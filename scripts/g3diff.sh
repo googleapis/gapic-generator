@@ -98,6 +98,9 @@ do
     *io/gapi/gax*)
       diff_files $file io/gapi/gax/ java/com/google/api/common/
       ;;
+    *io/gapi/vgen*)
+      diff_files $file io/gapi/vgen/ java/com/google/api/tools/veneer/generator/
+      ;;
     *)
       diff_files $file
   esac
