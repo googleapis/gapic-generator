@@ -1,0 +1,399 @@
+@snippet generateFilename(service)
+  {@context.getVeneerName(service)}.java
+@end
+
+@snippet generateClass(service, body, imports)
+  /*
+   * Copyright 2015, Google Inc. All rights reserved.
+   *
+   * Redistribution and use in source and binary forms, with or without
+   * modification, are permitted provided that the following conditions are
+   * met:
+   *
+   *    * Redistributions of source code must retain the above copyright
+   * notice, this list of conditions and the following disclaimer.
+   *    * Redistributions in binary form must reproduce the above
+   * copyright notice, this list of conditions and the following disclaimer
+   * in the documentation and/or other materials provided with the
+   * distribution.
+   *
+   *    * Neither the name of Google Inc. nor the names of its
+   * contributors may be used to endorse or promote products derived from
+   * this software without specific prior written permission.
+   *
+   * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+   * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+   * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+   * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+   * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+   * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+   * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+   */
+
+  /*
+   * EDITING INSTRUCTIONS
+   * This file was generated from the file {@service.getFile.getLocation.getDisplayString},
+   * and updates to that file get reflected here through a regular refresh process.
+   * However, manual additions are allowed because the refresh process performs
+   * a 3-way merge in order to preserve those manual additions. In order to not
+   * break the refresh process, only certain types of modifications are
+   * allowed.
+   *
+   * Allowed modifications - currently there is only one type allowed:
+   * 1. New methods (these should be added to the end of the class)
+   *
+   * Happy editing!
+   */
+  package {@context.getJavaPackage(service.getFile)};
+
+  @join import : imports
+    import {@import};
+  @end
+
+  {@body}
+@end
+
+@snippet generateBody(service)
+  {@alwaysImport()}
+
+  {@serviceJavaDoc(service)}
+  @@javax.annotation.Generated("by the veneer generator")
+  public class {@context.getVeneerName(service)} implements AutoCloseable {
+
+    {@constants(service)}
+
+    {@members(service)}
+
+    {@constructors(service)}
+
+    {@getters()}
+
+    {@callables(service)}
+
+    {@cleanupSection()}
+
+    {@manualSection()}
+  }
+@end
+
+@private alwaysImport() fill
+  {@context.addImport("com.google.common.base.Supplier")}
+  {@context.addImport("com.google.common.base.Suppliers")}
+  {@context.addImport("io.gapi.gax.internal.ServiceApiSettings")}
+  {@context.addImport("io.gapi.gax.internal.ApiUtils")}
+  {@context.addImport("io.grpc.callable.Callable")}
+  {@context.addImport("io.grpc.Channel")}
+  {@context.addImport("io.grpc.ManagedChannel")}
+  {@context.addImport("java.io.IOException")}
+@end
+
+@private constants(service)
+    // =========
+    // Constants
+    // =========
+
+  {@pathAndPortConstants()}
+  {@callableConstants(service)}
+  {@scopeConstant()}
+@end
+
+@private pathAndPortConstants()
+  /**
+   * The default address of the service.
+   */
+  # TODO (garrettjones) get this data from the yaml files of the service
+  public static final String SERVICE_ADDRESS = "xyz.googleapis.com";
+
+  /**
+   * The default port of the service.
+   */
+  public static final int DEFAULT_SERVICE_PORT = 443;
+
+@end
+
+@private callableConstants(service)
+  @let serviceName = service.getSimpleName, \
+       grpcName = context.getGrpcName(service)
+
+    @join method : service.getMethods
+      @let callableConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
+           inTypeName = context.typeName(method.getInputType), \
+           outTypeName = context.typeName(method.getOutputType)
+        public static final Callable<{@inTypeName}, {@outTypeName}>
+            {@callableConstant} = Callable.create({@grpcName}.METHOD_{@callableConstant});
+            # TODO: MIGRATION
+            # figure from where to get the service descriptor, or get rid of its need
+            # via vgen detail config
+            #    {@serviceName}.getServiceDescriptor().findMethodByName("{@method.getSimpleName}"));
+      @end
+    @end
+
+  @end
+@end
+
+@private scopeConstant()
+  private static String ALL_SCOPES[] = {
+    # TODO (garrettjones) get this data from the yaml files of the service
+  };
+@end
+
+@private members(service)
+  @let serviceName = service.getSimpleName, \
+       blockingClientName = context.getBlockingClientName(service)
+
+    // ========
+    // Members
+    // ========
+
+    private final ManagedChannel basicChannel;
+    private final Channel channel;
+    private final Supplier<{@blockingClientName}> baseClient;
+    private final ServiceApiSettings settings;
+  @end
+@end
+
+@private constructors(service)
+  @let serviceName = service.getSimpleName, \
+       grpcName = context.getGrpcName(service), \
+       veneerName = context.getVeneerName(service), \
+       blockingClientName = context.getBlockingClientName(service)
+    // ========
+    // Constructors
+    // ========
+
+    /**
+     * Constructs an instance of {@veneerName} with default settings.
+     */
+    public {@veneerName}() throws IOException {
+      this(new ServiceApiSettings());
+    }
+
+    /**
+     * Constructs an instance of {@veneerName}, using the given settings. The channels are created based
+     * on the settings passed in, or defaults for any settings that are not set.
+     */
+    public {@veneerName}(ServiceApiSettings settings) throws IOException {
+      ServiceApiSettings internalSettings = ApiUtils.settingsWithChannels(settings,
+          SERVICE_ADDRESS, DEFAULT_SERVICE_PORT, ALL_SCOPES);
+      this.settings = internalSettings;
+      this.basicChannel = internalSettings.getBasicChannel();
+      this.channel = internalSettings.getWrappedChannel();
+      this.baseClient = Suppliers.memoize(new Supplier<{@blockingClientName}>() {
+        @@Override public {@blockingClientName} get() {
+          return {@grpcName}.newBlockingStub({@veneerName}.this.channel);
+        }
+      });
+    }
+  @end
+@end
+
+@private getters()
+  // ========
+  // Getters
+  // ========
+
+  public Channel getChannel() {
+    return channel;
+  }
+
+@end
+
+@private callables(service)
+  @let serviceName = service.getSimpleName, \
+       grpcName = context.getGrpcName(service)
+    // =============
+    // Service Calls
+    // =============
+
+    @join method : service.getMethods
+      @let callableConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
+           methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
+           inTypeName = context.typeName(method.getInputType), \
+           outTypeName = context.typeName(method.getOutputType), \
+           requestFactoryName = context.getRequestFactoryName(service)
+        // ----- {@methodName} -----
+
+        # TODO (garrettjones) put some kind of limit on number of flattened parameters, and
+        # don't generated a flattened method if there are too many.
+        @if {@context.messages.isPageStreamingRequest(method.getOutputType, method.getInputType)}
+          {@iterableFlattenedMethod(method, methodName, requestFactoryName)}
+          {@iterableMethodWithRequestParam(method, methodName, inTypeName)}
+        @else
+          {@flattenedMethod(method, methodName, requestFactoryName)}
+          {@methodWithRequestParam(method, methodName, inTypeName, outTypeName)}
+        @end
+        {@methodReturningCallable(method, callableConstant, methodName, inTypeName, outTypeName)}
+      @end
+    @end
+  @end
+@end
+
+@private cleanupSection()
+  // ========
+  // Cleanup
+  // ========
+
+  /**
+   * Initiates an orderly shutdown in which preexisting calls continue but new calls are immediately
+   * cancelled.
+   */
+  @@Override public void close() {
+    basicChannel.shutdown();
+  }
+
+@end
+
+@private manualSection()
+  // ========
+  // Manually-added methods: add custom (non-generated) methods after this point.
+  // ========
+
+@end
+
+@private iterableFlattenedMethod(method, methodName, requestFactoryName)
+  {@methodJavaDoc(method)}
+  @let returnElementType = context.pageStreamingReturnElementType(method.getOutputType), \
+       requestMethodName = context.upperCamelToLowerCamel(context.typeName(method.getInputType))
+    public Iterable<{@returnElementType}> {@methodName}({@flattenedParameters(method.getInputType)}) {
+      {@context.typeName(method.getInputType)} request =
+          {@requestFactoryName}.{@requestMethodName}({@flattenedArguments(method.getInputType)});
+      return {@methodName}(request);
+    }
+
+  @end
+@end
+
+@private iterableMethodWithRequestParam(method, methodName, inTypeName)
+  {@methodJavaDoc(method)}
+  @let returnElementType = context.pageStreamingReturnElementType(method.getOutputType)
+    public Iterable<{@returnElementType}> {@methodName}({@inTypeName} request) {
+      return {@methodName}Callable()
+          .pageStreaming({@returnElementType}.class)
+          .iterableResponseStreamCall(request);
+    }
+
+  @end
+@end
+
+@private flattenedMethod(method, methodName, requestFactoryName)
+  {@flattenedMethodJavaDoc(method)}
+  @let returnType = context.methodReturnTypeName(method.getOutputType), \
+       returnStatement = context.methodReturnStatement(method.getOutputType), \
+       requestMethodName = context.upperCamelToLowerCamel(context.typeName(method.getInputType))
+    public {@returnType} {@methodName}({@flattenedParameters(method.getInputType)}) {
+      {@context.typeName(method.getInputType)} request =
+          {@requestFactoryName}.{@requestMethodName}({@flattenedArguments(method.getInputType)});
+      {@returnStatement}{@methodName}(request);
+    }
+
+  @end
+@end
+
+@private methodWithRequestParam(method, methodName, inTypeName, outTypeName)
+  {@methodJavaDoc(method)}
+  @let returnType = context.methodReturnTypeName(method.getOutputType), \
+       returnStatement = context.methodReturnStatement(method.getOutputType)
+    public {@returnType} {@methodName}({@inTypeName} request) {
+      {@returnStatement}{@methodName}Callable().call(request);
+    }
+
+  @end
+@end
+
+@private methodReturningCallable(method, callableConstant, methodName, inTypeName, outTypeName)
+  {@methodJavaDoc(method)}
+  public Callable<{@inTypeName}, {@outTypeName}> {@methodName}Callable() {
+    @if context.resources.isIdempotent(method)
+      return ApiUtils.prepareIdempotentCallable({@callableConstant}, settings).bind(channel);
+    @else
+      return {@callableConstant}.bind(channel);
+    @end
+  }
+
+@end
+
+@private serviceJavaDoc(protoElement)
+  {@autoGenWarning()}
+  {@javaDoc(protoElement)}
+@end
+
+@private methodJavaDoc(protoElement)
+  {@autoGenWarning()}
+  {@javaDoc(protoElement)}
+@end
+
+@private flattenedMethodJavaDoc(method)
+  {@autoGenWarning()}
+  {@javaDocStart()}
+  {@javaDocLines(method)}
+  {@javaDocEmptyLine()}
+  @join field : context.messages.flattenedFields(method.getInputType) vertical
+    @join commentLine : context.getJavaDocLinesWithPrefix(getDoc(field), paramDocLinePrefix(field))
+      {@commentLine}
+    @end
+  @end
+  {@javaDocEnd()}
+@end
+
+@private autoGenWarning()
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+@end
+
+@private paramDocLinePrefix(field)
+  @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName), \
+      lineBarrier = ""
+    @@param {@paramName} {@lineBarrier}
+  @end
+@end
+
+@private javaDoc(protoElement)
+  {@javaDocStart()}
+  {@javaDocLines(protoElement)}
+  {@javaDocEnd()}
+@end
+
+@private javaDocLines(protoElement)
+  @join commentLine : context.getJavaDocLines(getDoc(protoElement))
+    {@commentLine}
+  @end
+@end
+
+@private javaDocStart()
+  /**
+@end
+
+@private javaDocEmptyLine()
+  @let lineBarrier = ""
+    {@lineBarrier} *
+  @end
+@end
+
+@private javaDocEnd()
+  @let lineBarrier = ""
+    {@lineBarrier} */
+  @end
+@end
+
+@private getDoc(protoElement)
+  {@context.getDescription(protoElement)}
+@end
+
+@private flattenedParameters(inType)
+  @join field : context.messages.flattenedFields(inType) on ", "
+    @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
+      {@context.typeName(field.getType)} {@paramName}
+    @end
+  @end
+@end
+
+@private flattenedArguments(inType)
+  @join field : context.messages.flattenedFields(inType) on ", "
+    @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
+      {@paramName}
+    @end
+  @end
+@end

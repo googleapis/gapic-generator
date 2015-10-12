@@ -1,0 +1,152 @@
+// Build Script
+// ============
+
+buildscript {
+  repositories {
+    mavenLocal()
+    mavenCentral()
+  }
+  dependencies {
+    // Depend on local snapshot for protobuf gradle plugin. This needs
+    // to be currently cloned from https://github.com/wrwg/protobuf-gradle-plugin,
+    // until https://github.com/google/protobuf-gradle-plugin/pull/45 made it
+    // through.
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.1-SNAPSHOT'
+  }
+}
+
+// Configuration For All Subprojects
+// =================================
+
+subprojects {
+  apply plugin: "java"
+  apply plugin: "maven"
+  apply plugin: "idea"
+  apply plugin: "eclipse"
+  apply plugin: "com.google.protobuf"
+
+  group = "io.gapi"
+  version = "0.0.0-SNAPSHOT"
+
+  // Dependencies
+  // ------------
+
+  ext {
+    // Shortcuts for libraries we are using
+    libraries = [
+      // General
+      guava: 'com.google.guava:guava:18.0',
+      jsr305: 'com.google.code.findbugs:jsr305:3.0.0',
+      autovalue: 'com.google.auto.value:auto-value:1.1',
+      cglib: 'cglib:cglib:3.1',
+      guice: 'com.google.inject:guice:4.0',
+      commonsLang: 'org.apache.commons:commons-lang3:3.4',
+      snakeyaml: 'org.yaml:snakeyaml:1.16',
+
+      // Testing
+      junit: 'junit:junit:4.11',
+      mockito: 'org.mockito:mockito-core:1.10.19',
+      truth: 'com.google.truth:truth:0.27',
+
+      // Protobuf
+      protobuf: 'com.google.protobuf:protobuf-java:3.0.0-beta-1',
+      protoc:  'com.google.protobuf:protoc:3.0.0-beta-1',
+    ]
+  }
+
+  repositories {
+    mavenLocal()
+    mavenCentral()
+  }
+
+  dependencies {
+    compile libraries.guava,
+      libraries.jsr305,
+      libraries.autovalue,
+      libraries.protobuf,
+      libraries.cglib,
+      libraries.guice,
+      libraries.commonsLang,
+      libraries.snakeyaml
+
+    testCompile libraries.junit,
+      libraries.mockito,
+      libraries.truth
+  }
+
+  // Protobuf
+  // --------
+
+  sourceSets {
+    main {
+      proto {
+        // Include proto sources of submodule for gapi-core-proto,
+        // which includes com.google.api, com.google.protobuf, etc.
+        srcDir "${projectDir}/../modules/gapi-core-proto/src/main/proto"
+      }
+      java {
+        // Include location where proto plugin puts generated sources.
+        srcDir "${buildDir}/generated/source/proto/main/java"
+      }
+    }
+  }
+
+  protobuf {
+    protoc {
+      artifact = libraries.protoc
+    }
+  }
+
+
+  // Eclipse Annotation Processing
+  // -----------------------------
+
+  // TODO(wrwg): figure whether there is direct support for this in eclipse plugin,
+  // and use that instead.
+
+  ext {
+    eclipseAptFolder = '.apt_generated'
+    eclipseSettingsDir = file('.settings')
+  }
+
+  configurations {
+    codeGeneration
+  }
+
+  dependencies {
+    codeGeneration libraries.autovalue, libraries.jsr305
+  }
+
+  eclipse {
+    jdt.file.withProperties {
+      it['org.eclipse.jdt.core.compiler.processAnnotations'] = 'enabled'
+    }
+  }
+
+  tasks.eclipseJdt {
+    doFirst {
+      def aptPrefs =
+          file("${eclipseSettingsDir}/org.eclipse.jdt.apt.core.prefs")
+      aptPrefs.parentFile.mkdirs()
+
+      aptPrefs.text = """\
+        eclipse.preferences.version=1
+        org.eclipse.jdt.apt.aptEnabled=true
+        org.eclipse.jdt.apt.genSrcDir=${eclipseAptFolder}
+        org.eclipse.jdt.apt.reconcileEnabled=true
+        """.stripIndent()
+
+      file('.factorypath').withWriter {
+        new groovy.xml.MarkupBuilder(it).'factorypath' {
+          project.configurations.codeGeneration.each { dep->
+            factorypathentry(
+              kind:'EXTJAR',
+              id:dep.absolutePath,
+              enabled:true,
+              runInBatchMode:false)
+          }
+        }
+      }
+    }
+  }
+}
