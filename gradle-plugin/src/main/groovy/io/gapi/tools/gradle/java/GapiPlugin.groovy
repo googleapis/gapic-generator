@@ -3,7 +3,6 @@ package io.gapi.tools.gradle.java
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSet
-import org.gradle.plugins.ide.eclipse.model.SourceFolder
 import org.gradle.util.ConfigureUtil
 
 
@@ -176,9 +175,9 @@ class GapiPlugin implements Plugin<Project> {
           // Make eclipse plugin aware.
           // TODO(wrwg): this should happen automatically, but there seems to be an issue with
           // initialization order, so we do it manually right now.
-          eclipse.classpath.file.whenMerged { classpath ->
-              classpath.entries.add(new SourceFolder(javaPath, null))
-          }
+          //project.configurations.eclipse.classpath.file.whenMerged { classpath ->
+          //    classpath.entries.add(new SourceFolder(javaPath, null))
+          //}
         }
       }
     }

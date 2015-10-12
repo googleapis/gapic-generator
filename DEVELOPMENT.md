@@ -23,13 +23,20 @@ Clone and install our version of protobuf-gradle-plugin:
     ./gradlew install
     cd ..
 
-Clone the gapi-tools (this). _Note_ the `--recursive` flag to the `git clone` call; it includes 
-the content of submodules in the clone. If you don't use 
-it, you need to init and update the submodules manually with `git submodule` (see e.g. 
+Clone the gapi-tools (this). _Note_ the `--recursive` flag to the `git clone` call; it includes
+the content of submodules in the clone. If you don't use
+it, you need to init and update the submodules manually with `git submodule` (see e.g.
 [here](https://git-scm.com/docs/git-submodule) for the submodule feature documentation):
 
     git clone --recursive sso://gapi/gapi-tools
     cd gapi-tools
+    ./gradlew build install
+    cd ..
+
+Clone the GAX library:
+
+    git clone --recursive sso://gapi/gapi-gax-java
+    cd gapi-gax-java
     ./gradlew build install
     cd ..
 
@@ -62,8 +69,8 @@ which provides a convenient UI in Eclipse to find and install plugins. Use the r
    handy. Note that the viewer needs a `Show View` before it becomes visible.
 
 Once you have setup everything, you can import gapi-tools project in Eclipse via File>Import>Gradle.
-Before doing so, you should run tasks `build` and `eclipse` (in any order) . The `build` step is 
-needed to let protoc generate Java sources which Eclipse would not find otherwise. The `eclipse` 
+Before doing so, you should run tasks `build` and `eclipse` (in any order) . The `build` step is
+needed to let protoc generate Java sources which Eclipse would not find otherwise. The `eclipse`
 step generates Eclipse settings.
 
 The importer can also generate settings by itself, but its unclear whether they are equivalent
@@ -74,7 +81,7 @@ If the `build.gradle` has changed, you can regenerate Eclipse settings from the 
 running `./gradlew eclipse`. The changes should be picked up automatically by Eclipse.
 
 Note that `./gradlew eclipse` works incremental, it will not remove settings unless its sure
-to have created them (and that seems to not work sometimes). To ensure your 
+to have created them (and that seems to not work sometimes). To ensure your
 settings are consistent, you can use `./gradlew cleanEclipse`.
 
 
@@ -99,6 +106,6 @@ with Google3 code. Use as in
     g3diff.sh .                           # compare the entire tree
     g3diff.sh -n <arg>                    # don't call UI, just report which files differ
 
-The script must always be called at the root of a source tree. It will ignore package names and 
+The script must always be called at the root of a source tree. It will ignore package names and
 imports (it just deletes them before calling diff), and only actual code differences are shown.
 
