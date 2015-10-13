@@ -7,48 +7,48 @@ for github.]
 
 Currently, several projects need to be cloned onto your local machine and build in a certain order.
 
-Create a development root directory, e.g. `~/g` if you like it short.
+The short version to install those is to execute the `enroll.sh` script.
 
-Clone and install our version of grpc-java which includes the Callable abstraction:
+Create a development root directory, e.g. `~/g` if you like it short. Download
+the file
+[enroll.sh](https://gapi.git.corp.google.com/gapi-tools/+/master/scripts/enroll.sh)
+to this directory (note: git-on-borg does not seem to support the `raw` protocol, so
+we can't do this download from a bash command; once we are on github, we can).
 
-    git clone https://github.com/wrwg/grpc-java.git
-    cd grpc-java
-    ./gradlew install
-    cd ..
+Now execute in `~/g`:
 
-Clone and install our version of protobuf-gradle-plugin:
+    source enroll.sh
 
-    git clone https://github.com/wrwg/protobuf-gradle-plugin.git
-    cd protobuf-gradle-plugin
-    ./gradlew install
-    cd ..
-
-Clone the gapi-tools (this). _Note_ the `--recursive` flag to the `git clone` call; it includes
-the content of submodules in the clone. If you don't use
-it, you need to init and update the submodules manually with `git submodule` (see e.g.
-[here](https://git-scm.com/docs/git-submodule) for the submodule feature documentation):
-
-    git clone --recursive sso://gapi/gapi-tools
-    cd gapi-tools
-    ./gradlew build install
-    cd ..
-
-Clone the GAX library:
-
-    git clone --recursive sso://gapi/gapi-gax-java
-    cd gapi-gax-java
-    ./gradlew build install
-    cd ..
-
-Clone the library example, which currently also serves as a test that things are correctly setup:
-
-    git clone --recursive sso://gapi/gapi-example-library-java
-    cd gapi-example-library-java
-    ./gradlew build
-
-If all builds have succeeded, you should be set. To test your setup further, see the instructions
+If all builds have succeeded, you should be set. To test your setup further, see the examples
 at [gapi-example-library-java](https://gapi.git.corp.google.com/gapi-example-library-java) for how
-to play with the example.
+to play with the book library example, which was cloned by `enroll.sh` in the last step.
+
+If you are interested in what is happening under the hood, here is the content of `enroll.sh`
+script (at some point in time):
+
+    git clone https://github.com/wrwg/grpc-java.git || exit 1
+    (cd grpc-java && git checkout callable && ./gradlew install) || exit 1
+
+    git clone https://github.com/wrwg/protobuf-gradle-plugin.git || exit 1
+    (cd protobuf-gradle-plugin && ./gradlew install) || exit 1
+
+    git clone --recursive sso://gapi/gapi-tools || exit 1
+    (cd gapi-tools && ./gradlew build install) || exit 1
+
+    git clone --recursive sso://gapi/gapi-gax-java || exit 1
+    (cd gapi-gax-java ./gradlew build install) || exit 1
+
+    git clone --recursive sso://gapi/gapi-core-java || exit 1
+    (cd gapi-core-java && ./gradlew build install) || exit 1
+
+    git clone --recursive sso://gapi/gapi-example-library-java || exit 1
+    (cd gapi-example-library-java && ./gradlew build)
+
+Note: cloning a larger number of repositories for setting up a development
+environment is also what Android needs. They created the
+[repo](https://source.android.com/source/using-repo.html) tool which we may
+reuse here.
+
 
 ## IDE Support
 
@@ -57,9 +57,11 @@ should work in theory as well, as it is supported by gradle.
 
 ### Eclipse
 
-You may want to first install the [Eclipse Marketplace Client](https://marketplace.eclipse.org)
-which provides a convenient UI in Eclipse to find and install plugins. Use the regular
-`Install New Software` to locate Marketplace Client, for Eclipse 4.5 at this install site: [http://download.eclipse.org/releases/mars]()
+You may want to first install the
+[Eclipse Marketplace Client](https://marketplace.eclipse.org) which provides a
+convenient UI in Eclipse to find and install plugins. Use the regular `Install
+New Software` to locate Marketplace Client, for Eclipse 4.5 at this install
+site: [http://download.eclipse.org/releases/mars]()
 
 1. (Required) Install Buildship gradle integration. There are other gradle plugins as well, but
    that one is confirmed to work. It is on marketplace.
@@ -109,3 +111,21 @@ with Google3 code. Use as in
 The script must always be called at the root of a source tree. It will ignore package names and
 imports (it just deletes them before calling diff), and only actual code differences are shown.
 
+## Note on Submodules
+
+If you clone a repository with submodules using the `--recursive` flag, or other
+means, the submodule ends at a state which is specified in the parent repository
+via a commit id (such as `87fa7afc7d`). That state is not necessarily the same as the
+current 'master' in the origin repository.
+
+That is because 'master` is just a symbol for a given commit id:
+
+    master -> 87fa7afc7
+
+Git does not store the symbol but the commit id in the parent repository, for that a
+submodule does not pull in arbitry changes from its master.
+
+This behavior has been subject of lots of criticism about sub-modules, but it reflects
+the inherent complexity of the problem domain.
+
+TBD: recipes how to work with submodules.
