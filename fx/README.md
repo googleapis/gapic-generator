@@ -55,32 +55,32 @@ following major components:
 
 References:
 
-- The [Model](src/main/java/io/gapi/fx/model/Model.java)
+- The [Model](./src/main/java/io/gapi/fx/model/Model.java)
   class, the root object of the AST.
 - Selected model elements:
-  [ProtoFile](src/main/java/io/gapi/fx/model/ProtoFile.java),
-  [Interface](src/main/java/io/gapi/fx/model/Interface.java),
-  [Method](src/main/java/io/gapi/fx/model/Method.java),
-  [MessageType](src/main/java/io/gapi/fx/model/MessageType.java), and
-  [Field](src/main/java/io/gapi/fx/model/Model.java).
+  [ProtoFile](./src/main/java/io/gapi/fx/model/ProtoFile.java),
+  [Interface](./src/main/java/io/gapi/fx/model/Interface.java),
+  [Method](./src/main/java/io/gapi/fx/model/Method.java),
+  [MessageType](./src/main/java/io/gapi/fx/model/MessageType.java), and
+  [Field](./src/main/java/io/gapi/fx/model/Model.java).
 - The
-  [Processor](src/main/java/io/gapi/fx/model/Processor.java)
+  [Processor](./src/main/java/io/gapi/fx/model/Processor.java)
   interface, and an example of a processor, the
-  [Resolver](src/main/java/io/gapi/fx/processors/resolver/Resolver.java).
-- The [ToolBase](src/main/java/io/gapi/fx/tools/ToolBase.java) class
+  [Resolver](./src/main/java/io/gapi/fx/processors/resolver/Resolver.java).
+- The [ToolBase](./src/main/java/io/gapi/fx/tools/ToolBase.java) class
   from which tools can be derived, and an example of a tool, the
-  [SchemaGeneratorTool](src/main/java/io/gapi/fx/tools/restschemagen/SchemaGeneratorTool.java).
-- The [SnippetSet](src/main/java/io/gapi/fx/snippet/SnippetSet.java) class, which contains
+  [SchemaGeneratorTool](./src/main/java/io/gapi/fx/tools/restschemagen/SchemaGeneratorTool.java).
+- The [SnippetSet](./src/main/java/io/gapi/fx/snippet/SnippetSet.java) class, which contains
   documentation of the snippets templating engine.
 - The
-  [ConfigAspect](src/main/java/io/gapi/fx/model/ConfigAspect.java)
+  [ConfigAspect](./src/main/java/io/gapi/fx/model/ConfigAspect.java)
   interface, the
-  [ConfigAspectBase](src/main/java/io/gapi/fx/aspects/ConfigAspectBase.java)
+  [ConfigAspectBase](./src/main/java/io/gapi/fx/aspects/ConfigAspectBase.java)
   class from which specific aspects derive, and an example of an
   aspect, the
-  [VersionConfigAspect](src/main/java/io/gapi/fx/aspects/versioning/VersionConfigAspect.java).
+  [VersionConfigAspect](./src/main/java/io/gapi/fx/aspects/versioning/VersionConfigAspect.java).
   Furthermore, the
-  [RuleBasedConfigAspect](src/main/java/io/gapi/fx/aspects/RuleBasedConfigAspect.java)
+  [RuleBasedConfigAspect](./src/main/java/io/gapi/fx/aspects/RuleBasedConfigAspect.java)
   which is used for config aspects which use the config rule
   mechanism. See also more information about configuration aspects
   below.
@@ -200,7 +200,7 @@ class ReleaseConfigAspect extends ConfigAspectBase {
 
 Every config aspect relevant for the default logic of the tools
 framework should be added to the
-[StandardSetup](src/main/java/io/gapi/fx/setup/StandardSetup.java)
+[StandardSetup](./src/main/java/io/gapi/fx/setup/StandardSetup.java)
 class, so tools pick it up by default.
 
 ### Step 4: Test the Config Aspect
