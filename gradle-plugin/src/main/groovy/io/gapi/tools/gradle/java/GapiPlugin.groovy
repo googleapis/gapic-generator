@@ -49,9 +49,9 @@ class GapiPlugin implements Plugin<Project> {
       generateProtoTasks {
         all().each { task ->
           task.generateDescriptorSet = true
-          task.descriptorSetPath = "${Util.descriptorFile(project, task.sourceSet.name)}"
-          task.includeSourceInfoInDescriptorSet = true
-          task.includeImportsInDescriptorSet = true
+          task.descriptorSetOptions.path = "${Util.descriptorFile(project, task.sourceSet.name)}"
+          task.descriptorSetOptions.includeSourceInfo = true
+          task.descriptorSetOptions.includeImports = true
         }
         all()*.plugins {
           grpc {

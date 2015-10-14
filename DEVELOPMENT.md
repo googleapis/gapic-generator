@@ -23,7 +23,7 @@ we can't do this download from a bash command; once we are on github, we can).
 
 Now execute in `~/g`:
 
-    source enroll.sh
+    bash enroll.sh
 
 If all builds have succeeded, you should be set. To test your setup further, see the examples
 at [gapi-example-library-java](https://gapi.git.corp.google.com/gapi-example-library-java) for how
