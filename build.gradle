@@ -115,7 +115,10 @@ subprojects {
 
   dependencies {
     codeGeneration libraries.autovalue, libraries.jsr305
+    compile libraries.autovalue, libraries.jsr305
   }
+
+  compileJava.classpath += configurations.codeGeneration
 
   eclipse {
     jdt.file.withProperties {
@@ -130,11 +133,11 @@ subprojects {
       aptPrefs.parentFile.mkdirs()
 
       aptPrefs.text = """\
-        eclipse.preferences.version=1
-        org.eclipse.jdt.apt.aptEnabled=true
-        org.eclipse.jdt.apt.genSrcDir=${eclipseAptFolder}
-        org.eclipse.jdt.apt.reconcileEnabled=true
-        """.stripIndent()
+          eclipse.preferences.version=1
+          org.eclipse.jdt.apt.aptEnabled=true
+          org.eclipse.jdt.apt.genSrcDir=${eclipseAptFolder}
+          org.eclipse.jdt.apt.reconcileEnabled=true
+          """.stripIndent()
 
       file('.factorypath').withWriter {
         new groovy.xml.MarkupBuilder(it).'factorypath' {
@@ -147,6 +150,13 @@ subprojects {
           }
         }
       }
+    }
+  }
+
+  tasks.cleanEclipseJdt {
+    doFirst {
+      delete file("${eclipseSettingsDir}/org.eclipse.jdt.apt.core.prefs"),
+        file('.factorypath')
     }
   }
 }
