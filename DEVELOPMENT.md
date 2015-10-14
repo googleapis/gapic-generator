@@ -11,7 +11,7 @@ If you haven't done so earlier, install Google's git protocol extensions:
 
     sudo apt-get install git-remote-google
 
-Currently, several projects need to be cloned onto your local machine and build in a certain order.
+Currently, several projects need to be cloned onto your local machine and be built in a certain order.
 
 The short version to install those is to execute the `enroll.sh` script.
 
@@ -65,30 +65,31 @@ should work in theory as well, as it is supported by gradle.
 
 You may want to first install the
 [Eclipse Marketplace Client](https://marketplace.eclipse.org) which provides a
-convenient UI in Eclipse to find and install plugins. Use the regular `Install
+convenient UI in Eclipse to find and install plugins. Use the regular `Help > Install
 New Software` to locate Marketplace Client, for Eclipse 4.5 at this install
 site: [http://download.eclipse.org/releases/mars]()
 
 1. (Required) Install Buildship gradle integration. There are other gradle plugins as well, but
    that one is confirmed to work. It is on marketplace.
-2. (Required) Install Eclipse Groovy support. This is _not_ on marketplace, I installed it from
-   here: [http://dist.springsource.org/snapshot/GRECLIPSE/e4.5/]()
-3. (Optional) You find on marketplace editors for markdown and a 'github' style viewer, which are
+2. (Required) Install Eclipse Groovy support. This is _not_ on marketplace; you can install it
+   using this site: [http://dist.springsource.org/snapshot/GRECLIPSE/e4.5/]() - put it in the
+   sites field in the `Install New Software` dialog. 
+3. (Optional) On marketplace, you can find editors for markdown and a 'github' style viewer, which are
    handy. Note that the viewer needs a `Show View` before it becomes visible.
 
-Once you have setup everything, you can import gapi-tools project in Eclipse via File>Import>Gradle.
-Before doing so, you should run tasks `build` and `eclipse` (in any order) . The `build` step is
+Once you have set up everything, you can import the gapi-tools project in Eclipse via File>Import>Gradle.
+Before doing so, you should run the tasks `build` and `eclipse` (in any order) . The `build` step is
 needed to let protoc generate Java sources which Eclipse would not find otherwise. The `eclipse`
 step generates Eclipse settings.
 
-The importer can also generate settings by itself, but its unclear whether they are equivalent
+The importer can also generate settings by itself, but it's unclear whether they are equivalent
 with those generated from the command line. If the importer finds settings, it leaves them alone
 and just uses them. That's why `./gradlew eclipse` plays well with the importer.
 
 If the `build.gradle` has changed, you can regenerate Eclipse settings from the command line by
 running `./gradlew eclipse`. The changes should be picked up automatically by Eclipse.
 
-Note that `./gradlew eclipse` works incremental, it will not remove settings unless its sure
+Note that `./gradlew eclipse` works incrementally; it will not remove settings unless it's sure
 to have created them (and that seems to not work sometimes). To ensure your
 settings are consistent, you can use `./gradlew cleanEclipse`.
 
@@ -99,8 +100,8 @@ TBD
 
 ## Note On Gradle Daemon
 
-Gradle bugs you to configure it's daemon to speed up build time. If you follow this hint, be
-careful that the daemon may not reload plugin and related code you may just have changed. Don't
+Gradle bugs you to configure its daemon to speed up build time. If you follow this hint, be
+careful that the daemon may not reload the plugin and related code you may just have changed. Don't
 use the daemon during plugin development, or restart it with `./gradlew --stop`
 when needed.
 
@@ -128,10 +129,10 @@ That is because 'master` is just a symbol for a given commit id:
 
     master -> 87fa7afc7
 
-Git does not store the symbol but the commit id in the parent repository, for that a
-submodule does not pull in arbitry changes from its master.
+Git does not store the symbol but the commit id in the parent repository, so that a
+submodule does not pull in arbitrary changes from its master.
 
 This behavior has been subject of lots of criticism about sub-modules, but it reflects
 the inherent complexity of the problem domain.
 
-TBD: recipes how to work with submodules.
+TBD: recipes on how to work with submodules.
