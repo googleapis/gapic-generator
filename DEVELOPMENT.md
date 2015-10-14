@@ -5,6 +5,12 @@ for github.]
 
 ## Setup
 
+You need to run `prodaccess` to access git-on-borg.
+
+If you haven't done so earlier, install Google's git protocol extensions:
+
+    sudo apt-get install git-remote-google
+
 Currently, several projects need to be cloned onto your local machine and build in a certain order.
 
 The short version to install those is to execute the `enroll.sh` script.
@@ -27,7 +33,7 @@ If you are interested in what is happening under the hood, here is the content o
 script (at some point in time):
 
     git clone https://github.com/wrwg/grpc-java.git || exit 1
-    (cd grpc-java && git checkout callable && ./gradlew install) || exit 1
+    (cd grpc-java && git checkout callable && echo "skipCodegen=true" >gradle.properties && ./gradlew install) || exit 1
 
     git clone https://github.com/wrwg/protobuf-gradle-plugin.git || exit 1
     (cd protobuf-gradle-plugin && ./gradlew install) || exit 1
