@@ -32,9 +32,6 @@ to play with the book library example, which was cloned by `enroll.sh` in the la
 If you are interested in what is happening under the hood, here is the content of `enroll.sh`
 script (at some point in time):
 
-    git clone https://github.com/wrwg/grpc-java.git || exit 1
-    (cd grpc-java && git checkout callable && echo "skipCodegen=true" >gradle.properties && ./gradlew install) || exit 1
-
     git clone https://github.com/wrwg/protobuf-gradle-plugin.git || exit 1
     (cd protobuf-gradle-plugin && ./gradlew install) || exit 1
 
