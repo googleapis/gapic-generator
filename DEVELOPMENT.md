@@ -11,6 +11,11 @@ If you haven't done so earlier, install Google's git protocol extensions:
 
     sudo apt-get install git-remote-google
 
+The client library projects (e.g. gapi-example-library-java) require kdiff3; make sure you have
+this installed:
+
+    sudo apt-get install kdiff3
+
 Currently, several projects need to be cloned onto your local machine and be built in a certain order.
 
 The short version to install those is to execute the `enroll.sh` script.
