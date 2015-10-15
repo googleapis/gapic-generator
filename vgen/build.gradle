@@ -1,3 +1,25 @@
 dependencies {
   compile project(':fx')
 }
+
+// Protobuf
+// --------
+
+sourceSets {
+  main {
+    proto {
+      // Include proto sources for veneer generator config.
+      srcDir "src/main/proto"
+    }
+    java {
+      // Include location where proto plugin puts generated sources.
+      srcDir "${buildDir}/generated/source/proto/main/java"
+    }
+  }
+}
+
+protobuf {
+  protoc {
+    artifact = libraries.protoc
+  }
+}
