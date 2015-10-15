@@ -74,29 +74,6 @@ subprojects {
       libraries.truth
   }
 
-  // Protobuf
-  // --------
-
-  sourceSets {
-    main {
-      proto {
-        // Include proto sources of submodule for gapi-core-proto,
-        // which includes com.google.api, com.google.protobuf, etc.
-        srcDir "${projectDir}/../modules/gapi-core-proto/src/main/proto"
-      }
-      java {
-        // Include location where proto plugin puts generated sources.
-        srcDir "${buildDir}/generated/source/proto/main/java"
-      }
-    }
-  }
-
-  protobuf {
-    protoc {
-      artifact = libraries.protoc
-    }
-  }
-
 
   // Eclipse Annotation Processing
   // -----------------------------
