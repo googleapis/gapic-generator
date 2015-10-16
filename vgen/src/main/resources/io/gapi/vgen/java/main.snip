@@ -72,6 +72,8 @@
 
     {@constructors(service)}
 
+    {@createResourceFunctions(service)}
+
     {@getters()}
 
     {@callables(service)}
@@ -87,6 +89,7 @@
   {@context.addImport("com.google.common.base.Suppliers")}
   {@context.addImport("io.gapi.gax.internal.ServiceApiSettings")}
   {@context.addImport("io.gapi.gax.internal.ApiUtils")}
+  {@context.addImport("io.gapi.gax.protobuf.PathTemplate")}
   {@context.addImport("io.grpc.callable.Callable")}
   {@context.addImport("io.grpc.Channel")}
   {@context.addImport("io.grpc.ManagedChannel")}
@@ -94,13 +97,14 @@
 @end
 
 @private constants(service)
-    // =========
-    // Constants
-    // =========
+  // =========
+  // Constants
+  // =========
 
   {@pathAndPortConstants()}
   {@callableConstants(service)}
   {@scopeConstant()}
+  {@pathTemplateConstants(service)}
 @end
 
 @private pathAndPortConstants()
@@ -141,6 +145,56 @@
   private static String ALL_SCOPES[] = {
     # TODO (garrettjones) get this data from the yaml files of the service
   };
+
+@end
+
+@private pathTemplateConstants(service)
+  @join fieldSegment : context.resources.getFieldSegmentsFromHttpPaths(service.getMethods)
+    {@pathTemplateConstant(fieldSegment)}
+  @end
+@end
+
+@private pathTemplateConstant(fieldSegment)
+  public static final PathTemplate {@pathTemplateConstantName(fieldSegment)} =
+      PathTemplate.create("{@context.resources.templatize(fieldSegment)}");
+@end
+
+@private pathTemplateConstantName(fieldSegment)
+  {@context.lowerUnderscoreToUpperUnderscore(fieldSegment.getFieldPath)}_PATH_TEMPLATE
+@end
+
+@private createResourceFunctions(service)
+  // ==============================
+  // Resource Name Helper Functions
+  // ==============================
+
+  @join fieldSegment : context.resources.getFieldSegmentsFromHttpPaths(service.getMethods)
+    {@createResourceFunction(fieldSegment)}
+  @end
+@end
+
+@private createResourceFunction(fieldSegment)
+  public static final String {@createResourceFunctionName(fieldSegment)}(\
+      {@createResourceFunctionParams(fieldSegment)}) {
+    return {@pathTemplateConstantName(fieldSegment)}.instantiate(
+        {@pathTemplateArgs(fieldSegment)});
+  }
+
+@end
+@private createResourceFunctionName(fieldSegment)
+  create{@context.lowerUnderscoreToUpperCamel(fieldSegment.getFieldPath)}
+@end
+
+@private createResourceFunctionParams(fieldSegment)
+  @join param : context.resources.getParamsForResourceNameWildcards(fieldSegment) on ", "
+    String {@context.lowerUnderscoreToLowerCamel(param)}
+  @end
+@end
+
+@private pathTemplateArgs(fieldSegment)
+  @join param : context.resources.getParamsForResourceNameWildcards(fieldSegment) vertical on ","
+    "{@param}", {@context.lowerUnderscoreToLowerCamel(param)}
+  @end
 @end
 
 @private members(service)
@@ -262,10 +316,12 @@
 @private iterableFlattenedMethod(method, methodName, requestFactoryName)
   {@methodJavaDoc(method)}
   @let returnElementType = context.pageStreamingReturnElementType(method.getOutputType), \
-       requestMethodName = context.upperCamelToLowerCamel(context.typeName(method.getInputType))
+       requestTypeName = context.typeName(method.getInputType)
     public Iterable<{@returnElementType}> {@methodName}({@flattenedParameters(method.getInputType)}) {
       {@context.typeName(method.getInputType)} request =
-          {@requestFactoryName}.{@requestMethodName}({@flattenedArguments(method.getInputType)});
+          {@requestTypeName}.newBuilder()
+          {@builderSetCalls(method.getInputType)}
+          .build();
       return {@methodName}(request);
     }
 
@@ -288,10 +344,13 @@
   {@flattenedMethodJavaDoc(method)}
   @let returnType = context.methodReturnTypeName(method.getOutputType), \
        returnStatement = context.methodReturnStatement(method.getOutputType), \
-       requestMethodName = context.upperCamelToLowerCamel(context.typeName(method.getInputType))
+       requestTypeName = context.typeName(method.getInputType)
     public {@returnType} {@methodName}({@flattenedParameters(method.getInputType)}) {
       {@context.typeName(method.getInputType)} request =
-          {@requestFactoryName}.{@requestMethodName}({@flattenedArguments(method.getInputType)});
+          {@requestTypeName}.newBuilder()
+          {@builderSetCalls(method.getInputType)}
+          .build();
+          
       {@returnStatement}{@methodName}(request);
     }
 
@@ -419,6 +478,24 @@
   @join field : context.messages.flattenedFields(inType) on ", "
     @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
       {@paramName}
+    @end
+  @end
+@end
+
+@private builderSetCalls(inType)
+  @join field : context.messages.flattenedFields(inType)
+    @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
+      .{@setCallName(field)}({@paramName})
+    @end
+  @end
+@end
+
+@private setCallName(field)
+  @let paramNameInCamel = context.lowerUnderscoreToUpperCamel(field.getSimpleName)
+    @if field.isRepeated
+      addAll{@paramNameInCamel}
+    @else
+      set{@paramNameInCamel}
     @end
   @end
 @end
