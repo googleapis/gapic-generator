@@ -54,6 +54,8 @@
     import {@import};
   @end
 
+  // Manually-added imports: add custom (non-generated) imports after this point.
+
   {@body}
 @end
 
@@ -149,8 +151,7 @@
     // Members
     // ========
 
-    private final ManagedChannel basicChannel;
-    private final Channel channel;
+    private final ManagedChannel channel;
     private final Supplier<{@blockingClientName}> baseClient;
     private final ServiceApiSettings settings;
   @end
@@ -180,8 +181,7 @@
       ServiceApiSettings internalSettings = ApiUtils.settingsWithChannels(settings,
           SERVICE_ADDRESS, DEFAULT_SERVICE_PORT, ALL_SCOPES);
       this.settings = internalSettings;
-      this.basicChannel = internalSettings.getBasicChannel();
-      this.channel = internalSettings.getWrappedChannel();
+      this.channel = internalSettings.getChannel();
       this.baseClient = Suppliers.memoize(new Supplier<{@blockingClientName}>() {
         @@Override public {@blockingClientName} get() {
           return {@grpcName}.newBlockingStub({@veneerName}.this.channel);
@@ -242,7 +242,12 @@
    * cancelled.
    */
   @@Override public void close() {
-    basicChannel.shutdown();
+    // Manually-added shutdown code
+
+    // Auto-generated shutdown code
+    channel.shutdown();
+
+    // Manually-added shutdown code
   }
 
 @end
@@ -268,7 +273,7 @@
 @end
 
 @private iterableMethodWithRequestParam(method, methodName, inTypeName)
-  {@methodJavaDoc(method)}
+  {@methodWithRequestParamJavaDoc(method)}
   @let returnElementType = context.pageStreamingReturnElementType(method.getOutputType)
     public Iterable<{@returnElementType}> {@methodName}({@inTypeName} request) {
       return {@methodName}Callable()
@@ -294,7 +299,7 @@
 @end
 
 @private methodWithRequestParam(method, methodName, inTypeName, outTypeName)
-  {@methodJavaDoc(method)}
+  {@methodWithRequestParamJavaDoc(method)}
   @let returnType = context.methodReturnTypeName(method.getOutputType), \
        returnStatement = context.methodReturnStatement(method.getOutputType)
     public {@returnType} {@methodName}({@inTypeName} request) {
@@ -317,17 +322,26 @@
 @end
 
 @private serviceJavaDoc(protoElement)
-  {@autoGenWarning()}
+  {@autoGenServiceWarning()}
   {@javaDoc(protoElement)}
 @end
 
 @private methodJavaDoc(protoElement)
-  {@autoGenWarning()}
+  {@autoGenMethodWarning()}
   {@javaDoc(protoElement)}
 @end
 
+@private methodWithRequestParamJavaDoc(protoElement)
+  {@autoGenMethodWarning()}
+  {@javaDocStart()}
+  {@javaDocLines(protoElement)}
+  {@javaDocEmptyLine()}
+  {@javaDocGenericRequestParam()}
+  {@javaDocEnd()}
+@end
+
 @private flattenedMethodJavaDoc(method)
-  {@autoGenWarning()}
+  {@autoGenMethodWarning()}
   {@javaDocStart()}
   {@javaDocLines(method)}
   {@javaDocEmptyLine()}
@@ -339,7 +353,11 @@
   {@javaDocEnd()}
 @end
 
-@private autoGenWarning()
+@private autoGenServiceWarning()
+  // AUTO-GENERATED DOCUMENTATION AND SERVICE - see instructions at the top of the file for editing.
+@end
+
+@private autoGenMethodWarning()
   // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
 @end
 
@@ -369,6 +387,13 @@
 @private javaDocEmptyLine()
   @let lineBarrier = ""
     {@lineBarrier} *
+  @end
+@end
+
+@private javaDocGenericRequestParam()
+  @let lineBarrier = ""
+    {@lineBarrier} * @@param request The request object containing all \
+        of the parameters for the API call.
   @end
 @end
 
