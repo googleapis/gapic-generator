@@ -216,22 +216,26 @@
        grpcName = context.getGrpcName(service), \
        veneerName = context.getVeneerName(service), \
        blockingClientName = context.getBlockingClientName(service)
-    // ========
-    // Constructors
-    // ========
+    // ===============
+    // Factory Methods
+    // ===============
 
     /**
      * Constructs an instance of {@veneerName} with default settings.
      */
-    public {@veneerName}() throws IOException {
-      this(new ServiceApiSettings());
+    public static {@veneerName} create() throws IOException {
+      return create(new ServiceApiSettings());
     }
 
     /**
      * Constructs an instance of {@veneerName}, using the given settings. The channels are created based
      * on the settings passed in, or defaults for any settings that are not set.
      */
-    public {@veneerName}(ServiceApiSettings settings) throws IOException {
+    public static {@veneerName} create(ServiceApiSettings settings) throws IOException {
+      return new {@veneerName}(settings);
+    }
+
+    private {@veneerName}(ServiceApiSettings settings) throws IOException {
       ServiceApiSettings internalSettings = ApiUtils.settingsWithChannels(settings,
           SERVICE_ADDRESS, DEFAULT_SERVICE_PORT, ALL_SCOPES);
       this.settings = internalSettings;
