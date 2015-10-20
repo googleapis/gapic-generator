@@ -85,8 +85,6 @@
 @end
 
 @private alwaysImport() fill
-  {@context.addImport("com.google.common.base.Supplier")}
-  {@context.addImport("com.google.common.base.Suppliers")}
   {@context.addImport("io.gapi.gax.internal.ServiceApiSettings")}
   {@context.addImport("io.gapi.gax.internal.ApiUtils")}
   {@context.addImport("io.gapi.gax.protobuf.PathTemplate")}
@@ -198,24 +196,16 @@
 @end
 
 @private members(service)
-  @let serviceName = service.getSimpleName, \
-       blockingClientName = context.getBlockingClientName(service)
+  // ========
+  // Members
+  // ========
 
-    // ========
-    // Members
-    // ========
-
-    private final ManagedChannel channel;
-    private final Supplier<{@blockingClientName}> baseClient;
-    private final ServiceApiSettings settings;
-  @end
+  private final ManagedChannel channel;
+  private final ServiceApiSettings settings;
 @end
 
 @private constructors(service)
-  @let serviceName = service.getSimpleName, \
-       grpcName = context.getGrpcName(service), \
-       veneerName = context.getVeneerName(service), \
-       blockingClientName = context.getBlockingClientName(service)
+  @let veneerName = context.getVeneerName(service)
     // ===============
     // Factory Methods
     // ===============
@@ -240,11 +230,6 @@
           SERVICE_ADDRESS, DEFAULT_SERVICE_PORT, ALL_SCOPES);
       this.settings = internalSettings;
       this.channel = internalSettings.getChannel();
-      this.baseClient = Suppliers.memoize(new Supplier<{@blockingClientName}>() {
-        @@Override public {@blockingClientName} get() {
-          return {@grpcName}.newBlockingStub({@veneerName}.this.channel);
-        }
-      });
     }
   @end
 @end
@@ -261,31 +246,28 @@
 @end
 
 @private callables(service)
-  @let serviceName = service.getSimpleName, \
-       grpcName = context.getGrpcName(service)
-    // =============
-    // Service Calls
-    // =============
+  // =============
+  // Service Calls
+  // =============
 
-    @join method : service.getMethods
-      @let callableConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
-           methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
-           inTypeName = context.typeName(method.getInputType), \
-           outTypeName = context.typeName(method.getOutputType), \
-           requestFactoryName = context.getRequestFactoryName(service)
-        // ----- {@methodName} -----
+  @join method : service.getMethods
+    @let callableConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
+         methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
+         inTypeName = context.typeName(method.getInputType), \
+         outTypeName = context.typeName(method.getOutputType), \
+         requestFactoryName = context.getRequestFactoryName(service)
+      // ----- {@methodName} -----
 
-        # TODO (garrettjones) put some kind of limit on number of flattened parameters, and
-        # don't generated a flattened method if there are too many.
-        @if {@context.messages.isPageStreamingRequest(method.getOutputType, method.getInputType)}
-          {@iterableFlattenedMethod(method, methodName, requestFactoryName)}
-          {@iterableMethodWithRequestParam(method, methodName, inTypeName)}
-        @else
-          {@flattenedMethod(method, methodName, requestFactoryName)}
-          {@methodWithRequestParam(method, methodName, inTypeName, outTypeName)}
-        @end
-        {@methodReturningCallable(method, callableConstant, methodName, inTypeName, outTypeName)}
+      # TODO (garrettjones) put some kind of limit on number of flattened parameters, and
+      # don't generated a flattened method if there are too many.
+      @if {@context.messages.isPageStreamingRequest(method.getOutputType, method.getInputType)}
+        {@iterableFlattenedMethod(method, methodName, requestFactoryName)}
+        {@iterableMethodWithRequestParam(method, methodName, inTypeName)}
+      @else
+        {@flattenedMethod(method, methodName, requestFactoryName)}
+        {@methodWithRequestParam(method, methodName, inTypeName, outTypeName)}
       @end
+      {@methodReturningCallable(method, callableConstant, methodName, inTypeName, outTypeName)}
     @end
   @end
 @end
