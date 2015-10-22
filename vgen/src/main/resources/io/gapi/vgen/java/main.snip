@@ -85,10 +85,10 @@
 @end
 
 @private alwaysImport() fill
-  {@context.addImport("io.gapi.gax.internal.ServiceApiSettings")}
+  {@context.addImport("io.gapi.gax.grpc.ApiCallable")}
+  {@context.addImport("io.gapi.gax.grpc.ServiceApiSettings")}
   {@context.addImport("io.gapi.gax.internal.ApiUtils")}
   {@context.addImport("io.gapi.gax.protobuf.PathTemplate")}
-  {@context.addImport("io.grpc.callable.Callable")}
   {@context.addImport("io.grpc.Channel")}
   {@context.addImport("io.grpc.ManagedChannel")}
   {@context.addImport("java.io.IOException")}
@@ -127,8 +127,8 @@
       @let callableConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
            inTypeName = context.typeName(method.getInputType), \
            outTypeName = context.typeName(method.getOutputType)
-        public static final Callable<{@inTypeName}, {@outTypeName}>
-            {@callableConstant} = Callable.create({@grpcName}.METHOD_{@callableConstant});
+        public static final ApiCallable<{@inTypeName}, {@outTypeName}>
+            {@callableConstant} = ApiCallable.create({@grpcName}.METHOD_{@callableConstant});
             # TODO: MIGRATION
             # figure from where to get the service descriptor, or get rid of its need
             # via vgen detail config
@@ -356,7 +356,7 @@
 
 @private methodReturningCallable(method, callableConstant, methodName, inTypeName, outTypeName)
   {@methodJavaDoc(method)}
-  public Callable<{@inTypeName}, {@outTypeName}> {@methodName}Callable() {
+  public ApiCallable<{@inTypeName}, {@outTypeName}> {@methodName}Callable() {
     @if context.resources.isIdempotent(method)
       return ApiUtils.prepareIdempotentCallable({@callableConstant}, settings).bind(channel);
     @else
