@@ -47,6 +47,7 @@ subprojects {
       junit: 'junit:junit:4.11',
       mockito: 'org.mockito:mockito-core:1.10.19',
       truth: 'com.google.truth:truth:0.27',
+      gaxTesting: 'io.gapi.gax:gax-testing:0.0.0-SNAPSHOT',
 
       // Protobuf
       protobuf: 'com.google.protobuf:protobuf-java:3.0.0-beta-1',
@@ -71,9 +72,18 @@ subprojects {
 
     testCompile libraries.junit,
       libraries.mockito,
-      libraries.truth
+      libraries.truth,
+      libraries.gaxTesting
   }
 
+  // Source jar
+  task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+  }
+  artifacts {
+    archives sourcesJar
+  }
 
   // Eclipse Annotation Processing
   // -----------------------------

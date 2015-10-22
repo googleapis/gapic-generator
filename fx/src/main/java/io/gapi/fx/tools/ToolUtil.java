@@ -1,15 +1,16 @@
 package io.gapi.fx.tools;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import com.google.common.io.Files;
+import com.google.protobuf.Message;
+
 import io.gapi.fx.model.Diag;
 import io.gapi.fx.model.Model;
 import io.gapi.fx.model.SimpleLocation;
 import io.gapi.fx.snippet.Doc;
 import io.gapi.fx.snippet.Doc.AnsiColor;
 import io.gapi.fx.yaml.YamlReader;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
-import com.google.common.io.Files;
-import com.google.protobuf.Message;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -139,6 +140,7 @@ public class ToolUtil {
   public static ImmutableList<String> sanitizeSourceFiles(Iterable<String> sources) {
     ImmutableList.Builder<String> sourcesBuilder = new ImmutableList.Builder<>();
     for (String source : sources) {
+      // TODO(wgg): MIGRATION
       if (source.startsWith(BLAZEOUT_PREFIX) && source.contains(GENFILES_TOKEN)) {
         // For blaze-generated proto source, keep the string after "/genfiles/" as the proto source
         // file name.

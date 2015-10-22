@@ -1,5 +1,6 @@
 dependencies {
   compile project(':fx')
+  testCompile project(path: ':fx', configuration: 'tests')
 }
 
 // Protobuf
@@ -21,5 +22,25 @@ sourceSets {
 protobuf {
   protoc {
     artifact = libraries.protoc
+  }
+}
+
+// Test data
+// ---------
+
+sourceSets {
+  test {
+    resources {
+      // Include all resources from testdata folders.
+      srcDir 'src/test/java'
+      include '**/testdata/*'
+    }
+    resources {
+      // Include protos of core platform and vgen,
+      // as some tests depend on this.
+      srcDir 'src/main/proto'
+      srcDir "${projectDir}/../modules/gapi-core-proto/src/main/proto"
+      include '**/*.proto'
+    }
   }
 }
