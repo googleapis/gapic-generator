@@ -47,12 +47,12 @@ package com.google.example.library.v1;
 
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
+import io.gapi.gax.grpc.ApiCallable;
+import io.gapi.gax.grpc.ServiceApiSettings;
 import io.gapi.gax.internal.ApiUtils;
-import io.gapi.gax.internal.ServiceApiSettings;
 import io.gapi.gax.protobuf.PathTemplate;
 import io.grpc.Channel;
 import io.grpc.ManagedChannel;
-import io.grpc.callable.Callable;
 import java.io.IOException;
 import java.util.List;
 
@@ -90,28 +90,28 @@ public class LibraryServiceApi implements AutoCloseable {
   public static final int DEFAULT_SERVICE_PORT = 443;
 
 
-  public static final Callable<CreateShelfRequest, Shelf>
-      CREATE_SHELF = Callable.create(LibraryServiceGrpc.METHOD_CREATE_SHELF);
-  public static final Callable<GetShelfRequest, Shelf>
-      GET_SHELF = Callable.create(LibraryServiceGrpc.METHOD_GET_SHELF);
-  public static final Callable<ListShelvesRequest, ListShelvesResponse>
-      LIST_SHELVES = Callable.create(LibraryServiceGrpc.METHOD_LIST_SHELVES);
-  public static final Callable<DeleteShelfRequest, Empty>
-      DELETE_SHELF = Callable.create(LibraryServiceGrpc.METHOD_DELETE_SHELF);
-  public static final Callable<MergeShelvesRequest, Shelf>
-      MERGE_SHELVES = Callable.create(LibraryServiceGrpc.METHOD_MERGE_SHELVES);
-  public static final Callable<CreateBookRequest, Book>
-      CREATE_BOOK = Callable.create(LibraryServiceGrpc.METHOD_CREATE_BOOK);
-  public static final Callable<GetBookRequest, Book>
-      GET_BOOK = Callable.create(LibraryServiceGrpc.METHOD_GET_BOOK);
-  public static final Callable<ListBooksRequest, ListBooksResponse>
-      LIST_BOOKS = Callable.create(LibraryServiceGrpc.METHOD_LIST_BOOKS);
-  public static final Callable<DeleteBookRequest, Empty>
-      DELETE_BOOK = Callable.create(LibraryServiceGrpc.METHOD_DELETE_BOOK);
-  public static final Callable<UpdateBookRequest, Book>
-      UPDATE_BOOK = Callable.create(LibraryServiceGrpc.METHOD_UPDATE_BOOK);
-  public static final Callable<MoveBookRequest, Book>
-      MOVE_BOOK = Callable.create(LibraryServiceGrpc.METHOD_MOVE_BOOK);
+  public static final ApiCallable<CreateShelfRequest, Shelf>
+      CREATE_SHELF = ApiCallable.create(LibraryServiceGrpc.METHOD_CREATE_SHELF);
+  public static final ApiCallable<GetShelfRequest, Shelf>
+      GET_SHELF = ApiCallable.create(LibraryServiceGrpc.METHOD_GET_SHELF);
+  public static final ApiCallable<ListShelvesRequest, ListShelvesResponse>
+      LIST_SHELVES = ApiCallable.create(LibraryServiceGrpc.METHOD_LIST_SHELVES);
+  public static final ApiCallable<DeleteShelfRequest, Empty>
+      DELETE_SHELF = ApiCallable.create(LibraryServiceGrpc.METHOD_DELETE_SHELF);
+  public static final ApiCallable<MergeShelvesRequest, Shelf>
+      MERGE_SHELVES = ApiCallable.create(LibraryServiceGrpc.METHOD_MERGE_SHELVES);
+  public static final ApiCallable<CreateBookRequest, Book>
+      CREATE_BOOK = ApiCallable.create(LibraryServiceGrpc.METHOD_CREATE_BOOK);
+  public static final ApiCallable<GetBookRequest, Book>
+      GET_BOOK = ApiCallable.create(LibraryServiceGrpc.METHOD_GET_BOOK);
+  public static final ApiCallable<ListBooksRequest, ListBooksResponse>
+      LIST_BOOKS = ApiCallable.create(LibraryServiceGrpc.METHOD_LIST_BOOKS);
+  public static final ApiCallable<DeleteBookRequest, Empty>
+      DELETE_BOOK = ApiCallable.create(LibraryServiceGrpc.METHOD_DELETE_BOOK);
+  public static final ApiCallable<UpdateBookRequest, Book>
+      UPDATE_BOOK = ApiCallable.create(LibraryServiceGrpc.METHOD_UPDATE_BOOK);
+  public static final ApiCallable<MoveBookRequest, Book>
+      MOVE_BOOK = ApiCallable.create(LibraryServiceGrpc.METHOD_MOVE_BOOK);
 
   private static String ALL_SCOPES[] = {
   };
@@ -213,7 +213,7 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Creates a shelf, and returns the new Shelf.
    */
-  public Callable<CreateShelfRequest, Shelf> createShelfCallable() {
+  public ApiCallable<CreateShelfRequest, Shelf> createShelfCallable() {
     return CREATE_SHELF.bind(channel);
   }
 
@@ -252,7 +252,7 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Gets a shelf.
    */
-  public Callable<GetShelfRequest, Shelf> getShelfCallable() {
+  public ApiCallable<GetShelfRequest, Shelf> getShelfCallable() {
     return ApiUtils.prepareIdempotentCallable(GET_SHELF, settings).bind(channel);
   }
 
@@ -286,7 +286,7 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Lists shelves.
    */
-  public Callable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
+  public ApiCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
     return ApiUtils.prepareIdempotentCallable(LIST_SHELVES, settings).bind(channel);
   }
 
@@ -321,7 +321,7 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Deletes a shelf.
    */
-  public Callable<DeleteShelfRequest, Empty> deleteShelfCallable() {
+  public ApiCallable<DeleteShelfRequest, Empty> deleteShelfCallable() {
     return ApiUtils.prepareIdempotentCallable(DELETE_SHELF, settings).bind(channel);
   }
 
@@ -364,7 +364,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * `other_shelf_name` to shelf `name`, and deletes
    * `other_shelf_name`. Returns the updated shelf.
    */
-  public Callable<MergeShelvesRequest, Shelf> mergeShelvesCallable() {
+  public ApiCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable() {
     return MERGE_SHELVES.bind(channel);
   }
 
@@ -401,7 +401,7 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Creates a book.
    */
-  public Callable<CreateBookRequest, Book> createBookCallable() {
+  public ApiCallable<CreateBookRequest, Book> createBookCallable() {
     return CREATE_BOOK.bind(channel);
   }
 
@@ -436,7 +436,7 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Gets a book.
    */
-  public Callable<GetBookRequest, Book> getBookCallable() {
+  public ApiCallable<GetBookRequest, Book> getBookCallable() {
     return ApiUtils.prepareIdempotentCallable(GET_BOOK, settings).bind(channel);
   }
 
@@ -470,7 +470,7 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Lists books in a shelf.
    */
-  public Callable<ListBooksRequest, ListBooksResponse> listBooksCallable() {
+  public ApiCallable<ListBooksRequest, ListBooksResponse> listBooksCallable() {
     return ApiUtils.prepareIdempotentCallable(LIST_BOOKS, settings).bind(channel);
   }
 
@@ -505,7 +505,7 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Deletes a book.
    */
-  public Callable<DeleteBookRequest, Empty> deleteBookCallable() {
+  public ApiCallable<DeleteBookRequest, Empty> deleteBookCallable() {
     return ApiUtils.prepareIdempotentCallable(DELETE_BOOK, settings).bind(channel);
   }
 
@@ -544,7 +544,7 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Updates a book.
    */
-  public Callable<UpdateBookRequest, Book> updateBookCallable() {
+  public ApiCallable<UpdateBookRequest, Book> updateBookCallable() {
     return ApiUtils.prepareIdempotentCallable(UPDATE_BOOK, settings).bind(channel);
   }
 
@@ -581,7 +581,7 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Moves a book to another shelf, and returns the new book.
    */
-  public Callable<MoveBookRequest, Book> moveBookCallable() {
+  public ApiCallable<MoveBookRequest, Book> moveBookCallable() {
     return MOVE_BOOK.bind(channel);
   }
 
