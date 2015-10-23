@@ -7,6 +7,14 @@ for github.]
 
 You need to run `prodaccess` to access git-on-borg.
 
+For running tests, currently `protoc` needs to be in your path. It does not need
+to be the exact version matching the grpc plugin, as long as it is a recent one, because it
+is only used for generating the descriptor in unit tests. For proto compilation outside
+of tests via the gapi gradle plugin, protoc and grpc plugin are automatically fetched 
+using the right version. Install protoc and grpc core system via the script 
+[here](https://goo.gl/getgrpc) (you also need linuxbrew or homebrew as described in 
+the script). Verify that `which protoc` works as expected.
+
 If you haven't done so earlier, install Google's git protocol extensions:
 
     sudo apt-get install git-remote-google

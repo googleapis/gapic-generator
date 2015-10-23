@@ -1,0 +1,611 @@
+/*
+ * Copyright 2015, Google Inc. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ *    * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *    * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *
+ *    * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ * EDITING INSTRUCTIONS
+ * This file was generated from the file library.proto,
+ * and updates to that file get reflected here through a regular refresh process.
+ * However, manual additions are allowed because the refresh process performs
+ * a 3-way merge in order to preserve those manual additions. In order to not
+ * break the refresh process, only certain types of modifications are
+ * allowed.
+ *
+ * Allowed modifications - currently there is only one type allowed:
+ * 1. New methods (these should be added to the end of the class)
+ *
+ * Happy editing!
+ */
+package com.google.example.library.v1;
+
+import com.google.protobuf.Empty;
+import com.google.protobuf.FieldMask;
+import io.gapi.gax.internal.ApiUtils;
+import io.gapi.gax.internal.ServiceApiSettings;
+import io.gapi.gax.protobuf.PathTemplate;
+import io.grpc.Channel;
+import io.grpc.ManagedChannel;
+import io.grpc.callable.Callable;
+import java.io.IOException;
+import java.util.List;
+
+// Manually-added imports: add custom (non-generated) imports after this point.
+
+
+
+// AUTO-GENERATED DOCUMENTATION AND SERVICE - see instructions at the top of the file for editing.
+/**
+ * This API represents a simple digital library.  It lets you manage Shelf
+ * resources and Book resources in the library. It defines the following
+ * resource model:
+ *
+ * - The API has a collection of [Shelf][google.example.library.v1.Shelf]
+ *   resources, named `shelves/*`
+ *
+ * - Each Shelf has a collection of [Book][google.example.library.v1.Book]
+ *   resources, named `shelves/&ast;/books/*`
+ */
+@javax.annotation.Generated("by the veneer generator")
+public class LibraryServiceApi implements AutoCloseable {
+
+  // =========
+  // Constants
+  // =========
+
+  /**
+   * The default address of the service.
+   */
+  public static final String SERVICE_ADDRESS = "xyz.googleapis.com";
+
+  /**
+   * The default port of the service.
+   */
+  public static final int DEFAULT_SERVICE_PORT = 443;
+
+
+  public static final Callable<CreateShelfRequest, Shelf>
+      CREATE_SHELF = Callable.create(LibraryServiceGrpc.METHOD_CREATE_SHELF);
+  public static final Callable<GetShelfRequest, Shelf>
+      GET_SHELF = Callable.create(LibraryServiceGrpc.METHOD_GET_SHELF);
+  public static final Callable<ListShelvesRequest, ListShelvesResponse>
+      LIST_SHELVES = Callable.create(LibraryServiceGrpc.METHOD_LIST_SHELVES);
+  public static final Callable<DeleteShelfRequest, Empty>
+      DELETE_SHELF = Callable.create(LibraryServiceGrpc.METHOD_DELETE_SHELF);
+  public static final Callable<MergeShelvesRequest, Shelf>
+      MERGE_SHELVES = Callable.create(LibraryServiceGrpc.METHOD_MERGE_SHELVES);
+  public static final Callable<CreateBookRequest, Book>
+      CREATE_BOOK = Callable.create(LibraryServiceGrpc.METHOD_CREATE_BOOK);
+  public static final Callable<GetBookRequest, Book>
+      GET_BOOK = Callable.create(LibraryServiceGrpc.METHOD_GET_BOOK);
+  public static final Callable<ListBooksRequest, ListBooksResponse>
+      LIST_BOOKS = Callable.create(LibraryServiceGrpc.METHOD_LIST_BOOKS);
+  public static final Callable<DeleteBookRequest, Empty>
+      DELETE_BOOK = Callable.create(LibraryServiceGrpc.METHOD_DELETE_BOOK);
+  public static final Callable<UpdateBookRequest, Book>
+      UPDATE_BOOK = Callable.create(LibraryServiceGrpc.METHOD_UPDATE_BOOK);
+  public static final Callable<MoveBookRequest, Book>
+      MOVE_BOOK = Callable.create(LibraryServiceGrpc.METHOD_MOVE_BOOK);
+
+  private static String ALL_SCOPES[] = {
+  };
+
+  public static final PathTemplate NAME_PATH_TEMPLATE =
+      PathTemplate.create("/shelves/{shelf}");
+  public static final PathTemplate NAME_PATH_TEMPLATE =
+      PathTemplate.create("/shelves/{shelf}/books/{book}");
+
+  // ========
+  // Members
+  // ========
+
+  private final ManagedChannel channel;
+  private final ServiceApiSettings settings;
+
+  // ===============
+  // Factory Methods
+  // ===============
+
+  /**
+   * Constructs an instance of LibraryServiceApi with default settings.
+   */
+  public static LibraryServiceApi create() throws IOException {
+    return create(new ServiceApiSettings());
+  }
+
+  /**
+   * Constructs an instance of LibraryServiceApi, using the given settings. The channels are created based
+   * on the settings passed in, or defaults for any settings that are not set.
+   */
+  public static LibraryServiceApi create(ServiceApiSettings settings) throws IOException {
+    return new LibraryServiceApi(settings);
+  }
+
+  private LibraryServiceApi(ServiceApiSettings settings) throws IOException {
+    ServiceApiSettings internalSettings = ApiUtils.settingsWithChannels(settings,
+        SERVICE_ADDRESS, DEFAULT_SERVICE_PORT, ALL_SCOPES);
+    this.settings = internalSettings;
+    this.channel = internalSettings.getChannel();
+  }
+
+  // ==============================
+  // Resource Name Helper Functions
+  // ==============================
+
+  public static final String createName(String shelf) {
+    return NAME_PATH_TEMPLATE.instantiate(
+        "shelf", shelf);
+  }
+
+  public static final String createName(String shelf, String book) {
+    return NAME_PATH_TEMPLATE.instantiate(
+        "shelf", shelf,"book", book);
+  }
+
+
+  // ========
+  // Getters
+  // ========
+
+  public Channel getChannel() {
+    return channel;
+  }
+
+
+  // =============
+  // Service Calls
+  // =============
+
+  // ----- createShelf -----
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Creates a shelf, and returns the new Shelf.
+   *
+   * @param shelf The shelf to create.
+   */
+  public Shelf createShelf(Shelf shelf) {
+    CreateShelfRequest request =
+        CreateShelfRequest.newBuilder()
+        .setShelf(shelf)
+        .build();
+
+    return createShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Creates a shelf, and returns the new Shelf.
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   */
+  public Shelf createShelf(CreateShelfRequest request) {
+    return createShelfCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Creates a shelf, and returns the new Shelf.
+   */
+  public Callable<CreateShelfRequest, Shelf> createShelfCallable() {
+    return CREATE_SHELF.bind(channel);
+  }
+
+  // ----- getShelf -----
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Gets a shelf.
+   *
+   * @param name The name of the shelf to retrieve.
+   * @param message Field to verify that message-type query parameter gets flattened.
+   * @param stringBuilder
+   */
+  public Shelf getShelf(String name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
+    GetShelfRequest request =
+        GetShelfRequest.newBuilder()
+        .setName(name)
+        .setMessage(message)
+        .setStringBuilder(stringBuilder)
+        .build();
+
+    return getShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Gets a shelf.
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   */
+  public Shelf getShelf(GetShelfRequest request) {
+    return getShelfCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Gets a shelf.
+   */
+  public Callable<GetShelfRequest, Shelf> getShelfCallable() {
+    return ApiUtils.prepareIdempotentCallable(GET_SHELF, settings).bind(channel);
+  }
+
+  // ----- listShelves -----
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Lists shelves.
+   */
+  public Iterable<Shelf> listShelves() {
+    ListShelvesRequest request =
+        ListShelvesRequest.newBuilder()
+
+        .build();
+    return listShelves(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Lists shelves.
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   */
+  public Iterable<Shelf> listShelves(ListShelvesRequest request) {
+    return listShelvesCallable()
+        .pageStreaming(Shelf.class)
+        .iterableResponseStreamCall(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Lists shelves.
+   */
+  public Callable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
+    return ApiUtils.prepareIdempotentCallable(LIST_SHELVES, settings).bind(channel);
+  }
+
+  // ----- deleteShelf -----
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Deletes a shelf.
+   *
+   * @param name The name of the shelf to delete.
+   */
+  public void deleteShelf(String name) {
+    DeleteShelfRequest request =
+        DeleteShelfRequest.newBuilder()
+        .setName(name)
+        .build();
+
+    deleteShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Deletes a shelf.
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   */
+  public void deleteShelf(DeleteShelfRequest request) {
+    deleteShelfCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Deletes a shelf.
+   */
+  public Callable<DeleteShelfRequest, Empty> deleteShelfCallable() {
+    return ApiUtils.prepareIdempotentCallable(DELETE_SHELF, settings).bind(channel);
+  }
+
+  // ----- mergeShelves -----
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Merges two shelves by adding all books from the shelf named
+   * `other_shelf_name` to shelf `name`, and deletes
+   * `other_shelf_name`. Returns the updated shelf.
+   *
+   * @param name The name of the shelf we're adding books to.
+   * @param otherShelfName The name of the shelf we're removing books from and deleting.
+   */
+  public Shelf mergeShelves(String name, String otherShelfName) {
+    MergeShelvesRequest request =
+        MergeShelvesRequest.newBuilder()
+        .setName(name)
+        .setOtherShelfName(otherShelfName)
+        .build();
+
+    return mergeShelves(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Merges two shelves by adding all books from the shelf named
+   * `other_shelf_name` to shelf `name`, and deletes
+   * `other_shelf_name`. Returns the updated shelf.
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   */
+  public Shelf mergeShelves(MergeShelvesRequest request) {
+    return mergeShelvesCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Merges two shelves by adding all books from the shelf named
+   * `other_shelf_name` to shelf `name`, and deletes
+   * `other_shelf_name`. Returns the updated shelf.
+   */
+  public Callable<MergeShelvesRequest, Shelf> mergeShelvesCallable() {
+    return MERGE_SHELVES.bind(channel);
+  }
+
+  // ----- createBook -----
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Creates a book.
+   *
+   * @param name The name of the shelf in which the book is created.
+   * @param book The book to create.
+   */
+  public Book createBook(String name, Book book) {
+    CreateBookRequest request =
+        CreateBookRequest.newBuilder()
+        .setName(name)
+        .setBook(book)
+        .build();
+
+    return createBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Creates a book.
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   */
+  public Book createBook(CreateBookRequest request) {
+    return createBookCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Creates a book.
+   */
+  public Callable<CreateBookRequest, Book> createBookCallable() {
+    return CREATE_BOOK.bind(channel);
+  }
+
+  // ----- getBook -----
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Gets a book.
+   *
+   * @param name The name of the book to retrieve.
+   */
+  public Book getBook(String name) {
+    GetBookRequest request =
+        GetBookRequest.newBuilder()
+        .setName(name)
+        .build();
+
+    return getBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Gets a book.
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   */
+  public Book getBook(GetBookRequest request) {
+    return getBookCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Gets a book.
+   */
+  public Callable<GetBookRequest, Book> getBookCallable() {
+    return ApiUtils.prepareIdempotentCallable(GET_BOOK, settings).bind(channel);
+  }
+
+  // ----- listBooks -----
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Lists books in a shelf.
+   */
+  public Iterable<Book> listBooks(String name) {
+    ListBooksRequest request =
+        ListBooksRequest.newBuilder()
+        .setName(name)
+        .build();
+    return listBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Lists books in a shelf.
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   */
+  public Iterable<Book> listBooks(ListBooksRequest request) {
+    return listBooksCallable()
+        .pageStreaming(Book.class)
+        .iterableResponseStreamCall(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Lists books in a shelf.
+   */
+  public Callable<ListBooksRequest, ListBooksResponse> listBooksCallable() {
+    return ApiUtils.prepareIdempotentCallable(LIST_BOOKS, settings).bind(channel);
+  }
+
+  // ----- deleteBook -----
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Deletes a book.
+   *
+   * @param name The name of the book to delete.
+   */
+  public void deleteBook(String name) {
+    DeleteBookRequest request =
+        DeleteBookRequest.newBuilder()
+        .setName(name)
+        .build();
+
+    deleteBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Deletes a book.
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   */
+  public void deleteBook(DeleteBookRequest request) {
+    deleteBookCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Deletes a book.
+   */
+  public Callable<DeleteBookRequest, Empty> deleteBookCallable() {
+    return ApiUtils.prepareIdempotentCallable(DELETE_BOOK, settings).bind(channel);
+  }
+
+  // ----- updateBook -----
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Updates a book.
+   *
+   * @param name The name of the book to update.
+   * @param book The book to update with.
+   * @param updateMask A field mask to apply, rendered as an HTTP parameter.
+   */
+  public Book updateBook(String name, Book book, FieldMask updateMask) {
+    UpdateBookRequest request =
+        UpdateBookRequest.newBuilder()
+        .setName(name)
+        .setBook(book)
+        .setUpdateMask(updateMask)
+        .build();
+
+    return updateBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Updates a book.
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   */
+  public Book updateBook(UpdateBookRequest request) {
+    return updateBookCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Updates a book.
+   */
+  public Callable<UpdateBookRequest, Book> updateBookCallable() {
+    return ApiUtils.prepareIdempotentCallable(UPDATE_BOOK, settings).bind(channel);
+  }
+
+  // ----- moveBook -----
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Moves a book to another shelf, and returns the new book.
+   *
+   * @param name The name of the book to move.
+   * @param otherShelfName The name of the destination shelf.
+   */
+  public Book moveBook(String name, String otherShelfName) {
+    MoveBookRequest request =
+        MoveBookRequest.newBuilder()
+        .setName(name)
+        .setOtherShelfName(otherShelfName)
+        .build();
+
+    return moveBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Moves a book to another shelf, and returns the new book.
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   */
+  public Book moveBook(MoveBookRequest request) {
+    return moveBookCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Moves a book to another shelf, and returns the new book.
+   */
+  public Callable<MoveBookRequest, Book> moveBookCallable() {
+    return MOVE_BOOK.bind(channel);
+  }
+
+
+  // ========
+  // Cleanup
+  // ========
+
+  /**
+   * Initiates an orderly shutdown in which preexisting calls continue but new calls are immediately
+   * cancelled.
+   */
+  @Override public void close() {
+    // Manually-added shutdown code
+
+    // Auto-generated shutdown code
+    channel.shutdown();
+
+    // Manually-added shutdown code
+  }
+
+
+  // ========
+  // Manually-added methods: add custom (non-generated) methods after this point.
+  // ========
+
+}

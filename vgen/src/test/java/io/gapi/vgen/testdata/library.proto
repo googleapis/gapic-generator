@@ -1,0 +1,291 @@
+// (-- This file defines the Library API for One Platform Service
+// Definition Codelab. You can find more details about the codelab
+// at http://go/api-definition-codelab --)
+
+syntax = "proto3";
+
+package google.example.library.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/field_mask.proto";
+
+option java_multiple_files = true;
+option java_outer_classname = "LibraryProto";
+option java_package = "com.google.example.library.v1";
+
+// This API represents a simple digital library.  It lets you manage Shelf
+// resources and Book resources in the library. It defines the following
+// resource model:
+//
+// - The API has a collection of [Shelf][google.example.library.v1.Shelf]
+//   resources, named `shelves/*`
+//
+// - Each Shelf has a collection of [Book][google.example.library.v1.Book]
+//   resources, named `shelves/*/books/*`
+//
+service LibraryService {
+
+  // Creates a shelf, and returns the new Shelf.
+  rpc CreateShelf(CreateShelfRequest) returns (Shelf) {
+    option (google.api.http) = { post: "/v1/shelves" body: "shelf" };
+  }
+
+  // Gets a shelf.
+  rpc GetShelf(GetShelfRequest) returns (Shelf) {
+    option (google.api.http) = { get: "/v1/{name=shelves/*}" };
+  }
+
+  // Lists shelves.
+  rpc ListShelves(ListShelvesRequest) returns (ListShelvesResponse) {
+    option (google.api.http) = { get: "/v1/shelves" };
+  }
+
+  // Deletes a shelf.
+  rpc DeleteShelf(DeleteShelfRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = { delete: "/v1/{name=shelves/*}" };
+  }
+
+  // Merges two shelves by adding all books from the shelf named
+  // `other_shelf_name` to shelf `name`, and deletes
+  // `other_shelf_name`. Returns the updated shelf.
+  rpc MergeShelves(MergeShelvesRequest) returns (Shelf) {
+    option (google.api.http) = { post: "/v1/{name=shelves/*}:merge" body: "*" };
+  }
+
+  // Creates a book.
+  rpc CreateBook(CreateBookRequest) returns (Book) {
+    option (google.api.http) = { post: "/v1/{name=shelves/*}/books" body: "book" };
+  }
+
+  // Gets a book.
+  rpc GetBook(GetBookRequest) returns (Book) {
+    option (google.api.http) = { get: "/v1/{name=shelves/*/books/*}" };
+  }
+
+  // Lists books in a shelf.
+  rpc ListBooks(ListBooksRequest) returns (ListBooksResponse) {
+    option (google.api.http) = { get: "/v1/{name=shelves/*}/books" };
+  }
+
+  // Deletes a book.
+  rpc DeleteBook(DeleteBookRequest) returns (protobuf.Empty) {
+    option (google.api.http) = { delete: "/v1/{name=shelves/*/books/*}" };
+  }
+
+  // Updates a book.
+  rpc UpdateBook(UpdateBookRequest) returns (Book) {
+    option (google.api.http) = { put: "/v1/{name=shelves/*/books/*}" body: "book" };
+  }
+
+  // Moves a book to another shelf, and returns the new book.
+  rpc MoveBook(MoveBookRequest) returns (Book) {
+    option (google.api.http) = { post: "/v1/{name=shelves/*/books/*}:move" body: "*" };
+  }
+}
+
+// A single book in the library.
+message Book {
+  // The resource name of the book.
+  // Book names have the form `shelves/{shelf_id}/books/{book_id}`.
+  string name = 1;
+
+  // The name of the book author.
+  string author = 2;
+
+  // The title of the book.
+  string title = 3;
+
+  // Value indicating whether the book has been read.
+  bool read = 4;
+
+
+  enum Rating {
+    GOOD = 0; // GOOD enum description
+    BAD = 1;
+  }
+
+  // For testing enums.
+  Rating rating = 5;
+
+  // For testing all well-known types.
+  google.protobuf.Any any_value = 10;
+  google.protobuf.Struct struct_value = 11;
+  google.protobuf.Value value_value = 12;
+  google.protobuf.ListValue list_value_value = 27;
+  map<string, google.protobuf.ListValue> map_list_value_value = 28;
+  google.protobuf.Timestamp time_value = 13;
+  google.protobuf.Duration duration_value = 14;
+  google.protobuf.FieldMask field_mask_value = 15;
+  google.protobuf.Int32Value int32_value = 16;
+  google.protobuf.UInt32Value uint32_value = 17;
+  google.protobuf.Int64Value int64_value = 18;
+  google.protobuf.UInt64Value uint64_value = 19;
+  google.protobuf.FloatValue float_value = 20;
+  google.protobuf.DoubleValue double_value = 21;
+  google.protobuf.StringValue string_value = 22;
+  google.protobuf.BoolValue bool_value = 23;
+  google.protobuf.BytesValue bytes_value = 24;
+
+  map<int32, string> map_string_value = 25;
+  map<string, SomeMessage> map_message_value = 26;
+}
+
+message SomeMessage {
+  int32 field = 1;
+}
+
+// A Shelf contains a collection of books with a theme.
+message Shelf {
+  // The resource name of the shelf.
+  // Shelf names have the form `shelves/{shelf_id}`.
+  string name = 1;
+
+  // The theme of the shelf
+  string theme = 2;
+
+  // Internal theme that is visible to trusted testers only.
+  string internal_theme = 3;
+}
+
+// Request message for LibraryService.CreateShelf.
+message CreateShelfRequest {
+  // The shelf to create.
+  Shelf shelf = 1;
+}
+
+// Request message for LibraryService.GetShelf.
+message GetShelfRequest {
+  // The name of the shelf to retrieve.
+  string name = 1;
+
+  // Field to verify that message-type query parameter gets flattened.
+  SomeMessage message = 2;
+
+  StringBuilder string_builder = 3;
+}
+
+
+// Creates a name conflict with java.lang type
+message StringBuilder {
+  string name = 1;
+}
+
+// Request message for LibraryService.ListShelves.
+message ListShelvesRequest {
+  // Requested page size. Server may return fewer shelves than requested.
+  // If unspecified, server will pick an appropriate default.
+  int32 page_size = 1;
+
+  // A token identifying a page of results the server should return.
+  // Typically, this is the value of
+  // [ListShelvesResponse.next_page_token][google.example.library.v1.ListShelvesResponse.next_page_token]
+  // returned from the previous call to `ListShelves` method.
+  string page_token = 2;
+}
+
+// Request message for LibraryService.ListShelves.
+message ListShelvesResponse {
+  // The list of shelves.
+  repeated Shelf shelves = 1;
+
+  // A token to retrieve next page of results.
+  // Pass this value in the
+  // [ListShelvesRequest.page_token][google.example.library.v1.ListShelvesRequest.page_token]
+  // field in the subsequent call to `ListShelves` method to retrieve the next
+  // page of results.
+  string next_page_token = 2;
+}
+
+// Request message for LibraryService.DeleteShelf.
+message DeleteShelfRequest {
+  // The name of the shelf to delete.
+  string name = 1;
+}
+
+// Describes the shelf being removed (other_shelf_name) and updated
+// (name) in this merge.
+message MergeShelvesRequest {
+  // The name of the shelf we're adding books to.
+  string name = 1;
+
+  // The name of the shelf we're removing books from and deleting.
+  string other_shelf_name = 2;
+}
+
+// Request message for LibraryService.CreateBook.
+message CreateBookRequest {
+  // The name of the shelf in which the book is created.
+  string name = 1;
+
+  // The book to create.
+  Book book = 2;
+}
+
+// Request message for LibraryService.GetBook.
+message GetBookRequest {
+  // The name of the book to retrieve.
+  string name = 1;
+}
+
+// Request message for LibraryService.ListBooks.
+message ListBooksRequest {
+  // The name of the shelf whose books we'd like to list.
+  string name = 1;
+
+  // Requested page size. Server may return fewer books than requested.
+  // If unspecified, server will pick an appropriate default.
+  int32 page_size = 2;
+
+  // A token identifying a page of results the server should return.
+  // Typically, this is the value of
+  // [ListBooksResponse.next_page_token][google.example.library.v1.ListBooksResponse.next_page_token].
+  // returned from the previous call to `ListBooks` method.
+  string page_token = 3;
+}
+
+// Response message for LibraryService.ListBooks.
+message ListBooksResponse {
+  // The list of books.
+  repeated Book books = 1;
+
+  // A token to retrieve next page of results.
+  // Pass this value in the
+  // [ListBooksRequest.page_token][google.example.library.v1.ListBooksRequest.page_token]
+  // field in the subsequent call to `ListBooks` method to retrieve the next
+  // page of results.
+  string next_page_token = 2;
+}
+
+// Request message for LibraryService.UpdateBook.
+message UpdateBookRequest {
+  // The name of the book to update.
+  string name = 1;
+
+  // The book to update with.
+  Book book = 2;
+
+  // A field mask to apply, rendered as an HTTP parameter.
+  google.protobuf.FieldMask update_mask = 3;
+}
+
+// Request message for LibraryService.DeleteBook.
+message DeleteBookRequest {
+  // The name of the book to delete.
+  string name = 1;
+}
+
+// Describes what book to move (name) and what shelf we're moving it
+// to (other_shelf_name).
+message MoveBookRequest {
+  // The name of the book to move.
+  string name = 1;
+
+  // The name of the destination shelf.
+  string other_shelf_name = 2;
+}
