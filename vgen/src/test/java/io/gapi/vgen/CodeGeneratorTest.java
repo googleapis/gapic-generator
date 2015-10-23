@@ -39,7 +39,7 @@ public class CodeGeneratorTest extends ApiConfigBaselineTestCase {
           "java",
           Config.newBuilder()
             .setLanguageProvider("io.gapi.vgen.java.JavaLanguageProvider")
-            .addSnippetInputNames("main.snip")
+            .addSnippetFiles("main.snip")
             .build()
       });
   }
@@ -66,7 +66,7 @@ public class CodeGeneratorTest extends ApiConfigBaselineTestCase {
 
   @Override
   protected Object run() {
-    String snippetInputName = config.getSnippetInputNamesList().get(0);
+    String snippetInputName = config.getSnippetFilesList().get(0);
     SnippetDescriptor resourceDescriptor =
           new SnippetDescriptor(snippetInputName);
     Map<Interface, GeneratedResult> result = generator.generate(resourceDescriptor);

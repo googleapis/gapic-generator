@@ -101,7 +101,7 @@ public class CodeGeneratorApi extends ToolBase {
     }
 
     Multimap<Interface, GeneratedResult> docs = ArrayListMultimap.create();
-    for (String snippetInputName : config.getSnippetInputNamesList()) {
+    for (String snippetInputName : config.getSnippetFilesList()) {
       SnippetDescriptor snippetDescriptor =
           new SnippetDescriptor(snippetInputName);
       Map<Interface, GeneratedResult> code = generator.generate(snippetDescriptor);

@@ -6,23 +6,153 @@ option java_multiple_files = true;
 option java_outer_classname = "ConfigProto";
 option java_package = "io.gapi.vgen";
 
-// `Config` specifies the configuration of code generation for veneer. The user
-// provides it via a yaml file; this message here represents the schema for this file.
+// `Config` specifies the configuration of code generation for
+// veneer. The user provides it via a yaml file; this message here
+// represents the schema for this file.
 //
 // Example of a Yaml configuration:
 //
 //     type: io.gapi.vgen.Config
 //     language_provider: io.gapi.vgen.java.JavaLanguageProvider
-//
+//     snippet_files: main.snip
+//     collections:
+//     - name_pattern: shelves/{shelf}
+//       method_base_name: shelf
+//     - name_pattern: shelves/{shelf}/books/{book}
+//       method_base_name: book
+//       ...
+//     methods:
+//     - name: google.example.library.v1.LibraryService.ListBooks
+//       flattening:
+//       - group:
+//           parameters:
+//           - name
+//       - group:
+//           parameters:
+//           - name
+//           - version
+//       paging:
+//         request:
+//           token_field: page_token
+//         response:
+//           token_field: next_page_token
+//           resources_field: books
+//       retry:
+//         slot_times_millis: 2
+//         truncate_after: 10
+//         max_attempts: 16
+//     - name: google.example.library.v1.LibraryService.GetBook
+//       ...
 message Config {
 
-  // The fully qualified name of the Java class of the language provider.
+  // The fully qualified name of the Java class of the language
+  // provider. Must be provided.
   string language_provider = 1;
 
-  // The snippet files for input
-  repeated string snippet_input_names = 2;
+  // The snippet template files used for generation. Each file is used
+  // to produce one output file. If the snippet file name is simple
+  // (does not contain a `/`), it is looked up as a resource relative
+  // to the package of the language provider class. If it contains a
+  // `/`, it is looked up in the file system. Defaults to a singleton
+  // list with the entry `main.snip`.
+  repeated string snippet_files = 2;
 
-  // For languages which produce multiple outputs, Whether the produced output should be put in
-  // an archive.
+  // For languages which produce multiple outputs, specifies whether
+  // the produced output should be put in an archive.
   bool archive = 3;
+
+  // A list of resource collection configurations.
+  repeated CollectionConfig collections = 10;
+
+  // A list of method configurations.
+  repeated MethodConfig methods = 20;
+}
+
+message CollectionConfig {
+  // A pattern to describe the names of the resources of this
+  // collection, using the platform's conventions for URI patterns. A
+  // generator may use this to generate methods to compose and
+  // decompose such names. The pattern should use named placeholders
+  // as in `shelves/{shelf}/books/{book}`; those will be taken as
+  // hints for the parameter names of the generated methods.  If
+  // empty, no name methods are generated.
+  string name_pattern = 1;
+
+  // Name to be used as a basis for generated methods.
+  string method_base_name = 2;
+}
+
+// `MethodConfig` describes the generator configuration for a method.
+message MethodConfig {
+  // The fully qualified name of the method.
+  string name = 1;
+
+  // Specifies the configuration for parameter flattening.
+  FlatteningConfig flattening = 2;
+
+  // Specifies the configuration for paging.
+  PageStreamingConfig paging = 3;
+
+  // Specifies the configuration for retry.
+  RetryConfig retry = 4;
+}
+
+// `FlatteningConfig` describes the parameter groups for which a
+// generator should produce method overloads which allow a client to
+// directly pass request message fields as method parameters.  This
+// information may or may not be used, depending on the target
+// language.
+message FlatteningConfig {
+  // Specifies a list of flattening groups.
+  repeated FlatteningGroup group = 1;
+}
+
+// `FlatteningGroup` represents a list of parameters to be flattened.
+message FlatteningGroup {
+  // The list of parameters to include in this flattening group. Each
+  // parameter must be a field of the request message.
+  repeated string parameters = 1;
+}
+
+// `PageStreamingConfig` describes information for generating a method which
+// transforms a paging list rpc into a stream of resources.
+message PageStreamingConfig {
+  // Specifies request information of the list method.
+  PageStreamingRequest request = 1;
+
+  // Specifies response information of the list method.
+  PageStreamingResponse response = 2;
+}
+
+// `PageStreamingRequest` defines which fields match the paging pattern in
+// the request.
+message PageStreamingRequest {
+  // The name of the field in the request containing the page token.
+  string token_field = 1;
+}
+
+// `PageStreamingResponse` defines which fields match the paging pattern in
+// the response.
+message PageStreamingResponse {
+  // The name of the field in the response containing the next page
+  // token.
+  string token_field = 1;
+
+  // The name of the field in the response containing the list of
+  // resources belonging to the page.
+  string resources_field = 2;
+}
+
+// `RetryConfig` specifies retry configuration for a method, using
+// [exponential
+// backoff](https://en.wikipedia.org/wiki/Exponential_backoff).
+message RetryConfig {
+  // The duration of time slots used in the algorithm. Defaults to `2`.
+  double slot_times_millis = 1;
+
+  // The ceiling after which exponentiation is cutoff. Defaults to `10`.
+  int32 truncate_after = 2;
+
+  // The maximal number of attempts made.
+  int32 max_attempts = 3;
 }
