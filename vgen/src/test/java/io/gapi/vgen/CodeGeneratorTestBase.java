@@ -1,18 +1,14 @@
 package io.gapi.vgen;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.truth.Truth;
 
 import io.gapi.fx.model.Diag;
 import io.gapi.fx.model.Interface;
 import io.gapi.fx.testing.ApiConfigBaselineTestCase;
 
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,34 +17,18 @@ import java.util.regex.Pattern;
  * Base class for code generator baseline tests.
  */
 @RunWith(Parameterized.class)
-public class CodeGeneratorTest extends ApiConfigBaselineTestCase {
+public abstract class CodeGeneratorTestBase extends ApiConfigBaselineTestCase {
 
   private static final Pattern BASELINE_PATTERN = Pattern.compile("(\\w+)\\[(\\w+)\\]");
 
   // Wiring
   // ======
 
-  /**
-   * Declares test parameters, each one an array of values passed to the constructor, with
-   * the first element a name, the second a config of this name.
-   */
-  @Parameters(name = "{0}")
-  public static List<Object[]> testedConfigs() {
-    return ImmutableList.of(
-      new Object[] {
-          "java",
-          Config.newBuilder()
-            .setLanguageProvider("io.gapi.vgen.java.JavaLanguageProvider")
-            .addSnippetFiles("main.snip")
-            .build()
-      });
-  }
-
   private final String name;
   private final Config config;
   private CodeGenerator generator;
 
-  public CodeGeneratorTest(String name, Config config) {
+  public CodeGeneratorTestBase(String name, Config config) {
     this.name = name;
     this.config = config;
   }
@@ -90,13 +70,5 @@ public class CodeGeneratorTest extends ApiConfigBaselineTestCase {
     } else {
       return name + "_" + methodName + ".baseline";
     }
-  }
-
-  // Tests
-  // =====
-
-  @Test
-  public void library() throws Exception {
-    test("library");
   }
 }

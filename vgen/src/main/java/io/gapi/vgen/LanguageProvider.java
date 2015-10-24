@@ -78,6 +78,10 @@ public abstract class LanguageProvider {
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, name);
   }
 
+  public String upperCamelToLowerUnderscore(String name) {
+    return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
+  }
+
   public String lowerUnderscoreToUpperUnderscore(String name) {
     return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_UNDERSCORE, name);
   }
