@@ -223,13 +223,6 @@ public class JavaLanguageProvider extends LanguageProvider {
   }
 
   /**
-   * Gets the name of the class which is the veneer for this service interface.
-   */
-  public String getVeneerName(Interface service) {
-    return service.getSimpleName() + "Api";
-  }
-
-  /**
    * Gets the name of the class which is the grpc container for this service interface.
    */
   public String getGrpcName(Interface service) {

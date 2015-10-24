@@ -64,6 +64,28 @@ public abstract class LanguageProvider {
     return resources;
   }
 
+  /**
+   * Return the service address.
+   */
+  public String getServiceAddress(Interface service) {
+    return service.getModel().getServiceConfig().getName();
+  }
+
+  /**
+   * Return the service port.
+   * TODO(cbao): Read the port from config.
+   */
+  public Integer getServicePort() {
+    return 443;
+  }
+
+  /**
+   * Return the name of the class which is the veneer for this service interface.
+   */
+  public String getVeneerName(Interface service) {
+    return service.getSimpleName() + "Api";
+  }
+
   // Helpers for Subclasses and Snippets
   // ===================================
 
@@ -76,6 +98,10 @@ public abstract class LanguageProvider {
 
   public String upperCamelToLowerCamel(String name) {
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, name);
+  }
+
+  public String upperCamelToLowerUnderscore(String name) {
+    return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
   }
 
   public String lowerUnderscoreToUpperUnderscore(String name) {

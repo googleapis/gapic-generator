@@ -1,0 +1,216 @@
+@snippet generateFilename(service)
+  {@context.getVeneerName(service)}.py
+@end
+
+@snippet generateClass(service, body, imports)
+  {@licenseSection(service)}
+
+  {@importSection(imports)}
+
+  {@body}
+@end
+
+@snippet generateBody(service)
+  {@authSection(service)}
+
+  {@serviceClass(service)}
+@end
+
+@private licenseSection(service)
+  @# Copyright 2015 Google Inc. All rights reserved.
+  @#
+  @# Licensed under the Apache License, Version 2.0 (the "License");
+  @# you may not use this file except in compliance with the License.
+  @# You may obtain a copy of the License at
+  @#
+  @#     http://www.apache.org/licenses/LICENSE-2.0
+  @#
+  @# Unless required by applicable law or agreed to in writing, software
+  @# distributed under the License is distributed on an "AS IS" BASIS,
+  @# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  @# See the License for the specific language governing permissions and
+  @# limitations under the License.
+  @#
+  @# EDITING INSTRUCTIONS
+  @# This file was generated from {@service.getFile().getSimpleName()}, and updates to that file
+  @# get reflected here through a regular refresh process. However, manual
+  @# additions are allowed because the refresh process performs a 3-way
+  @# merge in order to preserve those manual additions. In order to not
+  @# break the refresh process, only certain types of modifications are
+  @# allowed.
+  @#
+  @# Allowed modifications:
+  @# 1. New methods (these should be added to the end of the class)
+  @# 2. "Notes specific to this wrapper method" sections in the method
+  @#    documentation
+  @#
+  @# Happy editing!
+@end
+
+@private importSection(imports)
+  @join import : imports
+    {@import};
+  @end
+@end
+
+@private authSection(service)
+  @# The scopes needed to make gRPC calls to all of the methods defined in
+  @# this service
+  _ALL_SCOPES = [
+    @let auth_scopes = context.getOauthScopes(service)
+      @join auth_scope : auth_scopes on ",".add(BREAK)
+        "{@auth_scope}"
+      @end
+    @end
+  ]
+
+  def _oauth_access_token():
+    google_creds = auth_client.GoogleCredentials.get_application_default()
+    scoped_creds = google_creds.create_scoped(_ALL_SCOPES)
+    return scoped_creds.get_access_token().access_token
+@end
+
+@private serviceClass(service)
+  {@comments(service)}
+  class {@context.getVeneerName(service)}(object):
+    {@constantSection(service)}
+
+    {@initMethodSection(service)}
+
+    {@genericMethodsSection()}
+
+    {@propertySection()}
+
+    {@serviceMethodsSection(service)}
+
+    {@manualMethodsSection()}
+@end
+
+@private constantSection(service)
+  @# The default address of the logging service.
+  SERVICE_ADDRESS = "{@context.getServiceAddress(service)}"
+
+  @# The default port of the logging service.
+  DEFAULT_SERVICE_PORT = {@context.getServicePort()}
+
+  @# The location of the root certificates
+  PROD_ROOTS = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            '..','roots.pem')
+@end
+
+@private initMethodSection(service)
+  def __init__(self,
+      service_path=SERVICE_ADDRESS,
+      port=DEFAULT_SERVICE_PORT,
+      is_idempotent_retrying=True,
+      ssl_creds=None,
+      channel=None,
+      timeout=30):
+
+    if not channel:
+      if not ssl_creds:
+        with open(self.PROD_ROOTS, mode='rb') as prod_roots_file:
+          root_certificates = prod_roots_file.read()
+        ssl_creds = implementations.ssl_client_credentials(root_certificates,
+                                                           None, None)
+      channel = implementations.secure_channel(self.SERVICE_ADDRESS,
+                                               self.DEFAULT_SERVICE_PORT,
+                                               ssl_creds)
+    self.metadata_transformer = lambda x : [('Authorization',
+                                             'Bearer %s'% _oauth_access_token())]
+    self.timeout = timeout
+    self.stub = {@context.getServicePbFileName(service)}.beta_create_{@service.getSimpleName()}_stub(
+      channel, metadata_transformer=self.metadata_transformer)
+    print "call __init__()"
+@end
+
+@private propertySection()
+  @# Properties
+  @@property
+  def channel(self):
+    return self.channel
+@end
+
+@private comments(element)
+  @join comment : context.comments(element)
+    {@comment}
+  @end
+@end
+
+@private genericMethodsSection()
+  def __enter__(self):
+    print "call __enter__()"
+    return self
+
+  def __exit__(self, type, value, traceback):
+    print "call __exit__()"
+    self.close()
+
+  def close(self):
+    del self.stub
+@end
+
+@private serviceMethodsSection(service)
+  @# Service calls
+  @join method : service.getMethods on BREAK.add(BREAK)
+    {@flattenedMethod(method)}
+
+    {@callableMethod(method)}
+  @end
+@end
+
+@private flattenedMethod(method)
+  @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
+       requestObjName = context.upperCamelToLowerUnderscore(method.getInputMessage().getSimpleName()), \
+       serviceStub = context.getServicePbFileName(method.getParent), \
+       inputTypeName = method.getInputMessage().getSimpleName(), \
+       flattendPrams = context.messages.flattenedFields(method.getInputType())
+    @if flattendPrams
+      def {@methodName}(self, {@parametersWithDefaultValues(flattendPrams)}, **kwargs):
+        {@comments(method)}
+        {@requestObjName} = {@serviceStub}.{@inputTypeName}({@namedParameters(flattendPrams)}, **kwargs)
+        return self.{@methodName}_callable()({@requestObjName})
+    @else
+      def {@methodName}(self, **kwargs):
+        {@comments(method)}
+        {@requestObjName} = {@serviceStub}.{@inputTypeName}(**kwargs)
+        return self.{@methodName}_callable()({@requestObjName})
+    @end
+  @end
+@end
+
+@private callableMethod(method)
+  @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
+       requestObjName = context.upperCamelToLowerUnderscore(method.getInputMessage().getSimpleName()), \
+       isPageStreamingRequest = context.messages.isPageStreamingRequest(method.getOutputType(), method.getInputType())
+  def {@methodName}_callable(self, is_idempotent_retrying=True, max_attempts=None,
+                             is_page_streaming={@isPageStreamingRequest}):
+    return callable.Callable(self.stub.{@method.getSimpleName()}, self.timeout,
+                             is_page_streaming=is_page_streaming,
+                             is_idempotent_retrying=is_idempotent_retrying,
+                             max_attempts=self.max_attempts
+                                 if max_attempts is None else max_attempts)
+  @end
+@end
+
+@private parametersWithDefaultValues(flattendPrams)
+  @join field : flattendPrams on ", "
+    @let paramName = field.getSimpleName
+      {@paramName}={@context.defaultValue(field)}
+    @end
+  @end
+@end
+
+@private namedParameters(flattendPrams)
+  @join field : flattendPrams on ", "
+    @let paramName = field.getSimpleName
+      {@paramName}={@paramName}
+    @end
+  @end
+@end
+
+@private manualMethodsSection()
+  @# ========
+  @# Manually-added methods: add custom (non-generated) methods after this point.
+  @# ========
+@end
