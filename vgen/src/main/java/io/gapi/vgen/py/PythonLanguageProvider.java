@@ -186,8 +186,9 @@ public class PythonLanguageProvider extends LanguageProvider {
 
   /**
    * Return canonical oauth scopes of the given service.
+   * @param service 
    */
-  public Set<String> getOauthScopes(@SuppressWarnings("unused") Interface service) {
+  public Set<String> getOauthScopes(Interface service) {
     Set<String> scopes = Sets.newHashSet();
     // TODO(cbao): Add oauth scopes of methods inside the service once AuthAttribute gets included
     // in core.
