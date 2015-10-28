@@ -207,7 +207,7 @@ public class PythonLanguageProvider extends LanguageProvider {
   }
 
   /**
-   * Return name of service pb of the given service.
+   * Return name of service pb file name of the given service.
    */
   public String getServicePbFileName(Interface service) {
     // FileDescriptorProto.name returns file name, relative to root of the source tree. Return the
