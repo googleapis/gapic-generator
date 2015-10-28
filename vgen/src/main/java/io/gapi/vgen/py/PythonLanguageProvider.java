@@ -186,8 +186,9 @@ public class PythonLanguageProvider extends LanguageProvider {
 
   /**
    * Return canonical oauth scopes of the given service.
+   * @param service 
    */
-  public Set<String> getOauthScopes(@SuppressWarnings("unused") Interface service) {
+  public Set<String> getOauthScopes(Interface service) {
     Set<String> scopes = Sets.newHashSet();
     // TODO(cbao): Add oauth scopes of methods inside the service once AuthAttribute gets included
     // in core.
@@ -206,7 +207,7 @@ public class PythonLanguageProvider extends LanguageProvider {
   }
 
   /**
-   * Return name of service pb of the given service. 
+   * Return name of service pb of the given service.
    */
   public String getServicePbFileName(Interface service) {
     // FileDescriptorProto.name returns file name, relative to root of the source tree. Return the
