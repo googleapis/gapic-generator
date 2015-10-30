@@ -46,8 +46,7 @@ class SynchronizationTask extends DefaultTask {
     options.set(ToolOptions.DESCRIPTOR_SET,
       Util.descriptorFile(project, apiService.sourceSet.name).toString())
     options.set(ToolOptions.CONFIG_FILES, apiService.serviceConfigs*.toString())
-    // TODO(wrwg): let vgen accept multiple configs and merge them
-    options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILE, apiService.veneerConfigs[0].toString())
+    options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILES, apiService.veneerConfigs)
     options.set(CodeGeneratorApi.OUTPUT_FILE, generatedPath.toString())
     logger.debug "Executing veneer generator with: ${options}"
     def codeGen = new CodeGeneratorApi(options)

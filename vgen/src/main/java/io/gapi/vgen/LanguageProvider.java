@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
 
 import io.gapi.fx.model.Interface;
+import io.gapi.fx.model.Method;
 import io.gapi.fx.model.Model;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.io.IOException;
 public abstract class LanguageProvider {
 
   private final Model model;
-  private final Config config;
+  private final ApiConfig apiConfig;
 
   private final ServiceMessages serviceMessages;
   private final Resources resources;
@@ -23,9 +24,9 @@ public abstract class LanguageProvider {
   /**
    * Constructs the abstract instance of the language provider..
    */
-  protected LanguageProvider(Model model, Config config) {
+  protected LanguageProvider(Model model, ApiConfig apiConfig) {
     this.model = Preconditions.checkNotNull(model);
-    this.config = Preconditions.checkNotNull(config);
+    this.apiConfig = Preconditions.checkNotNull(apiConfig);
     this.serviceMessages = new ServiceMessages();
     this.resources = new Resources();
   }
@@ -40,7 +41,8 @@ public abstract class LanguageProvider {
    * Outputs the code based on a per-service map.
    */
   public abstract void outputCode(String outputArchiveFile,
-      Multimap<Interface, GeneratedResult> services) throws IOException;
+      Multimap<Interface, GeneratedResult> services,
+      boolean archive) throws IOException;
 
   /**
    * Returns the associated model.
@@ -52,8 +54,8 @@ public abstract class LanguageProvider {
   /**
    * Returns the associated config.
    */
-  public Config getConfig() {
-    return config;
+  public ApiConfig getApiConfig() {
+    return apiConfig;
   }
 
   public ServiceMessages messages() {

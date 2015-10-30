@@ -24,48 +24,9 @@ import javax.annotation.Nullable;
  */
 public class CodeGenerator {
 
-  /**
-   * Constructs a code generator by dynamically loading the language provider as specified by the
-   * config. If loading fails, errors will be reported on the model, and null is returned. The
-   * provider aggregates model and config from which it can be accessed by the code generator.
-   */
-  public static CodeGenerator create(Model model, Config config) {
-    Preconditions.checkNotNull(model);
-    Preconditions.checkNotNull(config);
-    Class<?> providerType;
-    try {
-      providerType = Class.forName(config.getLanguageProvider());
-    } catch (ClassNotFoundException e) {
-      error(model, "Cannot resolve provider class '%s'. Is it in the class path?",
-          config.getLanguageProvider());
-      return null;
-    }
-    if (!LanguageProvider.class.isAssignableFrom(providerType)) {
-      error(model, "the provider class '%s' does not extend the expected class '%s'",
-          providerType.getName(), LanguageProvider.class.getName());
-      return null;
-    }
-    Constructor<?> ctor;
-    try {
-      ctor = providerType.getConstructor(Model.class, Config.class);
-    } catch (NoSuchMethodException | SecurityException e) {
-      error(model, "the provider class '%s' does not have the expected constructor with "
-          + "parameters (%s, %s)",
-          providerType.getName(), Model.class.getName(), Config.class.getName());
-      return null;
-    }
-    try {
-      return new CodeGenerator((LanguageProvider) ctor.newInstance(model, config));
-    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-        | InvocationTargetException e) {
-      // At this point, this is likely a bug and not a user error, so propagate exception.
-      throw Throwables.propagate(e);
-    }
-  }
-
   private final LanguageProvider provider;
 
-  private CodeGenerator(LanguageProvider provider) {
+  public CodeGenerator(LanguageProvider provider) {
     this.provider = Preconditions.checkNotNull(provider);
   }
 
@@ -103,12 +64,97 @@ public class CodeGenerator {
    * {@link LanguageProvider#outputCode(String, Multimap)} and stores it in a
    * language-specific way.
    */
-  public void outputCode(String outputFile, Multimap<Interface, GeneratedResult> services)
+  public void outputCode(String outputFile,
+      Multimap<Interface, GeneratedResult> services, boolean archive)
       throws IOException {
-    provider.outputCode(outputFile, services);
+    provider.outputCode(outputFile, services, archive);
   }
 
-  private static void error(Model model, String message, Object... args) {
-    model.addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
+  public static class Builder {
+
+    private ConfigProto configProto;
+    private Model model;
+
+    /**
+     * Sets the model to be used in build().
+     */
+    public Builder setModel(Model model) {
+      this.model = model;
+      return this;
+    }
+
+    /**
+     * Sets the ConfigProto to be used in build().
+     */
+    public Builder setConfigProto(ConfigProto configProto) {
+      this.configProto = configProto;
+      return this;
+    }
+
+    /**
+     * Constructs a code generator by dynamically loading the language provider as specified by the
+     * config. If loading fails, errors will be reported on the model, and null is returned. The
+     * provider aggregates model and config from which it can be accessed by the code generator.
+     */
+    public CodeGenerator build() {
+      Preconditions.checkNotNull(model);
+      Preconditions.checkNotNull(configProto);
+
+      model.establishStage(Merged.KEY);
+      if (model.getErrorCount() > 0) {
+        return null;
+      }
+
+      ApiConfig apiConfig = ApiConfig.create(model, configProto);
+      if (apiConfig == null) {
+        return null;
+      }
+
+      LanguageProvider languageProvider =
+          createLanguageProvider(configProto.getLanguageProvider(), apiConfig);
+      if (languageProvider == null) {
+        return null;
+      }
+
+      return new CodeGenerator(languageProvider);
+    }
+
+    private LanguageProvider createLanguageProvider(String languageProviderName,
+        ApiConfig apiConfig) {
+      Class<?> providerType;
+      try {
+        providerType = Class.forName(languageProviderName);
+      } catch (ClassNotFoundException e) {
+        error("Cannot resolve provider class '%s'. Is it in the class path?",
+            languageProviderName);
+        return null;
+      }
+      if (!LanguageProvider.class.isAssignableFrom(providerType)) {
+        error("the provider class '%s' does not extend the expected class '%s'",
+            providerType.getName(), LanguageProvider.class.getName());
+        return null;
+      }
+      Constructor<?> ctor;
+      try {
+        ctor = providerType.getConstructor(Model.class, ApiConfig.class);
+      } catch (NoSuchMethodException | SecurityException e) {
+        error("the provider class '%s' does not have the expected constructor with "
+            + "parameters (%s, %s)",
+            providerType.getName(), Model.class.getName(), ApiConfig.class.getName());
+        return null;
+      }
+      try {
+        return (LanguageProvider) ctor.newInstance(model, apiConfig);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+          | InvocationTargetException e) {
+        // At this point, this is likely a bug and not a user error, so propagate exception.
+        throw Throwables.propagate(e);
+      }
+    }
+
+    private void error(String message, Object... args) {
+      model.addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
+    }
   }
+
 }

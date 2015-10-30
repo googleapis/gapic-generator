@@ -1,22 +1,5 @@
 package io.gapi.vgen.py;
 
-import io.gapi.fx.aspects.documentation.model.DocumentationUtil;
-import io.gapi.fx.aspects.documentation.model.ElementDocumentationAttribute;
-import io.gapi.fx.model.Field;
-import io.gapi.fx.model.Interface;
-import io.gapi.fx.model.Model;
-import io.gapi.fx.model.ProtoElement;
-import io.gapi.fx.model.TypeRef;
-import io.gapi.fx.model.TypeRef.Cardinality;
-import io.gapi.fx.snippet.Doc;
-import io.gapi.fx.snippet.SnippetSet;
-import io.gapi.fx.tools.ToolUtil;
-import io.gapi.vgen.GeneratedResult;
-import io.gapi.vgen.LanguageProvider;
-import io.gapi.vgen.SnippetDescriptor;
-import io.gapi.vgen.py.AutoValue_PythonLanguageProvider_PythonImport;
-import io.gapi.vgen.Config;
-
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
@@ -29,6 +12,22 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+
+import io.gapi.fx.aspects.documentation.model.DocumentationUtil;
+import io.gapi.fx.aspects.documentation.model.ElementDocumentationAttribute;
+import io.gapi.fx.model.Field;
+import io.gapi.fx.model.Interface;
+import io.gapi.fx.model.Model;
+import io.gapi.fx.model.ProtoElement;
+import io.gapi.fx.model.TypeRef;
+import io.gapi.fx.model.TypeRef.Cardinality;
+import io.gapi.fx.snippet.Doc;
+import io.gapi.fx.snippet.SnippetSet;
+import io.gapi.fx.tools.ToolUtil;
+import io.gapi.vgen.ApiConfig;
+import io.gapi.vgen.GeneratedResult;
+import io.gapi.vgen.LanguageProvider;
+import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -142,7 +141,8 @@ public class PythonLanguageProvider extends LanguageProvider {
   private final BiMap<String, PythonImport> imports = HashBiMap.create();
 
   @Override
-  public void outputCode(String outputArchiveFile, Multimap<Interface, GeneratedResult> services)
+  public void outputCode(String outputArchiveFile, Multimap<Interface, GeneratedResult> services,
+      boolean archive)
       throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
     for (Map.Entry<Interface, GeneratedResult> serviceEntry : services.entries()) {
@@ -151,7 +151,7 @@ public class PythonLanguageProvider extends LanguageProvider {
       String path = service.getFile().getFullName().replace('.', '/');
       files.put(path + "/" + generatedResult.getFilename(), generatedResult.getDoc());
     }
-    if (getConfig().getArchive()) {
+    if (archive) {
       ToolUtil.writeJar(files, outputArchiveFile);
     } else {
       ToolUtil.writeFiles(files, outputArchiveFile);
@@ -161,8 +161,8 @@ public class PythonLanguageProvider extends LanguageProvider {
   /**
    * Constructs the Python language provider.
    */
-  public PythonLanguageProvider(Model model, Config config) {
-    super(model, config);
+  public PythonLanguageProvider(Model model, ApiConfig apiConfig) {
+    super(model, apiConfig);
   }
 
   @Override
@@ -186,7 +186,7 @@ public class PythonLanguageProvider extends LanguageProvider {
 
   /**
    * Return canonical oauth scopes of the given service.
-   * @param service 
+   * @param service
    */
   public Set<String> getOauthScopes(Interface service) {
     Set<String> scopes = Sets.newHashSet();

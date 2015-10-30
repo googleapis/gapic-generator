@@ -3,16 +3,16 @@ syntax = "proto3";
 package io.gapi.vgen;
 
 option java_multiple_files = true;
-option java_outer_classname = "ConfigProto";
+option java_outer_classname = "ConfigProtoDesc";
 option java_package = "io.gapi.vgen";
 
-// `Config` specifies the configuration of code generation for
+// `ConfigProto` specifies the configuration of code generation for
 // veneer. The user provides it via a yaml file; this message here
 // represents the schema for this file.
 //
 // Example of a Yaml configuration:
 //
-//     type: io.gapi.vgen.Config
+//     type: io.gapi.vgen.ConfigProto
 //     language_provider: io.gapi.vgen.java.JavaLanguageProvider
 //     snippet_files: main.snip
 //     collections:
@@ -31,7 +31,7 @@ option java_package = "io.gapi.vgen";
 //           parameters:
 //           - name
 //           - version
-//       paging:
+//       page_streaming:
 //         request:
 //           token_field: page_token
 //         response:
@@ -43,7 +43,7 @@ option java_package = "io.gapi.vgen";
 //         max_attempts: 16
 //     - name: google.example.library.v1.LibraryService.GetBook
 //       ...
-message Config {
+message ConfigProto {
 
   // The fully qualified name of the Java class of the language
   // provider. Must be provided.
@@ -62,13 +62,13 @@ message Config {
   bool archive = 3;
 
   // A list of resource collection configurations.
-  repeated CollectionConfig collections = 10;
+  repeated CollectionConfigProto collections = 10;
 
   // A list of method configurations.
-  repeated MethodConfig methods = 20;
+  repeated MethodConfigProto methods = 20;
 }
 
-message CollectionConfig {
+message CollectionConfigProto {
   // A pattern to describe the names of the resources of this
   // collection, using the platform's conventions for URI patterns. A
   // generator may use this to generate methods to compose and
@@ -82,58 +82,58 @@ message CollectionConfig {
   string method_base_name = 2;
 }
 
-// `MethodConfig` describes the generator configuration for a method.
-message MethodConfig {
+// `MethodConfigProto` describes the generator configuration for a method.
+message MethodConfigProto {
   // The fully qualified name of the method.
   string name = 1;
 
   // Specifies the configuration for parameter flattening.
-  FlatteningConfig flattening = 2;
+  FlatteningConfigProto flattening = 2;
 
   // Specifies the configuration for paging.
-  PageStreamingConfig paging = 3;
+  PageStreamingConfigProto page_streaming = 3;
 
   // Specifies the configuration for retry.
-  RetryConfig retry = 4;
+  RetryConfigProto retry = 4;
 }
 
-// `FlatteningConfig` describes the parameter groups for which a
+// `FlatteningConfigProto` describes the parameter groups for which a
 // generator should produce method overloads which allow a client to
 // directly pass request message fields as method parameters.  This
 // information may or may not be used, depending on the target
 // language.
-message FlatteningConfig {
+message FlatteningConfigProto {
   // Specifies a list of flattening groups.
-  repeated FlatteningGroup group = 1;
+  repeated FlatteningGroupProto group = 1;
 }
 
-// `FlatteningGroup` represents a list of parameters to be flattened.
-message FlatteningGroup {
+// `FlatteningGroupProto` represents a list of parameters to be flattened.
+message FlatteningGroupProto {
   // The list of parameters to include in this flattening group. Each
   // parameter must be a field of the request message.
   repeated string parameters = 1;
 }
 
-// `PageStreamingConfig` describes information for generating a method which
+// `PageStreamingConfigProto` describes information for generating a method which
 // transforms a paging list rpc into a stream of resources.
-message PageStreamingConfig {
+message PageStreamingConfigProto {
   // Specifies request information of the list method.
-  PageStreamingRequest request = 1;
+  PageStreamingRequestProto request = 1;
 
   // Specifies response information of the list method.
-  PageStreamingResponse response = 2;
+  PageStreamingResponseProto response = 2;
 }
 
-// `PageStreamingRequest` defines which fields match the paging pattern in
+// `PageStreamingRequestProto` defines which fields match the paging pattern in
 // the request.
-message PageStreamingRequest {
+message PageStreamingRequestProto {
   // The name of the field in the request containing the page token.
   string token_field = 1;
 }
 
-// `PageStreamingResponse` defines which fields match the paging pattern in
+// `PageStreamingResponseProto` defines which fields match the paging pattern in
 // the response.
-message PageStreamingResponse {
+message PageStreamingResponseProto {
   // The name of the field in the response containing the next page
   // token.
   string token_field = 1;
@@ -146,7 +146,7 @@ message PageStreamingResponse {
 // `RetryConfig` specifies retry configuration for a method, using
 // [exponential
 // backoff](https://en.wikipedia.org/wiki/Exponential_backoff).
-message RetryConfig {
+message RetryConfigProto {
   // The duration of time slots used in the algorithm. Defaults to `2`.
   double slot_times_millis = 1;
 
