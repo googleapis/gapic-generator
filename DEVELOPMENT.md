@@ -48,11 +48,11 @@ script (at some point in time):
     git clone https://github.com/wrwg/protobuf-gradle-plugin.git || exit 1
     (cd protobuf-gradle-plugin && ./gradlew install) || exit 1
 
-    git clone --recursive sso://gapi/gapi-tools || exit 1
-    (cd gapi-tools && ./gradlew build install) || exit 1
-
     git clone --recursive sso://gapi/gapi-gax-java || exit 1
     (cd gapi-gax-java && ./gradlew build install) || exit 1
+
+    git clone --recursive sso://gapi/gapi-tools || exit 1
+    (cd gapi-tools && ./gradlew build install) || exit 1
 
     git clone --recursive sso://gapi/gapi-core-java || exit 1
     (cd gapi-core-java && ./gradlew build install) || exit 1
