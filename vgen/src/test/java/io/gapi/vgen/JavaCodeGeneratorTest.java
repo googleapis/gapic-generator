@@ -15,8 +15,8 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class JavaCodeGeneratorTest extends CodeGeneratorTestBase {
 
-  public JavaCodeGeneratorTest(String name, Config config) {
-    super(name, config);
+  public JavaCodeGeneratorTest(String name, String[] veneerConfigFileNames) {
+    super(name, veneerConfigFileNames);
   }
 
   /**
@@ -28,10 +28,7 @@ public class JavaCodeGeneratorTest extends CodeGeneratorTestBase {
     return ImmutableList.of(
       new Object[] {
           "java",
-          Config.newBuilder()
-            .setLanguageProvider("io.gapi.vgen.java.JavaLanguageProvider")
-            .addSnippetFiles("main.snip")
-            .build()
+          new String[]{"io/gapi/vgen/java/java_veneer.yaml", "library_veneer.yaml"}
       });
   }
 

@@ -238,20 +238,16 @@ class GapiPlugin implements Plugin<Project> {
       this.name = name
     }
 
-    def serviceConfig(List<String> serviceConfigs) {
-      serviceConfigs.each { serviceConfig(it) }
+    def serviceConfig(String... serviceConfigsInput) {
+      serviceConfigsInput.each {
+        serviceConfigs += [ Util.relativePath(sourceSet.protoPath, it) ]
+      }
     }
 
-    def serviceConfig(String serviceConfig) {
-      serviceConfigs += [ Util.relativePath(sourceSet.protoPath, serviceConfig) ]
-    }
-
-    def veneerConfig(List<String> serviceConfigs) {
-      serviceConfigs.each { veneerConfig(it) }
-    }
-
-    def veneerConfig(String veneerConfig) {
-      veneerConfigs += [ Util.relativePath(sourceSet.protoPath, veneerConfig) ]
+    def veneerConfig(String... veneerConfigsInput) {
+      veneerConfigsInput.each {
+        veneerConfigs += [ Util.relativePath(sourceSet.protoPath, it) ]
+      }
     }
   }
 }

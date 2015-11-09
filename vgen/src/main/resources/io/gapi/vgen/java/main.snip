@@ -101,6 +101,7 @@
 
   {@pathAndPortConstants()}
   {@callableConstants(service)}
+  {@pageDescriptorConstants(service)}
   {@scopeConstant()}
   {@pathTemplateConstants(service)}
 @end
@@ -136,6 +137,40 @@
       @end
     @end
 
+  @end
+@end
+
+@private pageDescriptorConstants(service)
+  @join method : service.getMethods
+    @if {@context.getApiConfig.getMethodConfig(method).isPageStreaming}
+      @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
+           inTypeName = context.typeName(method.getInputType), \
+           outTypeName = context.typeName(method.getOutputType), \
+           resourceTypeName = context.pageStreamingResourceType(method.getOutputType), \
+           pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming()
+        private static PageDescriptor<{@inTypeName}, {@outTypeName}, {@resourceTypeName}> {@methodConstant}_PAGE_DESC =
+            new PageDescriptor<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>() {
+              @@Override public Object emptyToken() {
+                return {@context.defaultTokenValue(pageStreaming.getRequestTokenField())};
+              }
+              @@Override public {@inTypeName} injectToken(
+                  {@inTypeName} payload, Object token) {
+                return {@inTypeName}
+                  .newBuilder(payload)
+                  .{@setCallName(pageStreaming.getRequestTokenField())}((String) token)
+                  .build();
+              }
+              @@Override
+              public Object extractNextToken({@outTypeName} payload) {
+                return payload.{@getCallName(pageStreaming.getResponseTokenField())}();
+              }
+              @@Override
+              public Iterable<{@resourceTypeName}> extractResources({@outTypeName} payload) {
+                return payload.{@getCallName(pageStreaming.getResourcesField())}();
+              }
+            };
+      @end
+    @end
   @end
 @end
 
@@ -260,9 +295,10 @@
 
       # TODO (garrettjones) put some kind of limit on number of flattened parameters, and
       # don't generated a flattened method if there are too many.
-      @if {@context.messages.isPageStreamingRequest(method.getOutputType, method.getInputType)}
+      @if {@context.getApiConfig.getMethodConfig(method).isPageStreaming}
         {@iterableFlattenedMethod(method, methodName, requestFactoryName)}
-        {@iterableMethodWithRequestParam(method, methodName, inTypeName)}
+        {@iterableMethodWithRequestParam(method, methodName, inTypeName, outTypeName)}
+        {@methodReturningStreamingCallable(method, methodName, inTypeName, outTypeName)}
       @else
         {@flattenedMethod(method, methodName, requestFactoryName)}
         {@methodWithRequestParam(method, methodName, inTypeName, outTypeName)}
@@ -301,9 +337,9 @@
 
 @private iterableFlattenedMethod(method, methodName, requestFactoryName)
   {@methodJavaDoc(method)}
-  @let returnElementType = context.pageStreamingReturnElementType(method.getOutputType), \
+  @let resourceTypeName = context.pageStreamingResourceType(method.getOutputType), \
        requestTypeName = context.typeName(method.getInputType)
-    public Iterable<{@returnElementType}> {@methodName}({@flattenedParameters(method.getInputType)}) {
+    public Iterable<{@resourceTypeName}> {@methodName}({@flattenedParameters(method.getInputType)}) {
       {@context.typeName(method.getInputType)} request =
           {@requestTypeName}.newBuilder()
           {@builderSetCalls(method.getInputType)}
@@ -314,13 +350,24 @@
   @end
 @end
 
-@private iterableMethodWithRequestParam(method, methodName, inTypeName)
+@private iterableMethodWithRequestParam(method, methodName, inTypeName, outTypeName)
   {@methodWithRequestParamJavaDoc(method)}
-  @let returnElementType = context.pageStreamingReturnElementType(method.getOutputType)
-    public Iterable<{@returnElementType}> {@methodName}({@inTypeName} request) {
-      return {@methodName}Callable()
-          .pageStreaming({@returnElementType}.class)
+  @let resourceTypeName = context.pageStreamingResourceType(method.getOutputType),\
+       dummy = context.addImport("io.gapi.gax.grpc.PageDescriptor")
+    public Iterable<{@resourceTypeName}> {@methodName}({@inTypeName} request) {
+      return {@methodName}StreamingCallable()
           .iterableResponseStreamCall(request);
+    }
+
+  @end
+@end
+
+@private methodReturningStreamingCallable(method, methodName, inTypeName, outTypeName)
+  {@methodJavaDoc(method)}
+  @let resourceTypeName = context.pageStreamingResourceType(method.getOutputType), \
+       methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName)
+    public ApiCallable<{@inTypeName}, {@resourceTypeName}> {@methodName}StreamingCallable() {
+      return {@methodName}Callable().pageStreaming({@methodConstant}_PAGE_DESC);
     }
 
   @end
@@ -485,3 +532,14 @@
     @end
   @end
 @end
+
+@private getCallName(field)
+  @let paramNameInCamel = context.lowerUnderscoreToUpperCamel(field.getSimpleName)
+    @if field.isRepeated
+      get{@paramNameInCamel}List
+    @else
+      get{@paramNameInCamel}
+    @end
+  @end
+@end
+

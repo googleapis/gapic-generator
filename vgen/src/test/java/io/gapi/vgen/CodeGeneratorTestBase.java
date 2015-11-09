@@ -1,17 +1,23 @@
 package io.gapi.vgen;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.truth.Truth;
+import com.google.protobuf.Message;
 
 import io.gapi.fx.model.Diag;
+import io.gapi.fx.model.DiagCollector;
 import io.gapi.fx.model.Interface;
 import io.gapi.fx.testing.ApiConfigBaselineTestCase;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 /**
  * Base class for code generator baseline tests.
@@ -25,18 +31,42 @@ public abstract class CodeGeneratorTestBase extends ApiConfigBaselineTestCase {
   // ======
 
   private final String name;
-  private final Config config;
+  private final String[] veneerConfigFileNames;
+  private ConfigProto config;
   private CodeGenerator generator;
 
-  public CodeGeneratorTestBase(String name, Config config) {
+  public CodeGeneratorTestBase(String name, String[] veneerConfigFileNames) {
     this.name = name;
-    this.config = config;
+    this.veneerConfigFileNames = veneerConfigFileNames;
   }
 
   @Override protected void setupModel() {
     super.setupModel();
-    generator = CodeGenerator.create(model, config);
-    Truth.assertThat(this.generator).isNotNull();
+
+    setupModelImpl();
+    // TODO (garrettjones) depend on the framework to take care of this
+    if (model.getErrorCount() > 0) {
+      for (Diag diag : model.getDiags()) {
+        System.err.println(diag.toString());
+      }
+      throw new IllegalArgumentException("Problem creating CodeGenerator");
+    }
+  }
+
+  private void setupModelImpl() {
+    config = readConfig(model);
+    if (config == null) {
+      return;
+    }
+
+    generator =
+        new CodeGenerator.Builder()
+            .setConfigProto(config)
+            .setModel(model)
+            .build();
+    if (generator == null) {
+      return;
+    }
   }
 
   @Override protected boolean suppressDiagnosis() {
@@ -46,6 +76,8 @@ public abstract class CodeGeneratorTestBase extends ApiConfigBaselineTestCase {
 
   @Override
   protected Object run() {
+    Truth.assertThat(this.generator).isNotNull();
+
     String snippetInputName = config.getSnippetFilesList().get(0);
     SnippetDescriptor resourceDescriptor =
           new SnippetDescriptor(snippetInputName);
@@ -70,5 +102,25 @@ public abstract class CodeGeneratorTestBase extends ApiConfigBaselineTestCase {
     } else {
       return name + "_" + methodName + ".baseline";
     }
+  }
+
+  private ConfigProto readConfig(DiagCollector diagCollector) {
+    List<String> inputNames = new ArrayList<>();
+    List<String> inputs = new ArrayList<>();
+
+    for (String veneerConfigFileName : veneerConfigFileNames) {
+      URL veneerConfigUrl = testDataLocator().findTestData(veneerConfigFileName);
+      String configData = testDataLocator().readTestData(veneerConfigUrl);
+      inputNames.add(veneerConfigFileName);
+      inputs.add(configData);
+    }
+
+    ImmutableMap<String, Message> supportedConfigTypes =
+        ImmutableMap.<String, Message>of(ConfigProto.getDescriptor().getFullName(),
+            ConfigProto.getDefaultInstance());
+    ConfigProto configProto =
+        (ConfigProto) MultiYamlReader.read(model, inputNames, inputs, supportedConfigTypes);
+
+    return configProto;
   }
 }

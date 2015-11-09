@@ -48,6 +48,7 @@ package com.google.example.library.v1;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
 import io.gapi.gax.grpc.ApiCallable;
+import io.gapi.gax.grpc.PageDescriptor;
 import io.gapi.gax.grpc.ServiceApiSettings;
 import io.gapi.gax.internal.ApiUtils;
 import io.gapi.gax.protobuf.PathTemplate;
@@ -112,6 +113,57 @@ public class LibraryServiceApi implements AutoCloseable {
       UPDATE_BOOK = ApiCallable.create(LibraryServiceGrpc.METHOD_UPDATE_BOOK);
   public static final ApiCallable<MoveBookRequest, Book>
       MOVE_BOOK = ApiCallable.create(LibraryServiceGrpc.METHOD_MOVE_BOOK);
+
+
+
+  private static PageDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_DESC =
+      new PageDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf>() {
+        @Override public Object emptyToken() {
+          return "";
+        }
+        @Override public ListShelvesRequest injectToken(
+            ListShelvesRequest payload, Object token) {
+          return ListShelvesRequest
+            .newBuilder(payload)
+            .setPageToken((String) token)
+            .build();
+        }
+        @Override
+        public Object extractNextToken(ListShelvesResponse payload) {
+          return payload.getNextPageToken();
+        }
+        @Override
+        public Iterable<Shelf> extractResources(ListShelvesResponse payload) {
+          return payload.getShelvesList();
+        }
+      };
+
+
+
+
+  private static PageDescriptor<ListBooksRequest, ListBooksResponse, Book> LIST_BOOKS_PAGE_DESC =
+      new PageDescriptor<ListBooksRequest, ListBooksResponse, Book>() {
+        @Override public Object emptyToken() {
+          return "";
+        }
+        @Override public ListBooksRequest injectToken(
+            ListBooksRequest payload, Object token) {
+          return ListBooksRequest
+            .newBuilder(payload)
+            .setPageToken((String) token)
+            .build();
+        }
+        @Override
+        public Object extractNextToken(ListBooksResponse payload) {
+          return payload.getNextPageToken();
+        }
+        @Override
+        public Iterable<Book> extractResources(ListBooksResponse payload) {
+          return payload.getBooksList();
+        }
+      };
+
+
 
   private static String ALL_SCOPES[] = {
   };
@@ -277,9 +329,16 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param request The request object containing all of the parameters for the API call.
    */
   public Iterable<Shelf> listShelves(ListShelvesRequest request) {
-    return listShelvesCallable()
-        .pageStreaming(Shelf.class)
+    return listShelvesStreamingCallable()
         .iterableResponseStreamCall(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Lists shelves.
+   */
+  public ApiCallable<ListShelvesRequest, Shelf> listShelvesStreamingCallable() {
+    return listShelvesCallable().pageStreaming(LIST_SHELVES_PAGE_DESC);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
@@ -461,9 +520,16 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param request The request object containing all of the parameters for the API call.
    */
   public Iterable<Book> listBooks(ListBooksRequest request) {
-    return listBooksCallable()
-        .pageStreaming(Book.class)
+    return listBooksStreamingCallable()
         .iterableResponseStreamCall(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Lists books in a shelf.
+   */
+  public ApiCallable<ListBooksRequest, Book> listBooksStreamingCallable() {
+    return listBooksCallable().pageStreaming(LIST_BOOKS_PAGE_DESC);
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.

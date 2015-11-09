@@ -11,6 +11,7 @@ import com.google.common.io.Files;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import io.gapi.fx.aspects.documentation.model.DocumentationUtil;
+import io.gapi.fx.model.Field;
 import io.gapi.fx.model.Interface;
 import io.gapi.fx.model.Model;
 import io.gapi.fx.model.ProtoElement;
@@ -20,7 +21,7 @@ import io.gapi.fx.model.TypeRef.Cardinality;
 import io.gapi.fx.snippet.Doc;
 import io.gapi.fx.snippet.SnippetSet;
 import io.gapi.fx.tools.ToolUtil;
-import io.gapi.vgen.Config;
+import io.gapi.vgen.ApiConfig;
 import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.LanguageProvider;
 import io.gapi.vgen.SnippetDescriptor;
@@ -128,12 +129,13 @@ public class JavaLanguageProvider extends LanguageProvider {
   /**
    * Constructs the Java language provider.
    */
-  public JavaLanguageProvider(Model model, Config config) {
-    super(model, config);
+  public JavaLanguageProvider(Model model, ApiConfig apiConfig) {
+    super(model, apiConfig);
   }
 
   @Override
-  public void outputCode(String outputPath, Multimap<Interface, GeneratedResult> services)
+  public void outputCode(String outputPath, Multimap<Interface, GeneratedResult> services,
+      boolean archive)
       throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
     for (Map.Entry<Interface, GeneratedResult> serviceEntry : services.entries()) {
@@ -142,7 +144,7 @@ public class JavaLanguageProvider extends LanguageProvider {
       String path = getJavaPackage(service.getFile()).replace('.', '/');
       files.put(path + "/" + generatedResult.getFilename(), generatedResult.getDoc());
     }
-    if (getConfig().getArchive()) {
+    if (archive) {
       ToolUtil.writeJar(files, outputPath);
     } else {
       ToolUtil.writeFiles(files, outputPath);
@@ -271,7 +273,7 @@ public class JavaLanguageProvider extends LanguageProvider {
    * For a page streaming request, if there is only one field in the response, then returns
    * that type's name, else returns the response type's name.
    */
-  public String pageStreamingReturnElementType(TypeRef returnType) {
+  public String pageStreamingResourceType(TypeRef returnType) {
     TypeRef elementType = messages().pageStreamingElementTypeRef(returnType);
     return basicTypeName(elementType, true);
   }
@@ -406,5 +408,19 @@ public class JavaLanguageProvider extends LanguageProvider {
       linePrefix = "";
     }
     return result;
+  }
+
+  public String defaultTokenValue(Field field) {
+    if (field.getType().getKind().equals(Type.TYPE_STRING)) {
+      return "\"\"";
+    } else if (field.getType().getKind().equals(Type.TYPE_BYTES)) {
+      String byteStringTypeName = getTypeName("com.google.protobuf.ByteString");
+      return String.format("new %s()", byteStringTypeName);
+    } else {
+      throw new IllegalArgumentException(
+          String.format("Unsupported type for field %s - found %s, "
+              + "but expected TYPE_STRING or TYPE_BYTES",
+              field.getFullName(), field.getType().getKind()));
+    }
   }
 }
