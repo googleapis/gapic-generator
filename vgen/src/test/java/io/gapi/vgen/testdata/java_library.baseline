@@ -247,7 +247,6 @@ public class LibraryServiceApi implements AutoCloseable {
         CreateShelfRequest.newBuilder()
         .setShelf(shelf)
         .build();
-
     return createShelf(request);
   }
 
@@ -276,6 +275,36 @@ public class LibraryServiceApi implements AutoCloseable {
    * Gets a shelf.
    *
    * @param name The name of the shelf to retrieve.
+   */
+  public Shelf getShelf(String name) {
+    GetShelfRequest request =
+        GetShelfRequest.newBuilder()
+        .setName(name)
+        .build();
+    return getShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Gets a shelf.
+   *
+   * @param name The name of the shelf to retrieve.
+   * @param message Field to verify that message-type query parameter gets flattened.
+   */
+  public Shelf getShelf(String name, SomeMessage message) {
+    GetShelfRequest request =
+        GetShelfRequest.newBuilder()
+        .setName(name)
+        .setMessage(message)
+        .build();
+    return getShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Gets a shelf.
+   *
+   * @param name The name of the shelf to retrieve.
    * @param message Field to verify that message-type query parameter gets flattened.
    * @param stringBuilder
    */
@@ -286,7 +315,6 @@ public class LibraryServiceApi implements AutoCloseable {
         .setMessage(message)
         .setStringBuilder(stringBuilder)
         .build();
-
     return getShelf(request);
   }
 
@@ -362,7 +390,6 @@ public class LibraryServiceApi implements AutoCloseable {
         DeleteShelfRequest.newBuilder()
         .setName(name)
         .build();
-
     deleteShelf(request);
   }
 
@@ -401,7 +428,6 @@ public class LibraryServiceApi implements AutoCloseable {
         .setName(name)
         .setOtherShelfName(otherShelfName)
         .build();
-
     return mergeShelves(request);
   }
 
@@ -442,7 +468,6 @@ public class LibraryServiceApi implements AutoCloseable {
         .setName(name)
         .setBook(book)
         .build();
-
     return createBook(request);
   }
 
@@ -477,7 +502,6 @@ public class LibraryServiceApi implements AutoCloseable {
         GetBookRequest.newBuilder()
         .setName(name)
         .build();
-
     return getBook(request);
   }
 
@@ -553,7 +577,6 @@ public class LibraryServiceApi implements AutoCloseable {
         DeleteBookRequest.newBuilder()
         .setName(name)
         .build();
-
     deleteBook(request);
   }
 
@@ -583,6 +606,22 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param name The name of the book to update.
    * @param book The book to update with.
+   */
+  public Book updateBook(String name, Book book) {
+    UpdateBookRequest request =
+        UpdateBookRequest.newBuilder()
+        .setName(name)
+        .setBook(book)
+        .build();
+    return updateBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Updates a book.
+   *
+   * @param name The name of the book to update.
+   * @param book The book to update with.
    * @param updateMask A field mask to apply, rendered as an HTTP parameter.
    */
   public Book updateBook(String name, Book book, FieldMask updateMask) {
@@ -592,7 +631,6 @@ public class LibraryServiceApi implements AutoCloseable {
         .setBook(book)
         .setUpdateMask(updateMask)
         .build();
-
     return updateBook(request);
   }
 
@@ -629,7 +667,6 @@ public class LibraryServiceApi implements AutoCloseable {
         .setName(name)
         .setOtherShelfName(otherShelfName)
         .build();
-
     return moveBook(request);
   }
 

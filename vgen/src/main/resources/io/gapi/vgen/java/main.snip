@@ -290,17 +290,31 @@
          methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
          inTypeName = context.typeName(method.getInputType), \
          outTypeName = context.typeName(method.getOutputType), \
-         requestFactoryName = context.getRequestFactoryName(service)
+         requestFactoryName = context.getRequestFactoryName(service), \
+         isPageStreaming = context.getApiConfig.getMethodConfig(method).isPageStreaming, \
+         isFlattening = context.getApiConfig.getMethodConfig(method).isFlattening
       // ----- {@methodName} -----
 
       # TODO (garrettjones) put some kind of limit on number of flattened parameters, and
       # don't generated a flattened method if there are too many.
-      @if {@context.getApiConfig.getMethodConfig(method).isPageStreaming}
-        {@iterableFlattenedMethod(method, methodName, requestFactoryName)}
+      @if {@isPageStreaming}
+        @if {@isFlattening}
+          @join flatteningGroup: \
+              context.getApiConfig.getMethodConfig(method).getFlattening().getFlatteningGroups()
+            {@iterableFlattenedMethod(method, methodName, requestFactoryName, flatteningGroup)}
+          @end
+          {@BREAK}
+        @end
         {@iterableMethodWithRequestParam(method, methodName, inTypeName, outTypeName)}
         {@methodReturningStreamingCallable(method, methodName, inTypeName, outTypeName)}
       @else
-        {@flattenedMethod(method, methodName, requestFactoryName)}
+        @if {@isFlattening}
+          @join flatteningGroup : \
+              context.getApiConfig.getMethodConfig(method).getFlattening().getFlatteningGroups()
+            {@flattenedMethod(method, methodName, requestFactoryName, flatteningGroup)}
+          @end
+          {@BREAK}
+        @end
         {@methodWithRequestParam(method, methodName, inTypeName, outTypeName)}
       @end
       {@methodReturningCallable(method, callableConstant, methodName, inTypeName, outTypeName)}
@@ -335,14 +349,15 @@
 
 @end
 
-@private iterableFlattenedMethod(method, methodName, requestFactoryName)
+@private iterableFlattenedMethod(method, methodName, requestFactoryName, fields)
   {@methodJavaDoc(method)}
   @let resourceTypeName = context.pageStreamingResourceType(method.getOutputType), \
        requestTypeName = context.typeName(method.getInputType)
-    public Iterable<{@resourceTypeName}> {@methodName}({@flattenedParameters(method.getInputType)}) {
+    public Iterable<{@resourceTypeName}> \
+        {@methodName}({@flattenedParameters(fields)}) {
       {@context.typeName(method.getInputType)} request =
           {@requestTypeName}.newBuilder()
-          {@builderSetCalls(method.getInputType)}
+          {@builderSetCalls(fields)}
           .build();
       return {@methodName}(request);
     }
@@ -373,17 +388,16 @@
   @end
 @end
 
-@private flattenedMethod(method, methodName, requestFactoryName)
-  {@flattenedMethodJavaDoc(method)}
+@private flattenedMethod(method, methodName, requestFactoryName, fields)
+  {@flattenedMethodJavaDoc(method, fields)}
   @let returnType = context.methodReturnTypeName(method.getOutputType), \
        returnStatement = context.methodReturnStatement(method.getOutputType), \
        requestTypeName = context.typeName(method.getInputType)
-    public {@returnType} {@methodName}({@flattenedParameters(method.getInputType)}) {
+    public {@returnType} {@methodName}({@flattenedParameters(fields)}) {
       {@context.typeName(method.getInputType)} request =
           {@requestTypeName}.newBuilder()
-          {@builderSetCalls(method.getInputType)}
+          {@builderSetCalls(fields)}
           .build();
-          
       {@returnStatement}{@methodName}(request);
     }
 
@@ -432,12 +446,12 @@
   {@javaDocEnd()}
 @end
 
-@private flattenedMethodJavaDoc(method)
+@private flattenedMethodJavaDoc(method, fields)
   {@autoGenMethodWarning()}
   {@javaDocStart()}
   {@javaDocLines(method)}
   {@javaDocEmptyLine()}
-  @join field : context.messages.flattenedFields(method.getInputType) vertical
+  @join field : fields vertical
     @join commentLine : context.getJavaDocLinesWithPrefix(getDoc(field), paramDocLinePrefix(field))
       {@commentLine}
     @end
@@ -499,24 +513,24 @@
   {@context.getDescription(protoElement)}
 @end
 
-@private flattenedParameters(inType)
-  @join field : context.messages.flattenedFields(inType) on ", "
+@private flattenedParameters(fields)
+  @join field : fields on ", "
     @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
       {@context.typeName(field.getType)} {@paramName}
     @end
   @end
 @end
 
-@private flattenedArguments(inType)
-  @join field : context.messages.flattenedFields(inType) on ", "
+@private flattenedArguments(fields)
+  @join field : fields on ", "
     @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
       {@paramName}
     @end
   @end
 @end
 
-@private builderSetCalls(inType)
-  @join field : context.messages.flattenedFields(inType)
+@private builderSetCalls(fields)
+  @join field : fields
     @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
       .{@setCallName(field)}({@paramName})
     @end

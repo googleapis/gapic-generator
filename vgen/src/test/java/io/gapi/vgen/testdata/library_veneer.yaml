@@ -1,8 +1,26 @@
 type: io.gapi.vgen.ConfigProto
 methods:
 - name: google.example.library.v1.LibraryService.CreateShelf
+  flattening:
+    groups:
+    - parameters:
+      - shelf
 - name: google.example.library.v1.LibraryService.GetShelf
+  flattening:
+    groups:
+    - parameters:
+      - name
+    - parameters:
+      - name
+      - message
+    - parameters:
+      - name
+      - message
+      - string_builder
 - name: google.example.library.v1.LibraryService.ListShelves
+  flattening:
+    groups:
+    - parameters: []
   page_streaming:
     request:
       token_field: page_token
@@ -10,10 +28,32 @@ methods:
       token_field: next_page_token
       resources_field: shelves
 - name: google.example.library.v1.LibraryService.DeleteShelf
+  flattening:
+    groups:
+    - parameters:
+      - name
 - name: google.example.library.v1.LibraryService.MergeShelves
+  flattening:
+    groups:
+    - parameters:
+      - name
+      - other_shelf_name
 - name: google.example.library.v1.LibraryService.CreateBook
+  flattening:
+    groups:
+    - parameters:
+      - name
+      - book
 - name: google.example.library.v1.LibraryService.GetBook
+  flattening:
+    groups:
+    - parameters:
+      - name
 - name: google.example.library.v1.LibraryService.ListBooks
+  flattening:
+    groups:
+    - parameters:
+      - name
   page_streaming:
     request:
       token_field: page_token
@@ -21,5 +61,23 @@ methods:
       token_field: next_page_token
       resources_field: books
 - name: google.example.library.v1.LibraryService.DeleteBook
+  flattening:
+    groups:
+    - parameters:
+      - name
 - name: google.example.library.v1.LibraryService.UpdateBook
+  flattening:
+    groups:
+    - parameters:
+      - name
+      - book
+    - parameters:
+      - name
+      - book
+      - update_mask
 - name: google.example.library.v1.LibraryService.MoveBook
+  flattening:
+    groups:
+    - parameters:
+      - name
+      - other_shelf_name

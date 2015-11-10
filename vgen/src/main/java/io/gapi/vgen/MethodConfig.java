@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 public class MethodConfig {
 
   private final PageStreaming pageStreaming;
+  private final Flattening flattening;
 
   /**
    * Creates an instance of MethodConfig based on MethodConfigProto, linking it
@@ -20,22 +21,42 @@ public class MethodConfig {
    */
   @Nullable public static MethodConfig createMethodConfig(DiagCollector diagCollector,
       MethodConfigProto methodConfig, Method method) {
+
+    boolean error = false;
+    
+    PageStreaming pageStreaming;
     if (PageStreamingConfigProto.getDefaultInstance().equals(methodConfig.getPageStreaming())) {
-      return new MethodConfig(null);
+      pageStreaming = null;
+    } else {
+      pageStreaming = PageStreaming.createPageStreaming(diagCollector, 
+          methodConfig.getPageStreaming(), method);
+      if (pageStreaming == null) {
+        error = true;
+      }
     }
 
-    PageStreaming pageStreaming =
-        PageStreaming.createPageStreaming(diagCollector,
-            methodConfig.getPageStreaming(), method);
-    if (pageStreaming == null) {
+    Flattening flattening; 
+    if (FlatteningConfigProto.getDefaultInstance().equals(methodConfig.getFlattening())) {
+      flattening = null;
+    } else {
+      flattening = 
+          Flattening.createFlattening(diagCollector, 
+              methodConfig.getFlattening(), method);
+      if (flattening == null) {
+        error = true;
+      }
+    } 
+        
+    if (error) {
       return null;
     } else {
-      return new MethodConfig(pageStreaming);
+      return new MethodConfig(pageStreaming, flattening);
     }
   }
 
-  private MethodConfig(PageStreaming pageStreaming) {
+  private MethodConfig(PageStreaming pageStreaming, Flattening flattening) {
     this.pageStreaming = pageStreaming;
+    this.flattening = flattening;
   }
 
   /**
@@ -50,5 +71,19 @@ public class MethodConfig {
    */
   public PageStreaming getPageStreaming() {
     return pageStreaming;
+  }
+
+  /**
+   * Returns true if this method has flattening configured.
+   */
+  public boolean isFlattening() {
+    return flattening != null;
+  }
+
+  /**
+   * Returns the flattening configuration of the method.
+   */
+  public Flattening getFlattening() {
+    return flattening;
   }
 }
