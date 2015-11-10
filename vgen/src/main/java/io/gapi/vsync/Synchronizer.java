@@ -1,12 +1,11 @@
 package io.gapi.vsync;
 
+import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.api.tools.framework.tools.ToolOptions;
+import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.common.base.Throwables;
 import com.google.common.io.CharStreams;
-
-import io.gapi.fx.model.Diag;
-import io.gapi.fx.model.SimpleLocation;
-import io.gapi.fx.tools.ToolOptions;
-import io.gapi.fx.tools.ToolOptions.Option;
 
 import autovalue.shaded.com.google.common.common.base.Preconditions;
 

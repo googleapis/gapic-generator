@@ -1,5 +1,16 @@
 package io.gapi.vgen.java;
 
+import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
+import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.ProtoElement;
+import com.google.api.tools.framework.model.ProtoFile;
+import com.google.api.tools.framework.model.TypeRef;
+import com.google.api.tools.framework.model.TypeRef.Cardinality;
+import com.google.api.tools.framework.snippet.Doc;
+import com.google.api.tools.framework.snippet.SnippetSet;
+import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
@@ -10,17 +21,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.io.Files;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-import io.gapi.fx.aspects.documentation.model.DocumentationUtil;
-import io.gapi.fx.model.Field;
-import io.gapi.fx.model.Interface;
-import io.gapi.fx.model.Model;
-import io.gapi.fx.model.ProtoElement;
-import io.gapi.fx.model.ProtoFile;
-import io.gapi.fx.model.TypeRef;
-import io.gapi.fx.model.TypeRef.Cardinality;
-import io.gapi.fx.snippet.Doc;
-import io.gapi.fx.snippet.SnippetSet;
-import io.gapi.fx.tools.ToolUtil;
 import io.gapi.vgen.ApiConfig;
 import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.LanguageProvider;

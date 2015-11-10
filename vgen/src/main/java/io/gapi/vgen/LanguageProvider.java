@@ -1,12 +1,11 @@
 package io.gapi.vgen;
 
+import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.Model;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
-
-import io.gapi.fx.model.Interface;
-import io.gapi.fx.model.Method;
-import io.gapi.fx.model.Model;
 
 import java.io.IOException;
 

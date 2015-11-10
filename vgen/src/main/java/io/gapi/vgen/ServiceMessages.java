@@ -1,8 +1,8 @@
 package io.gapi.vgen;
 
-import io.gapi.fx.model.Field;
-import io.gapi.fx.model.MessageType;
-import io.gapi.fx.model.TypeRef;
+import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.MessageType;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.protobuf.Empty;
 
 import java.util.ArrayList;

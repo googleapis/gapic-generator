@@ -1,13 +1,15 @@
 package io.gapi.vgen;
 
+import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.truth.Truth;
 import com.google.protobuf.Message;
 
-import io.gapi.fx.model.Diag;
-import io.gapi.fx.model.DiagCollector;
-import io.gapi.fx.model.Interface;
-import io.gapi.fx.testing.ApiConfigBaselineTestCase;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,14 +18,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 /**
  * Base class for code generator baseline tests.
  */
 @RunWith(Parameterized.class)
-public abstract class CodeGeneratorTestBase extends ApiConfigBaselineTestCase {
+public abstract class CodeGeneratorTestBase extends ConfigBaselineTestCase {
 
   private static final Pattern BASELINE_PATTERN = Pattern.compile("(\\w+)\\[(\\w+)\\]");
 
@@ -109,8 +108,8 @@ public abstract class CodeGeneratorTestBase extends ApiConfigBaselineTestCase {
     List<String> inputs = new ArrayList<>();
 
     for (String veneerConfigFileName : veneerConfigFileNames) {
-      URL veneerConfigUrl = testDataLocator().findTestData(veneerConfigFileName);
-      String configData = testDataLocator().readTestData(veneerConfigUrl);
+      URL veneerConfigUrl = getTestDataLocator().findTestData(veneerConfigFileName);
+      String configData = getTestDataLocator().readTestData(veneerConfigUrl);
       inputNames.add(veneerConfigFileName);
       inputs.add(configData);
     }

@@ -1,6 +1,6 @@
 package io.gapi.tools.gradle.java
 
-import io.gapi.fx.model.Diag
+import com.google.api.tools.framework.model.Diag
 
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.Project

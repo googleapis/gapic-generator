@@ -1,12 +1,12 @@
 package io.gapi.vgen;
 
-import io.gapi.fx.aspects.http.model.HttpAttribute;
-import io.gapi.fx.aspects.http.model.HttpAttribute.FieldSegment;
-import io.gapi.fx.aspects.http.model.HttpAttribute.LiteralSegment;
-import io.gapi.fx.aspects.http.model.HttpAttribute.MethodKind;
-import io.gapi.fx.aspects.http.model.HttpAttribute.PathSegment;
-import io.gapi.fx.aspects.http.model.HttpAttribute.WildcardSegment;
-import io.gapi.fx.model.Method;
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute.FieldSegment;
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute.LiteralSegment;
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute.MethodKind;
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute.PathSegment;
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute.WildcardSegment;
+import com.google.api.tools.framework.model.Method;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 

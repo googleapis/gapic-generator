@@ -1,7 +1,7 @@
 package io.gapi.vgen;
 
-import io.gapi.fx.model.DiagCollector;
-import io.gapi.fx.model.Method;
+import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.Method;
 
 import javax.annotation.Nullable;
 
