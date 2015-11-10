@@ -1,13 +1,12 @@
 package io.gapi.vgen;
 
+import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.api.tools.framework.yaml.YamlReader;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 import com.google.protobuf.Message;
-
-import io.gapi.fx.model.Diag;
-import io.gapi.fx.model.DiagCollector;
-import io.gapi.fx.model.SimpleLocation;
-import io.gapi.fx.yaml.YamlReader;
 
 import java.io.File;
 import java.io.IOException;

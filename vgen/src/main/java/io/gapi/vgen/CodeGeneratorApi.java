@@ -1,29 +1,28 @@
 package io.gapi.vgen;
 
+import com.google.api.tools.framework.aspects.context.ContextConfigAspect;
+import com.google.api.tools.framework.aspects.documentation.DocumentationConfigAspect;
+import com.google.api.tools.framework.aspects.http.HttpConfigAspect;
+import com.google.api.tools.framework.aspects.naming.NamingConfigAspect;
+import com.google.api.tools.framework.aspects.system.SystemConfigAspect;
+import com.google.api.tools.framework.aspects.versioning.VersionConfigAspect;
+import com.google.api.tools.framework.aspects.visibility.VisibilityConfigAspect;
+import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.api.tools.framework.processors.linter.Linter;
+import com.google.api.tools.framework.processors.merger.Merger;
+import com.google.api.tools.framework.processors.normalizer.Normalizer;
+import com.google.api.tools.framework.processors.resolver.Resolver;
+import com.google.api.tools.framework.tools.ToolDriverBase;
+import com.google.api.tools.framework.tools.ToolOptions;
+import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.inject.TypeLiteral;
 import com.google.protobuf.Message;
-
-import io.gapi.fx.aspects.context.ContextConfigAspect;
-import io.gapi.fx.aspects.documentation.DocumentationConfigAspect;
-import io.gapi.fx.aspects.http.HttpConfigAspect;
-import io.gapi.fx.aspects.naming.NamingConfigAspect;
-import io.gapi.fx.aspects.system.SystemConfigAspect;
-import io.gapi.fx.aspects.versioning.VersionConfigAspect;
-import io.gapi.fx.aspects.visibility.VisibilityConfigAspect;
-import io.gapi.fx.model.Diag;
-import io.gapi.fx.model.Interface;
-import io.gapi.fx.model.SimpleLocation;
-import io.gapi.fx.processors.linter.Linter;
-import io.gapi.fx.processors.merger.Merger;
-import io.gapi.fx.processors.normalizer.Normalizer;
-import io.gapi.fx.processors.resolver.Resolver;
-import io.gapi.fx.tools.ToolBase;
-import io.gapi.fx.tools.ToolOptions;
-import io.gapi.fx.tools.ToolOptions.Option;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ import java.util.Map;
 /**
  * Main class for the code generator.
  */
-public class CodeGeneratorApi extends ToolBase {
+public class CodeGeneratorApi extends ToolDriverBase {
 
   public static final Option<String> OUTPUT_FILE = ToolOptions.createOption(
       String.class,

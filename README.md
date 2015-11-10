@@ -2,8 +2,9 @@
 
 GAPI tools consist of the following sub projects:
 
-- The [GAPI framework](./fx), a set of libraries to process _API services_,
-  that is a collection of protocol buffer definitions and configuration files.
+- The [GAPI tools framework](https://gapi.git.corp.google.com/gapi-tools-framework), a set of 
+  libraries to process _API services_, that is a collection of protocol buffer definitions and 
+  configuration files.
 - The [GAPI generators and synchronizers](./vgen), which produce wrappers around GRPC apis
   which can be enriched by manually edited code.
 - The [GAPI Gradle Plugin](./gradle-plugin) which integrates GAPI development into Gradle.
@@ -11,7 +12,9 @@ GAPI tools consist of the following sub projects:
 For a usage example, see the
 [gapi-example-library-java](https://gapi.git.corp.google.com/gapi-example-library-java) repository.
 
-For instructions how to setup a development environment, see [./DEVELOPMENT.md](./DEVELOPMENT.md).
+For instructions how to setup a development environment, see [gapi-all/DEVELOPMENT.md](
+https://gapi.git.corp.google.com/gapi-all/+/master/DEVELOPMENT.md).
+
 
 # Design Notes
 

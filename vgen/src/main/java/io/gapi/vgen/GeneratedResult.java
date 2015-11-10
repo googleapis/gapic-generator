@@ -1,6 +1,6 @@
 package io.gapi.vgen;
 
-import io.gapi.fx.snippet.Doc;
+import com.google.api.tools.framework.snippet.Doc;
 import com.google.auto.value.AutoValue;
 
 /**

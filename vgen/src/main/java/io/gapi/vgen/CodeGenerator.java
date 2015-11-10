@@ -1,15 +1,14 @@
 package io.gapi.vgen;
 
+import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.api.tools.framework.model.stages.Merged;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
-
-import io.gapi.fx.model.Diag;
-import io.gapi.fx.model.Interface;
-import io.gapi.fx.model.Model;
-import io.gapi.fx.model.SimpleLocation;
-import io.gapi.fx.model.stages.Merged;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;

@@ -1,6 +1,7 @@
 package io.gapi.tools.gradle.java
 
-import io.gapi.fx.tools.ToolOptions
+import com.google.api.tools.framework.tools.ToolOptions
+
 import io.gapi.tools.gradle.java.GapiPlugin.ApiServiceConfigurator
 import io.gapi.vgen.CodeGeneratorApi
 import io.gapi.vsync.Synchronizer

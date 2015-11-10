@@ -2,10 +2,9 @@ package io.gapi.vgen;
 
 import java.util.List;
 
+import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.common.collect.Lists;
-
-import io.gapi.fx.model.Diag;
-import io.gapi.fx.model.DiagCollector;
 
 public class SimpleDiagCollector implements DiagCollector {
   private final List<Diag> diags = Lists.newArrayList();

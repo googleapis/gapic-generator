@@ -1,11 +1,11 @@
 package io.gapi.vgen;
 
-import io.gapi.fx.model.Diag;
-import io.gapi.fx.model.DiagCollector;
-import io.gapi.fx.model.Interface;
-import io.gapi.fx.model.Method;
-import io.gapi.fx.model.Model;
-import io.gapi.fx.model.SimpleLocation;
+import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.SimpleLocation;
 
 import java.util.HashMap;
 import java.util.Map;
