@@ -103,7 +103,7 @@ public class PythonLanguageProvider extends LanguageProvider {
 
     public String importString() {
       return (Strings.isNullOrEmpty(moduleName()) ? "" : "from " + moduleName() + " ") + "import "
-          + attributeName() + (Strings.isNullOrEmpty(localName()) ? "" : "as " + localName());
+          + attributeName() + (Strings.isNullOrEmpty(localName()) ? "" : " as " + localName());
     }
   }
 
@@ -272,8 +272,9 @@ public class PythonLanguageProvider extends LanguageProvider {
     imports.clear();
 
     // Add non-service-specific imports.
-    imports.put("grpc.beta.implementations", PythonImport.create("grpc.beta", "implementations"));
-    imports.put("oauth2client.client", PythonImport.create("oauth2client", "client", "auth_client"));
+    imports.put("api_callable", PythonImport.create("api_callable"));
+    imports.put("api_utils", PythonImport.create("api_utils"));
+    imports.put("page_descriptor", PythonImport.create("page_descriptor"));
 
     // Add service-specific imports.
     imports.put(
@@ -290,4 +291,3 @@ public class PythonLanguageProvider extends LanguageProvider {
     return result;
   }
 }
-

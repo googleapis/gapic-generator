@@ -11,8 +11,6 @@
 @end
 
 @snippet generateBody(service)
-  {@authSection(service)}
-
   {@serviceClass(service)}
 @end
 
@@ -53,7 +51,33 @@
   @end
 @end
 
-@private authSection(service)
+# TODO(jgeiger): module name should be lower_with_under, class name UpperCamel
+@private serviceClass(service)
+  class {@context.getVeneerName(service)}(object):
+    {@comments(service)}
+  
+    {@constantSection(service)}
+
+    {@initMethodSection(service)}
+
+    {@genericMethodsSection()}
+
+    {@propertySection()}
+
+    {@pageDescriptorSection(service)}
+
+    {@serviceMethodsSection(service)}
+
+    {@manualMethodsSection()}
+@end
+
+@private constantSection(service)
+  @# The default address of the logging service.
+  _SERVICE_ADDRESS = "{@context.getServiceAddress(service)}"
+
+  @# The default port of the logging service.
+  _DEFAULT_SERVICE_PORT = {@context.getServicePort()}
+  
   @# The scopes needed to make gRPC calls to all of the methods defined in
   @# this service
   _ALL_SCOPES = [
@@ -63,65 +87,21 @@
       @end
     @end
   ]
-
-  def _oauth_access_token():
-    google_creds = auth_client.GoogleCredentials.get_application_default()
-    scoped_creds = google_creds.create_scoped(_ALL_SCOPES)
-    return scoped_creds.get_access_token().access_token
-@end
-
-@private serviceClass(service)
-  {@comments(service)}
-  class {@context.getVeneerName(service)}(object):
-    {@constantSection(service)}
-
-    {@initMethodSection(service)}
-
-    {@genericMethodsSection()}
-
-    {@propertySection()}
-
-    {@serviceMethodsSection(service)}
-
-    {@manualMethodsSection()}
-@end
-
-@private constantSection(service)
-  @# The default address of the logging service.
-  SERVICE_ADDRESS = "{@context.getServiceAddress(service)}"
-
-  @# The default port of the logging service.
-  DEFAULT_SERVICE_PORT = {@context.getServicePort()}
-
-  @# The location of the root certificates
-  PROD_ROOTS = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                            '..','roots.pem')
 @end
 
 @private initMethodSection(service)
-  def __init__(self,
-      service_path=SERVICE_ADDRESS,
-      port=DEFAULT_SERVICE_PORT,
-      is_idempotent_retrying=True,
-      ssl_creds=None,
-      channel=None,
-      timeout=30):
+  def __init__(
+      self, service_path=_SERVICE_ADDRESS, port=_DEFAULT_SERVICE_PORT,
+      channel=None, ssl_creds=None, scopes=_ALL_SCOPES,
+      is_idempotent_retrying=True, max_attempts=3, timeout=30):
 
-    if not channel:
-      if not ssl_creds:
-        with open(self.PROD_ROOTS, mode='rb') as prod_roots_file:
-          root_certificates = prod_roots_file.read()
-        ssl_creds = implementations.ssl_client_credentials(root_certificates,
-                                                           None, None)
-      channel = implementations.secure_channel(self.SERVICE_ADDRESS,
-                                               self.DEFAULT_SERVICE_PORT,
-                                               ssl_creds)
-    self.metadata_transformer = lambda x : [('Authorization',
-                                             'Bearer %s'% _oauth_access_token())]
-    self.timeout = timeout
-    self.stub = {@context.getServicePbFileName(service)}.beta_create_{@service.getSimpleName()}_stub(
-      channel, metadata_transformer=self.metadata_transformer)
-    print "call __init__()"
+    self.defaults = api_callable.ApiCallableDefaults(
+      timeout=timeout, max_attempts=max_attempts,
+      is_idempotent_retrying=is_idempotent_retrying)
+
+    self.stub = api_utils.create_stub(
+      logging_pb2.beta_create_LoggingService_stub, service_path, port,
+      ssl_creds=ssl_creds, channel=channel, scopes=scopes)
 @end
 
 @private propertySection()
@@ -129,6 +109,23 @@
   @@property
   def channel(self):
     return self.channel
+@end
+
+@private pageDescriptorName(method)
+  _{@context.upperCamelToUpperUnderscore(method.getSimpleName())}_DESCRIPTOR
+@end
+
+@private pageDescriptorSection(service)
+  @# Page descriptors
+  @join method : context.messages.filterPageStreamingMethods(context.getApiConfig, service.getMethods)
+    @let pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming(), \
+         requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
+         responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
+         resources = pageStreaming.getResourcesField().getSimpleName()
+      {@pageDescriptorName(method)} = page_descriptor.PageDescriptor(
+          '{@requestToken}', '{@responseToken}', '{@resources}')
+    @end
+  @end
 @end
 
 @private comments(element)
@@ -139,11 +136,9 @@
 
 @private genericMethodsSection()
   def __enter__(self):
-    print "call __enter__()"
     return self
 
   def __exit__(self, type, value, traceback):
-    print "call __exit__()"
     self.close()
 
   def close(self):
@@ -162,18 +157,19 @@
 @private flattenedMethod(method)
   @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
        requestObjName = context.upperCamelToLowerUnderscore(method.getInputMessage().getSimpleName()), \
-       serviceStub = context.getServicePbFileName(method.getParent), \
+       servicePkg = context.getServicePbFileName(method.getParent), \
        inputTypeName = method.getInputMessage().getSimpleName(), \
-       flattendPrams = context.messages.flattenedFields(method.getInputType())
-    @if flattendPrams
-      def {@methodName}(self, {@parametersWithDefaultValues(flattendPrams)}, **kwargs):
+       flattendParams = context.messages.flattenedFields(method.getInputType())
+    @if flattendParams
+      def {@methodName}(self, {@parametersWithDefaultValues(flattendParams)}, **kwargs):
         {@comments(method)}
-        {@requestObjName} = {@serviceStub}.{@inputTypeName}({@namedParameters(flattendPrams)}, **kwargs)
+        {@requestObjName} = {@servicePkg}.{@inputTypeName}(
+            {@namedParameters(flattendParams)}, **kwargs)
         return self.{@methodName}_callable()({@requestObjName})
     @else
       def {@methodName}(self, **kwargs):
         {@comments(method)}
-        {@requestObjName} = {@serviceStub}.{@inputTypeName}(**kwargs)
+        {@requestObjName} = {@servicePkg}.{@inputTypeName}(**kwargs)
         return self.{@methodName}_callable()({@requestObjName})
     @end
   @end
@@ -182,27 +178,37 @@
 @private callableMethod(method)
   @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
        requestObjName = context.upperCamelToLowerUnderscore(method.getInputMessage().getSimpleName()), \
-       isPageStreamingRequest = context.messages.isPageStreamingRequest(method.getOutputType(), method.getInputType())
-  def {@methodName}_callable(self, is_idempotent_retrying=True, max_attempts=None,
-                             is_page_streaming={@isPageStreamingRequest}):
-    return callable.Callable(self.stub.{@method.getSimpleName()}, self.timeout,
-                             is_page_streaming=is_page_streaming,
-                             is_idempotent_retrying=is_idempotent_retrying,
-                             max_attempts=self.max_attempts
-                                 if max_attempts is None else max_attempts)
+       isPageStreamingRequest = context.getApiConfig.getMethodConfig(method).isPageStreaming()
+    @if {@isPageStreamingRequest}
+      def {@methodName}_callable(
+          self, is_retrying=None, max_attempts=None,
+          page_streaming={@pageDescriptorName(method)}):
+        return api_callable.idempotent_callable(
+            self.stub.{@method.getSimpleName()},
+            page_streaming=page_streaming,
+    @else
+      def {@methodName}_callable(
+          self, is_retrying=None, max_attempts=None):
+        return api_callable.idempotent_callable(
+            self.stub.{@method.getSimpleName()},
+    @end
+
+          is_retrying=is_retrying,
+          max_attempts=max_attempts,
+          defaults=self.defaults)
   @end
 @end
 
-@private parametersWithDefaultValues(flattendPrams)
-  @join field : flattendPrams on ", "
+@private parametersWithDefaultValues(flattendParams)
+  @join field : flattendParams on ", "
     @let paramName = field.getSimpleName()
       {@paramName}={@context.defaultValue(field)}
     @end
   @end
 @end
 
-@private namedParameters(flattendPrams)
-  @join field : flattendPrams on ", "
+@private namedParameters(flattendParams)
+  @join field : flattendParams on ", "
     @let paramName = field.getSimpleName()
       {@paramName}={@paramName}
     @end

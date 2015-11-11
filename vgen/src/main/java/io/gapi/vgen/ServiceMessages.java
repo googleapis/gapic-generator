@@ -2,8 +2,11 @@ package io.gapi.vgen;
 
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.MessageType;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.protobuf.Empty;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,32 +25,17 @@ public class ServiceMessages {
   }
 
   /**
-   * Returns true if the request is a page streaming one (with fields like page_size and
-   * page_token)
+   * Inputs a list of methods and returns only those which are page streaming
    */
-  // TODO (garrettjones) consolidate logic with ProtoPageDescriptor
-  public boolean isPageStreamingRequest(TypeRef returnType, TypeRef requestType) {
-    if (!requestType.isMessage()) {
-      return false;
-    }
-    MessageType requestMessageType = requestType.getMessageType();
-    Field pageTokenField = requestMessageType.lookupField("page_token");
-    if (pageTokenField == null) {
-      return false;
-    }
-    if (!returnType.isMessage()) {
-      return false;
-    }
-    MessageType returnMessageType = returnType.getMessageType();
-    Field nextPageTokenField = returnMessageType.lookupField("next_page_token");
-    if (nextPageTokenField == null) {
-      return false;
-    }
-    TypeRef elementType = pageStreamingElementTypeRefIfExists(returnType);
-    if (elementType == null) {
-      return false;
-    }
-    return true;
+  public Iterable<Method> filterPageStreamingMethods(ApiConfig config, List<Method> methods) {
+    Predicate<Method> isPageStreaming = new Predicate<Method>() {
+      @Override
+      public boolean apply(Method method) {
+        return config.getMethodConfig(method).isPageStreaming();
+      }
+    };
+
+    return Iterables.filter(methods, isPageStreaming);
   }
 
   /**
