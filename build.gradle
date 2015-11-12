@@ -4,14 +4,15 @@
 buildscript {
   repositories {
     mavenLocal()
+    maven {
+      // For 0.7.2-SNAPSHOT of protobuf gradle plugin. This should be removed once
+      // this version is releaed.
+      url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
     mavenCentral()
   }
   dependencies {
-    // Depend on local snapshot for protobuf gradle plugin. This needs
-    // to be currently cloned from https://github.com/wrwg/protobuf-gradle-plugin,
-    // until https://github.com/google/protobuf-gradle-plugin/pull/45 made it
-    // through.
-    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.1-SNAPSHOT'
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.2-SNAPSHOT'
   }
 }
 
@@ -55,12 +56,18 @@ subprojects {
       // Protobuf
       protobuf: 'com.google.protobuf:protobuf-java:3.0.0-beta-1',
       protoc:  'com.google.protobuf:protoc:3.0.0-beta-1',
+      protobufGradlePlugin: 'com.google.protobuf:protobuf-gradle-plugin:0.7.2-SNAPSHOT'
     ]
   }
 
   repositories {
-    mavenLocal()
     mavenCentral()
+    maven {
+      // For 0.7.2-SNAPSHOT of protobuf gradle plugin. This should be removed once
+      // this version is releaed.
+      url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+    mavenLocal()
   }
 
   dependencies {
@@ -87,6 +94,14 @@ subprojects {
   }
   artifacts {
     archives sourcesJar
+  }
+
+  // Test Logging
+  // ============
+  test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
   }
 
   // Eclipse Annotation Processing

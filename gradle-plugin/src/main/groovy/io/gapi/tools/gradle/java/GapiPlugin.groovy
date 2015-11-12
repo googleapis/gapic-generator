@@ -80,6 +80,11 @@ class GapiPlugin implements Plugin<Project> {
           }
         }
       }
+
+      // Extend clean task to remove generated proto files
+      project.tasks.maybeCreate('clean') << {
+        new File(generatedSrcDir).deleteDir()
+      }
     }
   }
 
