@@ -2,8 +2,11 @@ package io.gapi.vgen.py;
 
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
+import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.MessageType;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
@@ -207,13 +210,13 @@ public class PythonLanguageProvider extends LanguageProvider {
   }
 
   /**
-   * Return name of service pb file name of the given service.
+   * Return name of protobuf file for the given ProtoElement.
    */
-  public String getServicePbFileName(Interface service) {
+  public String getPbFileName(ProtoElement element) {
     // FileDescriptorProto.name returns file name, relative to root of the source tree. Return the
     // last segment of the file name without proto extension appended by "_pb2".
-    String filename = service.getFile().getProto().getName().substring(
-        service.getFile().getProto().getName().lastIndexOf("/") + 1);
+    String filename = element.getFile().getProto().getName().substring(
+        element.getFile().getProto().getName().lastIndexOf("/") + 1);
     return filename.substring(0, filename.length() - ".proto".length()) + "_pb2";
   }
 
@@ -229,17 +232,39 @@ public class PythonLanguageProvider extends LanguageProvider {
 
     switch (type.getKind()) {
       case TYPE_MESSAGE:
-        return "None";
+        String msgPath = prefixInFile(type.getMessageType());
+        msgPath = Strings.isNullOrEmpty(msgPath) ? "" : msgPath + ".";
+        return getPbFileName(type.getMessageType().getFile()) + "." + msgPath
+            + type.getMessageType().getSimpleName() + "()";
       case TYPE_ENUM:
         Preconditions.checkArgument(type.getEnumType().getValues().size() > 0);
-        return type.getEnumType().getSimpleName() + "."
-            + type.getEnumType().getValues().get(0).getSimpleName();
+        String enumPath = prefixInFile(type.getEnumType());
+        enumPath = Strings.isNullOrEmpty(enumPath) ? "" : enumPath + ".";
+        return getPbFileName(type.getEnumType().getFile()) + "."
+            + enumPath + type.getEnumType().getValues().get(0).getSimpleName();
       default:
         if (type.isPrimitive()) {
           return DEFAULT_VALUE_MAP.get(type.getKind());
         }
         throw new IllegalArgumentException("unknown type kind: " + type.getKind());
     }
+  }
+
+  /**
+   * The dot-separated nested messages that contain an element in a Proto file.
+   * Returns null if the element is top-level or a proto file itself.
+   */
+  public String prefixInFile(ProtoElement elt) {
+    ProtoElement parent = elt.getParent();
+    // elt is a proto file itself, or elt is top-level
+    if (parent == null || parent.getParent() == null) {
+      return null;
+    }
+    String prefix = parent.getSimpleName();
+    for (parent = parent.getParent(); parent.getParent() != null; parent = parent.getParent()) {
+      prefix = parent.getSimpleName() + "." + prefix;
+    }
+    return prefix;
   }
 
   /*
@@ -272,15 +297,32 @@ public class PythonLanguageProvider extends LanguageProvider {
     imports.clear();
 
     // Add non-service-specific imports.
-    imports.put("api_callable", PythonImport.create("api_callable"));
-    imports.put("api_utils", PythonImport.create("api_utils"));
-    imports.put("page_descriptor", PythonImport.create("page_descriptor"));
+    imports.put("api_callable", PythonImport.create("google.gax", "api_callable"));
+    imports.put("api_utils", PythonImport.create("google.gax", "api_utils"));
+    imports.put("page_descriptor", PythonImport.create("google.gax", "page_descriptor"));
 
     // Add service-specific imports.
     imports.put(
         service.getFile().getProto().getName(),
         PythonImport.create(service.getFile().getProto().getPackage(), // package name
-            getServicePbFileName(service)));
+            getPbFileName(service)));
+
+    // Add method request-type imports
+    // There may be duplication, so we use forcePut
+    for (Method method : service.getMethods()) {
+      imports.forcePut(
+          method.getInputMessage().getFile().getProto().getName(),
+          PythonImport.create(method.getFile().getProto().getPackage(), // package name
+              getPbFileName(method.getInputMessage())));
+      for (Field field : method.getInputType().getMessageType().getFields()) {
+        if (field.getType().getKind() == Type.TYPE_MESSAGE) {
+          MessageType messageType = field.getType().getMessageType();
+          imports.forcePut(messageType.getProto().getName(),
+                PythonImport.create(messageType.getFile().getProto().getPackage(),
+                     getPbFileName(messageType)));
+        }
+      }
+    }
 
     // Generate a sorted list with import strings.
     List<String> result = new ArrayList<>();
