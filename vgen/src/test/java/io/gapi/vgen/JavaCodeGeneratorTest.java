@@ -27,8 +27,11 @@ public class JavaCodeGeneratorTest extends CodeGeneratorTestBase {
   public static List<Object[]> testedConfigs() {
     return ImmutableList.of(
       new Object[] {
-          "java",
-          new String[]{"io/gapi/vgen/java/java_veneer.yaml", "library_veneer.yaml"}
+          "java", new String[]{
+              "io/gapi/vgen/java/java_veneer.yaml",
+              "library_veneer.yaml",
+              "java_library_veneer.yaml"
+          }
       });
   }
 
@@ -40,5 +43,3 @@ public class JavaCodeGeneratorTest extends CodeGeneratorTestBase {
     test("library");
   }
 }
-
-

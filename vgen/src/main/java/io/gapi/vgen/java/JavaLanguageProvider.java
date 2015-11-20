@@ -33,7 +33,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Language provider for Java codegen.
@@ -73,7 +72,7 @@ public class JavaLanguageProvider extends LanguageProvider {
   /**
    * A regexp to match types from java.lang. Assumes well-formed qualified type names.
    */
-  private static final Pattern JAVA_LANG_TYPE_REGEX = Pattern.compile("java[.]lang[.][^.]+");
+  private static final String JAVA_LANG_TYPE_PREFIX = "java.lang.";
 
   /**
    * A map from primitive types in proto to Java counterparts.
@@ -169,11 +168,9 @@ public class JavaLanguageProvider extends LanguageProvider {
 
     // Clean up the imports.
     List<String> cleanedImports = new ArrayList<>();
-    Pattern defaultPackageTypeRegex = Pattern.compile(
-        Pattern.quote(getJavaPackage(service.getFile()) + ".") + "[^.]+");
+    String defaultPackagePrefix = getApiConfig().getPackageName() + ".";
     for (String imported : imports.keySet()) {
-      if (defaultPackageTypeRegex.matcher(imported).matches()
-          || JAVA_LANG_TYPE_REGEX.matcher(imported).matches()) {
+      if (imported.startsWith(JAVA_LANG_TYPE_PREFIX) || imported.startsWith(defaultPackagePrefix)) {
         // Imported type is in package or in java.lang, can be be ignored.
         continue;
       }
@@ -228,7 +225,9 @@ public class JavaLanguageProvider extends LanguageProvider {
    * Gets the name of the class which is the grpc container for this service interface.
    */
   public String getGrpcName(Interface service) {
-    return service.getSimpleName() + "Grpc";
+    String fullName = String.format("%s.%sGrpc",
+        getJavaPackage(service.getFile()), service.getSimpleName());
+    return getTypeName(fullName);
   }
 
   /**
@@ -343,7 +342,7 @@ public class JavaLanguageProvider extends LanguageProvider {
       return imports.get(fullName);
     }
     if (imports.containsValue(shortName)
-        || !JAVA_LANG_TYPE_REGEX.matcher(fullName).matches() && isImplicitImport(shortName)) {
+        || !fullName.startsWith(JAVA_LANG_TYPE_PREFIX) && isImplicitImport(shortName)) {
       // Short name clashes, use long name.
       return fullName;
     }

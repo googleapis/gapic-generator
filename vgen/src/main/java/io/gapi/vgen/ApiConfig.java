@@ -18,6 +18,7 @@ import javax.annotation.Nullable;
  */
 public class ApiConfig {
   private final Map<String, MethodConfig> methodConfigMap;
+  private final String packageName;
 
   /**
    * Creates an instance of ApiConfig based on ConfigProto, linking up
@@ -42,7 +43,7 @@ public class ApiConfig {
     if (methodConfigMap == null) {
       return null;
     } else {
-      return new ApiConfig(methodConfigMap);
+      return new ApiConfig(methodConfigMap, configProto.getPackageName());
     }
   }
 
@@ -73,8 +74,9 @@ public class ApiConfig {
     }
   }
 
-  private ApiConfig(Map<String, MethodConfig> methodConfigMap) {
+  private ApiConfig(Map<String, MethodConfig> methodConfigMap, String packageName) {
     this.methodConfigMap = methodConfigMap;
+    this.packageName = packageName;
   }
 
   /**
@@ -87,6 +89,13 @@ public class ApiConfig {
           + method.getFullName() + "'");
     }
     return methodConfig;
+  }
+
+  /**
+   * Returns the package name.
+   */
+  public String getPackageName() {
+    return packageName;
   }
 
 }

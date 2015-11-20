@@ -1,50 +1,53 @@
 /*
- * Copyright 2015, Google Inc. All rights reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *    * Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *    * Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *    * Neither the name of Google Inc. nor the names of its
- * contributors may be used to endorse or promote products derived from
- * this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 /*
  * EDITING INSTRUCTIONS
- * This file was generated from the file library.proto,
- * and updates to that file get reflected here through a regular refresh process.
- * However, manual additions are allowed because the refresh process performs
+ * This file was generated from the file
+ * https://github.com/google/googleapis/blob/master/library.proto
+ * and updates to that file get reflected here through a refresh process.
+ * For the short term, the refresh process will only be runnable by Google engineers.
+ * Manual additions are allowed because the refresh process performs
  * a 3-way merge in order to preserve those manual additions. In order to not
  * break the refresh process, only certain types of modifications are
  * allowed.
  *
- * Allowed modifications - currently there is only one type allowed:
+ * Allowed modifications - currently these are the only types allowed:
  * 1. New methods (these should be added to the end of the class)
+ * 2. New imports
  *
  * Happy editing!
  */
-package com.google.example.library.v1;
+package com.google.gcloud.pubsub.spi;
 
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.CreateBookRequest;
+import com.google.example.library.v1.CreateShelfRequest;
+import com.google.example.library.v1.DeleteBookRequest;
+import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.GetShelfRequest;
+import com.google.example.library.v1.LibraryServiceGrpc;
+import com.google.example.library.v1.ListBooksRequest;
+import com.google.example.library.v1.ListBooksResponse;
+import com.google.example.library.v1.ListShelvesRequest;
+import com.google.example.library.v1.ListShelvesResponse;
+import com.google.example.library.v1.MergeShelvesRequest;
+import com.google.example.library.v1.MoveBookRequest;
+import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.SomeMessage;
+import com.google.example.library.v1.UpdateBookRequest;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
 import io.gapi.gax.grpc.ApiCallable;
@@ -52,7 +55,6 @@ import io.gapi.gax.grpc.PageDescriptor;
 import io.gapi.gax.grpc.ServiceApiSettings;
 import io.gapi.gax.internal.ApiUtils;
 import io.gapi.gax.protobuf.PathTemplate;
-import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import java.io.IOException;
 import java.util.List;
@@ -91,37 +93,37 @@ public class LibraryServiceApi implements AutoCloseable {
   public static final int DEFAULT_SERVICE_PORT = 443;
 
 
-  public static final ApiCallable<CreateShelfRequest, Shelf>
+  private static final ApiCallable<CreateShelfRequest, Shelf>
       CREATE_SHELF = ApiCallable.create(LibraryServiceGrpc.METHOD_CREATE_SHELF);
-  public static final ApiCallable<GetShelfRequest, Shelf>
+  private static final ApiCallable<GetShelfRequest, Shelf>
       GET_SHELF = ApiCallable.create(LibraryServiceGrpc.METHOD_GET_SHELF);
-  public static final ApiCallable<ListShelvesRequest, ListShelvesResponse>
+  private static final ApiCallable<ListShelvesRequest, ListShelvesResponse>
       LIST_SHELVES = ApiCallable.create(LibraryServiceGrpc.METHOD_LIST_SHELVES);
-  public static final ApiCallable<DeleteShelfRequest, Empty>
+  private static final ApiCallable<DeleteShelfRequest, Empty>
       DELETE_SHELF = ApiCallable.create(LibraryServiceGrpc.METHOD_DELETE_SHELF);
-  public static final ApiCallable<MergeShelvesRequest, Shelf>
+  private static final ApiCallable<MergeShelvesRequest, Shelf>
       MERGE_SHELVES = ApiCallable.create(LibraryServiceGrpc.METHOD_MERGE_SHELVES);
-  public static final ApiCallable<CreateBookRequest, Book>
+  private static final ApiCallable<CreateBookRequest, Book>
       CREATE_BOOK = ApiCallable.create(LibraryServiceGrpc.METHOD_CREATE_BOOK);
-  public static final ApiCallable<GetBookRequest, Book>
+  private static final ApiCallable<GetBookRequest, Book>
       GET_BOOK = ApiCallable.create(LibraryServiceGrpc.METHOD_GET_BOOK);
-  public static final ApiCallable<ListBooksRequest, ListBooksResponse>
+  private static final ApiCallable<ListBooksRequest, ListBooksResponse>
       LIST_BOOKS = ApiCallable.create(LibraryServiceGrpc.METHOD_LIST_BOOKS);
-  public static final ApiCallable<DeleteBookRequest, Empty>
+  private static final ApiCallable<DeleteBookRequest, Empty>
       DELETE_BOOK = ApiCallable.create(LibraryServiceGrpc.METHOD_DELETE_BOOK);
-  public static final ApiCallable<UpdateBookRequest, Book>
+  private static final ApiCallable<UpdateBookRequest, Book>
       UPDATE_BOOK = ApiCallable.create(LibraryServiceGrpc.METHOD_UPDATE_BOOK);
-  public static final ApiCallable<MoveBookRequest, Book>
+  private static final ApiCallable<MoveBookRequest, Book>
       MOVE_BOOK = ApiCallable.create(LibraryServiceGrpc.METHOD_MOVE_BOOK);
-
-
 
   private static PageDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_DESC =
       new PageDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf>() {
-        @Override public Object emptyToken() {
+        @Override
+        public Object emptyToken() {
           return "";
         }
-        @Override public ListShelvesRequest injectToken(
+        @Override
+        public ListShelvesRequest injectToken(
             ListShelvesRequest payload, Object token) {
           return ListShelvesRequest
             .newBuilder(payload)
@@ -138,15 +140,14 @@ public class LibraryServiceApi implements AutoCloseable {
         }
       };
 
-
-
-
   private static PageDescriptor<ListBooksRequest, ListBooksResponse, Book> LIST_BOOKS_PAGE_DESC =
       new PageDescriptor<ListBooksRequest, ListBooksResponse, Book>() {
-        @Override public Object emptyToken() {
+        @Override
+        public Object emptyToken() {
           return "";
         }
-        @Override public ListBooksRequest injectToken(
+        @Override
+        public ListBooksRequest injectToken(
             ListBooksRequest payload, Object token) {
           return ListBooksRequest
             .newBuilder(payload)
@@ -163,14 +164,20 @@ public class LibraryServiceApi implements AutoCloseable {
         }
       };
 
-
-
   private static String ALL_SCOPES[] = {
   };
 
-  public static final PathTemplate NAME_PATH_TEMPLATE =
+  /**
+   * A PathTemplate representing the fully-qualified path to represent
+   * a name resource.
+   */
+  private static final PathTemplate NAME_PATH_TEMPLATE =
       PathTemplate.create("/shelves/{shelf}");
-  public static final PathTemplate NAME_PATH_TEMPLATE =
+  /**
+   * A PathTemplate representing the fully-qualified path to represent
+   * a name resource.
+   */
+  private static final PathTemplate NAME_PATH_TEMPLATE =
       PathTemplate.create("/shelves/{shelf}/books/{book}");
 
   // ========
@@ -199,7 +206,11 @@ public class LibraryServiceApi implements AutoCloseable {
     return new LibraryServiceApi(settings);
   }
 
-  private LibraryServiceApi(ServiceApiSettings settings) throws IOException {
+  /**
+   * Constructs an instance of PublisherApi, using the given settings. This is protected so that it
+   * easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   */
+  protected LibraryServiceApi(ServiceApiSettings settings) throws IOException {
     ServiceApiSettings internalSettings = ApiUtils.populateSettings(settings,
         SERVICE_ADDRESS, DEFAULT_SERVICE_PORT, ALL_SCOPES);
     this.settings = internalSettings;
@@ -210,23 +221,47 @@ public class LibraryServiceApi implements AutoCloseable {
   // Resource Name Helper Functions
   // ==============================
 
-  public static final String createName(String shelf) {
+  /**
+   * Creates a string containing the fully-qualified path to represent
+   * a name resource.
+   */
+  public static final String createNamePath(String shelf) {
     return NAME_PATH_TEMPLATE.instantiate(
         "shelf", shelf);
   }
 
-  public static final String createName(String shelf, String book) {
+  /**
+   * Creates a string containing the fully-qualified path to represent
+   * a name resource.
+   */
+  public static final String createNamePath(String shelf, String book) {
     return NAME_PATH_TEMPLATE.instantiate(
         "shelf", shelf,"book", book);
   }
 
 
-  // ========
-  // Getters
-  // ========
+  /**
+   * Extracts the shelf from the given fully-qualified path which
+   * represents a name resource.
+   */
+  public static final String extractShelfFromNamePath(String namePath) {
+    return NAME_PATH_TEMPLATE.parse(namePath).get("shelf");
+  }
 
-  public Channel getChannel() {
-    return channel;
+  /**
+   * Extracts the shelf from the given fully-qualified path which
+   * represents a name resource.
+   */
+  public static final String extractShelfFromNamePath(String namePath) {
+    return NAME_PATH_TEMPLATE.parse(namePath).get("shelf");
+  }
+
+  /**
+   * Extracts the book from the given fully-qualified path which
+   * represents a name resource.
+   */
+  public static final String extractBookFromNamePath(String namePath) {
+    return NAME_PATH_TEMPLATE.parse(namePath).get("book");
   }
 
 
@@ -247,6 +282,7 @@ public class LibraryServiceApi implements AutoCloseable {
         CreateShelfRequest.newBuilder()
         .setShelf(shelf)
         .build();
+
     return createShelf(request);
   }
 
@@ -281,6 +317,7 @@ public class LibraryServiceApi implements AutoCloseable {
         GetShelfRequest.newBuilder()
         .setName(name)
         .build();
+
     return getShelf(request);
   }
 
@@ -297,6 +334,7 @@ public class LibraryServiceApi implements AutoCloseable {
         .setName(name)
         .setMessage(message)
         .build();
+
     return getShelf(request);
   }
 
@@ -315,6 +353,7 @@ public class LibraryServiceApi implements AutoCloseable {
         .setMessage(message)
         .setStringBuilder(stringBuilder)
         .build();
+
     return getShelf(request);
   }
 
@@ -390,6 +429,7 @@ public class LibraryServiceApi implements AutoCloseable {
         DeleteShelfRequest.newBuilder()
         .setName(name)
         .build();
+
     deleteShelf(request);
   }
 
@@ -428,6 +468,7 @@ public class LibraryServiceApi implements AutoCloseable {
         .setName(name)
         .setOtherShelfName(otherShelfName)
         .build();
+
     return mergeShelves(request);
   }
 
@@ -468,6 +509,7 @@ public class LibraryServiceApi implements AutoCloseable {
         .setName(name)
         .setBook(book)
         .build();
+
     return createBook(request);
   }
 
@@ -502,6 +544,7 @@ public class LibraryServiceApi implements AutoCloseable {
         GetBookRequest.newBuilder()
         .setName(name)
         .build();
+
     return getBook(request);
   }
 
@@ -577,6 +620,7 @@ public class LibraryServiceApi implements AutoCloseable {
         DeleteBookRequest.newBuilder()
         .setName(name)
         .build();
+
     deleteBook(request);
   }
 
@@ -613,6 +657,7 @@ public class LibraryServiceApi implements AutoCloseable {
         .setName(name)
         .setBook(book)
         .build();
+
     return updateBook(request);
   }
 
@@ -631,6 +676,7 @@ public class LibraryServiceApi implements AutoCloseable {
         .setBook(book)
         .setUpdateMask(updateMask)
         .build();
+
     return updateBook(request);
   }
 
@@ -667,6 +713,7 @@ public class LibraryServiceApi implements AutoCloseable {
         .setName(name)
         .setOtherShelfName(otherShelfName)
         .build();
+
     return moveBook(request);
   }
 
@@ -697,7 +744,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * Initiates an orderly shutdown in which preexisting calls continue but new calls are immediately
    * cancelled.
    */
-  @Override public void close() {
+  @Override
+  public void close() {
     // Manually-added shutdown code
 
     // Auto-generated shutdown code
