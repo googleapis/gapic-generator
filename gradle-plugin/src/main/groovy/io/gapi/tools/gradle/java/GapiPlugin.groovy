@@ -25,7 +25,7 @@ class GapiPlugin implements Plugin<Project> {
   void apply(final Project project) {
     this.project = project
     this.config = new GapiConfigurator()
-    this.generatedSrcDir = "${project.projectDir}/src/generated"
+    this.generatedSrcDir = "${project.projectDir}/generated/src"
 
     // Install root configurator.
     project.convention.plugins.gapi = new GapiConvention(gapi: config)
