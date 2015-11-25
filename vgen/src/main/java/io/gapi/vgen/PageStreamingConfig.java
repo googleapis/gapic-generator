@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 /**
  * PageStreaming represents the page streaming configuration for a method.
  */
-public class PageStreaming {
+public class PageStreamingConfig {
   private final Field requestTokenField;
   private final Field responseTokenField;
   private final Field resourcesField;
@@ -22,7 +22,7 @@ public class PageStreaming {
    * are reported to the diag collector.
 
    */
-  @Nullable public static PageStreaming createPageStreaming(DiagCollector diagCollector,
+  @Nullable public static PageStreamingConfig createPageStreaming(DiagCollector diagCollector,
       PageStreamingConfigProto pageStreaming, Method method) {
     String requestTokenFieldName = pageStreaming.getRequest().getTokenField();
     Field requestTokenField =
@@ -57,10 +57,10 @@ public class PageStreaming {
     if (requestTokenField == null || responseTokenField == null || resourcesField == null) {
       return null;
     }
-    return new PageStreaming(requestTokenField, responseTokenField, resourcesField);
+    return new PageStreamingConfig(requestTokenField, responseTokenField, resourcesField);
   }
 
-  private PageStreaming(Field requestTokenField, Field responseTokenField,
+  private PageStreamingConfig(Field requestTokenField, Field responseTokenField,
       Field resourcesField) {
     this.requestTokenField = requestTokenField;
     this.responseTokenField = responseTokenField;
