@@ -140,7 +140,7 @@ public class JavaLanguageProvider extends LanguageProvider {
     for (Map.Entry<Interface, GeneratedResult> serviceEntry : services.entries()) {
       Interface service = serviceEntry.getKey();
       GeneratedResult generatedResult = serviceEntry.getValue();
-      String path = getJavaPackage(service.getFile()).replace('.', '/');
+      String path = getApiConfig().getPackageName().replace('.', '/');
       files.put(path + "/" + generatedResult.getFilename(), generatedResult.getDoc());
     }
     if (archive) {
