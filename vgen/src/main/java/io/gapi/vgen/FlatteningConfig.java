@@ -12,14 +12,14 @@ import javax.annotation.Nullable;
 /**
  * Flattening represents the flattening configuration for a method.
  */
-public class Flattening {
+public class FlatteningConfig {
   private final ImmutableList<ImmutableList<Field>> flatteningGroups;
 
   /**
    * Creates an instance of Flattening based on FlatteningConfigProto, linking it
    * up with the provided method.
    */
-  @Nullable public static Flattening createFlattening(DiagCollector diagCollector,
+  @Nullable public static FlatteningConfig createFlattening(DiagCollector diagCollector,
       FlatteningConfigProto flattening, Method method) {
     boolean missing = false;
     ImmutableList.Builder<ImmutableList<Field>> flatteningGroupsBuilder = ImmutableList.builder();
@@ -41,10 +41,10 @@ public class Flattening {
     if (missing) {
       return null;
     }
-    return new Flattening(flatteningGroupsBuilder.build());
+    return new FlatteningConfig(flatteningGroupsBuilder.build());
   }
 
-  private Flattening(ImmutableList<ImmutableList<Field>> flatteningGroups) {
+  private FlatteningConfig(ImmutableList<ImmutableList<Field>> flatteningGroups) {
     this.flatteningGroups = flatteningGroups;
   }
 

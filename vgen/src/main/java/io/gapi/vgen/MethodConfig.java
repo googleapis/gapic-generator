@@ -11,8 +11,8 @@ import javax.annotation.Nullable;
  */
 public class MethodConfig {
 
-  private final PageStreaming pageStreaming;
-  private final Flattening flattening;
+  private final PageStreamingConfig pageStreaming;
+  private final FlatteningConfig flattening;
 
   /**
    * Creates an instance of MethodConfig based on MethodConfigProto, linking it
@@ -24,23 +24,23 @@ public class MethodConfig {
 
     boolean error = false;
     
-    PageStreaming pageStreaming;
+    PageStreamingConfig pageStreaming;
     if (PageStreamingConfigProto.getDefaultInstance().equals(methodConfig.getPageStreaming())) {
       pageStreaming = null;
     } else {
-      pageStreaming = PageStreaming.createPageStreaming(diagCollector, 
+      pageStreaming = PageStreamingConfig.createPageStreaming(diagCollector, 
           methodConfig.getPageStreaming(), method);
       if (pageStreaming == null) {
         error = true;
       }
     }
 
-    Flattening flattening; 
+    FlatteningConfig flattening; 
     if (FlatteningConfigProto.getDefaultInstance().equals(methodConfig.getFlattening())) {
       flattening = null;
     } else {
       flattening = 
-          Flattening.createFlattening(diagCollector, 
+          FlatteningConfig.createFlattening(diagCollector, 
               methodConfig.getFlattening(), method);
       if (flattening == null) {
         error = true;
@@ -54,7 +54,7 @@ public class MethodConfig {
     }
   }
 
-  private MethodConfig(PageStreaming pageStreaming, Flattening flattening) {
+  private MethodConfig(PageStreamingConfig pageStreaming, FlatteningConfig flattening) {
     this.pageStreaming = pageStreaming;
     this.flattening = flattening;
   }
@@ -69,7 +69,7 @@ public class MethodConfig {
   /**
    * Returns the page streaming configuration of the method.
    */
-  public PageStreaming getPageStreaming() {
+  public PageStreamingConfig getPageStreaming() {
     return pageStreaming;
   }
 
@@ -83,7 +83,7 @@ public class MethodConfig {
   /**
    * Returns the flattening configuration of the method.
    */
-  public Flattening getFlattening() {
+  public FlatteningConfig getFlattening() {
     return flattening;
   }
 }
