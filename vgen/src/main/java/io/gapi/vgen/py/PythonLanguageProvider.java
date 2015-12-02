@@ -128,8 +128,8 @@ public class PythonLanguageProvider extends LanguageProvider {
       .put(Type.TYPE_SINT32, "0")
       .put(Type.TYPE_FIXED32, "0")
       .put(Type.TYPE_SFIXED32, "0")
-      .put(Type.TYPE_STRING, "\"\"")
-      .put(Type.TYPE_BYTES, "\"\"")
+      .put(Type.TYPE_STRING, "\'\'")
+      .put(Type.TYPE_BYTES, "\'\'")
       .build();
 
   /**
@@ -247,6 +247,23 @@ public class PythonLanguageProvider extends LanguageProvider {
           return DEFAULT_VALUE_MAP.get(type.getKind());
         }
         throw new IllegalArgumentException("unknown type kind: " + type.getKind());
+    }
+  }
+
+  /**
+   * Return whether the given field's default value is mutable in python.
+   */
+  public boolean isDefaultValueMutable(Field field) {
+    TypeRef type = field.getType();
+    if (type.getCardinality() == Cardinality.REPEATED) {
+      return true;
+    }
+    switch(type.getKind()) {
+    case TYPE_MESSAGE: // Fall-through.
+    case TYPE_ENUM:
+      return true;
+    default:
+      return false;
     }
   }
 

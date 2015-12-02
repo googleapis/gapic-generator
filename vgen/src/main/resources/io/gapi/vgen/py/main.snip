@@ -1,225 +1,259 @@
 @snippet generateFilename(service)
-  {@context.upperCamelToLowerUnderscore(context.getVeneerName(service))}.py
+    {@context.upperCamelToLowerUnderscore(context.getVeneerName(service))}.py
 @end
 
 @snippet generateClass(service, body, imports)
-  {@licenseSection(service)}
+    {@licenseSection(service)}
 
-  {@importSection(imports)}
+    {@importSection(imports)}
 
-  {@body}
+    {@body}
 @end
 
 @snippet generateBody(service)
-  {@serviceClass(service)}
+    {@serviceClass(service)}
 @end
 
 @private licenseSection(service)
-  @# Copyright 2015 Google Inc. All rights reserved.
-  @#
-  @# Licensed under the Apache License, Version 2.0 (the "License");
-  @# you may not use this file except in compliance with the License.
-  @# You may obtain a copy of the License at
-  @#
-  @#     http://www.apache.org/licenses/LICENSE-2.0
-  @#
-  @# Unless required by applicable law or agreed to in writing, software
-  @# distributed under the License is distributed on an "AS IS" BASIS,
-  @# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  @# See the License for the specific language governing permissions and
-  @# limitations under the License.
-  @#
-  @# EDITING INSTRUCTIONS
-  @# This file was generated from the file
-  @# https://github.com/google/googleapis/blob/master/{@service.getFile().getSimpleName()},
-  @# and updates to that file get reflected here through a refresh process.
-  @# For the short term, the refresh process will only be runnable by Google engineers.
-  @# Manual additions are allowed because the refresh process performs
-  @# a 3-way merge in order to preserve those manual additions. In order to not
-  @# break the refresh process, only certain types of modifications are
-  @# allowed.
-  @#
-  @# Allowed modifications:
-  @# 1. New methods (these should be added to the end of the class)
-  @#
-  @# Happy editing!
+    @# Copyright 2015 Google Inc. All rights reserved.
+    @#
+    @# Licensed under the Apache License, Version 2.0 (the "License");
+    @# you may not use this file except in compliance with the License.
+    @# You may obtain a copy of the License at
+    @#
+    @# http://www.apache.org/licenses/LICENSE-2.0
+    @#
+    @# Unless required by applicable law or agreed to in writing, software
+    @# distributed under the License is distributed on an "AS IS" BASIS,
+    @# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    @# See the License for the specific language governing permissions and
+    @# limitations under the License.
+    @#
+    @# EDITING INSTRUCTIONS
+    @# This file was generated from the file
+    @# https://github.com/google/googleapis/blob/master/{@service.getFile().getSimpleName()},
+    @# and updates to that file get reflected here through a refresh process.
+    @# For the short term, the refresh process will only be runnable by Google engineers.
+    @# Manual additions are allowed because the refresh process performs
+    @# a 3-way merge in order to preserve those manual additions. In order to not
+    @# break the refresh process, only certain types of modifications are
+    @# allowed.
+    @#
+    @# Allowed modifications:
+    @# 1. New methods (these should be added to the end of the class)
+    @#
+    @# Happy editing!
 @end
 
 @private importSection(imports)
-  @join import : imports
-    {@import}
-  @end
+    @join import : imports
+        {@import}
+    @end
 @end
 
 # TODO(jgeiger): module name should be lower_with_under, class name UpperCamel
 @private serviceClass(service)
-  class {@context.getVeneerName(service)}(object):
-    {@comments(service)}
+    class {@context.getVeneerName(service)}(object):
+        {@comments(service)}
 
-    {@constantSection(service)}
+        {@constantSection(service)}
 
-    {@initMethodSection(service)}
+        {@initMethodSection(service)}
 
-    {@genericMethodsSection()}
+        {@genericMethodsSection()}
 
-    {@propertySection()}
+        {@propertySection()}
 
-    {@pageDescriptorSection(service)}
+        {@pageDescriptorSection(service)}
 
-    {@serviceMethodsSection(service)}
+        {@serviceMethodsSection(service)}
 
-    {@manualMethodsSection()}
+        {@manualMethodsSection()}
 @end
 
 @private constantSection(service)
-  @# The default address of the logging service.
-  _SERVICE_ADDRESS = '{@context.getServiceAddress(service)}'
+    @# The default address of the logging service.
+    _SERVICE_ADDRESS = '{@context.getServiceAddress(service)}'
 
-  @# The default port of the logging service.
-  _DEFAULT_SERVICE_PORT = {@context.getServicePort()}
+    @# The default port of the logging service.
+    _DEFAULT_SERVICE_PORT = {@context.getServicePort()}
 
-  @# The scopes needed to make gRPC calls to all of the methods defined in
-  @# this service
-  _ALL_SCOPES = [
-    @let auth_scopes = context.getOauthScopes(service)
-      @join auth_scope : auth_scopes on ",".add(BREAK)
-        "{@auth_scope}"
-      @end
-    @end
-  ]
+    @# The scopes needed to make gRPC calls to all of the methods defined in
+    @# this service
+    _ALL_SCOPES = [
+        @let auth_scopes = context.getOauthScopes(service)
+            @join auth_scope : auth_scopes on ",".add(BREAK)
+                '{@auth_scope}'
+            @end
+        @end
+    ]
 @end
 
 @private initMethodSection(service)
-  @let stubModule = context.getPbFileName(service), \
-       stubService = service.getSimpleName
-    def __init__(
-        self, service_path=_SERVICE_ADDRESS, port=_DEFAULT_SERVICE_PORT,
-        channel=None, ssl_creds=None, scopes=_ALL_SCOPES,
-        is_idempotent_retrying=True, max_attempts=3, timeout=30):
+    @let stubModule = context.getPbFileName(service), \
+             stubService = service.getSimpleName
+        def __init__(
+                self,
+                service_path=_SERVICE_ADDRESS,
+                port=_DEFAULT_SERVICE_PORT,
+                channel=None,
+                ssl_creds=None,
+                scopes=_ALL_SCOPES,
+                is_idempotent_retrying=True,
+                max_attempts=3,
+                timeout=30):
+            self.defaults = api_callable.ApiCallableDefaults(
+                timeout=timeout,
+                max_attempts=max_attempts,
+                is_idempotent_retrying=is_idempotent_retrying)
 
-      self.defaults = api_callable.ApiCallableDefaults(
-        timeout=timeout, max_attempts=max_attempts,
-        is_idempotent_retrying=is_idempotent_retrying)
-  
-      self.stub = api_utils.create_stub(
-        {@stubModule}.beta_create_{@stubService}_stub, service_path, port,
-        ssl_creds=ssl_creds, channel=channel, scopes=scopes)
-  @end
+            self.stub = api_utils.create_stub(
+                {@stubModule}.beta_create_{@stubService}_stub,
+                service_path,
+                port,
+                ssl_creds=ssl_creds,
+                channel=channel,
+                scopes=scopes)
+    @end
 @end
 
 @private propertySection()
-  @# Properties
-  @@property
-  def channel(self):
-    return self.channel
+    @# Properties
+    @@property
+    def channel(self):
+        return self.channel
 @end
 
 @private pageDescriptorName(method)
-  _{@context.upperCamelToUpperUnderscore(method.getSimpleName())}_DESCRIPTOR
+    _{@context.upperCamelToUpperUnderscore(method.getSimpleName())}_DESCRIPTOR
 @end
 
 @private pageDescriptorSection(service)
-  @# Page descriptors
-  @join method : context.messages.filterPageStreamingMethods(context.getApiConfig, service.getMethods)
-    @let pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming(), \
-         requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
-         responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
-         resources = pageStreaming.getResourcesField().getSimpleName()
-      {@pageDescriptorName(method)} = page_descriptor.PageDescriptor(
-          '{@requestToken}', '{@responseToken}', '{@resources}')
+    @# Page descriptors
+    @join method : context.messages.filterPageStreamingMethods(context.getApiConfig, service.getMethods)
+        @let pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming(), \
+                 requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
+                 responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
+                 resources = pageStreaming.getResourcesField().getSimpleName()
+            {@pageDescriptorName(method)} = page_descriptor.PageDescriptor(
+                    '{@requestToken}',
+                    '{@responseToken}',
+                    '{@resources}')
+        @end
     @end
-  @end
 @end
 
 @private comments(element)
-  @join comment : context.comments(element)
-    {@comment}
-  @end
+    @join comment : context.comments(element)
+        {@comment}
+    @end
 @end
 
 @private genericMethodsSection()
-  def __enter__(self):
-    return self
+    def __enter__(self):
+        return self
 
-  def __exit__(self, type, value, traceback):
-    self.close()
+    def __exit__(self, type, value, traceback):
+        self.close()
 
-  def close(self):
-    del self.stub
+    def close(self):
+        del self.stub
 @end
 
 @private serviceMethodsSection(service)
-  @# Service calls
-  @join method : service.getMethods on BREAK.add(BREAK)
-    {@flattenedMethod(method)}
+    @# Service calls
+    @join method : service.getMethods on BREAK.add(BREAK)
+        {@flattenedMethod(method)}
 
-    {@callableMethod(method)}
-  @end
+        {@callableMethod(method)}
+    @end
 @end
 
 @private flattenedMethod(method)
-  @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
-       requestObjName = context.upperCamelToLowerUnderscore(method.getInputMessage().getSimpleName()), \
-       methodInputModule = context.getPbFileName(method.getInputMessage()), \
-       inputTypeName = method.getInputMessage().getSimpleName(), \
-       flattendParams = context.messages.flattenedFields(method.getInputType())
-    @if flattendParams
-      def {@methodName}(self, {@parametersWithDefaultValues(flattendParams)}, **kwargs):
-        {@comments(method)}
-        {@requestObjName} = {@methodInputModule}.{@inputTypeName}(
-            {@namedParameters(flattendParams)}, **kwargs)
-        return self.{@methodName}_callable()({@requestObjName})
-    @else
-      def {@methodName}(self, **kwargs):
-        {@comments(method)}
-        {@requestObjName} = {@methodInputModule}.{@inputTypeName}(**kwargs)
-        return self.{@methodName}_callable()({@requestObjName})
+    @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
+             requestObjName = context.upperCamelToLowerUnderscore(method.getInputMessage().getSimpleName()), \
+             methodInputModule = context.getPbFileName(method.getInputMessage()), \
+             inputTypeName = method.getInputMessage().getSimpleName(), \
+             flattenedParams = context.messages.flattenedFields(method.getInputType())
+        @if flattenedParams
+            def {@methodName}(
+                    self,
+                    {@parameterValues(flattenedParams)},
+                    **kwargs):
+                {@comments(method)}
+                {@defaultMutableValues(flattenedParams)}
+                {@requestObjName} = {@methodInputModule}.{@inputTypeName}(
+                        {@namedParameters(flattenedParams)},
+                        **kwargs)
+                return self.{@methodName}_callable()({@requestObjName})
+        @else
+            def {@methodName}(self, **kwargs):
+                {@comments(method)}
+                {@requestObjName} = {@methodInputModule}.{@inputTypeName}(**kwargs)
+                return self.{@methodName}_callable()({@requestObjName})
+        @end
     @end
-  @end
 @end
 
 @private callableMethod(method)
-  @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
-       requestObjName = context.upperCamelToLowerUnderscore(method.getInputMessage().getSimpleName()), \
-       isPageStreamingRequest = context.getApiConfig.getMethodConfig(method).isPageStreaming()
-    @if {@isPageStreamingRequest}
-      def {@methodName}_callable(
-          self, is_retrying=None, max_attempts=None,
-          page_streaming={@pageDescriptorName(method)}):
-        return api_callable.idempotent_callable(
-            self.stub.{@method.getSimpleName()},
-            page_streaming=page_streaming,
-    @else
-      def {@methodName}_callable(
-          self, is_retrying=None, max_attempts=None):
-        return api_callable.idempotent_callable(
-            self.stub.{@method.getSimpleName()},
-    @end
+    @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
+             requestObjName = context.upperCamelToLowerUnderscore(method.getInputMessage().getSimpleName()), \
+             isPageStreamingRequest = context.getApiConfig.getMethodConfig(method).isPageStreaming()
+        @if {@isPageStreamingRequest}
+            def {@methodName}_callable(
+                    self,
+                    is_retrying=None,
+                    max_attempts=None,
+                    page_streaming={@pageDescriptorName(method)}):
+                return api_callable.idempotent_callable(
+                        self.stub.{@method.getSimpleName()},
+                        page_streaming=page_streaming,
+        @else
+            def {@methodName}_callable(
+                    self,
+                    is_retrying=None,
+                    max_attempts=None):
+                return api_callable.idempotent_callable(
+                        self.stub.{@method.getSimpleName()},
+        @end
 
-          is_retrying=is_retrying,
-          max_attempts=max_attempts,
-          defaults=self.defaults)
-  @end
+                    is_retrying=is_retrying,
+                    max_attempts=max_attempts,
+                    defaults=self.defaults)
+    @end
 @end
 
-@private parametersWithDefaultValues(flattendParams)
-  @join field : flattendParams on ", "
-    @let paramName = field.getSimpleName()
-      {@paramName}={@context.defaultValue(field)}
+@private parameterValues(flattenedParams)
+    @join field : flattenedParams on ",".add(BREAK)
+        @let paramName = field.getSimpleName()
+            @if {@context.isDefaultValueMutable(field)}
+                {@paramName}=None
+            @else
+                {@paramName}={@context.defaultValue(field)}
+            @end
+        @end
     @end
-  @end
 @end
 
-@private namedParameters(flattendParams)
-  @join field : flattendParams on ", "
-    @let paramName = field.getSimpleName()
-      {@paramName}={@paramName}
+@private defaultMutableValues(flattenedParams)
+    @join field : flattenedParams if {@context.isDefaultValueMutable(field)} on BREAK
+        @let paramName = field.getSimpleName()
+            if {@paramName} is None:
+                {@paramName} = {@context.defaultValue(field)}
+        @end
     @end
-  @end
+@end
+
+@private namedParameters(flattenedParams)
+    @join field : flattenedParams on ",".add(BREAK)
+        @let paramName = field.getSimpleName()
+            {@paramName}={@paramName}
+        @end
+    @end
 @end
 
 @private manualMethodsSection()
-  @# ========
-  @# Manually-added methods: add custom (non-generated) methods after this point.
-  @# ========
+    @# ========
+    @# Manually-added methods: add custom (non-generated) methods after this point.
+    @# ========
 @end
