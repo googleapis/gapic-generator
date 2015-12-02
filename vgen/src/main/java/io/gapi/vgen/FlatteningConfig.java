@@ -10,13 +10,13 @@ import com.google.common.collect.ImmutableList;
 import javax.annotation.Nullable;
 
 /**
- * Flattening represents the flattening configuration for a method.
+ * FlatteningConfig represents the flattening configuration for a method.
  */
 public class FlatteningConfig {
   private final ImmutableList<ImmutableList<Field>> flatteningGroups;
 
   /**
-   * Creates an instance of Flattening based on FlatteningConfigProto, linking it
+   * Creates an instance of FlatteningConfig based on FlatteningConfigProto, linking it
    * up with the provided method.
    */
   @Nullable public static FlatteningConfig createFlattening(DiagCollector diagCollector,
