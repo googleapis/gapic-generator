@@ -31,6 +31,7 @@
    * Allowed modifications - currently these are the only types allowed:
    * 1. New methods (these should be added to the end of the class)
    * 2. New imports
+   * 3. Additional documentation between "manual edit" demarcations
    *
    * Happy editing!
    */
@@ -92,12 +93,16 @@
 @private pathAndPortConstants()
   /**
    * The default address of the service.
+   *
+  {@javaDocManualEdit()}
    */
   # TODO (garrettjones) get this data from the yaml files of the service
   public static final String SERVICE_ADDRESS = "xyz.googleapis.com";
 
   /**
    * The default port of the service.
+   *
+  {@javaDocManualEdit()}
    */
   public static final int DEFAULT_SERVICE_PORT = 443;
 
@@ -175,6 +180,8 @@
   /**
    * A PathTemplate representing the fully-qualified path to represent
    * a {@fieldSegment.getFieldPath} resource.
+   *
+  {@javaDocManualEdit()}
    */
   private static final PathTemplate {@pathTemplateConstantName(fieldSegment)} =
       PathTemplate.create("{@context.resources.templatize(fieldSegment)}");
@@ -202,6 +209,8 @@
   /**
    * Creates a string containing the fully-qualified path to represent
    * a {@fieldSegment.getFieldPath} resource.
+   *
+  {@javaDocManualEdit()}
    */
   public static final String {@createResourceFunctionName(fieldSegment)}(\
       {@createResourceFunctionParams(fieldSegment)}) {
@@ -232,6 +241,8 @@
       /**
        * Extracts the {@subField} from the given fully-qualified path which
        * represents a {@context.lowerUnderscoreToLowerCamel(fieldSegment.getFieldPath)} resource.
+       *
+      {@javaDocManualEdit()}
        */
       public static final String \
           extract{@context.lowerUnderscoreToUpperCamel(subField)}From{@resourcePath(fieldSegment)}(\
@@ -264,6 +275,8 @@
 
     /**
      * Constructs an instance of {@veneerName} with default settings.
+     *
+    {@javaDocManualEdit()}
      */
     public static {@veneerName} create() throws IOException {
       return create(new ServiceApiSettings());
@@ -272,6 +285,8 @@
     /**
      * Constructs an instance of {@veneerName}, using the given settings. The channels are created based
      * on the settings passed in, or defaults for any settings that are not set.
+     *
+    {@javaDocManualEdit()}
      */
     public static {@veneerName} create(ServiceApiSettings settings) throws IOException {
       return new {@veneerName}(settings);
@@ -280,6 +295,8 @@
     /**
      * Constructs an instance of {@veneerName}, using the given settings. This is protected so that it
      * easy to make a subclass, but otherwise, the static factory methods should be preferred.
+     *
+    {@javaDocManualEdit()}
      */
     protected {@veneerName}(ServiceApiSettings settings) throws IOException {
       ServiceApiSettings internalSettings = ApiUtils.populateSettings(settings,
@@ -340,6 +357,8 @@
   /**
    * Initiates an orderly shutdown in which preexisting calls continue but new calls are immediately
    * cancelled.
+   *
+  {@javaDocManualEdit()}
    */
   @@Override
   public void close() {
@@ -454,6 +473,8 @@
   {@javaDocStart()}
   {@javaDocLines(protoElement)}
   {@javaDocEmptyLine()}
+  {@javaDocManualEdit()}
+  {@javaDocEmptyLine()}
   {@javaDocGenericRequestParam()}
   {@javaDocEnd()}
 @end
@@ -462,6 +483,8 @@
   {@autoGenMethodWarning()}
   {@javaDocStart()}
   {@javaDocLines(method)}
+  {@javaDocEmptyLine()}
+  {@javaDocManualEdit()}
   {@javaDocEmptyLine()}
   @join field : fields vertical
     @join commentLine : context.getJavaDocLinesWithPrefix(getDoc(field), paramDocLinePrefix(field))
@@ -489,6 +512,8 @@
 @private javaDoc(protoElement)
   {@javaDocStart()}
   {@javaDocLines(protoElement)}
+  {@javaDocEmptyLine()}
+  {@javaDocManualEdit()}
   {@javaDocEnd()}
 @end
 
@@ -512,6 +537,13 @@
   @let lineBarrier = ""
     {@lineBarrier} * @@param request The request object containing all \
         of the parameters for the API call.
+  @end
+@end
+
+@private javaDocManualEdit()
+  @let lineBarrier = ""
+    {@lineBarrier} * <!-- manual edit -->
+    {@lineBarrier} * <!-- end manual edit -->
   @end
 @end
 
