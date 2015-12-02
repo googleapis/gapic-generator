@@ -9,7 +9,7 @@ import com.google.api.tools.framework.model.SimpleLocation;
 import javax.annotation.Nullable;
 
 /**
- * PageStreaming represents the page streaming configuration for a method.
+ * PageStreamingConfig represents the page streaming configuration for a method.
  */
 public class PageStreamingConfig {
   private final Field requestTokenField;
@@ -17,7 +17,7 @@ public class PageStreamingConfig {
   private final Field resourcesField;
 
   /**
-   * Creates an instance of PageStreaming based on PageStreamingConfigProto, linking it
+   * Creates an instance of PageStreamingConfig based on PageStreamingConfigProto, linking it
    * up with the provided method. On errors, null will be returned, and diagnostics
    * are reported to the diag collector.
 
