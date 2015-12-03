@@ -78,13 +78,11 @@
 
     @# The scopes needed to make gRPC calls to all of the methods defined in
     @# this service
-    _ALL_SCOPES = [
-        @let auth_scopes = context.getOauthScopes(service)
-            @join auth_scope : auth_scopes on ",".add(BREAK)
-                '{@auth_scope}'
-            @end
+    _ALL_SCOPES = (
+        @join auth_scope : context.getOauthScopes(service) on ",".add(BREAK)
+            '{@auth_scope}'
         @end
-    ]
+    )
 @end
 
 @private initMethodSection(service)
@@ -127,9 +125,9 @@
                  responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
                  resources = pageStreaming.getResourcesField().getSimpleName()
             {@pageDescriptorName(method)} = page_descriptor.PageDescriptor(
-                    '{@requestToken}',
-                    '{@responseToken}',
-                    '{@resources}')
+                '{@requestToken}',
+                '{@responseToken}',
+                '{@resources}')
         @end
     @end
 @end
@@ -144,7 +142,7 @@
     def __enter__(self):
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
 
     def close(self):
@@ -174,8 +172,8 @@
                 {@comments(method)}
                 {@defaultMutableValues(flattenedParams)}
                 {@requestObjName} = {@methodInputModule}.{@inputTypeName}(
-                        {@namedParameters(flattenedParams)},
-                        **kwargs)
+                    {@namedParameters(flattenedParams)},
+                    **kwargs)
                 return self.{@methodName}_callable()({@requestObjName})
         @else
             def {@methodName}(self, **kwargs):
@@ -197,20 +195,20 @@
                     max_attempts=None,
                     page_streaming={@pageDescriptorName(method)}):
                 return api_callable.idempotent_callable(
-                        self.stub.{@method.getSimpleName()},
-                        page_streaming=page_streaming,
+                    self.stub.{@method.getSimpleName()},
+                    page_streaming=page_streaming,
         @else
             def {@methodName}_callable(
                     self,
                     is_retrying=None,
                     max_attempts=None):
                 return api_callable.idempotent_callable(
-                        self.stub.{@method.getSimpleName()},
+                    self.stub.{@method.getSimpleName()},
         @end
 
-                    is_retrying=is_retrying,
-                    max_attempts=max_attempts,
-                    defaults=self.defaults)
+                is_retrying=is_retrying,
+                max_attempts=max_attempts,
+                defaults=self.defaults)
     @end
 @end
 
