@@ -54,8 +54,8 @@ class LibraryServiceApi(object):
 
     # The scopes needed to make gRPC calls to all of the methods defined in
     # this service
-    _ALL_SCOPES = [
-    ]
+    _ALL_SCOPES = (
+    )
 
     def __init__(
             self,
@@ -83,7 +83,7 @@ class LibraryServiceApi(object):
     def __enter__(self):
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
 
     def close(self):
@@ -91,13 +91,13 @@ class LibraryServiceApi(object):
 
     # Page descriptors
     _LIST_SHELVES_DESCRIPTOR = page_descriptor.PageDescriptor(
-            'page_token',
-            'next_page_token',
-            'shelves')
+        'page_token',
+        'next_page_token',
+        'shelves')
     _LIST_BOOKS_DESCRIPTOR = page_descriptor.PageDescriptor(
-            'page_token',
-            'next_page_token',
-            'books')
+        'page_token',
+        'next_page_token',
+        'books')
 
     # Service calls
     def create_shelf(
@@ -108,8 +108,8 @@ class LibraryServiceApi(object):
         if shelf is None:
             shelf = library_pb2.Shelf()
         create_shelf_request = library_pb2.CreateShelfRequest(
-                shelf=shelf,
-                **kwargs)
+            shelf=shelf,
+            **kwargs)
         return self.create_shelf_callable()(create_shelf_request)
 
     def create_shelf_callable(
@@ -117,10 +117,10 @@ class LibraryServiceApi(object):
             is_retrying=None,
             max_attempts=None):
         return api_callable.idempotent_callable(
-                self.stub.CreateShelf,
-                is_retrying=is_retrying,
-                max_attempts=max_attempts,
-                defaults=self.defaults)
+            self.stub.CreateShelf,
+            is_retrying=is_retrying,
+            max_attempts=max_attempts,
+            defaults=self.defaults)
 
     def get_shelf(
             self,
@@ -134,10 +134,10 @@ class LibraryServiceApi(object):
         if string_builder is None:
             string_builder = library_pb2.StringBuilder()
         get_shelf_request = library_pb2.GetShelfRequest(
-                name=name,
-                message=message,
-                string_builder=string_builder,
-                **kwargs)
+            name=name,
+            message=message,
+            string_builder=string_builder,
+            **kwargs)
         return self.get_shelf_callable()(get_shelf_request)
 
     def get_shelf_callable(
@@ -145,10 +145,10 @@ class LibraryServiceApi(object):
             is_retrying=None,
             max_attempts=None):
         return api_callable.idempotent_callable(
-                self.stub.GetShelf,
-                is_retrying=is_retrying,
-                max_attempts=max_attempts,
-                defaults=self.defaults)
+            self.stub.GetShelf,
+            is_retrying=is_retrying,
+            max_attempts=max_attempts,
+            defaults=self.defaults)
 
     def list_shelves(self, **kwargs):
         """Lists shelves."""
@@ -161,11 +161,11 @@ class LibraryServiceApi(object):
             max_attempts=None,
             page_streaming=_LIST_SHELVES_DESCRIPTOR):
         return api_callable.idempotent_callable(
-                self.stub.ListShelves,
-                page_streaming=page_streaming,
-                is_retrying=is_retrying,
-                max_attempts=max_attempts,
-                defaults=self.defaults)
+            self.stub.ListShelves,
+            page_streaming=page_streaming,
+            is_retrying=is_retrying,
+            max_attempts=max_attempts,
+            defaults=self.defaults)
 
     def delete_shelf(
             self,
@@ -174,8 +174,8 @@ class LibraryServiceApi(object):
         """Deletes a shelf."""
 
         delete_shelf_request = library_pb2.DeleteShelfRequest(
-                name=name,
-                **kwargs)
+            name=name,
+            **kwargs)
         return self.delete_shelf_callable()(delete_shelf_request)
 
     def delete_shelf_callable(
@@ -183,10 +183,10 @@ class LibraryServiceApi(object):
             is_retrying=None,
             max_attempts=None):
         return api_callable.idempotent_callable(
-                self.stub.DeleteShelf,
-                is_retrying=is_retrying,
-                max_attempts=max_attempts,
-                defaults=self.defaults)
+            self.stub.DeleteShelf,
+            is_retrying=is_retrying,
+            max_attempts=max_attempts,
+            defaults=self.defaults)
 
     def merge_shelves(
             self,
@@ -200,9 +200,9 @@ class LibraryServiceApi(object):
         """
 
         merge_shelves_request = library_pb2.MergeShelvesRequest(
-                name=name,
-                other_shelf_name=other_shelf_name,
-                **kwargs)
+            name=name,
+            other_shelf_name=other_shelf_name,
+            **kwargs)
         return self.merge_shelves_callable()(merge_shelves_request)
 
     def merge_shelves_callable(
@@ -210,10 +210,10 @@ class LibraryServiceApi(object):
             is_retrying=None,
             max_attempts=None):
         return api_callable.idempotent_callable(
-                self.stub.MergeShelves,
-                is_retrying=is_retrying,
-                max_attempts=max_attempts,
-                defaults=self.defaults)
+            self.stub.MergeShelves,
+            is_retrying=is_retrying,
+            max_attempts=max_attempts,
+            defaults=self.defaults)
 
     def create_book(
             self,
@@ -224,9 +224,9 @@ class LibraryServiceApi(object):
         if book is None:
             book = library_pb2.Book()
         create_book_request = library_pb2.CreateBookRequest(
-                name=name,
-                book=book,
-                **kwargs)
+            name=name,
+            book=book,
+            **kwargs)
         return self.create_book_callable()(create_book_request)
 
     def create_book_callable(
@@ -234,10 +234,10 @@ class LibraryServiceApi(object):
             is_retrying=None,
             max_attempts=None):
         return api_callable.idempotent_callable(
-                self.stub.CreateBook,
-                is_retrying=is_retrying,
-                max_attempts=max_attempts,
-                defaults=self.defaults)
+            self.stub.CreateBook,
+            is_retrying=is_retrying,
+            max_attempts=max_attempts,
+            defaults=self.defaults)
 
     def get_book(
             self,
@@ -246,8 +246,8 @@ class LibraryServiceApi(object):
         """Gets a book."""
 
         get_book_request = library_pb2.GetBookRequest(
-                name=name,
-                **kwargs)
+            name=name,
+            **kwargs)
         return self.get_book_callable()(get_book_request)
 
     def get_book_callable(
@@ -255,10 +255,10 @@ class LibraryServiceApi(object):
             is_retrying=None,
             max_attempts=None):
         return api_callable.idempotent_callable(
-                self.stub.GetBook,
-                is_retrying=is_retrying,
-                max_attempts=max_attempts,
-                defaults=self.defaults)
+            self.stub.GetBook,
+            is_retrying=is_retrying,
+            max_attempts=max_attempts,
+            defaults=self.defaults)
 
     def list_books(
             self,
@@ -267,8 +267,8 @@ class LibraryServiceApi(object):
         """Lists books in a shelf."""
 
         list_books_request = library_pb2.ListBooksRequest(
-                name=name,
-                **kwargs)
+            name=name,
+            **kwargs)
         return self.list_books_callable()(list_books_request)
 
     def list_books_callable(
@@ -277,11 +277,11 @@ class LibraryServiceApi(object):
             max_attempts=None,
             page_streaming=_LIST_BOOKS_DESCRIPTOR):
         return api_callable.idempotent_callable(
-                self.stub.ListBooks,
-                page_streaming=page_streaming,
-                is_retrying=is_retrying,
-                max_attempts=max_attempts,
-                defaults=self.defaults)
+            self.stub.ListBooks,
+            page_streaming=page_streaming,
+            is_retrying=is_retrying,
+            max_attempts=max_attempts,
+            defaults=self.defaults)
 
     def delete_book(
             self,
@@ -290,8 +290,8 @@ class LibraryServiceApi(object):
         """Deletes a book."""
 
         delete_book_request = library_pb2.DeleteBookRequest(
-                name=name,
-                **kwargs)
+            name=name,
+            **kwargs)
         return self.delete_book_callable()(delete_book_request)
 
     def delete_book_callable(
@@ -299,10 +299,10 @@ class LibraryServiceApi(object):
             is_retrying=None,
             max_attempts=None):
         return api_callable.idempotent_callable(
-                self.stub.DeleteBook,
-                is_retrying=is_retrying,
-                max_attempts=max_attempts,
-                defaults=self.defaults)
+            self.stub.DeleteBook,
+            is_retrying=is_retrying,
+            max_attempts=max_attempts,
+            defaults=self.defaults)
 
     def update_book(
             self,
@@ -316,10 +316,10 @@ class LibraryServiceApi(object):
         if update_mask is None:
             update_mask = field_mask_pb2.FieldMask()
         update_book_request = library_pb2.UpdateBookRequest(
-                name=name,
-                book=book,
-                update_mask=update_mask,
-                **kwargs)
+            name=name,
+            book=book,
+            update_mask=update_mask,
+            **kwargs)
         return self.update_book_callable()(update_book_request)
 
     def update_book_callable(
@@ -327,10 +327,10 @@ class LibraryServiceApi(object):
             is_retrying=None,
             max_attempts=None):
         return api_callable.idempotent_callable(
-                self.stub.UpdateBook,
-                is_retrying=is_retrying,
-                max_attempts=max_attempts,
-                defaults=self.defaults)
+            self.stub.UpdateBook,
+            is_retrying=is_retrying,
+            max_attempts=max_attempts,
+            defaults=self.defaults)
 
     def move_book(
             self,
@@ -340,9 +340,9 @@ class LibraryServiceApi(object):
         """Moves a book to another shelf, and returns the new book."""
 
         move_book_request = library_pb2.MoveBookRequest(
-                name=name,
-                other_shelf_name=other_shelf_name,
-                **kwargs)
+            name=name,
+            other_shelf_name=other_shelf_name,
+            **kwargs)
         return self.move_book_callable()(move_book_request)
 
     def move_book_callable(
@@ -350,10 +350,10 @@ class LibraryServiceApi(object):
             is_retrying=None,
             max_attempts=None):
         return api_callable.idempotent_callable(
-                self.stub.MoveBook,
-                is_retrying=is_retrying,
-                max_attempts=max_attempts,
-                defaults=self.defaults)
+            self.stub.MoveBook,
+            is_retrying=is_retrying,
+            max_attempts=max_attempts,
+            defaults=self.defaults)
 
     # ========
     # Manually-added methods: add custom (non-generated) methods after this point.
