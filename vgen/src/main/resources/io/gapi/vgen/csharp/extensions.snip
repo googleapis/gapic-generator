@@ -38,9 +38,11 @@
   // and updates to that file get reflected here through a regular refresh process.
   // This file should not be edited manually. Further extension methods can be added in
   // separate classes.
+  
   @join import : imports
     using {@import};
   @end
+
   namespace {@context.getNamespace(service.getFile)}
   {
       {@body}
@@ -55,56 +57,114 @@
   /// </summary>
   public static class {@context.getExtensionsClassName(service)}
   {
+      {@paginators(service)}
       {@flattenedMethods(service)}
   }
 @end
 
 @private addCommonImports() fill
   {@context.addImport("Grpc.Core")}
+  {@context.addImport("Google.Apis.Common")}
   {@context.addImport("Google.Protobuf")}
   {@context.addImport("Google.Protobuf.Collections")}
 @end
 
-@private flattenedMethods(service)
-  @let serviceName = service.getSimpleName, \
-       grpcName = context.getGrpcName(service)
-    @join method : service.getMethods
+@private paginators(service)
+  @join method : context.messages.filterPageStreamingMethods(context.getApiConfig, service.getMethods)
+    @let pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming(), \
+     resourceTypeName = context.basicTypeName(pageStreaming.getResourcesField().getType), \
+     responseTypeName = context.typeName(method.getOutputType), \
+     requestTypeName = context.typeName(method.getInputType), \
+     tokenTypeName = context.typeName(pageStreaming.getRequestTokenField().getType), \
+     clientName = context.getClientName(service)    
+    private static readonly Paginator<{@resourceTypeName}, {@requestTypeName}, {@responseTypeName}, {@tokenTypeName}> s_{@method.getSimpleName}Paginator =
+        new Paginator<{@resourceTypeName}, {@requestTypeName}, {@responseTypeName}, {@tokenTypeName}>(
+            (request, token) => { request.{@propertyName(pageStreaming.getRequestTokenField)} = token; return request; },
+            response => response.{@propertyName(pageStreaming.getResponseTokenField)},
+            response => response.{@propertyName(pageStreaming.getResourcesField)},
+            {@tokenTypeName}.Empty);
 
-      @let callableConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
-           methodName = method.getSimpleName, \
-           inTypeName = context.typeName(method.getInputType), \
-           outTypeName = context.typeName(method.getOutputType)
-        {@flattenedMethod(method, methodName, service)}
+    @end
+    # Make sure we import System.Collections.Generic, but only if we need to.
+    {@context.addImport("System.Collections.Generic")}    
+  @end
+@end
+
+@private flattenedMethods(service)
+  @join method : service.getMethods
+    @let methodName = method.getSimpleName, \
+         inTypeName = context.typeName(method.getInputType), \
+         outTypeName = context.typeName(method.getOutputType), \
+         isPageStreaming = context.getApiConfig.getMethodConfig(method).isPageStreaming, \
+         isFlattening = context.getApiConfig.getMethodConfig(method).isFlattening
+      @if {@isPageStreaming}
+        @if {@isFlattening}
+          @join flatteningGroup: \
+              context.getApiConfig.getMethodConfig(method).getFlattening().getFlatteningGroups()
+            {@iterableFlattenedMethod(method, methodName, service, flatteningGroup)}
+          @end          
+        @end
+      @else
+        @if {@isFlattening}
+          @join flatteningGroup : \
+              context.getApiConfig.getMethodConfig(method).getFlattening().getFlatteningGroups()
+            {@flattenedMethod(method, methodName, service, flatteningGroup)}
+          @end
+        @end
       @end
     @end
   @end
 @end
 
-@private flattenedMethod(method, methodName, service)
+@private iterableFlattenedMethod(method, methodName, service, fields)
+  {@flattenedMethodXmlDoc(method)}
+  @let pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming(), \
+       resourceCollectionTypeName = context.typeName(pageStreaming.getResourcesField().getType), \
+       requestTypeName = context.typeName(method.getInputType), \
+       clientName = context.getClientName(service)
+    public static {@resourceCollectionTypeName} \
+      {@methodName}(this {@clientName} @@this{@context.prependComma({@flattenedParameters(fields)})})
+    {
+        @if {@fields.isEmpty}
+          {@requestTypeName} request = new {@requestTypeName}();
+        @else
+          {@requestTypeName} request = new {@requestTypeName}
+          {
+              {@propertySetCalls(fields)}
+          };
+        @end
+        return s_{@method.getSimpleName}Paginator.Fetch(request, req => @@this.{@methodName}(req));
+    }
+
+  @end
+@end
+
+@private flattenedMethod(method, methodName, service, fields)
   {@flattenedMethodXmlDoc(method)}
   @let returnType = context.methodReturnTypeName(method.getOutputType), \
-       inType = method.getInputType, \
+       requestTypeName = context.typeName(method.getInputType), \
        returnStatement = context.methodReturnStatement(method.getOutputType), \
        requestMethodName = context.typeName(method.getInputType), \
        clientName = context.getClientName(service)
-    public static {@returnType} {@methodName}(this {@clientName} @@this{@context.prependComma({@flattenedParameters(inType)})})
+    public static {@returnType} {@methodName}(this {@clientName} @@this{@context.prependComma({@flattenedParameters(fields)})})
     {
-        @if {@context.messages.flattenedFields(inType).isEmpty}
-          {@context.typeName(inType)} request = new {@context.typeName(inType)}();
+        @if {@fields.isEmpty}
+          {@requestTypeName} request = new {@requestTypeName}();
         @else
-          {@context.typeName(inType)} request = new {@context.typeName(inType)}
+          {@requestTypeName} request = new {@requestTypeName}
           {
-              {@propertySetCalls(inType)}
+              {@propertySetCalls(fields)}
           };
         @end
 
         {@returnStatement}@@this.{@methodName}(request);
     }
+
   @end
 @end
 
-@private propertySetCalls(inType)
-  @join field : context.messages.flattenedFields(inType)
+@private propertySetCalls(fields)
+  @join field : fields
     @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
       @if field.isRepeated
         {@propertyName(field)} = { {@paramName} },
@@ -138,16 +198,16 @@
   {@context.getDescription(protoElement)}
 @end
 
-@private flattenedParameters(inType)
-  @join field : context.messages.flattenedFields(inType) on ", "
+@private flattenedParameters(fields)
+  @join field : fields on ", "
     @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
       {@context.typeName(field.getType)} {@paramName}
     @end
   @end
 @end
 
-@private flattenedArguments(inType)
-  @join field : context.messages.flattenedFields(inType) on ", "
+@private flattenedArguments(fields)
+  @join field : fields on ", "
     @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
       {@paramName}
     @end
