@@ -128,13 +128,15 @@
   @end
 @end
 
+# TODO (pongad) don't heuristically guess resourceTypeName
 @private pageDescriptorConstants(service)
   @join method : context.messages.filterPageStreamingMethods(context.getApiConfig, service.getMethods)
     @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
          inTypeName = context.typeName(method.getInputType), \
          outTypeName = context.typeName(method.getOutputType), \
          resourceTypeName = context.pageStreamingResourceType(method.getOutputType), \
-         pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming()
+         pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming(), \
+         tokenTypeName = context.typeName(pageStreaming.getResponseTokenField.getType)
       private static PageDescriptor<{@inTypeName}, {@outTypeName}, {@resourceTypeName}> {@methodConstant}_PAGE_DESC =
           new PageDescriptor<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>() {
             @@Override
@@ -146,7 +148,7 @@
                 {@inTypeName} payload, Object token) {
               return {@inTypeName}
                 .newBuilder(payload)
-                .{@setCallName(pageStreaming.getRequestTokenField())}((String) token)
+                .{@setCallName(pageStreaming.getRequestTokenField())}(({@tokenTypeName}) token)
                 .build();
             }
             @@Override
@@ -583,10 +585,14 @@
 
 @private setCallName(field)
   @let paramNameInCamel = context.lowerUnderscoreToUpperCamel(field.getSimpleName)
-    @if field.isRepeated
-      addAll{@paramNameInCamel}
+    @if field.getType.isMap
+      putAll{@paramNameInCamel}
     @else
-      set{@paramNameInCamel}
+      @if field.isRepeated
+        addAll{@paramNameInCamel}
+      @else
+        set{@paramNameInCamel}
+      @end
     @end
   @end
 @end

@@ -281,11 +281,18 @@ public class JavaLanguageProvider extends LanguageProvider {
    * Returns the Java representation of a reference to a type.
    */
   public String typeName(TypeRef type) {
-    String listTypeName = getTypeName("java.util.List");
-    if (type.getCardinality() == Cardinality.REPEATED) {
+    if (type.isMap()) {
+      String mapTypeName = getTypeName("java.util.Map");
+      return String.format("%s<%s, %s>", mapTypeName,
+          basicTypeName(type.getMapKeyField().getType(), true),
+          basicTypeName(type.getMapValueField().getType(), true)
+      );
+    } else if (type.isRepeated()) {
+      String listTypeName = getTypeName("java.util.List");
       return String.format("%s<%s>", listTypeName, basicTypeName(type, true));
+    } else {
+      return basicTypeName(type, false);
     }
-    return basicTypeName(type, false);
   }
 
   /**
@@ -414,7 +421,7 @@ public class JavaLanguageProvider extends LanguageProvider {
       return "\"\"";
     } else if (field.getType().getKind().equals(Type.TYPE_BYTES)) {
       String byteStringTypeName = getTypeName("com.google.protobuf.ByteString");
-      return String.format("new %s()", byteStringTypeName);
+      return byteStringTypeName + ".EMPTY";
     } else {
       throw new IllegalArgumentException(
           String.format("Unsupported type for field %s - found %s, "
