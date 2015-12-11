@@ -269,47 +269,47 @@ public class JavaLanguageProvider extends LanguageProvider {
   }
 
   /**
-   * For a page streaming request, if there is only one field in the response, then returns
-   * that type's name, else returns the response type's name.
-   */
-  public String pageStreamingResourceType(TypeRef returnType) {
-    TypeRef elementType = messages().pageStreamingElementTypeRef(returnType);
-    return basicTypeName(elementType, true);
-  }
-
-  /**
    * Returns the Java representation of a reference to a type.
    */
   public String typeName(TypeRef type) {
     if (type.isMap()) {
       String mapTypeName = getTypeName("java.util.Map");
       return String.format("%s<%s, %s>", mapTypeName,
-          basicTypeName(type.getMapKeyField().getType(), true),
-          basicTypeName(type.getMapValueField().getType(), true)
+          basicTypeNameBoxed(type.getMapKeyField().getType()),
+          basicTypeNameBoxed(type.getMapValueField().getType())
       );
     } else if (type.isRepeated()) {
       String listTypeName = getTypeName("java.util.List");
-      return String.format("%s<%s>", listTypeName, basicTypeName(type, true));
+      return String.format("%s<%s>", listTypeName, basicTypeNameBoxed(type));
     } else {
-      return basicTypeName(type, false);
+      return basicTypeName(type);
     }
   }
 
   /**
-   * Returns the Java representation of a type, without cardinality. The
-   * boxed parameter indicates whether the result should be converted to its boxed
-   * counterpart.
+   * Returns the Java representation of a type, without cardinality, in boxed form.
    */
-  public String basicTypeName(TypeRef type, boolean boxed) {
+  public String basicTypeNameBoxed(TypeRef type) {
+    String unboxed = basicTypeName(type);
+    String boxed = BOXED_TYPE_MAP.get(unboxed);
+    if (boxed != null) {
+      return boxed;
+    } else {
+      return unboxed;
+    }
+  }
+
+  /**
+   * Returns the Java representation of a type, without cardinality.
+   * If the type is a Java primitive, basicTypeName returns it in unboxed form.
+   */
+  public String basicTypeName(TypeRef type) {
     String result = PRIMITIVE_TYPE_MAP.get(type.getKind());
     if (result != null) {
       if (result.contains(".")) {
         // Fully qualified type name, use regular type name resolver. Can skip boxing logic
         // because those types are already boxed.
         return getTypeName(result);
-      }
-      if (boxed && BOXED_TYPE_MAP.containsKey(result)) {
-        result = BOXED_TYPE_MAP.get(result);
       }
       return result;
     }

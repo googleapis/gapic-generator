@@ -39,19 +39,6 @@ public class ServiceMessages {
   }
 
   /**
-   * For a page streaming request, if there is only one field in the response, then returns
-   * that type, else returns the response type.
-   */
-  public TypeRef pageStreamingElementTypeRef(TypeRef returnType) {
-    TypeRef elementType = pageStreamingElementTypeRefIfExists(returnType);
-    if (elementType == null) {
-      throw new IllegalStateException("pageStreamingElementTypeRef: no appropriate page streaming"
-          + " element found.");
-    }
-    return elementType;
-  }
-
-  /**
    * Returns the list of flattened fields from the given request type, excluding
    * fields related to page streaming.
    */
@@ -65,23 +52,6 @@ public class ServiceMessages {
       fields.add(field);
     }
     return fields;
-  }
-
-  private TypeRef pageStreamingElementTypeRefIfExists(TypeRef returnType) {
-    TypeRef elementType = null;
-    for (Field field : returnType.getMessageType().getFields()) {
-      if (field.getSimpleName().equals("next_page_token")) {
-        continue;
-      }
-      if (elementType == null) {
-        elementType = field.getType();
-      } else {
-        // we found multiple content fields, so we need to return the full Response type
-        elementType = returnType;
-        break;
-      }
-    }
-    return elementType;
   }
 
 }

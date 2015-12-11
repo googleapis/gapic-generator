@@ -128,14 +128,13 @@
   @end
 @end
 
-# TODO (pongad) don't heuristically guess resourceTypeName
 @private pageDescriptorConstants(service)
   @join method : context.messages.filterPageStreamingMethods(context.getApiConfig, service.getMethods)
     @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
          inTypeName = context.typeName(method.getInputType), \
          outTypeName = context.typeName(method.getOutputType), \
-         resourceTypeName = context.pageStreamingResourceType(method.getOutputType), \
          pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming(), \
+         resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
          tokenTypeName = context.typeName(pageStreaming.getResponseTokenField.getType)
       private static PageDescriptor<{@inTypeName}, {@outTypeName}, {@resourceTypeName}> {@methodConstant}_PAGE_DESC =
           new PageDescriptor<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>() {
@@ -383,7 +382,8 @@
 
 @private iterableFlattenedMethod(method, methodName, requestFactoryName, fields)
   {@methodJavaDoc(method)}
-  @let resourceTypeName = context.pageStreamingResourceType(method.getOutputType), \
+  @let pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming(), \
+       resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
        requestTypeName = context.typeName(method.getInputType)
     public Iterable<{@resourceTypeName}> \
         {@methodName}({@flattenedParameters(fields)}) {
@@ -399,7 +399,8 @@
 
 @private iterableMethodWithRequestParam(method, methodName, inTypeName, outTypeName)
   {@methodWithRequestParamJavaDoc(method)}
-  @let resourceTypeName = context.pageStreamingResourceType(method.getOutputType),\
+  @let pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming(), \
+       resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
        dummy = context.addImport("io.gapi.gax.grpc.PageDescriptor")
     public Iterable<{@resourceTypeName}> {@methodName}({@inTypeName} request) {
       return {@methodName}StreamingCallable()
@@ -411,7 +412,8 @@
 
 @private methodReturningStreamingCallable(method, methodName, inTypeName, outTypeName)
   {@methodJavaDoc(method)}
-  @let resourceTypeName = context.pageStreamingResourceType(method.getOutputType), \
+  @let pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming(), \
+       resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
        methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName)
     public ApiCallable<{@inTypeName}, {@resourceTypeName}> {@methodName}StreamingCallable() {
       return {@methodName}Callable().pageStreaming({@methodConstant}_PAGE_DESC);
