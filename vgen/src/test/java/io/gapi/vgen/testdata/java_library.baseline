@@ -180,22 +180,22 @@ public class LibraryServiceApi implements AutoCloseable {
 
   /**
    * A PathTemplate representing the fully-qualified path to represent
-   * a name resource.
+   * a shelf resource.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  private static final PathTemplate NAME_PATH_TEMPLATE =
-      PathTemplate.create("/shelves/{shelf}");
+  private static final PathTemplate SHELF_PATH_TEMPLATE =
+      PathTemplate.create("shelves/{shelf}");
   /**
    * A PathTemplate representing the fully-qualified path to represent
-   * a name resource.
+   * a book resource.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  private static final PathTemplate NAME_PATH_TEMPLATE =
-      PathTemplate.create("/shelves/{shelf}/books/{book}");
+  private static final PathTemplate BOOK_PATH_TEMPLATE =
+      PathTemplate.create("shelves/{shelf}/books/{book}");
 
   // ========
   // Members
@@ -249,60 +249,60 @@ public class LibraryServiceApi implements AutoCloseable {
 
   /**
    * Creates a string containing the fully-qualified path to represent
-   * a name resource.
+   * a shelf resource.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public static final String createNamePath(String shelf) {
-    return NAME_PATH_TEMPLATE.instantiate(
+  public static final String createShelfPath(String shelf) {
+    return SHELF_PATH_TEMPLATE.instantiate(
         "shelf", shelf);
   }
 
   /**
    * Creates a string containing the fully-qualified path to represent
-   * a name resource.
+   * a book resource.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public static final String createNamePath(String shelf, String book) {
-    return NAME_PATH_TEMPLATE.instantiate(
+  public static final String createBookPath(String shelf, String book) {
+    return BOOK_PATH_TEMPLATE.instantiate(
         "shelf", shelf,"book", book);
   }
 
 
   /**
    * Extracts the shelf from the given fully-qualified path which
-   * represents a name resource.
+   * represents a shelf resource.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public static final String extractShelfFromNamePath(String namePath) {
-    return NAME_PATH_TEMPLATE.parse(namePath).get("shelf");
+  public static final String extractShelfFromShelfPath(String shelfPath) {
+    return SHELF_PATH_TEMPLATE.parse(shelfPath).get("shelf");
   }
 
   /**
    * Extracts the shelf from the given fully-qualified path which
-   * represents a name resource.
+   * represents a book resource.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public static final String extractShelfFromNamePath(String namePath) {
-    return NAME_PATH_TEMPLATE.parse(namePath).get("shelf");
+  public static final String extractShelfFromBookPath(String bookPath) {
+    return BOOK_PATH_TEMPLATE.parse(bookPath).get("shelf");
   }
 
   /**
    * Extracts the book from the given fully-qualified path which
-   * represents a name resource.
+   * represents a book resource.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public static final String extractBookFromNamePath(String namePath) {
-    return NAME_PATH_TEMPLATE.parse(namePath).get("book");
+  public static final String extractBookFromBookPath(String bookPath) {
+    return BOOK_PATH_TEMPLATE.parse(bookPath).get("book");
   }
 
 

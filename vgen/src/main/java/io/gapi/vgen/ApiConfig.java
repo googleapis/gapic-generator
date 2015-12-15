@@ -6,6 +6,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.common.collect.ImmutableList;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,7 @@ import javax.annotation.Nullable;
  * configuration for methods and resource names.
  */
 public class ApiConfig {
+  private final ImmutableList<CollectionConfig> collectionConfigs;
   private final Map<String, MethodConfig> methodConfigMap;
   private final String packageName;
 
@@ -38,12 +40,34 @@ public class ApiConfig {
       }
     }
 
+    ImmutableList<CollectionConfig> collectionConfigs = createCollectionConfigs(
+        model, configProto);
     Map<String, MethodConfig> methodConfigMap = createMethodConfigMap(
         model, configProto, methodMap);
-    if (methodConfigMap == null) {
+    if (collectionConfigs == null || methodConfigMap == null) {
       return null;
     } else {
-      return new ApiConfig(methodConfigMap, configProto.getPackageName());
+      return new ApiConfig(collectionConfigs, methodConfigMap, configProto.getPackageName());
+    }
+  }
+
+  private static ImmutableList<CollectionConfig> createCollectionConfigs(
+      DiagCollector diagCollector, ConfigProto configProto) {
+    ImmutableList.Builder<CollectionConfig> collectionConfigsBuilder = ImmutableList.builder();
+
+    for (CollectionConfigProto collectionConfigProto : configProto.getCollectionsList()) {
+      CollectionConfig collectionConfig =
+          CollectionConfig.createCollection(diagCollector, collectionConfigProto);
+      if (collectionConfig == null) {
+        continue;
+      }
+      collectionConfigsBuilder.add(collectionConfig);
+    }
+
+    if (diagCollector.getErrorCount() > 0) {
+      return null;
+    } else {
+      return collectionConfigsBuilder.build();
     }
   }
 
@@ -74,9 +98,18 @@ public class ApiConfig {
     }
   }
 
-  private ApiConfig(Map<String, MethodConfig> methodConfigMap, String packageName) {
+  private ApiConfig(ImmutableList<CollectionConfig> collectionConfigs,
+      Map<String, MethodConfig> methodConfigMap, String packageName) {
+    this.collectionConfigs = collectionConfigs;
     this.methodConfigMap = methodConfigMap;
     this.packageName = packageName;
+  }
+
+  /**
+   * Returns the list of CollectionConfigs.
+   */
+  public ImmutableList<CollectionConfig> getCollectionConfigs() {
+    return collectionConfigs;
   }
 
   /**

@@ -173,24 +173,24 @@
 @end
 
 @private pathTemplateConstants(service)
-  @join fieldSegment : context.resources.getFieldSegmentsFromHttpPaths(service.getMethods)
-    {@pathTemplateConstant(fieldSegment)}
+  @join collectionConfig : context.getApiConfig.getCollectionConfigs()
+    {@pathTemplateConstant(collectionConfig)}
   @end
 @end
 
-@private pathTemplateConstant(fieldSegment)
+@private pathTemplateConstant(collectionConfig)
   /**
    * A PathTemplate representing the fully-qualified path to represent
-   * a {@fieldSegment.getFieldPath} resource.
+   * a {@collectionConfig.getMethodBaseName} resource.
    *
   {@javaDocManualEdit()}
    */
-  private static final PathTemplate {@pathTemplateConstantName(fieldSegment)} =
-      PathTemplate.create("{@context.resources.templatize(fieldSegment)}");
+  private static final PathTemplate {@pathTemplateConstantName(collectionConfig)} =
+      PathTemplate.create("{@collectionConfig.getNamePattern}");
 @end
 
-@private pathTemplateConstantName(fieldSegment)
-  {@context.lowerUnderscoreToUpperUnderscore(fieldSegment.getFieldPath)}_PATH_TEMPLATE
+@private pathTemplateConstantName(collectionConfig)
+  {@context.lowerUnderscoreToUpperUnderscore(collectionConfig.getMethodBaseName)}_PATH_TEMPLATE
 @end
 
 @private resourceFunctions(service)
@@ -198,66 +198,67 @@
   // Resource Name Helper Functions
   // ==============================
 
-  @join fieldSegment : context.resources.getFieldSegmentsFromHttpPaths(service.getMethods)
-    {@createResourceFunction(fieldSegment)}
+  @join collectionConfig : context.getApiConfig.getCollectionConfigs()
+    {@createResourceFunction(collectionConfig)}
   @end
 
-  @join fieldSegment : context.resources.getFieldSegmentsFromHttpPaths(service.getMethods)
-    {@extractResourceFunction(fieldSegment)}
+  @join collectionConfig : context.getApiConfig.getCollectionConfigs()
+    {@extractResourceFunctions(collectionConfig)}
   @end
 @end
 
-@private createResourceFunction(fieldSegment)
+@private createResourceFunction(collectionConfig)
   /**
    * Creates a string containing the fully-qualified path to represent
-   * a {@fieldSegment.getFieldPath} resource.
+   * a {@collectionConfig.getMethodBaseName} resource.
    *
   {@javaDocManualEdit()}
    */
-  public static final String {@createResourceFunctionName(fieldSegment)}(\
-      {@createResourceFunctionParams(fieldSegment)}) {
-    return {@pathTemplateConstantName(fieldSegment)}.instantiate(
-        {@pathTemplateArgs(fieldSegment)});
+  public static final String {@createResourceFunctionName(collectionConfig)}(\
+      {@createResourceFunctionParams(collectionConfig)}) {
+    return {@pathTemplateConstantName(collectionConfig)}.instantiate(
+        {@pathTemplateArgs(collectionConfig)});
   }
 
 @end
-@private createResourceFunctionName(fieldSegment)
-  create{@resourcePath(fieldSegment)}
+
+@private createResourceFunctionName(collectionConfig)
+  create{@resourcePath(collectionConfig)}
 @end
 
-@private createResourceFunctionParams(fieldSegment)
-  @join param : context.resources.getParamsForResourceNameWildcards(fieldSegment) on ", "
+@private createResourceFunctionParams(collectionConfig)
+  @join param : collectionConfig.getNameTemplate.vars() on ", "
     String {@context.lowerUnderscoreToLowerCamel(param)}
   @end
 @end
 
-@private pathTemplateArgs(fieldSegment)
-  @join param : context.resources.getParamsForResourceNameWildcards(fieldSegment) vertical on ","
+@private pathTemplateArgs(collectionConfig)
+  @join param : collectionConfig.getNameTemplate.vars() vertical on ","
     "{@param}", {@context.lowerUnderscoreToLowerCamel(param)}
   @end
 @end
 
-@private extractResourceFunction(fieldSegment)
-  @join subField : context.resources.getParamsForResourceNameWildcards(fieldSegment)
-    @let fieldPath = context.upperCamelToLowerCamel(resourcePath(fieldSegment))
+@private extractResourceFunctions(collectionConfig)
+  @join subField : collectionConfig.getNameTemplate.vars() 
+    @let fieldPath = context.upperCamelToLowerCamel(resourcePath(collectionConfig))
       /**
        * Extracts the {@subField} from the given fully-qualified path which
-       * represents a {@context.lowerUnderscoreToLowerCamel(fieldSegment.getFieldPath)} resource.
+       * represents a {@context.lowerUnderscoreToLowerCamel(collectionConfig.getMethodBaseName)} resource.
        *
       {@javaDocManualEdit()}
        */
       public static final String \
-          extract{@context.lowerUnderscoreToUpperCamel(subField)}From{@resourcePath(fieldSegment)}(\
+          extract{@context.lowerUnderscoreToUpperCamel(subField)}From{@resourcePath(collectionConfig)}(\
           String {@fieldPath}) {
-        return {@pathTemplateConstantName(fieldSegment)}.parse({@fieldPath}).get("{@subField}");
+        return {@pathTemplateConstantName(collectionConfig)}.parse({@fieldPath}).get("{@subField}");
       }
 
     @end
   @end
 @end
 
-@private resourcePath(fieldSegment)
-  {@context.lowerUnderscoreToUpperCamel(fieldSegment.getFieldPath)}Path
+@private resourcePath(collectionConfig)
+  {@context.lowerUnderscoreToUpperCamel(collectionConfig.getMethodBaseName)}Path
 @end
 
 @private members(service)
