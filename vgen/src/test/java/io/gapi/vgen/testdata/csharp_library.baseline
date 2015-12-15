@@ -40,6 +40,8 @@ using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Example.Library.V1
 {
@@ -79,6 +81,32 @@ namespace Google.Example.Library.V1
 
             return @this.CreateShelf(request);
         }
+        /// <summary>
+        /// Creates a shelf, and returns the new Shelf.
+        /// </summary>
+        /// <paramref name="shelf">
+        /// The shelf to create.
+        /// </paramref>
+        public static Task<Shelf> CreateShelfAsync(this LibraryService.ILibraryServiceClient @this, Shelf shelf)
+        {
+            return CreateShelfAsync(@this, shelf, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Creates a shelf, and returns the new Shelf.
+        /// </summary>
+        /// <paramref name="shelf">
+        /// The shelf to create.
+        /// </paramref>
+        public static Task<Shelf> CreateShelfAsync(this LibraryService.ILibraryServiceClient @this, Shelf shelf, CancellationToken cancellationToken)
+        {
+            CreateShelfRequest request = new CreateShelfRequest
+            {
+                Shelf = shelf,
+            };
+
+            return @this.CreateShelfAsync(request, cancellationToken: cancellationToken).ResponseAsync;
+        }
 
         /// <summary>
         /// Gets a shelf.
@@ -100,6 +128,44 @@ namespace Google.Example.Library.V1
             };
 
             return @this.GetShelf(request);
+        }
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the shelf to retrieve.
+        /// </paramref>
+        /// <paramref name="message">
+        /// Field to verify that message-type query parameter gets flattened.
+        /// </paramref>
+        /// <paramref name="stringBuilder">
+        ///
+        /// </paramref>
+        public static Task<Shelf> GetShelfAsync(this LibraryService.ILibraryServiceClient @this, string name)
+        {
+            return GetShelfAsync(@this, name, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the shelf to retrieve.
+        /// </paramref>
+        /// <paramref name="message">
+        /// Field to verify that message-type query parameter gets flattened.
+        /// </paramref>
+        /// <paramref name="stringBuilder">
+        ///
+        /// </paramref>
+        public static Task<Shelf> GetShelfAsync(this LibraryService.ILibraryServiceClient @this, string name, CancellationToken cancellationToken)
+        {
+            GetShelfRequest request = new GetShelfRequest
+            {
+                Name = name,
+            };
+
+            return @this.GetShelfAsync(request, cancellationToken: cancellationToken).ResponseAsync;
         }
 
         /// <summary>
@@ -123,6 +189,45 @@ namespace Google.Example.Library.V1
             };
 
             return @this.GetShelf(request);
+        }
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the shelf to retrieve.
+        /// </paramref>
+        /// <paramref name="message">
+        /// Field to verify that message-type query parameter gets flattened.
+        /// </paramref>
+        /// <paramref name="stringBuilder">
+        ///
+        /// </paramref>
+        public static Task<Shelf> GetShelfAsync(this LibraryService.ILibraryServiceClient @this, string name, SomeMessage message)
+        {
+            return GetShelfAsync(@this, name, message, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the shelf to retrieve.
+        /// </paramref>
+        /// <paramref name="message">
+        /// Field to verify that message-type query parameter gets flattened.
+        /// </paramref>
+        /// <paramref name="stringBuilder">
+        ///
+        /// </paramref>
+        public static Task<Shelf> GetShelfAsync(this LibraryService.ILibraryServiceClient @this, string name, SomeMessage message, CancellationToken cancellationToken)
+        {
+            GetShelfRequest request = new GetShelfRequest
+            {
+                Name = name,
+                Message = message,
+            };
+
+            return @this.GetShelfAsync(request, cancellationToken: cancellationToken).ResponseAsync;
         }
 
         /// <summary>
@@ -148,6 +253,46 @@ namespace Google.Example.Library.V1
 
             return @this.GetShelf(request);
         }
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the shelf to retrieve.
+        /// </paramref>
+        /// <paramref name="message">
+        /// Field to verify that message-type query parameter gets flattened.
+        /// </paramref>
+        /// <paramref name="stringBuilder">
+        ///
+        /// </paramref>
+        public static Task<Shelf> GetShelfAsync(this LibraryService.ILibraryServiceClient @this, string name, SomeMessage message, StringBuilder stringBuilder)
+        {
+            return GetShelfAsync(@this, name, message, stringBuilder, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the shelf to retrieve.
+        /// </paramref>
+        /// <paramref name="message">
+        /// Field to verify that message-type query parameter gets flattened.
+        /// </paramref>
+        /// <paramref name="stringBuilder">
+        ///
+        /// </paramref>
+        public static Task<Shelf> GetShelfAsync(this LibraryService.ILibraryServiceClient @this, string name, SomeMessage message, StringBuilder stringBuilder, CancellationToken cancellationToken)
+        {
+            GetShelfRequest request = new GetShelfRequest
+            {
+                Name = name,
+                Message = message,
+                StringBuilder = stringBuilder,
+            };
+
+            return @this.GetShelfAsync(request, cancellationToken: cancellationToken).ResponseAsync;
+        }
 
         /// <summary>
         /// Lists shelves.
@@ -155,9 +300,19 @@ namespace Google.Example.Library.V1
         public static IEnumerable<Shelf> ListShelves(this LibraryService.ILibraryServiceClient @this)
         {
             ListShelvesRequest request = new ListShelvesRequest();
+
             return s_ListShelvesPaginator.Fetch(request, req => @this.ListShelves(req));
         }
 
+        /// <summary>
+        /// Lists shelves.
+        /// </summary>
+        public static IAsyncEnumerable<Shelf> ListShelvesAsync(this LibraryService.ILibraryServiceClient @this)
+        {
+            ListShelvesRequest request = new ListShelvesRequest();
+
+            return s_ListShelvesPaginator.FetchAsync(request, (req, cancellationToken) => @this.ListShelvesAsync(req).ResponseAsync);
+        }
         /// <summary>
         /// Deletes a shelf.
         /// </summary>
@@ -172,6 +327,32 @@ namespace Google.Example.Library.V1
             };
 
             @this.DeleteShelf(request);
+        }
+        /// <summary>
+        /// Deletes a shelf.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the shelf to delete.
+        /// </paramref>
+        public static Task DeleteShelfAsync(this LibraryService.ILibraryServiceClient @this, string name)
+        {
+            return DeleteShelfAsync(@this, name, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Deletes a shelf.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the shelf to delete.
+        /// </paramref>
+        public static Task DeleteShelfAsync(this LibraryService.ILibraryServiceClient @this, string name, CancellationToken cancellationToken)
+        {
+            DeleteShelfRequest request = new DeleteShelfRequest
+            {
+                Name = name,
+            };
+
+            return @this.DeleteShelfAsync(request, cancellationToken: cancellationToken).ResponseAsync;
         }
 
         /// <summary>
@@ -195,6 +376,43 @@ namespace Google.Example.Library.V1
 
             return @this.MergeShelves(request);
         }
+        /// <summary>
+        /// Merges two shelves by adding all books from the shelf named
+        /// `other_shelf_name` to shelf `name`, and deletes
+        /// `other_shelf_name`. Returns the updated shelf.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the shelf we're adding books to.
+        /// </paramref>
+        /// <paramref name="otherShelfName">
+        /// The name of the shelf we're removing books from and deleting.
+        /// </paramref>
+        public static Task<Shelf> MergeShelvesAsync(this LibraryService.ILibraryServiceClient @this, string name, string otherShelfName)
+        {
+            return MergeShelvesAsync(@this, name, otherShelfName, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Merges two shelves by adding all books from the shelf named
+        /// `other_shelf_name` to shelf `name`, and deletes
+        /// `other_shelf_name`. Returns the updated shelf.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the shelf we're adding books to.
+        /// </paramref>
+        /// <paramref name="otherShelfName">
+        /// The name of the shelf we're removing books from and deleting.
+        /// </paramref>
+        public static Task<Shelf> MergeShelvesAsync(this LibraryService.ILibraryServiceClient @this, string name, string otherShelfName, CancellationToken cancellationToken)
+        {
+            MergeShelvesRequest request = new MergeShelvesRequest
+            {
+                Name = name,
+                OtherShelfName = otherShelfName,
+            };
+
+            return @this.MergeShelvesAsync(request, cancellationToken: cancellationToken).ResponseAsync;
+        }
 
         /// <summary>
         /// Creates a book.
@@ -215,6 +433,39 @@ namespace Google.Example.Library.V1
 
             return @this.CreateBook(request);
         }
+        /// <summary>
+        /// Creates a book.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the shelf in which the book is created.
+        /// </paramref>
+        /// <paramref name="book">
+        /// The book to create.
+        /// </paramref>
+        public static Task<Book> CreateBookAsync(this LibraryService.ILibraryServiceClient @this, string name, Book book)
+        {
+            return CreateBookAsync(@this, name, book, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Creates a book.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the shelf in which the book is created.
+        /// </paramref>
+        /// <paramref name="book">
+        /// The book to create.
+        /// </paramref>
+        public static Task<Book> CreateBookAsync(this LibraryService.ILibraryServiceClient @this, string name, Book book, CancellationToken cancellationToken)
+        {
+            CreateBookRequest request = new CreateBookRequest
+            {
+                Name = name,
+                Book = book,
+            };
+
+            return @this.CreateBookAsync(request, cancellationToken: cancellationToken).ResponseAsync;
+        }
 
         /// <summary>
         /// Gets a book.
@@ -231,6 +482,32 @@ namespace Google.Example.Library.V1
 
             return @this.GetBook(request);
         }
+        /// <summary>
+        /// Gets a book.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the book to retrieve.
+        /// </paramref>
+        public static Task<Book> GetBookAsync(this LibraryService.ILibraryServiceClient @this, string name)
+        {
+            return GetBookAsync(@this, name, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Gets a book.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the book to retrieve.
+        /// </paramref>
+        public static Task<Book> GetBookAsync(this LibraryService.ILibraryServiceClient @this, string name, CancellationToken cancellationToken)
+        {
+            GetBookRequest request = new GetBookRequest
+            {
+                Name = name,
+            };
+
+            return @this.GetBookAsync(request, cancellationToken: cancellationToken).ResponseAsync;
+        }
 
         /// <summary>
         /// Lists books in a shelf.
@@ -244,9 +521,25 @@ namespace Google.Example.Library.V1
             {
                 Name = name,
             };
+
             return s_ListBooksPaginator.Fetch(request, req => @this.ListBooks(req));
         }
 
+        /// <summary>
+        /// Lists books in a shelf.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the shelf whose books we'd like to list.
+        /// </paramref>
+        public static IAsyncEnumerable<Book> ListBooksAsync(this LibraryService.ILibraryServiceClient @this, string name)
+        {
+            ListBooksRequest request = new ListBooksRequest
+            {
+                Name = name,
+            };
+
+            return s_ListBooksPaginator.FetchAsync(request, (req, cancellationToken) => @this.ListBooksAsync(req).ResponseAsync);
+        }
         /// <summary>
         /// Deletes a book.
         /// </summary>
@@ -261,6 +554,32 @@ namespace Google.Example.Library.V1
             };
 
             @this.DeleteBook(request);
+        }
+        /// <summary>
+        /// Deletes a book.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the book to delete.
+        /// </paramref>
+        public static Task DeleteBookAsync(this LibraryService.ILibraryServiceClient @this, string name)
+        {
+            return DeleteBookAsync(@this, name, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Deletes a book.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the book to delete.
+        /// </paramref>
+        public static Task DeleteBookAsync(this LibraryService.ILibraryServiceClient @this, string name, CancellationToken cancellationToken)
+        {
+            DeleteBookRequest request = new DeleteBookRequest
+            {
+                Name = name,
+            };
+
+            return @this.DeleteBookAsync(request, cancellationToken: cancellationToken).ResponseAsync;
         }
 
         /// <summary>
@@ -284,6 +603,45 @@ namespace Google.Example.Library.V1
             };
 
             return @this.UpdateBook(request);
+        }
+        /// <summary>
+        /// Updates a book.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the book to update.
+        /// </paramref>
+        /// <paramref name="book">
+        /// The book to update with.
+        /// </paramref>
+        /// <paramref name="updateMask">
+        /// A field mask to apply, rendered as an HTTP parameter.
+        /// </paramref>
+        public static Task<Book> UpdateBookAsync(this LibraryService.ILibraryServiceClient @this, string name, Book book)
+        {
+            return UpdateBookAsync(@this, name, book, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Updates a book.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the book to update.
+        /// </paramref>
+        /// <paramref name="book">
+        /// The book to update with.
+        /// </paramref>
+        /// <paramref name="updateMask">
+        /// A field mask to apply, rendered as an HTTP parameter.
+        /// </paramref>
+        public static Task<Book> UpdateBookAsync(this LibraryService.ILibraryServiceClient @this, string name, Book book, CancellationToken cancellationToken)
+        {
+            UpdateBookRequest request = new UpdateBookRequest
+            {
+                Name = name,
+                Book = book,
+            };
+
+            return @this.UpdateBookAsync(request, cancellationToken: cancellationToken).ResponseAsync;
         }
 
         /// <summary>
@@ -309,6 +667,46 @@ namespace Google.Example.Library.V1
 
             return @this.UpdateBook(request);
         }
+        /// <summary>
+        /// Updates a book.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the book to update.
+        /// </paramref>
+        /// <paramref name="book">
+        /// The book to update with.
+        /// </paramref>
+        /// <paramref name="updateMask">
+        /// A field mask to apply, rendered as an HTTP parameter.
+        /// </paramref>
+        public static Task<Book> UpdateBookAsync(this LibraryService.ILibraryServiceClient @this, string name, Book book, FieldMask updateMask)
+        {
+            return UpdateBookAsync(@this, name, book, updateMask, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Updates a book.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the book to update.
+        /// </paramref>
+        /// <paramref name="book">
+        /// The book to update with.
+        /// </paramref>
+        /// <paramref name="updateMask">
+        /// A field mask to apply, rendered as an HTTP parameter.
+        /// </paramref>
+        public static Task<Book> UpdateBookAsync(this LibraryService.ILibraryServiceClient @this, string name, Book book, FieldMask updateMask, CancellationToken cancellationToken)
+        {
+            UpdateBookRequest request = new UpdateBookRequest
+            {
+                Name = name,
+                Book = book,
+                UpdateMask = updateMask,
+            };
+
+            return @this.UpdateBookAsync(request, cancellationToken: cancellationToken).ResponseAsync;
+        }
 
         /// <summary>
         /// Moves a book to another shelf, and returns the new book.
@@ -328,6 +726,39 @@ namespace Google.Example.Library.V1
             };
 
             return @this.MoveBook(request);
+        }
+        /// <summary>
+        /// Moves a book to another shelf, and returns the new book.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the book to move.
+        /// </paramref>
+        /// <paramref name="otherShelfName">
+        /// The name of the destination shelf.
+        /// </paramref>
+        public static Task<Book> MoveBookAsync(this LibraryService.ILibraryServiceClient @this, string name, string otherShelfName)
+        {
+            return MoveBookAsync(@this, name, otherShelfName, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Moves a book to another shelf, and returns the new book.
+        /// </summary>
+        /// <paramref name="name">
+        /// The name of the book to move.
+        /// </paramref>
+        /// <paramref name="otherShelfName">
+        /// The name of the destination shelf.
+        /// </paramref>
+        public static Task<Book> MoveBookAsync(this LibraryService.ILibraryServiceClient @this, string name, string otherShelfName, CancellationToken cancellationToken)
+        {
+            MoveBookRequest request = new MoveBookRequest
+            {
+                Name = name,
+                OtherShelfName = otherShelfName,
+            };
+
+            return @this.MoveBookAsync(request, cancellationToken: cancellationToken).ResponseAsync;
         }
 
     }
