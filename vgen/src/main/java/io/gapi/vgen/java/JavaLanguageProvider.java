@@ -135,7 +135,7 @@ public class JavaLanguageProvider extends LanguageProvider {
   @Override
   public void outputCode(String outputPath, Multimap<Interface, GeneratedResult> services,
       boolean archive)
-      throws IOException {
+          throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
     for (Map.Entry<Interface, GeneratedResult> serviceEntry : services.entries()) {
       Interface service = serviceEntry.getKey();

@@ -1,7 +1,6 @@
 package io.gapi.vgen;
 
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Preconditions;
@@ -18,6 +17,7 @@ public abstract class LanguageProvider {
   private final ApiConfig apiConfig;
 
   private final ServiceMessages serviceMessages;
+  private final ServiceConfig serviceConfig;
   private final Resources resources;
 
   /**
@@ -28,6 +28,7 @@ public abstract class LanguageProvider {
     this.apiConfig = Preconditions.checkNotNull(apiConfig);
     this.serviceMessages = new ServiceMessages();
     this.resources = new Resources();
+    this.serviceConfig = new ServiceConfig();
   }
 
   /**
@@ -61,23 +62,12 @@ public abstract class LanguageProvider {
     return serviceMessages;
   }
 
+  public ServiceConfig getServiceConfig() {
+    return serviceConfig;
+  }
+
   public Resources resources() {
     return resources;
-  }
-
-  /**
-   * Return the service address.
-   */
-  public String getServiceAddress(Interface service) {
-    return service.getModel().getServiceConfig().getName();
-  }
-
-  /**
-   * Return the service port.
-   * TODO(cbao): Read the port from config.
-   */
-  public Integer getServicePort() {
-    return 443;
   }
 
   /**
