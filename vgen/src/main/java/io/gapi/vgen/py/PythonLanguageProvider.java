@@ -2,7 +2,6 @@ package io.gapi.vgen.py;
 
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
-import com.google.api.tools.framework.model.EnumType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
@@ -22,9 +21,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import io.gapi.vgen.ApiConfig;
@@ -38,7 +35,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Language provider for Python codegen.
@@ -146,7 +142,7 @@ public class PythonLanguageProvider extends LanguageProvider {
   @Override
   public void outputCode(String outputArchiveFile, Multimap<Interface, GeneratedResult> services,
       boolean archive)
-      throws IOException {
+          throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
     for (Map.Entry<Interface, GeneratedResult> serviceEntry : services.entries()) {
       Interface service = serviceEntry.getKey();
@@ -185,17 +181,6 @@ public class PythonLanguageProvider extends LanguageProvider {
     // Generate result.
     Doc result = snippets.generateClass(service, body, importList);
     return GeneratedResult.create(result, outputFilename);
-  }
-
-  /**
-   * Return canonical oauth scopes of the given service.
-   * @param service
-   */
-  public Set<String> getOauthScopes(Interface service) {
-    Set<String> scopes = Sets.newHashSet();
-    // TODO(cbao): Add oauth scopes of methods inside the service once AuthAttribute gets included
-    // in core.
-    return ImmutableSortedSet.copyOf(scopes);
   }
 
   /**
@@ -259,11 +244,11 @@ public class PythonLanguageProvider extends LanguageProvider {
       return true;
     }
     switch(type.getKind()) {
-    case TYPE_MESSAGE: // Fall-through.
-    case TYPE_ENUM:
-      return true;
-    default:
-      return false;
+      case TYPE_MESSAGE: // Fall-through.
+      case TYPE_ENUM:
+        return true;
+      default:
+        return false;
     }
   }
 
@@ -335,8 +320,8 @@ public class PythonLanguageProvider extends LanguageProvider {
         if (field.getType().getKind() == Type.TYPE_MESSAGE) {
           MessageType messageType = field.getType().getMessageType();
           imports.forcePut(messageType.getProto().getName(),
-                PythonImport.create(messageType.getFile().getProto().getPackage(),
-                     getPbFileName(messageType)));
+              PythonImport.create(messageType.getFile().getProto().getPackage(),
+                  getPbFileName(messageType)));
         }
       }
     }

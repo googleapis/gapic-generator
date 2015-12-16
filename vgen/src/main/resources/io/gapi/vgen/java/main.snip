@@ -83,28 +83,27 @@
   // Constants
   // =========
 
-  {@pathAndPortConstants()}
+  {@pathAndPortConstants(service)}
   {@callableConstants(service)}
   {@pageDescriptorConstants(service)}
-  {@scopeConstant()}
+  {@scopeConstant(service)}
   {@pathTemplateConstants(service)}
 @end
 
-@private pathAndPortConstants()
+@private pathAndPortConstants(service)
   /**
    * The default address of the service.
    *
   {@javaDocManualEdit()}
    */
-  # TODO (garrettjones) get this data from the yaml files of the service
-  public static final String SERVICE_ADDRESS = "xyz.googleapis.com";
+  public static final String SERVICE_ADDRESS = "{@context.getServiceConfig.getServiceAddress(service)}";
 
   /**
    * The default port of the service.
    *
   {@javaDocManualEdit()}
    */
-  public static final int DEFAULT_SERVICE_PORT = 443;
+  public static final int DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()};
 
 @end
 
@@ -164,9 +163,11 @@
   @end
 @end
 
-@private scopeConstant()
+@private scopeConstant(service)
   private static String ALL_SCOPES[] = {
-    # TODO (garrettjones) get this data from the yaml files of the service
+    @join scope : context.getServiceConfig.getAuthScopes(service)
+      "{@scope}",
+    @end
   };
 
 @end
