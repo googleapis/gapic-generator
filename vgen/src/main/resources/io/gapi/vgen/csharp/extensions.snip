@@ -67,6 +67,8 @@
   {@context.addImport("Google.Apis.Common")}
   {@context.addImport("Google.Protobuf")}
   {@context.addImport("Google.Protobuf.Collections")}
+  {@context.addImport("System.Threading")}
+  {@context.addImport("System.Threading.Tasks")}
 @end
 
 @private paginators(service)
@@ -85,8 +87,8 @@
             {@tokenTypeName}.Empty);
 
     @end
-    # Make sure we import System.Collections.Generic, but only if we need to.
-    {@context.addImport("System.Collections.Generic")}    
+    # Make sure we import collection types, but only if we need to.
+    {@context.addImport("System.Collections.Generic")}
   @end
 @end
 
@@ -117,60 +119,79 @@
 @end
 
 @private iterableFlattenedMethod(method, methodName, service, fields)
-  {@flattenedMethodXmlDoc(method)}
   @let pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming(), \
-       resourceCollectionTypeName = context.typeName(pageStreaming.getResourcesField().getType), \
-       requestTypeName = context.typeName(method.getInputType), \
+       resourceElementTypeName = context.basicTypeName(pageStreaming.getResourcesField().getType), \
        clientName = context.getClientName(service)
-    public static {@resourceCollectionTypeName} \
+    {@flattenedMethodXmlDoc(method)}
+    public static IEnumerable<{@resourceElementTypeName}> \
       {@methodName}(this {@clientName} @@this{@context.prependComma({@flattenedParameters(fields)})})
     {
-        @if {@fields.isEmpty}
-          {@requestTypeName} request = new {@requestTypeName}();
-        @else
-          {@requestTypeName} request = new {@requestTypeName}
-          {
-              {@propertySetCalls(fields)}
-          };
-        @end
+        {@requestCreation(method, fields)}
+
         return s_{@method.getSimpleName}Paginator.Fetch(request, req => @@this.{@methodName}(req));
     }
 
+    {@flattenedMethodXmlDoc(method)}
+    public static IAsyncEnumerable<{@resourceElementTypeName}> \
+      {@methodName}Async(this {@clientName} @@this{@context.prependComma({@flattenedParameters(fields)})})
+    {
+        {@requestCreation(method, fields)}
+
+        return s_{@method.getSimpleName}Paginator.FetchAsync(request, (req, cancellationToken) => @@this.{@methodName}Async(req).ResponseAsync);
+    }
   @end
 @end
 
 @private flattenedMethod(method, methodName, service, fields)
-  {@flattenedMethodXmlDoc(method)}
   @let returnType = context.methodReturnTypeName(method.getOutputType), \
-       requestTypeName = context.typeName(method.getInputType), \
        returnStatement = context.methodReturnStatement(method.getOutputType), \
-       requestMethodName = context.typeName(method.getInputType), \
        clientName = context.getClientName(service)
+    {@flattenedMethodXmlDoc(method)}
     public static {@returnType} {@methodName}(this {@clientName} @@this{@context.prependComma({@flattenedParameters(fields)})})
     {
-        @if {@fields.isEmpty}
-          {@requestTypeName} request = new {@requestTypeName}();
-        @else
-          {@requestTypeName} request = new {@requestTypeName}
-          {
-              {@propertySetCalls(fields)}
-          };
-        @end
+        {@requestCreation(method, fields)}
 
         {@returnStatement}@@this.{@methodName}(request);
     }
 
   @end
+  @let returnType = context.asyncMethodReturnTypeName(method.getOutputType), \
+       clientName = context.getClientName(service)
+    {@flattenedMethodXmlDoc(method)}
+    public static {@returnType} {@methodName}Async(this {@clientName} @@this{@context.prependComma({@flattenedParameters(fields)})})
+    {
+        return {@methodName}Async(@@this, {@flattenedArguments(fields)}, CancellationToken.None);
+    }
+
+    {@flattenedMethodXmlDoc(method)}
+    public static {@returnType} {@methodName}Async(this {@clientName} @@this{@context.prependComma({@flattenedParameters(fields)})}, \
+        CancellationToken cancellationToken)
+    {
+        {@requestCreation(method, fields)}
+
+        return @@this.{@methodName}Async(request, cancellationToken: cancellationToken).ResponseAsync;
+    }
+
+  @end
 @end
 
-@private propertySetCalls(fields)
-  @join field : fields
-    @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
-      @if field.isRepeated
-        {@propertyName(field)} = { {@paramName} },
-      @else
-        {@propertyName(field)} = {@paramName},
-      @end
+@private requestCreation(method, fields)
+  @let requestTypeName = context.typeName(method.getInputType)
+    @if {@fields.isEmpty}
+      {@requestTypeName} request = new {@requestTypeName}();
+    @else
+      {@requestTypeName} request = new {@requestTypeName}
+    {
+          @join field : fields
+            @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
+              @if field.isRepeated
+                  {@propertyName(field)} = { {@paramName} },
+              @else
+                  {@propertyName(field)} = {@paramName},
+              @end
+            @end
+          @end
+    };
     @end
   @end
 @end

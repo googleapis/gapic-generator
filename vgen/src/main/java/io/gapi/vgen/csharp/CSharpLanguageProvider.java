@@ -199,6 +199,15 @@ public class CSharpLanguageProvider extends LanguageProvider {
   }
 
   /**
+   * Given a TypeRef, returns the String form of the type to be used as a return value from
+   * an async method.
+   * Special case: this will return "Task" for the Empty return type.
+   */
+  public String asyncMethodReturnTypeName(TypeRef type) {
+    return messages().isEmptyType(type) ? "Task" : "Task<" + typeName(type) + ">";
+  }
+
+  /**
    * Returns the C# representation of a reference to a type.
    */
   public String typeName(TypeRef type) {
