@@ -169,6 +169,13 @@ public class CSharpLanguageProvider extends LanguageProvider {
   }
 
   /**
+   * Gets the name of the class which provides factory methods for this service interface.
+   */
+  public String getFactoryClassName(Interface service) {
+    return service.getSimpleName() + "Factory";
+  }
+
+  /**
    * Gets the name of the class which is the grpc container for this service interface.
    */
   public String getGrpcName(Interface service) {
@@ -176,10 +183,17 @@ public class CSharpLanguageProvider extends LanguageProvider {
   }
 
   /**
-   * Gets the name of the class which is the client interface for this service.
+   * Gets the name of the client interface for this service.
    */
   public String getClientName(Interface service) {
     return getGrpcName(service) + ".I" + service.getSimpleName() + "Client";
+  }
+
+  /**
+   * Gets the name of the class which implements this service.
+   */
+  public String getClientImplementationName(Interface service) {
+    return getGrpcName(service) + "." + service.getSimpleName() + "Client";
   }
 
   /**

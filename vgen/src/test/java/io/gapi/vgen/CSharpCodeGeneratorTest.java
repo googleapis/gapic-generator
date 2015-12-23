@@ -25,10 +25,18 @@ public class CSharpCodeGeneratorTest extends CodeGeneratorTestBase {
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
+    // TODO(jonskeet): Remove the separate YAML files when we have a better way of overriding
+    // which snippets to use. (Ideally we should use csharp_veneer.yaml and only override which
+    // snippet we want to test. While additional YAML files can override single values, they
+    // append to list values.)
     return ImmutableList.of(
       new Object[] {
-          "csharp",
-          new String[]{"io/gapi/vgen/csharp/csharp_veneer.yaml", "library_veneer.yaml"}
+          "csharp_extensions",
+          new String[] { "library_veneer.yaml", "csharp_extensions_library.yaml" }
+      },
+      new Object[] {
+          "csharp_factory",
+          new String[] { "library_veneer.yaml", "csharp_factory_library.yaml" }
       });
   }
 
