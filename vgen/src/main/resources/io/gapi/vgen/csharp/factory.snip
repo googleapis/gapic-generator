@@ -3,117 +3,117 @@
 @end
 
 @snippet generateClass(service, body, imports)
-    //
-    // Copyright 2015, Google Inc. All rights reserved.
-    //
-    // Redistribution and use in source and binary forms, with or without
-    // modification, are permitted provided that the following conditions are
-    // met:
-    //
-    //    Redistributions of source code must retain the above copyright
-    // notice, this list of conditions and the following disclaimer.
-    //    Redistributions in binary form must reproduce the above
-    // copyright notice, this list of conditions and the following disclaimer
-    // in the documentation and/or other materials provided with the
-    // distribution.
-    //
-    //    Neither the name of Google Inc. nor the names of its
-    // contributors may be used to endorse or promote products derived from
-    // this software without specific prior written permission.
-    //
-    // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-    // "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-    // LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-    // A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-    // OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-    // SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-    // LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-    // DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-    // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-    // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-    // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  //
+  // Copyright 2015, Google Inc. All rights reserved.
+  //
+  // Redistribution and use in source and binary forms, with or without
+  // modification, are permitted provided that the following conditions are
+  // met:
+  //
+  //    Redistributions of source code must retain the above copyright
+  // notice, this list of conditions and the following disclaimer.
+  //    Redistributions in binary form must reproduce the above
+  // copyright notice, this list of conditions and the following disclaimer
+  // in the documentation and/or other materials provided with the
+  // distribution.
+  //
+  //    Neither the name of Google Inc. nor the names of its
+  // contributors may be used to endorse or promote products derived from
+  // this software without specific prior written permission.
+  //
+  // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  // "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  // LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  // A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  // OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  // SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  // LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  // DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  // THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-    // EDITING INSTRUCTIONS
-    // This file was generated from the file {@service.getFile.getLocation.getDisplayString},
-    // and updates to that file get reflected here through a regular refresh process.
-    // This file should not be edited manually. Additional static members may be added
-    // to this class using partial classes.
+  // EDITING INSTRUCTIONS
+  // This file was generated from the file {@service.getFile.getLocation.getDisplayString},
+  // and updates to that file get reflected here through a regular refresh process.
+  // This file should not be edited manually. Additional static members may be added
+  // to this class using partial classes.
 
   @join import : imports
-      using {@import};
+    using {@import};
   @end
 
   namespace {@context.getNamespace(service.getFile)}
   {
-        {@body}
+      {@body}
   }
 @end
 
 @snippet generateBody(service)
-    {@addCommonImports()}
-    /// <summary>
-    /// Service-wide constants and factory methods for creating <see cref="{@context.getClientName(service)}"/> clients.
-    /// </summary>
-    public static partial class {@context.getFactoryClassName(service)}
-    {
-        {@factoryConstants(service)}
-        {@factoryMethods(service)}
-    }
+  {@addCommonImports()}
+  /// <summary>
+  /// Service-wide constants and factory methods for creating <see cref="{@context.getClientName(service)}"/> clients.
+  /// </summary>
+  public static partial class {@context.getFactoryClassName(service)}
+  {
+      {@factoryConstants(service)}
+      {@factoryMethods(service)}
+  }
 @end
 
 @private addCommonImports() fill
-    {@context.addImport("Google.Apis.Common")}
-    {@context.addImport("Grpc.Core")}
-    {@context.addImport("System.Collections.ObjectModel")}
-    {@context.addImport("System.Threading.Tasks")}
+  {@context.addImport("Google.Apis.Common")}
+  {@context.addImport("Grpc.Core")}
+  {@context.addImport("System.Collections.ObjectModel")}
+  {@context.addImport("System.Threading.Tasks")}
 @end
 
 @private factoryConstants(service)
 
-    private static readonly ReadOnlyCollection<string> _allScopes = new ReadOnlyCollection<string>(
-        new[] {
-            @join scope : context.getServiceConfig.getAuthScopes(service)
+  private static readonly ReadOnlyCollection<string> _allScopes = new ReadOnlyCollection<string>(
+      new[] {
+          @join scope : context.getServiceConfig.getAuthScopes(service)
             "{@scope}",
-            @end
-        });
+          @end
+      });
 
-    /// <summary>
-    /// All the credential scopes required for access to the service.
-    /// </summary>
-    public static IReadOnlyCollection<string> AllScopes { get { return _allScopes; } }
-  
-    /// <summary>
-    /// The default host of the service.
-    /// </summary>
-    public static string DefaultHost { get { return "{@context.getServiceConfig.getServiceAddress(service)}"; } }
+  /// <summary>
+  /// All the credential scopes required for access to the service.
+  /// </summary>
+  public static IReadOnlyCollection<string> AllScopes { get { return _allScopes; } }
 
-    /// <summary>
-    /// The default port of the service.
-    /// </summary>
-    public static int DefaultPort { get { return {@context.getServiceConfig.getServicePort()}; } }
+  /// <summary>
+  /// The default host of the service.
+  /// </summary>
+  public static string DefaultHost { get { return "{@context.getServiceConfig.getServiceAddress(service)}"; } }
+
+  /// <summary>
+  /// The default port of the service.
+  /// </summary>
+  public static int DefaultPort { get { return {@context.getServiceConfig.getServicePort()}; } }
 
 @end
 
 @private factoryMethods(service)
-    /// <summary>
-    /// Creates a channel connecting to the default host and port, using default
-    /// application credentials.
-    /// </summary>
-    /// <returns>A task representing the asynchronous operation, with a result
-    /// of a channel using the default settings.</returns>
-    public static Task<Channel> CreateChannelAsync()
-    {
-        return ChannelFactory.FromApplicationCredentials(DefaultHost, DefaultPort, AllScopes);
-    }
+  /// <summary>
+  /// Creates a channel connecting to the default host and port, using default
+  /// application credentials.
+  /// </summary>
+  /// <returns>A task representing the asynchronous operation, with a result
+  /// of a channel using the default settings.</returns>
+  public static Task<Channel> CreateChannelAsync()
+  {
+      return ChannelFactory.FromApplicationCredentials(DefaultHost, DefaultPort, AllScopes);
+  }
 
-    /// <summary>
-    /// Creates a client connecting to the default host and port, using default
-    /// application credentials.
-    /// </summary>
-    /// <returns>A task representing the asynchronous operation, with a result
-    /// of a client using the default settings.</returns>
-    public static async Task<{@context.getClientName(service)}> CreateClientAsync()
-    {
-        return new {@context.getClientImplementationName(service)}(await CreateChannelAsync());
-    }
+  /// <summary>
+  /// Creates a client connecting to the default host and port, using default
+  /// application credentials.
+  /// </summary>
+  /// <returns>A task representing the asynchronous operation, with a result
+  /// of a client using the default settings.</returns>
+  public static async Task<{@context.getClientName(service)}> CreateClientAsync()
+  {
+      return new {@context.getClientImplementationName(service)}(await CreateChannelAsync());
+  }
 @end

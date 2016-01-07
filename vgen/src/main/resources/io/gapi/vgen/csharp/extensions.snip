@@ -74,17 +74,17 @@
 @private paginators(service)
   @join method : context.messages.filterPageStreamingMethods(context.getApiConfig, service.getMethods)
     @let pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming(), \
-     resourceTypeName = context.basicTypeName(pageStreaming.getResourcesField().getType), \
-     responseTypeName = context.typeName(method.getOutputType), \
-     requestTypeName = context.typeName(method.getInputType), \
-     tokenTypeName = context.typeName(pageStreaming.getRequestTokenField().getType), \
-     clientName = context.getClientName(service)    
-    private static readonly Paginator<{@resourceTypeName}, {@requestTypeName}, {@responseTypeName}, {@tokenTypeName}> s_{@method.getSimpleName}Paginator =
-        new Paginator<{@resourceTypeName}, {@requestTypeName}, {@responseTypeName}, {@tokenTypeName}>(
-            (request, token) => { request.{@propertyName(pageStreaming.getRequestTokenField)} = token; return request; },
-            response => response.{@propertyName(pageStreaming.getResponseTokenField)},
-            response => response.{@propertyName(pageStreaming.getResourcesField)},
-            {@tokenTypeName}.Empty);
+         resourceTypeName = context.basicTypeName(pageStreaming.getResourcesField().getType), \
+         responseTypeName = context.typeName(method.getOutputType), \
+         requestTypeName = context.typeName(method.getInputType), \
+         tokenTypeName = context.typeName(pageStreaming.getRequestTokenField().getType), \
+         clientName = context.getClientName(service)
+      private static readonly Paginator<{@resourceTypeName}, {@requestTypeName}, {@responseTypeName}, {@tokenTypeName}> s_{@method.getSimpleName}Paginator =
+          new Paginator<{@resourceTypeName}, {@requestTypeName}, {@responseTypeName}, {@tokenTypeName}>(
+              (request, token) => { request.{@propertyName(pageStreaming.getRequestTokenField)} = token; return request; },
+              response => response.{@propertyName(pageStreaming.getResponseTokenField)},
+              response => response.{@propertyName(pageStreaming.getResourcesField)},
+              {@tokenTypeName}.Empty);
 
     @end
     # Make sure we import collection types, but only if we need to.
@@ -124,7 +124,7 @@
        clientName = context.getClientName(service)
     {@flattenedMethodXmlDoc(method)}
     public static IEnumerable<{@resourceElementTypeName}> \
-      {@methodName}(this {@clientName} @@this{@context.prependComma({@flattenedParameters(fields)})})
+        {@methodName}(this {@clientName} @@this{@context.prependComma({@flattenedParameters(fields)})})
     {
         {@requestCreation(method, fields)}
 
@@ -133,7 +133,7 @@
 
     {@flattenedMethodXmlDoc(method)}
     public static IAsyncEnumerable<{@resourceElementTypeName}> \
-      {@methodName}Async(this {@clientName} @@this{@context.prependComma({@flattenedParameters(fields)})})
+        {@methodName}Async(this {@clientName} @@this{@context.prependComma({@flattenedParameters(fields)})})
     {
         {@requestCreation(method, fields)}
 
@@ -181,7 +181,7 @@
       {@requestTypeName} request = new {@requestTypeName}();
     @else
       {@requestTypeName} request = new {@requestTypeName}
-    {
+      {
           @join field : fields
             @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
               @if field.isRepeated
@@ -191,7 +191,7 @@
               @end
             @end
           @end
-    };
+      };
     @end
   @end
 @end
