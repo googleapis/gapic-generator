@@ -52,15 +52,15 @@ namespace Google.Example.Library.V1
     /// </summary>
     public static class LibraryServiceExtensions
     {
-        private static readonly Paginator<Shelf, ListShelvesRequest, ListShelvesResponse, string> s_ListShelvesPaginator =
-            new Paginator<Shelf, ListShelvesRequest, ListShelvesResponse, string>(
+        private static readonly PageStreamer<Shelf, ListShelvesRequest, ListShelvesResponse, string> s_ListShelvesPageStreamer =
+            new PageStreamer<Shelf, ListShelvesRequest, ListShelvesResponse, string>(
                 (request, token) => { request.PageToken = token; return request; },
                 response => response.NextPageToken,
                 response => response.Shelves,
                 string.Empty);
 
-        private static readonly Paginator<Book, ListBooksRequest, ListBooksResponse, string> s_ListBooksPaginator =
-            new Paginator<Book, ListBooksRequest, ListBooksResponse, string>(
+        private static readonly PageStreamer<Book, ListBooksRequest, ListBooksResponse, string> s_ListBooksPageStreamer =
+            new PageStreamer<Book, ListBooksRequest, ListBooksResponse, string>(
                 (request, token) => { request.PageToken = token; return request; },
                 response => response.NextPageToken,
                 response => response.Books,
@@ -301,7 +301,7 @@ namespace Google.Example.Library.V1
         {
             ListShelvesRequest request = new ListShelvesRequest();
 
-            return s_ListShelvesPaginator.Fetch(request, req => @this.ListShelves(req));
+            return s_ListShelvesPageStreamer.Fetch(request, req => @this.ListShelves(req));
         }
 
         /// <summary>
@@ -311,7 +311,7 @@ namespace Google.Example.Library.V1
         {
             ListShelvesRequest request = new ListShelvesRequest();
 
-            return s_ListShelvesPaginator.FetchAsync(request, (req, cancellationToken) => @this.ListShelvesAsync(req).ResponseAsync);
+            return s_ListShelvesPageStreamer.FetchAsync(request, (req, cancellationToken) => @this.ListShelvesAsync(req).ResponseAsync);
         }
         /// <summary>
         /// Deletes a shelf.
@@ -522,7 +522,7 @@ namespace Google.Example.Library.V1
                 Name = name,
             };
 
-            return s_ListBooksPaginator.Fetch(request, req => @this.ListBooks(req));
+            return s_ListBooksPageStreamer.Fetch(request, req => @this.ListBooks(req));
         }
 
         /// <summary>
@@ -538,7 +538,7 @@ namespace Google.Example.Library.V1
                 Name = name,
             };
 
-            return s_ListBooksPaginator.FetchAsync(request, (req, cancellationToken) => @this.ListBooksAsync(req).ResponseAsync);
+            return s_ListBooksPageStreamer.FetchAsync(request, (req, cancellationToken) => @this.ListBooksAsync(req).ResponseAsync);
         }
         /// <summary>
         /// Deletes a book.

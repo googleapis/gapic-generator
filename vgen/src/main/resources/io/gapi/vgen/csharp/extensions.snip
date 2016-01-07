@@ -57,7 +57,7 @@
   /// </summary>
   public static class {@context.getExtensionsClassName(service)}
   {
-      {@paginators(service)}
+      {@pageStreamers(service)}
       {@flattenedMethods(service)}
   }
 @end
@@ -71,7 +71,7 @@
   {@context.addImport("System.Threading.Tasks")}
 @end
 
-@private paginators(service)
+@private pageStreamers(service)
   @join method : context.messages.filterPageStreamingMethods(context.getApiConfig, service.getMethods)
     @let pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming(), \
          resourceTypeName = context.basicTypeName(pageStreaming.getResourcesField().getType), \
@@ -79,8 +79,8 @@
          requestTypeName = context.typeName(method.getInputType), \
          tokenTypeName = context.typeName(pageStreaming.getRequestTokenField().getType), \
          clientName = context.getClientName(service)
-      private static readonly Paginator<{@resourceTypeName}, {@requestTypeName}, {@responseTypeName}, {@tokenTypeName}> s_{@method.getSimpleName}Paginator =
-          new Paginator<{@resourceTypeName}, {@requestTypeName}, {@responseTypeName}, {@tokenTypeName}>(
+      private static readonly PageStreamer<{@resourceTypeName}, {@requestTypeName}, {@responseTypeName}, {@tokenTypeName}> s_{@method.getSimpleName}PageStreamer =
+          new PageStreamer<{@resourceTypeName}, {@requestTypeName}, {@responseTypeName}, {@tokenTypeName}>(
               (request, token) => { request.{@propertyName(pageStreaming.getRequestTokenField)} = token; return request; },
               response => response.{@propertyName(pageStreaming.getResponseTokenField)},
               response => response.{@propertyName(pageStreaming.getResourcesField)},
@@ -128,7 +128,7 @@
     {
         {@requestCreation(method, fields)}
 
-        return s_{@method.getSimpleName}Paginator.Fetch(request, req => @@this.{@methodName}(req));
+        return s_{@method.getSimpleName}PageStreamer.Fetch(request, req => @@this.{@methodName}(req));
     }
 
     {@flattenedMethodXmlDoc(method)}
@@ -137,7 +137,7 @@
     {
         {@requestCreation(method, fields)}
 
-        return s_{@method.getSimpleName}Paginator.FetchAsync(request, (req, cancellationToken) => @@this.{@methodName}Async(req).ResponseAsync);
+        return s_{@method.getSimpleName}PageStreamer.FetchAsync(request, (req, cancellationToken) => @@this.{@methodName}Async(req).ResponseAsync);
     }
   @end
 @end
