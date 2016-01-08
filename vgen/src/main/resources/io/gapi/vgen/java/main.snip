@@ -241,7 +241,7 @@
 @end
 
 @private extractResourceFunctions(collectionConfig)
-  @join subField : collectionConfig.getNameTemplate.vars() 
+  @join subField : collectionConfig.getNameTemplate.vars()
     @let fieldPath = context.upperCamelToLowerCamel(resourcePath(collectionConfig))
       /**
        * Extracts the {@subField} from the given fully-qualified path which
@@ -411,7 +411,7 @@
        dummy = context.addImport("io.gapi.gax.grpc.PageDescriptor")
     public Iterable<{@resourceTypeName}> {@methodName}({@inTypeName} request) {
       return {@methodName}StreamingCallable()
-          .iterableResponseStreamCall(request);
+          .call(request);
     }
 
   @end
@@ -423,7 +423,7 @@
        pageStreaming = methodConfig.getPageStreaming(), \
        resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
        methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName)
-    public ApiCallable<{@inTypeName}, {@resourceTypeName}> {@methodName}StreamingCallable() {
+    public ApiCallable<{@inTypeName}, Iterable<{@resourceTypeName}>> {@methodName}StreamingCallable() {
       return {@methodName}Callable().pageStreaming({@methodConstant}_PAGE_DESC);
     }
 
