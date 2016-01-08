@@ -87,18 +87,11 @@ namespace Google.Example.Library.V1
         /// <paramref name="shelf">
         /// The shelf to create.
         /// </paramref>
-        public static Task<Shelf> CreateShelfAsync(this LibraryService.ILibraryServiceClient @this, Shelf shelf)
-        {
-            return CreateShelfAsync(@this, shelf, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Creates a shelf, and returns the new Shelf.
-        /// </summary>
-        /// <paramref name="shelf">
-        /// The shelf to create.
+        /// <paramref name="cancellationToken">
+        /// The cancellation token for the asynchronous operation. This defaults to the default
+        /// cancellation token, equivalent to <see cref="CancellationToken.None" />.
         /// </paramref>
-        public static Task<Shelf> CreateShelfAsync(this LibraryService.ILibraryServiceClient @this, Shelf shelf, CancellationToken cancellationToken)
+        public static Task<Shelf> CreateShelfAsync(this LibraryService.ILibraryServiceClient @this, Shelf shelf, CancellationToken cancellationToken = default(CancellationToken))
         {
             CreateShelfRequest request = new CreateShelfRequest
             {
@@ -141,24 +134,11 @@ namespace Google.Example.Library.V1
         /// <paramref name="stringBuilder">
         ///
         /// </paramref>
-        public static Task<Shelf> GetShelfAsync(this LibraryService.ILibraryServiceClient @this, string name)
-        {
-            return GetShelfAsync(@this, name, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Gets a shelf.
-        /// </summary>
-        /// <paramref name="name">
-        /// The name of the shelf to retrieve.
+        /// <paramref name="cancellationToken">
+        /// The cancellation token for the asynchronous operation. This defaults to the default
+        /// cancellation token, equivalent to <see cref="CancellationToken.None" />.
         /// </paramref>
-        /// <paramref name="message">
-        /// Field to verify that message-type query parameter gets flattened.
-        /// </paramref>
-        /// <paramref name="stringBuilder">
-        ///
-        /// </paramref>
-        public static Task<Shelf> GetShelfAsync(this LibraryService.ILibraryServiceClient @this, string name, CancellationToken cancellationToken)
+        public static Task<Shelf> GetShelfAsync(this LibraryService.ILibraryServiceClient @this, string name, CancellationToken cancellationToken = default(CancellationToken))
         {
             GetShelfRequest request = new GetShelfRequest
             {
@@ -202,24 +182,11 @@ namespace Google.Example.Library.V1
         /// <paramref name="stringBuilder">
         ///
         /// </paramref>
-        public static Task<Shelf> GetShelfAsync(this LibraryService.ILibraryServiceClient @this, string name, SomeMessage message)
-        {
-            return GetShelfAsync(@this, name, message, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Gets a shelf.
-        /// </summary>
-        /// <paramref name="name">
-        /// The name of the shelf to retrieve.
+        /// <paramref name="cancellationToken">
+        /// The cancellation token for the asynchronous operation. This defaults to the default
+        /// cancellation token, equivalent to <see cref="CancellationToken.None" />.
         /// </paramref>
-        /// <paramref name="message">
-        /// Field to verify that message-type query parameter gets flattened.
-        /// </paramref>
-        /// <paramref name="stringBuilder">
-        ///
-        /// </paramref>
-        public static Task<Shelf> GetShelfAsync(this LibraryService.ILibraryServiceClient @this, string name, SomeMessage message, CancellationToken cancellationToken)
+        public static Task<Shelf> GetShelfAsync(this LibraryService.ILibraryServiceClient @this, string name, SomeMessage message, CancellationToken cancellationToken = default(CancellationToken))
         {
             GetShelfRequest request = new GetShelfRequest
             {
@@ -265,24 +232,11 @@ namespace Google.Example.Library.V1
         /// <paramref name="stringBuilder">
         ///
         /// </paramref>
-        public static Task<Shelf> GetShelfAsync(this LibraryService.ILibraryServiceClient @this, string name, SomeMessage message, StringBuilder stringBuilder)
-        {
-            return GetShelfAsync(@this, name, message, stringBuilder, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Gets a shelf.
-        /// </summary>
-        /// <paramref name="name">
-        /// The name of the shelf to retrieve.
+        /// <paramref name="cancellationToken">
+        /// The cancellation token for the asynchronous operation. This defaults to the default
+        /// cancellation token, equivalent to <see cref="CancellationToken.None" />.
         /// </paramref>
-        /// <paramref name="message">
-        /// Field to verify that message-type query parameter gets flattened.
-        /// </paramref>
-        /// <paramref name="stringBuilder">
-        ///
-        /// </paramref>
-        public static Task<Shelf> GetShelfAsync(this LibraryService.ILibraryServiceClient @this, string name, SomeMessage message, StringBuilder stringBuilder, CancellationToken cancellationToken)
+        public static Task<Shelf> GetShelfAsync(this LibraryService.ILibraryServiceClient @this, string name, SomeMessage message, StringBuilder stringBuilder, CancellationToken cancellationToken = default(CancellationToken))
         {
             GetShelfRequest request = new GetShelfRequest
             {
@@ -334,18 +288,11 @@ namespace Google.Example.Library.V1
         /// <paramref name="name">
         /// The name of the shelf to delete.
         /// </paramref>
-        public static Task DeleteShelfAsync(this LibraryService.ILibraryServiceClient @this, string name)
-        {
-            return DeleteShelfAsync(@this, name, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Deletes a shelf.
-        /// </summary>
-        /// <paramref name="name">
-        /// The name of the shelf to delete.
+        /// <paramref name="cancellationToken">
+        /// The cancellation token for the asynchronous operation. This defaults to the default
+        /// cancellation token, equivalent to <see cref="CancellationToken.None" />.
         /// </paramref>
-        public static Task DeleteShelfAsync(this LibraryService.ILibraryServiceClient @this, string name, CancellationToken cancellationToken)
+        public static Task DeleteShelfAsync(this LibraryService.ILibraryServiceClient @this, string name, CancellationToken cancellationToken = default(CancellationToken))
         {
             DeleteShelfRequest request = new DeleteShelfRequest
             {
@@ -387,23 +334,11 @@ namespace Google.Example.Library.V1
         /// <paramref name="otherShelfName">
         /// The name of the shelf we're removing books from and deleting.
         /// </paramref>
-        public static Task<Shelf> MergeShelvesAsync(this LibraryService.ILibraryServiceClient @this, string name, string otherShelfName)
-        {
-            return MergeShelvesAsync(@this, name, otherShelfName, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Merges two shelves by adding all books from the shelf named
-        /// `other_shelf_name` to shelf `name`, and deletes
-        /// `other_shelf_name`. Returns the updated shelf.
-        /// </summary>
-        /// <paramref name="name">
-        /// The name of the shelf we're adding books to.
+        /// <paramref name="cancellationToken">
+        /// The cancellation token for the asynchronous operation. This defaults to the default
+        /// cancellation token, equivalent to <see cref="CancellationToken.None" />.
         /// </paramref>
-        /// <paramref name="otherShelfName">
-        /// The name of the shelf we're removing books from and deleting.
-        /// </paramref>
-        public static Task<Shelf> MergeShelvesAsync(this LibraryService.ILibraryServiceClient @this, string name, string otherShelfName, CancellationToken cancellationToken)
+        public static Task<Shelf> MergeShelvesAsync(this LibraryService.ILibraryServiceClient @this, string name, string otherShelfName, CancellationToken cancellationToken = default(CancellationToken))
         {
             MergeShelvesRequest request = new MergeShelvesRequest
             {
@@ -442,21 +377,11 @@ namespace Google.Example.Library.V1
         /// <paramref name="book">
         /// The book to create.
         /// </paramref>
-        public static Task<Book> CreateBookAsync(this LibraryService.ILibraryServiceClient @this, string name, Book book)
-        {
-            return CreateBookAsync(@this, name, book, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Creates a book.
-        /// </summary>
-        /// <paramref name="name">
-        /// The name of the shelf in which the book is created.
+        /// <paramref name="cancellationToken">
+        /// The cancellation token for the asynchronous operation. This defaults to the default
+        /// cancellation token, equivalent to <see cref="CancellationToken.None" />.
         /// </paramref>
-        /// <paramref name="book">
-        /// The book to create.
-        /// </paramref>
-        public static Task<Book> CreateBookAsync(this LibraryService.ILibraryServiceClient @this, string name, Book book, CancellationToken cancellationToken)
+        public static Task<Book> CreateBookAsync(this LibraryService.ILibraryServiceClient @this, string name, Book book, CancellationToken cancellationToken = default(CancellationToken))
         {
             CreateBookRequest request = new CreateBookRequest
             {
@@ -488,18 +413,11 @@ namespace Google.Example.Library.V1
         /// <paramref name="name">
         /// The name of the book to retrieve.
         /// </paramref>
-        public static Task<Book> GetBookAsync(this LibraryService.ILibraryServiceClient @this, string name)
-        {
-            return GetBookAsync(@this, name, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Gets a book.
-        /// </summary>
-        /// <paramref name="name">
-        /// The name of the book to retrieve.
+        /// <paramref name="cancellationToken">
+        /// The cancellation token for the asynchronous operation. This defaults to the default
+        /// cancellation token, equivalent to <see cref="CancellationToken.None" />.
         /// </paramref>
-        public static Task<Book> GetBookAsync(this LibraryService.ILibraryServiceClient @this, string name, CancellationToken cancellationToken)
+        public static Task<Book> GetBookAsync(this LibraryService.ILibraryServiceClient @this, string name, CancellationToken cancellationToken = default(CancellationToken))
         {
             GetBookRequest request = new GetBookRequest
             {
@@ -561,18 +479,11 @@ namespace Google.Example.Library.V1
         /// <paramref name="name">
         /// The name of the book to delete.
         /// </paramref>
-        public static Task DeleteBookAsync(this LibraryService.ILibraryServiceClient @this, string name)
-        {
-            return DeleteBookAsync(@this, name, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Deletes a book.
-        /// </summary>
-        /// <paramref name="name">
-        /// The name of the book to delete.
+        /// <paramref name="cancellationToken">
+        /// The cancellation token for the asynchronous operation. This defaults to the default
+        /// cancellation token, equivalent to <see cref="CancellationToken.None" />.
         /// </paramref>
-        public static Task DeleteBookAsync(this LibraryService.ILibraryServiceClient @this, string name, CancellationToken cancellationToken)
+        public static Task DeleteBookAsync(this LibraryService.ILibraryServiceClient @this, string name, CancellationToken cancellationToken = default(CancellationToken))
         {
             DeleteBookRequest request = new DeleteBookRequest
             {
@@ -616,24 +527,11 @@ namespace Google.Example.Library.V1
         /// <paramref name="updateMask">
         /// A field mask to apply, rendered as an HTTP parameter.
         /// </paramref>
-        public static Task<Book> UpdateBookAsync(this LibraryService.ILibraryServiceClient @this, string name, Book book)
-        {
-            return UpdateBookAsync(@this, name, book, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Updates a book.
-        /// </summary>
-        /// <paramref name="name">
-        /// The name of the book to update.
+        /// <paramref name="cancellationToken">
+        /// The cancellation token for the asynchronous operation. This defaults to the default
+        /// cancellation token, equivalent to <see cref="CancellationToken.None" />.
         /// </paramref>
-        /// <paramref name="book">
-        /// The book to update with.
-        /// </paramref>
-        /// <paramref name="updateMask">
-        /// A field mask to apply, rendered as an HTTP parameter.
-        /// </paramref>
-        public static Task<Book> UpdateBookAsync(this LibraryService.ILibraryServiceClient @this, string name, Book book, CancellationToken cancellationToken)
+        public static Task<Book> UpdateBookAsync(this LibraryService.ILibraryServiceClient @this, string name, Book book, CancellationToken cancellationToken = default(CancellationToken))
         {
             UpdateBookRequest request = new UpdateBookRequest
             {
@@ -679,24 +577,11 @@ namespace Google.Example.Library.V1
         /// <paramref name="updateMask">
         /// A field mask to apply, rendered as an HTTP parameter.
         /// </paramref>
-        public static Task<Book> UpdateBookAsync(this LibraryService.ILibraryServiceClient @this, string name, Book book, FieldMask updateMask)
-        {
-            return UpdateBookAsync(@this, name, book, updateMask, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Updates a book.
-        /// </summary>
-        /// <paramref name="name">
-        /// The name of the book to update.
+        /// <paramref name="cancellationToken">
+        /// The cancellation token for the asynchronous operation. This defaults to the default
+        /// cancellation token, equivalent to <see cref="CancellationToken.None" />.
         /// </paramref>
-        /// <paramref name="book">
-        /// The book to update with.
-        /// </paramref>
-        /// <paramref name="updateMask">
-        /// A field mask to apply, rendered as an HTTP parameter.
-        /// </paramref>
-        public static Task<Book> UpdateBookAsync(this LibraryService.ILibraryServiceClient @this, string name, Book book, FieldMask updateMask, CancellationToken cancellationToken)
+        public static Task<Book> UpdateBookAsync(this LibraryService.ILibraryServiceClient @this, string name, Book book, FieldMask updateMask, CancellationToken cancellationToken = default(CancellationToken))
         {
             UpdateBookRequest request = new UpdateBookRequest
             {
@@ -736,21 +621,11 @@ namespace Google.Example.Library.V1
         /// <paramref name="otherShelfName">
         /// The name of the destination shelf.
         /// </paramref>
-        public static Task<Book> MoveBookAsync(this LibraryService.ILibraryServiceClient @this, string name, string otherShelfName)
-        {
-            return MoveBookAsync(@this, name, otherShelfName, CancellationToken.None);
-        }
-
-        /// <summary>
-        /// Moves a book to another shelf, and returns the new book.
-        /// </summary>
-        /// <paramref name="name">
-        /// The name of the book to move.
+        /// <paramref name="cancellationToken">
+        /// The cancellation token for the asynchronous operation. This defaults to the default
+        /// cancellation token, equivalent to <see cref="CancellationToken.None" />.
         /// </paramref>
-        /// <paramref name="otherShelfName">
-        /// The name of the destination shelf.
-        /// </paramref>
-        public static Task<Book> MoveBookAsync(this LibraryService.ILibraryServiceClient @this, string name, string otherShelfName, CancellationToken cancellationToken)
+        public static Task<Book> MoveBookAsync(this LibraryService.ILibraryServiceClient @this, string name, string otherShelfName, CancellationToken cancellationToken = default(CancellationToken))
         {
             MoveBookRequest request = new MoveBookRequest
             {

@@ -158,14 +158,12 @@
   @let returnType = context.asyncMethodReturnTypeName(method.getOutputType), \
        clientName = context.getClientName(service)
     {@flattenedMethodXmlDoc(method)}
-    public static {@returnType} {@methodName}Async(this {@clientName} @@this{@context.prependComma({@flattenedParameters(fields)})})
-    {
-        return {@methodName}Async(@@this, {@flattenedArguments(fields)}, CancellationToken.None);
-    }
-
-    {@flattenedMethodXmlDoc(method)}
+    /// <paramref name="cancellationToken">
+    /// The cancellation token for the asynchronous operation. This defaults to the default
+    /// cancellation token, equivalent to <see cref="CancellationToken.None" />.
+    /// </paramref>
     public static {@returnType} {@methodName}Async(this {@clientName} @@this{@context.prependComma({@flattenedParameters(fields)})}, \
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default(CancellationToken))
     {
         {@requestCreation(method, fields)}
 
