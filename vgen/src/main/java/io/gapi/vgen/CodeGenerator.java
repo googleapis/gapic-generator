@@ -104,7 +104,7 @@ public class CodeGenerator {
         return null;
       }
 
-      ApiConfig apiConfig = ApiConfig.create(model, configProto);
+      ApiConfig apiConfig = ApiConfig.createApiConfig(model, configProto);
       if (apiConfig == null) {
         return null;
       }

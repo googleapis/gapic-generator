@@ -3,10 +3,9 @@ package io.gapi.vgen;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
-import com.google.common.collect.ImmutableList;
+import com.google.api.tools.framework.model.SymbolTable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,114 +13,68 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 /**
- * ApiConfig represents the code-gen config for an api, and includes the
- * configuration for methods and resource names.
+ * ApiConfig represents the code-gen config for an API library.
  */
 public class ApiConfig {
-  private final ImmutableList<CollectionConfig> collectionConfigs;
-  private final Map<String, MethodConfig> methodConfigMap;
+  private final Map<String, InterfaceConfig> interfaceConfigMap;
   private final String packageName;
 
   /**
    * Creates an instance of ApiConfig based on ConfigProto, linking up
-   * method configuration with the methods specified in methodMap.
+   * API interface configurations with specified interfaces in interfaceConfigMap.
    * On errors, null will be returned, and diagnostics are reported to
    * the model.
    */
-  @Nullable public static ApiConfig create(Model model,
-      ConfigProto configProto) {
-    Map<String, Method> methodMap = new HashMap<>();
-    for (Interface iface : model.getSymbolTable().getInterfaces()) {
-      if (!iface.isReachable()) {
-        continue;
-      }
-      for (Method method : iface.getMethods()) {
-        methodMap.put(method.getFullName(), method);
-      }
-    }
-
-    ImmutableList<CollectionConfig> collectionConfigs = createCollectionConfigs(
-        model, configProto);
-    Map<String, MethodConfig> methodConfigMap = createMethodConfigMap(
-        model, configProto, methodMap);
-    if (collectionConfigs == null || methodConfigMap == null) {
+  @Nullable public static ApiConfig createApiConfig(Model model, ConfigProto configProto) {
+    Map<String, InterfaceConfig> interfaceConfigMap = createInterfaceConfigMap(
+        model, configProto, model.getSymbolTable());
+    if (interfaceConfigMap == null) {
       return null;
     } else {
-      return new ApiConfig(collectionConfigs, methodConfigMap, configProto.getPackageName());
+      return new ApiConfig(interfaceConfigMap, configProto.getPackageName());
     }
   }
 
-  private static ImmutableList<CollectionConfig> createCollectionConfigs(
-      DiagCollector diagCollector, ConfigProto configProto) {
-    ImmutableList.Builder<CollectionConfig> collectionConfigsBuilder = ImmutableList.builder();
-
-    for (CollectionConfigProto collectionConfigProto : configProto.getCollectionsList()) {
-      CollectionConfig collectionConfig =
-          CollectionConfig.createCollection(diagCollector, collectionConfigProto);
-      if (collectionConfig == null) {
-        continue;
-      }
-      collectionConfigsBuilder.add(collectionConfig);
-    }
-
-    if (diagCollector.getErrorCount() > 0) {
-      return null;
-    } else {
-      return collectionConfigsBuilder.build();
-    }
-  }
-
-  private static Map<String, MethodConfig> createMethodConfigMap(
-      DiagCollector diagCollector, ConfigProto configProto,
-      Map<String, Method> methodMap) {
-    Map<String, MethodConfig> methodConfigMap = new HashMap<>();
-
-    for (MethodConfigProto methodConfigProto : configProto.getMethodsList()) {
-      Method method = methodMap.get(methodConfigProto.getName());
-      if (method == null) {
+  private static Map<String, InterfaceConfig> createInterfaceConfigMap(
+      DiagCollector diagCollector, ConfigProto configProto, SymbolTable symbolTable) {
+    Map<String, InterfaceConfig> interfaceConfigMap = new HashMap<>();
+    for (InterfaceConfigProto interfaceConfigProto : configProto.getInterfacesList()) {
+      Interface iface = symbolTable.lookupInterface(interfaceConfigProto.getName());
+      if (iface == null || !iface.isReachable()) {
         diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL,
-            "method not found: %s", methodConfigProto.getName()));
+            "interface not found: %s", interfaceConfigProto.getName()));
         continue;
       }
-      MethodConfig methodConfig =
-          MethodConfig.createMethodConfig(diagCollector, methodConfigProto, method);
-      if (methodConfig == null) {
+      InterfaceConfig interfaceConfig =
+          InterfaceConfig.createInterfaceConfig(diagCollector, interfaceConfigProto, iface);
+      if (interfaceConfig == null) {
         continue;
       }
-      methodConfigMap.put(methodConfigProto.getName(), methodConfig);
+      interfaceConfigMap.put(interfaceConfigProto.getName(), interfaceConfig);
     }
 
     if (diagCollector.getErrorCount() > 0) {
       return null;
     } else {
-      return methodConfigMap;
+      return interfaceConfigMap;
     }
   }
 
-  private ApiConfig(ImmutableList<CollectionConfig> collectionConfigs,
-      Map<String, MethodConfig> methodConfigMap, String packageName) {
-    this.collectionConfigs = collectionConfigs;
-    this.methodConfigMap = methodConfigMap;
+  private ApiConfig(Map<String, InterfaceConfig> interfaceConfigMap, String packageName) {
+    this.interfaceConfigMap = interfaceConfigMap;
     this.packageName = packageName;
   }
 
   /**
-   * Returns the list of CollectionConfigs.
+   * Returns the InterfaceConfig for the given API interface.
    */
-  public ImmutableList<CollectionConfig> getCollectionConfigs() {
-    return collectionConfigs;
-  }
-
-  /**
-   * Returns the MethodConfig for the given method.
-   */
-  public MethodConfig getMethodConfig(Method method) {
-    MethodConfig methodConfig = methodConfigMap.get(method.getFullName());
-    if (methodConfig == null) {
-      throw new IllegalArgumentException("no method config for method '"
-          + method.getFullName() + "'");
+  public InterfaceConfig getInterfaceConfig(Interface iface) {
+    InterfaceConfig interfaceConfig = interfaceConfigMap.get(iface.getFullName());
+    if (interfaceConfig == null) {
+      throw new IllegalArgumentException("no interface config for interface '"
+          + iface.getFullName() + "'");
     }
-    return methodConfig;
+    return interfaceConfig;
   }
 
   /**

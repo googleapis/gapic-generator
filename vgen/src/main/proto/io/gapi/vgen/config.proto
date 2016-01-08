@@ -15,33 +15,36 @@ option java_package = "io.gapi.vgen";
 //     type: io.gapi.vgen.ConfigProto
 //     language_provider: io.gapi.vgen.java.JavaLanguageProvider
 //     snippet_files: main.snip
-//     collections:
-//     - name_pattern: shelves/{shelf}
-//       method_base_name: shelf
-//     - name_pattern: shelves/{shelf}/books/{book}
-//       method_base_name: book
+//     interfaces:
+//     - name: google.example.library.v1.LibraryService
+//       collections:
+//       - name_pattern: shelves/{shelf}
+//         method_base_name: shelf
+//       - name_pattern: shelves/{shelf}/books/{book}
+//         method_base_name: book
+//         ...
+//       methods:
+//       - name: ListBooks
+//         flattening:
+//           groups:
+//           - parameters:
+//             - name
+//           - parameters:
+//             - name
+//             - version
+//         page_streaming:
+//           request:
+//             token_field: page_token
+//           response:
+//             token_field: next_page_token
+//             resources_field: books
+//         retry:
+//           slot_times_millis: 2
+//           truncate_after: 10
+//           max_attempts: 16
+//       - name: GetBook
 //       ...
-//     methods:
-//     - name: google.example.library.v1.LibraryService.ListBooks
-//       flattening:
-//         groups:
-//         - parameters:
-//           - name
-//         - parameters:
-//           - name
-//           - version
-//       page_streaming:
-//         request:
-//           token_field: page_token
-//         response:
-//           token_field: next_page_token
-//           resources_field: books
-//       retry:
-//         slot_times_millis: 2
-//         truncate_after: 10
-//         max_attempts: 16
-//     - name: google.example.library.v1.LibraryService.GetBook
-//       ...
+//     ...
 message ConfigProto {
 
   // The fully qualified name of the Java class of the language
@@ -62,6 +65,15 @@ message ConfigProto {
 
   // The package the generated code should belong to.
   string package_name = 4;
+
+  // A list of API interface configurations.
+  repeated InterfaceConfigProto interfaces = 10;
+}
+
+message InterfaceConfigProto {
+
+  // The fully qualified name of the API interface.
+  string name = 1;
 
   // A list of resource collection configurations.
   repeated CollectionConfigProto collections = 10;

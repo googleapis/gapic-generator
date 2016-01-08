@@ -72,23 +72,26 @@
 @end
 
 @private pageStreamers(service)
-  @join method : context.messages.filterPageStreamingMethods(context.getApiConfig, service.getMethods)
-    @let pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming(), \
-         resourceTypeName = context.basicTypeName(pageStreaming.getResourcesField().getType), \
-         responseTypeName = context.typeName(method.getOutputType), \
-         requestTypeName = context.typeName(method.getInputType), \
-         tokenTypeName = context.typeName(pageStreaming.getRequestTokenField().getType), \
-         clientName = context.getClientName(service)
-      private static readonly PageStreamer<{@resourceTypeName}, {@requestTypeName}, {@responseTypeName}, {@tokenTypeName}> s_{@method.getSimpleName}PageStreamer =
-          new PageStreamer<{@resourceTypeName}, {@requestTypeName}, {@responseTypeName}, {@tokenTypeName}>(
-              (request, token) => { request.{@propertyName(pageStreaming.getRequestTokenField)} = token; return request; },
-              response => response.{@propertyName(pageStreaming.getResponseTokenField)},
-              response => response.{@propertyName(pageStreaming.getResourcesField)},
-              {@tokenTypeName}.Empty);
+  @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service)
+    @join method : context.messages.filterPageStreamingMethods(interfaceConfig, service.getMethods)
+      @let methodConfig = interfaceConfig.getMethodConfig(method), \
+           pageStreaming = methodConfig.getPageStreaming(), \
+           resourceTypeName = context.basicTypeName(pageStreaming.getResourcesField().getType), \
+           responseTypeName = context.typeName(method.getOutputType), \
+           requestTypeName = context.typeName(method.getInputType), \
+           tokenTypeName = context.typeName(pageStreaming.getRequestTokenField().getType), \
+           clientName = context.getClientName(service)
+        private static readonly PageStreamer<{@resourceTypeName}, {@requestTypeName}, {@responseTypeName}, {@tokenTypeName}> s_{@method.getSimpleName}PageStreamer =
+            new PageStreamer<{@resourceTypeName}, {@requestTypeName}, {@responseTypeName}, {@tokenTypeName}>(
+                (request, token) => { request.{@propertyName(pageStreaming.getRequestTokenField)} = token; return request; },
+                response => response.{@propertyName(pageStreaming.getResponseTokenField)},
+                response => response.{@propertyName(pageStreaming.getResourcesField)},
+                {@tokenTypeName}.Empty);
 
+      @end
+      # Make sure we import collection types, but only if we need to.
+      {@context.addImport("System.Collections.Generic")}
     @end
-    # Make sure we import collection types, but only if we need to.
-    {@context.addImport("System.Collections.Generic")}
   @end
 @end
 
@@ -97,19 +100,20 @@
     @let methodName = method.getSimpleName, \
          inTypeName = context.typeName(method.getInputType), \
          outTypeName = context.typeName(method.getOutputType), \
-         isPageStreaming = context.getApiConfig.getMethodConfig(method).isPageStreaming, \
-         isFlattening = context.getApiConfig.getMethodConfig(method).isFlattening
+         methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+         isPageStreaming = methodConfig.isPageStreaming, \
+         isFlattening = methodConfig.isFlattening
       @if {@isPageStreaming}
         @if {@isFlattening}
           @join flatteningGroup: \
-              context.getApiConfig.getMethodConfig(method).getFlattening().getFlatteningGroups()
+              methodConfig.getFlattening().getFlatteningGroups()
             {@iterableFlattenedMethod(method, methodName, service, flatteningGroup)}
-          @end          
+          @end
         @end
       @else
         @if {@isFlattening}
           @join flatteningGroup : \
-              context.getApiConfig.getMethodConfig(method).getFlattening().getFlatteningGroups()
+              methodConfig.getFlattening().getFlatteningGroups()
             {@flattenedMethod(method, methodName, service, flatteningGroup)}
           @end
         @end
@@ -119,7 +123,8 @@
 @end
 
 @private iterableFlattenedMethod(method, methodName, service, fields)
-  @let pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming(), \
+  @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+       pageStreaming = methodConfig.getPageStreaming(), \
        resourceElementTypeName = context.basicTypeName(pageStreaming.getResourcesField().getType), \
        clientName = context.getClientName(service)
     {@flattenedMethodXmlDoc(method)}

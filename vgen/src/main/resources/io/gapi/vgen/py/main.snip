@@ -119,15 +119,17 @@
 
 @private pageDescriptorSection(service)
     @# Page descriptors
-    @join method : context.messages.filterPageStreamingMethods(context.getApiConfig, service.getMethods)
-        @let pageStreaming = context.getApiConfig.getMethodConfig(method).getPageStreaming(), \
-                 requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
-                 responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
-                 resources = pageStreaming.getResourcesField().getSimpleName()
-            {@pageDescriptorName(method)} = page_descriptor.PageDescriptor(
-                '{@requestToken}',
-                '{@responseToken}',
-                '{@resources}')
+    @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service)
+        @join method : context.messages.filterPageStreamingMethods(interfaceConfig, service.getMethods)
+            @let pageStreaming = interfaceConfig.getMethodConfig(method).getPageStreaming(), \
+                     requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
+                     responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
+                     resources = pageStreaming.getResourcesField().getSimpleName()
+                {@pageDescriptorName(method)} = page_descriptor.PageDescriptor(
+                    '{@requestToken}',
+                    '{@responseToken}',
+                    '{@resources}')
+            @end
         @end
     @end
 @end
@@ -154,7 +156,7 @@
     @join method : service.getMethods on BREAK.add(BREAK)
         {@flattenedMethod(method)}
 
-        {@callableMethod(method)}
+        {@callableMethod(service, method)}
     @end
 @end
 
@@ -184,10 +186,11 @@
     @end
 @end
 
-@private callableMethod(method)
+@private callableMethod(service, method)
     @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
              requestObjName = context.upperCamelToLowerUnderscore(method.getInputMessage().getSimpleName()), \
-             isPageStreamingRequest = context.getApiConfig.getMethodConfig(method).isPageStreaming()
+             methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+             isPageStreamingRequest = methodConfig.isPageStreaming()
         @if {@isPageStreamingRequest}
             def {@methodName}_callable(
                     self,

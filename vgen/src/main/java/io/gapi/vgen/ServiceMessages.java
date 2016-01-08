@@ -1,12 +1,11 @@
 package io.gapi.vgen;
 
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.protobuf.Empty;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.protobuf.Empty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,8 @@ public class ServiceMessages {
   /**
    * Inputs a list of methods and returns only those which are page streaming
    */
-  public Iterable<Method> filterPageStreamingMethods(ApiConfig config, List<Method> methods) {
+  public Iterable<Method> filterPageStreamingMethods(
+      InterfaceConfig config, List<Method> methods) {
     Predicate<Method> isPageStreaming = new Predicate<Method>() {
       @Override
       public boolean apply(Method method) {
