@@ -11,20 +11,20 @@ import java.util.List;
 // Example usage: (assuming environment variable BASE is the base directory of the project
 // containing the yamls, descriptor set, and output)
 //
-//     CodeGeneratorTool --base=$BASE/src/main/
-//        --descriptorSet=$BASE/generated/_descriptors/bigtable.desc
-//        --serviceYaml=$BASE/configs/bigtabletableadmin.yaml
-//        --veneerYaml=$BASE/configs/bigtable_table_veneer.yaml
+//     CodeGeneratorTool --descriptorSet=$BASE/src/main/generated/_descriptors/bigtable.desc \
+//        --serviceYaml=$BASE/src/main/configs/bigtabletableadmin.yaml \
+//        --veneerYaml=$BASE/src/main/configs/bigtable_table_veneer.yaml \
+//        --output=$BASE
 public class CodeGeneratorTool {
 
-  static String base = "";
+  static String outputDirectory = "";
   static String descriptorSet = "";
   static List<String> serviceYaml = new ArrayList<>();
   static List<String> veneerYaml = new ArrayList<>();
 
   public static void main(String[] args) {
     parseArgs(args);
-    generate(base, descriptorSet, serviceYaml, veneerYaml);
+    generate(descriptorSet, serviceYaml, veneerYaml, outputDirectory);
   }
 
   private static void parseArgs(String[] args) {
@@ -43,9 +43,9 @@ public class CodeGeneratorTool {
     }
 
     for (int i = 0; i < argList.size(); i++) {
-      if(argList.get(i).equals("--base")) {
-        assertOrDie(++i < argList.size(), String.format(missingArgMsg, "--base"));
-        base = argList.get(i);
+      if(argList.get(i).equals("--output")) {
+        assertOrDie(++i < argList.size(), String.format(missingArgMsg, "--output"));
+        outputDirectory = argList.get(i);
 
       } else if(argList.get(i).equals("--descriptorSet")) {
         assertOrDie(++i < argList.size(), String.format(missingArgMsg, "--descriptorSet"));
@@ -69,8 +69,8 @@ public class CodeGeneratorTool {
 
       } else {
         System.err.println("Unexpected option: " + argList.get(i));
-        System.err.println("Usage: CodeGeneratorTool [--base=B] [--descriptorSet=D] "
-            + "[--serviceYaml=S ... ] [--veneerYaml=V ...]");
+        System.err.println("Usage: CodeGeneratorTool [--descriptorSet=D] "
+            + "[--serviceYaml=S ... ] [--veneerYaml=V ...] [--output=O]");
         System.exit(1);
       }
     }
@@ -83,20 +83,20 @@ public class CodeGeneratorTool {
     }
   }
 
-  private static void generate(String base, String descriptorSet, List<String> apiConfigs,
-      List<String> generatorConfigs) {
+  private static void generate(String descriptorSet, List<String> apiConfigs,
+      List<String> generatorConfigs, String outputDirectory) {
 
     ToolOptions options = ToolOptions.create();
-    options.set(ToolOptions.DESCRIPTOR_SET, base + descriptorSet);
+    options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
     List<String> configs = new ArrayList<String>();
     for (String config : apiConfigs) {
-      configs.add(base + config);
+      configs.add(config);
     }
     options.set(ToolOptions.CONFIG_FILES, configs);
-    options.set(CodeGeneratorApi.OUTPUT_FILE, base);
+    options.set(CodeGeneratorApi.OUTPUT_FILE, outputDirectory);
     List<String> genConfigs = new ArrayList<String>();
     for (String genConfig : generatorConfigs) {
-      genConfigs.add(base + genConfig);
+      genConfigs.add(genConfig);
     }
     options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILES, genConfigs);
     CodeGeneratorApi codeGen = new CodeGeneratorApi(options);
