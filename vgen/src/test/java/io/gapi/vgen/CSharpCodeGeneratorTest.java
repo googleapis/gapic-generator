@@ -15,8 +15,9 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class CSharpCodeGeneratorTest extends CodeGeneratorTestBase {
 
-  public CSharpCodeGeneratorTest(String name, String[] veneerConfigFileNames) {
-    super(name, veneerConfigFileNames);
+  public CSharpCodeGeneratorTest(String name, String[] veneerConfigFileNames, String snippetName) {
+    super(name, veneerConfigFileNames, snippetName);
+    getTestDataLocator().addTestDataSource(io.gapi.vgen.csharp.CSharpLanguageProvider.class, "");
   }
 
   /**
@@ -32,11 +33,13 @@ public class CSharpCodeGeneratorTest extends CodeGeneratorTestBase {
     return ImmutableList.of(
       new Object[] {
           "csharp_extensions",
-          new String[] { "library_veneer.yaml", "csharp_extensions_library.yaml" }
+          new String[] { "library_veneer.yaml", "csharp_veneer.yaml" },
+          "extensions.snip"
       },
       new Object[] {
           "csharp_factory",
-          new String[] { "library_veneer.yaml", "csharp_factory_library.yaml" }
+          new String[] { "library_veneer.yaml", "csharp_veneer.yaml" },
+          "factory.snip"
       });
   }
 
