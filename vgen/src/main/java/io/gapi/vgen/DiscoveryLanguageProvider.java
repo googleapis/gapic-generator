@@ -1,23 +1,25 @@
 package io.gapi.vgen;
 
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.Model;
+import com.google.api.Service;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
+import com.google.protobuf.Field;
+import com.google.protobuf.Method;
+import com.google.protobuf.Type;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
+import java.util.List;
+
+import javax.annotation.Nullable;
 
 /**
  * Base class for language providers.
  */
-public abstract class LanguageProvider {
+public abstract class DiscoveryLanguageProvider {
 
-  private final Model model;
-  private final ApiConfig apiConfig;
+  private final Service service;
+  private final ApiaryConfig apiaryConfig;
 
   private final ServiceMessages serviceMessages;
   private final ServiceConfig serviceConfig;
@@ -25,31 +27,18 @@ public abstract class LanguageProvider {
   /**
    * Constructs the abstract instance of the language provider..
    */
-  protected LanguageProvider(Model model, ApiConfig apiConfig) {
-    this.model = Preconditions.checkNotNull(model);
-    this.apiConfig = Preconditions.checkNotNull(apiConfig);
+  protected DiscoveryLanguageProvider(Service service, ApiaryConfig apiaryConfig) {
+    this.service = Preconditions.checkNotNull(service);
+    this.apiaryConfig = Preconditions.checkNotNull(apiaryConfig);
     this.serviceMessages = new ServiceMessages();
     this.serviceConfig = new ServiceConfig();
   }
-
-  /**
-   * Generates code for the given service interface.
-   */
-  public abstract GeneratedResult generate(Interface service,
-      SnippetDescriptor snippetDescriptor);
 
   /**
    * Generates fragment for the given method.
    */
   public abstract GeneratedResult generateFragment(Method method,
       SnippetDescriptor snippetDescriptor);
-
-  /**
-   * Outputs the code based on a per-service map.
-   */
-  public abstract void outputCode(String outputArchiveFile,
-      Multimap<Interface, GeneratedResult> services,
-      boolean archive) throws IOException;
 
   /**
    * Outputs fragments based on a per-method map.
@@ -59,17 +48,17 @@ public abstract class LanguageProvider {
       boolean archive) throws IOException;
 
   /**
-   * Returns the associated model.
+   * Returns the associated service.
    */
-  public Model getModel() {
-    return model;
+  public Service getService() {
+    return service;
   }
 
   /**
    * Returns the associated config.
    */
-  public ApiConfig getApiConfig() {
-    return apiConfig;
+  public ApiaryConfig getApiaryConfig() {
+    return apiaryConfig;
   }
 
   public ServiceMessages messages() {
@@ -80,22 +69,19 @@ public abstract class LanguageProvider {
     return serviceConfig;
   }
 
-  public boolean isIdempotent(Method method) {
-    return Resources.isIdempotent(method);
-  }
-
-  /**
-   * Return the name of the class which is the veneer for this service interface.
-   */
-  public String getVeneerName(Interface service) {
-    return service.getSimpleName() + "Api";
-  }
-
   // Helpers for Subclasses and Snippets
   // ===================================
 
   // Note the below methods are instance-based, even if they don't depend on instance state,
   // so they can be accessed by templates.
+
+  public <T> T getLast(List<T> list) {
+    return list.get(list.size() - 1);
+  }
+
+  public String getSimpleName(String name) {
+    return name.substring(name.lastIndexOf('.') + 1);
+  }
 
   public String upperCamelToUpperUnderscore(String name) {
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, name);
@@ -125,12 +111,22 @@ public abstract class LanguageProvider {
     return CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, name);
   }
 
-  /*
-   * This method is necessary to call m.entrySet() from snippets,
-   * due to method resolution complexities.
-   * See com.google.api.tools.framework.snippet.Elem::findMethod for more details.
-   */
-  public <K, V> Collection<Map.Entry<K, V>> entrySet(Map<K, V> m) {
-    return m.entrySet();
+  @Nullable
+  public Field getFirstRepeatedField(Type type) {
+    for (Field field : type.getFieldsList()) {
+      if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
+        return field;
+      }
+    }
+    return null;
+  }
+
+  public boolean isPageStreaming(Method method) {
+    for (Field field : apiaryConfig.getType(method.getResponseTypeUrl()).getFieldsList()) {
+      if (field.getName() == "nextPageToken") {
+        return true;
+      }
+    }
+    return false;
   }
 }

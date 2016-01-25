@@ -50,6 +50,7 @@ public class DiscoveryImporter {
 
   private static Iterable<Map.Entry<String, JsonNode>> iterFields(JsonNode n) {
     return new Iterable<Map.Entry<String, JsonNode>>() {
+      @Override
       public Iterator<Map.Entry<String, JsonNode>> iterator() {
         if (n != null) {
           return n.fields();
@@ -61,6 +62,7 @@ public class DiscoveryImporter {
 
   private static Iterable<JsonNode> elements(JsonNode n) {
     return new Iterable<JsonNode>() {
+      @Override
       public Iterator<JsonNode> iterator() {
         if (n != null) {
           return n.elements();
@@ -141,6 +143,7 @@ public class DiscoveryImporter {
     }
     Service serv = builder.addApis(apiBuilder).build();
     importer.service = serv;
+    importer.config.types = importer.types;
     return importer;
   }
 

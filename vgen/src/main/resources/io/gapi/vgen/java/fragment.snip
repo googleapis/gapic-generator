@@ -1,0 +1,84 @@
+@snippet generateFilename(method)
+  @let service = method.getParent
+    {@service}.{@method.getSimpleName}.frag.java
+  @end
+@end
+
+@snippet generateClass(method, body, imports)
+  @let service = method.getParent, \
+       ServiceName = service.getSimpleName, \
+       serviceName = context.upperCamelToLowerCamel(ServiceName), \
+       serviceVersion = context.getApiConfig.getPackageName
+    /*
+     * PRE-REQUISITES:
+     * ---------------
+     * 1. If not already done, enable the {@ServiceName} API and check quota for your project at
+     *    https://console.developers.google.com/apis/api/{@serviceName}_component/quotas 
+     * 2. To install the client library on Maven or Gradle, check installation instructions at 
+     *    https://github.com/google/google-api-java-client. 
+     *    On other build systems, you can add the jar files to your project from 
+     *    https://developers.google.com/resources/api-libraries/download/{@serviceName}/{@serviceVersion}/java
+     * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from 
+     *    https://cloud.google.com/sdk/ and run 'gcloud auth login'
+     */
+    
+    @join import : imports
+      import {@import};
+    @end
+  
+    {@body}
+  @end
+@end
+
+@snippet generateBody(method)
+  {@alwaysImport()}
+  @@javax.annotation.Generated("by the sample snippet generator")
+  @let service = method.getParent, \
+       ServiceName = service.getSimpleName, \
+       serviceName = context.upperCamelToLowerCamel(ServiceName), \
+       methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
+       inTypeName = context.typeName(method.getInputType), \
+       outTypeName = context.typeName(method.getOutputType), \
+       methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+       isPageStreaming = methodConfig.isPageStreaming
+    public class {@ServiceName}Sample {
+      public static void main(String[] args) throws IOException, GeneralSecurityException {
+        // Authentication is provided by gcloud tool when running locally
+        // and by built-in service accounts when running on GAE, GCE or GKE.
+        GoogleCredential credential = GoogleCredential.getApplicationDefault();
+              
+        // The createScopedRequired method returns true when running on GAE or a local developer
+        // machine. In that case, the desired scopes must be passed in manually. When the code is
+        // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+        // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+        if (credential.createScopedRequired()) {
+          credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+        }
+            
+        HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+        {@ServiceName} {@serviceName}Service = new {@ServiceName}.Builder(httpTransport, jsonFactory, credential)
+          .setApplicationName("Google Cloud Platform Sample")
+          .build();
+
+        @if {@isPageStreaming}
+          @let pageStreaming = methodConfig.getPageStreaming(), \
+               resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType())
+             
+          @end
+        @end
+      }
+    }
+  @end
+@end
+
+@private alwaysImport() fill
+  {@context.addImport("java.io.IOException")}
+  {@context.addImport("java.security.GeneralSecurityException")}
+  {@context.addImport("java.util.Collections")}
+  {@context.addImport("com.google.api.client.googleapis.auth.oauth2.GoogleCredential")}
+  {@context.addImport("com.google.api.client.googleapis.javanet.GoogleNetHttpTransport")}
+  {@context.addImport("com.google.api.client.http.HttpTransport")}
+  {@context.addImport("com.google.api.client.json.JsonFactory")}
+  {@context.addImport("com.google.api.client.json.jackson2.JacksonFactory")}
+@end

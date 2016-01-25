@@ -12,28 +12,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Example usage: (assuming environment variable BASE is the base directory of the project
-// containing the yamls, descriptor set, and output)
+// containing the yaml config, discovery doc, and output)
 //
-//     CodeGeneratorTool --descriptor_set=$BASE/src/main/generated/_descriptors/bigtable.desc \
-//        --service_yaml=$BASE/src/main/configs/bigtabletableadmin.yaml \
-//        --veneer_yaml=$BASE/src/main/configs/bigtable_table_veneer.yaml \
+//     DiscoveryFragmentGeneratorTool --discovery_doc=$BASE/<service>.json \
+//        --veneer_yaml=$BASE/<service>_veneer.yaml \
 //        --output=$BASE
-public class CodeGeneratorTool {
+public class DiscoveryFragmentGeneratorTool {
   public static void main(String[] args) throws Exception {
     Options options = new Options();
     options.addOption("h", "help", false, "show usage");
     options.addOption(Option.builder()
-        .longOpt("descriptor_set")
-        .desc("The descriptor set representing the compiled input protos.")
+        .longOpt("discovery_doc")
+        .desc("The discovery doc representing the service description.")
         .hasArg()
-        .argName("DESCRIPTOR-SET")
-        .required(true)
-        .build());
-    options.addOption(Option.builder()
-        .longOpt("service_yaml")
-        .desc("The service yaml configuration file or files.")
-        .hasArg()
-        .argName("SERVICE-YAML")
+        .argName("DISCOVERY-DOC")
         .required(true)
         .build());
     options.addOption(Option.builder()
@@ -45,7 +37,7 @@ public class CodeGeneratorTool {
         .build());
     options.addOption(Option.builder("o")
         .longOpt("output")
-        .desc("The directory in which to output the generated Veneer.")
+        .desc("The directory in which to output the generated fragments.")
         .hasArg()
         .argName("OUTPUT-DIRECTORY")
         .build());
@@ -56,31 +48,24 @@ public class CodeGeneratorTool {
       formater.printHelp("CodeGeneratorTool", options);
     }
 
-    generate(cl.getOptionValue("descriptor_set"),
-             cl.getOptionValues("service_yaml"),
+    generate(cl.getOptionValue("discovery_doc"),
              cl.getOptionValues("veneer_yaml"),
              cl.getOptionValue("output", ""));
   }
 
-  private static void generate(String descriptorSet, String[] apiConfigs,
+  @SuppressWarnings("unchecked")
+  private static void generate(String discoveryDoc,
       String[] generatorConfigs, String outputDirectory) {
 
     ToolOptions options = ToolOptions.create();
-    options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
-    List<String> configs = new ArrayList<String>();
-    for (String config : apiConfigs) {
-      configs.add(config);
-    }
-    options.set(ToolOptions.CONFIG_FILES, configs);
-    options.set(CodeGeneratorApi.OUTPUT_FILE, outputDirectory);
+    options.set(DiscoveryFragmentGeneratorApi.DISCOVERY_DOC, discoveryDoc);
+    options.set(DiscoveryFragmentGeneratorApi.OUTPUT_FILE, outputDirectory);
     List<String> genConfigs = new ArrayList<String>();
     for (String genConfig : generatorConfigs) {
       genConfigs.add(genConfig);
     }
-    options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILES, genConfigs);
-    CodeGeneratorApi codeGen = new CodeGeneratorApi(options);
-    codeGen.run();
+    options.set(DiscoveryFragmentGeneratorApi.GENERATOR_CONFIG_FILES, genConfigs);
+    DiscoveryFragmentGeneratorApi generator = new DiscoveryFragmentGeneratorApi(options);
+    generator.run();
   }
 }
-
-
