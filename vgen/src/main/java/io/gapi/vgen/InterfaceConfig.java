@@ -6,7 +6,13 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
+import io.grpc.Status;
+
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +25,7 @@ import javax.annotation.Nullable;
 public class InterfaceConfig {
   private final ImmutableList<CollectionConfig> collectionConfigs;
   private final Map<String, MethodConfig> methodConfigMap;
+  private final ImmutableMap<String, ImmutableSet<Status.Code>> retryDefinition;
 
   /**
    * Creates an instance of InterfaceConfig based on ConfigProto, linking up
@@ -30,12 +37,20 @@ public class InterfaceConfig {
       DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto, Interface iface) {
     ImmutableList<CollectionConfig> collectionConfigs = createCollectionConfigs(
         diagCollector, interfaceConfigProto);
-    Map<String, MethodConfig> methodConfigMap = createMethodConfigMap(
-        diagCollector, interfaceConfigProto, iface);
-    if (collectionConfigs == null || methodConfigMap == null) {
+
+    ImmutableMap<String, ImmutableSet<Status.Code>> retryDefinition =
+        createRetryDefinition(diagCollector, interfaceConfigProto);
+
+    Map<String, MethodConfig> methodConfigMap = null;
+    if (retryDefinition != null) {
+      methodConfigMap =
+          createMethodConfigMap(diagCollector, interfaceConfigProto, iface, retryDefinition.keySet());
+    }
+
+    if (collectionConfigs == null || methodConfigMap == null || retryDefinition == null) {
       return null;
     } else {
-      return new InterfaceConfig(collectionConfigs, methodConfigMap);
+      return new InterfaceConfig(collectionConfigs, methodConfigMap, retryDefinition);
     }
   }
 
@@ -59,8 +74,33 @@ public class InterfaceConfig {
     }
   }
 
+  private static ImmutableMap<String, ImmutableSet<Status.Code>> createRetryDefinition(
+      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
+    ImmutableMap.Builder<String, ImmutableSet<Status.Code>> builder =
+        ImmutableMap.<String, ImmutableSet<Status.Code>>builder();
+    for (RetryConfigDefinitionProto retryDef : interfaceConfigProto.getRetryDefList()) {
+      EnumSet<Status.Code> codes = EnumSet.noneOf(Status.Code.class);
+      for (String codeText : retryDef.getRetryCodesList()) {
+        try {
+          codes.add(Status.Code.valueOf(codeText));
+        } catch (IllegalArgumentException e) {
+          diagCollector.addDiag(
+              Diag.error(SimpleLocation.TOPLEVEL, "status code not found %s", codeText));
+        }
+      }
+      builder.put(retryDef.getName(), Sets.immutableEnumSet(codes));
+    }
+    if (diagCollector.getErrorCount() > 0) {
+      return null;
+    }
+    return builder.build();
+  }
+
   private static Map<String, MethodConfig> createMethodConfigMap(
-      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto, Interface iface) {
+      DiagCollector diagCollector,
+      InterfaceConfigProto interfaceConfigProto,
+      Interface iface,
+      ImmutableSet<String> retryConfigNames) {
     Map<String, MethodConfig> methodConfigMap = new HashMap<>();
 
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
@@ -71,7 +111,7 @@ public class InterfaceConfig {
         continue;
       }
       MethodConfig methodConfig =
-          MethodConfig.createMethodConfig(diagCollector, methodConfigProto, method);
+          MethodConfig.createMethodConfig(diagCollector, methodConfigProto, method, retryConfigNames);
       if (methodConfig == null) {
         continue;
       }
@@ -86,9 +126,11 @@ public class InterfaceConfig {
   }
 
   private InterfaceConfig(ImmutableList<CollectionConfig> collectionConfigs,
-      Map<String, MethodConfig> methodConfigMap) {
+      Map<String, MethodConfig> methodConfigMap,
+      ImmutableMap<String, ImmutableSet<Status.Code>> retryDefinition) {
     this.collectionConfigs = collectionConfigs;
     this.methodConfigMap = methodConfigMap;
+    this.retryDefinition = retryDefinition;
   }
 
   /**
@@ -108,5 +150,9 @@ public class InterfaceConfig {
           + method.getFullName() + "'");
     }
     return methodConfig;
+  }
+
+  public ImmutableMap<String, ImmutableSet<Status.Code>> getRetryDefinition() {
+    return retryDefinition;
   }
 }

@@ -1,6 +1,13 @@
 type: io.gapi.vgen.ConfigProto
 interfaces:
 - name: google.example.library.v1.LibraryService
+  retry_def:
+  - name: idempotent
+    retry_codes:
+    - UNAVAILABLE
+    - DEADLINE_EXCEEDED
+  - name: non_idempotent
+    retry_codes:
   collections:
   - name_pattern: shelves/{shelf}
     method_base_name: shelf
@@ -12,6 +19,7 @@ interfaces:
       groups:
       - parameters:
         - shelf
+    retry_name: non_idempotent
   - name: GetShelf
     flattening:
       groups:
@@ -24,6 +32,7 @@ interfaces:
         - name
         - message
         - string_builder
+    retry_name: idempotent
   - name: ListShelves
     flattening:
       groups:
@@ -34,28 +43,33 @@ interfaces:
       response:
         token_field: next_page_token
         resources_field: shelves
+    retry_name: idempotent
   - name: DeleteShelf
     flattening:
       groups:
       - parameters:
         - name
+    retry_name: idempotent
   - name: MergeShelves
     flattening:
       groups:
       - parameters:
         - name
         - other_shelf_name
+    retry_name: non_idempotent
   - name: CreateBook
     flattening:
       groups:
       - parameters:
         - name
         - book
+    retry_name: non_idempotent
   - name: GetBook
     flattening:
       groups:
       - parameters:
         - name
+    retry_name: idempotent
   - name: ListBooks
     flattening:
       groups:
@@ -68,11 +82,13 @@ interfaces:
       response:
         token_field: next_page_token
         resources_field: books
+    retry_name: idempotent
   - name: DeleteBook
     flattening:
       groups:
       - parameters:
         - name
+    retry_name: idempotent
   - name: UpdateBook
     flattening:
       groups:
@@ -84,9 +100,11 @@ interfaces:
         - book
         - update_mask
         - physical_mask
+    retry_name: idempotent
   - name: MoveBook
     flattening:
       groups:
       - parameters:
         - name
         - other_shelf_name
+    retry_name: non_idempotent

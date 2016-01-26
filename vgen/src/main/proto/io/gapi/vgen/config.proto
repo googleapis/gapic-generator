@@ -80,6 +80,9 @@ message InterfaceConfigProto {
 
   // A list of method configurations.
   repeated MethodConfigProto methods = 20;
+
+  // Definition for retry configuration
+  repeated RetryConfigDefinitionProto retry_def = 30;
 }
 
 message CollectionConfigProto {
@@ -108,7 +111,7 @@ message MethodConfigProto {
   PageStreamingConfigProto page_streaming = 3;
 
   // Specifies the configuration for retry.
-  RetryConfigProto retry = 4;
+  string retry_name = 4;
 }
 
 // `FlatteningConfigProto` describes the parameter groups for which a
@@ -157,16 +160,9 @@ message PageStreamingResponseProto {
   string resources_field = 2;
 }
 
-// `RetryConfig` specifies retry configuration for a method, using
-// [exponential
-// backoff](https://en.wikipedia.org/wiki/Exponential_backoff).
-message RetryConfigProto {
-  // The duration of time slots used in the algorithm. Defaults to `2`.
-  double slot_times_millis = 1;
-
-  // The ceiling after which exponentiation is cutoff. Defaults to `10`.
-  int32 truncate_after = 2;
-
-  // The maximal number of attempts made.
-  int32 max_attempts = 3;
+// `RetryConfigDefinitionProto` specifies retry configuration for a method
+// TODO(pongad): also read exponential backoff and timeout settings from here
+message RetryConfigDefinitionProto {
+  string name = 1;
+  repeated string retry_codes = 2;
 }

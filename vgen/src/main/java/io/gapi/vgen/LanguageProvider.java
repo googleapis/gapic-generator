@@ -8,6 +8,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Base class for language providers.
@@ -108,5 +110,14 @@ public abstract class LanguageProvider {
 
   public String lowerCamelToUpperCamel(String name) {
     return CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, name);
+  }
+
+  /*
+   * This method is necessary to call m.entrySet() from snippets,
+   * due to method resolution complexities.
+   * See com.google.api.tools.framework.snippet.Elem::findMethod for more details.
+   */
+  public <K, V> Collection<Map.Entry<K, V>> entrySet(Map<K, V> m) {
+    return m.entrySet();
   }
 }
