@@ -31,12 +31,18 @@ public abstract class CodeGeneratorTestBase extends ConfigBaselineTestCase {
 
   private final String name;
   private final String[] veneerConfigFileNames;
+  private final String snippetName;
   private ConfigProto config;
   private CodeGenerator generator;
 
-  public CodeGeneratorTestBase(String name, String[] veneerConfigFileNames) {
+  public CodeGeneratorTestBase(String name, String[] veneerConfigFileNames, String snippetName) {
     this.name = name;
     this.veneerConfigFileNames = veneerConfigFileNames;
+    this.snippetName = snippetName;
+  }
+
+  public CodeGeneratorTestBase(String name, String[] veneerConfigFileNames) {
+    this(name, veneerConfigFileNames, null);
   }
 
   @Override protected void setupModel() {
@@ -119,6 +125,13 @@ public abstract class CodeGeneratorTestBase extends ConfigBaselineTestCase {
             ConfigProto.getDefaultInstance());
     ConfigProto configProto =
         (ConfigProto) MultiYamlReader.read(model, inputNames, inputs, supportedConfigTypes);
+
+    if (snippetName != null) {
+      // Filtering can be made more sophisticated later if required
+      configProto = configProto.toBuilder()
+          .clearSnippetFiles().addSnippetFiles(snippetName)
+          .build();
+    }
 
     return configProto;
   }
