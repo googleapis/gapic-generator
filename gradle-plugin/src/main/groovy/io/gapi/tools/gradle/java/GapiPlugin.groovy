@@ -67,16 +67,24 @@ class GapiPlugin implements Plugin<Project> {
     }
 
     project.afterEvaluate {
-      // Register synchronization task for each api service in each source set.
-      // We need to do that after project evaluation so all gapi source sets are
-      // properly configured.
+      // Register veneer generation task for each api service in each source set.
+      config.sourceSets.each { sourceSet ->
+        def sourceSetTag = "${Util.getSourceSetSubstringForTaskNames(sourceSet.name)}"
+        sourceSet.apiServices.each { apiService ->
+          def taskName = "generate${sourceSetTag}${apiService.name.capitalize()}"
+          def task = project.tasks.create(taskName, VeneerGeneratorTask) {
+            initialize(apiService)
+          }
+        }
+      }
+
+      // Register veneer synchronization task for each api service in each source set.
       config.sourceSets.each { sourceSet ->
         def sourceSetTag = "${Util.getSourceSetSubstringForTaskNames(sourceSet.name)}"
         sourceSet.apiServices.each { apiService ->
           def taskName = "sync${sourceSetTag}${apiService.name.capitalize()}"
-          def task = project.tasks.create(taskName, SynchronizationTask) {
-            description = "Generates and synchronizes veneer for ${apiService.name}"
-            initialize apiService
+          def task = project.tasks.create(taskName, VeneerSynchronizerTask) {
+            initialize(apiService)
           }
         }
       }
