@@ -35,6 +35,12 @@ class VeneerGeneratorTask extends DefaultTask {
     inputs.file Util.descriptorFile(project, apiService.sourceSet.name)
     inputs.file "${project.projectDir}/build.gradle"
     outputs.dir generatedPath()
+    // Next line forces this task to always run.
+    // This is required because vgen library changes don't trigger this task to execute.
+    // So (for example), editing a snippet file does not cause the veneer to be re-generated.
+    // A better way would be to make the vgen library/jar a dependency of this task,
+    // but I don't know how to do that :(
+    outputs.upToDateWhen { false }
   }
 
   @TaskAction
