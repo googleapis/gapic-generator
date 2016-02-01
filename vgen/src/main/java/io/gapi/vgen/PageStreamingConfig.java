@@ -29,7 +29,7 @@ public class PageStreamingConfig {
         method.getInputType().getMessageType().lookupField(requestTokenFieldName);
     if (requestTokenField == null) {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL,
-          "Field missing for page streaming: method = %s, message type = %s, field = %s",
+          "Request field missing for page streaming: method = %s, message type = %s, field = %s",
           method.getFullName(), method.getInputType().getMessageType().getFullName(),
           requestTokenFieldName));
     }
@@ -39,7 +39,7 @@ public class PageStreamingConfig {
         method.getOutputType().getMessageType().lookupField(responseTokenFieldName);
     if (responseTokenField == null) {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL,
-          "Field missing for page streaming: method = %s, message type = %s, field = %s",
+          "Response field missing for page streaming: method = %s, message type = %s, field = %s",
           method.getFullName(), method.getOutputType().getMessageType().getFullName(),
           responseTokenFieldName));
     }
@@ -49,7 +49,7 @@ public class PageStreamingConfig {
         method.getOutputType().getMessageType().lookupField(resourcesFieldName);
     if (resourcesField == null) {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL,
-          "Field missing for page streaming: method = %s, message type = %s, field = %s",
+          "Resources field missing for page streaming: method = %s, message type = %s, field = %s",
           method.getFullName(), method.getOutputType().getMessageType().getFullName(),
           resourcesFieldName));
     }
