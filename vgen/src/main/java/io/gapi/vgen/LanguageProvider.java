@@ -18,7 +18,6 @@ public abstract class LanguageProvider {
 
   private final ServiceMessages serviceMessages;
   private final ServiceConfig serviceConfig;
-  private final Resources resources;
 
   /**
    * Constructs the abstract instance of the language provider..
@@ -27,7 +26,6 @@ public abstract class LanguageProvider {
     this.model = Preconditions.checkNotNull(model);
     this.apiConfig = Preconditions.checkNotNull(apiConfig);
     this.serviceMessages = new ServiceMessages();
-    this.resources = new Resources();
     this.serviceConfig = new ServiceConfig();
   }
 
@@ -64,10 +62,6 @@ public abstract class LanguageProvider {
 
   public ServiceConfig getServiceConfig() {
     return serviceConfig;
-  }
-
-  public Resources resources() {
-    return resources;
   }
 
   /**

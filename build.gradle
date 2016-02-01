@@ -203,4 +203,17 @@ project(':vgen') {
       }
     }
   }
+
+  // Task to run ConfigGeneratorTool
+  // =============================
+  //
+  // Command line args can be passed to the tool as a comma-separated list:
+  //   ./gradlew runConfigGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
+  task runConfigGen(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'io.gapi.vgen.config.ConfigGeneratorTool'
+    if (project.hasProperty('clargs')) {
+      args = clargs.split(',').toList()
+    }
+  }
 }

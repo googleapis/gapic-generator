@@ -26,12 +26,14 @@ public class Resources {
    * Generate parameter names for wildcards in a resource path, based on singularized
    * collection names.
    */
-  public Iterable<String> getParamsForResourceNameWildcards(FieldSegment fieldSegment) {
+  public static Iterable<String> getParamsForResourceNameWildcards(FieldSegment fieldSegment) {
     Preconditions.checkArgument(isTemplateFieldSegment(fieldSegment));
 
     // Using a LinkedHashSet to preserve insertion order
     Set<String> paramList = new LinkedHashSet<>();
     for (String collectionName : getWildcardCollectionNames(fieldSegment)) {
+      // TODO(shinfan): Replace this simple singularizer with one that may be expected to
+      // work across all APIs, such as Google NLP singularizer or Wordnet stemmer.
       String paramName = Inflector.singularize(collectionName);
       // TODO (garrettjones) handle potential non-uniqueness of parameter names;
       // make consistent with templatize().
@@ -46,7 +48,7 @@ public class Resources {
    * Each FieldSegment will be composed of a field name and a path segment, representing an
    * abstract resource name with wildcards.
    */
-  public Iterable<FieldSegment> getFieldSegmentsFromHttpPaths(List<Method> methods) {
+  public static Iterable<FieldSegment> getFieldSegmentsFromHttpPaths(List<Method> methods) {
     // Using a map with the string representation of the resource path to avoid duplication
     // of field segments with equivalent paths.
     // Using a TreeMap in particular so that the ordering is deterministic
@@ -75,7 +77,7 @@ public class Resources {
    * Returns true if the method is idempotent according to the http method kind
    * (GET, PUT, DELETE).
    */
-  public boolean isIdempotent(Method method) {
+  public static boolean isIdempotent(Method method) {
     HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);
     MethodKind methodKind = httpAttr.getMethodKind();
     return methodKind.isIdempotent();
@@ -85,7 +87,7 @@ public class Resources {
    * Returns the templatized form of the resource path (replacing each * with a name) which
    * can be used with PathTemplate.
    */
-  public String templatize(FieldSegment fieldSegment) {
+  public static String templatize(FieldSegment fieldSegment) {
     StringBuffer buf = new StringBuffer();
 
     for (String collectionName : getWildcardCollectionNames(fieldSegment)) {
@@ -96,7 +98,7 @@ public class Resources {
     return buf.toString();
   }
 
-  private boolean isTemplateFieldSegment(PathSegment pathSegment) {
+  private static boolean isTemplateFieldSegment(PathSegment pathSegment) {
     if (!(pathSegment instanceof FieldSegment)) {
       return false;
     }
@@ -113,7 +115,7 @@ public class Resources {
     return true;
   }
 
-  private List<String> getWildcardCollectionNames(FieldSegment fieldSegment) {
+  private static List<String> getWildcardCollectionNames(FieldSegment fieldSegment) {
     List<String> collectionNames = new ArrayList<>();
 
     PathSegment lastSegment = null;
