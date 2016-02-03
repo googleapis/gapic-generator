@@ -7,6 +7,7 @@
 
     {@importSection(imports)}
 
+
     {@body}
 @end
 
@@ -15,7 +16,7 @@
 @end
 
 @private licenseSection(service)
-    @# Copyright 2015 Google Inc. All rights reserved.
+    @# Copyright 2016 Google Inc. All rights reserved.
     @#
     @# Licensed under the Apache License, Version 2.0 (the "License");
     @# you may not use this file except in compliance with the License.
@@ -58,11 +59,11 @@
 
         {@constantSection(service)}
 
+        {@pageDescriptorSection(service)}
+
         {@initMethodSection(service)}
 
         {@genericMethodsSection()}
-
-        {@pageDescriptorSection(service)}
 
         {@serviceMethodsSection(service)}
 
@@ -79,8 +80,8 @@
     @# The scopes needed to make gRPC calls to all of the methods defined in
     @# this service
     _ALL_SCOPES = (
-        @join auth_scope : context.getServiceConfig.getAuthScopes(service) on ",".add(BREAK)
-            '{@auth_scope}'
+        @join auth_scope : context.getServiceConfig.getAuthScopes(service) on BREAK
+            '{@auth_scope}',
         @end
     )
 @end
@@ -128,7 +129,8 @@
                 {@pageDescriptorName(method)} = page_descriptor.PageDescriptor(
                     '{@requestToken}',
                     '{@responseToken}',
-                    '{@resources}')
+                    '{@resources}',
+                )
             @end
         @end
     @end

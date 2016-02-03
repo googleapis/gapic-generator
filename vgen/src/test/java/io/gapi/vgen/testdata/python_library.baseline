@@ -1,4 +1,4 @@
-# Copyright 2015 Google Inc. All rights reserved.
+# Copyright 2016 Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ from google.gax import api_utils
 from google.gax import page_descriptor
 from google.protobuf import field_mask_pb2
 
+
 class LibraryServiceApi(object):
     """
     This API represents a simple digital library.  It lets you manage Shelf
@@ -56,7 +57,19 @@ class LibraryServiceApi(object):
     # this service
     _ALL_SCOPES = (
         'https://www.googleapis.com/auth/library',
-        'https://www.googleapis.com/auth/cloud-platform'
+        'https://www.googleapis.com/auth/cloud-platform',
+    )
+
+    # Page descriptors
+    _LIST_SHELVES_DESCRIPTOR = page_descriptor.PageDescriptor(
+        'page_token',
+        'next_page_token',
+        'shelves',
+    )
+    _LIST_BOOKS_DESCRIPTOR = page_descriptor.PageDescriptor(
+        'page_token',
+        'next_page_token',
+        'books',
     )
 
     def __init__(
@@ -90,16 +103,6 @@ class LibraryServiceApi(object):
 
     def close(self):
         del self.stub
-
-    # Page descriptors
-    _LIST_SHELVES_DESCRIPTOR = page_descriptor.PageDescriptor(
-        'page_token',
-        'next_page_token',
-        'shelves')
-    _LIST_BOOKS_DESCRIPTOR = page_descriptor.PageDescriptor(
-        'page_token',
-        'next_page_token',
-        'books')
 
     # Service calls
     def create_shelf(
