@@ -513,6 +513,9 @@ namespace Google.Example.Library.V1
         /// <paramref name="updateMask">
         /// A field mask to apply, rendered as an HTTP parameter.
         /// </paramref>
+        /// <paramref name="physicalMask">
+        /// To test Python import clash resolution.
+        /// </paramref>
         public static Book UpdateBook(this LibraryService.ILibraryServiceClient @this, string name, Book book)
         {
             UpdateBookRequest request = new UpdateBookRequest
@@ -534,6 +537,9 @@ namespace Google.Example.Library.V1
         /// </paramref>
         /// <paramref name="updateMask">
         /// A field mask to apply, rendered as an HTTP parameter.
+        /// </paramref>
+        /// <paramref name="physicalMask">
+        /// To test Python import clash resolution.
         /// </paramref>
         /// <paramref name="cancellationToken">
         /// The cancellation token for the asynchronous operation. This defaults to the default
@@ -562,13 +568,17 @@ namespace Google.Example.Library.V1
         /// <paramref name="updateMask">
         /// A field mask to apply, rendered as an HTTP parameter.
         /// </paramref>
-        public static Book UpdateBook(this LibraryService.ILibraryServiceClient @this, string name, Book book, FieldMask updateMask)
+        /// <paramref name="physicalMask">
+        /// To test Python import clash resolution.
+        /// </paramref>
+        public static Book UpdateBook(this LibraryService.ILibraryServiceClient @this, string name, Book book, FieldMask updateMask, FieldMask physicalMask)
         {
             UpdateBookRequest request = new UpdateBookRequest
             {
                 Name = name,
                 Book = book,
                 UpdateMask = updateMask,
+                PhysicalMask = physicalMask,
             };
 
             return @this.UpdateBook(request);
@@ -585,17 +595,21 @@ namespace Google.Example.Library.V1
         /// <paramref name="updateMask">
         /// A field mask to apply, rendered as an HTTP parameter.
         /// </paramref>
+        /// <paramref name="physicalMask">
+        /// To test Python import clash resolution.
+        /// </paramref>
         /// <paramref name="cancellationToken">
         /// The cancellation token for the asynchronous operation. This defaults to the default
         /// cancellation token, equivalent to <see cref="CancellationToken.None" />.
         /// </paramref>
-        public static Task<Book> UpdateBookAsync(this LibraryService.ILibraryServiceClient @this, string name, Book book, FieldMask updateMask, CancellationToken cancellationToken = default(CancellationToken))
+        public static Task<Book> UpdateBookAsync(this LibraryService.ILibraryServiceClient @this, string name, Book book, FieldMask updateMask, FieldMask physicalMask, CancellationToken cancellationToken = default(CancellationToken))
         {
             UpdateBookRequest request = new UpdateBookRequest
             {
                 Name = name,
                 Book = book,
                 UpdateMask = updateMask,
+                PhysicalMask = physicalMask,
             };
 
             return @this.UpdateBookAsync(request, cancellationToken: cancellationToken).ResponseAsync;

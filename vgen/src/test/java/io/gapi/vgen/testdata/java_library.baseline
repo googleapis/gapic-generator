@@ -809,13 +809,15 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param name The name of the book to update.
    * @param book The book to update with.
    * @param updateMask A field mask to apply, rendered as an HTTP parameter.
+   * @param physicalMask To test Python import clash resolution.
    */
-  public Book updateBook(String name, Book book, FieldMask updateMask) {
+  public Book updateBook(String name, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
     UpdateBookRequest request =
         UpdateBookRequest.newBuilder()
         .setName(name)
         .setBook(book)
         .setUpdateMask(updateMask)
+        .setPhysicalMask(physicalMask)
         .build();
 
     return updateBook(request);

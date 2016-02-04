@@ -32,7 +32,8 @@ from google.gax import PageDescriptor
 from google.gax import api_callable
 from google.gax import config
 from google.gax.path_template import PathTemplate
-from google.protobuf import field_mask_pb2
+from google import protobuf.field_mask_pb2
+from google.example.library import v1.field_mask_pb2
 
 
 class LibraryServiceApi(object):
@@ -323,16 +324,20 @@ class LibraryServiceApi(object):
             name='',
             book=None,
             update_mask=None,
+            physical_mask=None,
             **kwargs):
         """Updates a book."""
         if book is None:
             book = library_pb2.Book()
         if update_mask is None:
-            update_mask = field_mask_pb2.FieldMask()
+            update_mask = protobuf.field_mask_pb2.FieldMask()
+        if physical_mask is None:
+            physical_mask = v1.field_mask_pb2.FieldMask()
         update_book_request = library_pb2.UpdateBookRequest(
             name=name,
             book=book,
             update_mask=update_mask,
+            physical_mask=physical_mask,
             **kwargs)
         return self.update_book_callable()(update_book_request)
 

@@ -6,6 +6,7 @@ syntax = "proto3";
 
 package google.example.library.v1;
 
+import "field_mask.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
@@ -275,6 +276,9 @@ message UpdateBookRequest {
 
   // A field mask to apply, rendered as an HTTP parameter.
   google.protobuf.FieldMask update_mask = 3;
+
+  // To test Python import clash resolution.
+  google.example.library.v1.FieldMask physical_mask = 4;
 }
 
 // Request message for LibraryService.DeleteBook.

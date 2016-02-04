@@ -4,8 +4,6 @@ import com.google.api.tools.framework.aspects.documentation.model.DocumentationU
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
@@ -13,12 +11,9 @@ import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.api.tools.framework.tools.ToolUtil;
-import com.google.auto.value.AutoValue;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -31,8 +26,6 @@ import io.gapi.vgen.LanguageProvider;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +50,7 @@ public class PythonLanguageProvider extends LanguageProvider {
 
     /**
      * Generates the body of the class for the service interface.
+     * @param iface
      */
     Doc generateBody(Interface iface);
 
@@ -65,46 +59,6 @@ public class PythonLanguageProvider extends LanguageProvider {
      * and a set of accumulated types to be imported.
      */
     Doc generateClass(Interface iface, Doc body, Iterable<String> imports);
-  }
-
-  /*
-   * Class to represent one python import.
-   */
-  @AutoValue
-  abstract static class PythonImport {
-
-    public abstract String moduleName();
-
-    public abstract String attributeName();
-
-    public abstract String localName();
-
-    /*
-     * Create a Python import with the given module, attribute and local names.
-     */
-    public static PythonImport create(String moduleName, String attributeName, String localName) {
-      return new AutoValue_PythonLanguageProvider_PythonImport(
-          moduleName, attributeName, localName);
-    }
-
-    /*
-     * Create a Python import with then given module and attribute names.
-     */
-    public static PythonImport create(String moduleName, String attributeName) {
-      return create(moduleName, attributeName, "");
-    }
-
-    /*
-     * Create a Python import with the given attribute name.
-     */
-    public static PythonImport create(String attributeName) {
-      return create("", attributeName, "");
-    }
-
-    public String importString() {
-      return (Strings.isNullOrEmpty(moduleName()) ? "" : "from " + moduleName() + " ") + "import "
-          + attributeName() + (Strings.isNullOrEmpty(localName()) ? "" : " as " + localName());
-    }
   }
 
   /**
@@ -134,11 +88,6 @@ public class PythonLanguageProvider extends LanguageProvider {
    */
   private static final String SNIPPET_RESOURCE_ROOT =
       PythonLanguageProvider.class.getPackage().getName().replace('.', '/');
-
-  /**
-   * A bi-map from full names to short names indicating the import map.
-   */
-  private final BiMap<String, PythonImport> imports = HashBiMap.create();
 
   /**
    * A set of python keywords and built-ins.
@@ -187,16 +136,22 @@ public class PythonLanguageProvider extends LanguageProvider {
 
   @Override
   public GeneratedResult generate(Interface service, SnippetDescriptor snippetDescriptor) {
+    PythonImportHandler importHandler = new PythonImportHandler(service);
+    ImmutableMap<String, Object> globalMap = ImmutableMap.<String, Object>builder()
+        .put("context", this)
+        .put("pyproto", new PythonProtoElements())
+        .put("importHandler", importHandler)
+        .build();
     PythonSnippetSet snippets = SnippetSet.createSnippetInterface(
         PythonSnippetSet.class,
         SNIPPET_RESOURCE_ROOT,
         snippetDescriptor.getSnippetInputName(),
-        ImmutableMap.<String, Object>of("context", this));
+        globalMap);
 
     Doc filenameDoc = snippets.generateFilename(service);
     String outputFilename = filenameDoc.prettyPrint();
 
-    List<String> importList = calculateImports(service);
+    List<String> importList = importHandler.calculateImports();
     Doc body = snippets.generateBody(service);
 
     // Generate result.
@@ -215,16 +170,6 @@ public class PythonLanguageProvider extends LanguageProvider {
     return convertToCommentedBlock(DocumentationUtil.getScopedDescription(element));
   }
 
-  /**
-   * Return name of protobuf file for the given ProtoElement.
-   */
-  public String getPbFileName(ProtoElement element) {
-    // FileDescriptorProto.name returns file name, relative to root of the source tree. Return the
-    // last segment of the file name without proto extension appended by "_pb2".
-    String filename = element.getFile().getProto().getName().substring(
-        element.getFile().getProto().getName().lastIndexOf("/") + 1);
-    return filename.substring(0, filename.length() - ".proto".length()) + "_pb2";
-  }
 
   /**
    * Return a non-conflicting safe name if name is a python built-in.
@@ -239,7 +184,7 @@ public class PythonLanguageProvider extends LanguageProvider {
   /**
    * Return the default value for the given field. Return null if there is no default value.
    */
-  public String defaultValue(Field field) {
+  public String defaultValue(Field field, PythonImportHandler importHandler) {
     TypeRef type = field.getType();
     // Return empty array if the type is repeated.
     if (type.getCardinality() == Cardinality.REPEATED) {
@@ -250,13 +195,13 @@ public class PythonLanguageProvider extends LanguageProvider {
       case TYPE_MESSAGE:
         String msgPath = prefixInFile(type.getMessageType());
         msgPath = Strings.isNullOrEmpty(msgPath) ? "" : msgPath + ".";
-        return getPbFileName(type.getMessageType().getFile()) + "." + msgPath
+        return importHandler.fileToModule(type.getMessageType().getFile()) + "." + msgPath
             + type.getMessageType().getSimpleName() + "()";
       case TYPE_ENUM:
         Preconditions.checkArgument(type.getEnumType().getValues().size() > 0);
         String enumPath = prefixInFile(type.getEnumType());
         enumPath = Strings.isNullOrEmpty(enumPath) ? "" : enumPath + ".";
-        return getPbFileName(type.getEnumType().getFile()) + "."
+        return importHandler.fileToModule(type.getEnumType().getFile()) + "."
             + enumPath + type.getEnumType().getValues().get(0).getSimpleName();
       default:
         if (type.isPrimitive()) {
@@ -323,47 +268,4 @@ public class PythonLanguageProvider extends LanguageProvider {
     return builder.build();
   }
 
-  /*
-   * Calculate the imports map and return a sorted set of python import output strings.
-   */
-  private List<String> calculateImports(Interface service) {
-    imports.clear();
-
-    // Add non-service-specific imports.
-    imports.put("api_callable", PythonImport.create("google.gax", "api_callable"));
-    imports.put("config", PythonImport.create("google.gax", "config"));
-    imports.put("PageDescriptor", PythonImport.create("google.gax", "PageDescriptor"));
-    imports.put("PathTemplate", PythonImport.create("google.gax.path_template", "PathTemplate"));
-
-    // Add service-specific imports.
-    imports.put(
-        service.getFile().getProto().getName(),
-        PythonImport.create(service.getFile().getProto().getPackage(), // package name
-            getPbFileName(service)));
-
-    // Add method request-type imports
-    // There may be duplication, so we use forcePut
-    for (Method method : service.getMethods()) {
-      imports.forcePut(
-          method.getInputMessage().getFile().getProto().getName(),
-          PythonImport.create(method.getFile().getProto().getPackage(), // package name
-              getPbFileName(method.getInputMessage())));
-      for (Field field : method.getInputType().getMessageType().getFields()) {
-        if (field.getType().getKind() == Type.TYPE_MESSAGE) {
-          MessageType messageType = field.getType().getMessageType();
-          imports.forcePut(messageType.getProto().getName(),
-              PythonImport.create(messageType.getFile().getProto().getPackage(),
-                  getPbFileName(messageType)));
-        }
-      }
-    }
-
-    // Generate a sorted list with import strings.
-    List<String> result = new ArrayList<>();
-    for (PythonImport protoImport : imports.values()) {
-      result.add(protoImport.importString());
-    }
-    Collections.sort(result);
-    return result;
-  }
 }

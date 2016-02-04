@@ -52,7 +52,6 @@
     @end
 @end
 
-# TODO(jgeiger): module name should be lower_with_under, class name UpperCamel
 @private serviceClass(service)
     class {@context.getVeneerName(service)}(object):
         {@comments(service)}
@@ -89,7 +88,7 @@
 @end
 
 @private initMethodSection(service)
-    @let stubModule = context.getPbFileName(service), \
+    @let stubModule = pyproto.getPbFileName(service), \
              stubService = service.getSimpleName()
         def __init__(
                 self,
@@ -179,7 +178,7 @@
 @private flattenedMethod(method)
     @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
              requestObjName = context.upperCamelToLowerUnderscore(method.getInputMessage().getSimpleName()), \
-             methodInputModule = context.getPbFileName(method.getInputMessage()), \
+             methodInputModule = pyproto.getPbFileName(method.getInputMessage()), \
              inputTypeName = method.getInputMessage().getSimpleName(), \
              flattenedParams = context.messages.flattenedFields(method.getInputType())
         @if flattenedParams
@@ -237,7 +236,7 @@
             @if {@context.isDefaultValueMutable(field)}
                 {@paramName}=None
             @else
-                {@paramName}={@context.defaultValue(field)}
+                {@paramName}={@context.defaultValue(field, importHandler)}
             @end
         @end
     @end
@@ -247,7 +246,7 @@
     @join field : flattenedParams if {@context.isDefaultValueMutable(field)} on BREAK
         @let paramName = {@context.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
             if {@paramName} is None:
-                {@paramName} = {@context.defaultValue(field)}
+                {@paramName} = {@context.defaultValue(field, importHandler)}
         @end
     @end
 @end
