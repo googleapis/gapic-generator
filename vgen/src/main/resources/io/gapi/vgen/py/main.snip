@@ -61,6 +61,8 @@
 
         {@pageDescriptorSection(service)}
 
+        {@pathTemplateSection(service)}
+
         {@initMethodSection(service)}
 
         {@genericMethodsSection()}
@@ -133,6 +135,19 @@
             @end
         @end
     @end
+@end
+
+@private pathTemplateName(collectionConfig)
+    {@context.lowerUnderscoreToUpperUnderscore(collectionConfig.getMethodBaseName)}
+@end
+
+@private pathTemplateSection(service)
+    class Templates(object):
+        """PathTemplates for resources used by {@context.getVeneerName(service)}."""
+        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+            {@pathTemplateName(collectionConfig)} = PathTemplate.from_string(
+                '{@collectionConfig.getNamePattern}')
+        @end
 @end
 
 @private comments(element)

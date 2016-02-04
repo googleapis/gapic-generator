@@ -31,6 +31,7 @@ from google.example.library.v1 import library_pb2
 from google.gax import PageDescriptor
 from google.gax import api_callable
 from google.gax import config
+from google.gax.path_template import PathTemplate
 from google.protobuf import field_mask_pb2
 
 
@@ -70,6 +71,13 @@ class LibraryServiceApi(object):
         'next_page_token',
         'books',
     )
+
+    class Templates(object):
+        """PathTemplates for resources used by LibraryServiceApi."""
+        SHELF = PathTemplate.from_string(
+            'shelves/{shelf}')
+        BOOK = PathTemplate.from_string(
+            'shelves/{shelf}/books/{book}')
 
     def __init__(
             self,
