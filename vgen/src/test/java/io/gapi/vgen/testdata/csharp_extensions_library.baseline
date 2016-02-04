@@ -433,11 +433,15 @@ namespace Google.Example.Library.V1
         /// <paramref name="name">
         /// The name of the shelf whose books we'd like to list.
         /// </paramref>
-        public static IEnumerable<Book> ListBooks(this LibraryService.ILibraryServiceClient @this, string name)
+        /// <paramref name="filter">
+        /// To test python built-in wrapping.
+        /// </paramref>
+        public static IEnumerable<Book> ListBooks(this LibraryService.ILibraryServiceClient @this, string name, string filter)
         {
             ListBooksRequest request = new ListBooksRequest
             {
                 Name = name,
+                Filter = filter,
             };
 
             return s_ListBooksPageStreamer.Fetch(request, req => @this.ListBooks(req));
@@ -449,11 +453,15 @@ namespace Google.Example.Library.V1
         /// <paramref name="name">
         /// The name of the shelf whose books we'd like to list.
         /// </paramref>
-        public static IAsyncEnumerable<Book> ListBooksAsync(this LibraryService.ILibraryServiceClient @this, string name)
+        /// <paramref name="filter">
+        /// To test python built-in wrapping.
+        /// </paramref>
+        public static IAsyncEnumerable<Book> ListBooksAsync(this LibraryService.ILibraryServiceClient @this, string name, string filter)
         {
             ListBooksRequest request = new ListBooksRequest
             {
                 Name = name,
+                Filter = filter,
             };
 
             return s_ListBooksPageStreamer.FetchAsync(request, (req, cancellationToken) => @this.ListBooksAsync(req).ResponseAsync);

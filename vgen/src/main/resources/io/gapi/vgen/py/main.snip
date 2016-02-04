@@ -88,7 +88,7 @@
 
 @private initMethodSection(service)
     @let stubModule = context.getPbFileName(service), \
-             stubService = service.getSimpleName
+             stubService = service.getSimpleName()
         def __init__(
                 self,
                 service_path=_SERVICE_ADDRESS,
@@ -218,7 +218,7 @@
 
 @private parameterValues(flattenedParams)
     @join field : flattenedParams on ",".add(BREAK)
-        @let paramName = field.getSimpleName()
+        @let paramName = {@context.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
             @if {@context.isDefaultValueMutable(field)}
                 {@paramName}=None
             @else
@@ -230,7 +230,7 @@
 
 @private defaultMutableValues(flattenedParams)
     @join field : flattenedParams if {@context.isDefaultValueMutable(field)} on BREAK
-        @let paramName = field.getSimpleName()
+        @let paramName = {@context.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
             if {@paramName} is None:
                 {@paramName} = {@context.defaultValue(field)}
         @end
@@ -239,8 +239,8 @@
 
 @private namedParameters(flattenedParams)
     @join field : flattenedParams on ",".add(BREAK)
-        @let paramName = field.getSimpleName()
-            {@paramName}={@paramName}
+        @let paramName = {@field.getSimpleName()}
+            {@paramName}={@context.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
         @end
     @end
 @end

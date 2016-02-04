@@ -267,11 +267,13 @@ class LibraryServiceApi(object):
     def list_books(
             self,
             name='',
+            filter_='',
             **kwargs):
         """Lists books in a shelf."""
 
         list_books_request = library_pb2.ListBooksRequest(
             name=name,
+            filter=filter_,
             **kwargs)
         return self.list_books_callable()(list_books_request)
 

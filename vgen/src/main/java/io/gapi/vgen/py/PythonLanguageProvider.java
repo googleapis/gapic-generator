@@ -21,6 +21,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
@@ -139,6 +140,26 @@ public class PythonLanguageProvider extends LanguageProvider {
    */
   private final BiMap<String, PythonImport> imports = HashBiMap.create();
 
+  /**
+   * A set of python keywords and built-ins.
+   * Built-ins derived from: https://docs.python.org/2/library/functions.html
+   */
+  private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
+      ImmutableSet.<String>builder()
+      .add("and", "as", "assert", "break", "class", "continue", "def", "del", "elif", "else",
+          "except", "exec", "finally", "for", "from", "global", "if", "import", "in", "is",
+          "lambda", "not", "or", "pass", "print", "raise", "return", "try", "while", "with",
+          "yield", "abs", "all", "any", "basestring", "bin", "bool", "bytearray", "callable", "chr",
+          "classmethod", "cmp", "compile", "complex", "delattr", "dict", "dir", "divmod",
+          "enumerate", "eval", "execfile", "file", "filter", "float", "format", "frozenset",
+          "getattr", "globals", "hasattr", "hash", "help", "hex", "id", "input", "int",
+          "isinstance", "issubclass", "iter", "len", "list", "locals", "long", "map", "max",
+          "memoryview", "min", "next", "object", "oct", "open", "ord", "pow", "print", "property",
+          "range", "raw_input", "reduce", "reload", "repr", "reversed", "round", "set", "setattr",
+          "slice", "sorted", "staticmethod", "str", "sum", "super", "tuple", "type", "unichr",
+          "unicode", "vars", "xrange", "zip", "__import__")
+      .build();
+
   @Override
   public void outputCode(String outputArchiveFile, Multimap<Interface, GeneratedResult> services,
       boolean archive)
@@ -203,6 +224,16 @@ public class PythonLanguageProvider extends LanguageProvider {
     String filename = element.getFile().getProto().getName().substring(
         element.getFile().getProto().getName().lastIndexOf("/") + 1);
     return filename.substring(0, filename.length() - ".proto".length()) + "_pb2";
+  }
+
+  /**
+   * Return a non-conflicting safe name if name is a python built-in.
+   */
+  public String wrapIfKeywordOrBuiltIn(String name) {
+    if (KEYWORD_BUILT_IN_SET.contains(name)) {
+      return name + "_";
+    }
+    return name;
   }
 
   /**
