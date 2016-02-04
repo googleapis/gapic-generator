@@ -28,9 +28,9 @@
 # Happy editing!
 
 from google.example.library.v1 import library_pb2
+from google.gax import PageDescriptor
 from google.gax import api_callable
-from google.gax import api_utils
-from google.gax import page_descriptor
+from google.gax import config
 from google.protobuf import field_mask_pb2
 
 
@@ -60,12 +60,12 @@ class LibraryServiceApi(object):
         'https://www.googleapis.com/auth/cloud-platform',
     )
 
-    _LIST_SHELVES_DESCRIPTOR = page_descriptor.PageDescriptor(
+    _LIST_SHELVES_DESCRIPTOR = PageDescriptor(
         'page_token',
         'next_page_token',
         'shelves',
     )
-    _LIST_BOOKS_DESCRIPTOR = page_descriptor.PageDescriptor(
+    _LIST_BOOKS_DESCRIPTOR = PageDescriptor(
         'page_token',
         'next_page_token',
         'books',
@@ -86,7 +86,7 @@ class LibraryServiceApi(object):
             max_attempts=max_attempts,
             is_idempotent_retrying=is_idempotent_retrying)
 
-        self.stub = api_utils.create_stub(
+        self.stub = config.create_stub(
             library_pb2.beta_create_LibraryService_stub,
             service_path,
             port,

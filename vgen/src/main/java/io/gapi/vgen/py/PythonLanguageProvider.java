@@ -300,8 +300,8 @@ public class PythonLanguageProvider extends LanguageProvider {
 
     // Add non-service-specific imports.
     imports.put("api_callable", PythonImport.create("google.gax", "api_callable"));
-    imports.put("api_utils", PythonImport.create("google.gax", "api_utils"));
-    imports.put("page_descriptor", PythonImport.create("google.gax", "page_descriptor"));
+    imports.put("config", PythonImport.create("google.gax", "config"));
+    imports.put("PageDescriptor", PythonImport.create("google.gax", "PageDescriptor"));
 
     // Add service-specific imports.
     imports.put(

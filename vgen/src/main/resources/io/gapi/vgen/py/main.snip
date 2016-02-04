@@ -104,7 +104,7 @@
                 max_attempts=max_attempts,
                 is_idempotent_retrying=is_idempotent_retrying)
 
-            self.stub = api_utils.create_stub(
+            self.stub = config.create_stub(
                 {@stubModule}.beta_create_{@stubService}_stub,
                 service_path,
                 port,
@@ -125,7 +125,7 @@
                      requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
                      responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
                      resources = pageStreaming.getResourcesField().getSimpleName()
-                {@pageDescriptorName(method)} = page_descriptor.PageDescriptor(
+                {@pageDescriptorName(method)} = PageDescriptor(
                     '{@requestToken}',
                     '{@responseToken}',
                     '{@resources}',
