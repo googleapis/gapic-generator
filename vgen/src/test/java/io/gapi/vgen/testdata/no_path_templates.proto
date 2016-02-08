@@ -1,0 +1,23 @@
+// Dummy service that doesn't use standard resource names
+
+syntax = "proto3";
+
+package google.example.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_outer_classname = "LibraryProto";
+option java_package = "com.google.example.noPathTemplates.v1";
+
+service NoTemplatesService {
+
+  rpc Increment(IncrementRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = { post: "/v1/me:increment" body: "*" };
+  }
+
+}
+
+message IncrementRequest {
+}

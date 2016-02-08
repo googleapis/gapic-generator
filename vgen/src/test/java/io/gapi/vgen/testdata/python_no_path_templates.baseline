@@ -1,0 +1,98 @@
+# Copyright 2016 Google Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# EDITING INSTRUCTIONS
+# This file was generated from the file
+# https://github.com/google/googleapis/blob/master/no_path_templates.proto,
+# and updates to that file get reflected here through a refresh process.
+# For the short term, the refresh process will only be runnable by Google engineers.
+# Manual additions are allowed because the refresh process performs
+# a 3-way merge in order to preserve those manual additions. In order to not
+# break the refresh process, only certain types of modifications are
+# allowed.
+#
+# Allowed modifications:
+# 1. New methods (these should be added to the end of the class)
+#
+# Happy editing!
+
+from google.example.v1 import no_path_templates_pb2
+from google.gax import PageDescriptor
+from google.gax import api_callable
+from google.gax import config
+from google.gax.path_template import PathTemplate
+
+
+class NoTemplatesServiceApi(object):
+    # The default address of the logging service.
+    _SERVICE_ADDRESS = 'no-path-templates.googleapis.com'
+
+    # The default port of the logging service.
+    _DEFAULT_SERVICE_PORT = 443
+
+    # The scopes needed to make gRPC calls to all of the methods defined in
+    # this service
+    _ALL_SCOPES = (
+    )
+
+    def __init__(
+            self,
+            service_path=_SERVICE_ADDRESS,
+            port=_DEFAULT_SERVICE_PORT,
+            channel=None,
+            ssl_creds=None,
+            scopes=_ALL_SCOPES,
+            is_idempotent_retrying=True,
+            max_attempts=3,
+            timeout=30):
+        self.defaults = api_callable.ApiCallableDefaults(
+            timeout=timeout,
+            max_attempts=max_attempts,
+            is_idempotent_retrying=is_idempotent_retrying)
+
+        self.stub = config.create_stub(
+            no_path_templates_pb2.beta_create_NoTemplatesService_stub,
+            service_path,
+            port,
+            ssl_creds=ssl_creds,
+            channel=channel,
+            scopes=scopes)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+
+    def close(self):
+        del self.stub
+
+    # Service calls
+    def increment(self, **kwargs):
+        increment_request = no_path_templates_pb2.IncrementRequest(**kwargs)
+        return self.increment_callable()(increment_request)
+
+    def increment_callable(
+            self,
+            is_retrying=None,
+            max_attempts=None):
+        return api_callable.idempotent_callable(
+            self.stub.Increment,
+            is_retrying=is_retrying,
+            max_attempts=max_attempts,
+            defaults=self.defaults)
+
+    # ========
+    # Manually-added methods: add custom (non-generated) methods after this point.
+    # ========
