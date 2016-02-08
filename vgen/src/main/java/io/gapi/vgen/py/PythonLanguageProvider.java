@@ -4,6 +4,7 @@ import com.google.api.tools.framework.aspects.documentation.model.DocumentationU
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
@@ -159,17 +160,100 @@ public class PythonLanguageProvider extends LanguageProvider {
     return GeneratedResult.create(result, outputFilename);
   }
 
+
   /**
-   * Return comments lines of the proto elements. Those lines will be printed out in the generated
-   * proto.
+   * Return a Python docstring to be associated with the given ProtoElement.
    */
-  public List<String> comments(ProtoElement element) {
+  public List<String> comments(ProtoElement element, PythonImportHandler importHandler) {
+    if (element instanceof Method) {
+      return methodComments((Method) element, importHandler);
+    } else {
+      return defaultComments(element);
+    }
+  }
+
+  /**
+   * Return comments lines for a given proto element, extracted directly from the proto doc
+   */
+  private List<String> defaultComments(ProtoElement element) {
     if (!element.hasAttribute(ElementDocumentationAttribute.KEY)) {
       return ImmutableList.<String>of("");
     }
     return convertToCommentedBlock(DocumentationUtil.getScopedDescription(element));
   }
 
+  /**
+   * Return comments lines for a given method, consisting of proto doc and parameter type
+   * documentation
+   */
+  private List<String> methodComments(Method msg, PythonImportHandler importHandler) {
+    // Generate parameter types
+    StringBuilder paramTypesBuilder = new StringBuilder();
+    for (Field field : this.messages().flattenedFields(msg.getInputType())) {
+      TypeRef type = field.getType();
+
+      String cardinalityComment;
+      if (type.getCardinality() == Cardinality.REPEATED) {
+        cardinalityComment = "list of ";
+      } else {
+        cardinalityComment = "";
+      }
+
+      String typeComment;
+      switch (type.getKind()) {
+        case TYPE_MESSAGE:
+          String msgPath = prefixInFile(type.getMessageType());
+          msgPath = Strings.isNullOrEmpty(msgPath) ? "" : msgPath + ".";
+          typeComment = importHandler.fileToModule(type.getMessageType().getFile()) + "."
+              + msgPath + type.getMessageType().getSimpleName();
+          break;
+
+        case TYPE_ENUM:
+          Preconditions.checkArgument(type.getEnumType().getValues().size() > 0);
+          String enumPath = prefixInFile(type.getEnumType());
+          enumPath = Strings.isNullOrEmpty(enumPath) ? "" : enumPath + ".";
+          typeComment = "enum " + importHandler.fileToModule(type.getEnumType().getFile()) + "."
+              + enumPath + type.getEnumType().getSimpleName();
+          break;
+
+        default:
+          if (type.isPrimitive()) {
+            typeComment = type.getPrimitiveTypeName();
+          } else {
+            throw new IllegalArgumentException("unknown type kind: " + type.getKind());
+          }
+          break;
+      }
+
+      paramTypesBuilder.append(
+          String.format(":type %s: %s%s\n",
+              field.getSimpleName(), cardinalityComment, typeComment));
+    }
+    // Remove trailing newline if exists
+    if (paramTypesBuilder.length() > 0) {
+      paramTypesBuilder.setLength(paramTypesBuilder.length() - 1);
+    }
+    String paramTypes = paramTypesBuilder.toString();
+
+    // Generate comment contents
+    StringBuilder contentBuilder = new StringBuilder();
+    if (msg.hasAttribute(ElementDocumentationAttribute.KEY)) {
+      contentBuilder.append(DocumentationUtil.getScopedDescription(msg));
+      if (!Strings.isNullOrEmpty(paramTypes)) {
+        contentBuilder.append("\n\n");
+      }
+    }
+    if (!Strings.isNullOrEmpty(paramTypes)){
+      contentBuilder.append(paramTypes);
+    }
+
+    // Don't generate empty docstrings
+    if (contentBuilder.length() == 0) {
+      return ImmutableList.<String>of("");
+    }
+
+    return convertToCommentedBlock(contentBuilder.toString());
+  }
 
   /**
    * Return a non-conflicting safe name if name is a python built-in.

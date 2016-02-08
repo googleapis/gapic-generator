@@ -117,7 +117,11 @@ class LibraryServiceApi(object):
             self,
             shelf=None,
             **kwargs):
-        """Creates a shelf, and returns the new Shelf."""
+        """
+        Creates a shelf, and returns the new Shelf.
+
+        :type shelf: library_pb2.Shelf
+        """
         if shelf is None:
             shelf = library_pb2.Shelf()
         create_shelf_request = library_pb2.CreateShelfRequest(
@@ -141,7 +145,13 @@ class LibraryServiceApi(object):
             message=None,
             string_builder=None,
             **kwargs):
-        """Gets a shelf."""
+        """
+        Gets a shelf.
+
+        :type name: string
+        :type message: library_pb2.SomeMessage
+        :type string_builder: library_pb2.StringBuilder
+        """
         if message is None:
             message = library_pb2.SomeMessage()
         if string_builder is None:
@@ -184,7 +194,11 @@ class LibraryServiceApi(object):
             self,
             name='',
             **kwargs):
-        """Deletes a shelf."""
+        """
+        Deletes a shelf.
+
+        :type name: string
+        """
 
         delete_shelf_request = library_pb2.DeleteShelfRequest(
             name=name,
@@ -210,6 +224,9 @@ class LibraryServiceApi(object):
         Merges two shelves by adding all books from the shelf named
         `other_shelf_name` to shelf `name`, and deletes
         `other_shelf_name`. Returns the updated shelf.
+
+        :type name: string
+        :type other_shelf_name: string
         """
 
         merge_shelves_request = library_pb2.MergeShelvesRequest(
@@ -233,7 +250,12 @@ class LibraryServiceApi(object):
             name='',
             book=None,
             **kwargs):
-        """Creates a book."""
+        """
+        Creates a book.
+
+        :type name: string
+        :type book: library_pb2.Book
+        """
         if book is None:
             book = library_pb2.Book()
         create_book_request = library_pb2.CreateBookRequest(
@@ -256,7 +278,11 @@ class LibraryServiceApi(object):
             self,
             name='',
             **kwargs):
-        """Gets a book."""
+        """
+        Gets a book.
+
+        :type name: string
+        """
 
         get_book_request = library_pb2.GetBookRequest(
             name=name,
@@ -278,7 +304,12 @@ class LibraryServiceApi(object):
             name='',
             filter_='',
             **kwargs):
-        """Lists books in a shelf."""
+        """
+        Lists books in a shelf.
+
+        :type name: string
+        :type filter: string
+        """
 
         list_books_request = library_pb2.ListBooksRequest(
             name=name,
@@ -302,7 +333,11 @@ class LibraryServiceApi(object):
             self,
             name='',
             **kwargs):
-        """Deletes a book."""
+        """
+        Deletes a book.
+
+        :type name: string
+        """
 
         delete_book_request = library_pb2.DeleteBookRequest(
             name=name,
@@ -326,7 +361,14 @@ class LibraryServiceApi(object):
             update_mask=None,
             physical_mask=None,
             **kwargs):
-        """Updates a book."""
+        """
+        Updates a book.
+
+        :type name: string
+        :type book: library_pb2.Book
+        :type update_mask: protobuf.field_mask_pb2.FieldMask
+        :type physical_mask: v1.field_mask_pb2.FieldMask
+        """
         if book is None:
             book = library_pb2.Book()
         if update_mask is None:
@@ -356,7 +398,12 @@ class LibraryServiceApi(object):
             name='',
             other_shelf_name='',
             **kwargs):
-        """Moves a book to another shelf, and returns the new book."""
+        """
+        Moves a book to another shelf, and returns the new book.
+
+        :type name: string
+        :type other_shelf_name: string
+        """
 
         move_book_request = library_pb2.MoveBookRequest(
             name=name,
