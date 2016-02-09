@@ -59,45 +59,74 @@ abstract class PythonImport {
     return Strings.isNullOrEmpty(localName()) ? attributeName() : localName();
   }
 
-  /*
-   * Attempts to disambiguate this import. If this import uses a local name, mangles the local
-   * name; if this import uses the attribute name, moves a package into the attribute name.
-   * Returns the import unchanged if the import cannot be disambiguated through either of these
-   * strategies.
-   * E.g.,
-   *   "from foo import bar as baz" ====> "from foo import bar as baz_"
-   *   "from foo.bar import baz" ====> "from foo import bar.baz"
-   *   "import foo.bar" ====> "import foo.bar"
+  /* Attempts to disambiguate an import by changing the shortName by applying a number of
+   * strategies in sequence. If a strategy succeeds in modifying the shortName corresponding to the
+   * import, subsequent strategies are not attempted. In the order that they are attempted,
+   * these strategies are:
+   *
+   * Add a localName if one is not present, set equal to the shortName with '.' replaced by '_':
+   *   "import foo" ====> "import foo as foo"
+   *   "from foo import bar" ====> "from foo import bar as bar"
+   *   "import foo.bar" ====> "import foo.bar as foo_bar"
+   *
+   * Move the highest-level single package name not already present in the alias into the alias:
+   *   "from foo import bar as baz" ====> "from foo import bar as foo_baz"
+   *   "from foo.bar import baz as bar_baz" ====> "from foo.bar import baz as foo_bar_baz"
+   *
+   * Mangle with a single underscore:
+   *   "import foo as bar" ====> "import foo as bar_"
+   *   "from foo import bar as foo_bar" ====> "from foo import bar as foo_bar_"
+   *   "import foo as bar_" ====> "import foo as bar__"
    */
   public PythonImport disambiguate() {
+    String oldShortName = shortName();
+    PythonImport disambiguation = this;
 
-    // Package disambiguation
+    // Add local name
     if (Strings.isNullOrEmpty(localName())) {
+      disambiguation = PythonImport.create(
+          disambiguation.moduleName(), disambiguation.attributeName(),
+          disambiguation.shortName().replace('.', '_'), disambiguation.type());
 
-      // Case: import foo.bar (cannot disambiguate)
-      if (Strings.isNullOrEmpty(moduleName())) {
-        return this;
-
-      } else {
-        int lastDot = moduleName().lastIndexOf('.');
-
-        // Case: from foo import bar (only one package in moduleName())
-        if (lastDot == -1) {
-          return PythonImport.create(moduleName() + "." + attributeName(), type());
-
-        // Case: from foo.bar import baz
-        } else {
-          return PythonImport.create(moduleName().substring(0, lastDot),
-              moduleName().substring(lastDot + 1) + "." + attributeName(),
-              type());
-        }
+      if (!disambiguation.shortName().equals(oldShortName)) {
+        return disambiguation;
       }
-
-    // Mangling disambiguation
-    } else {
-      return PythonImport.create(moduleName(), attributeName(), localName() + "_", type());
     }
 
+    // Move a package into local name
+    String[] moduleNamePackages = disambiguation.moduleName().split("\\.");
+    String localNamePackagePrefix = moduleNamePackages[moduleNamePackages.length - 1];
+    int i = moduleNamePackages.length - 2;
+    boolean found = disambiguation.localName().startsWith(localNamePackagePrefix);
+
+    if (!found) {
+      found = true;
+      do {
+        if (i < 0) {
+          found = false;
+          break;
+        }
+        localNamePackagePrefix = moduleNamePackages[i] + "_" + localNamePackagePrefix;
+        i--;
+      } while (!disambiguation.localName().startsWith(localNamePackagePrefix));
+    }
+
+    // Move a first package
+    if (!found) {
+      return PythonImport.create(disambiguation.moduleName(), disambiguation.attributeName(),
+          moduleNamePackages[moduleNamePackages.length - 1] + "_" + disambiguation.shortName(),
+          disambiguation.type());
+
+    // Move another package
+    } else if (found && i >= 0) {
+      return PythonImport.create(disambiguation.moduleName(), disambiguation.attributeName(),
+          moduleNamePackages[i] + "_" + disambiguation.shortName(), disambiguation.type());
+
+    // Mangle
+    } else {
+      return PythonImport.create(disambiguation.moduleName(), disambiguation.attributeName(),
+          disambiguation.shortName() + "_", disambiguation.type());
+    }
   }
 
 }

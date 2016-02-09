@@ -5,7 +5,6 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoFile;
-import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
@@ -77,15 +76,22 @@ public class PythonImportHandler {
 
     // Conflict
     } else {
-      // Only mangle the earlier import if these are not local name (i.e. "import x as y") imports
-      if (Strings.isNullOrEmpty(imp.localName())) {
-        String oldShortName = imp.shortName();
-        PythonImport former_imp = stringImports.remove(oldShortName);
-        ProtoFile former_file = fileImports.inverse().remove(oldShortName);
-        addImport(former_file, former_imp.disambiguate());
+      String oldShortName = imp.shortName();
+      PythonImport formerImp = stringImports.remove(oldShortName);
+      ProtoFile formerFile = fileImports.inverse().remove(oldShortName);
+
+      PythonImport disambiguatedNewImp = imp.disambiguate();
+      PythonImport disambiguatedOldImp = formerImp.disambiguate();
+
+      // If we mangled both names, un-mangle the older one; otherwise we'll be in an infinite
+      // mangling cycle
+      if (disambiguatedNewImp.shortName().equals(oldShortName + "_") &&
+          disambiguatedOldImp.shortName().equals(oldShortName + "_")) {
+        disambiguatedOldImp = formerImp;
       }
-      PythonImport latter_imp = imp.disambiguate();
-      return addImport(file, latter_imp);
+
+      addImport(formerFile, disambiguatedOldImp);
+      return addImport(file, disambiguatedNewImp);
     }
   }
 
