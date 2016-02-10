@@ -73,12 +73,25 @@ class LibraryServiceApi(object):
         'books',
     )
 
-    class Templates(object):
-        """PathTemplates for resources used by LibraryServiceApi."""
-        SHELF = PathTemplate(
-            'shelves/{shelf}')
-        BOOK = PathTemplate(
-            'shelves/{shelf}/books/{book}')
+    _SHELF_PATH_TEMPLATE = PathTemplate(
+        'shelves/{shelf}')
+    _BOOK_PATH_TEMPLATE = PathTemplate(
+        'shelves/{shelf}/books/{book}')
+
+    @classmethod
+    def shelf_path(cls, shelf):
+        """Returns a fully qualified shelf path template."""
+        return cls._SHELF_PATH_TEMPLATE.instantiate({
+            'shelf': shelf,
+        })
+
+    @classmethod
+    def book_path(cls, shelf, book):
+        """Returns a fully qualified book path template."""
+        return cls._BOOK_PATH_TEMPLATE.instantiate({
+            'shelf': shelf,
+            'book': book,
+        })
 
     def __init__(
             self,
