@@ -1,0 +1,446 @@
+============== file: library_service_api.go ==============
+// Copyright 2016 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// EDITING INSTRUCTIONS
+// This file was generated from the file
+// https://github.com/googleapis/blob/master/library.proto
+// and updates to that file get reflected here through a refresh process.
+// For the short term, the refresh process will only be runnable by Google engineers.
+// Manual additions are allowed because the refresh process performs
+// a 3-way merge in order to preserve those manual additions. In order to not
+// break the refresh process, only certain types of modifications are
+// allowed.
+//
+// Allowed modifications - currently these are the only types allowed:
+// 1. New methods (these should be added to the end of the class)
+// 2. New imports
+// 3. Additional documentation at the end of the doc comment, use the
+//    blank comment lines.
+//
+// Happy editing!
+
+package library
+
+import (
+	"io"
+	
+	google_protobuf "github.com/googleapis/core-proto-go/google/protobuf"
+	gax "github.com/googleapis/gax-go"
+	"golang.org/x/net/context"
+	"google.golang.org/cloud"
+	"google.golang.org/cloud/internal/transport"
+	"google.golang.org/grpc"
+	google_example_library_v1 "library/proto/google/example/library/v1"
+)
+
+// AUTO-GENERATED DOCUMENTATION AND SERVICE -- see instructions at the top of the file for editing.
+
+// This API represents a simple digital library.  It lets you manage Shelf
+// resources and Book resources in the library. It defines the following
+// resource model:
+//
+// - The API has a collection of [Shelf][google.example.library.v1.Shelf]
+//   resources, named `shelves/*`
+//
+// - Each Shelf has a collection of [Book][google.example.library.v1.Book]
+//   resources, named `shelves/*/books/*`
+//
+//
+type LibraryServiceApi struct {
+	// The connection to the service.
+	conn *grpc.ClientConn
+
+	// The gRPC API client.
+	client google_example_library_v1.LibraryServiceClient
+
+	// The default call option used for the method of this service.
+	CallOptions []gax.CallOption
+}
+
+var (
+	allScopesLibraryServiceApi = []string {
+		"https://www.googleapis.com/auth/library",
+		"https://www.googleapis.com/auth/cloud-platform",
+	}
+)
+
+// NewLibraryServiceApi creates a new API service client.
+func NewLibraryServiceApi(ctx context.Context, opts ...cloud.ClientOption) (*LibraryServiceApi, error) {
+	o := []cloud.ClientOption {
+		cloud.WithEndpoint(prodAddr),
+		cloud.WithScopes(allScopesLibraryServiceApi...),
+		cloud.WithUserAgent(clientUserAgent),
+	}
+	o = append(o, opts...)
+	conn, err := transport.DialGRPC(ctx, o...)
+	if err != nil {
+		return nil, err
+	}
+	return &LibraryServiceApi {
+		conn: conn,
+		client: google_example_library_v1.NewLibraryServiceClient(conn),
+	}, nil
+}
+
+// Close closes the connection to the API service. The user should invoke this when
+// it's not used anymore. Typically the user code would look like:
+//    api := NewLibraryServiceApi(ctx)
+//    defer api.Close()
+//    // Calling api methods...
+func (api *LibraryServiceApi) Close() {
+	api.conn.Close()
+}
+
+// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+// Creates a shelf, and returns the new Shelf.
+//
+//
+func (api *LibraryServiceApi) CreateShelf(ctx context.Context, req *google_example_library_v1.CreateShelfRequest, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
+	opts = append(api.CallOptions, opts...)
+	resp, err := gax.Invoke(ctx, req, api.createShelf, opts...)
+	if err != nil {
+		return nil, err
+	}
+        return resp.(*google_example_library_v1.Shelf), nil
+}
+
+func (api *LibraryServiceApi) createShelf(ctx context.Context, req interface{}) (interface{}, error) {
+	return api.client.CreateShelf(ctx, req.(*google_example_library_v1.CreateShelfRequest))
+}
+
+// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+// Gets a shelf.
+//
+//
+func (api *LibraryServiceApi) GetShelf(ctx context.Context, req *google_example_library_v1.GetShelfRequest, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
+	opts = append(api.CallOptions, opts...)
+	resp, err := gax.Invoke(ctx, req, api.getShelf, opts...)
+	if err != nil {
+		return nil, err
+	}
+        return resp.(*google_example_library_v1.Shelf), nil
+}
+
+func (api *LibraryServiceApi) getShelf(ctx context.Context, req interface{}) (interface{}, error) {
+	return api.client.GetShelf(ctx, req.(*google_example_library_v1.GetShelfRequest))
+}
+
+// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+// Lists shelves.
+//
+//
+func (api *LibraryServiceApi) ListShelvesStreamable(req *google_example_library_v1.ListShelvesRequest) gax.PageStreamable {
+	return &listShelvesStreamable{req: req, api: api}
+}
+
+// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+// Lists shelves.
+//
+//
+func (api *LibraryServiceApi) ListShelves(ctx context.Context, req *google_example_library_v1.ListShelvesRequest, f func(*google_example_library_v1.Shelf) bool, opts ...gax.CallOption) error {
+	opts = append(api.CallOptions, opts...)
+	return gax.PageStream(ctx, api.ListShelvesStreamable(req), func(obj interface{}) bool {
+		return f(obj.(*google_example_library_v1.Shelf))
+	}, opts...)
+}
+
+func (api *LibraryServiceApi) listShelves(ctx context.Context, req interface{}) (interface{}, error) {
+	return api.client.ListShelves(ctx, req.(*google_example_library_v1.ListShelvesRequest))
+}
+
+// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+// Deletes a shelf.
+//
+//
+func (api *LibraryServiceApi) DeleteShelf(ctx context.Context, req *google_example_library_v1.DeleteShelfRequest, opts ...gax.CallOption) (*google_protobuf.Empty, error) {
+	opts = append(api.CallOptions, opts...)
+	resp, err := gax.Invoke(ctx, req, api.deleteShelf, opts...)
+	if err != nil {
+		return nil, err
+	}
+        return resp.(*google_protobuf.Empty), nil
+}
+
+func (api *LibraryServiceApi) deleteShelf(ctx context.Context, req interface{}) (interface{}, error) {
+	return api.client.DeleteShelf(ctx, req.(*google_example_library_v1.DeleteShelfRequest))
+}
+
+// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+// Merges two shelves by adding all books from the shelf named
+// `other_shelf_name` to shelf `name`, and deletes
+// `other_shelf_name`. Returns the updated shelf.
+//
+//
+func (api *LibraryServiceApi) MergeShelves(ctx context.Context, req *google_example_library_v1.MergeShelvesRequest, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
+	opts = append(api.CallOptions, opts...)
+	resp, err := gax.Invoke(ctx, req, api.mergeShelves, opts...)
+	if err != nil {
+		return nil, err
+	}
+        return resp.(*google_example_library_v1.Shelf), nil
+}
+
+func (api *LibraryServiceApi) mergeShelves(ctx context.Context, req interface{}) (interface{}, error) {
+	return api.client.MergeShelves(ctx, req.(*google_example_library_v1.MergeShelvesRequest))
+}
+
+// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+// Creates a book.
+//
+//
+func (api *LibraryServiceApi) CreateBook(ctx context.Context, req *google_example_library_v1.CreateBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
+	opts = append(api.CallOptions, opts...)
+	resp, err := gax.Invoke(ctx, req, api.createBook, opts...)
+	if err != nil {
+		return nil, err
+	}
+        return resp.(*google_example_library_v1.Book), nil
+}
+
+func (api *LibraryServiceApi) createBook(ctx context.Context, req interface{}) (interface{}, error) {
+	return api.client.CreateBook(ctx, req.(*google_example_library_v1.CreateBookRequest))
+}
+
+// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+// Gets a book.
+//
+//
+func (api *LibraryServiceApi) GetBook(ctx context.Context, req *google_example_library_v1.GetBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
+	opts = append(api.CallOptions, opts...)
+	resp, err := gax.Invoke(ctx, req, api.getBook, opts...)
+	if err != nil {
+		return nil, err
+	}
+        return resp.(*google_example_library_v1.Book), nil
+}
+
+func (api *LibraryServiceApi) getBook(ctx context.Context, req interface{}) (interface{}, error) {
+	return api.client.GetBook(ctx, req.(*google_example_library_v1.GetBookRequest))
+}
+
+// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+// Lists books in a shelf.
+//
+//
+func (api *LibraryServiceApi) ListBooksStreamable(req *google_example_library_v1.ListBooksRequest) gax.PageStreamable {
+	return &listBooksStreamable{req: req, api: api}
+}
+
+// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+// Lists books in a shelf.
+//
+//
+func (api *LibraryServiceApi) ListBooks(ctx context.Context, req *google_example_library_v1.ListBooksRequest, f func(*google_example_library_v1.Book) bool, opts ...gax.CallOption) error {
+	opts = append(api.CallOptions, opts...)
+	return gax.PageStream(ctx, api.ListBooksStreamable(req), func(obj interface{}) bool {
+		return f(obj.(*google_example_library_v1.Book))
+	}, opts...)
+}
+
+func (api *LibraryServiceApi) listBooks(ctx context.Context, req interface{}) (interface{}, error) {
+	return api.client.ListBooks(ctx, req.(*google_example_library_v1.ListBooksRequest))
+}
+
+// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+// Deletes a book.
+//
+//
+func (api *LibraryServiceApi) DeleteBook(ctx context.Context, req *google_example_library_v1.DeleteBookRequest, opts ...gax.CallOption) (*google_protobuf.Empty, error) {
+	opts = append(api.CallOptions, opts...)
+	resp, err := gax.Invoke(ctx, req, api.deleteBook, opts...)
+	if err != nil {
+		return nil, err
+	}
+        return resp.(*google_protobuf.Empty), nil
+}
+
+func (api *LibraryServiceApi) deleteBook(ctx context.Context, req interface{}) (interface{}, error) {
+	return api.client.DeleteBook(ctx, req.(*google_example_library_v1.DeleteBookRequest))
+}
+
+// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+// Updates a book.
+//
+//
+func (api *LibraryServiceApi) UpdateBook(ctx context.Context, req *google_example_library_v1.UpdateBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
+	opts = append(api.CallOptions, opts...)
+	resp, err := gax.Invoke(ctx, req, api.updateBook, opts...)
+	if err != nil {
+		return nil, err
+	}
+        return resp.(*google_example_library_v1.Book), nil
+}
+
+func (api *LibraryServiceApi) updateBook(ctx context.Context, req interface{}) (interface{}, error) {
+	return api.client.UpdateBook(ctx, req.(*google_example_library_v1.UpdateBookRequest))
+}
+
+// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+// Moves a book to another shelf, and returns the new book.
+//
+//
+func (api *LibraryServiceApi) MoveBook(ctx context.Context, req *google_example_library_v1.MoveBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
+	opts = append(api.CallOptions, opts...)
+	resp, err := gax.Invoke(ctx, req, api.moveBook, opts...)
+	if err != nil {
+		return nil, err
+	}
+        return resp.(*google_example_library_v1.Book), nil
+}
+
+func (api *LibraryServiceApi) moveBook(ctx context.Context, req interface{}) (interface{}, error) {
+	return api.client.MoveBook(ctx, req.(*google_example_library_v1.MoveBookRequest))
+}
+
+// PageStreamables.
+//
+
+// listShelvesStreamable
+//
+type listShelvesStreamable struct {
+	req  *google_example_library_v1.ListShelvesRequest
+	resp *google_example_library_v1.ListShelvesResponse
+	api  *LibraryServiceApi
+}
+
+func (streamable *listShelvesStreamable) ApiCall(ctx context.Context, opts ...gax.CallOption) error {
+	resp, err := gax.Invoke(ctx, streamable.req, streamable.api.listShelves, opts...)
+	if err == nil {
+		streamable.resp = resp.(*google_example_library_v1.ListShelvesResponse)
+	}
+	return err
+}
+
+func (streamable *listShelvesStreamable) NextPage() error {
+	if streamable.resp == nil {
+		return io.EOF
+	}
+	token := streamable.resp.NextPageToken
+	if token == "" {
+		return io.EOF
+	}
+	streamable.req.PageToken = token
+	return nil
+}
+
+func (streamable *listShelvesStreamable) Len() int {
+	if streamable.resp == nil {
+		return 0
+	}
+	return len(streamable.resp.Shelves)
+}
+
+func (streamable *listShelvesStreamable) GetData(i int) interface{} {
+	if streamable.resp == nil {
+		return nil
+ 	}
+ 	return streamable.resp.Shelves[i]
+}
+
+// listBooksStreamable
+//
+type listBooksStreamable struct {
+	req  *google_example_library_v1.ListBooksRequest
+	resp *google_example_library_v1.ListBooksResponse
+	api  *LibraryServiceApi
+}
+
+func (streamable *listBooksStreamable) ApiCall(ctx context.Context, opts ...gax.CallOption) error {
+	resp, err := gax.Invoke(ctx, streamable.req, streamable.api.listBooks, opts...)
+	if err == nil {
+		streamable.resp = resp.(*google_example_library_v1.ListBooksResponse)
+	}
+	return err
+}
+
+func (streamable *listBooksStreamable) NextPage() error {
+	if streamable.resp == nil {
+		return io.EOF
+	}
+	token := streamable.resp.NextPageToken
+	if token == "" {
+		return io.EOF
+	}
+	streamable.req.PageToken = token
+	return nil
+}
+
+func (streamable *listBooksStreamable) Len() int {
+	if streamable.resp == nil {
+		return 0
+	}
+	return len(streamable.resp.Books)
+}
+
+func (streamable *listBooksStreamable) GetData(i int) interface{} {
+	if streamable.resp == nil {
+		return nil
+ 	}
+ 	return streamable.resp.Books[i]
+}
+============== file: doc.go ==============
+// Copyright 2016 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// EDITING INSTRUCTIONS
+// This file was auto-generated and updates to that file get reflected
+// here through a refresh process. For the short term, the refresh
+// process will only be runnable by Google engineers. Manual additions are
+// allowed because the refresh process performs a 3-way merge in order to
+// preserve those manual additions. In order to notbreak the refresh
+// process, only certain types of modifications are allowed.
+//
+// Allowed modifications - currently these are the only types allowed:
+// 1. New methods (these should be added to the end of the class)
+// 2. New imports
+// 3. Additional documentation at the end of the doc comment, use the
+//    blank comment lines.
+//
+// Happy editing!
+
+// Package library provides the more language idiomatic and
+// developer friendly layer for the gRPC based API service.
+//
+// A simple Google Example Library API.
+package library
+
+const (
+	prodAddr = "library-example.googleapis.com:443"
+	clientUserAgent = "library"
+)

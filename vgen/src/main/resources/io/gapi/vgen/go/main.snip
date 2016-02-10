@@ -1,0 +1,280 @@
+@extends "common.snip"
+
+@snippet generateFilename(service)
+    {@context.upperCamelToLowerUnderscore(context.getVeneerName(service))}.go
+@end
+
+@snippet generateClass(service, body)
+    {@headerComment(editingInstruction(service))}
+
+    package {@context.getPackageName}
+
+    {@importSection(service)}
+
+    {@body}
+@end
+
+@private editingInstruction(service)
+    // EDITING INSTRUCTIONS
+    // This file was generated from the file
+    // https://github.com/googleapis/blob/master/{@service.getFile().getSimpleName()}
+    // and updates to that file get reflected here through a refresh process.
+    // For the short term, the refresh process will only be runnable by Google engineers.
+    // Manual additions are allowed because the refresh process performs
+    // a 3-way merge in order to preserve those manual additions. In order to not
+    // break the refresh process, only certain types of modifications are
+    // allowed.
+    //
+@end
+
+@private importSection(service)
+    import (
+    	@join import : context.getImports(service)
+    	{@import}
+    	@end
+    )
+@end
+
+@snippet generateBody(service)
+    // AUTO-GENERATED DOCUMENTATION AND SERVICE -- see instructions at the top of the file for editing.
+
+    @join commentLine : context.comments(service)
+        {@commentLine}
+    @end
+    {@manualEdit()}
+    type {@context.getVeneerName(service)} struct {
+    	// The connection to the service.
+    	conn *grpc.ClientConn
+
+    	// The gRPC API client.
+    	client {@context.getServiceClientName(service)}
+
+    	// The default call option used for the method of this service.
+    	CallOptions []gax.CallOption
+    }
+
+    {@globals(service)}
+
+    {@constructor(service)}
+    {@methods(service)}
+
+    {@streamables(service)}
+@end
+
+@private globals(service)
+    var (
+    	allScopes{@context.getVeneerName(service)} = []string {
+    		@join scope : context.getServiceConfig.getAuthScopes(service)
+    			"{@scope}",
+    		@end
+    	}
+    )
+@end
+
+@private constructor(service)
+    // New{@context.getVeneerName(service)} creates a new API service client.
+    func New{@context.getVeneerName(service)}(ctx context.Context, opts ...cloud.ClientOption) (*{@context.getVeneerName(service)}, error) {
+    	o := []cloud.ClientOption {
+    		cloud.WithEndpoint(prodAddr),
+    		cloud.WithScopes(allScopes{@context.getVeneerName(service)}...),
+    		cloud.WithUserAgent(clientUserAgent),
+    	}
+    	o = append(o, opts...)
+    	conn, err := transport.DialGRPC(ctx, o...)
+    	if err != nil {
+    		return nil, err
+    	}
+    	return &{@context.getVeneerName(service)} {
+    		conn: conn,
+    		client: {@context.getServiceClientConstructorName(service)}(conn),
+    	}, nil
+    }
+
+    // Close closes the connection to the API service. The user should invoke this when
+    // it's not used anymore. Typically the user code would look like:
+    //    api := New{@context.getVeneerName(service)}(ctx)
+    //    defer api.Close()
+    //    // Calling api methods...
+    func (api *{@context.getVeneerName(service)}) Close() {
+    	api.conn.Close()
+    }
+@end
+
+@private methods(service)
+    @join method : service.getMethods
+        @let methodName = method.getSimpleName, \
+             lowerMethodName = context.upperCamelToLowerCamel(methodName), \
+             inTypeName = context.typeName(method.getInputType), \
+             outTypeName = context.typeName(method.getOutputType), \
+             methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+             isPageStreaming = methodConfig.isPageStreaming
+            @if {@isPageStreaming}
+                @let streamableTypeName = context.getStreamableTypeName(method), \
+                     pageStreaming = methodConfig.getPageStreaming(), \
+                     resourceTypeName = context.typeName(pageStreaming.getResourcesField().getType())
+
+                    {@methodComment(method)}
+                    func (api *{@context.getVeneerName(service)}) {@methodName}Streamable(req {@inTypeName}) gax.PageStreamable {
+                    	return &{@streamableTypeName}{req: req, api: api}
+                    }
+
+                    {@methodComment(method)}
+                    func (api *{@context.getVeneerName(service)}) {@methodName}(ctx context.Context, req {@inTypeName}, f func({@resourceTypeName}) bool, opts ...gax.CallOption) error {
+                    	opts = append(api.CallOptions, opts...)
+                    	return gax.PageStream(ctx, api.{@methodName}Streamable(req), func(obj interface{}) bool {
+                    		return f(obj.({@resourceTypeName}))
+                    	}, opts...)
+                    }
+              @end
+            @else
+
+                {@methodComment(method)}
+                func (api *{@context.getVeneerName(service)}) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) ({@outTypeName}, error) {
+                	opts = append(api.CallOptions, opts...)
+                	resp, err := gax.Invoke(ctx, req, api.{@lowerMethodName}, opts...)
+                	if err != nil {
+                		return nil, err
+                	}
+                        return resp.({@outTypeName}), nil
+                }
+            @end
+
+
+            func (api *{@context.getVeneerName(service)}) {@lowerMethodName}(ctx context.Context, req interface{}) (interface{}, error) {
+            	return api.client.{@methodName}(ctx, req.({@inTypeName}))
+            }
+        @end
+    @end
+@end
+
+@private methodComment(method)
+    // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+    @join commentLine : context.comments(method)
+        {@commentLine}
+    @end
+    {@manualEdit()}
+@end
+
+@private manualEdit()
+    //
+    //
+@end
+
+@private streamables(service)
+    // PageStreamables.
+    //
+    @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service), \
+         apiName = context.getVeneerName(service)
+        @join method : context.messages.filterPageStreamingMethods(interfaceConfig, service.getMethods)
+            @let methodConfig = interfaceConfig.getMethodConfig(method), \
+                 methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
+                 inTypeName = context.typeName(method.getInputType), \
+                 outTypeName = context.typeName(method.getOutputType), \
+                 streamableTypeName = context.getStreamableTypeName(method), \
+                 pageStreaming = methodConfig.getPageStreaming(), \
+                 resourceFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getResourcesField().getSimpleName), \
+                 requestTokenFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getRequestTokenField().getSimpleName), \
+                 responseTokenFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getResponseTokenField().getSimpleName), \
+                 tokenZeroValue = context.zeroValue(pageStreaming.getRequestTokenField().getType)
+              @if {@method.getResponseStreaming}
+                {@streamingStreamer(apiName, methodName, inTypeName, outTypeName, streamableTypeName, context.getStreamReceiver(service, method), resourceFieldName, requestTokenFieldName, responseTokenFieldName, tokenZeroValue)}
+              @else
+                {@pagingStreamer(apiName, methodName, inTypeName, outTypeName, streamableTypeName, resourceFieldName, requestTokenFieldName, responseTokenFieldName, tokenZeroValue)}
+              @end
+            @end
+        @end
+    @end
+@end
+
+@private streamerCommon(streamableTypeName, resourceFieldName)
+    func (streamable *{@streamableTypeName}) Len() int {
+    	if streamable.resp == nil {
+    		return 0
+    	}
+    	return len(streamable.resp.{@resourceFieldName})
+    }
+
+    func (streamable *{@streamableTypeName}) GetData(i int) interface{} {
+    	if streamable.resp == nil {
+    		return nil
+     	}
+     	return streamable.resp.{@resourceFieldName}[i]
+    }
+@end
+
+@private pagingStreamer(apiName, methodName, inTypeName, outTypeName, streamableTypeName, resourceFieldName, requestTokenFieldName, responseTokenFieldName, tokenZeroValue)
+
+    // {@streamableTypeName}
+    //
+    type {@streamableTypeName} struct {
+    	req  {@inTypeName}
+    	resp {@outTypeName}
+    	api  *{@apiName}
+    }
+
+    func (streamable *{@streamableTypeName}) ApiCall(ctx context.Context, opts ...gax.CallOption) error {
+    	resp, err := gax.Invoke(ctx, streamable.req, streamable.api.{@methodName}, opts...)
+    	if err == nil {
+    		streamable.resp = resp.({@outTypeName})
+    	}
+    	return err
+    }
+
+    func (streamable *{@streamableTypeName}) NextPage() error {
+    	if streamable.resp == nil {
+    		return io.EOF
+    	}
+    	token := streamable.resp.{@responseTokenFieldName}
+    	if token == {@tokenZeroValue} {
+    		return io.EOF
+    	}
+    	streamable.req.{@requestTokenFieldName} = token
+    	return nil
+    }
+
+    {@streamerCommon(streamableTypeName, resourceFieldName)}
+@end
+
+@private streamingStreamer(apiName, methodName, inTypeName, outTypeName, streamableTypeName, streamReceiverName, resourceFieldName, requestTokenFieldName, responseTokenFieldName, tokenZeroValue)
+
+    // {@streamableTypeName}
+    //
+    type {@streamableTypeName} struct {
+    	req       {@inTypeName}
+    	resp      {@outTypeName}
+    	api       *{@apiName}
+    	receiver  {@streamReceiverName}
+    }
+
+    func (streamable *{@streamableTypeName}) ApiCall(ctx context.Context, opts ...gax.CallOption) error {
+    	if streamable.receiver == nil {
+    		receiver, err := gax.Invoke(ctx, streamable.req, streamable.api.{@methodName}, opts...)
+    		if err != nil {
+                        return err
+    		}
+    		streamable.receiver = receiver.({@streamReceiverName})
+    		streamable.resp, err = streamable.receiver.Recv()
+    		return err
+    	}
+    	return nil
+    }
+
+    func (streamable *{@streamableTypeName}) NextPage() error {
+    	if streamable.receiver == nil {
+    		return io.EOF
+    	}
+    	var err error
+    	streamable.resp, err = streamable.receiver.Recv()
+    	if err == io.EOF {
+    		return err
+    	}
+    	token := streamable.resp.{@responseTokenFieldName}
+    	if token != {@tokenZeroValue} {
+    		streamable.req.{@requestTokenFieldName} = token
+    	}
+    	return nil
+    }
+
+    {@streamerCommon(streamableTypeName, resourceFieldName)}
+@end

@@ -79,11 +79,11 @@ public abstract class CodeGeneratorTestBase extends ConfigBaselineTestCase {
     return true;
   }
 
-  @Override
-  protected Object run() {
-    Truth.assertThat(this.generator).isNotNull();
-
-    String snippetInputName = config.getSnippetFilesList().get(0);
+  protected GeneratedResult generateForSnippet(int index) {
+    if (index >= config.getSnippetFilesCount()) {
+      return null;
+    }
+    String snippetInputName = config.getSnippetFilesList().get(index);
     SnippetDescriptor resourceDescriptor =
           new SnippetDescriptor(snippetInputName);
     Map<Interface, GeneratedResult> result = generator.generate(resourceDescriptor);
@@ -95,7 +95,15 @@ public abstract class CodeGeneratorTestBase extends ConfigBaselineTestCase {
       return null;
     }
     Truth.assertThat(result.size()).isEqualTo(1);
-    return result.values().iterator().next().getDoc();
+    return result.values().iterator().next();
+  }
+
+  @Override
+  protected Object run() {
+    Truth.assertThat(this.generator).isNotNull();
+    GeneratedResult result = generateForSnippet(0);
+    Truth.assertThat(result).isNotNull();
+    return result.getDoc();
   }
 
   @Override
