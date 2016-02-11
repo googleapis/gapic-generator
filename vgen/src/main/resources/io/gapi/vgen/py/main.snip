@@ -147,17 +147,41 @@
 @end
 
 @private pathTemplateName(collectionConfig)
-    {@context.lowerUnderscoreToUpperUnderscore(collectionConfig.getMethodBaseName)}
+    _{@context.lowerUnderscoreToUpperUnderscore(collectionConfig.getMethodBaseName)}_PATH_TEMPLATE
 @end
 
 @private pathTemplateSection(service)
     @if context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-        class Templates(object):
-            """PathTemplates for resources used by {@context.getVeneerName(service)}."""
-            @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-                {@pathTemplateName(collectionConfig)} = PathTemplate(
-                    '{@collectionConfig.getNamePattern}')
-            @end
+        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+            {@pathTemplateName(collectionConfig)} = PathTemplate(
+                '{@collectionConfig.getNamePattern}')
+        @end
+        
+        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+
+            {@createResourceFunction(collectionConfig)}
+        @end
+    @end
+@end
+
+@private createResourceFunction(collectionConfig)
+    {@"@classmethod"}
+    def {@collectionConfig.getMethodBaseName}_path(cls, {@createResourceFunctionParams(collectionConfig)}):
+        """Returns a fully qualified {@collectionConfig.getMethodBaseName} path template."""
+        return cls.{@pathTemplateName(collectionConfig)}.instantiate({
+            {@createInstantiateDictionary(collectionConfig)}
+        })
+@end
+
+@private createResourceFunctionParams(collectionConfig)
+    @join param : collectionConfig.getNameTemplate.vars() on ", "
+        {@param}
+    @end
+@end
+
+@private createInstantiateDictionary(collectionConfig)
+    @join param: collectionConfig.getNameTemplate.vars() on BREAK
+        '{@param}': {@param},
     @end
 @end
 
