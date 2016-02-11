@@ -197,22 +197,20 @@
         @if flattenedParams
             def {@methodName}(
                     self,
-                    {@parameterValues(flattenedParams)},
-                    **kwargs):
+                    {@parameterValues(flattenedParams)}):
                 @if documentation
                     {@documentation}
                 @end
                 {@defaultMutableValues(flattenedParams)}
                 {@requestObjName} = {@methodInputModule}.{@inputTypeName}(
-                    {@namedParameters(flattenedParams)},
-                    **kwargs)
+                    {@namedParameters(flattenedParams)})
                 return self.{@methodName}_callable()({@requestObjName})
         @else
-            def {@methodName}(self, **kwargs):
+            def {@methodName}(self):
                 @if documentation
                     {@documentation}
                 @end
-                {@requestObjName} = {@methodInputModule}.{@inputTypeName}(**kwargs)
+                {@requestObjName} = {@methodInputModule}.{@inputTypeName}()
                 return self.{@methodName}_callable()({@requestObjName})
         @end
     @end

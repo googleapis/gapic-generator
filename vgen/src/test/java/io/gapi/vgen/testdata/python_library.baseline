@@ -115,8 +115,7 @@ class LibraryServiceApi(object):
     # Service calls
     def create_shelf(
             self,
-            shelf=None,
-            **kwargs):
+            shelf=None):
         """
         Creates a shelf, and returns the new Shelf.
 
@@ -125,8 +124,7 @@ class LibraryServiceApi(object):
         if shelf is None:
             shelf = library_pb2.Shelf()
         create_shelf_request = library_pb2.CreateShelfRequest(
-            shelf=shelf,
-            **kwargs)
+            shelf=shelf)
         return self.create_shelf_callable()(create_shelf_request)
 
     def create_shelf_callable(
@@ -143,8 +141,7 @@ class LibraryServiceApi(object):
             self,
             name='',
             message=None,
-            string_builder=None,
-            **kwargs):
+            string_builder=None):
         """
         Gets a shelf.
 
@@ -159,8 +156,7 @@ class LibraryServiceApi(object):
         get_shelf_request = library_pb2.GetShelfRequest(
             name=name,
             message=message,
-            string_builder=string_builder,
-            **kwargs)
+            string_builder=string_builder)
         return self.get_shelf_callable()(get_shelf_request)
 
     def get_shelf_callable(
@@ -173,9 +169,9 @@ class LibraryServiceApi(object):
             max_attempts=max_attempts,
             defaults=self.defaults)
 
-    def list_shelves(self, **kwargs):
+    def list_shelves(self):
         """Lists shelves."""
-        list_shelves_request = library_pb2.ListShelvesRequest(**kwargs)
+        list_shelves_request = library_pb2.ListShelvesRequest()
         return self.list_shelves_callable()(list_shelves_request)
 
     def list_shelves_callable(
@@ -192,8 +188,7 @@ class LibraryServiceApi(object):
 
     def delete_shelf(
             self,
-            name='',
-            **kwargs):
+            name=''):
         """
         Deletes a shelf.
 
@@ -201,8 +196,7 @@ class LibraryServiceApi(object):
         """
 
         delete_shelf_request = library_pb2.DeleteShelfRequest(
-            name=name,
-            **kwargs)
+            name=name)
         return self.delete_shelf_callable()(delete_shelf_request)
 
     def delete_shelf_callable(
@@ -218,8 +212,7 @@ class LibraryServiceApi(object):
     def merge_shelves(
             self,
             name='',
-            other_shelf_name='',
-            **kwargs):
+            other_shelf_name=''):
         """
         Merges two shelves by adding all books from the shelf named
         `other_shelf_name` to shelf `name`, and deletes
@@ -231,8 +224,7 @@ class LibraryServiceApi(object):
 
         merge_shelves_request = library_pb2.MergeShelvesRequest(
             name=name,
-            other_shelf_name=other_shelf_name,
-            **kwargs)
+            other_shelf_name=other_shelf_name)
         return self.merge_shelves_callable()(merge_shelves_request)
 
     def merge_shelves_callable(
@@ -248,8 +240,7 @@ class LibraryServiceApi(object):
     def create_book(
             self,
             name='',
-            book=None,
-            **kwargs):
+            book=None):
         """
         Creates a book.
 
@@ -260,8 +251,7 @@ class LibraryServiceApi(object):
             book = library_pb2.Book()
         create_book_request = library_pb2.CreateBookRequest(
             name=name,
-            book=book,
-            **kwargs)
+            book=book)
         return self.create_book_callable()(create_book_request)
 
     def create_book_callable(
@@ -276,8 +266,7 @@ class LibraryServiceApi(object):
 
     def get_book(
             self,
-            name='',
-            **kwargs):
+            name=''):
         """
         Gets a book.
 
@@ -285,8 +274,7 @@ class LibraryServiceApi(object):
         """
 
         get_book_request = library_pb2.GetBookRequest(
-            name=name,
-            **kwargs)
+            name=name)
         return self.get_book_callable()(get_book_request)
 
     def get_book_callable(
@@ -302,8 +290,7 @@ class LibraryServiceApi(object):
     def list_books(
             self,
             name='',
-            filter_='',
-            **kwargs):
+            filter_=''):
         """
         Lists books in a shelf.
 
@@ -313,8 +300,7 @@ class LibraryServiceApi(object):
 
         list_books_request = library_pb2.ListBooksRequest(
             name=name,
-            filter=filter_,
-            **kwargs)
+            filter=filter_)
         return self.list_books_callable()(list_books_request)
 
     def list_books_callable(
@@ -331,8 +317,7 @@ class LibraryServiceApi(object):
 
     def delete_book(
             self,
-            name='',
-            **kwargs):
+            name=''):
         """
         Deletes a book.
 
@@ -340,8 +325,7 @@ class LibraryServiceApi(object):
         """
 
         delete_book_request = library_pb2.DeleteBookRequest(
-            name=name,
-            **kwargs)
+            name=name)
         return self.delete_book_callable()(delete_book_request)
 
     def delete_book_callable(
@@ -359,8 +343,7 @@ class LibraryServiceApi(object):
             name='',
             book=None,
             update_mask=None,
-            physical_mask=None,
-            **kwargs):
+            physical_mask=None):
         """
         Updates a book.
 
@@ -379,8 +362,7 @@ class LibraryServiceApi(object):
             name=name,
             book=book,
             update_mask=update_mask,
-            physical_mask=physical_mask,
-            **kwargs)
+            physical_mask=physical_mask)
         return self.update_book_callable()(update_book_request)
 
     def update_book_callable(
@@ -396,8 +378,7 @@ class LibraryServiceApi(object):
     def move_book(
             self,
             name='',
-            other_shelf_name='',
-            **kwargs):
+            other_shelf_name=''):
         """
         Moves a book to another shelf, and returns the new book.
 
@@ -407,8 +388,7 @@ class LibraryServiceApi(object):
 
         move_book_request = library_pb2.MoveBookRequest(
             name=name,
-            other_shelf_name=other_shelf_name,
-            **kwargs)
+            other_shelf_name=other_shelf_name)
         return self.move_book_callable()(move_book_request)
 
     def move_book_callable(
