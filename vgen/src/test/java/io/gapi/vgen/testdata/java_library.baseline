@@ -32,6 +32,13 @@
  */
 package com.google.gcloud.pubsub.spi;
 
+import com.google.api.gax.core.BackoffParams;
+import com.google.api.gax.core.RetryParams;
+import com.google.api.gax.grpc.ApiCallable;
+import com.google.api.gax.grpc.PageDescriptor;
+import com.google.api.gax.grpc.ServiceApiSettings;
+import com.google.api.gax.internal.ApiUtils;
+import com.google.api.gax.protobuf.PathTemplate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -56,11 +63,6 @@ import com.google.example.library.v1.SomeMessage;
 import com.google.example.library.v1.UpdateBookRequest;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
-import io.gapi.gax.grpc.ApiCallable;
-import io.gapi.gax.grpc.PageDescriptor;
-import io.gapi.gax.grpc.ServiceApiSettings;
-import io.gapi.gax.internal.ApiUtils;
-import io.gapi.gax.protobuf.PathTemplate;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
 import java.io.IOException;
@@ -138,6 +140,43 @@ public class LibraryServiceApi implements AutoCloseable {
     retryableCodes.put(MethodIdentifier.UPDATE_BOOK, definition.get("idempotent"));
     retryableCodes.put(MethodIdentifier.MOVE_BOOK, definition.get("non_idempotent"));
     DEFAULT_RETRY_CONFIG = Maps.<MethodIdentifier, ImmutableSet<Status.Code>>immutableEnumMap(retryableCodes);
+  }
+
+  private static final ImmutableMap<MethodIdentifier, RetryParams> DEFAULT_RETRY_PARAMS;
+
+  static {
+    Map<String, RetryParams> definition = new HashMap<>();
+    RetryParams params = null;
+    params = RetryParams.newBuilder()
+        .setRetryBackoff(
+            BackoffParams.newBuilder()
+                .setInitialDelayMillis(100L)
+                .setDelayMultiplier(1.2)
+                .setMaxDelayMillis(1000L)
+                .build())
+        .setTimeoutBackoff(
+            BackoffParams.newBuilder()
+                .setInitialDelayMillis(300L)
+                .setDelayMultiplier(1.3)
+                .setMaxDelayMillis(3000L)
+                .build())
+        .setTotalTimeout(30000L)
+        .build();
+    definition.put("default", params);
+
+    Map<MethodIdentifier, RetryParams> retryParams = new EnumMap<>(MethodIdentifier.class);
+    retryParams.put(MethodIdentifier.CREATE_SHELF, definition.get("default"));
+    retryParams.put(MethodIdentifier.GET_SHELF, definition.get("default"));
+    retryParams.put(MethodIdentifier.LIST_SHELVES, definition.get("default"));
+    retryParams.put(MethodIdentifier.DELETE_SHELF, definition.get("default"));
+    retryParams.put(MethodIdentifier.MERGE_SHELVES, definition.get("default"));
+    retryParams.put(MethodIdentifier.CREATE_BOOK, definition.get("default"));
+    retryParams.put(MethodIdentifier.GET_BOOK, definition.get("default"));
+    retryParams.put(MethodIdentifier.LIST_BOOKS, definition.get("default"));
+    retryParams.put(MethodIdentifier.DELETE_BOOK, definition.get("default"));
+    retryParams.put(MethodIdentifier.UPDATE_BOOK, definition.get("default"));
+    retryParams.put(MethodIdentifier.MOVE_BOOK, definition.get("default"));
+    DEFAULT_RETRY_PARAMS = Maps.<MethodIdentifier, RetryParams>immutableEnumMap(retryParams);
   }
 
   private static final ApiCallable<CreateShelfRequest, Shelf>
@@ -241,7 +280,8 @@ public class LibraryServiceApi implements AutoCloseable {
 
   private final ManagedChannel channel;
   private final ServiceApiSettings<MethodIdentifier> settings;
-  private final ImmutableMap<MethodIdentifier, ImmutableSet<Status.Code>> retryConfig;
+  private final ImmutableMap<MethodIdentifier, ImmutableSet<Status.Code>> retryCodesConfig;
+  private final ImmutableMap<MethodIdentifier, RetryParams> retryParamsConfig;
 
   // ===============
   // Factory Methods
@@ -281,11 +321,16 @@ public class LibraryServiceApi implements AutoCloseable {
     this.settings = internalSettings;
     this.channel = internalSettings.getChannel();
 
-    Map<MethodIdentifier, ImmutableSet<Status.Code>> retryConfig =
+    Map<MethodIdentifier, ImmutableSet<Status.Code>> retryCodesConfig =
         new EnumMap<>(DEFAULT_RETRY_CONFIG);
-    retryConfig.putAll(settings.getRetryableCodes());
-    this.retryConfig =
-        Maps.<MethodIdentifier, ImmutableSet<Status.Code>>immutableEnumMap(retryConfig);
+    retryCodesConfig.putAll(settings.getRetryableCodes());
+    this.retryCodesConfig =
+        Maps.<MethodIdentifier, ImmutableSet<Status.Code>>immutableEnumMap(retryCodesConfig);
+
+    Map<MethodIdentifier, RetryParams> retryParamsConfig = new EnumMap<>(DEFAULT_RETRY_PARAMS);
+    retryParamsConfig.putAll(settings.getRetryParams());
+    this.retryParamsConfig =
+        Maps.<MethodIdentifier, RetryParams>immutableEnumMap(retryParamsConfig);
   }
 
   // ==============================
@@ -396,8 +441,11 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    */
   public ApiCallable<CreateShelfRequest, Shelf> createShelfCallable() {
-    ImmutableSet<Status.Code> retryableCodes = retryConfig.get(MethodIdentifier.CREATE_SHELF);
-    return CREATE_SHELF.retryableOn(retryableCodes).retrying().bind(channel);
+    ImmutableSet<Status.Code> retryableCodes =
+        retryCodesConfig.get(MethodIdentifier.CREATE_SHELF);
+    RetryParams retryParams =
+        retryParamsConfig.get(MethodIdentifier.CREATE_SHELF);
+    return CREATE_SHELF.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
   }
 
   // ----- getShelf -----
@@ -483,8 +531,11 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    */
   public ApiCallable<GetShelfRequest, Shelf> getShelfCallable() {
-    ImmutableSet<Status.Code> retryableCodes = retryConfig.get(MethodIdentifier.GET_SHELF);
-    return GET_SHELF.retryableOn(retryableCodes).retrying().bind(channel);
+    ImmutableSet<Status.Code> retryableCodes =
+        retryCodesConfig.get(MethodIdentifier.GET_SHELF);
+    RetryParams retryParams =
+        retryParamsConfig.get(MethodIdentifier.GET_SHELF);
+    return GET_SHELF.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
   }
 
   // ----- listShelves -----
@@ -537,8 +588,11 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    */
   public ApiCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
-    ImmutableSet<Status.Code> retryableCodes = retryConfig.get(MethodIdentifier.LIST_SHELVES);
-    return LIST_SHELVES.retryableOn(retryableCodes).retrying().bind(channel);
+    ImmutableSet<Status.Code> retryableCodes =
+        retryCodesConfig.get(MethodIdentifier.LIST_SHELVES);
+    RetryParams retryParams =
+        retryParamsConfig.get(MethodIdentifier.LIST_SHELVES);
+    return LIST_SHELVES.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
   }
 
   // ----- deleteShelf -----
@@ -582,8 +636,11 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    */
   public ApiCallable<DeleteShelfRequest, Empty> deleteShelfCallable() {
-    ImmutableSet<Status.Code> retryableCodes = retryConfig.get(MethodIdentifier.DELETE_SHELF);
-    return DELETE_SHELF.retryableOn(retryableCodes).retrying().bind(channel);
+    ImmutableSet<Status.Code> retryableCodes =
+        retryCodesConfig.get(MethodIdentifier.DELETE_SHELF);
+    RetryParams retryParams =
+        retryParamsConfig.get(MethodIdentifier.DELETE_SHELF);
+    return DELETE_SHELF.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
   }
 
   // ----- mergeShelves -----
@@ -635,8 +692,11 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    */
   public ApiCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable() {
-    ImmutableSet<Status.Code> retryableCodes = retryConfig.get(MethodIdentifier.MERGE_SHELVES);
-    return MERGE_SHELVES.retryableOn(retryableCodes).retrying().bind(channel);
+    ImmutableSet<Status.Code> retryableCodes =
+        retryCodesConfig.get(MethodIdentifier.MERGE_SHELVES);
+    RetryParams retryParams =
+        retryParamsConfig.get(MethodIdentifier.MERGE_SHELVES);
+    return MERGE_SHELVES.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
   }
 
   // ----- createBook -----
@@ -682,8 +742,11 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    */
   public ApiCallable<CreateBookRequest, Book> createBookCallable() {
-    ImmutableSet<Status.Code> retryableCodes = retryConfig.get(MethodIdentifier.CREATE_BOOK);
-    return CREATE_BOOK.retryableOn(retryableCodes).retrying().bind(channel);
+    ImmutableSet<Status.Code> retryableCodes =
+        retryCodesConfig.get(MethodIdentifier.CREATE_BOOK);
+    RetryParams retryParams =
+        retryParamsConfig.get(MethodIdentifier.CREATE_BOOK);
+    return CREATE_BOOK.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
   }
 
   // ----- getBook -----
@@ -727,8 +790,11 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    */
   public ApiCallable<GetBookRequest, Book> getBookCallable() {
-    ImmutableSet<Status.Code> retryableCodes = retryConfig.get(MethodIdentifier.GET_BOOK);
-    return GET_BOOK.retryableOn(retryableCodes).retrying().bind(channel);
+    ImmutableSet<Status.Code> retryableCodes =
+        retryCodesConfig.get(MethodIdentifier.GET_BOOK);
+    RetryParams retryParams =
+        retryParamsConfig.get(MethodIdentifier.GET_BOOK);
+    return GET_BOOK.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
   }
 
   // ----- listBooks -----
@@ -782,8 +848,11 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    */
   public ApiCallable<ListBooksRequest, ListBooksResponse> listBooksCallable() {
-    ImmutableSet<Status.Code> retryableCodes = retryConfig.get(MethodIdentifier.LIST_BOOKS);
-    return LIST_BOOKS.retryableOn(retryableCodes).retrying().bind(channel);
+    ImmutableSet<Status.Code> retryableCodes =
+        retryCodesConfig.get(MethodIdentifier.LIST_BOOKS);
+    RetryParams retryParams =
+        retryParamsConfig.get(MethodIdentifier.LIST_BOOKS);
+    return LIST_BOOKS.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
   }
 
   // ----- deleteBook -----
@@ -827,8 +896,11 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    */
   public ApiCallable<DeleteBookRequest, Empty> deleteBookCallable() {
-    ImmutableSet<Status.Code> retryableCodes = retryConfig.get(MethodIdentifier.DELETE_BOOK);
-    return DELETE_BOOK.retryableOn(retryableCodes).retrying().bind(channel);
+    ImmutableSet<Status.Code> retryableCodes =
+        retryCodesConfig.get(MethodIdentifier.DELETE_BOOK);
+    RetryParams retryParams =
+        retryParamsConfig.get(MethodIdentifier.DELETE_BOOK);
+    return DELETE_BOOK.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
   }
 
   // ----- updateBook -----
@@ -898,8 +970,11 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    */
   public ApiCallable<UpdateBookRequest, Book> updateBookCallable() {
-    ImmutableSet<Status.Code> retryableCodes = retryConfig.get(MethodIdentifier.UPDATE_BOOK);
-    return UPDATE_BOOK.retryableOn(retryableCodes).retrying().bind(channel);
+    ImmutableSet<Status.Code> retryableCodes =
+        retryCodesConfig.get(MethodIdentifier.UPDATE_BOOK);
+    RetryParams retryParams =
+        retryParamsConfig.get(MethodIdentifier.UPDATE_BOOK);
+    return UPDATE_BOOK.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
   }
 
   // ----- moveBook -----
@@ -945,8 +1020,11 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    */
   public ApiCallable<MoveBookRequest, Book> moveBookCallable() {
-    ImmutableSet<Status.Code> retryableCodes = retryConfig.get(MethodIdentifier.MOVE_BOOK);
-    return MOVE_BOOK.retryableOn(retryableCodes).retrying().bind(channel);
+    ImmutableSet<Status.Code> retryableCodes =
+        retryCodesConfig.get(MethodIdentifier.MOVE_BOOK);
+    RetryParams retryParams =
+        retryParamsConfig.get(MethodIdentifier.MOVE_BOOK);
+    return MOVE_BOOK.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
   }
 
 

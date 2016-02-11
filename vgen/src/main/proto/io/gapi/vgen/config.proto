@@ -81,8 +81,11 @@ message InterfaceConfigProto {
   // A list of method configurations.
   repeated MethodConfigProto methods = 20;
 
-  // Definition for retry configuration
-  repeated RetryConfigDefinitionProto retry_def = 30;
+  // Definition for retryable codes
+  repeated RetryCodesDefinitionProto retry_codes_def = 30;
+
+  // Definition for retry/backoff parameters
+  repeated RetryParamsDefinitionProto retry_params_def = 31;
 }
 
 message CollectionConfigProto {
@@ -110,8 +113,13 @@ message MethodConfigProto {
   // Specifies the configuration for paging.
   PageStreamingConfigProto page_streaming = 3;
 
-  // Specifies the configuration for retry.
-  string retry_name = 4;
+  // Specifies the configuration for retryable codes.
+  // The name must be defined in InterfaceConfigProto::retry_codes_def.
+  string retry_codes_name = 4;
+
+  // Specifies the configuration for retry/backoff parameters.
+  // The name must be defined in InterfaceConfigProto::retry_params_def.
+  string retry_params_name = 5;
 }
 
 // `FlatteningConfigProto` describes the parameter groups for which a
@@ -160,9 +168,25 @@ message PageStreamingResponseProto {
   string resources_field = 2;
 }
 
-// `RetryConfigDefinitionProto` specifies retry configuration for a method
-// TODO(pongad): also read exponential backoff and timeout settings from here
-message RetryConfigDefinitionProto {
+// `RetryConfigDefinitionProto` specifies, by name,
+// GRPC codes that a method should consider retryable.
+message RetryCodesDefinitionProto {
   string name = 1;
   repeated string retry_codes = 2;
+}
+
+// `RetryParamsDefinitionProto` specifies, by name,
+// the backoff behavior of a method when retrying.
+message RetryParamsDefinitionProto {
+  string name = 1;
+
+  uint64 initial_retry_delay_millis = 2;
+  double retry_delay_multiplier = 3;
+  uint64 max_retry_delay_millis = 4;
+
+  uint64 initial_rpc_timeout_millis = 5;
+  double rpc_timeout_multiplier = 6;
+  uint64 max_rpc_timeout_millis = 7;
+
+  uint64 total_timeout_millis = 8;
 }

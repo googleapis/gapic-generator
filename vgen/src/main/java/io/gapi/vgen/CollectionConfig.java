@@ -4,8 +4,8 @@ import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
 
-import io.gapi.gax.protobuf.PathTemplate;
-import io.gapi.gax.protobuf.ValidationException;
+import com.google.api.gax.protobuf.PathTemplate;
+import com.google.api.gax.protobuf.ValidationException;
 
 import javax.annotation.Nullable;
 

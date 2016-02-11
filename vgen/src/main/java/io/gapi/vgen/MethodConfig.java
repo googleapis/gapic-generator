@@ -16,18 +16,21 @@ public class MethodConfig {
 
   private final PageStreamingConfig pageStreaming;
   private final FlatteningConfig flattening;
-  private final String retryConfigName;
+  private final String retryCodesConfigName;
+  private final String retryParamsConfigName;
 
   /**
    * Creates an instance of MethodConfig based on MethodConfigProto, linking it
    * up with the provided method. On errors, null will be returned, and
    * diagnostics are reported to the diag collector.
    */
-  @Nullable public static MethodConfig createMethodConfig(
+  @Nullable
+  public static MethodConfig createMethodConfig(
       DiagCollector diagCollector,
       MethodConfigProto methodConfig,
       Method method,
-      ImmutableSet<String> retryConfigNames) {
+      ImmutableSet<String> retryCodesConfigNames,
+      ImmutableSet<String> retryParamsConfigNames) {
 
     boolean error = false;
 
@@ -35,8 +38,9 @@ public class MethodConfig {
     if (PageStreamingConfigProto.getDefaultInstance().equals(methodConfig.getPageStreaming())) {
       pageStreaming = null;
     } else {
-      pageStreaming = PageStreamingConfig.createPageStreaming(diagCollector,
-          methodConfig.getPageStreaming(), method);
+      pageStreaming =
+          PageStreamingConfig.createPageStreaming(
+              diagCollector, methodConfig.getPageStreaming(), method);
       if (pageStreaming == null) {
         error = true;
       }
@@ -47,32 +51,44 @@ public class MethodConfig {
       flattening = null;
     } else {
       flattening =
-          FlatteningConfig.createFlattening(diagCollector,
-              methodConfig.getFlattening(), method);
+          FlatteningConfig.createFlattening(diagCollector, methodConfig.getFlattening(), method);
       if (flattening == null) {
         error = true;
       }
     }
 
-    String retryConfigName = methodConfig.getRetryName();
-    if (!retryConfigName.isEmpty() && !retryConfigNames.contains(retryConfigName)) {
+    String retryCodesName = methodConfig.getRetryCodesName();
+    if (!retryCodesName.isEmpty() && !retryCodesConfigNames.contains(retryCodesName)) {
       diagCollector.addDiag(
           Diag.error(
-              SimpleLocation.TOPLEVEL, "retry config used but not defined: %s", retryConfigName));
+              SimpleLocation.TOPLEVEL, "retry config used but not defined: %s", retryCodesName));
+      error = true;
+    }
+
+    String retryParamsName = methodConfig.getRetryParamsName();
+    if (!retryParamsConfigNames.contains(retryParamsName)) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL, "retry config used but not defined: %s", retryParamsName));
       error = true;
     }
 
     if (error) {
       return null;
     } else {
-      return new MethodConfig(pageStreaming, flattening, retryConfigName);
+      return new MethodConfig(pageStreaming, flattening, retryCodesName, retryParamsName);
     }
   }
 
-  private MethodConfig(PageStreamingConfig pageStreaming, FlatteningConfig flattening, String retryConfigName) {
+  private MethodConfig(
+      PageStreamingConfig pageStreaming,
+      FlatteningConfig flattening,
+      String retryCodesConfigName,
+      String retryParamsConfigName) {
     this.pageStreaming = pageStreaming;
     this.flattening = flattening;
-    this.retryConfigName = retryConfigName;
+    this.retryCodesConfigName = retryCodesConfigName;
+    this.retryParamsConfigName = retryParamsConfigName;
   }
 
   /**
@@ -106,7 +122,11 @@ public class MethodConfig {
   /**
    * Returns the name of the retry config this method uses.
    */
-  public String getRetryConfigName() {
-    return retryConfigName;
+  public String getRetryCodesConfigName() {
+    return retryCodesConfigName;
+  }
+
+  public String getRetryParamsConfigName() {
+    return retryParamsConfigName;
   }
 }

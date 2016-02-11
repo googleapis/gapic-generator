@@ -72,21 +72,23 @@
 @end
 
 @private alwaysImport() fill
+  {@context.addImport("com.google.api.gax.core.BackoffParams")}
+  {@context.addImport("com.google.api.gax.core.RetryParams")}
+  {@context.addImport("com.google.api.gax.grpc.ApiCallable")}
+  {@context.addImport("com.google.api.gax.grpc.ServiceApiSettings")}
+  {@context.addImport("com.google.api.gax.internal.ApiUtils")}
+  {@context.addImport("com.google.api.gax.protobuf.PathTemplate")}
   {@context.addImport("com.google.common.collect.ImmutableMap")}
   {@context.addImport("com.google.common.collect.ImmutableSet")}
   {@context.addImport("com.google.common.collect.Lists")}
   {@context.addImport("com.google.common.collect.Maps")}
   {@context.addImport("com.google.common.collect.Sets")}
-  {@context.addImport("io.gapi.gax.grpc.ApiCallable")}
-  {@context.addImport("io.gapi.gax.grpc.ServiceApiSettings")}
-  {@context.addImport("io.gapi.gax.internal.ApiUtils")}
-  {@context.addImport("io.gapi.gax.protobuf.PathTemplate")}
   {@context.addImport("io.grpc.ManagedChannel")}
   {@context.addImport("io.grpc.Status")}
   {@context.addImport("java.io.IOException")}
   {@context.addImport("java.util.EnumMap")}
-  {@context.addImport("java.util.Map")}
   {@context.addImport("java.util.HashMap")}
+  {@context.addImport("java.util.Map")}
 @end
 
 @private methodIdentityEnum(service)
@@ -133,7 +135,7 @@
 
     static {
       Map<String, ImmutableSet<Status.Code>> definition = new HashMap<>();
-      @join retryDef : context.entrySet(interfaceConfig.getRetryDefinition)
+      @join retryDef : context.entrySet(interfaceConfig.getRetryCodesDefinition)
         definition.put(
             "{@retryDef.getKey}",
             Sets.immutableEnumSet(Lists.<Status.Code>newArrayList({@statusCodes(retryDef.getValue)})));
@@ -143,7 +145,7 @@
       @join method : service.getMethods
         @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              methodEnumName = context.upperCamelToUpperUnderscore(method.getSimpleName), \
-             retryName = methodConfig.getRetryConfigName
+             retryName = methodConfig.getRetryCodesConfigName
           @if retryName.isEmpty
             retryableCodes.put(MethodIdentifier.{@methodEnumName}, ImmutableSet.<Status.Code>of());
           @else
@@ -152,6 +154,41 @@
         @end
       @end
       DEFAULT_RETRY_CONFIG = Maps.<MethodIdentifier, ImmutableSet<Status.Code>>immutableEnumMap(retryableCodes);
+    }
+
+    private static final ImmutableMap<MethodIdentifier, RetryParams> DEFAULT_RETRY_PARAMS;
+
+    static {
+      Map<String, RetryParams> definition = new HashMap<>();
+      RetryParams params = null;
+      @join retryDef : context.entrySet(interfaceConfig.getRetryParamsDefinition)
+        params = RetryParams.newBuilder()
+            .setRetryBackoff(
+                BackoffParams.newBuilder()
+                    .setInitialDelayMillis({@retryDef.getValue.getRetryBackoff.getInitialDelayMillis}L)
+                    .setDelayMultiplier({@retryDef.getValue.getRetryBackoff.getDelayMultiplier})
+                    .setMaxDelayMillis({@retryDef.getValue.getRetryBackoff.getMaxDelayMillis}L)
+                    .build())
+            .setTimeoutBackoff(
+                BackoffParams.newBuilder()
+                    .setInitialDelayMillis({@retryDef.getValue.getTimeoutBackoff.getInitialDelayMillis}L)
+                    .setDelayMultiplier({@retryDef.getValue.getTimeoutBackoff.getDelayMultiplier})
+                    .setMaxDelayMillis({@retryDef.getValue.getTimeoutBackoff.getMaxDelayMillis}L)
+                    .build())
+            .setTotalTimeout({@retryDef.getValue.getTotalTimeout}L)
+            .build();
+        definition.put("{@retryDef.getKey}", params);
+      @end
+
+      Map<MethodIdentifier, RetryParams> retryParams = new EnumMap<>(MethodIdentifier.class);
+      @join method :service.getMethods
+        @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+             methodEnumName = context.upperCamelToUpperUnderscore(method.getSimpleName), \
+             retryName = methodConfig.getRetryParamsConfigName
+          retryParams.put(MethodIdentifier.{@methodEnumName}, definition.get("{@retryName}"));
+        @end
+      @end
+      DEFAULT_RETRY_PARAMS = Maps.<MethodIdentifier, RetryParams>immutableEnumMap(retryParams);
     }
   @end
 @end
@@ -325,7 +362,8 @@
 
   private final ManagedChannel channel;
   private final ServiceApiSettings<MethodIdentifier> settings;
-  private final ImmutableMap<MethodIdentifier, ImmutableSet<Status.Code>> retryConfig;
+  private final ImmutableMap<MethodIdentifier, ImmutableSet<Status.Code>> retryCodesConfig;
+  private final ImmutableMap<MethodIdentifier, RetryParams> retryParamsConfig;
 @end
 
 @private constructors(service)
@@ -365,11 +403,16 @@
       this.settings = internalSettings;
       this.channel = internalSettings.getChannel();
 
-      Map<MethodIdentifier, ImmutableSet<Status.Code>> retryConfig =
+      Map<MethodIdentifier, ImmutableSet<Status.Code>> retryCodesConfig =
           new EnumMap<>(DEFAULT_RETRY_CONFIG);
-      retryConfig.putAll(settings.getRetryableCodes());
-      this.retryConfig =
-          Maps.<MethodIdentifier, ImmutableSet<Status.Code>>immutableEnumMap(retryConfig);
+      retryCodesConfig.putAll(settings.getRetryableCodes());
+      this.retryCodesConfig =
+          Maps.<MethodIdentifier, ImmutableSet<Status.Code>>immutableEnumMap(retryCodesConfig);
+
+      Map<MethodIdentifier, RetryParams> retryParamsConfig = new EnumMap<>(DEFAULT_RETRY_PARAMS);
+      retryParamsConfig.putAll(settings.getRetryParams());
+      this.retryParamsConfig =
+          Maps.<MethodIdentifier, RetryParams>immutableEnumMap(retryParamsConfig);
     }
   @end
 @end
@@ -470,7 +513,7 @@
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
        resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
-       dummy = context.addImport("io.gapi.gax.grpc.PageDescriptor")
+       dummy = context.addImport("com.google.api.gax.grpc.PageDescriptor")
     public Iterable<{@resourceTypeName}> {@methodName}({@inTypeName} request) {
       return {@methodName}StreamingCallable()
           .call(request);
@@ -523,8 +566,11 @@
 @private methodReturningCallable(method, callableConstant, methodName, inTypeName, outTypeName)
   {@methodJavaDoc(method)}
   public ApiCallable<{@inTypeName}, {@outTypeName}> {@methodName}Callable() {
-    ImmutableSet<Status.Code> retryableCodes = retryConfig.get(MethodIdentifier.{@callableConstant});
-    return {@callableConstant}.retryableOn(retryableCodes).retrying().bind(channel);
+    ImmutableSet<Status.Code> retryableCodes =
+        retryCodesConfig.get(MethodIdentifier.{@callableConstant});
+    RetryParams retryParams =
+        retryParamsConfig.get(MethodIdentifier.{@callableConstant});
+    return {@callableConstant}.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
   }
 
 @end

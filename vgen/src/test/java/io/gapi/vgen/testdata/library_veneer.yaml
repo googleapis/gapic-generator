@@ -1,13 +1,22 @@
 type: io.gapi.vgen.ConfigProto
 interfaces:
 - name: google.example.library.v1.LibraryService
-  retry_def:
+  retry_codes_def:
   - name: idempotent
     retry_codes:
     - UNAVAILABLE
     - DEADLINE_EXCEEDED
   - name: non_idempotent
     retry_codes:
+  retry_params_def:
+  - name: default
+    initial_retry_delay_millis: 100
+    retry_delay_multiplier: 1.2
+    max_retry_delay_millis: 1000
+    initial_rpc_timeout_millis: 300
+    rpc_timeout_multiplier: 1.3
+    max_rpc_timeout_millis: 3000
+    total_timeout_millis: 30000
   collections:
   - name_pattern: shelves/{shelf}
     method_base_name: shelf
@@ -19,7 +28,8 @@ interfaces:
       groups:
       - parameters:
         - shelf
-    retry_name: non_idempotent
+    retry_codes_name: non_idempotent
+    retry_params_name: default
   - name: GetShelf
     flattening:
       groups:
@@ -32,7 +42,8 @@ interfaces:
         - name
         - message
         - string_builder
-    retry_name: idempotent
+    retry_codes_name: idempotent
+    retry_params_name: default
   - name: ListShelves
     flattening:
       groups:
@@ -43,33 +54,38 @@ interfaces:
       response:
         token_field: next_page_token
         resources_field: shelves
-    retry_name: idempotent
+    retry_codes_name: idempotent
+    retry_params_name: default
   - name: DeleteShelf
     flattening:
       groups:
       - parameters:
         - name
-    retry_name: idempotent
+    retry_codes_name: idempotent
+    retry_params_name: default
   - name: MergeShelves
     flattening:
       groups:
       - parameters:
         - name
         - other_shelf_name
-    retry_name: non_idempotent
+    retry_codes_name: non_idempotent
+    retry_params_name: default
   - name: CreateBook
     flattening:
       groups:
       - parameters:
         - name
         - book
-    retry_name: non_idempotent
+    retry_codes_name: non_idempotent
+    retry_params_name: default
   - name: GetBook
     flattening:
       groups:
       - parameters:
         - name
-    retry_name: idempotent
+    retry_codes_name: idempotent
+    retry_params_name: default
   - name: ListBooks
     flattening:
       groups:
@@ -82,13 +98,15 @@ interfaces:
       response:
         token_field: next_page_token
         resources_field: books
-    retry_name: idempotent
+    retry_codes_name: idempotent
+    retry_params_name: default
   - name: DeleteBook
     flattening:
       groups:
       - parameters:
         - name
-    retry_name: idempotent
+    retry_codes_name: idempotent
+    retry_params_name: default
   - name: UpdateBook
     flattening:
       groups:
@@ -100,11 +118,13 @@ interfaces:
         - book
         - update_mask
         - physical_mask
-    retry_name: idempotent
+    retry_codes_name: idempotent
+    retry_params_name: default
   - name: MoveBook
     flattening:
       groups:
       - parameters:
         - name
         - other_shelf_name
-    retry_name: non_idempotent
+    retry_codes_name: non_idempotent
+    retry_params_name: default

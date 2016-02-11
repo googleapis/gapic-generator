@@ -1,5 +1,7 @@
 package io.gapi.vgen;
 
+import com.google.api.gax.core.BackoffParams;
+import com.google.api.gax.core.RetryParams;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
@@ -25,7 +27,8 @@ import javax.annotation.Nullable;
 public class InterfaceConfig {
   private final ImmutableList<CollectionConfig> collectionConfigs;
   private final Map<String, MethodConfig> methodConfigMap;
-  private final ImmutableMap<String, ImmutableSet<Status.Code>> retryDefinition;
+  private final ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition;
+  private final ImmutableMap<String, RetryParams> retryParamsDefinition;
 
   /**
    * Creates an instance of InterfaceConfig based on ConfigProto, linking up
@@ -33,24 +36,33 @@ public class InterfaceConfig {
    * On errors, null will be returned, and diagnostics are reported to
    * the model.
    */
-  @Nullable public static InterfaceConfig createInterfaceConfig(
+  @Nullable
+  public static InterfaceConfig createInterfaceConfig(
       DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto, Interface iface) {
-    ImmutableList<CollectionConfig> collectionConfigs = createCollectionConfigs(
-        diagCollector, interfaceConfigProto);
+    ImmutableList<CollectionConfig> collectionConfigs =
+        createCollectionConfigs(diagCollector, interfaceConfigProto);
 
-    ImmutableMap<String, ImmutableSet<Status.Code>> retryDefinition =
-        createRetryDefinition(diagCollector, interfaceConfigProto);
+    ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition =
+        createRetryCodesDefinition(diagCollector, interfaceConfigProto);
+    ImmutableMap<String, RetryParams> retryParamsDefinition =
+        createRetryParamsDefinition(diagCollector, interfaceConfigProto);
 
     Map<String, MethodConfig> methodConfigMap = null;
-    if (retryDefinition != null) {
+    if (retryCodesDefinition != null && retryParamsDefinition != null) {
       methodConfigMap =
-          createMethodConfigMap(diagCollector, interfaceConfigProto, iface, retryDefinition.keySet());
+          createMethodConfigMap(
+              diagCollector,
+              interfaceConfigProto,
+              iface,
+              retryCodesDefinition.keySet(),
+              retryParamsDefinition.keySet());
     }
 
-    if (collectionConfigs == null || methodConfigMap == null || retryDefinition == null) {
+    if (collectionConfigs == null || methodConfigMap == null) {
       return null;
     } else {
-      return new InterfaceConfig(collectionConfigs, methodConfigMap, retryDefinition);
+      return new InterfaceConfig(
+          collectionConfigs, methodConfigMap, retryCodesDefinition, retryParamsDefinition);
     }
   }
 
@@ -74,11 +86,11 @@ public class InterfaceConfig {
     }
   }
 
-  private static ImmutableMap<String, ImmutableSet<Status.Code>> createRetryDefinition(
+  private static ImmutableMap<String, ImmutableSet<Status.Code>> createRetryCodesDefinition(
       DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
     ImmutableMap.Builder<String, ImmutableSet<Status.Code>> builder =
         ImmutableMap.<String, ImmutableSet<Status.Code>>builder();
-    for (RetryConfigDefinitionProto retryDef : interfaceConfigProto.getRetryDefList()) {
+    for (RetryCodesDefinitionProto retryDef : interfaceConfigProto.getRetryCodesDefList()) {
       EnumSet<Status.Code> codes = EnumSet.noneOf(Status.Code.class);
       for (String codeText : retryDef.getRetryCodesList()) {
         try {
@@ -96,22 +108,64 @@ public class InterfaceConfig {
     return builder.build();
   }
 
+  private static ImmutableMap<String, RetryParams> createRetryParamsDefinition(
+      DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
+    ImmutableMap.Builder<String, RetryParams> builder = ImmutableMap.<String, RetryParams>builder();
+    for (RetryParamsDefinitionProto retryDef : interfaceConfigProto.getRetryParamsDefList()) {
+      try {
+        BackoffParams retryDelay =
+            BackoffParams.newBuilder()
+                .setInitialDelayMillis(retryDef.getInitialRetryDelayMillis())
+                .setDelayMultiplier(retryDef.getRetryDelayMultiplier())
+                .setMaxDelayMillis(retryDef.getMaxRetryDelayMillis())
+                .build();
+        BackoffParams rpcTimeout =
+            BackoffParams.newBuilder()
+                .setInitialDelayMillis(retryDef.getInitialRpcTimeoutMillis())
+                .setDelayMultiplier(retryDef.getRpcTimeoutMultiplier())
+                .setMaxDelayMillis(retryDef.getMaxRpcTimeoutMillis())
+                .build();
+        RetryParams params =
+            RetryParams.newBuilder()
+                .setRetryBackoff(retryDelay)
+                .setTimeoutBackoff(rpcTimeout)
+                .setTotalTimeout(retryDef.getTotalTimeoutMillis())
+                .build();
+        builder.put(retryDef.getName(), params);
+      } catch (IllegalStateException | NullPointerException e) {
+        diagCollector.addDiag(
+            Diag.error(SimpleLocation.TOPLEVEL, "error while creating retry params: %s", e));
+      }
+    }
+    if (diagCollector.getErrorCount() > 0) {
+      return null;
+    }
+    return builder.build();
+  }
+
   private static Map<String, MethodConfig> createMethodConfigMap(
       DiagCollector diagCollector,
       InterfaceConfigProto interfaceConfigProto,
       Interface iface,
-      ImmutableSet<String> retryConfigNames) {
+      ImmutableSet<String> retryCodesConfigNames,
+      ImmutableSet<String> retryParamsConfigNames) {
     Map<String, MethodConfig> methodConfigMap = new HashMap<>();
 
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
       Method method = iface.lookupMethod(methodConfigProto.getName());
       if (method == null) {
-        diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL,
-            "method not found: %s", methodConfigProto.getName()));
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL, "method not found: %s", methodConfigProto.getName()));
         continue;
       }
       MethodConfig methodConfig =
-          MethodConfig.createMethodConfig(diagCollector, methodConfigProto, method, retryConfigNames);
+          MethodConfig.createMethodConfig(
+              diagCollector,
+              methodConfigProto,
+              method,
+              retryCodesConfigNames,
+              retryParamsConfigNames);
       if (methodConfig == null) {
         continue;
       }
@@ -125,12 +179,15 @@ public class InterfaceConfig {
     }
   }
 
-  private InterfaceConfig(ImmutableList<CollectionConfig> collectionConfigs,
+  private InterfaceConfig(
+      ImmutableList<CollectionConfig> collectionConfigs,
       Map<String, MethodConfig> methodConfigMap,
-      ImmutableMap<String, ImmutableSet<Status.Code>> retryDefinition) {
+      ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition,
+      ImmutableMap<String, RetryParams> retryParamsDefinition) {
     this.collectionConfigs = collectionConfigs;
     this.methodConfigMap = methodConfigMap;
-    this.retryDefinition = retryDefinition;
+    this.retryCodesDefinition = retryCodesDefinition;
+    this.retryParamsDefinition = retryParamsDefinition;
   }
 
   /**
@@ -146,13 +203,17 @@ public class InterfaceConfig {
   public MethodConfig getMethodConfig(Method method) {
     MethodConfig methodConfig = methodConfigMap.get(method.getSimpleName());
     if (methodConfig == null) {
-      throw new IllegalArgumentException("no method config for method '"
-          + method.getFullName() + "'");
+      throw new IllegalArgumentException(
+          "no method config for method '" + method.getFullName() + "'");
     }
     return methodConfig;
   }
 
-  public ImmutableMap<String, ImmutableSet<Status.Code>> getRetryDefinition() {
-    return retryDefinition;
+  public ImmutableMap<String, ImmutableSet<Status.Code>> getRetryCodesDefinition() {
+    return retryCodesDefinition;
+  }
+
+  public ImmutableMap<String, RetryParams> getRetryParamsDefinition() {
+    return retryParamsDefinition;
   }
 }
