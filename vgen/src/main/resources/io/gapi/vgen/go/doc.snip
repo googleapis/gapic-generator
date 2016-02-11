@@ -1,0 +1,47 @@
+@extends "common.snip"
+
+@snippet generateFilename(service)
+    doc.go
+@end
+
+@snippet generateClass(service, body)
+    {@headerComment(commonEditingInstruction())}
+
+    {@packageSection(service)}
+
+    {@body}
+@end
+
+@private commonEditingInstruction()
+    // EDITING INSTRUCTIONS
+    // This file was auto-generated and updates to that file get reflected
+    // here through a refresh process. For the short term, the refresh
+    // process will only be runnable by Google engineers. Manual additions are
+    // allowed because the refresh process performs a 3-way merge in order to
+    // preserve those manual additions. In order to notbreak the refresh
+    // process, only certain types of modifications are allowed.
+    //
+@end
+
+@snippet generateBody(service)
+    {@constants(service)}
+@end
+
+@private packageSection(service)
+    @let pkgName = context.getPackageName
+        // Package {@pkgName} provides the more language idiomatic and
+        // developer friendly layer for the gRPC based API service.
+        //
+        @join commentLine : context.getPackageDocument(service)
+            {@commentLine}
+        @end
+        package {@pkgName}
+    @end
+@end
+
+@private constants(service)
+    const (
+    	prodAddr = "{@context.getServiceConfig.getServiceAddress(service)}:{@context.getServiceConfig.getServicePort()}"
+    	clientUserAgent = "{@context.getApiConfig.getPackageName}"
+    )
+@end
