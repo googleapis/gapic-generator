@@ -229,10 +229,9 @@ public class PythonLanguageProvider extends LanguageProvider {
           String.format(":type %s: %s%s\n",
               field.getSimpleName(), cardinalityComment, typeComment));
     }
-    // Remove trailing newline if exists
-    if (paramTypesBuilder.length() > 0) {
-      paramTypesBuilder.setLength(paramTypesBuilder.length() - 1);
-    }
+
+    paramTypesBuilder.append(":type options: api_callable.CallOptions");
+
     String paramTypes = paramTypesBuilder.toString();
 
     // Generate comment contents
@@ -243,14 +242,7 @@ public class PythonLanguageProvider extends LanguageProvider {
         contentBuilder.append("\n\n");
       }
     }
-    if (!Strings.isNullOrEmpty(paramTypes)){
-      contentBuilder.append(paramTypes);
-    }
-
-    // Don't generate empty docstrings
-    if (contentBuilder.length() == 0) {
-      return ImmutableList.<String>of("");
-    }
+    contentBuilder.append(paramTypes);
 
     return convertToCommentedBlock(contentBuilder.toString());
   }

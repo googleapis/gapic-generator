@@ -173,7 +173,7 @@
             {@pathTemplateName(collectionConfig)} = PathTemplate(
                 '{@collectionConfig.getNamePattern}')
         @end
-        
+
         @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
 
             {@createResourceFunction(collectionConfig)}
@@ -222,67 +222,72 @@
 @private serviceMethodsSection(service)
     @# Service calls
     @join method : service.getMethods on BREAK.add(BREAK)
-        {@flattenedMethod(method)}
-
-        {@callableMethod(service, method)}
+        {@flattenedMethod(service, method)}
     @end
 @end
 
-@private flattenedMethod(method)
+@private callableConstructor(method)
+    @if context.isIdempotent(method)
+        return api_callable.idempotent_callable(
+
+    @else
+        return api_callable.ApiCallable(
+
+    @end
+        self,
+        is_retrying=standard_options.is_retrying,
+        max_attempts=standard_options.max_attempts,
+        page_streaming=standard_options.page_streaming)(req)
+@end
+
+@private flattenedMethod(service, method)
     @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
-             requestObjName = context.upperCamelToLowerUnderscore(method.getInputMessage().getSimpleName()), \
              methodInputModule = pyproto.getPbFileName(method.getInputMessage()), \
              inputTypeName = method.getInputMessage().getSimpleName(), \
              flattenedParams = context.messages.flattenedFields(method.getInputType()), \
-             documentation = comments(method)
+             documentation = comments(method), \
+             methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+             isPageStreamingRequest = methodConfig.isPageStreaming()
         @if flattenedParams
             def {@methodName}(
                     self,
-                    {@parameterValues(flattenedParams)}):
+                    {@parameterValues(flattenedParams)},
+                    options=None):
                 @if documentation
                     {@documentation}
                 @end
-                {@defaultMutableValues(flattenedParams)}
-                {@requestObjName} = {@methodInputModule}.{@inputTypeName}(
+                @if {@defaultMutableValues(flattenedParams)}
+                    {@defaultMutableValues(flattenedParams)}
+                @end
+                @if {@isPageStreamingRequest}
+                    standard_options = CallOptions(
+                        page_streaming={@pageDescriptorName(method)})
+                @else
+                    standard_options = CallOptions()
+                @end
+                standard_options.update(options)
+                standard_options.normalize()
+                req = {@methodInputModule}.{@inputTypeName}(
                     {@namedParameters(flattenedParams)})
-                return self.{@methodName}_callable()({@requestObjName})
+                {@callableConstructor(method)}
         @else
-            def {@methodName}(self):
+            def {@methodName}(
+                    self,
+                    options=None):
                 @if documentation
                     {@documentation}
                 @end
-                {@requestObjName} = {@methodInputModule}.{@inputTypeName}()
-                return self.{@methodName}_callable()({@requestObjName})
+                @if {@isPageStreamingRequest}
+                    standard_options = CallOptions(
+                        page_streaming={@pageDescriptorName(method)})
+                @else
+                    standard_options = CallOptions()
+                @end
+                standard_options.update(options)
+                standard_options.normalize()
+                req = {@methodInputModule}.{@inputTypeName}()
+                {@callableConstructor(method)}
         @end
-    @end
-@end
-
-@private callableMethod(service, method)
-    @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
-             requestObjName = context.upperCamelToLowerUnderscore(method.getInputMessage().getSimpleName()), \
-             methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-             isPageStreamingRequest = methodConfig.isPageStreaming()
-        @if {@isPageStreamingRequest}
-            def {@methodName}_callable(
-                    self,
-                    is_retrying=None,
-                    max_attempts=None,
-                    page_streaming={@pageDescriptorName(method)}):
-                return api_callable.idempotent_callable(
-                    self.stub.{@method.getSimpleName()},
-                    page_streaming=page_streaming,
-        @else
-            def {@methodName}_callable(
-                    self,
-                    is_retrying=None,
-                    max_attempts=None):
-                return api_callable.idempotent_callable(
-                    self.stub.{@method.getSimpleName()},
-        @end
-
-                is_retrying=is_retrying,
-                max_attempts=max_attempts,
-                defaults=self.defaults)
     @end
 @end
 
