@@ -184,4 +184,10 @@ project(':vgen') {
       args = clargs.split(',').toList()
     }
   }
+
+  // Task to display the cache path of GRPC Java plugin
+  task showGrpcJavaPluginPath << {
+    ExecutableLocator locator = new ExecutableLocator(project)
+    println locator.resolve('io.grpc:protoc-gen-grpc-java:0.9.0')
+  }
 }
