@@ -57,7 +57,10 @@ subprojects {
       // Protobuf
       protobuf: 'com.google.protobuf:protobuf-java:3.0.0-beta-1',
       protoc:  'com.google.protobuf:protoc:3.0.0-beta-1',
-      protobufGradlePlugin: 'com.google.protobuf:protobuf-gradle-plugin:0.7.2-SNAPSHOT'
+      protobufGradlePlugin: 'com.google.protobuf:protobuf-gradle-plugin:0.7.2-SNAPSHOT',
+
+      // Formatter
+      javaFomatter: 'com.google.googlejavaformat:google-java-format:0.1-alpha'
     ]
   }
 
@@ -81,7 +84,8 @@ subprojects {
       libraries.commonsLang,
       libraries.commonsCli,
       libraries.snakeyaml,
-      libraries.toolsFx
+      libraries.toolsFx,
+      libraries.javaFomatter
 
     testCompile libraries.junit,
       libraries.mockito,
@@ -189,5 +193,14 @@ project(':vgen') {
   task showGrpcJavaPluginPath << {
     ExecutableLocator locator = new ExecutableLocator(project)
     println locator.resolve('io.grpc:protoc-gen-grpc-java:0.9.0')
+  }
+
+  // Task to display the cache path of Google Java formatter
+  task showJavaFormatterPath << {
+    configurations.runtime.each {
+      if (it.toString().contains('google-java-format')) {
+        println it
+      }
+    }
   }
 }
