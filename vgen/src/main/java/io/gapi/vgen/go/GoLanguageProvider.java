@@ -141,12 +141,18 @@ public class GoLanguageProvider extends LanguageProvider {
 
   /**
    * The import path for generated pb.go files for core-proto files.
-   * TODO(mukai): Change this when it's moved to another place.
+   *
+   * Right now this and CORE_PROTO_PACKAGES are not used, assumed they are placed
+   * inside of this package, which is recommended by gcloud-golang team.
+   *
+   * TODO(mukai): Set the proper location when the location is known.
    */
-  private static final String CORE_PROTO_BASE = "github.com/googleapis/core-proto-go";
+  private static final String CORE_PROTO_BASE = "<TBD>";
 
   /**
    * The set of the core protobuf packages.
+   *
+   * See the comment above, this is also not used right now.
    */
   private static final ImmutableSet<String> CORE_PROTO_PACKAGES =
       ImmutableSet.<String>builder()
@@ -318,10 +324,6 @@ public class GoLanguageProvider extends LanguageProvider {
   private GoImport createMessageImport(MessageType messageType) {
     String pkgName = messageType.getFile().getProto().getPackage().replace(".", "/");
     String localName = localPackageName(messageType);
-    // Well known protos.
-    if (CORE_PROTO_PACKAGES.contains(pkgName)) {
-      return GoImport.create(CORE_PROTO_BASE + "/" + pkgName, localName);
-    }
     return GoImport.create(getApiConfig().getPackageName() + "/proto/" + pkgName, localName);
   }
 
