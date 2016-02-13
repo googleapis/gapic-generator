@@ -1,6 +1,7 @@
 package io.gapi.vgen;
 
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Preconditions;
@@ -62,6 +63,10 @@ public abstract class LanguageProvider {
 
   public ServiceConfig getServiceConfig() {
     return serviceConfig;
+  }
+
+  public boolean isIdempotent(Method method) {
+    return Resources.isIdempotent(method);
   }
 
   /**

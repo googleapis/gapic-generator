@@ -461,7 +461,7 @@
 @private methodReturningCallable(method, callableConstant, methodName, inTypeName, outTypeName)
   {@methodJavaDoc(method)}
   public ApiCallable<{@inTypeName}, {@outTypeName}> {@methodName}Callable() {
-    @if context.resources.isIdempotent(method)
+    @if context.isIdempotent(method)
       return ApiUtils.prepareIdempotentCallable({@callableConstant}, settings).bind(channel);
     @else
       return {@callableConstant}.bind(channel);
