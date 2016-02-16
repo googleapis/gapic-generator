@@ -316,8 +316,9 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    */
   protected LibraryServiceApi(ServiceApiSettings<MethodIdentifier> settings) throws IOException {
-    ServiceApiSettings<MethodIdentifier> internalSettings = ApiUtils.populateSettings(settings,
-        SERVICE_ADDRESS, DEFAULT_SERVICE_PORT, ALL_SCOPES);
+    ServiceApiSettings<MethodIdentifier> internalSettings =
+        ApiUtils.<MethodIdentifier>populateSettings(
+            settings, SERVICE_ADDRESS, DEFAULT_SERVICE_PORT, ALL_SCOPES);
     this.settings = internalSettings;
     this.channel = internalSettings.getChannel();
 
@@ -445,7 +446,10 @@ public class LibraryServiceApi implements AutoCloseable {
         retryCodesConfig.get(MethodIdentifier.CREATE_SHELF);
     RetryParams retryParams =
         retryParamsConfig.get(MethodIdentifier.CREATE_SHELF);
-    return CREATE_SHELF.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
+    return CREATE_SHELF
+        .retryableOn(retryableCodes)
+        .retrying(retryParams, settings.getExecutor())
+        .bind(channel);
   }
 
   // ----- getShelf -----
@@ -535,7 +539,10 @@ public class LibraryServiceApi implements AutoCloseable {
         retryCodesConfig.get(MethodIdentifier.GET_SHELF);
     RetryParams retryParams =
         retryParamsConfig.get(MethodIdentifier.GET_SHELF);
-    return GET_SHELF.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
+    return GET_SHELF
+        .retryableOn(retryableCodes)
+        .retrying(retryParams, settings.getExecutor())
+        .bind(channel);
   }
 
   // ----- listShelves -----
@@ -592,7 +599,10 @@ public class LibraryServiceApi implements AutoCloseable {
         retryCodesConfig.get(MethodIdentifier.LIST_SHELVES);
     RetryParams retryParams =
         retryParamsConfig.get(MethodIdentifier.LIST_SHELVES);
-    return LIST_SHELVES.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
+    return LIST_SHELVES
+        .retryableOn(retryableCodes)
+        .retrying(retryParams, settings.getExecutor())
+        .bind(channel);
   }
 
   // ----- deleteShelf -----
@@ -640,7 +650,10 @@ public class LibraryServiceApi implements AutoCloseable {
         retryCodesConfig.get(MethodIdentifier.DELETE_SHELF);
     RetryParams retryParams =
         retryParamsConfig.get(MethodIdentifier.DELETE_SHELF);
-    return DELETE_SHELF.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
+    return DELETE_SHELF
+        .retryableOn(retryableCodes)
+        .retrying(retryParams, settings.getExecutor())
+        .bind(channel);
   }
 
   // ----- mergeShelves -----
@@ -696,7 +709,10 @@ public class LibraryServiceApi implements AutoCloseable {
         retryCodesConfig.get(MethodIdentifier.MERGE_SHELVES);
     RetryParams retryParams =
         retryParamsConfig.get(MethodIdentifier.MERGE_SHELVES);
-    return MERGE_SHELVES.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
+    return MERGE_SHELVES
+        .retryableOn(retryableCodes)
+        .retrying(retryParams, settings.getExecutor())
+        .bind(channel);
   }
 
   // ----- createBook -----
@@ -746,7 +762,10 @@ public class LibraryServiceApi implements AutoCloseable {
         retryCodesConfig.get(MethodIdentifier.CREATE_BOOK);
     RetryParams retryParams =
         retryParamsConfig.get(MethodIdentifier.CREATE_BOOK);
-    return CREATE_BOOK.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
+    return CREATE_BOOK
+        .retryableOn(retryableCodes)
+        .retrying(retryParams, settings.getExecutor())
+        .bind(channel);
   }
 
   // ----- getBook -----
@@ -794,7 +813,10 @@ public class LibraryServiceApi implements AutoCloseable {
         retryCodesConfig.get(MethodIdentifier.GET_BOOK);
     RetryParams retryParams =
         retryParamsConfig.get(MethodIdentifier.GET_BOOK);
-    return GET_BOOK.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
+    return GET_BOOK
+        .retryableOn(retryableCodes)
+        .retrying(retryParams, settings.getExecutor())
+        .bind(channel);
   }
 
   // ----- listBooks -----
@@ -852,7 +874,10 @@ public class LibraryServiceApi implements AutoCloseable {
         retryCodesConfig.get(MethodIdentifier.LIST_BOOKS);
     RetryParams retryParams =
         retryParamsConfig.get(MethodIdentifier.LIST_BOOKS);
-    return LIST_BOOKS.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
+    return LIST_BOOKS
+        .retryableOn(retryableCodes)
+        .retrying(retryParams, settings.getExecutor())
+        .bind(channel);
   }
 
   // ----- deleteBook -----
@@ -900,7 +925,10 @@ public class LibraryServiceApi implements AutoCloseable {
         retryCodesConfig.get(MethodIdentifier.DELETE_BOOK);
     RetryParams retryParams =
         retryParamsConfig.get(MethodIdentifier.DELETE_BOOK);
-    return DELETE_BOOK.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
+    return DELETE_BOOK
+        .retryableOn(retryableCodes)
+        .retrying(retryParams, settings.getExecutor())
+        .bind(channel);
   }
 
   // ----- updateBook -----
@@ -974,7 +1002,10 @@ public class LibraryServiceApi implements AutoCloseable {
         retryCodesConfig.get(MethodIdentifier.UPDATE_BOOK);
     RetryParams retryParams =
         retryParamsConfig.get(MethodIdentifier.UPDATE_BOOK);
-    return UPDATE_BOOK.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
+    return UPDATE_BOOK
+        .retryableOn(retryableCodes)
+        .retrying(retryParams, settings.getExecutor())
+        .bind(channel);
   }
 
   // ----- moveBook -----
@@ -1024,7 +1055,10 @@ public class LibraryServiceApi implements AutoCloseable {
         retryCodesConfig.get(MethodIdentifier.MOVE_BOOK);
     RetryParams retryParams =
         retryParamsConfig.get(MethodIdentifier.MOVE_BOOK);
-    return MOVE_BOOK.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
+    return MOVE_BOOK
+        .retryableOn(retryableCodes)
+        .retrying(retryParams, settings.getExecutor())
+        .bind(channel);
   }
 
 

@@ -398,8 +398,9 @@
     {@javaDocManualEdit()}
      */
     protected {@veneerName}(ServiceApiSettings<MethodIdentifier> settings) throws IOException {
-      ServiceApiSettings<MethodIdentifier> internalSettings = ApiUtils.populateSettings(settings,
-          SERVICE_ADDRESS, DEFAULT_SERVICE_PORT, ALL_SCOPES);
+      ServiceApiSettings<MethodIdentifier> internalSettings =
+          ApiUtils.<MethodIdentifier>populateSettings(
+              settings, SERVICE_ADDRESS, DEFAULT_SERVICE_PORT, ALL_SCOPES);
       this.settings = internalSettings;
       this.channel = internalSettings.getChannel();
 
@@ -570,7 +571,10 @@
         retryCodesConfig.get(MethodIdentifier.{@callableConstant});
     RetryParams retryParams =
         retryParamsConfig.get(MethodIdentifier.{@callableConstant});
-    return {@callableConstant}.retryableOn(retryableCodes).retrying(retryParams).bind(channel);
+    return {@callableConstant}
+        .retryableOn(retryableCodes)
+        .retrying(retryParams, settings.getExecutor())
+        .bind(channel);
   }
 
 @end
