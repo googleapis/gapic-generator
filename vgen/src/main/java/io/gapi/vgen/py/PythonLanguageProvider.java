@@ -160,16 +160,22 @@ public class PythonLanguageProvider extends LanguageProvider {
     return GeneratedResult.create(result, outputFilename);
   }
 
-
   /**
    * Return a Python docstring to be associated with the given ProtoElement.
    */
   public List<String> comments(ProtoElement element, PythonImportHandler importHandler) {
+    List<String> comments;
     if (element instanceof Method) {
-      return methodComments((Method) element, importHandler);
+      comments = methodComments((Method) element, importHandler);
     } else {
-      return defaultComments(element);
+      comments = defaultComments(element);
     }
+
+    ImmutableList.Builder<String> builder = ImmutableList.builder();
+    for (int i = 0; i < comments.size(); i++) {
+      builder.add(PythonSphinxCommentFixer.sphinxify(comments.get(i)));
+    }
+    return builder.build();
   }
 
   /**
