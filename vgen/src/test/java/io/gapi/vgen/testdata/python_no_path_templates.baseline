@@ -97,17 +97,17 @@ class NoTemplatesServiceApi(object):
         del self.stub
 
     # Service calls
-    def increment(self):
-        increment_request = no_path_templates_pb2.IncrementRequest()
-        return self.increment_callable()(increment_request)
-
-    def increment_callable(
+    def increment(
             self,
-            is_retrying=None,
-            max_attempts=None):
-        return api_callable.idempotent_callable(
-            self.stub.Increment,
-            is_retrying=is_retrying,
-            max_attempts=max_attempts,
-            defaults=self.defaults)
+            options=None):
+        """:type options: api_callable.CallOptions"""
+        standard_options = CallOptions()
+        standard_options.update(options)
+        standard_options.normalize()
+        req = no_path_templates_pb2.IncrementRequest()
+        return api_callable.ApiCallable(
+            self,
+            is_retrying=standard_options.is_retrying,
+            max_attempts=standard_options.max_attempts,
+            page_streaming=standard_options.page_streaming)(req)
 
