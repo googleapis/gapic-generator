@@ -78,6 +78,11 @@ public abstract class LanguageProvider {
     return service.getSimpleName() + "Api";
   }
 
+  public String getRelativeProtoPath(Interface service) {
+    return service.getFile().getFullName().replace('.', '/')
+        + "/" + service.getFile().getSimpleName();
+  }
+
   // Helpers for Subclasses and Snippets
   // ===================================
 
