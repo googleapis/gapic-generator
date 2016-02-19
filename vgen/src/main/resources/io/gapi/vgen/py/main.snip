@@ -127,7 +127,7 @@
                 through this client
               :type timeout: int
             """
-            self.defaults = api_callable.ApiCallableDefaults(
+            self.defaults = api_callable.ApiCallDefaults(
                 timeout=timeout,
                 max_attempts=max_attempts,
                 is_idempotent_retrying=is_idempotent_retrying)
@@ -229,10 +229,11 @@
 @private callableConstructor(method)
     @if context.isIdempotent(method)
         return api_callable.ApiCallable(
-            self, options=options, defaults=defaults, is_idempotent=True)(req)
+            self.stub.{@method.getSimpleName()}, options=options, defaults=self.defaults,
+            is_idempotent=True)(req)
     @else
         return api_callable.ApiCallable(
-            self, options=options, defaults=defaults)(req)
+            self.stub.{@method.getSimpleName()}, options=options, defaults=self.defaults)(req)
     @end
 @end
 
@@ -256,10 +257,10 @@
                     {@defaultMutableValues(flattenedParams)}
                 @end
                 @if {@isPageStreamingRequest}
-                    standard_options = CallOptions(
+                    standard_options = api_callable.CallOptions(
                         page_streaming={@pageDescriptorName(method)})
                 @else
-                    standard_options = CallOptions()
+                    standard_options = api_callable.CallOptions()
                 @end
                 standard_options.update(options)
                 req = {@methodInputModule}.{@inputTypeName}(
@@ -273,10 +274,10 @@
                     {@documentation}
                 @end
                 @if {@isPageStreamingRequest}
-                    standard_options = CallOptions(
+                    standard_options = api_callable.CallOptions(
                         page_streaming={@pageDescriptorName(method)})
                 @else
-                    standard_options = CallOptions()
+                    standard_options = api_callable.CallOptions()
                 @end
                 standard_options.update(options)
                 standard_options.normalize()
