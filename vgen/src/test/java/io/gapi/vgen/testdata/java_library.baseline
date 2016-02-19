@@ -33,12 +33,13 @@
 package com.google.gcloud.pubsub.spi;
 
 import com.google.api.gax.core.BackoffParams;
+import com.google.api.gax.core.ConnectionSettings;
 import com.google.api.gax.core.RetryParams;
 import com.google.api.gax.grpc.ApiCallable;
 import com.google.api.gax.grpc.PageDescriptor;
 import com.google.api.gax.grpc.ServiceApiSettings;
-import com.google.api.gax.internal.ApiUtils;
 import com.google.api.gax.protobuf.PathTemplate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -108,7 +109,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public static final String SERVICE_ADDRESS = "library-example.googleapis.com";
+  public static final String DEFAULT_SERVICE_ADDRESS = "library-example.googleapis.com";
 
   /**
    * The default port of the service.
@@ -117,6 +118,27 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    */
   public static final int DEFAULT_SERVICE_PORT = 443;
+
+  /**
+   * The default scopes of the service.
+   */
+  public static ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
+      .add("https://www.googleapis.com/auth/library")
+      .add("https://www.googleapis.com/auth/cloud-platform")
+      .build();
+
+  /**
+   * The default settings for the service.
+   */
+  public static ServiceApiSettings<MethodIdentifier> DEFAULT_SETTINGS =
+      ServiceApiSettings.<MethodIdentifier>builder()
+        .provideChannelWith(
+            ConnectionSettings.builder()
+                .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
+                .setPort(DEFAULT_SERVICE_PORT)
+                .provideCredentialsWith(DEFAULT_SERVICE_SCOPES)
+                .build())
+        .build();
 
   private static final ImmutableMap<MethodIdentifier, ImmutableSet<Status.Code>> DEFAULT_RETRY_CONFIG;
 
@@ -252,11 +274,6 @@ public class LibraryServiceApi implements AutoCloseable {
         }
       };
 
-  private static String ALL_SCOPES[] = {
-    "https://www.googleapis.com/auth/library",
-    "https://www.googleapis.com/auth/cloud-platform",
-  };
-
   /**
    * A PathTemplate representing the fully-qualified path to represent
    * a shelf resource.
@@ -296,7 +313,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    */
   public static LibraryServiceApi create() throws IOException {
-    return create(ServiceApiSettings.<MethodIdentifier>builder().build());
+    return create(DEFAULT_SETTINGS);
   }
 
   /**
@@ -318,11 +335,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    */
   protected LibraryServiceApi(ServiceApiSettings<MethodIdentifier> settings) throws IOException {
-    ServiceApiSettings<MethodIdentifier> internalSettings =
-        ApiUtils.<MethodIdentifier>populateSettings(
-            settings, SERVICE_ADDRESS, DEFAULT_SERVICE_PORT, ALL_SCOPES);
-    this.settings = internalSettings;
-    this.channel = internalSettings.getChannel();
+    this.settings = settings;
+    this.channel = settings.getChannel();
 
     Map<MethodIdentifier, ImmutableSet<Status.Code>> retryCodesConfig =
         new EnumMap<>(DEFAULT_RETRY_CONFIG);
