@@ -228,16 +228,12 @@
 
 @private callableConstructor(method)
     @if context.isIdempotent(method)
-        return api_callable.idempotent_callable(
-
+        return api_callable.ApiCallable(
+            self, options=options, defaults=defaults, is_idempotent=True)(req)
     @else
         return api_callable.ApiCallable(
-
+            self, options=options, defaults=defaults)(req)
     @end
-        self,
-        is_retrying=standard_options.is_retrying,
-        max_attempts=standard_options.max_attempts,
-        page_streaming=standard_options.page_streaming)(req)
 @end
 
 @private flattenedMethod(service, method)
@@ -266,7 +262,6 @@
                     standard_options = CallOptions()
                 @end
                 standard_options.update(options)
-                standard_options.normalize()
                 req = {@methodInputModule}.{@inputTypeName}(
                     {@namedParameters(flattenedParams)})
                 {@callableConstructor(method)}

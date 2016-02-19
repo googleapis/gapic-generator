@@ -106,8 +106,5 @@ class NoTemplatesServiceApi(object):
         standard_options.normalize()
         req = no_path_templates_pb2.IncrementRequest()
         return api_callable.ApiCallable(
-            self,
-            is_retrying=standard_options.is_retrying,
-            max_attempts=standard_options.max_attempts,
-            page_streaming=standard_options.page_streaming)(req)
+            self, options=options, defaults=defaults)(req)
 
