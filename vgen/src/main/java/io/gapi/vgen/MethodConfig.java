@@ -2,8 +2,8 @@ package io.gapi.vgen;
 
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.collect.ImmutableSet;
 
 import javax.annotation.Nullable;
@@ -18,6 +18,7 @@ public class MethodConfig {
   private final FlatteningConfig flattening;
   private final String retryCodesConfigName;
   private final String retryParamsConfigName;
+  private final BundlingConfig bundling;
 
   /**
    * Creates an instance of MethodConfig based on MethodConfigProto, linking it
@@ -57,6 +58,17 @@ public class MethodConfig {
       }
     }
 
+    BundlingConfig bundling;
+    if (BundlingConfigProto.getDefaultInstance().equals(methodConfig.getBundling())) {
+      bundling = null;
+    } else {
+      bundling =
+          BundlingConfig.createBundling(diagCollector, methodConfig.getBundling(), method);
+      if (bundling == null) {
+        error = true;
+      }
+    }
+
     String retryCodesName = methodConfig.getRetryCodesName();
     if (!retryCodesName.isEmpty() && !retryCodesConfigNames.contains(retryCodesName)) {
       diagCollector.addDiag(
@@ -76,7 +88,7 @@ public class MethodConfig {
     if (error) {
       return null;
     } else {
-      return new MethodConfig(pageStreaming, flattening, retryCodesName, retryParamsName);
+      return new MethodConfig(pageStreaming, flattening, retryCodesName, retryParamsName, bundling);
     }
   }
 
@@ -84,11 +96,13 @@ public class MethodConfig {
       PageStreamingConfig pageStreaming,
       FlatteningConfig flattening,
       String retryCodesConfigName,
-      String retryParamsConfigName) {
+      String retryParamsConfigName,
+      BundlingConfig bundling) {
     this.pageStreaming = pageStreaming;
     this.flattening = flattening;
     this.retryCodesConfigName = retryCodesConfigName;
     this.retryParamsConfigName = retryParamsConfigName;
+    this.bundling = bundling;
   }
 
   /**
@@ -120,13 +134,30 @@ public class MethodConfig {
   }
 
   /**
-   * Returns the name of the retry config this method uses.
+   * Returns the name of the retry codes config this method uses.
    */
   public String getRetryCodesConfigName() {
     return retryCodesConfigName;
   }
 
+  /**
+   * Returns the name of the retry params config this method uses.
+   */
   public String getRetryParamsConfigName() {
     return retryParamsConfigName;
+  }
+
+  /**
+   * Returns true if this method has bundling configured.
+   */
+  public boolean isBundling() {
+    return bundling != null;
+  }
+
+  /**
+   * Returns the bundling configuration of the method.
+   */
+  public BundlingConfig getBundling() {
+    return bundling;
   }
 }

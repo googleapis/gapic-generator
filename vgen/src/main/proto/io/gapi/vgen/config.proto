@@ -23,8 +23,17 @@ option java_package = "io.gapi.vgen";
 //       - name_pattern: shelves/{shelf}/books/{book}
 //         method_base_name: book
 //         ...
+//       retry_codes_def:
+//       - name: idempotent
+//         retry_codes:
+//         ...
+//       - name: non_idempotent
+//         retry_codes:
+//       retry_params_def:
+//       - name: default
+//         ...
 //       methods:
-//       - name: ListBooks
+//       - name: PublishBooks
 //         flattening:
 //           groups:
 //           - parameters:
@@ -38,10 +47,18 @@ option java_package = "io.gapi.vgen";
 //           response:
 //             token_field: next_page_token
 //             resources_field: books
-//         retry:
-//           slot_times_millis: 2
-//           truncate_after: 10
-//           max_attempts: 16
+//         bundling:
+//           thresholds:
+//             element_count_threshold: 5
+//             request_byte_threshold: 16384
+//           bundle_descriptor:
+//             bundled_field: pictures
+//             request_discriminator_fields:
+//             - album
+//             - labels
+//             subresponse_field: pic_id
+//         retry_codes_name: idempotent
+//         retry_params_name: default
 //       - name: GetBook
 //       ...
 //     ...
@@ -120,6 +137,9 @@ message MethodConfigProto {
   // Specifies the configuration for retry/backoff parameters.
   // The name must be defined in InterfaceConfigProto::retry_params_def.
   string retry_params_name = 5;
+
+  // Specifies the configuration for bundling.
+  BundlingConfigProto bundling = 6;
 }
 
 // `FlatteningConfigProto` describes the parameter groups for which a
@@ -189,4 +209,50 @@ message RetryParamsDefinitionProto {
   uint64 max_rpc_timeout_millis = 7;
 
   uint64 total_timeout_millis = 8;
+}
+
+// `BundlingConfigProto` defines the bundling configuration for an API method.
+message BundlingConfigProto {
+  // The thresholds which trigger a bundled request to be sent.
+  BundlingSettingsProto thresholds = 1;
+
+  // The request and response fields used in bundling.
+  BundlingDescriptorProto bundle_descriptor = 2;
+}
+
+// `BundlingSettingsProto` specifies a set of bundling thresholds, each of
+// which acts as a trigger to send a bundle of messages as a request. At least
+// one threshold must be positive nonzero.
+message BundlingSettingsProto {
+  // The number of elements of a field collected into a bundle which, if
+  // exceeded, causes the bundle to be sent.
+  uint32 element_count_threshold = 1;
+
+  // The aggregated size of the bundled field which, if exceeded, causes the
+  // bundle to be sent. This size is computed by aggregating the sizes of the
+  // request field to be bundled, not of the entire request message.
+  uint64 request_byte_threshold = 2;
+
+  // The duration, in milliseconds, after which a bundle should be sent,
+  // starting from the addition of the first message to that bundle.
+  uint64 delay_threshold_millis = 3;
+}
+
+// `BundlingDescriptorProto` specifies the fields of the request message to be
+// used for bundling, and, optionally, the fields of the response message to be
+// used for demultiplexing.
+message BundlingDescriptorProto {
+  // The repeated field in the request message to be aggregated by bundling.
+  string bundled_field = 1;
+
+  // A list of the fields in the request message. Two requests will be bundled
+  // together only if the values of every field specified in
+  // `request_discriminator_fields` is equal between the two requests.
+  repeated string discriminator_fields = 2;
+
+  // Optional. When present, indicates the field in the response message to be
+  // used to demultiplex the response into multiple response messages, in
+  // correspondence with the multiple request messages originally bundled
+  // together.
+  string subresponse_field = 3;
 }
