@@ -74,7 +74,7 @@ class NoTemplatesServiceApi(object):
             through this client
           :type timeout: int
         """
-        self.defaults = api_callable.ApiCallableDefaults(
+        self.defaults = api_callable.ApiCallDefaults(
             timeout=timeout,
             max_attempts=max_attempts,
             is_idempotent_retrying=is_idempotent_retrying)
@@ -101,10 +101,10 @@ class NoTemplatesServiceApi(object):
             self,
             options=None):
         """:type options: api_callable.CallOptions"""
-        standard_options = CallOptions()
+        standard_options = api_callable.CallOptions()
         standard_options.update(options)
         standard_options.normalize()
         req = no_path_templates_pb2.IncrementRequest()
         return api_callable.ApiCallable(
-            self, options=options, defaults=defaults)(req)
+            self.stub.Increment, options=options, defaults=self.defaults)(req)
 
