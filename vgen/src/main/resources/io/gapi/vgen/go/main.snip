@@ -107,11 +107,12 @@
              inTypeName = context.typeName(method.getInputType), \
              outTypeName = context.typeName(method.getOutputType), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-             isPageStreaming = methodConfig.isPageStreaming
+             isPageStreaming = methodConfig.isPageStreaming, \
+             isFlattening = methodConfig.isFlattening
             @if {@isPageStreaming}
                 @let streamableTypeName = context.getStreamableTypeName(method), \
                      pageStreaming = methodConfig.getPageStreaming(), \
-                     resourceTypeName = context.typeName(pageStreaming.getResourcesField().getType())
+                     resourceTypeName = context.getResourceTypeName(pageStreaming.getResourcesField())
 
                     {@methodComment(method)}
                     func (api *{@context.getVeneerName(service)}) {@methodName}Streamable(req {@inTypeName}) gax.PageStreamable {
@@ -125,6 +126,28 @@
                     		return f(obj.({@resourceTypeName}))
                     	}, opts...)
                     }
+
+                    @if {@isFlattening}
+                        @let fields = context.getFlatteningFields(methodConfig)
+                            {@flattenedMethodComment(method, fields)}
+                            func (api *{@context.getVeneerName(service)}) {@methodName}With(ctx context.Context, {@flattenedParameters(fields)} f func({@resourceTypeName}) bool, opts ...gax.CallOption) error {
+                            	return api.{@methodName}(ctx, {@context.constructionExpr(method.getInputType)}{
+                            		@join field : fields
+                            		{@context.lowerUnderscoreToUpperCamel(field.getSimpleName)}: {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)},
+                            		@end
+                            	}, f, opts...)
+                            }
+
+                            {@flattenedMethodComment(method, fields)}
+                            func (api *{@context.getVeneerName(service)}) {@methodName}StreamableWith({@flattenedParametersStreamable(fields)}) gax.PageStreamable {
+                            	return api.{@methodName}Streamable({@context.constructionExpr(method.getInputType)}{
+                            		@join field : fields
+                            		{@context.lowerUnderscoreToUpperCamel(field.getSimpleName)}: {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)},
+                            		@end
+                            	})
+                            }
+                        @end
+                    @end
               @end
             @else
 
@@ -137,6 +160,19 @@
                 	}
                         return resp.({@outTypeName}), nil
                 }
+
+                @if {@isFlattening}
+                    @let fields = context.getFlatteningFields(methodConfig)
+                        {@flattenedMethodComment(method, fields)}
+                        func (api *{@context.getVeneerName(service)}) {@methodName}With(ctx context.Context, {@flattenedParameters(fields)} opts ...gax.CallOption) ({@outTypeName}, error) {
+                        	return api.{@methodName}(ctx, {@context.constructionExpr(method.getInputType)}{
+                        		@join field : fields
+                        		{@context.lowerUnderscoreToUpperCamel(field.getSimpleName)}: {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)},
+                        		@end
+                        	}, opts...)
+                        }
+                    @end
+                @end
             @end
 
 
@@ -159,6 +195,36 @@
 @private manualEdit()
     //
     //
+@end
+
+@private flattenedMethodComment(method, fields)
+    // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+    @join commentLine : context.comments(method)
+        {@commentLine}
+    @end
+    //
+    @join field : fields vertical
+        @join commentLine : context.getFieldComments(field)
+            {@commentLine}
+        @end
+    @end
+    {@manualEdit()}
+@end
+
+@private flattenedParametersStreamable(fields)
+    @join field : fields on ", "
+        {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)} {@context.typeName(field.getType)}
+    @end
+@end
+
+@private flattenedParameters(fields)
+    @join field : fields on " "
+        {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)} {@context.typeName(field.getType)},
+    @end
+@end
+
+@private flattenedBuilder(fields)
 @end
 
 @private streamables(service)

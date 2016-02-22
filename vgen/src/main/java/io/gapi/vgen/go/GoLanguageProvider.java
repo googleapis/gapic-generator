@@ -3,6 +3,7 @@ package io.gapi.vgen.go;
 import com.google.api.Documentation;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
@@ -237,15 +238,48 @@ public class GoLanguageProvider extends LanguageProvider {
   /**
    * Returns the Go type name for the specified TypeRef.
    */
-  public String typeName(TypeRef type) {
-    if (type.isMessage()) {
-      MessageType messageType = type.getMessageType();
-      return "*" + localPackageName(messageType) + "." + messageType.getProto().getName();
-    } else if (type.isPrimitive()) {
-      return PRIMITIVE_TYPE_MAP.get(type.getKind());
+  public String typeName(TypeRef type) throws RuntimeException {
+    if (type.isMap()) {
+      String keyName = typeName(type.getMapKeyField().getType());
+      String valueName = typeName(type.getMapValueField().getType());
+      return "map[" + keyName + "]"  + valueName;
     } else {
-      return "";
+      String name;
+      if (type.isMessage()) {
+        MessageType messageType = type.getMessageType();
+        name = "*" + localPackageName(messageType) + "." + messageType.getProto().getName();
+      } else if (type.isPrimitive()) {
+        name = PRIMITIVE_TYPE_MAP.get(type.getKind());
+      } else {
+        throw new RuntimeException("Unknown type: " + type.toString());
+      }
+      if (type.isRepeated()) {
+        return "[]" + name;
+      }
+      return name;
     }
+  }
+
+  /**
+   * Returns the Go Type name for the resources field.
+   *
+   * Note that this returns the individual element type of the resources in the message.
+   * For example, if SomeResponse has 'repeated string contents' field, the return value
+   * should be 'string', not '[]string', and that's why the snippet can't use typeName()
+   * directly.
+   */
+  public String getResourceTypeName(Field field) {
+    // Creating a copy with 'required' to extract the type name but isn't affected by
+    // repeated cardinality.
+    return typeName(field.getType().makeRequired());
+  }
+
+  /**
+   * The Go expression to build a value for the specified type.
+   */
+  public String constructionExpr(TypeRef type) {
+    MessageType messageType = type.getMessageType();
+    return "&" + localPackageName(messageType) + "." + messageType.getProto().getName();
   }
 
   /**
@@ -281,6 +315,17 @@ public class GoLanguageProvider extends LanguageProvider {
   }
 
   /**
+   * Returns a flattened group which will appear in the Go file.
+   *
+   * Because Go doesn't have features like keyword arguments or default values for parameters,
+   * it is actually hard to support every groups in Go. Thus, for now, the generator will
+   * simply pick up the first group specified in the config.
+   */
+  public Iterable<Field> getFlatteningFields(MethodConfig methodConfig) {
+    return methodConfig.getFlattening().getFlatteningGroups().get(0);
+  }
+
+  /**
    * Returns the Go type name of (gRPC's) response-streaming methods which receives
    * the element objects.
    */
@@ -297,6 +342,11 @@ public class GoLanguageProvider extends LanguageProvider {
       return ImmutableList.<String>of("");
     }
     return getCommentLines(DocumentationUtil.getScopedDescription(element));
+  }
+
+  public Iterable<String> getFieldComments(Field field) {
+    return getCommentLines(lowerUnderscoreToLowerCamel(field.getSimpleName()) + ": " +
+                           DocumentationUtil.getScopedDescription(field) + "\n");
   }
 
   /**
