@@ -184,10 +184,22 @@ project(':vgen') {
   //
   // Command line args can be passed to the tool as a comma-separated list:
   //   ./gradlew runVGen '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
-
   task runVGen(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'io.gapi.vgen.CodeGeneratorTool'
+    if (project.hasProperty('clargs')) {
+      args = clargs.split(',').toList()
+    }
+  }
+
+  // Task to run SynchronizerTool
+  // =============================
+  //
+  // Command line args can be passed to the tool as a comma-separated list:
+  //   ./gradlew runSynchronizer '-Pclargs=--arg1=val1,--arg2=val2,--arg3=val3'
+  task runSynchronizer(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'io.gapi.vgen.SynchronizerTool'
     if (project.hasProperty('clargs')) {
       args = clargs.split(',').toList()
     }
