@@ -118,7 +118,7 @@ public class PythonLanguageProvider extends LanguageProvider {
     for (Map.Entry<Interface, GeneratedResult> serviceEntry : services.entries()) {
       Interface service = serviceEntry.getKey();
       GeneratedResult generatedResult = serviceEntry.getValue();
-      String path = service.getFile().getFullName().replace('.', '/');
+      String path = getApiConfig().getPackageName().replace('.', '/');
       files.put(path + "/" + generatedResult.getFilename(), generatedResult.getDoc());
     }
     if (archive) {
