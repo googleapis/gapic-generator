@@ -73,11 +73,12 @@
 
 @private alwaysImport() fill
   {@context.addImport("com.google.api.gax.core.BackoffParams")}
+  {@context.addImport("com.google.api.gax.core.ConnectionSettings")}
   {@context.addImport("com.google.api.gax.core.RetryParams")}
   {@context.addImport("com.google.api.gax.grpc.ApiCallable")}
   {@context.addImport("com.google.api.gax.grpc.ServiceApiSettings")}
-  {@context.addImport("com.google.api.gax.internal.ApiUtils")}
   {@context.addImport("com.google.api.gax.protobuf.PathTemplate")}
+  {@context.addImport("com.google.common.collect.ImmutableList")}
   {@context.addImport("com.google.common.collect.ImmutableMap")}
   {@context.addImport("com.google.common.collect.ImmutableSet")}
   {@context.addImport("com.google.common.collect.Lists")}
@@ -104,21 +105,20 @@
   // Constants
   // =========
 
-  {@pathAndPortConstants(service)}
+  {@connectionConstants(service)}
   {@retryDefConstant(service)}
   {@callableConstants(service)}
   {@pageDescriptorConstants(service)}
-  {@scopeConstant(service)}
   {@pathTemplateConstants(service)}
 @end
 
-@private pathAndPortConstants(service)
+@private connectionConstants(service)
   /**
    * The default address of the service.
    *
   {@javaDocManualEdit()}
    */
-  public static final String SERVICE_ADDRESS = "{@context.getServiceConfig.getServiceAddress(service)}";
+  public static final String DEFAULT_SERVICE_ADDRESS = "{@context.getServiceConfig.getServiceAddress(service)}";
 
   /**
    * The default port of the service.
@@ -126,6 +126,28 @@
   {@javaDocManualEdit()}
    */
   public static final int DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()};
+
+  /**
+   * The default scopes of the service.
+   */
+  public static ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
+      @join scope : context.getServiceConfig.getAuthScopes(service)
+        .add("{@scope}")
+      @end
+      .build();
+
+  /**
+   * The default settings for the service.
+   */
+  public static ServiceApiSettings<MethodIdentifier> DEFAULT_SETTINGS =
+      ServiceApiSettings.<MethodIdentifier>builder()
+        .provideChannelWith(
+            ConnectionSettings.builder()
+                .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
+                .setPort(DEFAULT_SERVICE_PORT)
+                .provideCredentialsWith(DEFAULT_SERVICE_SCOPES)
+                .build())
+        .build();
 
 @end
 
@@ -257,15 +279,6 @@
   @end
 @end
 
-@private scopeConstant(service)
-  private static String ALL_SCOPES[] = {
-    @join scope : context.getServiceConfig.getAuthScopes(service)
-      "{@scope}",
-    @end
-  };
-
-@end
-
 @private pathTemplateConstants(service)
   @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
     {@pathTemplateConstant(collectionConfig)}
@@ -378,7 +391,7 @@
     {@javaDocManualEdit()}
      */
     public static {@veneerName} create() throws IOException {
-      return create(ServiceApiSettings.<MethodIdentifier>builder().build());
+      return create(DEFAULT_SETTINGS);
     }
 
     /**
@@ -398,11 +411,8 @@
     {@javaDocManualEdit()}
      */
     protected {@veneerName}(ServiceApiSettings<MethodIdentifier> settings) throws IOException {
-      ServiceApiSettings<MethodIdentifier> internalSettings =
-          ApiUtils.<MethodIdentifier>populateSettings(
-              settings, SERVICE_ADDRESS, DEFAULT_SERVICE_PORT, ALL_SCOPES);
-      this.settings = internalSettings;
-      this.channel = internalSettings.getChannel();
+      this.settings = settings;
+      this.channel = settings.getChannel();
 
       Map<MethodIdentifier, ImmutableSet<Status.Code>> retryCodesConfig =
           new EnumMap<>(DEFAULT_RETRY_CONFIG);
