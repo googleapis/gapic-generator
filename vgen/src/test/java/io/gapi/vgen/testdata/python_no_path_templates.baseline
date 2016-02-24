@@ -74,10 +74,11 @@ class NoTemplatesServiceApi(object):
             through this client
           :type timeout: int
         """
-        self.defaults = api_callable.ApiCallDefaults(
+        self._defaults = dict()
+        self._defaults['increment'] = CallSettings(
             timeout=timeout,
             max_attempts=max_attempts,
-            is_idempotent_retrying=is_idempotent_retrying)
+        )
 
         self.stub = config.create_stub(
             no_path_templates_pb2.beta_create_NoTemplatesService_stub,
@@ -101,10 +102,8 @@ class NoTemplatesServiceApi(object):
             self,
             options=None):
         """:type options: api_callable.CallOptions"""
-        standard_options = api_callable.CallOptions()
-        standard_options.update(options)
-        standard_options.normalize()
         req = no_path_templates_pb2.IncrementRequest()
+        settings = self._defaults['increment'].merge(options)
         return api_callable.ApiCallable(
-            self.stub.Increment, options=options, defaults=self.defaults)(req)
+            self.stub.Increment, settings=settings)(req)
 

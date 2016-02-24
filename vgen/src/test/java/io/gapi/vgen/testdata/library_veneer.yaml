@@ -79,6 +79,25 @@ interfaces:
         - book
     retry_codes_name: non_idempotent
     retry_params_name: default
+  - name: PublishSeries
+    flattening:
+      groups:
+      - parameters:
+        - shelf
+        - books
+        - edition
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    bundling:
+      thresholds:
+        element_count_threshold: 6
+        delay_threshold_millis: 500
+      bundle_descriptor:
+        bundled_field: books
+        discriminator_fields:
+          - edition
+          - shelf.name
+        subresponse_field: book_names
   - name: GetBook
     flattening:
       groups:

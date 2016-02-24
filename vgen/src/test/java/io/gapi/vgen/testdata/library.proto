@@ -66,6 +66,11 @@ service LibraryService {
     option (google.api.http) = { post: "/v1/{name=shelves/*}/books" body: "book" };
   }
 
+  // Creates a series of books.
+  rpc PublishSeries(PublishSeriesRequest) returns (PublishSeriesResponse) {
+    option (google.api.http) = { post: "/v1:publish" body: "*" };
+  }
+
   // Gets a book.
   rpc GetBook(GetBookRequest) returns (Book) {
     option (google.api.http) = { get: "/v1/{name=shelves/*/books/*}" };
@@ -228,6 +233,24 @@ message CreateBookRequest {
 
   // The book to create.
   Book book = 2;
+}
+
+// Request message for LibraryService.PublishSeries.
+message PublishSeriesRequest {
+  // The shelf in which the series is created.
+  Shelf shelf = 1;
+
+  // The books to publish in the series.
+  repeated Book books = 2;
+
+  // The edition of the series
+  uint32 edition = 3;
+}
+
+// Response message for LibraryService.PublishSeries.
+message PublishSeriesResponse {
+  // The names of the books in the series that were published
+  repeated string book_names = 1;
 }
 
 // Request message for LibraryService.GetBook.

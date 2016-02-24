@@ -58,6 +58,8 @@ import com.google.example.library.v1.ListShelvesRequest;
 import com.google.example.library.v1.ListShelvesResponse;
 import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.SomeMessage;
 import com.google.example.library.v1.UpdateBookRequest;
@@ -68,6 +70,7 @@ import io.grpc.Status;
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 // Manually-added imports: add custom (non-generated) imports after this point.
@@ -95,7 +98,7 @@ import java.util.Map;
 public class LibraryServiceApi implements AutoCloseable {
 
   public enum MethodIdentifier {
-    CREATE_SHELF,   GET_SHELF,   LIST_SHELVES,   DELETE_SHELF,   MERGE_SHELVES,   CREATE_BOOK,   GET_BOOK,   LIST_BOOKS,   DELETE_BOOK,   UPDATE_BOOK,   MOVE_BOOK
+    CREATE_SHELF,   GET_SHELF,   LIST_SHELVES,   DELETE_SHELF,   MERGE_SHELVES,   CREATE_BOOK,   PUBLISH_SERIES,   GET_BOOK,   LIST_BOOKS,   DELETE_BOOK,   UPDATE_BOOK,   MOVE_BOOK
   }
 
   // =========
@@ -136,6 +139,7 @@ public class LibraryServiceApi implements AutoCloseable {
     retryableCodes.put(MethodIdentifier.DELETE_SHELF, definition.get("idempotent"));
     retryableCodes.put(MethodIdentifier.MERGE_SHELVES, definition.get("non_idempotent"));
     retryableCodes.put(MethodIdentifier.CREATE_BOOK, definition.get("non_idempotent"));
+    retryableCodes.put(MethodIdentifier.PUBLISH_SERIES, definition.get("non_idempotent"));
     retryableCodes.put(MethodIdentifier.GET_BOOK, definition.get("idempotent"));
     retryableCodes.put(MethodIdentifier.LIST_BOOKS, definition.get("idempotent"));
     retryableCodes.put(MethodIdentifier.DELETE_BOOK, definition.get("idempotent"));
@@ -173,6 +177,7 @@ public class LibraryServiceApi implements AutoCloseable {
     retryParams.put(MethodIdentifier.DELETE_SHELF, definition.get("default"));
     retryParams.put(MethodIdentifier.MERGE_SHELVES, definition.get("default"));
     retryParams.put(MethodIdentifier.CREATE_BOOK, definition.get("default"));
+    retryParams.put(MethodIdentifier.PUBLISH_SERIES, definition.get("default"));
     retryParams.put(MethodIdentifier.GET_BOOK, definition.get("default"));
     retryParams.put(MethodIdentifier.LIST_BOOKS, definition.get("default"));
     retryParams.put(MethodIdentifier.DELETE_BOOK, definition.get("default"));
@@ -193,6 +198,8 @@ public class LibraryServiceApi implements AutoCloseable {
       MERGE_SHELVES = ApiCallable.create(LibraryServiceGrpc.METHOD_MERGE_SHELVES);
   private static final ApiCallable<CreateBookRequest, Book>
       CREATE_BOOK = ApiCallable.create(LibraryServiceGrpc.METHOD_CREATE_BOOK);
+  private static final ApiCallable<PublishSeriesRequest, PublishSeriesResponse>
+      PUBLISH_SERIES = ApiCallable.create(LibraryServiceGrpc.METHOD_PUBLISH_SERIES);
   private static final ApiCallable<GetBookRequest, Book>
       GET_BOOK = ApiCallable.create(LibraryServiceGrpc.METHOD_GET_BOOK);
   private static final ApiCallable<ListBooksRequest, ListBooksResponse>
@@ -765,6 +772,61 @@ public class LibraryServiceApi implements AutoCloseable {
     RetryParams retryParams =
         retryParamsConfig.get(MethodIdentifier.CREATE_BOOK);
     return CREATE_BOOK
+        .retryableOn(retryableCodes)
+        .retrying(retryParams, settings.getExecutor())
+        .bind(channel);
+  }
+
+  // ----- publishSeries -----
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Creates a series of books.
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   *
+   * @param shelf The shelf in which the series is created.
+   * @param books The books to publish in the series.
+   * @param edition The edition of the series
+   */
+  public PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition) {
+    PublishSeriesRequest request =
+        PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setEdition(edition)
+        .build();
+
+    return publishSeries(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Creates a series of books.
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   */
+  public PublishSeriesResponse publishSeries(PublishSeriesRequest request) {
+    return publishSeriesCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Creates a series of books.
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   */
+  public ApiCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable() {
+    ImmutableSet<Status.Code> retryableCodes =
+        retryCodesConfig.get(MethodIdentifier.PUBLISH_SERIES);
+    RetryParams retryParams =
+        retryParamsConfig.get(MethodIdentifier.PUBLISH_SERIES);
+    return PUBLISH_SERIES
         .retryableOn(retryableCodes)
         .retrying(retryParams, settings.getExecutor())
         .bind(channel);
