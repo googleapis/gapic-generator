@@ -60,7 +60,10 @@ subprojects {
       protobufGradlePlugin: 'com.google.protobuf:protobuf-gradle-plugin:0.7.2-SNAPSHOT',
 
       // Formatter
-      javaFomatter: 'com.google.googlejavaformat:google-java-format:0.1-alpha'
+      javaFomatter: 'com.google.googlejavaformat:google-java-format:0.1-alpha',
+
+      // JSON
+      jackson: 'com.fasterxml.jackson.core:jackson-databind:2.7.0'
     ]
   }
 
@@ -85,7 +88,8 @@ subprojects {
       libraries.commonsCli,
       libraries.snakeyaml,
       libraries.toolsFx,
-      libraries.javaFomatter
+      libraries.javaFomatter,
+      libraries.jackson
 
     testCompile libraries.junit,
       libraries.mockito,
@@ -212,6 +216,14 @@ project(':vgen') {
   task runConfigGen(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'io.gapi.vgen.config.ConfigGeneratorTool'
+    if (project.hasProperty('clargs')) {
+      args = clargs.split(',').toList()
+    }
+  }
+
+  task runDisco(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'io.gapi.vgen.DiscoveryImporter'
     if (project.hasProperty('clargs')) {
       args = clargs.split(',').toList()
     }
