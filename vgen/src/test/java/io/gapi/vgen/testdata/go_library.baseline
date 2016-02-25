@@ -324,6 +324,44 @@ func (api *LibraryServiceApi) createBook(ctx context.Context, req interface{}) (
 
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
+// Creates a series of books.
+//
+//
+func (api *LibraryServiceApi) PublishSeries(ctx context.Context, req *google_example_library_v1.PublishSeriesRequest, opts ...gax.CallOption) (*google_example_library_v1.PublishSeriesResponse, error) {
+	opts = append(api.CallOptions, opts...)
+	resp, err := gax.Invoke(ctx, req, api.publishSeries, opts...)
+	if err != nil {
+		return nil, err
+	}
+        return resp.(*google_example_library_v1.PublishSeriesResponse), nil
+}
+
+// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+// Creates a series of books.
+//
+// shelf: The shelf in which the series is created.
+//
+// books: The books to publish in the series.
+//
+// edition: The edition of the series
+//
+//
+//
+func (api *LibraryServiceApi) PublishSeriesWith(ctx context.Context, shelf *google_example_library_v1.Shelf, books []*google_example_library_v1.Book, edition uint32, opts ...gax.CallOption) (*google_example_library_v1.PublishSeriesResponse, error) {
+	return api.PublishSeries(ctx, &google_example_library_v1.PublishSeriesRequest{
+		Shelf: shelf,
+		Books: books,
+		Edition: edition,
+	}, opts...)
+}
+
+func (api *LibraryServiceApi) publishSeries(ctx context.Context, req interface{}) (interface{}, error) {
+	return api.client.PublishSeries(ctx, req.(*google_example_library_v1.PublishSeriesRequest))
+}
+
+// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
 // Gets a book.
 //
 //

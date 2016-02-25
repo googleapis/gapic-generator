@@ -48,8 +48,7 @@
 
 @private serviceClass(service)
     @let path_templates = {@pathTemplateSection(service)}, \
-         documentation = {@comments(service)}, \
-         page_descriptors = {@pageDescriptorSection(service)}
+         documentation = {@comments(service)}
         class {@context.getVeneerName(service)}(object):
             @if documentation
                 {@documentation}
@@ -57,10 +56,6 @@
             @end
             {@constantSection(service)}
 
-            @if page_descriptors
-                {@page_descriptors}
-
-            @end
             @if path_templates
                 {@path_templates}
 
@@ -88,6 +83,12 @@
             '{@auth_scope}',
         @end
     )
+@end
+
+@private methodConfigDict(service)
+    @join method : service.getMethods
+        method: MethodConfig(
+    @end
 @end
 
 @private initMethodSection(service)
@@ -127,10 +128,8 @@
                 through this client
               :type timeout: int
             """
-            self.defaults = api_callable.ApiCallDefaults(
-                timeout=timeout,
-                max_attempts=max_attempts,
-                is_idempotent_retrying=is_idempotent_retrying)
+            self._defaults = dict()
+            {@defaultsSection(service)}
 
             self.stub = config.create_stub(
                 {@stubModule}.beta_create_{@stubService}_stub,
@@ -142,23 +141,74 @@
     @end
 @end
 
-@private pageDescriptorName(method)
-    _{@context.upperCamelToUpperUnderscore(method.getSimpleName())}_DESCRIPTOR
+@private defaultsSection(service)
+    @join method : service.getMethods
+        @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+             methodName = context.upperCamelToLowerUnderscore(method.getSimpleName), \
+             isPageStreaming = methodConfig.isPageStreaming(), \
+             isBundling = methodConfig.isBundling()
+            self._defaults['{@methodName}'] = CallSettings(
+                timeout=timeout,
+                @if context.isIdempotent(method)
+                    is_retrying=is_idempotent_retrying,
+                @end
+                max_attempts=max_attempts,
+                @if isPageStreaming
+                    @let pageStreaming = methodConfig.getPageStreaming(), \
+                            requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
+                            responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
+                            resources = pageStreaming.getResourcesField().getSimpleName()
+                        page_descriptor=PageDescriptor(
+                            '{@requestToken}',
+                            '{@responseToken}',
+                            '{@resources}',
+                        ),
+                    @end
+                @end
+                @if isBundling
+                    @let bundling = methodConfig.getBundling(), \
+                            count = bundling.getElementCountThreshold(), \
+                            bytes = bundling.getRequestByteThreshold(), \
+                            delay = bundling.getDelayThresholdMillis()
+                        bundler=bundling.Executor(BundleOptions(
+                            @if count
+                                element_count_threshold={@count},
+                            @end
+                            @if bytes
+                                request_bytesize_threshold={@bytes},
+                            @end
+                            @if delay
+                                delay_threshold={@delay}
+                            @end
+                        )
+                        bundle_descriptor=BundleDescriptor(
+                            {@bundleDescriptorBody(bundling, method)}
+                        ),
+                    @end
+                @end
+            )
+        @end
+    @end
 @end
 
-@private pageDescriptorSection(service)
-    @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service)
-        @join method : context.messages.filterPageStreamingMethods(interfaceConfig, service.getMethods)
-            @let pageStreaming = interfaceConfig.getMethodConfig(method).getPageStreaming(), \
-                     requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
-                     responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
-                     resources = pageStreaming.getResourcesField().getSimpleName()
-                {@pageDescriptorName(method)} = PageDescriptor(
-                    '{@requestToken}',
-                    '{@responseToken}',
-                    '{@resources}',
-                )
-            @end
+@private bundleDescriptorBody(bundling, method)
+    @let bundledField = bundling.getBundledField().getSimpleName(), \
+            discriminatorFields = bundling.getDiscriminatorFields()
+        @if {@bundling.hasSubresponseField}
+                '{@bundledField}',
+                  [
+                      @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
+                          '{@fieldSelector.getParamName}'
+                      @end
+                  ],
+                'subresponse_field={@bundling.getSubresponseField().getSimpleName()}',
+        @else
+                '{@bundledField}',
+                  [
+                      @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
+                          '{@fieldSelector.getParamName}'
+                      @end
+                  ]
         @end
     @end
 @end
@@ -227,14 +277,8 @@
 @end
 
 @private callableConstructor(method)
-    @if context.isIdempotent(method)
-        return api_callable.ApiCallable(
-            self.stub.{@method.getSimpleName()}, options=options, defaults=self.defaults,
-            is_idempotent=True)(req)
-    @else
-        return api_callable.ApiCallable(
-            self.stub.{@method.getSimpleName()}, options=options, defaults=self.defaults)(req)
-    @end
+    return api_callable.ApiCallable(
+        self.stub.{@method.getSimpleName()}, settings=settings)(req)
 @end
 
 @private flattenedMethod(service, method)
@@ -256,15 +300,9 @@
                 @if {@defaultMutableValues(flattenedParams)}
                     {@defaultMutableValues(flattenedParams)}
                 @end
-                @if {@isPageStreamingRequest}
-                    standard_options = api_callable.CallOptions(
-                        page_streaming={@pageDescriptorName(method)})
-                @else
-                    standard_options = api_callable.CallOptions()
-                @end
-                standard_options.update(options)
                 req = {@methodInputModule}.{@inputTypeName}(
                     {@namedParameters(flattenedParams)})
+                settings = self._defaults['{@methodName}'].merge(options)
                 {@callableConstructor(method)}
         @else
             def {@methodName}(
@@ -273,15 +311,8 @@
                 @if documentation
                     {@documentation}
                 @end
-                @if {@isPageStreamingRequest}
-                    standard_options = api_callable.CallOptions(
-                        page_streaming={@pageDescriptorName(method)})
-                @else
-                    standard_options = api_callable.CallOptions()
-                @end
-                standard_options.update(options)
-                standard_options.normalize()
                 req = {@methodInputModule}.{@inputTypeName}()
+                settings = self._defaults['{@methodName}'].merge(options)
                 {@callableConstructor(method)}
         @end
     @end

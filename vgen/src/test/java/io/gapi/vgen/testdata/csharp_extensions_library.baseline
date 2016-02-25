@@ -393,6 +393,57 @@ namespace Google.Example.Library.V1
         }
 
         /// <summary>
+        /// Creates a series of books.
+        /// </summary>
+        /// <paramref name="shelf">
+        /// The shelf in which the series is created.
+        /// </paramref>
+        /// <paramref name="books">
+        /// The books to publish in the series.
+        /// </paramref>
+        /// <paramref name="edition">
+        /// The edition of the series
+        /// </paramref>
+        public static PublishSeriesResponse PublishSeries(this LibraryService.ILibraryServiceClient @this, Shelf shelf, IEnumerable<Book> books, uint edition)
+        {
+            PublishSeriesRequest request = new PublishSeriesRequest
+            {
+                Shelf = shelf,
+                Books = { books },
+                Edition = edition,
+            };
+
+            return @this.PublishSeries(request);
+        }
+        /// <summary>
+        /// Creates a series of books.
+        /// </summary>
+        /// <paramref name="shelf">
+        /// The shelf in which the series is created.
+        /// </paramref>
+        /// <paramref name="books">
+        /// The books to publish in the series.
+        /// </paramref>
+        /// <paramref name="edition">
+        /// The edition of the series
+        /// </paramref>
+        /// <paramref name="cancellationToken">
+        /// The cancellation token for the asynchronous operation. This defaults to the default
+        /// cancellation token, equivalent to <see cref="CancellationToken.None" />.
+        /// </paramref>
+        public static Task<PublishSeriesResponse> PublishSeriesAsync(this LibraryService.ILibraryServiceClient @this, Shelf shelf, IEnumerable<Book> books, uint edition, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            PublishSeriesRequest request = new PublishSeriesRequest
+            {
+                Shelf = shelf,
+                Books = { books },
+                Edition = edition,
+            };
+
+            return @this.PublishSeriesAsync(request, cancellationToken: cancellationToken).ResponseAsync;
+        }
+
+        /// <summary>
         /// Gets a book.
         /// </summary>
         /// <paramref name="name">
