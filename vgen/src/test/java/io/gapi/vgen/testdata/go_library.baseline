@@ -87,6 +87,11 @@ var (
 	}
 )
 
+var (
+	shelfLibraryServiceApiPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}")
+	bookLibraryServiceApiPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}/books/{book}")
+)
+
 // NewLibraryServiceApi creates a new API service client.
 func NewLibraryServiceApi(ctx context.Context, opts ...cloud.ClientOption) (*LibraryServiceApi, error) {
 	o := []cloud.ClientOption {
@@ -126,6 +131,39 @@ func NewLibraryServiceApi(ctx context.Context, opts ...cloud.ClientOption) (*Lib
 //    // Calling api methods...
 func (api *LibraryServiceApi) Close() {
 	api.conn.Close()
+}
+
+// CreateShelfPath creates the shelf path "shelves/{shelf}" with the shelf.
+func (api *LibraryServiceApi) CreateShelfPath(shelf string) (string, error) {
+	return shelfLibraryServiceApiPathTemplate.Instantiate(map[string]string{
+		"shelf": shelf,
+	})
+}
+
+// ExtractFromShelfPath returns the shelf from the path by matching with the template "shelves/{shelf}".
+func (api *LibraryServiceApi) ExtractFromShelfPath(path string) (string, error) {
+	binding, err := shelfLibraryServiceApiPathTemplate.Match(path)
+	if err != nil {
+		return "", err
+	}
+	return binding["shelf"], nil
+}
+
+// CreateBookPath creates the book path "shelves/{shelf}/books/{book}" with the shelf and the book.
+func (api *LibraryServiceApi) CreateBookPath(shelf string, book string) (string, error) {
+	return bookLibraryServiceApiPathTemplate.Instantiate(map[string]string{
+		"shelf": shelf,
+		"book": book,
+	})
+}
+
+// ExtractFromBookPath returns the shelf and the book from the path by matching with the template "shelves/{shelf}/books/{book}".
+func (api *LibraryServiceApi) ExtractFromBookPath(path string) (string, string, error) {
+	binding, err := bookLibraryServiceApiPathTemplate.Match(path)
+	if err != nil {
+		return "", "", err
+	}
+	return binding["shelf"], binding["book"], nil
 }
 
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.

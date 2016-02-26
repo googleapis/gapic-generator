@@ -56,6 +56,7 @@
     {@globals(service)}
 
     {@constructor(service)}
+    {@pathTemplateMethods(service)}
     {@methods(service)}
 
     {@streamables(service)}
@@ -77,6 +78,12 @@
     		gax.WithTimeoutMultiplier({@retryDef.getValue.getTimeoutBackoff.getDelayMultiplier}),
     		gax.WithMaxTimeout({@retryDef.getValue.getTimeoutBackoff.getMaxDelayMillis}*time.Millisecond),
     	}
+    	@end
+    )
+
+    var (
+    	@join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+    	{@pathTemplateVarName(service, collectionConfig)} = gax.MustCompilePathTemplate("{@collectionConfig.getNamePattern}")
     	@end
     )
 @end
@@ -113,6 +120,68 @@
     func (api *{@context.getVeneerName(service)}) Close() {
     	api.conn.Close()
     }
+@end
+
+@private pathTemplateVarName(service, collectionConfig)
+    {@context.lowerUnderscoreToLowerCamel(collectionConfig.getMethodBaseName)}{@context.getVeneerName(service)}PathTemplate
+@end
+
+@private createResourceFunctionParams(collectionConfig)
+    @join param : collectionConfig.getNameTemplate.vars() on ", "
+        {@context.lowerUnderscoreToLowerCamel(param)} string
+    @end
+@end
+
+@private extractResourceFunctionReturnType(collectionConfig)
+    @join param : collectionConfig.getNameTemplate.vars() on ", "
+        string
+    @end
+@end
+
+@private extractResourceFunctionErrorReturns(collectionConfig)
+    @join param : collectionConfig.getNameTemplate.vars() on ", "
+        ""
+    @end
+@end
+
+@private extractResourceFunctionSuccessfulReturns(collectionConfig)
+    @join param : collectionConfig.getNameTemplate.vars() on ", "
+        binding["{@param}"]
+    @end
+@end
+
+@private createResourceDocParams(collectionConfig)
+    @join param : collectionConfig.getNameTemplate.vars() on " and "
+        the {@param}
+    @end
+@end
+
+# PathTemplates are currently methods of the service. They don't have to be, but
+# this would be good to shorten the method names, and normally the users of these
+# methods would have the service instance already.
+@private pathTemplateMethods(service)
+    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+      @let methodBase = context.lowerUnderscoreToUpperCamel(collectionConfig.getMethodBaseName)
+
+        // Create{@methodBase}Path creates the {@collectionConfig.getMethodBaseName} path "{@collectionConfig.getNamePattern}" with {@createResourceDocParams(collectionConfig)}.
+        func (api *{@context.getVeneerName(service)}) Create{@methodBase}Path({@createResourceFunctionParams(collectionConfig)}) (string, error) {
+        	return {@pathTemplateVarName(service, collectionConfig)}.Instantiate(map[string]string{
+        		@join param : collectionConfig.getNameTemplate.vars()
+        		"{@param}": {@context.lowerUnderscoreToLowerCamel(param)},
+        		@end
+        	})
+        }
+
+        // ExtractFrom{@methodBase}Path returns {@createResourceDocParams(collectionConfig)} from the path by matching with the template "{@collectionConfig.getNamePattern}".
+        func (api *{@context.getVeneerName(service)}) ExtractFrom{@methodBase}Path(path string) ({@extractResourceFunctionReturnType(collectionConfig)}, error) {
+        	binding, err := {@pathTemplateVarName(service, collectionConfig)}.Match(path)
+        	if err != nil {
+        		return {@extractResourceFunctionErrorReturns(collectionConfig)}, err
+        	}
+        	return {@extractResourceFunctionSuccessfulReturns(collectionConfig)}, nil
+        }
+      @end
+    @end
 @end
 
 @private methods(service)
