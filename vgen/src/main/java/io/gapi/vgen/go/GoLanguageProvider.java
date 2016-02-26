@@ -395,6 +395,10 @@ public class GoLanguageProvider extends LanguageProvider {
     imports.add(GoImport.create("google.golang.org/cloud/internal/transport"));
     imports.add(GoImport.create("github.com/googleapis/gax-go", "gax"));
 
+    if (!getApiConfig().getInterfaceConfig(service).getRetryParamsDefinition().isEmpty()) {
+      coreImports.add(GoImport.create("time"));
+    }
+
     // Add method request-type imports
     for (Method method : service.getMethods()) {
       MessageType inputMessage = method.getInputMessage();

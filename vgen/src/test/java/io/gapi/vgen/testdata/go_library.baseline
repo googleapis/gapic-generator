@@ -35,6 +35,7 @@ package library
 
 import (
 	"io"
+	"time"
 	
 	gax "github.com/googleapis/gax-go"
 	"golang.org/x/net/context"
@@ -67,14 +68,22 @@ type LibraryServiceApi struct {
 	// The gRPC API client.
 	client google_example_library_v1.LibraryServiceClient
 
-	// The default call option used for the method of this service.
-	CallOptions []gax.CallOption
+	// The map from the method name to the default call options for the method of this service.
+	CallOptions map[string][]gax.CallOption
 }
 
 var (
 	allScopesLibraryServiceApi = []string {
 		"https://www.googleapis.com/auth/library",
 		"https://www.googleapis.com/auth/cloud-platform",
+	}
+	default_LibraryServiceApiRetryParams = []gax.CallOption {
+		gax.WithRetryInterval(100*time.Millisecond),
+		gax.WithIntervalMultiplier(1.2),
+		gax.WithMaxInterval(1000*time.Millisecond),
+		gax.WithTimeout(300*time.Millisecond),
+		gax.WithTimeoutMultiplier(1.3),
+		gax.WithMaxTimeout(3000*time.Millisecond),
 	}
 )
 
@@ -93,6 +102,20 @@ func NewLibraryServiceApi(ctx context.Context, opts ...cloud.ClientOption) (*Lib
 	return &LibraryServiceApi {
 		conn: conn,
 		client: google_example_library_v1.NewLibraryServiceClient(conn),
+		CallOptions: map[string][]gax.CallOption{
+			"CreateShelf": default_LibraryServiceApiRetryParams,
+			"GetShelf": default_LibraryServiceApiRetryParams,
+			"ListShelves": default_LibraryServiceApiRetryParams,
+			"DeleteShelf": default_LibraryServiceApiRetryParams,
+			"MergeShelves": default_LibraryServiceApiRetryParams,
+			"CreateBook": default_LibraryServiceApiRetryParams,
+			"PublishSeries": default_LibraryServiceApiRetryParams,
+			"GetBook": default_LibraryServiceApiRetryParams,
+			"ListBooks": default_LibraryServiceApiRetryParams,
+			"DeleteBook": default_LibraryServiceApiRetryParams,
+			"UpdateBook": default_LibraryServiceApiRetryParams,
+			"MoveBook": default_LibraryServiceApiRetryParams,
+		},
 	}, nil
 }
 
@@ -111,7 +134,7 @@ func (api *LibraryServiceApi) Close() {
 //
 //
 func (api *LibraryServiceApi) CreateShelf(ctx context.Context, req *google_example_library_v1.CreateShelfRequest, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
-	opts = append(api.CallOptions, opts...)
+	opts = append(api.CallOptions["CreateShelf"], opts...)
 	resp, err := gax.Invoke(ctx, req, api.createShelf, opts...)
 	if err != nil {
 		return nil, err
@@ -143,7 +166,7 @@ func (api *LibraryServiceApi) createShelf(ctx context.Context, req interface{}) 
 //
 //
 func (api *LibraryServiceApi) GetShelf(ctx context.Context, req *google_example_library_v1.GetShelfRequest, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
-	opts = append(api.CallOptions, opts...)
+	opts = append(api.CallOptions["GetShelf"], opts...)
 	resp, err := gax.Invoke(ctx, req, api.getShelf, opts...)
 	if err != nil {
 		return nil, err
@@ -184,7 +207,7 @@ func (api *LibraryServiceApi) ListShelvesStreamable(req *google_example_library_
 //
 //
 func (api *LibraryServiceApi) ListShelves(ctx context.Context, req *google_example_library_v1.ListShelvesRequest, f func(*google_example_library_v1.Shelf) bool, opts ...gax.CallOption) error {
-	opts = append(api.CallOptions, opts...)
+	opts = append(api.CallOptions["ListShelves"], opts...)
 	return gax.PageStream(ctx, api.ListShelvesStreamable(req), func(obj interface{}) bool {
 		return f(obj.(*google_example_library_v1.Shelf))
 	}, opts...)
@@ -222,7 +245,7 @@ func (api *LibraryServiceApi) listShelves(ctx context.Context, req interface{}) 
 //
 //
 func (api *LibraryServiceApi) DeleteShelf(ctx context.Context, req *google_example_library_v1.DeleteShelfRequest, opts ...gax.CallOption) (*google_protobuf.Empty, error) {
-	opts = append(api.CallOptions, opts...)
+	opts = append(api.CallOptions["DeleteShelf"], opts...)
 	resp, err := gax.Invoke(ctx, req, api.deleteShelf, opts...)
 	if err != nil {
 		return nil, err
@@ -256,7 +279,7 @@ func (api *LibraryServiceApi) deleteShelf(ctx context.Context, req interface{}) 
 //
 //
 func (api *LibraryServiceApi) MergeShelves(ctx context.Context, req *google_example_library_v1.MergeShelvesRequest, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
-	opts = append(api.CallOptions, opts...)
+	opts = append(api.CallOptions["MergeShelves"], opts...)
 	resp, err := gax.Invoke(ctx, req, api.mergeShelves, opts...)
 	if err != nil {
 		return nil, err
@@ -293,7 +316,7 @@ func (api *LibraryServiceApi) mergeShelves(ctx context.Context, req interface{})
 //
 //
 func (api *LibraryServiceApi) CreateBook(ctx context.Context, req *google_example_library_v1.CreateBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
-	opts = append(api.CallOptions, opts...)
+	opts = append(api.CallOptions["CreateBook"], opts...)
 	resp, err := gax.Invoke(ctx, req, api.createBook, opts...)
 	if err != nil {
 		return nil, err
@@ -328,7 +351,7 @@ func (api *LibraryServiceApi) createBook(ctx context.Context, req interface{}) (
 //
 //
 func (api *LibraryServiceApi) PublishSeries(ctx context.Context, req *google_example_library_v1.PublishSeriesRequest, opts ...gax.CallOption) (*google_example_library_v1.PublishSeriesResponse, error) {
-	opts = append(api.CallOptions, opts...)
+	opts = append(api.CallOptions["PublishSeries"], opts...)
 	resp, err := gax.Invoke(ctx, req, api.publishSeries, opts...)
 	if err != nil {
 		return nil, err
@@ -366,7 +389,7 @@ func (api *LibraryServiceApi) publishSeries(ctx context.Context, req interface{}
 //
 //
 func (api *LibraryServiceApi) GetBook(ctx context.Context, req *google_example_library_v1.GetBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
-	opts = append(api.CallOptions, opts...)
+	opts = append(api.CallOptions["GetBook"], opts...)
 	resp, err := gax.Invoke(ctx, req, api.getBook, opts...)
 	if err != nil {
 		return nil, err
@@ -407,7 +430,7 @@ func (api *LibraryServiceApi) ListBooksStreamable(req *google_example_library_v1
 //
 //
 func (api *LibraryServiceApi) ListBooks(ctx context.Context, req *google_example_library_v1.ListBooksRequest, f func(*google_example_library_v1.Book) bool, opts ...gax.CallOption) error {
-	opts = append(api.CallOptions, opts...)
+	opts = append(api.CallOptions["ListBooks"], opts...)
 	return gax.PageStream(ctx, api.ListBooksStreamable(req), func(obj interface{}) bool {
 		return f(obj.(*google_example_library_v1.Book))
 	}, opts...)
@@ -457,7 +480,7 @@ func (api *LibraryServiceApi) listBooks(ctx context.Context, req interface{}) (i
 //
 //
 func (api *LibraryServiceApi) DeleteBook(ctx context.Context, req *google_example_library_v1.DeleteBookRequest, opts ...gax.CallOption) (*google_protobuf.Empty, error) {
-	opts = append(api.CallOptions, opts...)
+	opts = append(api.CallOptions["DeleteBook"], opts...)
 	resp, err := gax.Invoke(ctx, req, api.deleteBook, opts...)
 	if err != nil {
 		return nil, err
@@ -489,7 +512,7 @@ func (api *LibraryServiceApi) deleteBook(ctx context.Context, req interface{}) (
 //
 //
 func (api *LibraryServiceApi) UpdateBook(ctx context.Context, req *google_example_library_v1.UpdateBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
-	opts = append(api.CallOptions, opts...)
+	opts = append(api.CallOptions["UpdateBook"], opts...)
 	resp, err := gax.Invoke(ctx, req, api.updateBook, opts...)
 	if err != nil {
 		return nil, err
@@ -524,7 +547,7 @@ func (api *LibraryServiceApi) updateBook(ctx context.Context, req interface{}) (
 //
 //
 func (api *LibraryServiceApi) MoveBook(ctx context.Context, req *google_example_library_v1.MoveBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
-	opts = append(api.CallOptions, opts...)
+	opts = append(api.CallOptions["MoveBook"], opts...)
 	resp, err := gax.Invoke(ctx, req, api.moveBook, opts...)
 	if err != nil {
 		return nil, err

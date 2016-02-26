@@ -49,8 +49,8 @@
     	// The gRPC API client.
     	client {@context.getServiceClientName(service)}
 
-    	// The default call option used for the method of this service.
-    	CallOptions []gax.CallOption
+    	// The map from the method name to the default call options for the method of this service.
+    	CallOptions map[string][]gax.CallOption
     }
 
     {@globals(service)}
@@ -68,6 +68,16 @@
     			"{@scope}",
     		@end
     	}
+    	@join retryDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetryParamsDefinition)
+    	{@retryDef.getKey}_{@context.getVeneerName(service)}RetryParams = []gax.CallOption {
+    		gax.WithRetryInterval({@retryDef.getValue.getRetryBackoff.getInitialDelayMillis}*time.Millisecond),
+    		gax.WithIntervalMultiplier({@retryDef.getValue.getRetryBackoff.getDelayMultiplier}),
+    		gax.WithMaxInterval({@retryDef.getValue.getRetryBackoff.getMaxDelayMillis}*time.Millisecond),
+    		gax.WithTimeout({@retryDef.getValue.getTimeoutBackoff.getInitialDelayMillis}*time.Millisecond),
+    		gax.WithTimeoutMultiplier({@retryDef.getValue.getTimeoutBackoff.getDelayMultiplier}),
+    		gax.WithMaxTimeout({@retryDef.getValue.getTimeoutBackoff.getMaxDelayMillis}*time.Millisecond),
+    	}
+    	@end
     )
 @end
 
@@ -87,6 +97,11 @@
     	return &{@context.getVeneerName(service)} {
     		conn: conn,
     		client: {@context.getServiceClientConstructorName(service)}(conn),
+    		CallOptions: map[string][]gax.CallOption{
+    			@join method : service.getMethods
+      			"{@method.getSimpleName}": {@context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method).getRetryParamsConfigName}_{@context.getVeneerName(service)}RetryParams,
+    			@end
+    		},
     	}, nil
     }
 
@@ -121,7 +136,7 @@
 
                     {@methodComment(method)}
                     func (api *{@context.getVeneerName(service)}) {@methodName}(ctx context.Context, req {@inTypeName}, f func({@resourceTypeName}) bool, opts ...gax.CallOption) error {
-                    	opts = append(api.CallOptions, opts...)
+                    	opts = append(api.CallOptions["{@methodName}"], opts...)
                     	return gax.PageStream(ctx, api.{@methodName}Streamable(req), func(obj interface{}) bool {
                     		return f(obj.({@resourceTypeName}))
                     	}, opts...)
@@ -153,7 +168,7 @@
 
                 {@methodComment(method)}
                 func (api *{@context.getVeneerName(service)}) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) ({@outTypeName}, error) {
-                	opts = append(api.CallOptions, opts...)
+                	opts = append(api.CallOptions["{@methodName}"], opts...)
                 	resp, err := gax.Invoke(ctx, req, api.{@lowerMethodName}, opts...)
                 	if err != nil {
                 		return nil, err
