@@ -87,6 +87,7 @@ class LibraryServiceApi(object):
             scopes=_ALL_SCOPES,
             is_idempotent_retrying=True,
             max_attempts=3,
+            bundling_override=None,
             timeout=30):
         """Constructor.
 
@@ -108,10 +109,18 @@ class LibraryServiceApi(object):
           :keyword max_attempts: The maximum number of times to retry a
             method that is configured to retry upon transient failure
           :type max_attempts: int
+          :keyword bundling_override: A dictionary that overrides default
+            bundling settings. ``bundling_override`` maps bundling method
+            names (e.g., 'publish_foo') to custom BundleOptions objects, or to
+            None. It is invalid to have a key for a method that is not
+            bundling-enabled. A value of None indicates that the method in
+            question should not bundle.
+          :type bundling_override: dict
           :keyword timeout: The default timeout, in seconds, for calls made
             through this client
           :type timeout: int
         """
+        bundling_override = bundling_override or dict()
         self._defaults = dict()
         self._defaults['create_shelf'] = CallSettings(
             timeout=timeout,
@@ -145,13 +154,18 @@ class LibraryServiceApi(object):
             timeout=timeout,
             max_attempts=max_attempts,
         )
+        if 'publish_series' in bundling_override:
+            publish_series_bundler = bundling.Executor(
+                bundle_overrides['publish_series'])
+        else:
+            publish_series_bundler = bundling.Executor(BundleOptions(
+                element_count_threshold=6,
+                delay_threshold=500
+            ))
         self._defaults['publish_series'] = CallSettings(
             timeout=timeout,
             max_attempts=max_attempts,
-            bundler=bundling.Executor(BundleOptions(
-                element_count_threshold=6,
-                delay_threshold=500
-            )
+            bundler=publish_series_bundler,
             bundle_descriptor=BundleDescriptor(
                 'books',
                   [

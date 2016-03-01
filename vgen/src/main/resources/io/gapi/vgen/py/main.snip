@@ -103,6 +103,7 @@
                 scopes=_ALL_SCOPES,
                 is_idempotent_retrying=True,
                 max_attempts=3,
+                bundling_override=None,
                 timeout=30):
             """Constructor.
 
@@ -124,10 +125,18 @@
               :keyword max_attempts: The maximum number of times to retry a
                 method that is configured to retry upon transient failure
               :type max_attempts: int
+              :keyword bundling_override: A dictionary that overrides default
+                bundling settings. ``bundling_override`` maps bundling method
+                names (e.g., 'publish_foo') to custom BundleOptions objects, or to
+                None. It is invalid to have a key for a method that is not
+                bundling-enabled. A value of None indicates that the method in
+                question should not bundle.
+              :type bundling_override: dict
               :keyword timeout: The default timeout, in seconds, for calls made
                 through this client
               :type timeout: int
             """
+            bundling_override = bundling_override or dict()
             self._defaults = dict()
             {@defaultsSection(service)}
 
@@ -147,6 +156,29 @@
              methodName = context.upperCamelToLowerUnderscore(method.getSimpleName), \
              isPageStreaming = methodConfig.isPageStreaming(), \
              isBundling = methodConfig.isBundling()
+            @if isBundling
+                @let bundling = methodConfig.getBundling(), \
+                        count = bundling.getElementCountThreshold(), \
+                        bytes = bundling.getRequestByteThreshold(), \
+                        delay = bundling.getDelayThresholdMillis()
+                    if '{@methodName}' in bundling_override:
+                        {@methodName}_bundler = bundling.Executor(
+                            bundle_overrides['{@methodName}'])
+                    else:
+                        {@methodName}_bundler = bundling.Executor(BundleOptions(
+                            @if count
+                                element_count_threshold={@count},
+                            @end
+                            @if bytes
+                                request_bytesize_threshold={@bytes},
+                            @end
+                            @if delay
+                                delay_threshold={@delay}
+                            @end
+                        ))
+
+                @end
+            @end
             self._defaults['{@methodName}'] = CallSettings(
                 timeout=timeout,
                 @if context.isIdempotent(method)
@@ -166,21 +198,8 @@
                     @end
                 @end
                 @if isBundling
-                    @let bundling = methodConfig.getBundling(), \
-                            count = bundling.getElementCountThreshold(), \
-                            bytes = bundling.getRequestByteThreshold(), \
-                            delay = bundling.getDelayThresholdMillis()
-                        bundler=bundling.Executor(BundleOptions(
-                            @if count
-                                element_count_threshold={@count},
-                            @end
-                            @if bytes
-                                request_bytesize_threshold={@bytes},
-                            @end
-                            @if delay
-                                delay_threshold={@delay}
-                            @end
-                        )
+                    @let bundling = methodConfig.getBundling()
+                        bundler={@methodName}_bundler,
                         bundle_descriptor=BundleDescriptor(
                             {@bundleDescriptorBody(bundling, method)}
                         ),
