@@ -31,7 +31,18 @@ public class ApiConfig {
     if (interfaceConfigMap == null) {
       return null;
     } else {
-      return new ApiConfig(interfaceConfigMap, configProto.getPackageName());
+      return new ApiConfig(interfaceConfigMap, getPackageName(configProto));
+    }
+  }
+
+  private static String getPackageName(ConfigProto configProto) {
+    Map<String, LanguageSettingsProto> settingsMap =
+        configProto.getLanguageSettings();
+    String language = configProto.getLanguage();
+    if (settingsMap.containsKey(language)) {
+      return settingsMap.get(language).getPackageName();
+    } else {
+      return null;
     }
   }
 
