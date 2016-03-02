@@ -80,11 +80,19 @@ message ConfigProto {
   // the produced output should be put in an archive.
   bool archive = 3;
 
-  // The package the generated code should belong to.
-  string package_name = 4;
+  // The settings of generated code in a specific language.
+  map<string, LanguageSettingsProto> language_settings = 4;
+
+  // The language of the generated code.
+  string language = 5;
 
   // A list of API interface configurations.
   repeated InterfaceConfigProto interfaces = 10;
+}
+
+message LanguageSettingsProto {
+  // Package name used for the language.
+  string package_name = 1;
 }
 
 message InterfaceConfigProto {

@@ -32,7 +32,6 @@ public class GoCodeGeneratorTest extends CodeGeneratorTestBase {
           "go", new String[]{
               "io/gapi/vgen/go/go_veneer.yaml",
               "library_veneer.yaml",
-              "go_library_veneer.yaml"
           }
       });
   }

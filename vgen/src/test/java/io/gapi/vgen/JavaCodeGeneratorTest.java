@@ -30,7 +30,6 @@ public class JavaCodeGeneratorTest extends CodeGeneratorTestBase {
           "java", new String[]{
               "io/gapi/vgen/java/java_veneer.yaml",
               "library_veneer.yaml",
-              "java_library_veneer.yaml"
           }
       });
   }
