@@ -59,9 +59,6 @@ subprojects {
       protoc:  'com.google.protobuf:protoc:3.0.0-beta-1',
       protobufGradlePlugin: 'com.google.protobuf:protobuf-gradle-plugin:0.7.2-SNAPSHOT',
 
-      // Formatter
-      javaFomatter: 'com.google.googlejavaformat:google-java-format:0.1-alpha',
-
       // JSON
       jackson: 'com.fasterxml.jackson.core:jackson-databind:2.7.0'
     ]
@@ -88,7 +85,6 @@ subprojects {
       libraries.commonsCli,
       libraries.snakeyaml,
       libraries.toolsFx,
-      libraries.javaFomatter,
       libraries.jackson
 
     testCompile libraries.junit,
@@ -207,17 +203,23 @@ project(':vgen') {
 
   // Task to display the cache path of GRPC Java plugin
   task showGrpcJavaPluginPath << {
-    ExecutableLocator locator = new ExecutableLocator(project)
-    println locator.resolve('io.grpc:protoc-gen-grpc-java:0.9.0')
+    DependencyResolver resolver = new DependencyResolver(project)
+    println 'output: ' + resolver.resolveExecutable(
+      'io.grpc:protoc-gen-grpc-java:0.9.0')
+  }
+
+  // Task to display the cache path of protobuf
+  task showProtobufPath() << {
+    DependencyResolver resolver = new DependencyResolver(project)
+    println 'output: ' + resolver.extractArchive(
+      'com.google.protobuf:protobuf-java:3.0.0-beta-1');
   }
 
   // Task to display the cache path of Google Java formatter
   task showJavaFormatterPath << {
-    configurations.runtime.each {
-      if (it.toString().contains('google-java-format')) {
-        println it
-      }
-    }
+    DependencyResolver resolver = new DependencyResolver(project)
+    println 'output: ' + resolver.locateArchive(
+      'com.google.googlejavaformat:google-java-format:0.1-alpha')
   }
 
   // Task to run ConfigGeneratorTool
