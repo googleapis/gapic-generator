@@ -1,13 +1,18 @@
 @extends "common.snip"
 
 @snippet generateFilename(service)
-    {@context.upperCamelToLowerUnderscore(context.getVeneerName(service))}.go
+    {@context.upperCamelToLowerUnderscore(service.getSimpleName)}/client.go
 @end
 
 @snippet generateClass(service, body)
     {@headerComment(editingInstruction(service))}
 
-    package {@context.getPackageName}
+    // AUTO-GENERATED DOCUMENTATION AND SERVICE -- see instructions at the top of the file for editing.
+
+    @join commentLine : context.comments(service)
+        {@commentLine}
+    @end
+    package {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
 
     {@importSection(service)}
 
@@ -25,24 +30,28 @@
     // break the refresh process, only certain types of modifications are
     // allowed.
     //
+    // Only additional documentation of the doc comment is allowed.
+    // Please put the additional comment at the end.
+    //
+    // Additional new methods or new features can be added in additional files
+    // in the same directory.
+    //
+    // Happy editing!
 @end
 
 @private importSection(service)
     import (
-    	@join import : context.getImports(service)
-    	{@import}
-    	@end
+    @join import : context.getImports(service)
+    {@import}
+    @end
     )
 @end
 
 @snippet generateBody(service)
-    // AUTO-GENERATED DOCUMENTATION AND SERVICE -- see instructions at the top of the file for editing.
+    {@globals(service)}
 
-    @join commentLine : context.comments(service)
-        {@commentLine}
-    @end
-    {@manualEdit()}
-    type {@context.getVeneerName(service)} struct {
+    // Client is a client for interacting with {@service.getSimpleName}.
+    type Client struct {
     	// The connection to the service.
     	conn *grpc.ClientConn
 
@@ -53,8 +62,6 @@
     	CallOptions map[string][]gax.CallOption
     }
 
-    {@globals(service)}
-
     {@constructor(service)}
     {@pathTemplateMethods(service)}
     {@methods(service)}
@@ -63,14 +70,27 @@
 @end
 
 @private globals(service)
+    const (
+    	prodAddr = "{@context.getServiceConfig.getServiceAddress(service)}:{@context.getServiceConfig.getServicePort()}"
+    )
+
     var (
-    	allScopes{@context.getVeneerName(service)} = []string {
+    	allScopes = []string {
     		@join scope : context.getServiceConfig.getAuthScopes(service)
     			"{@scope}",
     		@end
     	}
-    	@join retryDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetryParamsDefinition)
-    	{@retryDef.getKey}_{@context.getVeneerName(service)}RetryParams = []gax.CallOption {
+    )
+
+    var (
+    	@join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+    	{@pathTemplateVarName(collectionConfig)} = gax.MustCompilePathTemplate("{@collectionConfig.getNamePattern}")
+    	@end
+    )
+    @join retryDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetryParamsDefinition)
+
+    func {@retryDef.getKey}_RetryParams() []gax.CallOption {
+    	return []gax.CallOption{
     		gax.WithRetryInterval({@retryDef.getValue.getRetryBackoff.getInitialDelayMillis}*time.Millisecond),
     		gax.WithIntervalMultiplier({@retryDef.getValue.getRetryBackoff.getDelayMultiplier}),
     		gax.WithMaxInterval({@retryDef.getValue.getRetryBackoff.getMaxDelayMillis}*time.Millisecond),
@@ -78,81 +98,43 @@
     		gax.WithTimeoutMultiplier({@retryDef.getValue.getTimeoutBackoff.getDelayMultiplier}),
     		gax.WithMaxTimeout({@retryDef.getValue.getTimeoutBackoff.getMaxDelayMillis}*time.Millisecond),
     	}
-    	@end
-    )
-
-    var (
-    	@join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-    	{@pathTemplateVarName(service, collectionConfig)} = gax.MustCompilePathTemplate("{@collectionConfig.getNamePattern}")
-    	@end
-    )
+    }
+    @end
 @end
 
 @private constructor(service)
-    // New{@context.getVeneerName(service)} creates a new API service client.
-    func New{@context.getVeneerName(service)}(ctx context.Context, opts ...cloud.ClientOption) (*{@context.getVeneerName(service)}, error) {
+    // NewClient creates a new API service client.
+    func NewClient(ctx context.Context, opts ...cloud.ClientOption) (*Client, error) {
     	o := []cloud.ClientOption {
     		cloud.WithEndpoint(prodAddr),
-    		cloud.WithScopes(allScopes{@context.getVeneerName(service)}...),
-    		cloud.WithUserAgent(clientUserAgent),
+    		cloud.WithScopes(allScopes...),
     	}
     	o = append(o, opts...)
     	conn, err := transport.DialGRPC(ctx, o...)
     	if err != nil {
     		return nil, err
     	}
-    	return &{@context.getVeneerName(service)} {
+    	return &Client {
     		conn: conn,
     		client: {@context.getServiceClientConstructorName(service)}(conn),
-    		CallOptions: map[string][]gax.CallOption{
-    			@join method : service.getMethods
-      			"{@method.getSimpleName}": {@context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method).getRetryParamsConfigName}_{@context.getVeneerName(service)}RetryParams,
-    			@end
-    		},
+    		CallOptions: map[string][]gax.CallOption{},
     	}, nil
     }
 
     // Close closes the connection to the API service. The user should invoke this when
-    // it's not used anymore. Typically the user code would look like:
-    //    api := New{@context.getVeneerName(service)}(ctx)
-    //    defer api.Close()
-    //    // Calling api methods...
-    func (api *{@context.getVeneerName(service)}) Close() {
-    	api.conn.Close()
+    // the client is no longer required.
+    func (client *Client) Close() error {
+    	return client.conn.Close()
     }
 @end
 
-@private pathTemplateVarName(service, collectionConfig)
-    {@context.lowerUnderscoreToLowerCamel(collectionConfig.getMethodBaseName)}{@context.getVeneerName(service)}PathTemplate
-@end
-
-@private createResourceFunctionParams(collectionConfig)
-    @join param : collectionConfig.getNameTemplate.vars() on ", "
-        {@context.lowerUnderscoreToLowerCamel(param)} string
-    @end
-@end
-
-@private extractResourceFunctionReturnType(collectionConfig)
-    @join param : collectionConfig.getNameTemplate.vars() on ", "
-        string
-    @end
-@end
-
-@private extractResourceFunctionErrorReturns(collectionConfig)
-    @join param : collectionConfig.getNameTemplate.vars() on ", "
-        ""
-    @end
-@end
-
-@private extractResourceFunctionSuccessfulReturns(collectionConfig)
-    @join param : collectionConfig.getNameTemplate.vars() on ", "
-        binding["{@param}"]
-    @end
+@private pathTemplateVarName(collectionConfig)
+    {@context.lowerUnderscoreToLowerCamel(collectionConfig.getMethodBaseName)}PathTemplate
 @end
 
 @private createResourceDocParams(collectionConfig)
     @join param : collectionConfig.getNameTemplate.vars() on " and "
-        the {@param}
+        the {@context.lowerUnderscoreToLowerCamel(param)}
     @end
 @end
 
@@ -160,27 +142,42 @@
 # this would be good to shorten the method names, and normally the users of these
 # methods would have the service instance already.
 @private pathTemplateMethods(service)
+
+    // Path templates.
     @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-      @let methodBase = context.lowerUnderscoreToUpperCamel(collectionConfig.getMethodBaseName)
+        @let pathTypeName = context.lowerUnderscoreToUpperCamel(collectionConfig.getMethodBaseName), \
+             humanReadableName = collectionConfig.getMethodBaseName.replaceAll("_", " "), \
+             methodReceiver = context.lowerUnderscoreToLowerCamel(collectionConfig.getMethodBaseName)
 
-        // Create{@methodBase}Path creates the {@collectionConfig.getMethodBaseName} path "{@collectionConfig.getNamePattern}" with {@createResourceDocParams(collectionConfig)}.
-        func (api *{@context.getVeneerName(service)}) Create{@methodBase}Path({@createResourceFunctionParams(collectionConfig)}) (string, error) {
-        	return {@pathTemplateVarName(service, collectionConfig)}.Instantiate(map[string]string{
-        		@join param : collectionConfig.getNameTemplate.vars()
-        		"{@param}": {@context.lowerUnderscoreToLowerCamel(param)},
-        		@end
-        	})
-        }
+            // {@pathTypeName} represents a {@humanReadableName} resource.
+            type {@pathTypeName} struct {
+            	@join param : collectionConfig.getNameTemplate.vars()
+            	{@context.lowerUnderscoreToUpperCamel(param)} string
+            	@end
+            }
 
-        // ExtractFrom{@methodBase}Path returns {@createResourceDocParams(collectionConfig)} from the path by matching with the template "{@collectionConfig.getNamePattern}".
-        func (api *{@context.getVeneerName(service)}) ExtractFrom{@methodBase}Path(path string) ({@extractResourceFunctionReturnType(collectionConfig)}, error) {
-        	binding, err := {@pathTemplateVarName(service, collectionConfig)}.Match(path)
-        	if err != nil {
-        		return {@extractResourceFunctionErrorReturns(collectionConfig)}, err
-        	}
-        	return {@extractResourceFunctionSuccessfulReturns(collectionConfig)}, nil
-        }
-      @end
+            // New{@pathTypeName}FromPath creates a {@pathTypeName} from a {@humanReadableName} path in the form of "{@collectionConfig.getNamePattern}".
+            func New{@pathTypeName}FromPath(path string) ({@pathTypeName}, error) {
+            	binding, err := {@pathTemplateVarName(collectionConfig)}.Match(path)
+            	if err != nil {
+            		return {@pathTypeName}{}, err
+            	}
+            	return {@pathTypeName}{
+            		@join param : collectionConfig.getNameTemplate.vars()
+            		{@context.lowerUnderscoreToUpperCamel(param)}: binding["{@param}"],
+            		@end
+            	}, nil
+            }
+
+            // Path returns the path for the {@humanReadableName} resource.
+            func ({@methodReceiver} {@pathTypeName}) Path() (string, error) {
+            	return {@pathTemplateVarName(collectionConfig)}.Instantiate(map[string]string{
+            		@join param : collectionConfig.getNameTemplate.vars()
+            		"{@param}": {@methodReceiver}.{@context.lowerUnderscoreToUpperCamel(param)},
+            		@end
+            	})
+            }
+        @end
     @end
 @end
 
@@ -192,6 +189,7 @@
              outTypeName = context.typeName(method.getOutputType), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              isPageStreaming = methodConfig.isPageStreaming, \
+             retryParamsName = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method).getRetryParamsConfigName, \
              isFlattening = methodConfig.isFlattening
             @if {@isPageStreaming}
                 @let pageStreaming = methodConfig.getPageStreaming(), \
@@ -203,11 +201,12 @@
                      tokenType = context.getNextPageTokenType(service, pageStreaming), \
                      tokenZeroValue = context.zeroValue(pageStreaming.getRequestTokenField().getType)
 
-                    {@methodComment(method)}
-                    func (api *{@context.getVeneerName(service)}) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) (*{@iteratorTypeName}, error) {
-                    	opts = append(api.CallOptions["{@methodName}"], opts...)
+                    {@methodComment(method, methodName)}
+                    func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) (*{@iteratorTypeName}, error) {
+                    	callOpts := append({@retryParamsName}_RetryParams(), client.CallOptions["{@methodName}"]...)
+                    	callOpts = append(callOpts, opts...)
                     	@if {@method.getResponseStreaming}
-                    	result, err := gax.Invoke(ctx, req, api.{@lowerMethodName}, opts...)
+                    	result, err := gax.Invoke(ctx, req, client.{@lowerMethodName}, callOpts...)
                     	if err != nil {
                     		return nil, err
                     	}
@@ -231,7 +230,7 @@
                     			if atLastPage {
                     				return {@iteratorPageTypeName}{}, io.EOF
                     			}
-                    			result, err := gax.Invoke(ctx, req, api.{@lowerMethodName}, opts...)
+                    			result, err := gax.Invoke(ctx, req, client.{@lowerMethodName}, callOpts...)
                     			if err != nil {
                     				return {@iteratorPageTypeName}{}, err
                     			}
@@ -252,9 +251,9 @@
 
                     @if {@isFlattening}
                         @let fields = context.getFlatteningFields(methodConfig)
-                            {@flattenedMethodComment(method, fields)}
-                            func (api *{@context.getVeneerName(service)}) {@methodName}With(ctx context.Context, {@flattenedParameters(fields)} opts ...gax.CallOption) (*{@iteratorTypeName}, error) {
-                            	return api.{@methodName}(ctx, {@context.constructionExpr(method.getInputType)}{
+                            {@flattenedMethodComment(method, methodName.concat("With"), fields)}
+                            func (client *Client) {@methodName}With(ctx context.Context{@flattenedParameters(fields)}, opts ...gax.CallOption) (*{@iteratorTypeName}, error) {
+                            	return client.{@methodName}(ctx, {@context.constructionExpr(method.getInputType)}{
                             		@join field : fields
                              		{@context.lowerUnderscoreToUpperCamel(field.getSimpleName)}: {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)},
                             		@end
@@ -266,10 +265,11 @@
                 @end
             @else
 
-                {@methodComment(method)}
-                func (api *{@context.getVeneerName(service)}) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) ({@outTypeName}, error) {
-                	opts = append(api.CallOptions["{@methodName}"], opts...)
-                	resp, err := gax.Invoke(ctx, req, api.{@lowerMethodName}, opts...)
+                {@methodComment(method, methodName)}
+                func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) ({@outTypeName}, error) {
+                	callOpts := append({@retryParamsName}_RetryParams(), client.CallOptions["{@methodName}"]...)
+                	callOpts = append(callOpts, opts...)
+                	resp, err := gax.Invoke(ctx, req, client.{@lowerMethodName}, callOpts...)
                 	if err != nil {
                 		return nil, err
                 	}
@@ -278,9 +278,9 @@
 
                 @if {@isFlattening}
                     @let fields = context.getFlatteningFields(methodConfig)
-                        {@flattenedMethodComment(method, fields)}
-                        func (api *{@context.getVeneerName(service)}) {@methodName}With(ctx context.Context, {@flattenedParameters(fields)} opts ...gax.CallOption) ({@outTypeName}, error) {
-                        	return api.{@methodName}(ctx, {@context.constructionExpr(method.getInputType)}{
+                        {@flattenedMethodComment(method, methodName.concat("With"), fields)}
+                        func (client *Client) {@methodName}With(ctx context.Context{@flattenedParameters(fields)}, opts ...gax.CallOption) ({@outTypeName}, error) {
+                        	return client.{@methodName}(ctx, {@context.constructionExpr(method.getInputType)}{
                         		@join field : fields
                          		{@context.lowerUnderscoreToUpperCamel(field.getSimpleName)}: {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)},
                         		@end
@@ -292,45 +292,37 @@
             @end
 
             // {@lowerMethodName} is a gax.APICall that calls api.client.{@methodName}.
-            func (api *{@context.getVeneerName(service)}) {@lowerMethodName}(ctx context.Context, req interface{}) (interface{}, error) {
-            	return api.client.{@methodName}(ctx, req.({@inTypeName}))
+            func (client *Client) {@lowerMethodName}(ctx context.Context, req interface{}) (interface{}, error) {
+            	return client.client.{@methodName}(ctx, req.({@inTypeName}))
             }
         @end
     @end
 @end
 
-@private methodComment(method)
+@private methodComment(method, methodName)
     // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
-    @join commentLine : context.comments(method)
+    @join commentLine : context.getMethodComments(method, methodName)
         {@commentLine}
     @end
-    {@manualEdit()}
 @end
 
-@private manualEdit()
-    //
-    //
-@end
-
-@private flattenedMethodComment(method, fields)
+@private flattenedMethodComment(method, methodName, fields)
     // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
-    @join commentLine : context.comments(method)
+    @join commentLine : context.getMethodComments(method, methodName)
         {@commentLine}
     @end
-    //
     @join field : fields vertical
         @join commentLine : context.getFieldComments(field)
             {@commentLine}
         @end
     @end
-    {@manualEdit()}
 @end
 
 @private flattenedParameters(fields)
-    @join field : fields on " "
-        {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)} {@context.typeName(field.getType)},
+    @join field : fields on ""
+        , {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)} {@context.typeName(field.getType)}
     @end
 @end
 

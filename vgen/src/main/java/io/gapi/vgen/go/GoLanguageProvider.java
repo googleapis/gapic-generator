@@ -23,6 +23,7 @@ import com.google.common.collect.Multimap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import io.gapi.vgen.ApiConfig;
+import io.gapi.vgen.CollectionConfig;
 import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.LanguageProvider;
 import io.gapi.vgen.MethodConfig;
@@ -30,6 +31,7 @@ import io.gapi.vgen.PageStreamingConfig;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
+import java.lang.Character;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -397,8 +399,26 @@ public class GoLanguageProvider extends LanguageProvider {
   }
 
   public Iterable<String> getFieldComments(Field field) {
-    return getCommentLines(lowerUnderscoreToLowerCamel(field.getSimpleName()) + ": " +
-                           DocumentationUtil.getScopedDescription(field) + "\n");
+    return getCommentLines("\n" + lowerUnderscoreToLowerCamel(field.getSimpleName()) + ": " +
+                           DocumentationUtil.getScopedDescription(field));
+  }
+
+  /**
+   * Returns the doc comments of a method in Go style.
+   * Right now this assumes comment of gRPC methods starts with a verb.
+   */
+  public Iterable<String> getMethodComments(Method method, String methodName) {
+    if (!method.hasAttribute(ElementDocumentationAttribute.KEY)) {
+      return ImmutableList.<String>of("");
+    }
+
+    String comment = DocumentationUtil.getScopedDescription(method);
+    int firstChar = comment.codePointAt(0);
+    if (Character.isUpperCase(firstChar)) {
+      String lower = new String(Character.toChars(Character.toLowerCase(firstChar)));
+      comment = methodName + " " + lower + comment.substring(Character.charCount(firstChar));
+    }
+    return getCommentLines(comment);
   }
 
   /**
@@ -421,6 +441,20 @@ public class GoLanguageProvider extends LanguageProvider {
   }
 
   /**
+   * Returns the unique list of path component variable names in the path template.
+   */
+  public Iterable<String> getCollectionParams(Interface service) {
+    TreeSet<String> params = new TreeSet<>();
+    for (CollectionConfig config :
+             getApiConfig().getInterfaceConfig(service).getCollectionConfigs()) {
+      for (String param : config.getNameTemplate().vars()) {
+        params.add(param);
+      }
+    }
+    return params;
+  }
+
+  /**
    * Creates a Go import from the message import.
    */
   private GoImport createMessageImport(MessageType messageType) {
@@ -435,6 +469,9 @@ public class GoLanguageProvider extends LanguageProvider {
    *  - core imports (Go standard libraries) in alphabetical order
    *  - a blank line (so an empty string)
    *  - other imports, alphabetical order
+   *
+   * Each of the lines (except for the blank line) starts with a tab character '\t' for the
+   * indentation within the 'import' section in Go file.
    */
   public Iterable<String> getImports(Interface service) {
     TreeSet<GoImport> coreImports = new TreeSet<>();
@@ -471,12 +508,12 @@ public class GoLanguageProvider extends LanguageProvider {
 
     List<String> result = new ArrayList<>();
     for (GoImport goImport : coreImports) {
-      result.add(goImport.importString());
+      result.add("\t" + goImport.importString());
     }
     // An empty string to bring the blank line between core imports and others.
     result.add("");
     for (GoImport goImport : imports) {
-      result.add(goImport.importString());
+      result.add("\t" + goImport.importString());
     }
     return result;
   }

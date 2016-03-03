@@ -5,14 +5,13 @@
 @end
 
 @snippet generateClass(service, body)
-    {@headerComment(commonEditingInstruction())}
+    {@headerComment(editingInstruction())}
 
     {@packageSection(service)}
-
     {@body}
 @end
 
-@private commonEditingInstruction()
+@private editingInstruction()
     // EDITING INSTRUCTIONS
     // This file was auto-generated and updates to that file get reflected
     // here through a refresh process. For the short term, the refresh
@@ -21,10 +20,10 @@
     // preserve those manual additions. In order to notbreak the refresh
     // process, only certain types of modifications are allowed.
     //
+    // Happy editing!
 @end
 
 @snippet generateBody(service)
-    {@constants(service)}
 @end
 
 @private packageSection(service)
@@ -37,11 +36,4 @@
         @end
         package {@pkgName}
     @end
-@end
-
-@private constants(service)
-    const (
-    	prodAddr = "{@context.getServiceConfig.getServiceAddress(service)}:{@context.getServiceConfig.getServicePort()}"
-    	clientUserAgent = "{@context.getApiConfig.getPackageName}"
-    )
 @end
