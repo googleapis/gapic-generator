@@ -1,8 +1,9 @@
 package io.gapi.vgen;
 
 import com.google.api.tools.framework.tools.ToolOptions;
-import org.apache.commons.cli.DefaultParser;
+
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -55,13 +56,14 @@ public class CodeGeneratorTool {
       formater.printHelp("CodeGeneratorTool", options);
     }
 
-    generate(cl.getOptionValue("descriptor_set"),
-             cl.getOptionValues("service_yaml"),
-             cl.getOptionValues("veneer_yaml"),
-             cl.getOptionValue("output", ""));
+    int exitCode = generate(cl.getOptionValue("descriptor_set"),
+                            cl.getOptionValues("service_yaml"),
+                            cl.getOptionValues("veneer_yaml"),
+                            cl.getOptionValue("output", ""));
+    System.exit(exitCode);
   }
 
-  private static void generate(String descriptorSet, String[] apiConfigs,
+  private static int generate(String descriptorSet, String[] apiConfigs,
       String[] generatorConfigs, String outputDirectory) {
 
     ToolOptions options = ToolOptions.create();
@@ -78,7 +80,7 @@ public class CodeGeneratorTool {
     }
     options.set(CodeGeneratorApi.GENERATOR_CONFIG_FILES, genConfigs);
     CodeGeneratorApi codeGen = new CodeGeneratorApi(options);
-    codeGen.run();
+    return codeGen.run();
   }
 }
 
