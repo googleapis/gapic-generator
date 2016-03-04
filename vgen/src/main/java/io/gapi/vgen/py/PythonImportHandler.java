@@ -34,6 +34,10 @@ public class PythonImportHandler {
     addImport(null,
         PythonImport.create("os", PythonImport.ImportType.STDLIB));
     addImport(null,
+        PythonImport.create("platform", PythonImport.ImportType.STDLIB));
+    addImport(null,
+        PythonImport.create("google.gax", PythonImport.ImportType.THIRD_PARTY));
+    addImport(null,
         PythonImport.create("google.gax", "api_callable", PythonImport.ImportType.THIRD_PARTY));
     addImport(null,
         PythonImport.create("google.gax", "config", PythonImport.ImportType.THIRD_PARTY));

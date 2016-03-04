@@ -23,10 +23,12 @@
 # merge preserves those additions if the generated source changes.
 
 import os
+import platform
 
 from google.gax import api_callable
 from google.gax import config
 from google.gax.path_template import PathTemplate
+import google.gax
 import yaml
 
 from google.example.library.v1 import field_mask_pb2 as v1_field_mask_pb2
@@ -48,6 +50,8 @@ class LibraryServiceApi(object):
 
     Check out `cloud docs! <https://cloud.google.com/library/example/link>`_
     """
+
+    _CODE_GEN_NAME_VERSION = 'gapic-0.1.0'
 
     SERVICE_ADDRESS = 'library-example.googleapis.com'
     """The default address of the service."""
@@ -91,7 +95,9 @@ class LibraryServiceApi(object):
             scopes=_ALL_SCOPES,
             retrying_override=None,
             bundling_override=None,
-            timeout=30):
+            timeout=30,
+            app_name=None,
+            app_version=None):
         """Constructor.
 
         Args:
@@ -121,7 +127,15 @@ class LibraryServiceApi(object):
           :keyword timeout: The default timeout, in seconds, for calls made
             through this client
           :type timeout: int
+          :keyword app_name: The codename of the calling service.
+          :type app_name: string
+          :keyword app_version: The version of the calling service.
+          :type app_version: string
         """
+        if app_name is None:
+            app_name = 'gax'
+        if app_version is None:
+            app_version = google.gax.__version__
         bundling_override = bundling_override or dict()
         retrying_override = retrying_override or dict()
         config_filename = os.path.join(
@@ -130,7 +144,14 @@ class LibraryServiceApi(object):
             self._defaults = api_callable.construct_settings(
                 yaml.load(api_yaml.read()), bundling_override, retrying_override,
                 config.EXCEPTION_NAMES, timeout)
-
+        google_apis_agent = '{}-{}/{}/gax-{}/{}'.format(
+            app_name,
+            app_version,
+            self._CODE_GEN_NAME_VERSION,
+            google.gax.__version__,
+            'python-{}'.format(platform.python_version())
+        )
+        self._headers = [('x-google-apis-agent', google_apis_agent)]
         self.stub = config.create_stub(
             library_pb2.beta_create_LibraryService_stub,
             service_path,
@@ -165,7 +186,7 @@ class LibraryServiceApi(object):
             shelf=shelf)
         settings = self._defaults['create_shelf'].merge(options)
         return api_callable.ApiCallable(
-            self.stub.CreateShelf, settings=settings)(req)
+            self.stub.CreateShelf, settings=settings)(req, metadata=self._headers)
 
     def get_shelf(
             self,
@@ -191,7 +212,7 @@ class LibraryServiceApi(object):
             string_builder=string_builder)
         settings = self._defaults['get_shelf'].merge(options)
         return api_callable.ApiCallable(
-            self.stub.GetShelf, settings=settings)(req)
+            self.stub.GetShelf, settings=settings)(req, metadata=self._headers)
 
     def list_shelves(
             self,
@@ -204,7 +225,7 @@ class LibraryServiceApi(object):
         req = library_pb2.ListShelvesRequest()
         settings = self._defaults['list_shelves'].merge(options)
         return api_callable.ApiCallable(
-            self.stub.ListShelves, settings=settings)(req)
+            self.stub.ListShelves, settings=settings)(req, metadata=self._headers)
 
     def delete_shelf(
             self,
@@ -220,7 +241,7 @@ class LibraryServiceApi(object):
             name=name)
         settings = self._defaults['delete_shelf'].merge(options)
         return api_callable.ApiCallable(
-            self.stub.DeleteShelf, settings=settings)(req)
+            self.stub.DeleteShelf, settings=settings)(req, metadata=self._headers)
 
     def merge_shelves(
             self,
@@ -241,7 +262,7 @@ class LibraryServiceApi(object):
             other_shelf_name=other_shelf_name)
         settings = self._defaults['merge_shelves'].merge(options)
         return api_callable.ApiCallable(
-            self.stub.MergeShelves, settings=settings)(req)
+            self.stub.MergeShelves, settings=settings)(req, metadata=self._headers)
 
     def create_book(
             self,
@@ -262,7 +283,7 @@ class LibraryServiceApi(object):
             book=book)
         settings = self._defaults['create_book'].merge(options)
         return api_callable.ApiCallable(
-            self.stub.CreateBook, settings=settings)(req)
+            self.stub.CreateBook, settings=settings)(req, metadata=self._headers)
 
     def publish_series(
             self,
@@ -288,7 +309,7 @@ class LibraryServiceApi(object):
             edition=edition)
         settings = self._defaults['publish_series'].merge(options)
         return api_callable.ApiCallable(
-            self.stub.PublishSeries, settings=settings)(req)
+            self.stub.PublishSeries, settings=settings)(req, metadata=self._headers)
 
     def get_book(
             self,
@@ -304,7 +325,7 @@ class LibraryServiceApi(object):
             name=name)
         settings = self._defaults['get_book'].merge(options)
         return api_callable.ApiCallable(
-            self.stub.GetBook, settings=settings)(req)
+            self.stub.GetBook, settings=settings)(req, metadata=self._headers)
 
     def list_books(
             self,
@@ -323,7 +344,7 @@ class LibraryServiceApi(object):
             filter=filter_)
         settings = self._defaults['list_books'].merge(options)
         return api_callable.ApiCallable(
-            self.stub.ListBooks, settings=settings)(req)
+            self.stub.ListBooks, settings=settings)(req, metadata=self._headers)
 
     def delete_book(
             self,
@@ -339,7 +360,7 @@ class LibraryServiceApi(object):
             name=name)
         settings = self._defaults['delete_book'].merge(options)
         return api_callable.ApiCallable(
-            self.stub.DeleteBook, settings=settings)(req)
+            self.stub.DeleteBook, settings=settings)(req, metadata=self._headers)
 
     def update_book(
             self,
@@ -370,7 +391,7 @@ class LibraryServiceApi(object):
             physical_mask=physical_mask)
         settings = self._defaults['update_book'].merge(options)
         return api_callable.ApiCallable(
-            self.stub.UpdateBook, settings=settings)(req)
+            self.stub.UpdateBook, settings=settings)(req, metadata=self._headers)
 
     def move_book(
             self,
@@ -389,7 +410,7 @@ class LibraryServiceApi(object):
             other_shelf_name=other_shelf_name)
         settings = self._defaults['move_book'].merge(options)
         return api_callable.ApiCallable(
-            self.stub.MoveBook, settings=settings)(req)
+            self.stub.MoveBook, settings=settings)(req, metadata=self._headers)
 
 ============== file: library_service_api.yaml ==============
 # Copyright 2016 Google Inc. All rights reserved.
