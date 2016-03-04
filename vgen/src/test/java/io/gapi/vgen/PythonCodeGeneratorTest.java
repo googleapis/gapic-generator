@@ -1,6 +1,8 @@
 package io.gapi.vgen;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.truth.Truth;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +36,19 @@ public class PythonCodeGeneratorTest  {
         });
     }
 
+    @Override
+    protected Object run() {
+      // Should generate two files -- one for the class, and
+      // the other for the configuration yaml.
+      GeneratedResult codeResult = generateForSnippet(0);
+      GeneratedResult configResult = generateForSnippet(1);
+      Truth.assertThat(codeResult).isNotNull();
+      Truth.assertThat(configResult).isNotNull();
+      return ImmutableMap.of(
+          codeResult.getFilename(), codeResult.getDoc(),
+          configResult.getFilename(), configResult.getDoc());
+    }
+
     // Tests
     // =====
 
@@ -62,6 +77,17 @@ public class PythonCodeGeneratorTest  {
             "python",
             new String[]{"io/gapi/vgen/py/python_veneer.yaml", "no_path_templates_veneer.yaml"}
         });
+    }
+
+    @Override
+    protected Object run() {
+      GeneratedResult codeResult = generateForSnippet(0);
+      GeneratedResult configResult = generateForSnippet(1);
+      Truth.assertThat(codeResult).isNotNull();
+      Truth.assertThat(configResult).isNotNull();
+      return ImmutableMap.of(
+          codeResult.getFilename(), codeResult.getDoc(),
+          configResult.getFilename(), configResult.getDoc());
     }
 
     // Tests
