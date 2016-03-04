@@ -1,3 +1,4 @@
+============== file: library_service_api.py ==============
 # Copyright 2016 Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,12 +22,15 @@
 # The only allowed edits are to method and file documentation. A 3-way
 # merge preserves those additions if the generated source changes.
 
-from google.example.library.v1 import library_pb2
-from google.gax import PageDescriptor
+import os
+
 from google.gax import api_callable
 from google.gax import config
 from google.gax.path_template import PathTemplate
+import yaml
+
 from google.example.library.v1 import field_mask_pb2 as v1_field_mask_pb2
+from google.example.library.v1 import library_pb2
 from google.protobuf import field_mask_pb2 as protobuf_field_mask_pb2
 
 
@@ -85,8 +89,7 @@ class LibraryServiceApi(object):
             channel=None,
             ssl_creds=None,
             scopes=_ALL_SCOPES,
-            is_idempotent_retrying=True,
-            max_attempts=3,
+            retrying_override=None,
             bundling_override=None,
             timeout=30):
         """Constructor.
@@ -102,13 +105,12 @@ class LibraryServiceApi(object):
             enabled channel
           :type ssl_creds: A grpc.beta.implementations.ClientCredentials
             object
-          :keyword is_idempotent_retrying: If set, idempotent RPCs sent
-            through this client will retry upon transient failure by
-            default.
-          :type is_idempotent_retrying: bool
-          :keyword max_attempts: The maximum number of times to retry a
-            method that is configured to retry upon transient failure
-          :type max_attempts: int
+          :keyword retrying_override: A dictionary that overrides default
+            retrying settings. ``retrying_override`` maps method names
+            (e.g., 'list_foo') to custom RetryOptions objects, or to None.
+            A value of None indicates that the method in question should not
+            retry.
+          :type retrying_override: dict
           :keyword bundling_override: A dictionary that overrides default
             bundling settings. ``bundling_override`` maps bundling method
             names (e.g., 'publish_foo') to custom BundleOptions objects, or to
@@ -121,88 +123,13 @@ class LibraryServiceApi(object):
           :type timeout: int
         """
         bundling_override = bundling_override or dict()
-        self._defaults = dict()
-        self._defaults['create_shelf'] = CallSettings(
-            timeout=timeout,
-            max_attempts=max_attempts,
-        )
-        self._defaults['get_shelf'] = CallSettings(
-            timeout=timeout,
-            is_retrying=is_idempotent_retrying,
-            max_attempts=max_attempts,
-        )
-        self._defaults['list_shelves'] = CallSettings(
-            timeout=timeout,
-            is_retrying=is_idempotent_retrying,
-            max_attempts=max_attempts,
-            page_descriptor=PageDescriptor(
-                'page_token',
-                'next_page_token',
-                'shelves',
-            ),
-        )
-        self._defaults['delete_shelf'] = CallSettings(
-            timeout=timeout,
-            is_retrying=is_idempotent_retrying,
-            max_attempts=max_attempts,
-        )
-        self._defaults['merge_shelves'] = CallSettings(
-            timeout=timeout,
-            max_attempts=max_attempts,
-        )
-        self._defaults['create_book'] = CallSettings(
-            timeout=timeout,
-            max_attempts=max_attempts,
-        )
-        if 'publish_series' in bundling_override:
-            publish_series_bundler = bundling.Executor(
-                bundle_overrides['publish_series'])
-        else:
-            publish_series_bundler = bundling.Executor(BundleOptions(
-                element_count_threshold=6,
-                delay_threshold=500
-            ))
-        self._defaults['publish_series'] = CallSettings(
-            timeout=timeout,
-            max_attempts=max_attempts,
-            bundler=publish_series_bundler,
-            bundle_descriptor=BundleDescriptor(
-                'books',
-                  [
-                      'edition',
-                      'shelf.name'
-                  ]
-            ),
-        )
-        self._defaults['get_book'] = CallSettings(
-            timeout=timeout,
-            is_retrying=is_idempotent_retrying,
-            max_attempts=max_attempts,
-        )
-        self._defaults['list_books'] = CallSettings(
-            timeout=timeout,
-            is_retrying=is_idempotent_retrying,
-            max_attempts=max_attempts,
-            page_descriptor=PageDescriptor(
-                'page_token',
-                'next_page_token',
-                'books',
-            ),
-        )
-        self._defaults['delete_book'] = CallSettings(
-            timeout=timeout,
-            is_retrying=is_idempotent_retrying,
-            max_attempts=max_attempts,
-        )
-        self._defaults['update_book'] = CallSettings(
-            timeout=timeout,
-            is_retrying=is_idempotent_retrying,
-            max_attempts=max_attempts,
-        )
-        self._defaults['move_book'] = CallSettings(
-            timeout=timeout,
-            max_attempts=max_attempts,
-        )
+        retrying_override = retrying_override or dict()
+        config_filename = os.path.join(
+            os.path.dirname(__file__), 'library_service_api.yaml')
+        with open(config_filename, 'r') as api_yaml:
+            self._defaults = api_callable.construct_settings(
+                yaml.load(api_yaml.read()), bundling_override, retrying_override,
+                config.EXCEPTION_NAMES, timeout)
 
         self.stub = config.create_stub(
             library_pb2.beta_create_LibraryService_stub,
@@ -464,3 +391,93 @@ class LibraryServiceApi(object):
         return api_callable.ApiCallable(
             self.stub.MoveBook, settings=settings)(req)
 
+============== file: library_service_api.yaml ==============
+# Copyright 2016 Google Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Automatically generated configuration file. Do not edit.
+
+retry_codes_def:
+    - name: idempotent
+      retry_codes:
+          - DEADLINE_EXCEEDED
+          - UNAVAILABLE
+    - name: non_idempotent
+      retry_codes:
+retry_params:
+    - name: default
+      initial_retry_delay_millis: 100
+      retry_delay_multiplier: 1.2
+      max_retry_delay_millis: 1000
+      initial_rpc_timeout_millis: 300
+      rpc_timeout_multiplier: 1.3
+      max_rpc_timeout_millis: 3000
+      total_timeout_millis: 30000
+methods:
+    - name: create_shelf
+      retry_codes_name: non_idempotent
+      retry_params_name: default
+    - name: get_shelf
+      retry_codes_name: idempotent
+      retry_params_name: default
+    - name: list_shelves
+      retry_codes_name: idempotent
+      retry_params_name: default
+      page_streaming:
+          request:
+              token_field: page_token
+          response:
+              token_field: next_page_token
+              resources_field: shelves
+    - name: delete_shelf
+      retry_codes_name: idempotent
+      retry_params_name: default
+    - name: merge_shelves
+      retry_codes_name: non_idempotent
+      retry_params_name: default
+    - name: create_book
+      retry_codes_name: non_idempotent
+      retry_params_name: default
+    - name: publish_series
+      retry_codes_name: non_idempotent
+      retry_params_name: default
+      bundle_options:
+          message_count_threshold: 6
+          delay_threshold: 500
+      bundle_descriptor:
+          bundled_field: books
+          request_discriminator_fields:
+              - edition
+              - shelf.name
+    - name: get_book
+      retry_codes_name: idempotent
+      retry_params_name: default
+    - name: list_books
+      retry_codes_name: idempotent
+      retry_params_name: default
+      page_streaming:
+          request:
+              token_field: page_token
+          response:
+              token_field: next_page_token
+              resources_field: books
+    - name: delete_book
+      retry_codes_name: idempotent
+      retry_params_name: default
+    - name: update_book
+      retry_codes_name: idempotent
+      retry_params_name: default
+    - name: move_book
+      retry_codes_name: non_idempotent
+      retry_params_name: default

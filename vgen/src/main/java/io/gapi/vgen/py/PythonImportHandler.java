@@ -32,19 +32,21 @@ public class PythonImportHandler {
   public PythonImportHandler(Interface service) {
     // Add non-service-specific imports.
     addImport(null,
+        PythonImport.create("os", PythonImport.ImportType.STDLIB));
+    addImport(null,
         PythonImport.create("google.gax", "api_callable", PythonImport.ImportType.THIRD_PARTY));
     addImport(null,
         PythonImport.create("google.gax", "config", PythonImport.ImportType.THIRD_PARTY));
     addImport(null,
-        PythonImport.create("google.gax", "PageDescriptor", PythonImport.ImportType.THIRD_PARTY));
-    addImport(null,
         PythonImport.create("google.gax.path_template", "PathTemplate",
             PythonImport.ImportType.THIRD_PARTY));
+    addImport(null,
+        PythonImport.create("yaml", PythonImport.ImportType.THIRD_PARTY));
 
     // Add service-specific imports.
     addImport(service.getFile(),
         PythonImport.create(service.getFile().getProto().getPackage(),
-            PythonProtoElements.getPbFileName(service), PythonImport.ImportType.THIRD_PARTY));
+            PythonProtoElements.getPbFileName(service), PythonImport.ImportType.APP));
 
     // Add method request-type imports
     for (Method method : service.getMethods()) {
@@ -122,8 +124,14 @@ public class PythonImportHandler {
     Collections.sort(app_result);
 
     List<String> all = new ArrayList<>();
-    all.addAll(stdlib_result);
-    all.addAll(third_party_result);
+    if (stdlib_result.size() > 0) {
+      all.addAll(stdlib_result);
+      all.add("");
+    }
+    if (third_party_result.size() > 0) {
+      all.addAll(third_party_result);
+      all.add("");
+    }
     all.addAll(app_result);
     return all;
   }

@@ -1,0 +1,126 @@
+@extends "common.snip"
+
+@snippet generateFilename(service)
+    {@context.upperCamelToLowerUnderscore(context.getVeneerName(service))}.yaml
+@end
+
+# This snippet does not generate a Python class, but this is required by the
+# PythonLanguageProvider interface.
+@snippet generateClass(service, body, imports)
+    {@body}
+@end
+
+
+@snippet generateBody(service)
+    {@licenseSection()}
+
+    {@retryCodes(service)}
+    {@retryParams(service)}
+    {@methodsSection(service)}
+@end
+
+@private licenseSection()
+    @# Copyright 2016 Google Inc. All rights reserved.
+    @#
+    @# Licensed under the Apache License, Version 2.0 (the "License");
+    @# you may not use this file except in compliance with the License.
+    @# You may obtain a copy of the License at
+    @#
+    @# http://www.apache.org/licenses/LICENSE-2.0
+    @#
+    @# Unless required by applicable law or agreed to in writing, software
+    @# distributed under the License is distributed on an "AS IS" BASIS,
+    @# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    @# See the License for the specific language governing permissions and
+    @# limitations under the License.
+    @#
+    @# Automatically generated configuration file. Do not edit.
+@end
+
+@private retryCodes(service)
+    @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service)
+        retry_codes_def:
+            @join retryDef : context.entrySet(interfaceConfig.getRetryCodesDefinition)
+                - name: {@retryDef.getKey}
+                  retry_codes:
+                      @join code : retryDef.getValue
+                          - {@code}
+                      @end
+            @end
+    @end
+@end
+
+@private retryParams(service)
+    @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service)
+        retry_params:
+            @join retryDef : context.entrySet(interfaceConfig.getRetryParamsDefinition)
+                - name: {@retryDef.getKey}
+                  initial_retry_delay_millis: {@retryDef.getValue.getRetryBackoff.getInitialDelayMillis}
+                  retry_delay_multiplier: {@retryDef.getValue.getRetryBackoff.getDelayMultiplier}
+                  max_retry_delay_millis: {@retryDef.getValue.getRetryBackoff.getMaxDelayMillis}
+                  initial_rpc_timeout_millis: {@retryDef.getValue.getTimeoutBackoff.getInitialDelayMillis}
+                  rpc_timeout_multiplier: {@retryDef.getValue.getTimeoutBackoff.getDelayMultiplier}
+                  max_rpc_timeout_millis: {@retryDef.getValue.getTimeoutBackoff.getMaxDelayMillis}
+                  total_timeout_millis: {@retryDef.getValue.getTotalTimeout}
+            @end
+    @end
+@end
+
+@private methodsSection(service)
+    methods:
+        @join method : service.getMethods
+            @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+                    methodName = context.upperCamelToLowerUnderscore(method.getSimpleName), \
+                    isPageStreaming = methodConfig.isPageStreaming, \
+                    isBundling = methodConfig.isBundling, \
+                    retryCodesName = methodConfig.getRetryCodesConfigName, \
+                    retryParamsName = methodConfig.getRetryParamsConfigName
+                - name: {@context.upperCamelToLowerUnderscore(method.getSimpleName)}
+                  @if and(retryCodesName, retryParamsName)
+                      retry_codes_name: {@retryCodesName}
+                      retry_params_name: {@retryParamsName}
+                  @end
+                  @if isBundling
+                      @let bundling = methodConfig.getBundling, \
+                              byte = bundling.getRequestByteThreshold, \
+                              delay = bundling.getDelayThresholdMillis, \
+                              count = bundling.getElementCountThreshold, \
+                              bundledField = bundling.getBundledField.getSimpleName, \
+                              discriminatorFields = bundling.getDiscriminatorFields
+                          bundle_options:
+                              @if count
+                                  message_count_threshold: {@count}
+                              @end
+                              @if byte
+                                  message_bytesize_threshold: {@byte}
+                              @end
+                              @if delay
+                                  delay_threshold: {@delay}
+                              @end
+                          bundle_descriptor:
+                              bundled_field: {@bundledField}
+                              request_discriminator_fields:
+                                  @join fieldSelector : bundling.getDiscriminatorFields
+                                      - {@fieldSelector.getParamName}
+                                  @end
+                              @if bundling.hasSubresponseField
+                                  subresponse_field: {@bundling.getSubresponseField.getSimpleName}
+                              @end
+                      @end
+                  @end
+                  @if isPageStreaming
+                      @let pageStreaming = methodConfig.getPageStreaming, \
+                              requestToken = pageStreaming.getRequestTokenField.getSimpleName, \
+                              responseToken = pageStreaming.getResponseTokenField.getSimpleName, \
+                              resources = pageStreaming.getResourcesField.getSimpleName
+                          page_streaming:
+                              request:
+                                  token_field: {@requestToken}
+                              response:
+                                  token_field: {@responseToken}
+                                  resources_field: {@resources}
+                      @end
+                  @end
+            @end
+        @end
+@end

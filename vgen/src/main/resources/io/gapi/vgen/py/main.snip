@@ -93,7 +93,8 @@
 
 @private initMethodSection(service)
     @let stubModule = pyproto.getPbFileName(service), \
-             stubService = service.getSimpleName()
+             stubService = service.getSimpleName(), \
+             yamlFilename = {@context.upperCamelToLowerUnderscore(context.getVeneerName(service))}
         def __init__(
                 self,
                 service_path=SERVICE_ADDRESS,
@@ -101,8 +102,7 @@
                 channel=None,
                 ssl_creds=None,
                 scopes=_ALL_SCOPES,
-                is_idempotent_retrying=True,
-                max_attempts=3,
+                retrying_override=None,
                 bundling_override=None,
                 timeout=30):
             """Constructor.
@@ -118,13 +118,12 @@
                 enabled channel
               :type ssl_creds: A grpc.beta.implementations.ClientCredentials
                 object
-              :keyword is_idempotent_retrying: If set, idempotent RPCs sent
-                through this client will retry upon transient failure by
-                default.
-              :type is_idempotent_retrying: bool
-              :keyword max_attempts: The maximum number of times to retry a
-                method that is configured to retry upon transient failure
-              :type max_attempts: int
+              :keyword retrying_override: A dictionary that overrides default
+                retrying settings. ``retrying_override`` maps method names
+                (e.g., 'list_foo') to custom RetryOptions objects, or to None.
+                A value of None indicates that the method in question should not
+                retry.
+              :type retrying_override: dict
               :keyword bundling_override: A dictionary that overrides default
                 bundling settings. ``bundling_override`` maps bundling method
                 names (e.g., 'publish_foo') to custom BundleOptions objects, or to
@@ -137,8 +136,13 @@
               :type timeout: int
             """
             bundling_override = bundling_override or dict()
-            self._defaults = dict()
-            {@defaultsSection(service)}
+            retrying_override = retrying_override or dict()
+            config_filename = os.path.join(
+                os.path.dirname(__file__), '{@yamlFilename}.yaml')
+            with open(config_filename, 'r') as api_yaml:
+                self._defaults = api_callable.construct_settings(
+                    yaml.load(api_yaml.read()), bundling_override, retrying_override,
+                    config.EXCEPTION_NAMES, timeout)
 
             self.stub = config.create_stub(
                 {@stubModule}.beta_create_{@stubService}_stub,
@@ -147,66 +151,6 @@
                 ssl_creds=ssl_creds,
                 channel=channel,
                 scopes=scopes)
-    @end
-@end
-
-@private defaultsSection(service)
-    @join method : service.getMethods
-        @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-             methodName = context.upperCamelToLowerUnderscore(method.getSimpleName), \
-             isPageStreaming = methodConfig.isPageStreaming(), \
-             isBundling = methodConfig.isBundling()
-            @if isBundling
-                @let bundling = methodConfig.getBundling(), \
-                        count = bundling.getElementCountThreshold(), \
-                        bytes = bundling.getRequestByteThreshold(), \
-                        delay = bundling.getDelayThresholdMillis()
-                    if '{@methodName}' in bundling_override:
-                        {@methodName}_bundler = bundling.Executor(
-                            bundle_overrides['{@methodName}'])
-                    else:
-                        {@methodName}_bundler = bundling.Executor(BundleOptions(
-                            @if count
-                                element_count_threshold={@count},
-                            @end
-                            @if bytes
-                                request_bytesize_threshold={@bytes},
-                            @end
-                            @if delay
-                                delay_threshold={@delay}
-                            @end
-                        ))
-
-                @end
-            @end
-            self._defaults['{@methodName}'] = CallSettings(
-                timeout=timeout,
-                @if context.isIdempotent(method)
-                    is_retrying=is_idempotent_retrying,
-                @end
-                max_attempts=max_attempts,
-                @if isPageStreaming
-                    @let pageStreaming = methodConfig.getPageStreaming(), \
-                            requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
-                            responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
-                            resources = pageStreaming.getResourcesField().getSimpleName()
-                        page_descriptor=PageDescriptor(
-                            '{@requestToken}',
-                            '{@responseToken}',
-                            '{@resources}',
-                        ),
-                    @end
-                @end
-                @if isBundling
-                    @let bundling = methodConfig.getBundling()
-                        bundler={@methodName}_bundler,
-                        bundle_descriptor=BundleDescriptor(
-                            {@bundleDescriptorBody(bundling, method)}
-                        ),
-                    @end
-                @end
-            )
-        @end
     @end
 @end
 
