@@ -25,6 +25,11 @@ public class ApiaryConfig {
   final ListMultimap<String, String> apiParams = ArrayListMultimap.<String, String>create();
 
   /**
+   * Maps (type name, field name) to description of that field.
+   */
+  final Table<String, String, String> fieldDescription = HashBasedTable.<String, String, String>create();
+
+  /**
    * Maps method to an order list of resources the method is namespaced under.
    */
   final ListMultimap<String, String> resources = ArrayListMultimap.<String, String>create();

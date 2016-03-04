@@ -30,9 +30,6 @@ import javax.annotation.Nullable;
  * Main class for the discovery doc fragment generator.
  */
 public class DiscoveryFragmentGeneratorApi {
-
-  protected final ToolOptions options;
-
   public static final Option<String> DISCOVERY_DOC = ToolOptions.createOption(
       String.class,
       "discovery_doc",
@@ -51,11 +48,15 @@ public class DiscoveryFragmentGeneratorApi {
       "The list of Yaml configuration files for the fragment generator.",
       ImmutableList.<String>of());
 
+  protected final ToolOptions options;
+  private final String dataPath;
+
   /**
    * Constructs a discovery doc fragment generator API based on given options.
    */
   public DiscoveryFragmentGeneratorApi(ToolOptions options) {
     this.options = options;
+    this.dataPath = getDataPath();
   }
 
   protected void process() throws Exception {
@@ -101,13 +102,8 @@ public class DiscoveryFragmentGeneratorApi {
     generator.outputFragments(options.get(OUTPUT_FILE), docs, configProto.getArchive());
   }
 
-  public int run() {
-    try {
-      process();
-    } catch (Exception e) {
-      return 1;
-    }
-    return 0;
+  public void run() throws Exception {
+    process();
   }
 
   private ConfigProto loadConfigFromFiles(List<String> configFileNames) {
@@ -141,8 +137,6 @@ public class DiscoveryFragmentGeneratorApi {
 
     return files;
   }
-
-  private String dataPath = getDataPath();
 
   private String getDataPath() {
     List<String> defaults = new ArrayList<>();

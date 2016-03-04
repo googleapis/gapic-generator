@@ -8,8 +8,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 // Example usage: (assuming environment variable BASE is the base directory of the project
 // containing the yaml config, discovery doc, and output)
@@ -55,16 +54,12 @@ public class DiscoveryFragmentGeneratorTool {
 
   @SuppressWarnings("unchecked")
   private static void generate(String discoveryDoc,
-      String[] generatorConfigs, String outputDirectory) {
+      String[] generatorConfigs, String outputDirectory) throws Exception {
 
     ToolOptions options = ToolOptions.create();
     options.set(DiscoveryFragmentGeneratorApi.DISCOVERY_DOC, discoveryDoc);
     options.set(DiscoveryFragmentGeneratorApi.OUTPUT_FILE, outputDirectory);
-    List<String> genConfigs = new ArrayList<String>();
-    for (String genConfig : generatorConfigs) {
-      genConfigs.add(genConfig);
-    }
-    options.set(DiscoveryFragmentGeneratorApi.GENERATOR_CONFIG_FILES, genConfigs);
+    options.set(DiscoveryFragmentGeneratorApi.GENERATOR_CONFIG_FILES, Arrays.asList(generatorConfigs));
     DiscoveryFragmentGeneratorApi generator = new DiscoveryFragmentGeneratorApi(options);
     generator.run();
   }

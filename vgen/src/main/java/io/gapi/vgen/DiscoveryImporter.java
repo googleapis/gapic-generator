@@ -185,6 +185,10 @@ public class DiscoveryImporter {
    * Parses a field of an object. Might create more synthetic types to express nested types.
    */
   private Field fieldFrom(String typeName, String fieldName, JsonNode root) {
+    if (root.get("description") != null) {
+      config.fieldDescription.put(typeName, fieldName, root.get("description").asText());
+    }
+
     Field.Builder builder = Field.newBuilder();
     builder.setName(fieldName);
     if (root.get("$ref") != null) {

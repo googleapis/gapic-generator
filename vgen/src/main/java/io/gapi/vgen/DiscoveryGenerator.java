@@ -20,7 +20,9 @@ public class DiscoveryGenerator {
   }
 
   public static DiscoveryGenerator create(DiscoveryLanguageProvider provider) {
-    return new DiscoveryGenerator(provider);
+    // TODO(pongad): HACK!!!
+    // return new DiscoveryGenerator(provider);
+    return new DiscoveryFragmentGenerator(provider);
   }
 
   public static class Builder {
@@ -60,7 +62,6 @@ public class DiscoveryGenerator {
       if (languageProvider == null) {
         return null;
       }
-
       return create(languageProvider);
     }
 
