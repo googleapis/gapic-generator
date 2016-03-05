@@ -194,6 +194,7 @@ func (api *LibraryServiceApi) CreateShelfWith(ctx context.Context, shelf *google
 	}, opts...)
 }
 
+// createShelf is a gax.APICall that calls api.client.CreateShelf.
 func (api *LibraryServiceApi) createShelf(ctx context.Context, req interface{}) (interface{}, error) {
 	return api.client.CreateShelf(ctx, req.(*google_example_library_v1.CreateShelfRequest))
 }
@@ -226,6 +227,7 @@ func (api *LibraryServiceApi) GetShelfWith(ctx context.Context, name string, opt
 	}, opts...)
 }
 
+// getShelf is a gax.APICall that calls api.client.GetShelf.
 func (api *LibraryServiceApi) getShelf(ctx context.Context, req interface{}) (interface{}, error) {
 	return api.client.GetShelf(ctx, req.(*google_example_library_v1.GetShelfRequest))
 }
@@ -235,8 +237,30 @@ func (api *LibraryServiceApi) getShelf(ctx context.Context, req interface{}) (in
 // Lists shelves.
 //
 //
-func (api *LibraryServiceApi) ListShelvesStreamable(req *google_example_library_v1.ListShelvesRequest) gax.PageStreamable {
-	return &listShelvesStreamable{req: req, api: api}
+func (api *LibraryServiceApi) ListShelves(ctx context.Context, req *google_example_library_v1.ListShelvesRequest, opts ...gax.CallOption) (*ShelfIterator, error) {
+	opts = append(api.CallOptions["ListShelves"], opts...)
+	atLastPage := false
+	return &ShelfIterator{
+		apiCall: func() (ShelfPage, error) {
+			if atLastPage {
+				return ShelfPage{}, io.EOF
+			}
+			result, err := gax.Invoke(ctx, req, api.listShelves, opts...)
+			if err != nil {
+				return ShelfPage{}, err
+			}
+			resp := result.(*google_example_library_v1.ListShelvesResponse)
+			if resp.NextPageToken == "" {
+				atLastPage = true
+			} else {
+				req.PageToken = resp.NextPageToken
+			}
+			return ShelfPage{
+				Items: resp.Shelves,
+				NextPageToken: resp.NextPageToken,
+			}, nil
+		},
+	}, nil
 }
 
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
@@ -244,35 +268,13 @@ func (api *LibraryServiceApi) ListShelvesStreamable(req *google_example_library_
 // Lists shelves.
 //
 //
-func (api *LibraryServiceApi) ListShelves(ctx context.Context, req *google_example_library_v1.ListShelvesRequest, f func(*google_example_library_v1.Shelf) bool, opts ...gax.CallOption) error {
-	opts = append(api.CallOptions["ListShelves"], opts...)
-	return gax.PageStream(ctx, api.ListShelvesStreamable(req), func(obj interface{}) bool {
-		return f(obj.(*google_example_library_v1.Shelf))
+//
+func (api *LibraryServiceApi) ListShelvesWith(ctx context.Context,  opts ...gax.CallOption) (*ShelfIterator, error) {
+	return api.ListShelves(ctx, &google_example_library_v1.ListShelvesRequest{
 	}, opts...)
 }
 
-// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
-
-// Lists shelves.
-//
-//
-//
-func (api *LibraryServiceApi) ListShelvesWith(ctx context.Context,  f func(*google_example_library_v1.Shelf) bool, opts ...gax.CallOption) error {
-	return api.ListShelves(ctx, &google_example_library_v1.ListShelvesRequest{
-	}, f, opts...)
-}
-
-// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
-
-// Lists shelves.
-//
-//
-//
-func (api *LibraryServiceApi) ListShelvesStreamableWith() gax.PageStreamable {
-	return api.ListShelvesStreamable(&google_example_library_v1.ListShelvesRequest{
-	})
-}
-
+// listShelves is a gax.APICall that calls api.client.ListShelves.
 func (api *LibraryServiceApi) listShelves(ctx context.Context, req interface{}) (interface{}, error) {
 	return api.client.ListShelves(ctx, req.(*google_example_library_v1.ListShelvesRequest))
 }
@@ -305,6 +307,7 @@ func (api *LibraryServiceApi) DeleteShelfWith(ctx context.Context, name string, 
 	}, opts...)
 }
 
+// deleteShelf is a gax.APICall that calls api.client.DeleteShelf.
 func (api *LibraryServiceApi) deleteShelf(ctx context.Context, req interface{}) (interface{}, error) {
 	return api.client.DeleteShelf(ctx, req.(*google_example_library_v1.DeleteShelfRequest))
 }
@@ -344,6 +347,7 @@ func (api *LibraryServiceApi) MergeShelvesWith(ctx context.Context, name string,
 	}, opts...)
 }
 
+// mergeShelves is a gax.APICall that calls api.client.MergeShelves.
 func (api *LibraryServiceApi) mergeShelves(ctx context.Context, req interface{}) (interface{}, error) {
 	return api.client.MergeShelves(ctx, req.(*google_example_library_v1.MergeShelvesRequest))
 }
@@ -379,6 +383,7 @@ func (api *LibraryServiceApi) CreateBookWith(ctx context.Context, name string, b
 	}, opts...)
 }
 
+// createBook is a gax.APICall that calls api.client.CreateBook.
 func (api *LibraryServiceApi) createBook(ctx context.Context, req interface{}) (interface{}, error) {
 	return api.client.CreateBook(ctx, req.(*google_example_library_v1.CreateBookRequest))
 }
@@ -417,6 +422,7 @@ func (api *LibraryServiceApi) PublishSeriesWith(ctx context.Context, shelf *goog
 	}, opts...)
 }
 
+// publishSeries is a gax.APICall that calls api.client.PublishSeries.
 func (api *LibraryServiceApi) publishSeries(ctx context.Context, req interface{}) (interface{}, error) {
 	return api.client.PublishSeries(ctx, req.(*google_example_library_v1.PublishSeriesRequest))
 }
@@ -449,6 +455,7 @@ func (api *LibraryServiceApi) GetBookWith(ctx context.Context, name string, opts
 	}, opts...)
 }
 
+// getBook is a gax.APICall that calls api.client.GetBook.
 func (api *LibraryServiceApi) getBook(ctx context.Context, req interface{}) (interface{}, error) {
 	return api.client.GetBook(ctx, req.(*google_example_library_v1.GetBookRequest))
 }
@@ -458,20 +465,30 @@ func (api *LibraryServiceApi) getBook(ctx context.Context, req interface{}) (int
 // Lists books in a shelf.
 //
 //
-func (api *LibraryServiceApi) ListBooksStreamable(req *google_example_library_v1.ListBooksRequest) gax.PageStreamable {
-	return &listBooksStreamable{req: req, api: api}
-}
-
-// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
-
-// Lists books in a shelf.
-//
-//
-func (api *LibraryServiceApi) ListBooks(ctx context.Context, req *google_example_library_v1.ListBooksRequest, f func(*google_example_library_v1.Book) bool, opts ...gax.CallOption) error {
+func (api *LibraryServiceApi) ListBooks(ctx context.Context, req *google_example_library_v1.ListBooksRequest, opts ...gax.CallOption) (*BookIterator, error) {
 	opts = append(api.CallOptions["ListBooks"], opts...)
-	return gax.PageStream(ctx, api.ListBooksStreamable(req), func(obj interface{}) bool {
-		return f(obj.(*google_example_library_v1.Book))
-	}, opts...)
+	atLastPage := false
+	return &BookIterator{
+		apiCall: func() (BookPage, error) {
+			if atLastPage {
+				return BookPage{}, io.EOF
+			}
+			result, err := gax.Invoke(ctx, req, api.listBooks, opts...)
+			if err != nil {
+				return BookPage{}, err
+			}
+			resp := result.(*google_example_library_v1.ListBooksResponse)
+			if resp.NextPageToken == "" {
+				atLastPage = true
+			} else {
+				req.PageToken = resp.NextPageToken
+			}
+			return BookPage{
+				Items: resp.Books,
+				NextPageToken: resp.NextPageToken,
+			}, nil
+		},
+	}, nil
 }
 
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
@@ -484,30 +501,14 @@ func (api *LibraryServiceApi) ListBooks(ctx context.Context, req *google_example
 //
 //
 //
-func (api *LibraryServiceApi) ListBooksWith(ctx context.Context, name string, filter string, f func(*google_example_library_v1.Book) bool, opts ...gax.CallOption) error {
+func (api *LibraryServiceApi) ListBooksWith(ctx context.Context, name string, filter string, opts ...gax.CallOption) (*BookIterator, error) {
 	return api.ListBooks(ctx, &google_example_library_v1.ListBooksRequest{
 		Name: name,
 		Filter: filter,
-	}, f, opts...)
+	}, opts...)
 }
 
-// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
-
-// Lists books in a shelf.
-//
-// name: The name of the shelf whose books we'd like to list.
-//
-// filter: To test python built-in wrapping.
-//
-//
-//
-func (api *LibraryServiceApi) ListBooksStreamableWith(name string, filter string) gax.PageStreamable {
-	return api.ListBooksStreamable(&google_example_library_v1.ListBooksRequest{
-		Name: name,
-		Filter: filter,
-	})
-}
-
+// listBooks is a gax.APICall that calls api.client.ListBooks.
 func (api *LibraryServiceApi) listBooks(ctx context.Context, req interface{}) (interface{}, error) {
 	return api.client.ListBooks(ctx, req.(*google_example_library_v1.ListBooksRequest))
 }
@@ -540,6 +541,7 @@ func (api *LibraryServiceApi) DeleteBookWith(ctx context.Context, name string, o
 	}, opts...)
 }
 
+// deleteBook is a gax.APICall that calls api.client.DeleteBook.
 func (api *LibraryServiceApi) deleteBook(ctx context.Context, req interface{}) (interface{}, error) {
 	return api.client.DeleteBook(ctx, req.(*google_example_library_v1.DeleteBookRequest))
 }
@@ -575,6 +577,7 @@ func (api *LibraryServiceApi) UpdateBookWith(ctx context.Context, name string, b
 	}, opts...)
 }
 
+// updateBook is a gax.APICall that calls api.client.UpdateBook.
 func (api *LibraryServiceApi) updateBook(ctx context.Context, req interface{}) (interface{}, error) {
 	return api.client.UpdateBook(ctx, req.(*google_example_library_v1.UpdateBookRequest))
 }
@@ -610,95 +613,98 @@ func (api *LibraryServiceApi) MoveBookWith(ctx context.Context, name string, oth
 	}, opts...)
 }
 
+// moveBook is a gax.APICall that calls api.client.MoveBook.
 func (api *LibraryServiceApi) moveBook(ctx context.Context, req interface{}) (interface{}, error) {
 	return api.client.MoveBook(ctx, req.(*google_example_library_v1.MoveBookRequest))
 }
 
-// PageStreamables.
+// Iterators.
 //
 
-// listShelvesStreamable
-//
-type listShelvesStreamable struct {
-	req  *google_example_library_v1.ListShelvesRequest
-	resp *google_example_library_v1.ListShelvesResponse
-	api  *LibraryServiceApi
+// ShelfPage represents a page in a stream of ShelfIterator.
+// This will be updated through ShelfIterator.Advance.
+type ShelfPage struct {
+	// The elements in the current page.
+	Items []*google_example_library_v1.Shelf
+
+	// The token to get the next page response. This can be used to resume the iteration.
+	NextPageToken string
 }
 
-func (streamable *listShelvesStreamable) ApiCall(ctx context.Context, opts ...gax.CallOption) error {
-	resp, err := gax.Invoke(ctx, streamable.req, streamable.api.listShelves, opts...)
+// ShelfIterator manages a stream of *google_example_library_v1.Shelf.
+type ShelfIterator struct {
+	// The current page data.
+	Page         ShelfPage
+	currentIndex int
+	apiCall      func() (ShelfPage, error)
+}
+
+// Advance moves to the next page and updates its internal data.
+// This returns io.EOF if no more pages exist.
+func (iterator *ShelfIterator) Advance() error {
+	page, err := iterator.apiCall()
 	if err == nil {
-		streamable.resp = resp.(*google_example_library_v1.ListShelvesResponse)
+		iterator.Page = page
 	}
 	return err
 }
 
-func (streamable *listShelvesStreamable) NextPage() error {
-	if streamable.resp == nil {
-		return io.EOF
+// Next returns the next element in the stream. This returns io.EOF at the end of
+// the stream.
+func (iterator *ShelfIterator) Next() (*google_example_library_v1.Shelf, error) {
+	for iterator.currentIndex >= len(iterator.Page.Items) {
+		err := iterator.Advance()
+		if err != nil {
+			return nil, err
+		}
+		iterator.currentIndex = 0
 	}
-	token := streamable.resp.NextPageToken
-	if token == "" {
-		return io.EOF
-	}
-	streamable.req.PageToken = token
-	return nil
+	result := iterator.Page.Items[iterator.currentIndex]
+	iterator.currentIndex++
+	return result, nil
 }
 
-func (streamable *listShelvesStreamable) Len() int {
-	if streamable.resp == nil {
-		return 0
-	}
-	return len(streamable.resp.Shelves)
+// BookPage represents a page in a stream of BookIterator.
+// This will be updated through BookIterator.Advance.
+type BookPage struct {
+	// The elements in the current page.
+	Items []*google_example_library_v1.Book
+
+	// The token to get the next page response. This can be used to resume the iteration.
+	NextPageToken string
 }
 
-func (streamable *listShelvesStreamable) GetData(i int) interface{} {
-	if streamable.resp == nil {
-		return nil
- 	}
- 	return streamable.resp.Shelves[i]
+// BookIterator manages a stream of *google_example_library_v1.Book.
+type BookIterator struct {
+	// The current page data.
+	Page         BookPage
+	currentIndex int
+	apiCall      func() (BookPage, error)
 }
 
-// listBooksStreamable
-//
-type listBooksStreamable struct {
-	req  *google_example_library_v1.ListBooksRequest
-	resp *google_example_library_v1.ListBooksResponse
-	api  *LibraryServiceApi
-}
-
-func (streamable *listBooksStreamable) ApiCall(ctx context.Context, opts ...gax.CallOption) error {
-	resp, err := gax.Invoke(ctx, streamable.req, streamable.api.listBooks, opts...)
+// Advance moves to the next page and updates its internal data.
+// This returns io.EOF if no more pages exist.
+func (iterator *BookIterator) Advance() error {
+	page, err := iterator.apiCall()
 	if err == nil {
-		streamable.resp = resp.(*google_example_library_v1.ListBooksResponse)
+		iterator.Page = page
 	}
 	return err
 }
 
-func (streamable *listBooksStreamable) NextPage() error {
-	if streamable.resp == nil {
-		return io.EOF
+// Next returns the next element in the stream. This returns io.EOF at the end of
+// the stream.
+func (iterator *BookIterator) Next() (*google_example_library_v1.Book, error) {
+	for iterator.currentIndex >= len(iterator.Page.Items) {
+		err := iterator.Advance()
+		if err != nil {
+			return nil, err
+		}
+		iterator.currentIndex = 0
 	}
-	token := streamable.resp.NextPageToken
-	if token == "" {
-		return io.EOF
-	}
-	streamable.req.PageToken = token
-	return nil
-}
-
-func (streamable *listBooksStreamable) Len() int {
-	if streamable.resp == nil {
-		return 0
-	}
-	return len(streamable.resp.Books)
-}
-
-func (streamable *listBooksStreamable) GetData(i int) interface{} {
-	if streamable.resp == nil {
-		return nil
- 	}
- 	return streamable.resp.Books[i]
+	result := iterator.Page.Items[iterator.currentIndex]
+	iterator.currentIndex++
+	return result, nil
 }
 ============== file: doc.go ==============
 // Copyright 2016 Google Inc. All Rights Reserved.
