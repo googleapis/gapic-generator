@@ -1,0 +1,314 @@
+@extends "common.snip"
+
+@snippet generateFilename(service)
+  {@settingsClassName(service)}.java
+@end
+
+@snippet generateClass(service, body, imports)
+  {@fileHeader(service)}
+  package {@context.getApiConfig.getPackageName};
+
+  @join import : imports
+    import {@import};
+  @end
+
+  // Manually-added imports: add custom (non-generated) imports after this point.
+
+  {@body}
+@end
+
+@snippet generateBody(service)
+  {@alwaysImport()}
+
+  {@autoGenClassWarning()}
+  @@javax.annotation.Generated("by GAPIC")
+  public class {@settingsClassName(service)} extends ApiCallSettings {
+
+    {@constants(service)}
+
+    {@members(service)}
+
+    {@constructors(service)}
+
+    {@memberFunctions(service)}
+
+    {@descriptors(service)}
+  }
+@end
+
+@private alwaysImport() fill
+  {@context.addImport("com.google.api.gax.core.BackoffParams")}
+  {@context.addImport("com.google.api.gax.core.ConnectionSettings")}
+  {@context.addImport("com.google.api.gax.core.RetryParams")}
+  {@context.addImport("com.google.api.gax.grpc.ApiCallSettings")}
+  {@context.addImport("com.google.api.gax.grpc.ApiCallable.ApiCallableBuilder")}
+  {@context.addImport("com.google.common.collect.ImmutableList")}
+  {@context.addImport("com.google.common.collect.ImmutableMap")}
+  {@context.addImport("com.google.common.collect.ImmutableSet")}
+  {@context.addImport("com.google.common.collect.Lists")}
+  {@context.addImport("com.google.common.collect.Sets")}
+  {@context.addImport("io.grpc.Status")}
+@end
+
+@private constants(service)
+  // =========
+  // Constants
+  // =========
+
+  {@connectionConstants(service)}
+  {@retryDefConstants(service)}
+@end
+
+@private connectionConstants(service)
+  /**
+   * The default address of the service.
+   *
+  {@javaDocManualEdit()}
+   */
+  public static final String DEFAULT_SERVICE_ADDRESS = "{@context.getServiceConfig.getServiceAddress(service)}";
+
+  /**
+   * The default port of the service.
+   *
+  {@javaDocManualEdit()}
+   */
+  public static final int DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()};
+
+  /**
+   * The default scopes of the service.
+   */
+  public static final ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
+      @join scope : context.getServiceConfig.getAuthScopes(service)
+        .add("{@scope}")
+      @end
+      .build();
+
+@end
+
+@private retryDefConstants(service)
+  @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service)
+    private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
+
+    static {
+      ImmutableMap.Builder<String, ImmutableSet<Status.Code>> definitions = ImmutableMap.builder();
+      @join retryDef : context.entrySet(interfaceConfig.getRetryCodesDefinition)
+        definitions.put(
+            "{@retryDef.getKey}",
+            Sets.immutableEnumSet(Lists.<Status.Code>newArrayList({@statusCodes(retryDef.getValue)})));
+      @end
+      RETRYABLE_CODE_DEFINITIONS = definitions.build();
+    }
+
+    private static final ImmutableMap<String, RetryParams> RETRY_PARAM_DEFINITIONS;
+
+    static {
+      ImmutableMap.Builder<String, RetryParams> definitions = ImmutableMap.builder();
+      RetryParams params = null;
+      @join retryDef : context.entrySet(interfaceConfig.getRetryParamsDefinition)
+        params = RetryParams.newBuilder()
+            .setRetryBackoff(
+                BackoffParams.newBuilder()
+                    .setInitialDelayMillis({@retryDef.getValue.getRetryBackoff.getInitialDelayMillis}L)
+                    .setDelayMultiplier({@retryDef.getValue.getRetryBackoff.getDelayMultiplier})
+                    .setMaxDelayMillis({@retryDef.getValue.getRetryBackoff.getMaxDelayMillis}L)
+                    .build())
+            .setTimeoutBackoff(
+                BackoffParams.newBuilder()
+                    .setInitialDelayMillis({@retryDef.getValue.getTimeoutBackoff.getInitialDelayMillis}L)
+                    .setDelayMultiplier({@retryDef.getValue.getTimeoutBackoff.getDelayMultiplier})
+                    .setMaxDelayMillis({@retryDef.getValue.getTimeoutBackoff.getMaxDelayMillis}L)
+                    .build())
+            .setTotalTimeout({@retryDef.getValue.getTotalTimeout}L)
+            .build();
+        definitions.put("{@retryDef.getKey}", params);
+      @end
+      RETRY_PARAM_DEFINITIONS = definitions.build();
+    }
+  @end
+@end
+
+@private statusCodes(codes)
+  @join code : codes on ", "
+    Status.Code.{@code}
+  @end
+@end
+
+@private members(service)
+  @join method : service.getMethods
+    @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
+         methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+         inTypeName = context.typeName(method.getInputType), \
+         outTypeName = context.typeName(method.getOutputType), \
+         isPageStreaming = methodConfig.isPageStreaming
+      @if {@isPageStreaming}
+        @let pageStreaming = methodConfig.getPageStreaming(), \
+             resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
+             dummy = context.addImport("com.google.api.gax.grpc.ApiCallable.PageStreamingApiCallableBuilder")
+          private final PageStreamingApiCallableBuilder<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>
+              {@methodName}Method;
+        @end
+      @else
+        private final ApiCallableBuilder<{@inTypeName}, {@outTypeName}> {@methodName}Method;
+      @end
+    @end
+  @end
+
+  private final ImmutableList<? extends ApiCallSettings> allMethods;
+@end
+
+@private constructors(service)
+  @let className = @settingsClassName(service)
+    // ===============
+    // Factory Methods
+    // ===============
+
+    /**
+     * Constructs an instance of {@className} with default settings.
+     *
+    {@javaDocManualEdit()}
+     */
+    public static {@className} create() {
+      {@className} settings = new {@className}();
+      settings.provideChannelWith(ConnectionSettings.builder()
+          .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
+          .setPort(DEFAULT_SERVICE_PORT)
+          .provideCredentialsWith(DEFAULT_SERVICE_SCOPES)
+          .build());
+      return settings;
+    }
+
+    /**
+     * Constructs an instance of {@className} with default settings. This is protected so that it
+     * easy to make a subclass, but otherwise, the static factory methods should be preferred.
+     *
+    {@javaDocManualEdit()}
+     */
+    {@mainConstructor(service)}
+  @end
+@end
+
+@private mainConstructor(service)
+  @let className = settingsClassName(service)
+    protected {@className}() {
+      @let serviceName = service.getSimpleName, \
+           grpcName = context.getGrpcName(service)
+        @join method : service.getMethods
+          @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
+               methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
+               methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+               retryCodesName = methodConfig.getRetryCodesConfigName, \
+               retryParamsName = methodConfig.getRetryParamsConfigName, \
+               isPageStreaming = methodConfig.isPageStreaming
+            @if {@isPageStreaming}
+              {@methodName}Method = new PageStreamingApiCallableBuilder<>(
+                  {@grpcName}.METHOD_{@methodConstant},
+                  {@methodConstant}_PAGE_STR_DESC);
+            @else
+              {@methodName}Method = new ApiCallableBuilder<>({@grpcName}.METHOD_{@methodConstant});
+            @end
+
+            {@methodName}Method.setRetryDefaults(
+                RETRYABLE_CODE_DEFINITIONS.get("{@retryCodesName}"),
+                RETRY_PARAM_DEFINITIONS.get("{@retryParamsName}"));
+
+          @end
+        @end
+
+        allMethods =
+            ImmutableList.<ApiCallSettings>builder()
+                .add(
+                    {@methodList(service)}
+                ).build();
+      @end
+    }
+  @end
+@end
+
+@private methodList(service)
+  @join method : service.getMethods on ","
+{@context.upperCamelToLowerCamel(method.getSimpleName)}Method
+  @end
+@end
+
+@private memberFunctions(service)
+  @join method : service.getMethods
+    @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
+         methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+         inTypeName = context.typeName(method.getInputType), \
+         outTypeName = context.typeName(method.getOutputType), \
+         isPageStreaming = methodConfig.isPageStreaming
+      @if {@isPageStreaming}
+        @let pageStreaming = methodConfig.getPageStreaming(), \
+             resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType())
+          /**
+           * Returns the PageStreamingApiCallableBuilder for the API method {@methodName}.
+           *
+          {@javaDocManualEdit()}
+           */
+          public PageStreamingApiCallableBuilder<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>
+              {@methodName}Method() {
+            return {@methodName}Method;
+          }
+
+        @end
+      @else
+        /**
+         * Returns the ApiCallableBuilder for the API method {@methodName}.
+         *
+        {@javaDocManualEdit()}
+         */
+        public ApiCallableBuilder<{@inTypeName}, {@outTypeName}> {@methodName}Method() {
+          return {@methodName}Method;
+        }
+
+      @end
+    @end
+  @end
+
+  public ImmutableList<? extends ApiCallSettings> allMethods() {
+    return allMethods;
+  }
+@end
+
+@private descriptors(service)
+  {@pageStreamingDescriptors(service)}
+@end
+
+@private pageStreamingDescriptors(service)
+  @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service), \
+       dummy = context.addImport("com.google.api.gax.grpc.PageDescriptor")
+    @join method : context.messages.filterPageStreamingMethods(interfaceConfig, service.getMethods)
+      @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
+           inTypeName = context.typeName(method.getInputType), \
+           outTypeName = context.typeName(method.getOutputType), \
+           pageStreaming = interfaceConfig.getMethodConfig(method).getPageStreaming(), \
+           resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
+           tokenTypeName = context.typeName(pageStreaming.getResponseTokenField.getType)
+        private static PageDescriptor<{@inTypeName}, {@outTypeName}, {@resourceTypeName}> {@methodConstant}_PAGE_STR_DESC =
+            new PageDescriptor<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>() {
+              @@Override
+              public Object emptyToken() {
+                return {@context.defaultTokenValue(pageStreaming.getRequestTokenField())};
+              }
+              @@Override
+              public {@inTypeName} injectToken(
+                  {@inTypeName} payload, Object token) {
+                return {@inTypeName}
+                  .newBuilder(payload)
+                  .{@setCallName(pageStreaming.getRequestTokenField())}(({@tokenTypeName}) token)
+                  .build();
+              }
+              @@Override
+              public Object extractNextToken({@outTypeName} payload) {
+                return payload.{@getCallName(pageStreaming.getResponseTokenField())}();
+              }
+              @@Override
+              public Iterable<{@resourceTypeName}> extractResources({@outTypeName} payload) {
+                return payload.{@getCallName(pageStreaming.getResourcesField())}();
+              }
+            };
+
+      @end
+    @end
+  @end
+@end

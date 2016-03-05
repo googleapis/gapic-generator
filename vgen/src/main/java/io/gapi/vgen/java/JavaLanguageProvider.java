@@ -230,20 +230,6 @@ public class JavaLanguageProvider extends LanguageProvider {
   }
 
   /**
-   * Gets the name of the class which is the blocking client for this service interface.
-   */
-  public String getBlockingClientName(Interface service) {
-    return getGrpcName(service) + "." + service.getSimpleName() + "BlockingClient";
-  }
-
-  /**
-   * Gets the name of the class which contains request building helpers.
-   */
-  public String getRequestFactoryName(Interface service) {
-    return service.getSimpleName() + "Requests";
-  }
-
-  /**
    * Given a TypeRef, returns the return statement for that type. Specifically, this will
    * return an empty string for the empty type (we don't want a return statement for void).
    */
