@@ -50,6 +50,7 @@ public class DiscoveryImporter {
 
   private static Iterable<Map.Entry<String, JsonNode>> iterFields(JsonNode n) {
     return new Iterable<Map.Entry<String, JsonNode>>() {
+      @Override
       public Iterator<Map.Entry<String, JsonNode>> iterator() {
         if (n != null) {
           return n.fields();
@@ -61,6 +62,7 @@ public class DiscoveryImporter {
 
   private static Iterable<JsonNode> elements(JsonNode n) {
     return new Iterable<JsonNode>() {
+      @Override
       public Iterator<JsonNode> iterator() {
         if (n != null) {
           return n.elements();
@@ -141,6 +143,7 @@ public class DiscoveryImporter {
     }
     Service serv = builder.addApis(apiBuilder).build();
     importer.service = serv;
+    importer.config.types = importer.types;
     return importer;
   }
 
@@ -182,6 +185,10 @@ public class DiscoveryImporter {
    * Parses a field of an object. Might create more synthetic types to express nested types.
    */
   private Field fieldFrom(String typeName, String fieldName, JsonNode root) {
+    if (root.get("description") != null) {
+      config.fieldDescription.put(typeName, fieldName, root.get("description").asText());
+    }
+
     Field.Builder builder = Field.newBuilder();
     builder.setName(fieldName);
     if (root.get("$ref") != null) {

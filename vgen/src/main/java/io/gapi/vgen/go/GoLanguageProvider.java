@@ -185,6 +185,12 @@ public class GoLanguageProvider extends LanguageProvider {
   }
 
   @Override
+  public void outputFragments(String outputArchiveFile, Multimap<Method, GeneratedResult> methods,
+      boolean archive) {
+    // TODO: implement this to make fragments work
+  }
+
+  @Override
   public GeneratedResult generate(Interface service, SnippetDescriptor snippetDescriptor) {
     GoSnippetSet snippets = SnippetSet.createSnippetInterface(
         GoSnippetSet.class,
@@ -200,6 +206,13 @@ public class GoLanguageProvider extends LanguageProvider {
     // Generate result.
     Doc result = snippets.generateClass(service, body);
     return GeneratedResult.create(result, outputFilename);
+  }
+
+  @Override
+  public GeneratedResult generateFragment(Method method,
+      SnippetDescriptor snippetDescriptor) {
+    // TODO: implement this to make fragment work
+    return null;
   }
 
   /**

@@ -438,7 +438,6 @@
          methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
          inTypeName = context.typeName(method.getInputType), \
          outTypeName = context.typeName(method.getOutputType), \
-         requestFactoryName = context.getRequestFactoryName(service), \
          methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
          isPageStreaming = methodConfig.isPageStreaming, \
          isFlattening = methodConfig.isFlattening
@@ -450,7 +449,7 @@
         @if {@isFlattening}
           @join flatteningGroup: \
               methodConfig.getFlattening().getFlatteningGroups()
-            {@iterableFlattenedMethod(service, method, methodName, requestFactoryName, flatteningGroup)}
+            {@iterableFlattenedMethod(service, method, methodName, flatteningGroup)}
           @end
           {@BREAK}
         @end
@@ -460,7 +459,7 @@
         @if {@isFlattening}
           @join flatteningGroup : \
               methodConfig.getFlattening().getFlatteningGroups()
-            {@flattenedMethod(method, methodName, requestFactoryName, flatteningGroup)}
+            {@flattenedMethod(method, methodName, flatteningGroup)}
           @end
           {@BREAK}
         @end
@@ -501,7 +500,7 @@
 
 @end
 
-@private iterableFlattenedMethod(service, method, methodName, requestFactoryName, fields)
+@private iterableFlattenedMethod(service, method, methodName, fields)
   {@methodJavaDoc(method)}
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
@@ -546,7 +545,7 @@
   @end
 @end
 
-@private flattenedMethod(method, methodName, requestFactoryName, fields)
+@private flattenedMethod(method, methodName, fields)
   {@flattenedMethodJavaDoc(method, fields)}
   @let returnType = context.methodReturnTypeName(method.getOutputType), \
        returnStatement = context.methodReturnStatement(method.getOutputType), \
