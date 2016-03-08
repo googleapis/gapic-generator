@@ -201,7 +201,7 @@
 @private pathTemplateSection(service)
     @if context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
         @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-            {@pathTemplateName(collectionConfig)} = PathTemplate(
+            {@pathTemplateName(collectionConfig)} = path_template.PathTemplate(
                 '{@collectionConfig.getNamePattern}')
         @end
 
@@ -263,8 +263,14 @@
         @if or(requiredParams, optionalParams)
             def {@methodName}(
                     self,
-                    {@requiredParameterNames(requiredParams)},
-                    @if optionalParams
+                    @if requiredParams
+                        @if optionalParams
+                            {@requiredParameterNames(requiredParams)},
+                            {@optionalParameterValues(optionalParams)},
+                        @else
+                            {@requiredParameterNames(requiredParams)},
+                        @end
+                    @else
                         {@optionalParameterValues(optionalParams)},
                     @end
                     options=None):

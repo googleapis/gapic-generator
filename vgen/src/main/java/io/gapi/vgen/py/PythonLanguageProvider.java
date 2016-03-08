@@ -137,11 +137,13 @@ public class PythonLanguageProvider extends LanguageProvider {
 
   @Override
   public GeneratedResult generate(Interface service, SnippetDescriptor snippetDescriptor) {
-    PythonImportHandler importHandler = new PythonImportHandler(service);
+    PythonImportHandler importHandler = PythonImportHandler.createServicePythonImportHandler(service);
+    PythonImportHandler deepImportHandler = PythonImportHandler.createMessagesPythonImportHandler(service);
     ImmutableMap<String, Object> globalMap = ImmutableMap.<String, Object>builder()
         .put("context", this)
         .put("pyproto", new PythonProtoElements())
         .put("importHandler", importHandler)
+        .put("deepImportHandler", deepImportHandler)
         .build();
     PythonSnippetSet snippets = SnippetSet.createSnippetInterface(
         PythonSnippetSet.class,
@@ -190,38 +192,30 @@ public class PythonLanguageProvider extends LanguageProvider {
 
   /**
    * Return comments lines for a given method, consisting of proto doc and parameter type
-   * documentation
+   * documentation.
    */
   private List<String> methodComments(Method msg, PythonImportHandler importHandler) {
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
     for (Field field : this.messages().flattenedFields(msg.getInputType())) {
       TypeRef type = field.getType();
-
       String cardinalityComment;
       if (type.getCardinality() == Cardinality.REPEATED) {
         cardinalityComment = "list of ";
       } else {
         cardinalityComment = "";
       }
-
       String typeComment;
       switch (type.getKind()) {
         case TYPE_MESSAGE:
-          String msgPath = prefixInFile(type.getMessageType());
-          msgPath = Strings.isNullOrEmpty(msgPath) ? "" : msgPath + ".";
-          typeComment = importHandler.fileToModule(type.getMessageType().getFile()) + "."
-              + msgPath + type.getMessageType().getSimpleName();
+          typeComment = "messages." + importHandler.disambiguatedClassName(type.getMessageType());
           break;
-
         case TYPE_ENUM:
-          Preconditions.checkArgument(type.getEnumType().getValues().size() > 0);
-          String enumPath = prefixInFile(type.getEnumType());
-          enumPath = Strings.isNullOrEmpty(enumPath) ? "" : enumPath + ".";
-          typeComment = "enum " + importHandler.fileToModule(type.getEnumType().getFile()) + "."
-              + enumPath + type.getEnumType().getSimpleName();
+          Preconditions.checkArgument(type.getEnumType().getValues().size() > 0,
+              "enum must have a value");
+          typeComment = "enum " + importHandler.fullyQualifiedPath(type.getEnumType()) + "." +
+              type.getEnumType().getSimpleName();
           break;
-
         default:
           if (type.isPrimitive()) {
             typeComment = type.getPrimitiveTypeName();
@@ -230,7 +224,6 @@ public class PythonLanguageProvider extends LanguageProvider {
           }
           break;
       }
-
       paramTypesBuilder.append(
           String.format(":type %s: %s%s\n",
               field.getSimpleName(), cardinalityComment, typeComment));
@@ -272,19 +265,15 @@ public class PythonLanguageProvider extends LanguageProvider {
     if (type.getCardinality() == Cardinality.REPEATED) {
       return "[]";
     }
-
     switch (type.getKind()) {
       case TYPE_MESSAGE:
-        String msgPath = prefixInFile(type.getMessageType());
-        msgPath = Strings.isNullOrEmpty(msgPath) ? "" : msgPath + ".";
-        return importHandler.fileToModule(type.getMessageType().getFile()) + "." + msgPath
-            + type.getMessageType().getSimpleName() + "()";
+        return "messages." +
+            importHandler.disambiguatedClassName(type.getMessageType()) + "()";
       case TYPE_ENUM:
-        Preconditions.checkArgument(type.getEnumType().getValues().size() > 0);
-        String enumPath = prefixInFile(type.getEnumType());
-        enumPath = Strings.isNullOrEmpty(enumPath) ? "" : enumPath + ".";
-        return importHandler.fileToModule(type.getEnumType().getFile()) + "."
-            + enumPath + type.getEnumType().getValues().get(0).getSimpleName();
+        Preconditions.checkArgument(type.getEnumType().getValues().size() > 0,
+            "enum must have a value");
+        return importHandler.fullyQualifiedPath(type.getEnumType()) + "." +
+            type.getEnumType().getValues().get(0).getSimpleName();
       default:
         if (type.isPrimitive()) {
           return DEFAULT_VALUE_MAP.get(type.getKind());
@@ -311,23 +300,6 @@ public class PythonLanguageProvider extends LanguageProvider {
   }
 
   /**
-   * The dot-separated nested messages that contain an element in a Proto file.
-   * Returns null if the element is top-level or a proto file itself.
-   */
-  public String prefixInFile(ProtoElement elt) {
-    ProtoElement parent = elt.getParent();
-    // elt is a proto file itself, or elt is top-level
-    if (parent == null || parent.getParent() == null) {
-      return null;
-    }
-    String prefix = parent.getSimpleName();
-    for (parent = parent.getParent(); parent.getParent() != null; parent = parent.getParent()) {
-      prefix = parent.getSimpleName() + "." + prefix;
-    }
-    return prefix;
-  }
-
-  /*
    * Convert the content string into a commented block that can be directly printed out in the
    * generated py files.
    */

@@ -28,8 +28,9 @@ import platform
 
 from google.gax import api_callable
 from google.gax import config
-from google.gax.path_template import PathTemplate
+from google.gax import path_template
 import google.gax
+import messages
 import yaml
 
 from google.example.library.v1 import field_mask_pb2 as v1_field_mask_pb2
@@ -67,9 +68,9 @@ class LibraryServiceApi(object):
         'https://www.googleapis.com/auth/cloud-platform',
     )
 
-    _SHELF_PATH_TEMPLATE = PathTemplate(
+    _SHELF_PATH_TEMPLATE = path_template.PathTemplate(
         'shelves/{shelf}')
-    _BOOK_PATH_TEMPLATE = PathTemplate(
+    _BOOK_PATH_TEMPLATE = path_template.PathTemplate(
         'shelves/{shelf}/books/{book}')
 
     @classmethod
@@ -168,7 +169,7 @@ class LibraryServiceApi(object):
         """
         Creates a shelf, and returns the new Shelf.
 
-        :type shelf: library_pb2.Shelf
+        :type shelf: messages.Shelf
         :type options: api_callable.CallOptions
         """
         req = library_pb2.CreateShelfRequest(
@@ -187,14 +188,14 @@ class LibraryServiceApi(object):
         Gets a shelf.
 
         :type name: string
-        :type message: library_pb2.SomeMessage
-        :type string_builder: library_pb2.StringBuilder
+        :type message: messages.SomeMessage
+        :type string_builder: messages.StringBuilder
         :type options: api_callable.CallOptions
         """
         if message is None:
-            message = library_pb2.SomeMessage()
+            message = messages.SomeMessage()
         if string_builder is None:
-            string_builder = library_pb2.StringBuilder()
+            string_builder = messages.StringBuilder()
         req = library_pb2.GetShelfRequest(
             name=name,
             message=message,
@@ -262,7 +263,7 @@ class LibraryServiceApi(object):
         Creates a book.
 
         :type name: string
-        :type book: library_pb2.Book
+        :type book: messages.Book
         :type options: api_callable.CallOptions
         """
         req = library_pb2.CreateBookRequest(
@@ -281,8 +282,8 @@ class LibraryServiceApi(object):
         """
         Creates a series of books.
 
-        :type shelf: library_pb2.Shelf
-        :type books: list of library_pb2.Book
+        :type shelf: messages.Shelf
+        :type books: list of messages.Book
         :type edition: uint32
         :type options: api_callable.CallOptions
         """
@@ -331,7 +332,6 @@ class LibraryServiceApi(object):
 
     def delete_book(
             self,
-            ,
             name='',
             options=None):
         """
@@ -357,15 +357,15 @@ class LibraryServiceApi(object):
         Updates a book.
 
         :type name: string
-        :type book: library_pb2.Book
-        :type update_mask: protobuf_field_mask_pb2.FieldMask
-        :type physical_mask: v1_field_mask_pb2.FieldMask
+        :type book: messages.Book
+        :type update_mask: messages.FieldMask
+        :type physical_mask: messages.V1FieldMaskFieldMask
         :type options: api_callable.CallOptions
         """
         if update_mask is None:
-            update_mask = protobuf_field_mask_pb2.FieldMask()
+            update_mask = messages.FieldMask()
         if physical_mask is None:
-            physical_mask = v1_field_mask_pb2.FieldMask()
+            physical_mask = messages.V1FieldMaskFieldMask()
         req = library_pb2.UpdateBookRequest(
             name=name,
             book=book,
@@ -486,3 +486,147 @@ methods:
       retry_codes_name: non_idempotent
       retry_params_name: default
 
+============== file: messages.py ==============
+# Copyright 2016 Google Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# EDITING INSTRUCTIONS
+# This file was generated from the file
+# https://github.com/google/googleapis/blob/master/library.proto,
+# and updates to that file get reflected here through a refresh process.
+# For the short term, the refresh process will only be runnable by Google engineers.
+#
+# The only allowed edits are to method and file documentation. A 3-way
+# merge preserves those additions if the generated source changes.
+
+from google.protobuf import message
+from google.protobuf.internal import python_message
+
+from google.example.library.v1 import field_mask_pb2 as v1_field_mask_pb2
+from google.example.library.v1 import library_pb2
+from google.protobuf import any_pb2
+from google.protobuf import duration_pb2
+from google.protobuf import field_mask_pb2 as protobuf_field_mask_pb2
+from google.protobuf import timestamp_pb2
+from google.protobuf import wrappers_pb2
+
+
+class Any(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = any_pb2.Any.DESCRIPTOR
+
+
+class Book(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = library_pb2.Book.DESCRIPTOR
+
+
+class BoolValue(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = wrappers_pb2.BoolValue.DESCRIPTOR
+
+
+class BytesValue(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = wrappers_pb2.BytesValue.DESCRIPTOR
+
+
+class DoubleValue(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = wrappers_pb2.DoubleValue.DESCRIPTOR
+
+
+class Duration(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = duration_pb2.Duration.DESCRIPTOR
+
+
+class FieldMask(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = field_mask_pb2.FieldMask.DESCRIPTOR
+
+
+class FloatValue(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = wrappers_pb2.FloatValue.DESCRIPTOR
+
+
+class Int32Value(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = wrappers_pb2.Int32Value.DESCRIPTOR
+
+
+class Int64Value(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = wrappers_pb2.Int64Value.DESCRIPTOR
+
+
+class MapListValueValueEntry(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = library_pb2.Book.MapListValueValueEntry.DESCRIPTOR
+
+
+class MapMessageValueEntry(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = library_pb2.Book.MapMessageValueEntry.DESCRIPTOR
+
+
+class MapStringValueEntry(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = library_pb2.Book.MapStringValueEntry.DESCRIPTOR
+
+
+class Shelf(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = library_pb2.Shelf.DESCRIPTOR
+
+
+class SomeMessage(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = library_pb2.SomeMessage.DESCRIPTOR
+
+
+class SomeMessage2(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = library_pb2.SomeMessage2.DESCRIPTOR
+
+
+class StringBuilder(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = library_pb2.StringBuilder.DESCRIPTOR
+
+
+class StringValue(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = wrappers_pb2.StringValue.DESCRIPTOR
+
+
+class Timestamp(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = timestamp_pb2.Timestamp.DESCRIPTOR
+
+
+class UInt32Value(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = wrappers_pb2.UInt32Value.DESCRIPTOR
+
+
+class UInt64Value(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = wrappers_pb2.UInt64Value.DESCRIPTOR
+
+
+class V1FieldMaskFieldMask(message.Message):
+    __metaclass__ = python_message.GeneratedProtocolMessageType
+    DESCRIPTOR = v1_field_mask_pb2.FieldMask.DESCRIPTOR

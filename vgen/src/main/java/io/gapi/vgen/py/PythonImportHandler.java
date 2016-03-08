@@ -4,7 +4,11 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
+import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.CaseFormat;
+import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
@@ -12,6 +16,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.TreeMap;
 
 public class PythonImportHandler {
 
@@ -29,47 +34,124 @@ public class PythonImportHandler {
    */
   private final BiMap<ProtoFile, String> fileImports = HashBiMap.create();
 
-  public PythonImportHandler(Interface service) {
-    // Add non-service-specific imports.
-    addImport(null,
-        PythonImport.create("os", PythonImport.ImportType.STDLIB));
-    addImport(null,
-        PythonImport.create("pkg_resources", PythonImport.ImportType.STDLIB));
-    addImport(null,
-        PythonImport.create("platform", PythonImport.ImportType.STDLIB));
-    addImport(null,
-        PythonImport.create("google.gax", PythonImport.ImportType.THIRD_PARTY));
-    addImport(null,
-        PythonImport.create("google.gax", "api_callable", PythonImport.ImportType.THIRD_PARTY));
-    addImport(null,
-        PythonImport.create("google.gax", "config", PythonImport.ImportType.THIRD_PARTY));
-    addImport(null,
-        PythonImport.create("google.gax.path_template", "PathTemplate",
-            PythonImport.ImportType.THIRD_PARTY));
-    addImport(null,
-        PythonImport.create("yaml", PythonImport.ImportType.THIRD_PARTY));
+  /**
+   * Map of disambiguated message types to their fully qualified paths.
+   */
+  private final TreeMap<String, String> classNameImports = new TreeMap<String, String>();
 
-    // Add service-specific imports.
-    addImport(service.getFile(),
-        PythonImport.create(service.getFile().getProto().getPackage(),
-            PythonProtoElements.getPbFileName(service), PythonImport.ImportType.APP));
+  /**
+   * Bi-map from proto messages to their disambiguated class names.
+   */
+  private final BiMap<ProtoElement, String> elementClassNames = HashBiMap.create();
 
-    // Add method request-type imports
+  public static PythonImportHandler createServicePythonImportHandler(Interface service) {
+    return new PythonImportHandler(service, false);
+  }
+
+  public static PythonImportHandler createMessagesPythonImportHandler(Interface service) {
+    return new PythonImportHandler(service, true);
+  }
+
+  private PythonImportHandler(Interface service, boolean messages) {
+    if (!messages) {
+      // Add non-service-specific imports.
+      addImport(null, PythonImport.create("os", PythonImport.ImportType.STDLIB));
+      addImport(null, PythonImport.create("pkg_resources", PythonImport.ImportType.STDLIB));
+      addImport(null, PythonImport.create("platform", PythonImport.ImportType.STDLIB));
+      addImport(null, PythonImport.create("google.gax", PythonImport.ImportType.THIRD_PARTY));
+      addImport(null, PythonImport.create("google.gax", "api_callable",
+          PythonImport.ImportType.THIRD_PARTY));
+      addImport(null, PythonImport.create("google.gax", "config",
+          PythonImport.ImportType.THIRD_PARTY));
+      addImport(null, PythonImport.create("google.gax", "path_template",
+          PythonImport.ImportType.THIRD_PARTY));
+      addImport(null, PythonImport.create("messages", PythonImport.ImportType.THIRD_PARTY));
+      addImport(null, PythonImport.create("yaml", PythonImport.ImportType.THIRD_PARTY));
+    } else {
+      addImport(null, PythonImport.create("google.protobuf", "message",
+          PythonImport.ImportType.THIRD_PARTY));
+      addImport(null, PythonImport.create("google.protobuf.internal",
+          "python_message", PythonImport.ImportType.THIRD_PARTY));
+    }
+    // Add method request-type imports.
     for (Method method : service.getMethods()) {
       addImport(method.getFile(), PythonImport.create(method.getFile().getProto().getPackage(),
-          PythonProtoElements.getPbFileName(method.getInputMessage()), PythonImport.ImportType.APP));
+          PythonProtoElements.getPbFileName(method.getInputMessage()),
+          PythonImport.ImportType.APP));
       for (Field field : method.getInputType().getMessageType().getFields()) {
-        if (field.getType().getKind() == Type.TYPE_MESSAGE) {
-          MessageType messageType = field.getType().getMessageType();
-          addImport(messageType.getFile(),
-              PythonImport.create(messageType.getFile().getProto().getPackage(),
-              PythonProtoElements.getPbFileName(messageType), PythonImport.ImportType.APP));
-        }
+        deepAddImport(field, messages);
       }
     }
   }
+
+  /**
+   * Calls addImport recursively if deep is true.
+   */
+  private void deepAddImport(Field field, boolean deep) {
+    if (field.getType().getKind() != Type.TYPE_MESSAGE) {
+      return;
+    }
+    MessageType messageType = field.getType().getMessageType();
+    PythonImport imp = addImport(messageType.getFile(),
+        PythonImport.create(messageType.getFile().getProto().getPackage(),
+        PythonProtoElements.getPbFileName(messageType), PythonImport.ImportType.APP));
+    // Appends to a map of class names that disambiguates using the short name
+    // of the import. Since the short names themselves are disambiguated, the
+    // resulting class name shouldn't conflict.
+    String name = messageType.getSimpleName();
+    String fullPath = fullyQualifiedPath(messageType) + "." + name;
+    if (classNameImports.containsKey(name) &&
+        !classNameImports.get(name).equals(fullPath)) {
+      String prefix = imp.shortName().replaceAll("_pb2$", "");
+      prefix = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, prefix);
+      name = prefix + name;
+    }
+    classNameImports.put(name, fullPath);
+    elementClassNames.put(messageType, name);
+    if (deep) {
+      for (Field f : messageType.getNonCyclicFields()) {
+        deepAddImport(f, deep);
+      }
+    }
+  }
+
+  /**
+   * Returns a disambiguated class name for a message given its ProtoElement
+   * representation.
+   */
+  public String disambiguatedClassName(ProtoElement elt) {
+    return elementClassNames.get(elt);
+  }
+
+  /**
+   * Returns the full path to a message or element.
+   * Ex: for path.to.type.HelloWorld, it returns path.to.type
+   */
+  public String fullyQualifiedPath(ProtoElement elt) {
+    String path = prefixInFile(elt);
+    path = Strings.isNullOrEmpty(path) ? "" : "." + path;
+    return fileToModule(elt.getFile()) + path;
+  }
+
+  /**
+   * The dot-separated nested messages that contain an element in a Proto file.
+   * Returns null if the element is top-level or a proto file itself.
+   */
+  private static String prefixInFile(ProtoElement elt) {
+    ProtoElement parent = elt.getParent();
+    // elt is a proto file itself, or elt is top-level
+    if (parent == null || parent.getParent() == null) {
+      return null;
+    }
+    String prefix = parent.getSimpleName();
+    for (parent = parent.getParent(); parent.getParent() != null; parent = parent.getParent()) {
+      prefix = parent.getSimpleName() + "." + prefix;
+    }
+    return prefix;
+  }
+
   /*
-   * Adds an import to the import maps
+   * Adds an import to the import maps.
    */
   private PythonImport addImport(ProtoFile file, PythonImport imp) {
     // No conflict
@@ -92,7 +174,7 @@ public class PythonImportHandler {
       PythonImport disambiguatedOldImp = formerImp.disambiguate();
 
       // If we mangled both names, un-mangle the older one; otherwise we'll be in an infinite
-      // mangling cycle
+      // mangling cycle.
       if (disambiguatedNewImp.shortName().equals(oldShortName + "_") &&
           disambiguatedOldImp.shortName().equals(oldShortName + "_")) {
         disambiguatedOldImp = formerImp;
@@ -103,48 +185,52 @@ public class PythonImportHandler {
     }
   }
 
-  /*
+  /**
+   * Returns the class name -> import map.
+   */
+  public TreeMap<String, String> getClassNameImports() {
+    return classNameImports;
+  }
+
+  /**
    * Calculate the imports map and return a sorted set of python import output strings.
    */
   public List<String> calculateImports() {
-
     // Order by import type, then lexicographically
-    List<String> stdlib_result = new ArrayList<>();
-    List<String> third_party_result = new ArrayList<>();
-    List<String> app_result = new ArrayList<>();
+    List<String> stdlibResult = new ArrayList<>();
+    List<String> thirdPartyResult = new ArrayList<>();
+    List<String> appResult = new ArrayList<>();
     for (PythonImport protoImport : stringImports.values()) {
       switch(protoImport.type()) {
         case STDLIB:
-          stdlib_result.add(protoImport.importString());
+          stdlibResult.add(protoImport.importString());
           break;
         case THIRD_PARTY:
-          third_party_result.add(protoImport.importString());
+          thirdPartyResult.add(protoImport.importString());
           break;
         case APP:
-          app_result.add(protoImport.importString());
+          appResult.add(protoImport.importString());
           break;
       }
     }
-    Collections.sort(stdlib_result);
-    Collections.sort(third_party_result);
-    Collections.sort(app_result);
+    Collections.sort(stdlibResult);
+    Collections.sort(thirdPartyResult);
+    Collections.sort(appResult);
 
     List<String> all = new ArrayList<>();
-    if (stdlib_result.size() > 0) {
-      all.addAll(stdlib_result);
+    if (stdlibResult.size() > 0) {
+      all.addAll(stdlibResult);
       all.add("");
     }
-    if (third_party_result.size() > 0) {
-      all.addAll(third_party_result);
+    if (thirdPartyResult.size() > 0) {
+      all.addAll(thirdPartyResult);
       all.add("");
     }
-    all.addAll(app_result);
+    all.addAll(appResult);
     return all;
   }
 
-  public String fileToModule(ProtoFile file) {
+  private String fileToModule(ProtoFile file) {
     return fileImports.get(file);
   }
-
 }
-
