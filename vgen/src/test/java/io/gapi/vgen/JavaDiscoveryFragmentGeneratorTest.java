@@ -7,7 +7,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -16,8 +15,8 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class JavaDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGeneratorTestBase {
 
-  public JavaDiscoveryFragmentGeneratorTest(
-      String name, String discoveryDocFileName, String[] veneerConfigFileNames) {
+  public JavaDiscoveryFragmentGeneratorTest(String name, String discoveryDocFileName,
+      String[] veneerConfigFileNames) {
     super(name, discoveryDocFileName, veneerConfigFileNames);
   }
 
@@ -27,18 +26,12 @@ public class JavaDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGenerat
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
-    File dir =
-        new File(System.getProperty("user.dir"), "src/test/java/io/gapi/vgen/testdata/discoveries");
-    ImmutableList.Builder<Object[]> builder = ImmutableList.<Object[]>builder();
-    for (String fileName : dir.list()) {
-      builder.add(
-          new Object[] {
-            "java_discovery_fragments_" + fileName,
-            "discoveries/" + fileName,
-            new String[] {"io/gapi/vgen/java/java_discovery_veneer.yaml"}
-          });
-    }
-    return builder.build();
+    return ImmutableList.of(
+      new Object[] {
+          "java_discovery_fragments", "pubsub.json", new String[] {
+              "io/gapi/vgen/java/java_discovery_veneer.yaml",
+          }
+      });
   }
 
   // Tests
