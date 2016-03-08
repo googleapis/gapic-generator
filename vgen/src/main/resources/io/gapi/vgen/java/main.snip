@@ -1,40 +1,11 @@
+@extends "common.snip"
+
 @snippet generateFilename(service)
   {@context.getVeneerName(service)}.java
 @end
 
 @snippet generateClass(service, body, imports)
-  /*
-   * Copyright 2015 Google Inc. All Rights Reserved.
-   *
-   * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
-   * in compliance with the License. You may obtain a copy of the License at
-   *
-   * http://www.apache.org/licenses/LICENSE-2.0
-   *
-   * Unless required by applicable law or agreed to in writing, software distributed under the License
-   * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
-   * or implied. See the License for the specific language governing permissions and limitations under
-   * the License.
-   */
-
-  /*
-   * EDITING INSTRUCTIONS
-   * This file was generated from the file
-   * https://github.com/google/googleapis/blob/master/{@service.getFile().getSimpleName()}
-   * and updates to that file get reflected here through a refresh process.
-   * For the short term, the refresh process will only be runnable by Google engineers.
-   * Manual additions are allowed because the refresh process performs
-   * a 3-way merge in order to preserve those manual additions. In order to not
-   * break the refresh process, only certain types of modifications are
-   * allowed.
-   *
-   * Allowed modifications - currently these are the only types allowed:
-   * 1. New methods (these should be added to the end of the class)
-   * 2. New imports
-   * 3. Additional documentation between "manual edit" demarcations
-   *
-   * Happy editing!
-   */
+  {@fileHeader(service)}
   package {@context.getApiConfig.getPackageName};
 
   @join import : imports
@@ -50,10 +21,8 @@
   {@alwaysImport()}
 
   {@serviceJavaDoc(service)}
-  @@javax.annotation.Generated("by the veneer generator")
+  @@javax.annotation.Generated("by GAPIC")
   public class {@context.getVeneerName(service)} implements AutoCloseable {
-
-    {@methodIdentityEnum(service)}
 
     {@constants(service)}
 
@@ -72,32 +41,14 @@
 @end
 
 @private alwaysImport() fill
-  {@context.addImport("com.google.api.gax.core.BackoffParams")}
-  {@context.addImport("com.google.api.gax.core.ConnectionSettings")}
-  {@context.addImport("com.google.api.gax.core.RetryParams")}
+  {@context.addImport("com.google.api.gax.grpc.ApiCallSettings")}
   {@context.addImport("com.google.api.gax.grpc.ApiCallable")}
-  {@context.addImport("com.google.api.gax.grpc.ServiceApiSettings")}
   {@context.addImport("com.google.api.gax.protobuf.PathTemplate")}
-  {@context.addImport("com.google.common.collect.ImmutableList")}
-  {@context.addImport("com.google.common.collect.ImmutableMap")}
-  {@context.addImport("com.google.common.collect.ImmutableSet")}
-  {@context.addImport("com.google.common.collect.Lists")}
-  {@context.addImport("com.google.common.collect.Maps")}
-  {@context.addImport("com.google.common.collect.Sets")}
   {@context.addImport("io.grpc.ManagedChannel")}
-  {@context.addImport("io.grpc.Status")}
+  {@context.addImport("java.io.Closeable")}
   {@context.addImport("java.io.IOException")}
-  {@context.addImport("java.util.EnumMap")}
-  {@context.addImport("java.util.HashMap")}
-  {@context.addImport("java.util.Map")}
-@end
-
-@private methodIdentityEnum(service)
-  public enum MethodIdentifier {
-    @join method : service.getMethods on ", "
-      {@context.upperCamelToUpperUnderscore(method.getSimpleName)}
-    @end
-  }
+  {@context.addImport("java.util.ArrayList")}
+  {@context.addImport("java.util.List")}
 @end
 
 @private constants(service)
@@ -105,178 +56,7 @@
   // Constants
   // =========
 
-  {@connectionConstants(service)}
-  {@retryDefConstant(service)}
-  {@callableConstants(service)}
-  {@pageDescriptorConstants(service)}
   {@pathTemplateConstants(service)}
-@end
-
-@private connectionConstants(service)
-  /**
-   * The default address of the service.
-   *
-  {@javaDocManualEdit()}
-   */
-  public static final String DEFAULT_SERVICE_ADDRESS = "{@context.getServiceConfig.getServiceAddress(service)}";
-
-  /**
-   * The default port of the service.
-   *
-  {@javaDocManualEdit()}
-   */
-  public static final int DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()};
-
-  /**
-   * The default scopes of the service.
-   */
-  public static ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
-      @join scope : context.getServiceConfig.getAuthScopes(service)
-        .add("{@scope}")
-      @end
-      .build();
-
-  /**
-   * The default settings for the service.
-   */
-  public static ServiceApiSettings<MethodIdentifier> DEFAULT_SETTINGS =
-      ServiceApiSettings.<MethodIdentifier>builder()
-        .provideChannelWith(
-            ConnectionSettings.builder()
-                .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
-                .setPort(DEFAULT_SERVICE_PORT)
-                .provideCredentialsWith(DEFAULT_SERVICE_SCOPES)
-                .build())
-        .build();
-
-@end
-
-@private retryDefConstant(service)
-  @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service)
-    private static final ImmutableMap<MethodIdentifier, ImmutableSet<Status.Code>> DEFAULT_RETRY_CONFIG;
-
-    static {
-      Map<String, ImmutableSet<Status.Code>> definition = new HashMap<>();
-      @join retryDef : context.entrySet(interfaceConfig.getRetryCodesDefinition)
-        definition.put(
-            "{@retryDef.getKey}",
-            Sets.immutableEnumSet(Lists.<Status.Code>newArrayList({@statusCodes(retryDef.getValue)})));
-      @end
-
-      Map<MethodIdentifier, ImmutableSet<Status.Code>> retryableCodes = new EnumMap<>(MethodIdentifier.class);
-      @join method : service.getMethods
-        @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-             methodEnumName = context.upperCamelToUpperUnderscore(method.getSimpleName), \
-             retryName = methodConfig.getRetryCodesConfigName
-          @if retryName.isEmpty
-            retryableCodes.put(MethodIdentifier.{@methodEnumName}, ImmutableSet.<Status.Code>of());
-          @else
-            retryableCodes.put(MethodIdentifier.{@methodEnumName}, definition.get("{@retryName}"));
-          @end
-        @end
-      @end
-      DEFAULT_RETRY_CONFIG = Maps.<MethodIdentifier, ImmutableSet<Status.Code>>immutableEnumMap(retryableCodes);
-    }
-
-    private static final ImmutableMap<MethodIdentifier, RetryParams> DEFAULT_RETRY_PARAMS;
-
-    static {
-      Map<String, RetryParams> definition = new HashMap<>();
-      RetryParams params = null;
-      @join retryDef : context.entrySet(interfaceConfig.getRetryParamsDefinition)
-        params = RetryParams.newBuilder()
-            .setRetryBackoff(
-                BackoffParams.newBuilder()
-                    .setInitialDelayMillis({@retryDef.getValue.getRetryBackoff.getInitialDelayMillis}L)
-                    .setDelayMultiplier({@retryDef.getValue.getRetryBackoff.getDelayMultiplier})
-                    .setMaxDelayMillis({@retryDef.getValue.getRetryBackoff.getMaxDelayMillis}L)
-                    .build())
-            .setTimeoutBackoff(
-                BackoffParams.newBuilder()
-                    .setInitialDelayMillis({@retryDef.getValue.getTimeoutBackoff.getInitialDelayMillis}L)
-                    .setDelayMultiplier({@retryDef.getValue.getTimeoutBackoff.getDelayMultiplier})
-                    .setMaxDelayMillis({@retryDef.getValue.getTimeoutBackoff.getMaxDelayMillis}L)
-                    .build())
-            .setTotalTimeout({@retryDef.getValue.getTotalTimeout}L)
-            .build();
-        definition.put("{@retryDef.getKey}", params);
-      @end
-
-      Map<MethodIdentifier, RetryParams> retryParams = new EnumMap<>(MethodIdentifier.class);
-      @join method :service.getMethods
-        @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-             methodEnumName = context.upperCamelToUpperUnderscore(method.getSimpleName), \
-             retryName = methodConfig.getRetryParamsConfigName
-          retryParams.put(MethodIdentifier.{@methodEnumName}, definition.get("{@retryName}"));
-        @end
-      @end
-      DEFAULT_RETRY_PARAMS = Maps.<MethodIdentifier, RetryParams>immutableEnumMap(retryParams);
-    }
-  @end
-@end
-
-@private statusCodes(codes)
-  @join code : codes on ", "
-    Status.Code.{@code}
-  @end
-@end
-
-@private callableConstants(service)
-  @let serviceName = service.getSimpleName, \
-       grpcName = context.getGrpcName(service)
-
-    @join method : service.getMethods
-      @let callableConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
-           inTypeName = context.typeName(method.getInputType), \
-           outTypeName = context.typeName(method.getOutputType)
-        private static final ApiCallable<{@inTypeName}, {@outTypeName}>
-            {@callableConstant} = ApiCallable.create({@grpcName}.METHOD_{@callableConstant});
-            # TODO: MIGRATION
-            # figure from where to get the service descriptor, or get rid of its need
-            # via vgen detail config
-            #    {@serviceName}.getServiceDescriptor().findMethodByName("{@method.getSimpleName}"));
-      @end
-    @end
-
-  @end
-@end
-
-@private pageDescriptorConstants(service)
-  @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service)
-    @join method : context.messages.filterPageStreamingMethods(interfaceConfig, service.getMethods)
-      @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
-           inTypeName = context.typeName(method.getInputType), \
-           outTypeName = context.typeName(method.getOutputType), \
-           pageStreaming = interfaceConfig.getMethodConfig(method).getPageStreaming(), \
-           resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
-           tokenTypeName = context.typeName(pageStreaming.getResponseTokenField.getType)
-        private static PageDescriptor<{@inTypeName}, {@outTypeName}, {@resourceTypeName}> {@methodConstant}_PAGE_DESC =
-            new PageDescriptor<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>() {
-              @@Override
-              public Object emptyToken() {
-                return {@context.defaultTokenValue(pageStreaming.getRequestTokenField())};
-              }
-              @@Override
-              public {@inTypeName} injectToken(
-                  {@inTypeName} payload, Object token) {
-                return {@inTypeName}
-                  .newBuilder(payload)
-                  .{@setCallName(pageStreaming.getRequestTokenField())}(({@tokenTypeName}) token)
-                  .build();
-              }
-              @@Override
-              public Object extractNextToken({@outTypeName} payload) {
-                return payload.{@getCallName(pageStreaming.getResponseTokenField())}();
-              }
-              @@Override
-              public Iterable<{@resourceTypeName}> extractResources({@outTypeName} payload) {
-                return payload.{@getCallName(pageStreaming.getResourcesField())}();
-              }
-            };
-
-      @end
-    @end
-  @end
 @end
 
 @private pathTemplateConstants(service)
@@ -374,56 +154,92 @@
   // ========
 
   private final ManagedChannel channel;
-  private final ServiceApiSettings<MethodIdentifier> settings;
-  private final ImmutableMap<MethodIdentifier, ImmutableSet<Status.Code>> retryCodesConfig;
-  private final ImmutableMap<MethodIdentifier, RetryParams> retryParamsConfig;
+  private final List<AutoCloseable> closeables = new ArrayList<>();
+
+  @join method : service.getMethods
+    @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
+         methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+         inTypeName = context.typeName(method.getInputType), \
+         outTypeName = context.typeName(method.getOutputType), \
+         isPageStreaming = methodConfig.isPageStreaming
+      private final ApiCallable<{@inTypeName}, {@outTypeName}> {@methodName}Callable;
+      @if {@isPageStreaming}
+        @let pageStreaming = methodConfig.getPageStreaming(), \
+             resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType())
+          private final ApiCallable<{@inTypeName}, Iterable<{@resourceTypeName}>>
+              {@methodName}IterableCallable;
+        @end
+      @end
+    @end
+  @end
+
 @end
 
 @private constructors(service)
-  @let veneerName = context.getVeneerName(service)
+  @let className = context.getVeneerName(service)
     // ===============
     // Factory Methods
     // ===============
 
     /**
-     * Constructs an instance of {@veneerName} with default settings.
-     *
-    {@javaDocManualEdit()}
+     * Constructs an instance of {@settingsClassName(service)} with default settings.
      */
-    public static {@veneerName} create() throws IOException {
-      return create(DEFAULT_SETTINGS);
+    public static {@settingsClassName(service)} newSettings() {
+      return {@settingsClassName(service)}.create();
     }
 
     /**
-     * Constructs an instance of {@veneerName}, using the given settings. The channels are created based
+     * Constructs an instance of {@className} with default settings.
+     *
+    {@javaDocManualEdit()}
+     */
+    public static {@className} create() throws IOException {
+      return create(newSettings());
+    }
+
+    /**
+     * Constructs an instance of {@className}, using the given settings. The channels are created based
      * on the settings passed in, or defaults for any settings that are not set.
      *
     {@javaDocManualEdit()}
      */
-    public static {@veneerName} create(ServiceApiSettings<MethodIdentifier> settings) throws IOException {
-      return new {@veneerName}(settings);
+    public static {@className} create({@settingsClassName(service)} settings) throws IOException {
+      return new {@className}(settings);
     }
 
     /**
-     * Constructs an instance of {@veneerName}, using the given settings. This is protected so that it
+     * Constructs an instance of {@className}, using the given settings. This is protected so that it
      * easy to make a subclass, but otherwise, the static factory methods should be preferred.
      *
     {@javaDocManualEdit()}
      */
-    protected {@veneerName}(ServiceApiSettings<MethodIdentifier> settings) throws IOException {
-      this.settings = settings;
+    protected {@className}({@settingsClassName(service)} settings) throws IOException {
       this.channel = settings.getChannel();
 
-      Map<MethodIdentifier, ImmutableSet<Status.Code>> retryCodesConfig =
-          new EnumMap<>(DEFAULT_RETRY_CONFIG);
-      retryCodesConfig.putAll(settings.getRetryableCodes());
-      this.retryCodesConfig =
-          Maps.<MethodIdentifier, ImmutableSet<Status.Code>>immutableEnumMap(retryCodesConfig);
+      for (ApiCallSettings method : settings.allMethods()) {
+        if (method.getExecutor() == null) {
+          method.setExecutor(settings.getExecutor());
+        }
+      }
 
-      Map<MethodIdentifier, RetryParams> retryParamsConfig = new EnumMap<>(DEFAULT_RETRY_PARAMS);
-      retryParamsConfig.putAll(settings.getRetryParams());
-      this.retryParamsConfig =
-          Maps.<MethodIdentifier, RetryParams>immutableEnumMap(retryParamsConfig);
+      @join method : service.getMethods
+        @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
+             methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+             isPageStreaming = methodConfig.isPageStreaming
+          this.{@methodName}Callable = settings.{@methodName}Method().build(settings);
+          @if {@isPageStreaming}
+            this.{@methodName}IterableCallable = settings.{@methodName}Method().buildPageStreaming(settings);
+          @end
+        @end
+      @end
+
+      closeables.add(
+        new Closeable() {
+          @@Override
+          public void close() throws IOException {
+            channel.shutdown();
+          }
+        });
     }
   @end
 @end
@@ -454,7 +270,7 @@
           {@BREAK}
         @end
         {@iterableMethodWithRequestParam(service, method, methodName, inTypeName, outTypeName)}
-        {@methodReturningStreamingCallable(service, method, methodName, inTypeName, outTypeName)}
+        {@methodReturningIterableCallable(service, method, methodName, inTypeName, outTypeName)}
       @else
         @if {@isFlattening}
           @join flatteningGroup : \
@@ -482,15 +298,12 @@
   {@javaDocManualEdit()}
    */
   @@Override
-  public void close() {
-    // Manually-added shutdown code
-
-    // Auto-generated shutdown code
-    channel.shutdown();
-
-    // Manually-added shutdown code
+  public void close() throws Exception {
+    for (AutoCloseable closeable : closeables) {
+      closeable.close();
+    }
   }
-
+  
 @end
 
 @private manualSection()
@@ -522,24 +335,22 @@
   {@methodWithRequestParamJavaDoc(method)}
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
-       resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
-       dummy = context.addImport("com.google.api.gax.grpc.PageDescriptor")
+       resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType())
     public Iterable<{@resourceTypeName}> {@methodName}({@inTypeName} request) {
-      return {@methodName}StreamingCallable()
+      return {@methodName}IterableCallable()
           .call(request);
     }
 
   @end
 @end
 
-@private methodReturningStreamingCallable(service, method, methodName, inTypeName, outTypeName)
+@private methodReturningIterableCallable(service, method, methodName, inTypeName, outTypeName)
   {@methodJavaDoc(method)}
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
-       resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
-       methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName)
-    public ApiCallable<{@inTypeName}, Iterable<{@resourceTypeName}>> {@methodName}StreamingCallable() {
-      return {@methodName}Callable().pageStreaming({@methodConstant}_PAGE_DESC);
+       resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType())
+    public ApiCallable<{@inTypeName}, Iterable<{@resourceTypeName}>> {@methodName}IterableCallable() {
+      return {@methodName}IterableCallable;
     }
 
   @end
@@ -576,14 +387,7 @@
 @private methodReturningCallable(method, callableConstant, methodName, inTypeName, outTypeName)
   {@methodJavaDoc(method)}
   public ApiCallable<{@inTypeName}, {@outTypeName}> {@methodName}Callable() {
-    ImmutableSet<Status.Code> retryableCodes =
-        retryCodesConfig.get(MethodIdentifier.{@callableConstant});
-    RetryParams retryParams =
-        retryParamsConfig.get(MethodIdentifier.{@callableConstant});
-    return {@callableConstant}
-        .retryableOn(retryableCodes)
-        .retrying(retryParams, settings.getExecutor())
-        .bind(channel);
+    return {@methodName}Callable;
   }
 
 @end
@@ -624,42 +428,10 @@
   {@javaDocEnd()}
 @end
 
-@private autoGenServiceWarning()
-  // AUTO-GENERATED DOCUMENTATION AND SERVICE - see instructions at the top of the file for editing.
-@end
-
-@private autoGenMethodWarning()
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
-@end
-
 @private paramDocLinePrefix(field)
   @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName), \
       lineBarrier = ""
     @@param {@paramName} {@lineBarrier}
-  @end
-@end
-
-@private javaDoc(protoElement)
-  {@javaDocStart()}
-  {@javaDocLines(protoElement)}
-  {@javaDocEmptyLine()}
-  {@javaDocManualEdit()}
-  {@javaDocEnd()}
-@end
-
-@private javaDocLines(protoElement)
-  @join commentLine : context.getJavaDocLines(getDoc(protoElement))
-    {@commentLine}
-  @end
-@end
-
-@private javaDocStart()
-  /**
-@end
-
-@private javaDocEmptyLine()
-  @let lineBarrier = ""
-    {@lineBarrier} *
   @end
 @end
 
@@ -668,23 +440,6 @@
     {@lineBarrier} * @@param request The request object containing all \
         of the parameters for the API call.
   @end
-@end
-
-@private javaDocManualEdit()
-  @let lineBarrier = ""
-    {@lineBarrier} * <!-- manual edit -->
-    {@lineBarrier} * <!-- end manual edit -->
-  @end
-@end
-
-@private javaDocEnd()
-  @let lineBarrier = ""
-    {@lineBarrier} */
-  @end
-@end
-
-@private getDoc(protoElement)
-  {@context.getDescription(protoElement)}
 @end
 
 @private flattenedParameters(fields)
@@ -707,30 +462,6 @@
   @join field : fields
     @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
       .{@setCallName(field)}({@paramName})
-    @end
-  @end
-@end
-
-@private setCallName(field)
-  @let paramNameInCamel = context.lowerUnderscoreToUpperCamel(field.getSimpleName)
-    @if field.getType.isMap
-      putAll{@paramNameInCamel}
-    @else
-      @if field.isRepeated
-        addAll{@paramNameInCamel}
-      @else
-        set{@paramNameInCamel}
-      @end
-    @end
-  @end
-@end
-
-@private getCallName(field)
-  @let paramNameInCamel = context.lowerUnderscoreToUpperCamel(field.getSimpleName)
-    @if field.isRepeated
-      get{@paramNameInCamel}List
-    @else
-      get{@paramNameInCamel}
     @end
   @end
 @end
