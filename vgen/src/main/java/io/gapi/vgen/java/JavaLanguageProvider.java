@@ -3,7 +3,6 @@ package io.gapi.vgen.java;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -16,7 +15,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.io.Files;
@@ -49,7 +47,7 @@ public class JavaLanguageProvider extends LanguageProvider {
   interface JavaSnippetSet {
 
     /**
-     * Generates the result filename for the generated document.
+     * Generates the result filename for the generated document
      */
     Doc generateFilename(Interface iface);
 
@@ -63,31 +61,6 @@ public class JavaLanguageProvider extends LanguageProvider {
      * and a set of accumulated types to be imported.
      */
     Doc generateClass(Interface iface, Doc body, Iterable<String> imports);
-  }
-
-  /**
-   * Entry points for the fragment snippet set. Generation is partitioned into a first phase
-   * which generates the content of the class without package and imports header,
-   * and a second phase which completes the class based on the knowledge of which
-   * other classes have been imported.
-   */
-  interface JavaFragmentSnippetSet {
-
-    /**
-     * Generates the result filename for the generated document.
-     */
-    Doc generateFilename(Method method);
-
-    /**
-     * Generates the body of the class for the method fragment.
-     */
-    Doc generateBody(Method method);
-
-    /**
-     * Generates the result class, based on the result for the body,
-     * and a set of accumulated types to be imported.
-     */
-    Doc generateClass(Method method, Doc body, Iterable<String> imports);
   }
 
   /**
@@ -177,24 +150,6 @@ public class JavaLanguageProvider extends LanguageProvider {
   }
 
   @Override
-  public void outputFragments(String outputPath, Multimap<Method, GeneratedResult> methods,
-      boolean archive)
-          throws IOException {
-    Map<String, Doc> files = new LinkedHashMap<>();
-    for (Map.Entry<Method, GeneratedResult> methodEntry : methods.entries()) {
-      Method method = methodEntry.getKey();
-      GeneratedResult generatedResult = methodEntry.getValue();
-      String path = getApiConfig().getPackageName().replace('.', '/');
-      files.put(path + "/" + generatedResult.getFilename(), generatedResult.getDoc());
-    }
-    if (archive) {
-      ToolUtil.writeJar(files, outputPath);
-    } else {
-      ToolUtil.writeFiles(files, outputPath);
-    }
-  }
-
-  @Override
   public GeneratedResult generate(Interface service,
       SnippetDescriptor snippetDescriptor) {
     JavaSnippetSet snippets = SnippetSet.createSnippetInterface(
@@ -224,31 +179,6 @@ public class JavaLanguageProvider extends LanguageProvider {
 
     // Generate result.
     Doc result = snippets.generateClass(service, body, cleanedImports);
-    return GeneratedResult.create(result, outputFilename);
-  }
-
-  @Override
-  public GeneratedResult generateFragment(Method method,
-      SnippetDescriptor snippetDescriptor) {
-    JavaFragmentSnippetSet snippets = SnippetSet.createSnippetInterface(
-        JavaFragmentSnippetSet.class,
-        SNIPPET_RESOURCE_ROOT,
-        snippetDescriptor.getSnippetInputName(),
-        ImmutableMap.<String, Object>of("context", this));
-
-    Doc filenameDoc = snippets.generateFilename(method);
-    String outputFilename = filenameDoc.prettyPrint();
-
-    // Generate the body, which will collect the imports.
-    imports.clear();
-    Doc body = snippets.generateBody(method);
-
-    // Clean up the imports.
-    List<String> cleanedImports = Lists.newArrayList(imports.keySet());
-    Collections.sort(cleanedImports);
-
-    // Generate result.
-    Doc result = snippets.generateClass(method, body, cleanedImports);
     return GeneratedResult.create(result, outputFilename);
   }
 

@@ -2,7 +2,6 @@ package io.gapi.vgen.csharp;
 
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -41,7 +40,7 @@ public class CSharpLanguageProvider extends LanguageProvider {
    */
   interface CSharpSnippetSet {
     /**
-     * Generates the result filename for the generated document.
+     * Generates the result filename for the generated document
      */
     Doc generateFilename(Interface iface);
 
@@ -55,30 +54,6 @@ public class CSharpLanguageProvider extends LanguageProvider {
      * and a set of accumulated types to be imported.
      */
     Doc generateClass(Interface iface, Doc body, Iterable<String> imports);
-  }
-
-  /**
-   * Entry points for the fragment snippet set. Generation is partitioned into a first phase
-   * which generates the content of the class without namespace and using directives,
-   * and a second phase which completes the class based on the knowledge of which
-   * other classes have been imported.
-   */
-  interface CSharpFragmentSnippetSet {
-    /**
-     * Generates the result filename for the generated document.
-     */
-    Doc generateFilename(Method method);
-
-    /**
-     * Generates the body of the class for the method fragment.
-     */
-    Doc generateBody(Method method);
-
-    /**
-     * Generates the result class, based on the result for the body,
-     * and a set of accumulated types to be imported.
-     */
-    Doc generateClass(Method method, Doc body, Iterable<String> imports);
   }
 
   /**
@@ -141,24 +116,6 @@ public class CSharpLanguageProvider extends LanguageProvider {
   }
 
   @Override
-  public void outputFragments(String outputPath, Multimap<Method, GeneratedResult> methods,
-      boolean archive)
-          throws IOException {
-    Map<String, Doc> files = new LinkedHashMap<>();
-    for (Map.Entry<Method, GeneratedResult> methodEntry : methods.entries()) {
-      Method method = methodEntry.getKey();
-      GeneratedResult generatedResult = methodEntry.getValue();
-      String path = getNamespace(method.getParent().getFile()).replace('.', '/');
-      files.put(path + "/" + generatedResult.getFilename(), generatedResult.getDoc());
-    }
-    if (archive) {
-      ToolUtil.writeJar(files, outputPath);
-    } else {
-      ToolUtil.writeFiles(files, outputPath);
-    }
-  }
-
-  @Override
   public GeneratedResult generate(Interface service, SnippetDescriptor snippetDescriptor) {
     CSharpSnippetSet snippets = SnippetSet.createSnippetInterface(CSharpSnippetSet.class,
         SNIPPET_RESOURCE_ROOT, snippetDescriptor.getSnippetInputName(),
@@ -177,31 +134,6 @@ public class CSharpLanguageProvider extends LanguageProvider {
 
     // Generate result.
     Doc result = snippets.generateClass(service, body, imports);
-    return GeneratedResult.create(result, outputFilename);
-  }
-
-  @Override
-  public GeneratedResult generateFragment(Method method,
-      SnippetDescriptor snippetDescriptor) {
-    CSharpFragmentSnippetSet snippets = SnippetSet.createSnippetInterface(
-        CSharpFragmentSnippetSet.class,
-        SNIPPET_RESOURCE_ROOT,
-        snippetDescriptor.getSnippetInputName(),
-        ImmutableMap.<String, Object>of("context", this));
-
-    Doc filenameDoc = snippets.generateFilename(method);
-    String outputFilename = filenameDoc.prettyPrint();
-
-    // Generate the body, which will collect the imports.
-    // Note that imports is a field of the language provider, which is
-    // populated during generateBody.
-    imports.clear();
-    Doc body = snippets.generateBody(method);
-
-    imports.remove(getNamespace(method.getParent().getFile()));
-
-    // Generate result.
-    Doc result = snippets.generateClass(method, body, imports);
     return GeneratedResult.create(result, outputFilename);
   }
 

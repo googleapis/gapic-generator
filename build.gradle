@@ -59,8 +59,8 @@ subprojects {
       protoc:  'com.google.protobuf:protoc:3.0.0-beta-1',
       protobufGradlePlugin: 'com.google.protobuf:protobuf-gradle-plugin:0.7.2-SNAPSHOT',
 
-      // JSON
-      jackson: 'com.fasterxml.jackson.core:jackson-databind:2.7.0'
+      // Formatter
+      javaFomatter: 'com.google.googlejavaformat:google-java-format:0.1-alpha'
     ]
   }
 
@@ -85,8 +85,7 @@ subprojects {
       libraries.commonsCli,
       libraries.snakeyaml,
       libraries.toolsFx,
-      libraries.toolsFxTesting,
-      libraries.jackson
+      libraries.javaFomatter
 
     testCompile libraries.junit,
       libraries.mockito,
@@ -235,24 +234,4 @@ project(':vgen') {
       args = clargs.split(',').toList()
     }
   }
-
-  task runDisco(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'io.gapi.vgen.DiscoveryImporter'
-    if (project.hasProperty('clargs')) {
-      args = clargs.split(',').toList()
-    }
-  }
-
-  task runDiscoGen(type: JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    main = 'io.gapi.vgen.DiscoveryFragmentGeneratorTool'
-    if (project.hasProperty('clargs')) {
-      args = clargs.split(',').toList()
-    }
-  }
-}
-
-task show << {
-  println sourceSets.main.runtimeClasspath.asPath
 }

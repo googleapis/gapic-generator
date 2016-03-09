@@ -45,7 +45,7 @@ public class PythonLanguageProvider extends LanguageProvider {
   interface PythonSnippetSet {
 
     /**
-     * Generates the result filename for the generated document.
+     * Generates the result filename for the generated document
      */
     Doc generateFilename(Interface iface);
 
@@ -60,31 +60,6 @@ public class PythonLanguageProvider extends LanguageProvider {
      * and a set of accumulated types to be imported.
      */
     Doc generateClass(Interface iface, Doc body, Iterable<String> imports);
-  }
-
-  /**
-   * Entry points for the fragment snippet set. Generation is partitioned into a first phase
-   * which generates the content of the class without package and imports header,
-   * and a second phase which completes the class based on the knowledge of which
-   * other classes have been imported.
-   */
-  interface PythonFragmentSnippetSet {
-
-    /**
-     * Generates the result filename for the generated document.
-     */
-    Doc generateFilename(Method method);
-
-    /**
-     * Generates the body of the class for the method fragment.
-     */
-    Doc generateBody(Method method);
-
-    /**
-     * Generates the result class, based on the result for the body,
-     * and a set of accumulated types to be imported.
-     */
-    Doc generateClass(Method method, Doc body, Iterable<String> imports);
   }
 
   /**
@@ -153,24 +128,6 @@ public class PythonLanguageProvider extends LanguageProvider {
     }
   }
 
-  @Override
-  public void outputFragments(String outputArchiveFile, Multimap<Method, GeneratedResult> methods,
-      boolean archive)
-          throws IOException {
-    Map<String, Doc> files = new LinkedHashMap<>();
-    for (Map.Entry<Method, GeneratedResult> methodEntry : methods.entries()) {
-      Method method = methodEntry.getKey();
-      GeneratedResult generatedResult = methodEntry.getValue();
-      String path = method.getParent().getFile().getFullName().replace('.', '/');
-      files.put(path + "/" + generatedResult.getFilename(), generatedResult.getDoc());
-    }
-    if (archive) {
-      ToolUtil.writeJar(files, outputArchiveFile);
-    } else {
-      ToolUtil.writeFiles(files, outputArchiveFile);
-    }
-  }
-
   /**
    * Constructs the Python language provider.
    */
@@ -200,31 +157,6 @@ public class PythonLanguageProvider extends LanguageProvider {
 
     // Generate result.
     Doc result = snippets.generateClass(service, body, importList);
-    return GeneratedResult.create(result, outputFilename);
-  }
-
-  @Override
-  public GeneratedResult generateFragment(Method method,
-      SnippetDescriptor snippetDescriptor) {
-    PythonImportHandler importHandler = new PythonImportHandler((Interface) method.getParent());
-    ImmutableMap<String, Object> globalMap = ImmutableMap.<String, Object>builder()
-        .put("context", this)
-        .put("pyproto", new PythonProtoElements())
-        .put("importHandler", importHandler)
-        .build();
-    PythonFragmentSnippetSet snippets = SnippetSet.createSnippetInterface(
-        PythonFragmentSnippetSet.class,
-        SNIPPET_RESOURCE_ROOT,
-        snippetDescriptor.getSnippetInputName(),
-        globalMap);
-    Doc filenameDoc = snippets.generateFilename(method);
-    String outputFilename = filenameDoc.prettyPrint();
-
-    List<String> importList = importHandler.calculateImports();
-    Doc body = snippets.generateBody(method);
-
-    // Generate result.
-    Doc result = snippets.generateClass(method, body, importList);
     return GeneratedResult.create(result, outputFilename);
   }
 
@@ -417,4 +349,5 @@ public class PythonLanguageProvider extends LanguageProvider {
     }
     return builder.build();
   }
+
 }

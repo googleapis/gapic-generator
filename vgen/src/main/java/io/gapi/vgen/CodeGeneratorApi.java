@@ -88,7 +88,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
     }
 
     CodeGenerator generator =
-        (CodeGenerator) new CodeGenerator.Builder()
+        new CodeGenerator.Builder()
             .setConfigProto(configProto)
             .setModel(model)
             .build();

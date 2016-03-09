@@ -39,23 +39,10 @@ public abstract class LanguageProvider {
       SnippetDescriptor snippetDescriptor);
 
   /**
-   * Generates fragment for the given method.
-   */
-  public abstract GeneratedResult generateFragment(Method method,
-      SnippetDescriptor snippetDescriptor);
-
-  /**
    * Outputs the code based on a per-service map.
    */
   public abstract void outputCode(String outputArchiveFile,
       Multimap<Interface, GeneratedResult> services,
-      boolean archive) throws IOException;
-
-  /**
-   * Outputs fragments based on a per-method map.
-   */
-  public abstract void outputFragments(String outputArchiveFile,
-      Multimap<Method, GeneratedResult> methods,
       boolean archive) throws IOException;
 
   /**
