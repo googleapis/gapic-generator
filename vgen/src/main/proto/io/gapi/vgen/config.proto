@@ -34,6 +34,7 @@ option java_package = "io.gapi.vgen";
 //         ...
 //       methods:
 //       - name: PublishBooks
+//         request_object_method: true
 //         flattening:
 //           groups:
 //           - parameters:
@@ -148,6 +149,10 @@ message MethodConfigProto {
 
   // Specifies the configuration for bundling.
   BundlingConfigProto bundling = 6;
+
+  // Turns on or off the generation of a method whose sole parameter is
+  // a request object. Not all languages will generate this method.
+  bool request_object_method = 7;
 }
 
 // `FlatteningConfigProto` describes the parameter groups for which a

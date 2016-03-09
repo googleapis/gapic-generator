@@ -24,13 +24,11 @@
   @@javax.annotation.Generated("by GAPIC")
   public class {@context.getVeneerName(service)} implements AutoCloseable {
 
-    {@constants(service)}
+    {@resourceNamesInnerClass(service)}
 
     {@members(service)}
 
     {@constructors(service)}
-
-    {@resourceFunctions(service)}
 
     {@callables(service)}
 
@@ -51,17 +49,31 @@
   {@context.addImport("java.util.List")}
 @end
 
-@private constants(service)
-  // =========
-  // Constants
-  // =========
+@private resourceNamesInnerClass(service)
+
+  public static class ResourceNames {
+    private ResourceNames() {}
+
+    {@resourceConstants(service)}
+
+    {@resourceFunctions(service)}
+  }
+
+@end
+
+@private resourceConstants(service)
+  // =======================
+  // ResourceNames Constants
+  // =======================
 
   {@pathTemplateConstants(service)}
+
 @end
 
 @private pathTemplateConstants(service)
   @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
     {@pathTemplateConstant(collectionConfig)}
+
   @end
 @end
 
@@ -86,34 +98,34 @@
   // ==============================
 
   @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-    {@createResourceFunction(collectionConfig)}
+    {@formatResourceFunctions(collectionConfig)}
   @end
 
   @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-    {@extractResourceFunctions(collectionConfig)}
+    {@parseResourceFunctions(collectionConfig)}
   @end
 @end
 
-@private createResourceFunction(collectionConfig)
+@private formatResourceFunctions(collectionConfig)
   /**
-   * Creates a string containing the fully-qualified path to represent
+   * Formats a string containing the fully-qualified path to represent
    * a {@collectionConfig.getMethodBaseName} resource.
    *
   {@javaDocManualEdit()}
    */
-  public static final String {@createResourceFunctionName(collectionConfig)}(\
-      {@createResourceFunctionParams(collectionConfig)}) {
+  public static final String {@formatResourceFunctionName(collectionConfig)}(\
+      {@formatResourceFunctionParams(collectionConfig)}) {
     return {@pathTemplateConstantName(collectionConfig)}.instantiate(
         {@pathTemplateArgs(collectionConfig)});
   }
 
 @end
 
-@private createResourceFunctionName(collectionConfig)
-  create{@resourcePath(collectionConfig)}
+@private formatResourceFunctionName(collectionConfig)
+  format{@resourcePath(collectionConfig)}
 @end
 
-@private createResourceFunctionParams(collectionConfig)
+@private formatResourceFunctionParams(collectionConfig)
   @join param : collectionConfig.getNameTemplate.vars() on ", "
     String {@context.lowerUnderscoreToLowerCamel(param)}
   @end
@@ -125,17 +137,17 @@
   @end
 @end
 
-@private extractResourceFunctions(collectionConfig)
+@private parseResourceFunctions(collectionConfig)
   @join subField : collectionConfig.getNameTemplate.vars()
     @let fieldPath = context.upperCamelToLowerCamel(resourcePath(collectionConfig))
       /**
-       * Extracts the {@subField} from the given fully-qualified path which
+       * Parses the {@subField} from the given fully-qualified path which
        * represents a {@context.lowerUnderscoreToLowerCamel(collectionConfig.getMethodBaseName)} resource.
        *
       {@javaDocManualEdit()}
        */
       public static final String \
-          extract{@context.lowerUnderscoreToUpperCamel(subField)}From{@resourcePath(collectionConfig)}(\
+          parse{@context.lowerUnderscoreToUpperCamel(subField)}From{@resourcePath(collectionConfig)}(\
           String {@fieldPath}) {
         return {@pathTemplateConstantName(collectionConfig)}.parse({@fieldPath}).get("{@subField}");
       }
@@ -256,7 +268,8 @@
          outTypeName = context.typeName(method.getOutputType), \
          methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
          isPageStreaming = methodConfig.isPageStreaming, \
-         isFlattening = methodConfig.isFlattening
+         isFlattening = methodConfig.isFlattening, \
+         requestObjectMethodAccessStr = requestObjectMethodAccess(methodConfig)
       // ----- {@methodName} -----
 
       # TODO (garrettjones) put some kind of limit on number of flattened parameters, and
@@ -269,7 +282,7 @@
           @end
           {@BREAK}
         @end
-        {@iterableMethodWithRequestParam(service, method, methodName, inTypeName, outTypeName)}
+        {@iterableMethodWithRequestParam(service, method, methodName, inTypeName, outTypeName, requestObjectMethodAccessStr)}
         {@methodReturningIterableCallable(service, method, methodName, inTypeName, outTypeName)}
       @else
         @if {@isFlattening}
@@ -279,10 +292,18 @@
           @end
           {@BREAK}
         @end
-        {@methodWithRequestParam(method, methodName, inTypeName, outTypeName)}
+        {@methodWithRequestParam(method, methodName, inTypeName, outTypeName, requestObjectMethodAccessStr)}
       @end
       {@methodReturningCallable(method, callableConstant, methodName, inTypeName, outTypeName)}
     @end
+  @end
+@end
+
+@private requestObjectMethodAccess(methodConfig)
+  @if {@methodConfig.hasRequestObjectMethod}
+    public
+  @else
+    private
   @end
 @end
 
@@ -331,12 +352,12 @@
   @end
 @end
 
-@private iterableMethodWithRequestParam(service, method, methodName, inTypeName, outTypeName)
+@private iterableMethodWithRequestParam(service, method, methodName, inTypeName, outTypeName, accessModifier)
   {@methodWithRequestParamJavaDoc(method)}
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
        resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType())
-    public Iterable<{@resourceTypeName}> {@methodName}({@inTypeName} request) {
+    {@accessModifier} Iterable<{@resourceTypeName}> {@methodName}({@inTypeName} request) {
       return {@methodName}IterableCallable()
           .call(request);
     }
@@ -373,11 +394,11 @@
   @end
 @end
 
-@private methodWithRequestParam(method, methodName, inTypeName, outTypeName)
+@private methodWithRequestParam(method, methodName, inTypeName, outTypeName, accessModifier)
   {@methodWithRequestParamJavaDoc(method)}
   @let returnType = context.methodReturnTypeName(method.getOutputType), \
        returnStatement = context.methodReturnStatement(method.getOutputType)
-    public {@returnType} {@methodName}({@inTypeName} request) {
+    {@accessModifier} {@returnType} {@methodName}({@inTypeName} request) {
       {@returnStatement}{@methodName}Callable().call(request);
     }
 
@@ -394,7 +415,11 @@
 
 @private serviceJavaDoc(protoElement)
   {@autoGenServiceWarning()}
-  {@javaDoc(protoElement)}
+  {@javaDocFromStr(serviceDocString(protoElement))}
+@end
+
+@private serviceDocString(protoElement)
+  Service Description: {@getDoc(protoElement)}
 @end
 
 @private methodJavaDoc(protoElement)
