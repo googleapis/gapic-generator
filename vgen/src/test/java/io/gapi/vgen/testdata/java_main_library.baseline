@@ -68,7 +68,7 @@ import java.util.List;
 
 // AUTO-GENERATED DOCUMENTATION AND SERVICE - see instructions at the top of the file for editing.
 /**
- * This API represents a simple digital library.  It lets you manage Shelf
+ * Service Description: This API represents a simple digital library.  It lets you manage Shelf
  * resources and Book resources in the library. It defines the following
  * resource model:
  *
@@ -86,28 +86,100 @@ import java.util.List;
 @javax.annotation.Generated("by GAPIC")
 public class LibraryServiceApi implements AutoCloseable {
 
-  // =========
-  // Constants
-  // =========
 
-  /**
-   * A PathTemplate representing the fully-qualified path to represent
-   * a shelf resource.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   */
-  private static final PathTemplate SHELF_PATH_TEMPLATE =
-      PathTemplate.create("shelves/{shelf}");
-  /**
-   * A PathTemplate representing the fully-qualified path to represent
-   * a book resource.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   */
-  private static final PathTemplate BOOK_PATH_TEMPLATE =
-      PathTemplate.create("shelves/{shelf}/books/{book}");
+  public static class ResourceNames {
+    private ResourceNames() {}
+
+    // =======================
+    // ResourceNames Constants
+    // =======================
+
+    /**
+     * A PathTemplate representing the fully-qualified path to represent
+     * a shelf resource.
+     *
+     * <!-- manual edit -->
+     * <!-- end manual edit -->
+     */
+    private static final PathTemplate SHELF_PATH_TEMPLATE =
+        PathTemplate.create("shelves/{shelf}");
+
+    /**
+     * A PathTemplate representing the fully-qualified path to represent
+     * a book resource.
+     *
+     * <!-- manual edit -->
+     * <!-- end manual edit -->
+     */
+    private static final PathTemplate BOOK_PATH_TEMPLATE =
+        PathTemplate.create("shelves/{shelf}/books/{book}");
+
+
+
+    // ==============================
+    // Resource Name Helper Functions
+    // ==============================
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a shelf resource.
+     *
+     * <!-- manual edit -->
+     * <!-- end manual edit -->
+     */
+    public static final String formatShelfPath(String shelf) {
+      return SHELF_PATH_TEMPLATE.instantiate(
+          "shelf", shelf);
+    }
+
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a book resource.
+     *
+     * <!-- manual edit -->
+     * <!-- end manual edit -->
+     */
+    public static final String formatBookPath(String shelf, String book) {
+      return BOOK_PATH_TEMPLATE.instantiate(
+          "shelf", shelf,"book", book);
+    }
+
+
+    /**
+     * Parses the shelf from the given fully-qualified path which
+     * represents a shelf resource.
+     *
+     * <!-- manual edit -->
+     * <!-- end manual edit -->
+     */
+    public static final String parseShelfFromShelfPath(String shelfPath) {
+      return SHELF_PATH_TEMPLATE.parse(shelfPath).get("shelf");
+    }
+
+    /**
+     * Parses the shelf from the given fully-qualified path which
+     * represents a book resource.
+     *
+     * <!-- manual edit -->
+     * <!-- end manual edit -->
+     */
+    public static final String parseShelfFromBookPath(String bookPath) {
+      return BOOK_PATH_TEMPLATE.parse(bookPath).get("shelf");
+    }
+
+    /**
+     * Parses the book from the given fully-qualified path which
+     * represents a book resource.
+     *
+     * <!-- manual edit -->
+     * <!-- end manual edit -->
+     */
+    public static final String parseBookFromBookPath(String bookPath) {
+      return BOOK_PATH_TEMPLATE.parse(bookPath).get("book");
+    }
+
+  }
+
 
   // ========
   // Members
@@ -206,69 +278,6 @@ public class LibraryServiceApi implements AutoCloseable {
       });
   }
 
-  // ==============================
-  // Resource Name Helper Functions
-  // ==============================
-
-  /**
-   * Creates a string containing the fully-qualified path to represent
-   * a shelf resource.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   */
-  public static final String createShelfPath(String shelf) {
-    return SHELF_PATH_TEMPLATE.instantiate(
-        "shelf", shelf);
-  }
-
-  /**
-   * Creates a string containing the fully-qualified path to represent
-   * a book resource.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   */
-  public static final String createBookPath(String shelf, String book) {
-    return BOOK_PATH_TEMPLATE.instantiate(
-        "shelf", shelf,"book", book);
-  }
-
-
-  /**
-   * Extracts the shelf from the given fully-qualified path which
-   * represents a shelf resource.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   */
-  public static final String extractShelfFromShelfPath(String shelfPath) {
-    return SHELF_PATH_TEMPLATE.parse(shelfPath).get("shelf");
-  }
-
-  /**
-   * Extracts the shelf from the given fully-qualified path which
-   * represents a book resource.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   */
-  public static final String extractShelfFromBookPath(String bookPath) {
-    return BOOK_PATH_TEMPLATE.parse(bookPath).get("shelf");
-  }
-
-  /**
-   * Extracts the book from the given fully-qualified path which
-   * represents a book resource.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   */
-  public static final String extractBookFromBookPath(String bookPath) {
-    return BOOK_PATH_TEMPLATE.parse(bookPath).get("book");
-  }
-
-
   // =============
   // Service Calls
   // =============
@@ -302,7 +311,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param request The request object containing all of the parameters for the API call.
    */
-  public Shelf createShelf(CreateShelfRequest request) {
+  private Shelf createShelf(CreateShelfRequest request) {
     return createShelfCallable().call(request);
   }
 
@@ -429,7 +438,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param request The request object containing all of the parameters for the API call.
    */
-  public Iterable<Shelf> listShelves(ListShelvesRequest request) {
+  private Iterable<Shelf> listShelves(ListShelvesRequest request) {
     return listShelvesIterableCallable()
         .call(request);
   }
@@ -485,7 +494,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param request The request object containing all of the parameters for the API call.
    */
-  public void deleteShelf(DeleteShelfRequest request) {
+  private void deleteShelf(DeleteShelfRequest request) {
     deleteShelfCallable().call(request);
   }
 
@@ -675,7 +684,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param request The request object containing all of the parameters for the API call.
    */
-  public Book getBook(GetBookRequest request) {
+  private Book getBook(GetBookRequest request) {
     return getBookCallable().call(request);
   }
 
@@ -773,7 +782,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param request The request object containing all of the parameters for the API call.
    */
-  public void deleteBook(DeleteBookRequest request) {
+  private void deleteBook(DeleteBookRequest request) {
     deleteBookCallable().call(request);
   }
 

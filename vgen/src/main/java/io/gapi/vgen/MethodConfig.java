@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableSet;
 
 import javax.annotation.Nullable;
 
+// TODO(garrettjones) consider using AutoValue in this class and related classes.
 /**
  * MethodConfig represents the code-gen config for a method, and includes the
  * specification of features like page streaming and parameter flattening.
@@ -19,6 +20,7 @@ public class MethodConfig {
   private final String retryCodesConfigName;
   private final String retryParamsConfigName;
   private final BundlingConfig bundling;
+  private final boolean hasRequestObjectMethod;
 
   /**
    * Creates an instance of MethodConfig based on MethodConfigProto, linking it
@@ -85,10 +87,13 @@ public class MethodConfig {
       error = true;
     }
 
+    boolean hasRequestObjectMethod = methodConfig.getRequestObjectMethod();
+
     if (error) {
       return null;
     } else {
-      return new MethodConfig(pageStreaming, flattening, retryCodesName, retryParamsName, bundling);
+      return new MethodConfig(pageStreaming, flattening, retryCodesName, retryParamsName, bundling,
+          hasRequestObjectMethod);
     }
   }
 
@@ -97,12 +102,14 @@ public class MethodConfig {
       FlatteningConfig flattening,
       String retryCodesConfigName,
       String retryParamsConfigName,
-      BundlingConfig bundling) {
+      BundlingConfig bundling,
+      boolean hasRequestObjectMethod) {
     this.pageStreaming = pageStreaming;
     this.flattening = flattening;
     this.retryCodesConfigName = retryCodesConfigName;
     this.retryParamsConfigName = retryParamsConfigName;
     this.bundling = bundling;
+    this.hasRequestObjectMethod = hasRequestObjectMethod;
   }
 
   /**
@@ -159,5 +166,13 @@ public class MethodConfig {
    */
   public BundlingConfig getBundling() {
     return bundling;
+  }
+
+  /**
+   * Returns whether the generation of the method taking a request object
+   * is turned on.
+   */
+  public boolean hasRequestObjectMethod() {
+    return hasRequestObjectMethod;
   }
 }

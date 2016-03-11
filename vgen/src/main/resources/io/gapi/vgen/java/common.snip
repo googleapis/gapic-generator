@@ -51,8 +51,12 @@
 @end
 
 @snippet javaDoc(protoElement)
+  {@javaDocFromStr(getDoc(protoElement))}
+@end
+
+@snippet javaDocFromStr(str)
   {@javaDocStart()}
-  {@javaDocLines(protoElement)}
+  {@javaDocLinesFromStr(str)}
   {@javaDocEmptyLine()}
   {@javaDocManualEdit()}
   {@javaDocEnd()}
@@ -63,7 +67,11 @@
 @end
 
 @snippet javaDocLines(protoElement)
-  @join commentLine : context.getJavaDocLines(getDoc(protoElement))
+  {@javaDocLinesFromStr(getDoc(protoElement))}
+@end
+
+@snippet javaDocLinesFromStr(str)
+  @join commentLine : context.getJavaDocLines(str)
     {@commentLine}
   @end
 @end

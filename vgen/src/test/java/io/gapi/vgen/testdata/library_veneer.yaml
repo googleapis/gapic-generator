@@ -37,6 +37,7 @@ interfaces:
         - shelf
     retry_codes_name: non_idempotent
     retry_params_name: default
+    request_object_method: false
   - name: GetShelf
     flattening:
       groups:
@@ -51,6 +52,7 @@ interfaces:
         - string_builder
     retry_codes_name: idempotent
     retry_params_name: default
+    request_object_method: true
   - name: ListShelves
     flattening:
       groups:
@@ -63,6 +65,7 @@ interfaces:
         resources_field: shelves
     retry_codes_name: idempotent
     retry_params_name: default
+    request_object_method: false
   - name: DeleteShelf
     flattening:
       groups:
@@ -70,6 +73,7 @@ interfaces:
         - name
     retry_codes_name: idempotent
     retry_params_name: default
+    request_object_method: false
   - name: MergeShelves
     flattening:
       groups:
@@ -78,6 +82,7 @@ interfaces:
         - other_shelf_name
     retry_codes_name: non_idempotent
     retry_params_name: default
+    request_object_method: true
   - name: CreateBook
     flattening:
       groups:
@@ -86,6 +91,7 @@ interfaces:
         - book
     retry_codes_name: non_idempotent
     retry_params_name: default
+    request_object_method: true
   - name: PublishSeries
     flattening:
       groups:
@@ -105,6 +111,7 @@ interfaces:
           - edition
           - shelf.name
         subresponse_field: book_names
+    request_object_method: true
   - name: GetBook
     flattening:
       groups:
@@ -112,6 +119,7 @@ interfaces:
         - name
     retry_codes_name: idempotent
     retry_params_name: default
+    request_object_method: false
   - name: ListBooks
     flattening:
       groups:
@@ -126,6 +134,7 @@ interfaces:
         resources_field: books
     retry_codes_name: idempotent
     retry_params_name: default
+    request_object_method: true
   - name: DeleteBook
     flattening:
       groups:
@@ -133,6 +142,8 @@ interfaces:
         - name
     retry_codes_name: idempotent
     retry_params_name: default
+    # leaving commented out to test the default
+    #request_object_method: false
   - name: UpdateBook
     flattening:
       groups:
@@ -146,6 +157,7 @@ interfaces:
         - physical_mask
     retry_codes_name: idempotent
     retry_params_name: default
+    request_object_method: true
   - name: MoveBook
     flattening:
       groups:
@@ -154,3 +166,4 @@ interfaces:
         - other_shelf_name
     retry_codes_name: non_idempotent
     retry_params_name: default
+    request_object_method: true
