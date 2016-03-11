@@ -40,6 +40,7 @@ import com.google.api.gax.grpc.ApiCallSettings;
 import com.google.api.gax.grpc.ApiCallable.ApiCallableBuilder;
 import com.google.api.gax.grpc.ApiCallable.PageStreamingApiCallableBuilder;
 import com.google.api.gax.grpc.PageDescriptor;
+import com.google.api.gax.grpc.ServiceApiSettings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -72,7 +73,7 @@ import io.grpc.Status;
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS - see instructions at the top of the file for editing.
 @javax.annotation.Generated("by GAPIC")
-public class LibraryServiceSettings extends ApiCallSettings {
+public class LibraryServiceSettings extends ServiceApiSettings {
 
   // =========
   // Constants
@@ -139,21 +140,86 @@ public class LibraryServiceSettings extends ApiCallSettings {
     RETRY_PARAM_DEFINITIONS = definitions.build();
   }
 
-  private final ApiCallableBuilder<CreateShelfRequest, Shelf> createShelfMethod;
-  private final ApiCallableBuilder<GetShelfRequest, Shelf> getShelfMethod;
-  private final PageStreamingApiCallableBuilder<ListShelvesRequest, ListShelvesResponse, Shelf>
-      listShelvesMethod;
-  private final ApiCallableBuilder<DeleteShelfRequest, Empty> deleteShelfMethod;
-  private final ApiCallableBuilder<MergeShelvesRequest, Shelf> mergeShelvesMethod;
-  private final ApiCallableBuilder<CreateBookRequest, Book> createBookMethod;
-  private final ApiCallableBuilder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesMethod;
-  private final ApiCallableBuilder<GetBookRequest, Book> getBookMethod;
-  private final PageStreamingApiCallableBuilder<ListBooksRequest, ListBooksResponse, Book>
-      listBooksMethod;
-  private final ApiCallableBuilder<DeleteBookRequest, Empty> deleteBookMethod;
-  private final ApiCallableBuilder<UpdateBookRequest, Book> updateBookMethod;
-  private final ApiCallableBuilder<MoveBookRequest, Book> moveBookMethod;
-  private final ImmutableList<? extends ApiCallSettings> allMethods;
+  private static class MethodBuilders {
+    private final ApiCallableBuilder<CreateShelfRequest, Shelf> createShelfMethod;
+    private final ApiCallableBuilder<GetShelfRequest, Shelf> getShelfMethod;
+    private final PageStreamingApiCallableBuilder<ListShelvesRequest, ListShelvesResponse, Shelf>
+        listShelvesMethod;
+    private final ApiCallableBuilder<DeleteShelfRequest, Empty> deleteShelfMethod;
+    private final ApiCallableBuilder<MergeShelvesRequest, Shelf> mergeShelvesMethod;
+    private final ApiCallableBuilder<CreateBookRequest, Book> createBookMethod;
+    private final ApiCallableBuilder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesMethod;
+    private final ApiCallableBuilder<GetBookRequest, Book> getBookMethod;
+    private final PageStreamingApiCallableBuilder<ListBooksRequest, ListBooksResponse, Book>
+        listBooksMethod;
+    private final ApiCallableBuilder<DeleteBookRequest, Empty> deleteBookMethod;
+    private final ApiCallableBuilder<UpdateBookRequest, Book> updateBookMethod;
+    private final ApiCallableBuilder<MoveBookRequest, Book> moveBookMethod;
+    private final ImmutableList<? extends ApiCallSettings> allMethods;
+
+    public MethodBuilders() {
+      createShelfMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_CREATE_SHELF);
+      createShelfMethod.setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"));
+      createShelfMethod.setRetryParams(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      getShelfMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_GET_SHELF);
+      getShelfMethod.setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"));
+      getShelfMethod.setRetryParams(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      listShelvesMethod = new PageStreamingApiCallableBuilder<>(
+          LibraryServiceGrpc.METHOD_LIST_SHELVES,
+          LIST_SHELVES_PAGE_STR_DESC);
+      listShelvesMethod.setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"));
+      listShelvesMethod.setRetryParams(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      deleteShelfMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_DELETE_SHELF);
+      deleteShelfMethod.setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"));
+      deleteShelfMethod.setRetryParams(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      mergeShelvesMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_MERGE_SHELVES);
+      mergeShelvesMethod.setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"));
+      mergeShelvesMethod.setRetryParams(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      createBookMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_CREATE_BOOK);
+      createBookMethod.setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"));
+      createBookMethod.setRetryParams(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      publishSeriesMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_PUBLISH_SERIES);
+      publishSeriesMethod.setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"));
+      publishSeriesMethod.setRetryParams(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      getBookMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_GET_BOOK);
+      getBookMethod.setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"));
+      getBookMethod.setRetryParams(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      listBooksMethod = new PageStreamingApiCallableBuilder<>(
+          LibraryServiceGrpc.METHOD_LIST_BOOKS,
+          LIST_BOOKS_PAGE_STR_DESC);
+      listBooksMethod.setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"));
+      listBooksMethod.setRetryParams(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      deleteBookMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_DELETE_BOOK);
+      deleteBookMethod.setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"));
+      deleteBookMethod.setRetryParams(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      updateBookMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_UPDATE_BOOK);
+      updateBookMethod.setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"));
+      updateBookMethod.setRetryParams(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      moveBookMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_MOVE_BOOK);
+      moveBookMethod.setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"));
+      moveBookMethod.setRetryParams(RETRY_PARAM_DEFINITIONS.get("default"));
+
+      allMethods =
+          ImmutableList.<ApiCallSettings>builder()
+              .add(
+                  createShelfMethod,getShelfMethod,listShelvesMethod,deleteShelfMethod,mergeShelvesMethod,createBookMethod,publishSeriesMethod,getBookMethod,listBooksMethod,deleteBookMethod,updateBookMethod,moveBookMethod
+              ).build();
+    }
+  }
+
+  private final MethodBuilders methods;
+
 
   // ===============
   // Factory Methods
@@ -166,7 +232,7 @@ public class LibraryServiceSettings extends ApiCallSettings {
    * <!-- end manual edit -->
    */
   public static LibraryServiceSettings create() {
-    LibraryServiceSettings settings = new LibraryServiceSettings();
+    LibraryServiceSettings settings = new LibraryServiceSettings(new MethodBuilders());
     settings.provideChannelWith(ConnectionSettings.builder()
         .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
         .setPort(DEFAULT_SERVICE_PORT)
@@ -182,76 +248,9 @@ public class LibraryServiceSettings extends ApiCallSettings {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  protected LibraryServiceSettings() {
-    createShelfMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_CREATE_SHELF);
-    createShelfMethod.setRetryDefaults(
-        RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"),
-        RETRY_PARAM_DEFINITIONS.get("default"));
-
-    getShelfMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_GET_SHELF);
-    getShelfMethod.setRetryDefaults(
-        RETRYABLE_CODE_DEFINITIONS.get("idempotent"),
-        RETRY_PARAM_DEFINITIONS.get("default"));
-
-    listShelvesMethod = new PageStreamingApiCallableBuilder<>(
-        LibraryServiceGrpc.METHOD_LIST_SHELVES,
-        LIST_SHELVES_PAGE_STR_DESC);
-    listShelvesMethod.setRetryDefaults(
-        RETRYABLE_CODE_DEFINITIONS.get("idempotent"),
-        RETRY_PARAM_DEFINITIONS.get("default"));
-
-    deleteShelfMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_DELETE_SHELF);
-    deleteShelfMethod.setRetryDefaults(
-        RETRYABLE_CODE_DEFINITIONS.get("idempotent"),
-        RETRY_PARAM_DEFINITIONS.get("default"));
-
-    mergeShelvesMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_MERGE_SHELVES);
-    mergeShelvesMethod.setRetryDefaults(
-        RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"),
-        RETRY_PARAM_DEFINITIONS.get("default"));
-
-    createBookMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_CREATE_BOOK);
-    createBookMethod.setRetryDefaults(
-        RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"),
-        RETRY_PARAM_DEFINITIONS.get("default"));
-
-    publishSeriesMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_PUBLISH_SERIES);
-    publishSeriesMethod.setRetryDefaults(
-        RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"),
-        RETRY_PARAM_DEFINITIONS.get("default"));
-
-    getBookMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_GET_BOOK);
-    getBookMethod.setRetryDefaults(
-        RETRYABLE_CODE_DEFINITIONS.get("idempotent"),
-        RETRY_PARAM_DEFINITIONS.get("default"));
-
-    listBooksMethod = new PageStreamingApiCallableBuilder<>(
-        LibraryServiceGrpc.METHOD_LIST_BOOKS,
-        LIST_BOOKS_PAGE_STR_DESC);
-    listBooksMethod.setRetryDefaults(
-        RETRYABLE_CODE_DEFINITIONS.get("idempotent"),
-        RETRY_PARAM_DEFINITIONS.get("default"));
-
-    deleteBookMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_DELETE_BOOK);
-    deleteBookMethod.setRetryDefaults(
-        RETRYABLE_CODE_DEFINITIONS.get("idempotent"),
-        RETRY_PARAM_DEFINITIONS.get("default"));
-
-    updateBookMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_UPDATE_BOOK);
-    updateBookMethod.setRetryDefaults(
-        RETRYABLE_CODE_DEFINITIONS.get("idempotent"),
-        RETRY_PARAM_DEFINITIONS.get("default"));
-
-    moveBookMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_MOVE_BOOK);
-    moveBookMethod.setRetryDefaults(
-        RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"),
-        RETRY_PARAM_DEFINITIONS.get("default"));
-
-    allMethods =
-        ImmutableList.<ApiCallSettings>builder()
-            .add(
-                createShelfMethod,getShelfMethod,listShelvesMethod,deleteShelfMethod,mergeShelvesMethod,createBookMethod,publishSeriesMethod,getBookMethod,listBooksMethod,deleteBookMethod,updateBookMethod,moveBookMethod
-            ).build();
+  protected LibraryServiceSettings(MethodBuilders methods) {
+    super(methods.allMethods);
+    this.methods = methods;
   }
 
   /**
@@ -261,7 +260,7 @@ public class LibraryServiceSettings extends ApiCallSettings {
    * <!-- end manual edit -->
    */
   public ApiCallableBuilder<CreateShelfRequest, Shelf> createShelfMethod() {
-    return createShelfMethod;
+    return methods.createShelfMethod;
   }
 
   /**
@@ -271,7 +270,7 @@ public class LibraryServiceSettings extends ApiCallSettings {
    * <!-- end manual edit -->
    */
   public ApiCallableBuilder<GetShelfRequest, Shelf> getShelfMethod() {
-    return getShelfMethod;
+    return methods.getShelfMethod;
   }
 
   /**
@@ -282,7 +281,7 @@ public class LibraryServiceSettings extends ApiCallSettings {
    */
   public PageStreamingApiCallableBuilder<ListShelvesRequest, ListShelvesResponse, Shelf>
       listShelvesMethod() {
-    return listShelvesMethod;
+    return methods.listShelvesMethod;
   }
 
   /**
@@ -292,7 +291,7 @@ public class LibraryServiceSettings extends ApiCallSettings {
    * <!-- end manual edit -->
    */
   public ApiCallableBuilder<DeleteShelfRequest, Empty> deleteShelfMethod() {
-    return deleteShelfMethod;
+    return methods.deleteShelfMethod;
   }
 
   /**
@@ -302,7 +301,7 @@ public class LibraryServiceSettings extends ApiCallSettings {
    * <!-- end manual edit -->
    */
   public ApiCallableBuilder<MergeShelvesRequest, Shelf> mergeShelvesMethod() {
-    return mergeShelvesMethod;
+    return methods.mergeShelvesMethod;
   }
 
   /**
@@ -312,7 +311,7 @@ public class LibraryServiceSettings extends ApiCallSettings {
    * <!-- end manual edit -->
    */
   public ApiCallableBuilder<CreateBookRequest, Book> createBookMethod() {
-    return createBookMethod;
+    return methods.createBookMethod;
   }
 
   /**
@@ -322,7 +321,7 @@ public class LibraryServiceSettings extends ApiCallSettings {
    * <!-- end manual edit -->
    */
   public ApiCallableBuilder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesMethod() {
-    return publishSeriesMethod;
+    return methods.publishSeriesMethod;
   }
 
   /**
@@ -332,7 +331,7 @@ public class LibraryServiceSettings extends ApiCallSettings {
    * <!-- end manual edit -->
    */
   public ApiCallableBuilder<GetBookRequest, Book> getBookMethod() {
-    return getBookMethod;
+    return methods.getBookMethod;
   }
 
   /**
@@ -343,7 +342,7 @@ public class LibraryServiceSettings extends ApiCallSettings {
    */
   public PageStreamingApiCallableBuilder<ListBooksRequest, ListBooksResponse, Book>
       listBooksMethod() {
-    return listBooksMethod;
+    return methods.listBooksMethod;
   }
 
   /**
@@ -353,7 +352,7 @@ public class LibraryServiceSettings extends ApiCallSettings {
    * <!-- end manual edit -->
    */
   public ApiCallableBuilder<DeleteBookRequest, Empty> deleteBookMethod() {
-    return deleteBookMethod;
+    return methods.deleteBookMethod;
   }
 
   /**
@@ -363,7 +362,7 @@ public class LibraryServiceSettings extends ApiCallSettings {
    * <!-- end manual edit -->
    */
   public ApiCallableBuilder<UpdateBookRequest, Book> updateBookMethod() {
-    return updateBookMethod;
+    return methods.updateBookMethod;
   }
 
   /**
@@ -373,12 +372,9 @@ public class LibraryServiceSettings extends ApiCallSettings {
    * <!-- end manual edit -->
    */
   public ApiCallableBuilder<MoveBookRequest, Book> moveBookMethod() {
-    return moveBookMethod;
+    return methods.moveBookMethod;
   }
 
-  public ImmutableList<? extends ApiCallSettings> allMethods() {
-    return allMethods;
-  }
 
   private static PageDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
       new PageDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf>() {

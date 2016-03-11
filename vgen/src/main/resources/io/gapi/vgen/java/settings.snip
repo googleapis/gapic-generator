@@ -22,9 +22,11 @@
 
   {@autoGenClassWarning()}
   @@javax.annotation.Generated("by GAPIC")
-  public class {@settingsClassName(service)} extends ApiCallSettings {
+  public class {@settingsClassName(service)} extends ServiceApiSettings {
 
     {@constants(service)}
+
+    {@methodBuildersInnerClass(service)}
 
     {@members(service)}
 
@@ -42,6 +44,7 @@
   {@context.addImport("com.google.api.gax.core.RetryParams")}
   {@context.addImport("com.google.api.gax.grpc.ApiCallSettings")}
   {@context.addImport("com.google.api.gax.grpc.ApiCallable.ApiCallableBuilder")}
+  {@context.addImport("com.google.api.gax.grpc.ServiceApiSettings")}
   {@context.addImport("com.google.common.collect.ImmutableList")}
   {@context.addImport("com.google.common.collect.ImmutableMap")}
   {@context.addImport("com.google.common.collect.ImmutableSet")}
@@ -133,7 +136,15 @@
   @end
 @end
 
-@private members(service)
+@private methodBuildersInnerClass(service)
+  private static class MethodBuilders {
+    {@methodBuildersMembers(service)}
+
+    {@methodBuildersConstructor(service)}
+  }
+@end
+
+@private methodBuildersMembers(service)
   @join method : service.getMethods
     @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
          methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
@@ -156,6 +167,45 @@
   private final ImmutableList<? extends ApiCallSettings> allMethods;
 @end
 
+@private methodBuildersConstructor(service)
+  public MethodBuilders() {
+    @let serviceName = service.getSimpleName, \
+         grpcName = context.getGrpcName(service)
+      @join method : service.getMethods
+        @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
+             methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
+             methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+             retryCodesName = methodConfig.getRetryCodesConfigName, \
+             retryParamsName = methodConfig.getRetryParamsConfigName, \
+             isPageStreaming = methodConfig.isPageStreaming
+          @if {@isPageStreaming}
+            {@methodName}Method = new PageStreamingApiCallableBuilder<>(
+                {@grpcName}.METHOD_{@methodConstant},
+                {@methodConstant}_PAGE_STR_DESC);
+          @else
+            {@methodName}Method = new ApiCallableBuilder<>({@grpcName}.METHOD_{@methodConstant});
+          @end
+
+          {@methodName}Method.setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@retryCodesName}"));
+          {@methodName}Method.setRetryParams(RETRY_PARAM_DEFINITIONS.get("{@retryParamsName}"));
+
+        @end
+      @end
+
+      allMethods =
+          ImmutableList.<ApiCallSettings>builder()
+              .add(
+                  {@methodList(service)}
+              ).build();
+    @end
+  }
+@end
+
+@private members(service)
+  private final MethodBuilders methods;
+
+@end
+
 @private constructors(service)
   @let className = @settingsClassName(service)
     // ===============
@@ -168,7 +218,7 @@
     {@javaDocManualEdit()}
      */
     public static {@className} create() {
-      {@className} settings = new {@className}();
+      {@className} settings = new {@className}(new MethodBuilders());
       settings.provideChannelWith(ConnectionSettings.builder()
           .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
           .setPort(DEFAULT_SERVICE_PORT)
@@ -183,43 +233,9 @@
      *
     {@javaDocManualEdit()}
      */
-    {@mainConstructor(service)}
-  @end
-@end
-
-@private mainConstructor(service)
-  @let className = settingsClassName(service)
-    protected {@className}() {
-      @let serviceName = service.getSimpleName, \
-           grpcName = context.getGrpcName(service)
-        @join method : service.getMethods
-          @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
-               methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
-               methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-               retryCodesName = methodConfig.getRetryCodesConfigName, \
-               retryParamsName = methodConfig.getRetryParamsConfigName, \
-               isPageStreaming = methodConfig.isPageStreaming
-            @if {@isPageStreaming}
-              {@methodName}Method = new PageStreamingApiCallableBuilder<>(
-                  {@grpcName}.METHOD_{@methodConstant},
-                  {@methodConstant}_PAGE_STR_DESC);
-            @else
-              {@methodName}Method = new ApiCallableBuilder<>({@grpcName}.METHOD_{@methodConstant});
-            @end
-
-            {@methodName}Method.setRetryDefaults(
-                RETRYABLE_CODE_DEFINITIONS.get("{@retryCodesName}"),
-                RETRY_PARAM_DEFINITIONS.get("{@retryParamsName}"));
-
-          @end
-        @end
-
-        allMethods =
-            ImmutableList.<ApiCallSettings>builder()
-                .add(
-                    {@methodList(service)}
-                ).build();
-      @end
+    protected {@className}(MethodBuilders methods) {
+      super(methods.allMethods);
+      this.methods = methods;
     }
   @end
 @end
@@ -247,7 +263,7 @@
            */
           public PageStreamingApiCallableBuilder<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>
               {@methodName}Method() {
-            return {@methodName}Method;
+            return methods.{@methodName}Method;
           }
 
         @end
@@ -258,16 +274,13 @@
         {@javaDocManualEdit()}
          */
         public ApiCallableBuilder<{@inTypeName}, {@outTypeName}> {@methodName}Method() {
-          return {@methodName}Method;
+          return methods.{@methodName}Method;
         }
 
       @end
     @end
   @end
 
-  public ImmutableList<? extends ApiCallSettings> allMethods() {
-    return allMethods;
-  }
 @end
 
 @private descriptors(service)
