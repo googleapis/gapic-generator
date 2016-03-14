@@ -2,12 +2,11 @@
 
 GAPI tools consist of the following sub projects:
 
-- The [GAPI tools framework](https://gapi.git.corp.google.com/gapi-tools-framework), a set of 
-  libraries to process _API services_, that is a collection of protocol buffer definitions and 
+- The [GAPI tools framework](https://gapi.git.corp.google.com/gapi-tools-framework), a set of
+  libraries to process _API services_, that is a collection of protocol buffer definitions and
   configuration files.
 - The [GAPI generators and synchronizers](./vgen), which produce wrappers around GRPC apis
   which can be enriched by manually edited code.
-- The [GAPI Gradle Plugin](./gradle-plugin) which integrates GAPI development into Gradle.
 
 For a usage example, see the
 [gapi-example-library-java](https://gapi.git.corp.google.com/gapi-example-library-java) repository.
@@ -38,33 +37,6 @@ mechanism instead). For example:
   the generated Java GRPC client, as well as veneers for it. The above proto repository is
   aggregated as a submodule at `${projectDir}/modules/gapi-example-library-proto`.
 
-## The GAPI Gradle Plugin
-
-The GAPI Gradle plugin provides a convenient way to setup a GAPI client repository for a given language
-(currrently only Java). For example, below is the `build.gradle` for the book library example:
-
-    apply plugin: 'io.gapi.java'
-
-    group = "io.gapi.google.example.library"
-    version = "0.0.0-SNAPSHOT"
-
-    gapi {
-      sourceSet {
-        protoPath "${projectDir}/modules/gapi-example-library-proto/src/main/proto"
-        apiService {
-          name "library"
-          serviceConfig "google/example/library/library.yaml"
-          veneerConfig "google/example/library/veneerc_config.yaml"
-        }
-      }
-    }
-
-The plugin allows to define multiple source sets with each having multiple API services. For each
-API service, the service configuration can be specified, as well as the configuration of
-the veneer generator and synchronizer. The plugin configures compilation of the protos in
-each source set; the compilation result is stored in `./src/generated/${sourceSetName}` and
-intended to be persisted with the repository.
-
 ## The Veneer Synchronizer
 
 Veneer wrappers are stored at the regular source location, i.e. `./src/${sourceSetName}`. The
@@ -72,9 +44,8 @@ veneer synchronizer creates or updates wrappers at this location. The synchroniz
 called implicitly as part of a regular build step but explicitly when the protos or configurations
 have changed, or for initial veneer creation.
 
-The GAPI plugin installs a Gradle task for each source set/API service combination for
-synchronization. The task is named `sync${sourceSetName}${apiServiceName}`, where `${sourceSetName}`
-is conventional empty for the `main` source set (therefore, for the library example, `syncLibrary`).
+The synchronizer can be invoked directly through a gradle task(see build.gradle:runSynchronizer
+task) or [the code generation pipeline](https://gapi.git.corp.google.com/pipeline).
 
 Synchronization works as follows:
 
