@@ -188,9 +188,8 @@
              inTypeName = context.typeName(method.getInputType), \
              outTypeName = context.typeName(method.getOutputType), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-             isPageStreaming = methodConfig.isPageStreaming, \
              retryParamsName = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method).getRetryParamsConfigName, \
-             isFlattening = methodConfig.isFlattening
+             isPageStreaming = methodConfig.isPageStreaming
             @if {@isPageStreaming}
                 @let pageStreaming = methodConfig.getPageStreaming(), \
                      iteratorTypeName = context.getIteratorTypeName(pageStreaming), \
@@ -249,19 +248,6 @@
                     	@end
                     }
 
-                    @if {@isFlattening}
-                        @let fields = context.getFlatteningFields(methodConfig)
-                            {@flattenedMethodComment(method, methodName.concat("With"), fields)}
-                            func (client *Client) {@methodName}With(ctx context.Context{@flattenedParameters(fields)}, opts ...gax.CallOption) (*{@iteratorTypeName}, error) {
-                            	return client.{@methodName}(ctx, {@context.constructionExpr(method.getInputType)}{
-                            		@join field : fields
-                             		{@context.lowerUnderscoreToUpperCamel(field.getSimpleName)}: {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)},
-                            		@end
-                            	}, opts...)
-                            }
-
-                        @end
-                    @end
                 @end
             @else
 
@@ -276,19 +262,6 @@
                         return resp.({@outTypeName}), nil
                 }
 
-                @if {@isFlattening}
-                    @let fields = context.getFlatteningFields(methodConfig)
-                        {@flattenedMethodComment(method, methodName.concat("With"), fields)}
-                        func (client *Client) {@methodName}With(ctx context.Context{@flattenedParameters(fields)}, opts ...gax.CallOption) ({@outTypeName}, error) {
-                        	return client.{@methodName}(ctx, {@context.constructionExpr(method.getInputType)}{
-                        		@join field : fields
-                         		{@context.lowerUnderscoreToUpperCamel(field.getSimpleName)}: {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)},
-                        		@end
-                        	}, opts...)
-                        }
-
-                    @end
-                @end
             @end
 
             // {@lowerMethodName} is a gax.APICall that calls api.client.{@methodName}.
@@ -305,28 +278,6 @@
     @join commentLine : context.getMethodComments(method, methodName)
         {@commentLine}
     @end
-@end
-
-@private flattenedMethodComment(method, methodName, fields)
-    // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
-
-    @join commentLine : context.getMethodComments(method, methodName)
-        {@commentLine}
-    @end
-    @join field : fields vertical
-        @join commentLine : context.getFieldComments(field)
-            {@commentLine}
-        @end
-    @end
-@end
-
-@private flattenedParameters(fields)
-    @join field : fields on ""
-        , {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)} {@context.typeName(field.getType)}
-    @end
-@end
-
-@private flattenedBuilder(fields)
 @end
 
 @private iterators(service)
@@ -382,7 +333,4 @@
             }
         @end
     @end
-@end
-
-@private iterator(iteratorTypeName, resourceFieldType)
 @end

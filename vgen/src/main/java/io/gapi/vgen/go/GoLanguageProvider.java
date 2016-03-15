@@ -369,17 +369,6 @@ public class GoLanguageProvider extends LanguageProvider {
   }
 
   /**
-   * Returns a flattened group which will appear in the Go file.
-   *
-   * Because Go doesn't have features like keyword arguments or default values for parameters,
-   * it is actually hard to support every groups in Go. Thus, for now, the generator will
-   * simply pick up the first group specified in the config.
-   */
-  public Iterable<Field> getFlatteningFields(MethodConfig methodConfig) {
-    return methodConfig.getFlattening().getFlatteningGroups().get(0);
-  }
-
-  /**
    * Returns the Go type name of (gRPC's) response-streaming methods which receives
    * the element objects.
    */
