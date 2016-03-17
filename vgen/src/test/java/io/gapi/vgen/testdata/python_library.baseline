@@ -143,7 +143,7 @@ class LibraryServiceApi(object):
         with open(config_filename, 'r') as api_yaml:
             self._defaults = api_callable.construct_settings(
                 yaml.load(api_yaml.read()), bundling_override, retrying_override,
-                config.EXCEPTION_NAMES, timeout)
+                config.STATUS_CODE_NAMES, timeout)
         google_apis_agent = '{}-{}/{}/gax-{}/{}'.format(
             app_name,
             app_version,
