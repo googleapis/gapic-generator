@@ -97,7 +97,8 @@ public class InterfaceConfig {
           codes.add(Status.Code.valueOf(codeText));
         } catch (IllegalArgumentException e) {
           diagCollector.addDiag(
-              Diag.error(SimpleLocation.TOPLEVEL, "status code not found %s", codeText));
+              Diag.error(SimpleLocation.TOPLEVEL, "status code not found: '%s' (in interface %s)",
+                  codeText, interfaceConfigProto.getName()));
         }
       }
       builder.put(retryDef.getName(), Sets.immutableEnumSet(codes));
@@ -134,7 +135,9 @@ public class InterfaceConfig {
         builder.put(retryDef.getName(), params);
       } catch (IllegalStateException | NullPointerException e) {
         diagCollector.addDiag(
-            Diag.error(SimpleLocation.TOPLEVEL, "error while creating retry params: %s", e));
+            Diag.error(SimpleLocation.TOPLEVEL,
+                "error while creating retry params: %s (in interface %s)",
+                e, interfaceConfigProto.getName()));
       }
     }
     if (diagCollector.getErrorCount() > 0) {
