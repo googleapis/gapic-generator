@@ -62,8 +62,6 @@
             @end
             {@initMethodSection(service)}
 
-            {@genericMethodsSection()}
-
             {@serviceMethodsSection(service)}
 
     @end
@@ -238,17 +236,6 @@
     @join comment : context.comments(element, importHandler)
         {@comment}
     @end
-@end
-
-@private genericMethodsSection()
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close()
-
-    def close(self):
-        del self.stub
 @end
 
 @private serviceMethodsSection(service)
