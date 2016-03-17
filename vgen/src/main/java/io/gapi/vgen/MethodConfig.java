@@ -75,7 +75,9 @@ public class MethodConfig {
     if (!retryCodesName.isEmpty() && !retryCodesConfigNames.contains(retryCodesName)) {
       diagCollector.addDiag(
           Diag.error(
-              SimpleLocation.TOPLEVEL, "retry config used but not defined: %s", retryCodesName));
+              SimpleLocation.TOPLEVEL,
+              "retry codes config used but not defined: '%s' (in method %s)",
+              retryCodesName, method.getFullName()));
       error = true;
     }
 
@@ -83,7 +85,9 @@ public class MethodConfig {
     if (!retryParamsConfigNames.contains(retryParamsName)) {
       diagCollector.addDiag(
           Diag.error(
-              SimpleLocation.TOPLEVEL, "retry config used but not defined: %s", retryParamsName));
+              SimpleLocation.TOPLEVEL,
+              "retry parameters config used but not defined: %s (in method %s)",
+              retryParamsName, method.getFullName()));
       error = true;
     }
 
