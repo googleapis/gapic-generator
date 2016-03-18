@@ -150,7 +150,8 @@
          methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
          inTypeName = context.typeName(method.getInputType), \
          outTypeName = context.typeName(method.getOutputType), \
-         isPageStreaming = methodConfig.isPageStreaming
+         isPageStreaming = methodConfig.isPageStreaming, \
+         isBundling = methodConfig.isBundling
       @if {@isPageStreaming}
         @let pageStreaming = methodConfig.getPageStreaming(), \
              resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
@@ -159,7 +160,14 @@
               {@methodName}Method;
         @end
       @else
-        private final ApiCallableBuilder<{@inTypeName}, {@outTypeName}> {@methodName}Method;
+        @if {@isBundling}
+          @let bundling = methodConfig.getBundling(), \
+               dummy = context.addImport("com.google.api.gax.grpc.ApiCallable.BundlableApiCallableBuilder")
+            private final BundlableApiCallableBuilder<{@inTypeName}, {@outTypeName}> {@methodName}Method;
+          @end
+        @else
+          private final ApiCallableBuilder<{@inTypeName}, {@outTypeName}> {@methodName}Method;
+        @end
       @end
     @end
   @end
@@ -177,13 +185,20 @@
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              retryCodesName = methodConfig.getRetryCodesConfigName, \
              retryParamsName = methodConfig.getRetryParamsConfigName, \
-             isPageStreaming = methodConfig.isPageStreaming
+             isPageStreaming = methodConfig.isPageStreaming, \
+             isBundling = methodConfig.isBundling
           @if {@isPageStreaming}
             {@methodName}Method = new PageStreamingApiCallableBuilder<>(
                 {@grpcName}.METHOD_{@methodConstant},
                 {@methodConstant}_PAGE_STR_DESC);
           @else
-            {@methodName}Method = new ApiCallableBuilder<>({@grpcName}.METHOD_{@methodConstant});
+            @if {@isBundling}
+              {@methodName}Method = new BundlableApiCallableBuilder<>(
+                  {@grpcName}.METHOD_{@methodConstant},
+                  {@methodConstant}_BUNDLING_DESC);
+            @else
+              {@methodName}Method = new ApiCallableBuilder<>({@grpcName}.METHOD_{@methodConstant});
+            @end
           @end
 
           {@methodName}Method.setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@retryCodesName}"));
@@ -253,33 +268,33 @@
          methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
          inTypeName = context.typeName(method.getInputType), \
          outTypeName = context.typeName(method.getOutputType), \
-         isPageStreaming = methodConfig.isPageStreaming
+         isPageStreaming = methodConfig.isPageStreaming, \
+         isBundling = methodConfig.isBundling
+      /**
+       * Returns the builder for the API method {@methodName}.
+       *
+      {@javaDocManualEdit()}
+       */
       @if {@isPageStreaming}
         @let pageStreaming = methodConfig.getPageStreaming(), \
              resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType())
-          /**
-           * Returns the PageStreamingApiCallableBuilder for the API method
-           * {@methodName}.
-           *
-          {@javaDocManualEdit()}
-           */
           public PageStreamingApiCallableBuilder<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>
               {@methodName}Method() {
             return methods.{@methodName}Method;
           }
-
         @end
       @else
-        /**
-         * Returns the ApiCallableBuilder for the API method {@methodName}.
-         *
-        {@javaDocManualEdit()}
-         */
-        public ApiCallableBuilder<{@inTypeName}, {@outTypeName}> {@methodName}Method() {
-          return methods.{@methodName}Method;
-        }
-
+        @if {@isBundling}
+          public BundlableApiCallableBuilder<{@inTypeName}, {@outTypeName}> {@methodName}Method() {
+            return methods.{@methodName}Method;
+          }
+        @else
+          public ApiCallableBuilder<{@inTypeName}, {@outTypeName}> {@methodName}Method() {
+            return methods.{@methodName}Method;
+          }
+        @end
       @end
+
     @end
   @end
 
@@ -287,11 +302,12 @@
 
 @private descriptors(service)
   {@pageStreamingDescriptors(service)}
+  {@bundlingDescriptors(service)}
 @end
 
 @private pageStreamingDescriptors(service)
   @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service), \
-       dummy = context.addImport("com.google.api.gax.grpc.PageDescriptor")
+       dummy = context.addImport("com.google.api.gax.grpc.PageStreamingDescriptor")
     @join method : context.messages.filterPageStreamingMethods(interfaceConfig, service.getMethods)
       @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
            inTypeName = context.typeName(method.getInputType), \
@@ -299,8 +315,8 @@
            pageStreaming = interfaceConfig.getMethodConfig(method).getPageStreaming(), \
            resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
            tokenTypeName = context.typeName(pageStreaming.getResponseTokenField.getType)
-        private static PageDescriptor<{@inTypeName}, {@outTypeName}, {@resourceTypeName}> {@methodConstant}_PAGE_STR_DESC =
-            new PageDescriptor<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>() {
+        private static PageStreamingDescriptor<{@inTypeName}, {@outTypeName}, {@resourceTypeName}> {@methodConstant}_PAGE_STR_DESC =
+            new PageStreamingDescriptor<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>() {
               @@Override
               public Object emptyToken() {
                 return {@context.defaultTokenValue(pageStreaming.getRequestTokenField())};
@@ -324,6 +340,98 @@
             };
 
       @end
+    @end
+  @end
+@end
+
+@private bundlingDescriptors(service)
+  @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service)
+    @join method : context.messages.filterBundlingMethods(interfaceConfig, service.getMethods)
+      @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
+           inTypeName = context.typeName(method.getInputType), \
+           outTypeName = context.typeName(method.getOutputType), \
+           bundling = interfaceConfig.getMethodConfig(method).getBundling(), \
+           dummy = context.addImport("com.google.api.gax.grpc.BundlingDescriptor"), \
+           dummy2 = context.addImport("java.util.Collection"), \
+           dummy3 = context.addImport("com.google.api.gax.grpc.RequestIssuer"), \
+           dummy4 = context.addImport("java.util.ArrayList")
+        private static BundlingDescriptor<{@inTypeName}, {@outTypeName}> {@methodConstant}_BUNDLING_DESC =
+            new BundlingDescriptor<{@inTypeName}, {@outTypeName}>() {
+              @@Override
+              public String getBundlePartitionKey({@inTypeName} request) {
+                return {@partitionKeyCode(bundling)};
+              }
+
+              @@Override
+              public {@inTypeName} mergeRequests(Collection<{@inTypeName}> requests) {
+                {@inTypeName} firstRequest = requests.iterator().next();
+
+                {@context.typeName(bundling.getBundledField.getType)} elements = new ArrayList<>();
+                for ({@inTypeName} request : requests) {
+                  elements.addAll(request.{@getCallName(bundling.getBundledField)}());
+                }
+
+                {@inTypeName} bundleRequest =
+                    {@inTypeName}.newBuilder()
+                        {@setDescriminatorFields(bundling)}
+                        .{@setCallName(bundling.getBundledField)}(elements)
+                        .build();
+                return bundleRequest;
+              }
+
+              @@Override
+              public void splitResponse(
+                  {@outTypeName} bundleResponse,
+                  Collection<? extends RequestIssuer<{@inTypeName}, {@outTypeName}>> bundle) {
+                # TODO(garrettjones) support case of no subresponse_field (e.g. Logging)
+                int bundleMessageIndex = 0;
+                for (RequestIssuer<{@inTypeName}, {@outTypeName}> responder : bundle) {
+                  {@context.typeName(bundling.getSubresponseField.getType)} subresponseElements = new ArrayList<>();
+                  int subresponseCount = responder.getRequest().{@getCountCallName(bundling.getBundledField)}();
+                  for (int i = 0; i < subresponseCount; i++) {
+                    subresponseElements.add(bundleResponse.{@getIndexCallName(bundling.getSubresponseField)}(bundleMessageIndex));
+                    bundleMessageIndex += 1;
+                  }
+                  {@outTypeName} response =
+                      {@outTypeName}.newBuilder().{@setCallName(bundling.getSubresponseField)}(subresponseElements).build();
+                  responder.setResponse(response);
+                }
+              }
+
+              @@Override
+              public void splitException(
+                  Throwable throwable,
+                  Collection<? extends RequestIssuer<{@inTypeName}, {@outTypeName}>> bundle) {
+                for (RequestIssuer<{@inTypeName}, {@outTypeName}> responder : bundle) {
+                  responder.setException(throwable);
+                }
+              }
+
+              @@Override
+              public long countElements({@inTypeName} request) {
+                return request.{@getCountCallName(bundling.getBundledField)}();
+              }
+
+              @@Override
+              public long countBytes({@inTypeName} request) {
+                return request.getSerializedSize();
+              }
+            };
+
+      @end
+    @end
+  @end
+@end
+
+@private partitionKeyCode(bundling)
+  {@context.partitionKeyCode(bundling.getDiscriminatorFields)}
+@end
+
+@private setDescriminatorFields(bundling)
+  @join fieldSelector : bundling.getDiscriminatorFields
+    # Note: This only supports field selectors with a single field.
+    @let field = fieldSelector.getLastField
+      .{@setCallName(field)}(firstRequest.{@getCallName(field)}())
     @end
   @end
 @end

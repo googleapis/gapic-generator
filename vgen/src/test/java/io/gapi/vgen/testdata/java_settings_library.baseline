@@ -38,8 +38,11 @@ import com.google.api.gax.core.ConnectionSettings;
 import com.google.api.gax.core.RetryParams;
 import com.google.api.gax.grpc.ApiCallSettings;
 import com.google.api.gax.grpc.ApiCallable.ApiCallableBuilder;
+import com.google.api.gax.grpc.ApiCallable.BundlableApiCallableBuilder;
 import com.google.api.gax.grpc.ApiCallable.PageStreamingApiCallableBuilder;
-import com.google.api.gax.grpc.PageDescriptor;
+import com.google.api.gax.grpc.BundlingDescriptor;
+import com.google.api.gax.grpc.PageStreamingDescriptor;
+import com.google.api.gax.grpc.RequestIssuer;
 import com.google.api.gax.grpc.ServiceApiSettings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -66,6 +69,9 @@ import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.UpdateBookRequest;
 import com.google.protobuf.Empty;
 import io.grpc.Status;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 // Manually-added imports: add custom (non-generated) imports after this point.
 
@@ -151,7 +157,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     private final ApiCallableBuilder<DeleteShelfRequest, Empty> deleteShelfMethod;
     private final ApiCallableBuilder<MergeShelvesRequest, Shelf> mergeShelvesMethod;
     private final ApiCallableBuilder<CreateBookRequest, Book> createBookMethod;
-    private final ApiCallableBuilder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesMethod;
+    private final BundlableApiCallableBuilder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesMethod;
     private final ApiCallableBuilder<GetBookRequest, Book> getBookMethod;
     private final PageStreamingApiCallableBuilder<ListBooksRequest, ListBooksResponse, Book>
         listBooksMethod;
@@ -187,7 +193,9 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       createBookMethod.setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"));
       createBookMethod.setRetryParams(RETRY_PARAM_DEFINITIONS.get("default"));
 
-      publishSeriesMethod = new ApiCallableBuilder<>(LibraryServiceGrpc.METHOD_PUBLISH_SERIES);
+      publishSeriesMethod = new BundlableApiCallableBuilder<>(
+          LibraryServiceGrpc.METHOD_PUBLISH_SERIES,
+          PUBLISH_SERIES_BUNDLING_DESC);
       publishSeriesMethod.setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"));
       publishSeriesMethod.setRetryParams(RETRY_PARAM_DEFINITIONS.get("default"));
 
@@ -255,7 +263,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   }
 
   /**
-   * Returns the ApiCallableBuilder for the API method createShelf.
+   * Returns the builder for the API method createShelf.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
@@ -265,7 +273,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   }
 
   /**
-   * Returns the ApiCallableBuilder for the API method getShelf.
+   * Returns the builder for the API method getShelf.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
@@ -275,8 +283,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   }
 
   /**
-   * Returns the PageStreamingApiCallableBuilder for the API method
-   * listShelves.
+   * Returns the builder for the API method listShelves.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
@@ -287,7 +294,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   }
 
   /**
-   * Returns the ApiCallableBuilder for the API method deleteShelf.
+   * Returns the builder for the API method deleteShelf.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
@@ -297,7 +304,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   }
 
   /**
-   * Returns the ApiCallableBuilder for the API method mergeShelves.
+   * Returns the builder for the API method mergeShelves.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
@@ -307,7 +314,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   }
 
   /**
-   * Returns the ApiCallableBuilder for the API method createBook.
+   * Returns the builder for the API method createBook.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
@@ -317,17 +324,17 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   }
 
   /**
-   * Returns the ApiCallableBuilder for the API method publishSeries.
+   * Returns the builder for the API method publishSeries.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public ApiCallableBuilder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesMethod() {
+  public BundlableApiCallableBuilder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesMethod() {
     return methods.publishSeriesMethod;
   }
 
   /**
-   * Returns the ApiCallableBuilder for the API method getBook.
+   * Returns the builder for the API method getBook.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
@@ -337,8 +344,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   }
 
   /**
-   * Returns the PageStreamingApiCallableBuilder for the API method
-   * listBooks.
+   * Returns the builder for the API method listBooks.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
@@ -349,7 +355,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   }
 
   /**
-   * Returns the ApiCallableBuilder for the API method deleteBook.
+   * Returns the builder for the API method deleteBook.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
@@ -359,7 +365,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   }
 
   /**
-   * Returns the ApiCallableBuilder for the API method updateBook.
+   * Returns the builder for the API method updateBook.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
@@ -369,7 +375,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   }
 
   /**
-   * Returns the ApiCallableBuilder for the API method moveBook.
+   * Returns the builder for the API method moveBook.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
@@ -379,8 +385,8 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   }
 
 
-  private static PageDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
-      new PageDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf>() {
+  private static PageStreamingDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
+      new PageStreamingDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf>() {
         @Override
         public Object emptyToken() {
           return "";
@@ -403,8 +409,8 @@ public class LibraryServiceSettings extends ServiceApiSettings {
         }
       };
 
-  private static PageDescriptor<ListBooksRequest, ListBooksResponse, Book> LIST_BOOKS_PAGE_STR_DESC =
-      new PageDescriptor<ListBooksRequest, ListBooksResponse, Book>() {
+  private static PageStreamingDescriptor<ListBooksRequest, ListBooksResponse, Book> LIST_BOOKS_PAGE_STR_DESC =
+      new PageStreamingDescriptor<ListBooksRequest, ListBooksResponse, Book>() {
         @Override
         public Object emptyToken() {
           return "";
@@ -424,6 +430,69 @@ public class LibraryServiceSettings extends ServiceApiSettings {
         @Override
         public Iterable<Book> extractResources(ListBooksResponse payload) {
           return payload.getBooksList();
+        }
+      };
+
+  private static BundlingDescriptor<PublishSeriesRequest, PublishSeriesResponse> PUBLISH_SERIES_BUNDLING_DESC =
+      new BundlingDescriptor<PublishSeriesRequest, PublishSeriesResponse>() {
+        @Override
+        public String getBundlePartitionKey(PublishSeriesRequest request) {
+          return request.getEdition() + "|" + request.getName();
+        }
+
+        @Override
+        public PublishSeriesRequest mergeRequests(Collection<PublishSeriesRequest> requests) {
+          PublishSeriesRequest firstRequest = requests.iterator().next();
+
+          List<Book> elements = new ArrayList<>();
+          for (PublishSeriesRequest request : requests) {
+            elements.addAll(request.getBooksList());
+          }
+
+          PublishSeriesRequest bundleRequest =
+              PublishSeriesRequest.newBuilder()
+                  .setEdition(firstRequest.getEdition())
+                  .setName(firstRequest.getName())
+                  .addAllBooks(elements)
+                  .build();
+          return bundleRequest;
+        }
+
+        @Override
+        public void splitResponse(
+            PublishSeriesResponse bundleResponse,
+            Collection<? extends RequestIssuer<PublishSeriesRequest, PublishSeriesResponse>> bundle) {
+          int bundleMessageIndex = 0;
+          for (RequestIssuer<PublishSeriesRequest, PublishSeriesResponse> responder : bundle) {
+            List<String> subresponseElements = new ArrayList<>();
+            int subresponseCount = responder.getRequest().getBooksCount();
+            for (int i = 0; i < subresponseCount; i++) {
+              subresponseElements.add(bundleResponse.getBookNames(bundleMessageIndex));
+              bundleMessageIndex += 1;
+            }
+            PublishSeriesResponse response =
+                PublishSeriesResponse.newBuilder().addAllBookNames(subresponseElements).build();
+            responder.setResponse(response);
+          }
+        }
+
+        @Override
+        public void splitException(
+            Throwable throwable,
+            Collection<? extends RequestIssuer<PublishSeriesRequest, PublishSeriesResponse>> bundle) {
+          for (RequestIssuer<PublishSeriesRequest, PublishSeriesResponse> responder : bundle) {
+            responder.setException(throwable);
+          }
+        }
+
+        @Override
+        public long countElements(PublishSeriesRequest request) {
+          return request.getBooksCount();
+        }
+
+        @Override
+        public long countBytes(PublishSeriesRequest request) {
+          return request.getSerializedSize();
         }
       };
 

@@ -57,8 +57,8 @@ public class BundlingConfig {
 
     String subresponseFieldName = bundlingConfig.getBundleDescriptor().getSubresponseField();
     Field subresponseField;
-    if (subresponseFieldName.isEmpty()) {
-      subresponseField = method.getInputType().getMessageType().lookupField(subresponseFieldName);
+    if (!subresponseFieldName.isEmpty()) {
+      subresponseField = method.getOutputType().getMessageType().lookupField(subresponseFieldName);
     } else {
       subresponseField = null;
     }

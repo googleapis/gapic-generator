@@ -2,6 +2,7 @@ package io.gapi.vgen.java;
 
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
@@ -14,6 +15,7 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -413,5 +415,18 @@ public class JavaLanguageProvider extends LanguageProvider {
               + "but expected TYPE_STRING or TYPE_BYTES",
               field.getFullName(), field.getType().getKind()));
     }
+  }
+
+  // Workaround for the fact that quotes can't be used in a snippet @join
+  public String partitionKeyCode(ImmutableList<FieldSelector> discriminatorFields) {
+    StringBuffer buf = new StringBuffer();
+    for (int i = 0; i < discriminatorFields.size(); i++) {
+      if (i > 0) {
+        buf.append(" + \"|\" + ");
+      }
+      String simpleName = discriminatorFields.get(i).getLastField().getSimpleName();
+      buf.append("request.get" + lowerUnderscoreToUpperCamel(simpleName) + "()");
+    }
+    return buf.toString();
   }
 }

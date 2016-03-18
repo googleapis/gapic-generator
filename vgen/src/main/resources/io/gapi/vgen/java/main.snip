@@ -38,7 +38,6 @@
 @end
 
 @private alwaysImport() fill
-  {@context.addImport("com.google.api.gax.grpc.ApiCallSettings")}
   {@context.addImport("com.google.api.gax.grpc.ApiCallable")}
   {@context.addImport("com.google.api.gax.protobuf.PathTemplate")}
   {@context.addImport("io.grpc.ManagedChannel")}
@@ -226,10 +225,27 @@
       @join method : service.getMethods
         @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-             isPageStreaming = methodConfig.isPageStreaming
-          this.{@methodName}Callable = settings.{@methodName}Method().build(settings);
-          @if {@isPageStreaming}
-            this.{@methodName}IterableCallable = settings.{@methodName}Method().buildPageStreaming(settings);
+             isPageStreaming = methodConfig.isPageStreaming, \
+             isBundling = methodConfig.isBundling
+          @if {@isBundling}
+            @let inTypeName = context.typeName(method.getInputType), \
+                 outTypeName = context.typeName(method.getOutputType), \
+                 dummy = context.addImport("com.google.api.gax.grpc.ApiCallable.BundlableApiCallableInfo"), \
+                 dummy2 = context.addImport("com.google.api.gax.grpc.BundlerFactory")
+              BundlableApiCallableInfo<{@inTypeName}, {@outTypeName}> bundlable{@method.getSimpleName} =
+                  settings.{@methodName}Method().buildBundlable(settings);
+              this.{@methodName}Callable = bundlable{@method.getSimpleName}.getApiCallable();
+              BundlerFactory<{@inTypeName}, {@outTypeName}> {@methodName}BundlerFactory =
+                 bundlable{@method.getSimpleName}.getBundlerFactory();
+              if ({@methodName}BundlerFactory != null) {
+                this.closeables.add({@methodName}BundlerFactory);
+              }
+            @end
+          @else
+            this.{@methodName}Callable = settings.{@methodName}Method().build(settings);
+            @if {@isPageStreaming}
+              this.{@methodName}IterableCallable = settings.{@methodName}Method().buildPageStreaming(settings);
+            @end
           @end
         @end
       @end

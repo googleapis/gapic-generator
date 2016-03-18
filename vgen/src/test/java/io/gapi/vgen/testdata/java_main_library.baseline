@@ -33,8 +33,9 @@
 
 package com.google.gcloud.pubsub.spi;
 
-import com.google.api.gax.grpc.ApiCallSettings;
 import com.google.api.gax.grpc.ApiCallable;
+import com.google.api.gax.grpc.ApiCallable.BundlableApiCallableInfo;
+import com.google.api.gax.grpc.BundlerFactory;
 import com.google.api.gax.protobuf.PathTemplate;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.CreateBookRequest;
@@ -250,7 +251,14 @@ public class LibraryServiceApi implements AutoCloseable {
     this.deleteShelfCallable = settings.deleteShelfMethod().build(settings);
     this.mergeShelvesCallable = settings.mergeShelvesMethod().build(settings);
     this.createBookCallable = settings.createBookMethod().build(settings);
-    this.publishSeriesCallable = settings.publishSeriesMethod().build(settings);
+    BundlableApiCallableInfo<PublishSeriesRequest, PublishSeriesResponse> bundlablePublishSeries =
+        settings.publishSeriesMethod().buildBundlable(settings);
+    this.publishSeriesCallable = bundlablePublishSeries.getApiCallable();
+    BundlerFactory<PublishSeriesRequest, PublishSeriesResponse> publishSeriesBundlerFactory =
+       bundlablePublishSeries.getBundlerFactory();
+    if (publishSeriesBundlerFactory != null) {
+      this.closeables.add(publishSeriesBundlerFactory);
+    }
     this.getBookCallable = settings.getBookMethod().build(settings);
     this.listBooksCallable = settings.listBooksMethod().build(settings);
     this.listBooksIterableCallable = settings.listBooksMethod().buildPageStreaming(settings);
