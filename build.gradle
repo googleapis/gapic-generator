@@ -28,6 +28,8 @@ subprojects {
 
   group = "io.gapi"
   version = "0.0.0-SNAPSHOT"
+  // url to the snapshot repository of a private maven repo.
+  def privateSnapshotRepo = "http://104.197.230.53:8081/nexus/content/repositories/snapshots/"
 
   // Dependencies
   // ------------
@@ -46,6 +48,7 @@ subprojects {
       snakeyaml: 'org.yaml:snakeyaml:1.16',
 
       // Gapi
+      // TODO(cbao): Use released version instead of snapshot.
       toolsFx: 'io.gapi:gapi-tools-framework:0.0.0-SNAPSHOT',
 
       // Testing
@@ -70,6 +73,10 @@ subprojects {
       // For 0.7.2-SNAPSHOT of protobuf gradle plugin. This should be removed once
       // this version is releaed.
       url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+    maven {
+      // Private maven repo.
+      url privateSnapshotRepo
     }
     mavenLocal()
   }
@@ -169,6 +176,31 @@ subprojects {
     doFirst {
       delete file("${eclipseSettingsDir}/org.eclipse.jdt.apt.core.prefs"),
         file('.factorypath')
+    }
+  }
+
+  uploadArchives {
+    repositories {
+      mavenDeployer {
+        snapshotRepository(url: privateSnapshotRepo) {
+          authentication(userName: privateOssrhUsername, password: privateOssrhPassword)
+        }
+
+        pom.project {
+          name 'Gapi Tools'
+          packaging 'jar'
+          description 'Google API tools frameworks.'
+          url 'http://www.googleapis.com'
+
+
+          licenses {
+            license {
+              name 'The Apache License, Version 2.0'
+              url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            }
+          }
+        }
+      }
     }
   }
 }
