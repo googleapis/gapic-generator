@@ -156,6 +156,10 @@ public class Synchronizer extends SimpleFileVisitor<Path> {
               CharStreams.toString(stdout));
           return FileVisitResult.TERMINATE;
         }
+        if (!Files.exists(baselinePath)) {
+          // If the baseline does not yet exist, create it from output.
+          Files.copy(sourcePath, baselinePath);
+        }
       } catch (InterruptedException e) {
         error("interrupted during merge conflict resolution for '%s', aborting. Output:%n%s",
             relativePath,
