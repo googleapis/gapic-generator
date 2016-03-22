@@ -59,7 +59,7 @@
     {@pathTemplateMethods(service)}
     {@methods(service)}
 
-    {@streamables(service)}
+    {@iterators(service)}
 @end
 
 @private globals(service)
@@ -194,45 +194,76 @@
              isPageStreaming = methodConfig.isPageStreaming, \
              isFlattening = methodConfig.isFlattening
             @if {@isPageStreaming}
-                @let streamableTypeName = context.getStreamableTypeName(method), \
-                     pageStreaming = methodConfig.getPageStreaming(), \
-                     resourceTypeName = context.getResourceTypeName(pageStreaming.getResourcesField())
+                @let pageStreaming = methodConfig.getPageStreaming(), \
+                     iteratorTypeName = context.getIteratorTypeName(pageStreaming), \
+                     iteratorPageTypeName = context.getIteratorPageTypeName(pageStreaming), \
+                     resourceFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getResourcesField().getSimpleName), \
+                     requestTokenFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getRequestTokenField().getSimpleName), \
+                     responseTokenFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getResponseTokenField().getSimpleName), \
+                     tokenType = context.getNextPageTokenType(service, pageStreaming), \
+                     tokenZeroValue = context.zeroValue(pageStreaming.getRequestTokenField().getType)
 
                     {@methodComment(method)}
-                    func (api *{@context.getVeneerName(service)}) {@methodName}Streamable(req {@inTypeName}) gax.PageStreamable {
-                    	return &{@streamableTypeName}{req: req, api: api}
-                    }
-
-                    {@methodComment(method)}
-                    func (api *{@context.getVeneerName(service)}) {@methodName}(ctx context.Context, req {@inTypeName}, f func({@resourceTypeName}) bool, opts ...gax.CallOption) error {
+                    func (api *{@context.getVeneerName(service)}) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) (*{@iteratorTypeName}, error) {
                     	opts = append(api.CallOptions["{@methodName}"], opts...)
-                    	return gax.PageStream(ctx, api.{@methodName}Streamable(req), func(obj interface{}) bool {
-                    		return f(obj.({@resourceTypeName}))
-                    	}, opts...)
+                    	@if {@method.getResponseStreaming}
+                    	result, err := gax.Invoke(ctx, req, api.{@lowerMethodName}, opts...)
+                    	if err != nil {
+                    		return nil, err
+                    	}
+                    	receiver := result.({@context.getStreamReceiver(service, method)})
+                    	return &{@iteratorTypeName}{
+                    		apiCall: func() ({@iteratorPageTypeName}, error) {
+                    			resp, err := receiver.Recv()
+                    			if err != nil {
+                    				return {@iteratorPageTypeName}{}, err
+                    			}
+                    			return {@iteratorPageTypeName}{
+                    				Items: resp.{@resourceFieldName},
+                    				NextPageToken: resp.{@responseTokenFieldName},
+                    			}, nil
+                    		},
+                    	}, nil
+                    	@else
+                    	atLastPage := false
+                    	return &{@iteratorTypeName}{
+                    		apiCall: func() ({@iteratorPageTypeName}, error) {
+                    			if atLastPage {
+                    				return {@iteratorPageTypeName}{}, io.EOF
+                    			}
+                    			result, err := gax.Invoke(ctx, req, api.{@lowerMethodName}, opts...)
+                    			if err != nil {
+                    				return {@iteratorPageTypeName}{}, err
+                    			}
+                    			resp := result.({@outTypeName})
+                    			if resp.{@responseTokenFieldName} == {@tokenZeroValue} {
+                    				atLastPage = true
+                    			} else {
+                    				req.{@requestTokenFieldName} = resp.{@responseTokenFieldName}
+                    			}
+                    			return {@iteratorPageTypeName}{
+                    				Items: resp.{@resourceFieldName},
+                    				NextPageToken: resp.{@responseTokenFieldName},
+                    			}, nil
+                    		},
+                    	}, nil
+                    	@end
                     }
 
                     @if {@isFlattening}
                         @let fields = context.getFlatteningFields(methodConfig)
                             {@flattenedMethodComment(method, fields)}
-                            func (api *{@context.getVeneerName(service)}) {@methodName}With(ctx context.Context, {@flattenedParameters(fields)} f func({@resourceTypeName}) bool, opts ...gax.CallOption) error {
+                            func (api *{@context.getVeneerName(service)}) {@methodName}With(ctx context.Context, {@flattenedParameters(fields)} opts ...gax.CallOption) (*{@iteratorTypeName}, error) {
                             	return api.{@methodName}(ctx, {@context.constructionExpr(method.getInputType)}{
                             		@join field : fields
-                            		{@context.lowerUnderscoreToUpperCamel(field.getSimpleName)}: {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)},
+                             		{@context.lowerUnderscoreToUpperCamel(field.getSimpleName)}: {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)},
                             		@end
-                            	}, f, opts...)
+                            	}, opts...)
                             }
 
-                            {@flattenedMethodComment(method, fields)}
-                            func (api *{@context.getVeneerName(service)}) {@methodName}StreamableWith({@flattenedParametersStreamable(fields)}) gax.PageStreamable {
-                            	return api.{@methodName}Streamable({@context.constructionExpr(method.getInputType)}{
-                            		@join field : fields
-                            		{@context.lowerUnderscoreToUpperCamel(field.getSimpleName)}: {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)},
-                            		@end
-                            	})
-                            }
                         @end
                     @end
-              @end
+                @end
             @else
 
                 {@methodComment(method)}
@@ -251,15 +282,16 @@
                         func (api *{@context.getVeneerName(service)}) {@methodName}With(ctx context.Context, {@flattenedParameters(fields)} opts ...gax.CallOption) ({@outTypeName}, error) {
                         	return api.{@methodName}(ctx, {@context.constructionExpr(method.getInputType)}{
                         		@join field : fields
-                        		{@context.lowerUnderscoreToUpperCamel(field.getSimpleName)}: {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)},
+                         		{@context.lowerUnderscoreToUpperCamel(field.getSimpleName)}: {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)},
                         		@end
                         	}, opts...)
                         }
+
                     @end
                 @end
             @end
 
-
+            // {@lowerMethodName} is a gax.APICall that calls api.client.{@methodName}.
             func (api *{@context.getVeneerName(service)}) {@lowerMethodName}(ctx context.Context, req interface{}) (interface{}, error) {
             	return api.client.{@methodName}(ctx, req.({@inTypeName}))
             }
@@ -296,12 +328,6 @@
     {@manualEdit()}
 @end
 
-@private flattenedParametersStreamable(fields)
-    @join field : fields on ", "
-        {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)} {@context.typeName(field.getType)}
-    @end
-@end
-
 @private flattenedParameters(fields)
     @join field : fields on " "
         {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)} {@context.typeName(field.getType)},
@@ -311,120 +337,60 @@
 @private flattenedBuilder(fields)
 @end
 
-@private streamables(service)
-    // PageStreamables.
+@private iterators(service)
+    // Iterators.
     //
-    @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service), \
-         apiName = context.getVeneerName(service)
-        @join method : context.messages.filterPageStreamingMethods(interfaceConfig, service.getMethods)
-            @let methodConfig = interfaceConfig.getMethodConfig(method), \
-                 methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
-                 inTypeName = context.typeName(method.getInputType), \
-                 outTypeName = context.typeName(method.getOutputType), \
-                 streamableTypeName = context.getStreamableTypeName(method), \
-                 pageStreaming = methodConfig.getPageStreaming(), \
-                 resourceFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getResourcesField().getSimpleName), \
-                 requestTokenFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getRequestTokenField().getSimpleName), \
-                 responseTokenFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getResponseTokenField().getSimpleName), \
-                 tokenZeroValue = context.zeroValue(pageStreaming.getRequestTokenField().getType)
-              @if {@method.getResponseStreaming}
-                {@streamingStreamer(apiName, methodName, inTypeName, outTypeName, streamableTypeName, context.getStreamReceiver(service, method), resourceFieldName, requestTokenFieldName, responseTokenFieldName, tokenZeroValue)}
-              @else
-                {@pagingStreamer(apiName, methodName, inTypeName, outTypeName, streamableTypeName, resourceFieldName, requestTokenFieldName, responseTokenFieldName, tokenZeroValue)}
-              @end
-            @end
+    @join pageStreaming : context.getPageStreamingConfigs(service)
+        @let iteratorTypeName = context.getIteratorTypeName(pageStreaming), \
+             iteratorPageTypeName = context.getIteratorPageTypeName(pageStreaming), \
+             tokenType = context.getNextPageTokenType(service, pageStreaming), \
+             resourceFieldType = context.getResourceTypeName(pageStreaming.getResourcesField())
+
+            // {@iteratorPageTypeName} represents a page in a stream of {@iteratorTypeName}.
+            // This will be updated through {@iteratorTypeName}.Advance.
+            type {@iteratorPageTypeName} struct {
+            	// The elements in the current page.
+            	Items []{@resourceFieldType}
+
+            	// The token to get the next page response. This can be used to resume the iteration.
+            	NextPageToken {@tokenType}
+            }
+
+            // {@iteratorTypeName} manages a stream of {@resourceFieldType}.
+            type {@iteratorTypeName} struct {
+            	// The current page data.
+            	Page         {@iteratorPageTypeName}
+            	currentIndex int
+            	apiCall      func() ({@iteratorPageTypeName}, error)
+            }
+
+            // Advance moves to the next page and updates its internal data.
+            // This returns io.EOF if no more pages exist.
+            func (iterator *{@iteratorTypeName}) Advance() error {
+            	page, err := iterator.apiCall()
+            	if err == nil {
+            		iterator.Page = page
+            	}
+            	return err
+            }
+
+            // Next returns the next element in the stream. This returns io.EOF at the end of
+            // the stream.
+            func (iterator *{@iteratorTypeName}) Next() ({@resourceFieldType}, error) {
+            	for iterator.currentIndex >= len(iterator.Page.Items) {
+            		err := iterator.Advance()
+            		if err != nil {
+            			return nil, err
+            		}
+            		iterator.currentIndex = 0
+            	}
+            	result := iterator.Page.Items[iterator.currentIndex]
+            	iterator.currentIndex++
+            	return result, nil
+            }
         @end
     @end
 @end
 
-@private streamerCommon(streamableTypeName, resourceFieldName)
-    func (streamable *{@streamableTypeName}) Len() int {
-    	if streamable.resp == nil {
-    		return 0
-    	}
-    	return len(streamable.resp.{@resourceFieldName})
-    }
-
-    func (streamable *{@streamableTypeName}) GetData(i int) interface{} {
-    	if streamable.resp == nil {
-    		return nil
-     	}
-     	return streamable.resp.{@resourceFieldName}[i]
-    }
-@end
-
-@private pagingStreamer(apiName, methodName, inTypeName, outTypeName, streamableTypeName, resourceFieldName, requestTokenFieldName, responseTokenFieldName, tokenZeroValue)
-
-    // {@streamableTypeName}
-    //
-    type {@streamableTypeName} struct {
-    	req  {@inTypeName}
-    	resp {@outTypeName}
-    	api  *{@apiName}
-    }
-
-    func (streamable *{@streamableTypeName}) ApiCall(ctx context.Context, opts ...gax.CallOption) error {
-    	resp, err := gax.Invoke(ctx, streamable.req, streamable.api.{@methodName}, opts...)
-    	if err == nil {
-    		streamable.resp = resp.({@outTypeName})
-    	}
-    	return err
-    }
-
-    func (streamable *{@streamableTypeName}) NextPage() error {
-    	if streamable.resp == nil {
-    		return io.EOF
-    	}
-    	token := streamable.resp.{@responseTokenFieldName}
-    	if token == {@tokenZeroValue} {
-    		return io.EOF
-    	}
-    	streamable.req.{@requestTokenFieldName} = token
-    	return nil
-    }
-
-    {@streamerCommon(streamableTypeName, resourceFieldName)}
-@end
-
-@private streamingStreamer(apiName, methodName, inTypeName, outTypeName, streamableTypeName, streamReceiverName, resourceFieldName, requestTokenFieldName, responseTokenFieldName, tokenZeroValue)
-
-    // {@streamableTypeName}
-    //
-    type {@streamableTypeName} struct {
-    	req       {@inTypeName}
-    	resp      {@outTypeName}
-    	api       *{@apiName}
-    	receiver  {@streamReceiverName}
-    }
-
-    func (streamable *{@streamableTypeName}) ApiCall(ctx context.Context, opts ...gax.CallOption) error {
-    	if streamable.receiver == nil {
-    		receiver, err := gax.Invoke(ctx, streamable.req, streamable.api.{@methodName}, opts...)
-    		if err != nil {
-                        return err
-    		}
-    		streamable.receiver = receiver.({@streamReceiverName})
-    		streamable.resp, err = streamable.receiver.Recv()
-    		return err
-    	}
-    	return nil
-    }
-
-    func (streamable *{@streamableTypeName}) NextPage() error {
-    	if streamable.receiver == nil {
-    		return io.EOF
-    	}
-    	var err error
-    	streamable.resp, err = streamable.receiver.Recv()
-    	if err == io.EOF {
-    		return err
-    	}
-    	token := streamable.resp.{@responseTokenFieldName}
-    	if token != {@tokenZeroValue} {
-    		streamable.req.{@requestTokenFieldName} = token
-    	}
-    	return nil
-    }
-
-    {@streamerCommon(streamableTypeName, resourceFieldName)}
+@private iterator(iteratorTypeName, resourceFieldType)
 @end

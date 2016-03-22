@@ -26,6 +26,7 @@ import io.gapi.vgen.ApiConfig;
 import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.LanguageProvider;
 import io.gapi.vgen.MethodConfig;
+import io.gapi.vgen.PageStreamingConfig;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
@@ -283,10 +284,61 @@ public class GoLanguageProvider extends LanguageProvider {
   }
 
   /**
-   * Returns the Go type name for the PageStreamable implementation of the method.
+   * Returns the list of page streaming configs, grouped by the element type.
+   * In Go, the iterator structs are defined per element type.
    */
-  public String getStreamableTypeName(Method method) {
-    return upperCamelToLowerCamel(method.getSimpleName()) + "Streamable";
+  public Iterable<PageStreamingConfig> getPageStreamingConfigs(Interface service) {
+    Map<String, PageStreamingConfig> streamingConfigs = new LinkedHashMap<>();
+    for (Method method : service.getMethods()) {
+      MethodConfig methodConfig =
+          getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+
+      if (!methodConfig.isPageStreaming()) {
+        continue;
+      }
+      PageStreamingConfig config = methodConfig.getPageStreaming();
+      streamingConfigs.putIfAbsent(getIteratorTypeName(config), config);
+    }
+    return streamingConfigs.values();
+  }
+
+  public String getNextPageTokenType(Interface service, PageStreamingConfig config) {
+    TypeRef tokenType = config.getRequestTokenField().getType();
+    String iteratorType = getIteratorTypeName(config);
+    Map<String, PageStreamingConfig> streamingConfigs = new LinkedHashMap<>();
+    for (Method method : service.getMethods()) {
+      MethodConfig methodConfig =
+          getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+
+      if (!methodConfig.isPageStreaming()) {
+        continue;
+      }
+      PageStreamingConfig aConfig = methodConfig.getPageStreaming();
+      if (aConfig == config || !getIteratorTypeName(aConfig).equals(iteratorType)) {
+        continue;
+      }
+      TypeRef aTokenType = aConfig.getRequestTokenField().getType();
+      if (!aTokenType.equals(tokenType)) {
+        return "interface{}";
+      }
+    }
+    return typeName(tokenType);
+  }
+
+  /**
+   * Returns the Go type name for the page struct in the page-streaming iterator.
+   */
+  public String getIteratorPageTypeName(PageStreamingConfig config) {
+    MessageType messageType = config.getResourcesField().getType().getMessageType();
+    return messageType.getProto().getName() + "Page";
+  }
+
+  /**
+   * Returns the Go type name for the page-streaming iterator implementation of the method.
+   */
+  public String getIteratorTypeName(PageStreamingConfig config) {
+    MessageType messageType = config.getResourcesField().getType().getMessageType();
+    return messageType.getProto().getName() + "Iterator";
   }
 
   /**
