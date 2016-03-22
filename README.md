@@ -63,3 +63,16 @@ as well as the baseline folder.
 The process currently hard-wires `kdiff3` for merging and conflict resolution. `kdiff3` runs in auto
 mode and will only pop up a UI if conflict resolution is not possible (note: X display needed in
 this case).
+
+# Deployment
+
+Use the following command to deploy Gapi tools framework to a private maven
+repository:
+
+    ./gradlew uploadArchives
+
+Note: you will need to set privateOssrhUsername and privateOssrhPassword in
+{USER_HOME}/.gradle/gradle.properties file (create one if it doesn't exist).
+
+    privateOssrhUsername=deployment
+    privateOssrhPassword=<check out go/vkit-dev-credentials>

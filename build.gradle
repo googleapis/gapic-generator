@@ -179,29 +179,35 @@ subprojects {
     }
   }
 
-  uploadArchives {
-    repositories {
-      mavenDeployer {
-        snapshotRepository(url: privateSnapshotRepo) {
-          authentication(userName: privateOssrhUsername, password: privateOssrhPassword)
-        }
+  if (project.hasProperty('privateOssrhUsername') && project.hasProperty('privateOssrhPassword')) {
+    uploadArchives {
+      repositories {
+        mavenDeployer {
+          snapshotRepository(url: privateSnapshotRepo) {
+            authentication(userName: privateOssrhUsername, password: privateOssrhPassword)
+          }
 
-        pom.project {
-          name 'Gapi Tools'
-          packaging 'jar'
-          description 'Google API tools frameworks.'
-          url 'http://www.googleapis.com'
+          pom.project {
+            name 'Gapi Tools'
+            packaging 'jar'
+            description 'Google API tools frameworks.'
+            url 'http://www.googleapis.com'
 
 
-          licenses {
-            license {
-              name 'The Apache License, Version 2.0'
-              url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            licenses {
+              license {
+                name 'The Apache License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+              }
             }
           }
         }
       }
     }
+  } else {
+    logger.warn("The uploadArchives task was skipped. The privateOssrhUsername "
+      + "and privateOssrhPassword properties need to be set correctly in "
+      + "your ~/.gradle/gradle.properties file in order to upload archives.")
   }
 }
 
