@@ -75,5 +75,4 @@ Note: you will need to set privateOssrhUsername and privateOssrhPassword in
 {USER_HOME}/.gradle/gradle.properties file (create one if it doesn't exist).
 
     privateOssrhUsername=deployment
-    privateOssrhPassword=<Check your inbox>
-
+    privateOssrhPassword=<check out go/vkit-dev-credentials>
