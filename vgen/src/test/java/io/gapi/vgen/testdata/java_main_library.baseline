@@ -85,10 +85,33 @@ import java.util.List;
  */
 @javax.annotation.Generated("by GAPIC")
 public class LibraryServiceApi implements AutoCloseable {
+  // ========
+  // Members
+  // ========
+
+  private final ManagedChannel channel;
+  private final List<AutoCloseable> closeables = new ArrayList<>();
+
+  private final ApiCallable<CreateShelfRequest, Shelf> createShelfCallable;
+  private final ApiCallable<GetShelfRequest, Shelf> getShelfCallable;
+  private final ApiCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable;
+  private final ApiCallable<ListShelvesRequest, Iterable<Shelf>>
+      listShelvesIterableCallable;
+  private final ApiCallable<DeleteShelfRequest, Empty> deleteShelfCallable;
+  private final ApiCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable;
+  private final ApiCallable<CreateBookRequest, Book> createBookCallable;
+  private final ApiCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable;
+  private final ApiCallable<GetBookRequest, Book> getBookCallable;
+  private final ApiCallable<ListBooksRequest, ListBooksResponse> listBooksCallable;
+  private final ApiCallable<ListBooksRequest, Iterable<Book>>
+      listBooksIterableCallable;
+  private final ApiCallable<DeleteBookRequest, Empty> deleteBookCallable;
+  private final ApiCallable<UpdateBookRequest, Book> updateBookCallable;
+  private final ApiCallable<MoveBookRequest, Book> moveBookCallable;
+
 
 
   public static class ResourceNames {
-    private ResourceNames() {}
 
     // =======================
     // ResourceNames Constants
@@ -115,6 +138,8 @@ public class LibraryServiceApi implements AutoCloseable {
         PathTemplate.create("shelves/{shelf}/books/{book}");
 
 
+
+    private ResourceNames() {}
 
     // ==============================
     // Resource Name Helper Functions
@@ -181,31 +206,6 @@ public class LibraryServiceApi implements AutoCloseable {
   }
 
 
-  // ========
-  // Members
-  // ========
-
-  private final ManagedChannel channel;
-  private final List<AutoCloseable> closeables = new ArrayList<>();
-
-  private final ApiCallable<CreateShelfRequest, Shelf> createShelfCallable;
-  private final ApiCallable<GetShelfRequest, Shelf> getShelfCallable;
-  private final ApiCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable;
-  private final ApiCallable<ListShelvesRequest, Iterable<Shelf>>
-      listShelvesIterableCallable;
-  private final ApiCallable<DeleteShelfRequest, Empty> deleteShelfCallable;
-  private final ApiCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable;
-  private final ApiCallable<CreateBookRequest, Book> createBookCallable;
-  private final ApiCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable;
-  private final ApiCallable<GetBookRequest, Book> getBookCallable;
-  private final ApiCallable<ListBooksRequest, ListBooksResponse> listBooksCallable;
-  private final ApiCallable<ListBooksRequest, Iterable<Book>>
-      listBooksIterableCallable;
-  private final ApiCallable<DeleteBookRequest, Empty> deleteBookCallable;
-  private final ApiCallable<UpdateBookRequest, Book> updateBookCallable;
-  private final ApiCallable<MoveBookRequest, Book> moveBookCallable;
-
-
   // ===============
   // Factory Methods
   // ===============
@@ -221,8 +221,9 @@ public class LibraryServiceApi implements AutoCloseable {
   }
 
   /**
-   * Constructs an instance of LibraryServiceApi, using the given settings. The channels are created based
-   * on the settings passed in, or defaults for any settings that are not set.
+   * Constructs an instance of LibraryServiceApi, using the given settings.
+   * The channels are created based on the settings passed in, or defaults for any
+   * settings that are not set.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
@@ -232,8 +233,9 @@ public class LibraryServiceApi implements AutoCloseable {
   }
 
   /**
-   * Constructs an instance of LibraryServiceApi, using the given settings. This is protected so that it
-   * easy to make a subclass, but otherwise, the static factory methods should be preferred.
+   * Constructs an instance of LibraryServiceApi, using the given settings.
+   * This is protected so that it easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
