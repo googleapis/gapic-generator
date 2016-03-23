@@ -250,13 +250,15 @@
         @end
       @end
 
-      closeables.add(
-        new Closeable() {
-          @@Override
-          public void close() throws IOException {
-            channel.shutdown();
-          }
-        });
+      if (settings.shouldAutoCloseChannel()) {
+        closeables.add(
+          new Closeable() {
+            @@Override
+            public void close() throws IOException {
+              channel.shutdown();
+            }
+          });
+      }
     }
   @end
 @end

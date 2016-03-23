@@ -266,13 +266,15 @@ public class LibraryServiceApi implements AutoCloseable {
     this.updateBookCallable = settings.updateBookMethod().build(settings);
     this.moveBookCallable = settings.moveBookMethod().build(settings);
 
-    closeables.add(
-      new Closeable() {
-        @Override
-        public void close() throws IOException {
-          channel.shutdown();
-        }
-      });
+    if (settings.shouldAutoCloseChannel()) {
+      closeables.add(
+        new Closeable() {
+          @Override
+          public void close() throws IOException {
+            channel.shutdown();
+          }
+        });
+    }
   }
 
   // =============
