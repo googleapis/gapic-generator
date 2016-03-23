@@ -186,17 +186,6 @@ func (client *Client) CreateShelf(ctx context.Context, req *google_example_libra
         return resp.(*google_example_library_v1.Shelf), nil
 }
 
-// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
-
-// CreateShelfWith creates a shelf, and returns the new Shelf.
-//
-// shelf: The shelf to create.
-func (client *Client) CreateShelfWith(ctx context.Context, shelf *google_example_library_v1.Shelf, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
-	return client.CreateShelf(ctx, &google_example_library_v1.CreateShelfRequest{
-		Shelf: shelf,
-	}, opts...)
-}
-
 // createShelf is a gax.APICall that calls api.client.CreateShelf.
 func (client *Client) createShelf(ctx context.Context, req interface{}) (interface{}, error) {
 	return client.client.CreateShelf(ctx, req.(*google_example_library_v1.CreateShelfRequest))
@@ -213,17 +202,6 @@ func (client *Client) GetShelf(ctx context.Context, req *google_example_library_
 		return nil, err
 	}
         return resp.(*google_example_library_v1.Shelf), nil
-}
-
-// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
-
-// GetShelfWith gets a shelf.
-//
-// name: The name of the shelf to retrieve.
-func (client *Client) GetShelfWith(ctx context.Context, name string, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
-	return client.GetShelf(ctx, &google_example_library_v1.GetShelfRequest{
-		Name: name,
-	}, opts...)
 }
 
 // getShelf is a gax.APICall that calls api.client.GetShelf.
@@ -261,14 +239,6 @@ func (client *Client) ListShelves(ctx context.Context, req *google_example_libra
 	}, nil
 }
 
-// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
-
-// ListShelvesWith lists shelves.
-func (client *Client) ListShelvesWith(ctx context.Context, opts ...gax.CallOption) (*ShelfIterator, error) {
-	return client.ListShelves(ctx, &google_example_library_v1.ListShelvesRequest{
-	}, opts...)
-}
-
 // listShelves is a gax.APICall that calls api.client.ListShelves.
 func (client *Client) listShelves(ctx context.Context, req interface{}) (interface{}, error) {
 	return client.client.ListShelves(ctx, req.(*google_example_library_v1.ListShelvesRequest))
@@ -285,17 +255,6 @@ func (client *Client) DeleteShelf(ctx context.Context, req *google_example_libra
 		return nil, err
 	}
         return resp.(*google_protobuf.Empty), nil
-}
-
-// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
-
-// DeleteShelfWith deletes a shelf.
-//
-// name: The name of the shelf to delete.
-func (client *Client) DeleteShelfWith(ctx context.Context, name string, opts ...gax.CallOption) (*google_protobuf.Empty, error) {
-	return client.DeleteShelf(ctx, &google_example_library_v1.DeleteShelfRequest{
-		Name: name,
-	}, opts...)
 }
 
 // deleteShelf is a gax.APICall that calls api.client.DeleteShelf.
@@ -318,22 +277,6 @@ func (client *Client) MergeShelves(ctx context.Context, req *google_example_libr
         return resp.(*google_example_library_v1.Shelf), nil
 }
 
-// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
-
-// MergeShelvesWith merges two shelves by adding all books from the shelf named
-// `other_shelf_name` to shelf `name`, and deletes
-// `other_shelf_name`. Returns the updated shelf.
-//
-// name: The name of the shelf we're adding books to.
-//
-// otherShelfName: The name of the shelf we're removing books from and deleting.
-func (client *Client) MergeShelvesWith(ctx context.Context, name string, otherShelfName string, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
-	return client.MergeShelves(ctx, &google_example_library_v1.MergeShelvesRequest{
-		Name: name,
-		OtherShelfName: otherShelfName,
-	}, opts...)
-}
-
 // mergeShelves is a gax.APICall that calls api.client.MergeShelves.
 func (client *Client) mergeShelves(ctx context.Context, req interface{}) (interface{}, error) {
 	return client.client.MergeShelves(ctx, req.(*google_example_library_v1.MergeShelvesRequest))
@@ -350,20 +293,6 @@ func (client *Client) CreateBook(ctx context.Context, req *google_example_librar
 		return nil, err
 	}
         return resp.(*google_example_library_v1.Book), nil
-}
-
-// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
-
-// CreateBookWith creates a book.
-//
-// name: The name of the shelf in which the book is created.
-//
-// book: The book to create.
-func (client *Client) CreateBookWith(ctx context.Context, name string, book *google_example_library_v1.Book, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
-	return client.CreateBook(ctx, &google_example_library_v1.CreateBookRequest{
-		Name: name,
-		Book: book,
-	}, opts...)
 }
 
 // createBook is a gax.APICall that calls api.client.CreateBook.
@@ -384,23 +313,6 @@ func (client *Client) PublishSeries(ctx context.Context, req *google_example_lib
         return resp.(*google_example_library_v1.PublishSeriesResponse), nil
 }
 
-// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
-
-// PublishSeriesWith creates a series of books.
-//
-// shelf: The shelf in which the series is created.
-//
-// books: The books to publish in the series.
-//
-// edition: The edition of the series
-func (client *Client) PublishSeriesWith(ctx context.Context, shelf *google_example_library_v1.Shelf, books []*google_example_library_v1.Book, edition uint32, opts ...gax.CallOption) (*google_example_library_v1.PublishSeriesResponse, error) {
-	return client.PublishSeries(ctx, &google_example_library_v1.PublishSeriesRequest{
-		Shelf: shelf,
-		Books: books,
-		Edition: edition,
-	}, opts...)
-}
-
 // publishSeries is a gax.APICall that calls api.client.PublishSeries.
 func (client *Client) publishSeries(ctx context.Context, req interface{}) (interface{}, error) {
 	return client.client.PublishSeries(ctx, req.(*google_example_library_v1.PublishSeriesRequest))
@@ -417,17 +329,6 @@ func (client *Client) GetBook(ctx context.Context, req *google_example_library_v
 		return nil, err
 	}
         return resp.(*google_example_library_v1.Book), nil
-}
-
-// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
-
-// GetBookWith gets a book.
-//
-// name: The name of the book to retrieve.
-func (client *Client) GetBookWith(ctx context.Context, name string, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
-	return client.GetBook(ctx, &google_example_library_v1.GetBookRequest{
-		Name: name,
-	}, opts...)
 }
 
 // getBook is a gax.APICall that calls api.client.GetBook.
@@ -465,20 +366,6 @@ func (client *Client) ListBooks(ctx context.Context, req *google_example_library
 	}, nil
 }
 
-// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
-
-// ListBooksWith lists books in a shelf.
-//
-// name: The name of the shelf whose books we'd like to list.
-//
-// filter: To test python built-in wrapping.
-func (client *Client) ListBooksWith(ctx context.Context, name string, filter string, opts ...gax.CallOption) (*BookIterator, error) {
-	return client.ListBooks(ctx, &google_example_library_v1.ListBooksRequest{
-		Name: name,
-		Filter: filter,
-	}, opts...)
-}
-
 // listBooks is a gax.APICall that calls api.client.ListBooks.
 func (client *Client) listBooks(ctx context.Context, req interface{}) (interface{}, error) {
 	return client.client.ListBooks(ctx, req.(*google_example_library_v1.ListBooksRequest))
@@ -495,17 +382,6 @@ func (client *Client) DeleteBook(ctx context.Context, req *google_example_librar
 		return nil, err
 	}
         return resp.(*google_protobuf.Empty), nil
-}
-
-// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
-
-// DeleteBookWith deletes a book.
-//
-// name: The name of the book to delete.
-func (client *Client) DeleteBookWith(ctx context.Context, name string, opts ...gax.CallOption) (*google_protobuf.Empty, error) {
-	return client.DeleteBook(ctx, &google_example_library_v1.DeleteBookRequest{
-		Name: name,
-	}, opts...)
 }
 
 // deleteBook is a gax.APICall that calls api.client.DeleteBook.
@@ -526,20 +402,6 @@ func (client *Client) UpdateBook(ctx context.Context, req *google_example_librar
         return resp.(*google_example_library_v1.Book), nil
 }
 
-// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
-
-// UpdateBookWith updates a book.
-//
-// name: The name of the book to update.
-//
-// book: The book to update with.
-func (client *Client) UpdateBookWith(ctx context.Context, name string, book *google_example_library_v1.Book, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
-	return client.UpdateBook(ctx, &google_example_library_v1.UpdateBookRequest{
-		Name: name,
-		Book: book,
-	}, opts...)
-}
-
 // updateBook is a gax.APICall that calls api.client.UpdateBook.
 func (client *Client) updateBook(ctx context.Context, req interface{}) (interface{}, error) {
 	return client.client.UpdateBook(ctx, req.(*google_example_library_v1.UpdateBookRequest))
@@ -556,20 +418,6 @@ func (client *Client) MoveBook(ctx context.Context, req *google_example_library_
 		return nil, err
 	}
         return resp.(*google_example_library_v1.Book), nil
-}
-
-// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
-
-// MoveBookWith moves a book to another shelf, and returns the new book.
-//
-// name: The name of the book to move.
-//
-// otherShelfName: The name of the destination shelf.
-func (client *Client) MoveBookWith(ctx context.Context, name string, otherShelfName string, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
-	return client.MoveBook(ctx, &google_example_library_v1.MoveBookRequest{
-		Name: name,
-		OtherShelfName: otherShelfName,
-	}, opts...)
 }
 
 // moveBook is a gax.APICall that calls api.client.MoveBook.
