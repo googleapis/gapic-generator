@@ -38,8 +38,8 @@ public class PythonCodeGeneratorTest  {
 
     @Override
     protected Object run() {
-      // Should generate two files -- one for the class, and
-      // the other for the configuration yaml.
+      // Should generate three files -- one for the class, one for the other for the configuration
+      // yaml, and one for the messages class
       GeneratedResult codeResult = generateForSnippet(0);
       GeneratedResult configResult = generateForSnippet(1);
       GeneratedResult messagesResult = generateForSnippet(2);
@@ -86,11 +86,14 @@ public class PythonCodeGeneratorTest  {
     protected Object run() {
       GeneratedResult codeResult = generateForSnippet(0);
       GeneratedResult configResult = generateForSnippet(1);
+      GeneratedResult messagesResult = generateForSnippet(2);
       Truth.assertThat(codeResult).isNotNull();
       Truth.assertThat(configResult).isNotNull();
+      Truth.assertThat(messagesResult).isNotNull();
       return ImmutableMap.of(
           codeResult.getFilename(), codeResult.getDoc(),
-          configResult.getFilename(), configResult.getDoc());
+          configResult.getFilename(), configResult.getDoc(),
+          messagesResult.getFilename(), messagesResult.getDoc());
     }
 
     // Tests

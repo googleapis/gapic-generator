@@ -4,6 +4,7 @@ import com.google.api.tools.framework.aspects.documentation.model.DocumentationU
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
@@ -168,16 +169,10 @@ public class PythonLanguageProvider extends LanguageProvider {
   public List<String> comments(ProtoElement element, PythonImportHandler importHandler) {
     List<String> comments;
     if (element instanceof Method) {
-      comments = methodComments((Method) element, importHandler);
+      return methodComments((Method) element, importHandler);
     } else {
-      comments = defaultComments(element);
+      return defaultComments(element);
     }
-
-    ImmutableList.Builder<String> builder = ImmutableList.builder();
-    for (int i = 0; i < comments.size(); i++) {
-      builder.add(PythonSphinxCommentFixer.sphinxify(comments.get(i)));
-    }
-    return builder.build();
   }
 
   /**
@@ -187,7 +182,8 @@ public class PythonLanguageProvider extends LanguageProvider {
     if (!element.hasAttribute(ElementDocumentationAttribute.KEY)) {
       return ImmutableList.<String>of("");
     }
-    return convertToCommentedBlock(DocumentationUtil.getScopedDescription(element));
+    return convertToCommentedBlock(PythonSphinxCommentFixer.sphinxify(
+        DocumentationUtil.getScopedDescription(element)));
   }
 
   /**
@@ -197,24 +193,29 @@ public class PythonLanguageProvider extends LanguageProvider {
   private List<String> methodComments(Method msg, PythonImportHandler importHandler) {
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
+    paramTypesBuilder.append("Args:\n");
     for (Field field : this.messages().flattenedFields(msg.getInputType())) {
       TypeRef type = field.getType();
+      boolean closingBrace = false;
+
       String cardinalityComment;
       if (type.getCardinality() == Cardinality.REPEATED) {
-        cardinalityComment = "list of ";
+        cardinalityComment = "list[";
+        closingBrace = true;
       } else {
         cardinalityComment = "";
       }
       String typeComment;
       switch (type.getKind()) {
         case TYPE_MESSAGE:
-          typeComment = "messages." + importHandler.disambiguatedClassName(type.getMessageType());
+          typeComment = ":class:`messages."
+              + importHandler.disambiguatedClassName(type.getMessageType()) + "`";
           break;
         case TYPE_ENUM:
           Preconditions.checkArgument(type.getEnumType().getValues().size() > 0,
               "enum must have a value");
-          typeComment = "enum " + importHandler.fullyQualifiedPath(type.getEnumType()) + "." +
-              type.getEnumType().getSimpleName();
+          typeComment = ":class:`" + importHandler.fullyQualifiedPath(type.getEnumType()) + "." +
+              type.getEnumType().getSimpleName() + "`";
           break;
         default:
           if (type.isPrimitive()) {
@@ -225,23 +226,39 @@ public class PythonLanguageProvider extends LanguageProvider {
           break;
       }
       paramTypesBuilder.append(
-          String.format(":type %s: %s%s\n",
-              field.getSimpleName(), cardinalityComment, typeComment));
+          String.format("  %s (%s%s%s)\n",
+              field.getSimpleName(), cardinalityComment, typeComment, closingBrace ? "]" : ""));
     }
 
-    paramTypesBuilder.append(":type options: api_callable.CallOptions");
+    paramTypesBuilder.append("  options (:class:`api_callable.CallOptions`)");
 
     String paramTypes = paramTypesBuilder.toString();
+
+    // Generate return value type
+    MessageType returnMessageType = msg.getOutputMessage();
+    String returnType;
+    if (PythonProtoElements.isEmptyMessage(returnMessageType)) {
+      returnType = "Returns:\n  None.";
+    } else {
+      String returnPath = PythonProtoElements.prefixInFile(returnMessageType);
+      returnPath = Strings.isNullOrEmpty(returnPath) ? "" : returnPath + ".";
+      returnType = "Returns:\n  A :class:`"
+          + importHandler.fileToModule(returnMessageType.getFile()) + "." + returnPath
+          + returnMessageType.getSimpleName() + "` object.";
+    }
 
     // Generate comment contents
     StringBuilder contentBuilder = new StringBuilder();
     if (msg.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      contentBuilder.append(DocumentationUtil.getScopedDescription(msg));
+      contentBuilder.append(PythonSphinxCommentFixer.sphinxify(
+          DocumentationUtil.getScopedDescription(msg)));
       if (!Strings.isNullOrEmpty(paramTypes)) {
         contentBuilder.append("\n\n");
       }
     }
     contentBuilder.append(paramTypes);
+    contentBuilder.append("\n\n");
+    contentBuilder.append(returnType);
 
     return convertToCommentedBlock(contentBuilder.toString());
   }

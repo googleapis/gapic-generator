@@ -6,7 +6,6 @@ import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
@@ -128,26 +127,9 @@ public class PythonImportHandler {
    * Ex: for path.to.type.HelloWorld, it returns path.to.type
    */
   public String fullyQualifiedPath(ProtoElement elt) {
-    String path = prefixInFile(elt);
+    String path = PythonProtoElements.prefixInFile(elt);
     path = Strings.isNullOrEmpty(path) ? "" : "." + path;
     return fileToModule(elt.getFile()) + path;
-  }
-
-  /**
-   * The dot-separated nested messages that contain an element in a Proto file.
-   * Returns null if the element is top-level or a proto file itself.
-   */
-  private static String prefixInFile(ProtoElement elt) {
-    ProtoElement parent = elt.getParent();
-    // elt is a proto file itself, or elt is top-level
-    if (parent == null || parent.getParent() == null) {
-      return null;
-    }
-    String prefix = parent.getSimpleName();
-    for (parent = parent.getParent(); parent.getParent() != null; parent = parent.getParent()) {
-      prefix = parent.getSimpleName() + "." + prefix;
-    }
-    return prefix;
   }
 
   /*
@@ -230,7 +212,7 @@ public class PythonImportHandler {
     return all;
   }
 
-  private String fileToModule(ProtoFile file) {
+  public String fileToModule(ProtoFile file) {
     return fileImports.get(file);
   }
 }

@@ -1,6 +1,5 @@
 package io.gapi.vgen.py;
 
-import java.lang.StringBuffer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,14 +9,14 @@ import java.util.regex.Pattern;
 public class PythonSphinxCommentFixer {
 
   private static final Pattern SINGLE_BACK_QUOTE_PATTERN = Pattern.compile(
-      "(?<!`)`{1}(?!`)");
+      "(?<!`)`(?!`)");
   private static final Pattern CLOUD_LINK_PATTERN = Pattern.compile(
-      "\\[([^\\)]+)\\]\\(([^\\)]+)\\)");
+      "\\[([^\\]]+)\\]\\(([^\\)]+)\\)");
   private static final Pattern PROTO_LINK_PATTERN = Pattern.compile(
-      "\\[([^\\)]+)\\]\\[([^\\)]+)\\]");
+      "\\[([^\\]]+)\\]\\[[^\\]]+\\]");
 
   /**
-   * Returns a Sphinx formatted comment string.
+   * Returns a Sphinx-formatted comment string.
    */
   public static String sphinxify(String comment) {
     comment = SINGLE_BACK_QUOTE_PATTERN.matcher(comment).replaceAll("``");
@@ -37,6 +36,7 @@ public class PythonSphinxCommentFixer {
       do {
         m.appendReplacement(sb, String.format("``%s``", m.group(1)));
       } while (m.find());
+      m.appendTail(sb);
       return sb.toString();
   }
 
@@ -53,6 +53,7 @@ public class PythonSphinxCommentFixer {
         m.appendReplacement(
             sb, String.format("`%s <https://cloud.google.com%s>`_", m.group(1), m.group(2)));
       } while (m.find());
+      m.appendTail(sb);
       return sb.toString();
   }
 }
