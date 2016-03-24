@@ -61,10 +61,6 @@
 @end
 
 @private resourceConstants(service)
-  // =======================
-  // ResourceNames Constants
-  // =======================
-
   {@pathTemplateConstants(service)}
 
 @end
@@ -92,10 +88,6 @@
 @end
 
 @private resourceFunctions(service)
-  // ==============================
-  // Resource Name Helper Functions
-  // ==============================
-
   @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
     {@formatResourceFunctions(collectionConfig)}
   @end
@@ -160,10 +152,6 @@
 @end
 
 @private members(service)
-  // ========
-  // Members
-  // ========
-
   private final ManagedChannel channel;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
@@ -188,10 +176,6 @@
 
 @private constructors(service)
   @let className = context.getVeneerName(service)
-    // ===============
-    // Factory Methods
-    // ===============
-
     /**
      * Constructs an instance of {@className} with default settings.
      *
@@ -264,10 +248,6 @@
 @end
 
 @private callables(service)
-  // =============
-  // Service Calls
-  // =============
-
   @join method : service.getMethods
     @let callableConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
          methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
@@ -315,10 +295,6 @@
 @end
 
 @private cleanupSection()
-  // ========
-  // Cleanup
-  // ========
-
   /**
    * Initiates an orderly shutdown in which preexisting calls continue but new calls are immediately
    * cancelled.
