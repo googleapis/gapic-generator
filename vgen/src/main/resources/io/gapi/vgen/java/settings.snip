@@ -43,7 +43,8 @@
   {@context.addImport("com.google.api.gax.core.ConnectionSettings")}
   {@context.addImport("com.google.api.gax.core.RetryParams")}
   {@context.addImport("com.google.api.gax.grpc.ApiCallSettings")}
-  {@context.addImport("com.google.api.gax.grpc.ApiCallable.ApiCallableBuilder")}
+  {@context.addImport("com.google.api.gax.grpc.ApiCallable")}
+  {@context.addImport("com.google.api.gax.grpc.ApiCallable.Builder")}
   {@context.addImport("com.google.api.gax.grpc.ServiceApiSettings")}
   {@context.addImport("com.google.common.collect.ImmutableList")}
   {@context.addImport("com.google.common.collect.ImmutableMap")}
@@ -151,18 +152,18 @@
       @if {@isPageStreaming}
         @let pageStreaming = methodConfig.getPageStreaming(), \
              resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
-             dummy = context.addImport("com.google.api.gax.grpc.ApiCallable.PageStreamingApiCallableBuilder")
-          private final PageStreamingApiCallableBuilder<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>
+             dummy = context.addImport("com.google.api.gax.grpc.ApiCallable.PageStreamingBuilder")
+          private final ApiCallable.PageStreamingBuilder<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>
               {@methodName}Method;
         @end
       @else
         @if {@isBundling}
           @let bundling = methodConfig.getBundling(), \
-               dummy = context.addImport("com.google.api.gax.grpc.ApiCallable.BundlableApiCallableBuilder")
-            private final BundlableApiCallableBuilder<{@inTypeName}, {@outTypeName}> {@methodName}Method;
+               dummy = context.addImport("com.google.api.gax.grpc.ApiCallable.BundlableBuilder")
+            private final ApiCallable.BundlableBuilder<{@inTypeName}, {@outTypeName}> {@methodName}Method;
           @end
         @else
-          private final ApiCallableBuilder<{@inTypeName}, {@outTypeName}> {@methodName}Method;
+          private final ApiCallable.Builder<{@inTypeName}, {@outTypeName}> {@methodName}Method;
         @end
       @end
     @end
@@ -184,16 +185,16 @@
              isPageStreaming = methodConfig.isPageStreaming, \
              isBundling = methodConfig.isBundling
           @if {@isPageStreaming}
-            {@methodName}Method = new PageStreamingApiCallableBuilder<>(
+            {@methodName}Method = new PageStreamingBuilder<>(
                 {@grpcName}.METHOD_{@methodConstant},
                 {@methodConstant}_PAGE_STR_DESC);
           @else
             @if {@isBundling}
-              {@methodName}Method = new BundlableApiCallableBuilder<>(
+              {@methodName}Method = new BundlableBuilder<>(
                   {@grpcName}.METHOD_{@methodConstant},
                   {@methodConstant}_BUNDLING_DESC);
             @else
-              {@methodName}Method = new ApiCallableBuilder<>({@grpcName}.METHOD_{@methodConstant});
+              {@methodName}Method = new Builder<>({@grpcName}.METHOD_{@methodConstant});
             @end
           @end
 
@@ -270,18 +271,18 @@
       @if {@isPageStreaming}
         @let pageStreaming = methodConfig.getPageStreaming(), \
              resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType())
-          public PageStreamingApiCallableBuilder<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>
+          public ApiCallable.PageStreamingBuilder<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>
               {@methodName}Method() {
             return methods.{@methodName}Method;
           }
         @end
       @else
         @if {@isBundling}
-          public BundlableApiCallableBuilder<{@inTypeName}, {@outTypeName}> {@methodName}Method() {
+          public ApiCallable.BundlableBuilder<{@inTypeName}, {@outTypeName}> {@methodName}Method() {
             return methods.{@methodName}Method;
           }
         @else
-          public ApiCallableBuilder<{@inTypeName}, {@outTypeName}> {@methodName}Method() {
+          public ApiCallable.Builder<{@inTypeName}, {@outTypeName}> {@methodName}Method() {
             return methods.{@methodName}Method;
           }
         @end
