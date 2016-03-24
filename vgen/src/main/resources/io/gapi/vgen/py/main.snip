@@ -1,3 +1,5 @@
+@extends "common.snip"
+
 @snippet generateFilename(service)
     {@context.upperCamelToLowerUnderscore(context.getVeneerName(service))}.py
 @end
@@ -253,23 +255,38 @@
     @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
              methodInputModule = pyproto.getPbFileName(method.getInputMessage()), \
              inputTypeName = method.getInputMessage().getSimpleName(), \
-             flattenedParams = context.messages.flattenedFields(method.getInputType()), \
              documentation = comments(method), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+             requiredParams = methodConfig.getRequiredFields(), \
+             optionalParams = methodConfig.getOptionalFields(), \
              isPageStreamingRequest = methodConfig.isPageStreaming()
-        @if flattenedParams
+        @if or(requiredParams, optionalParams)
             def {@methodName}(
                     self,
-                    {@parameterValues(flattenedParams)},
+                    {@requiredParameterNames(requiredParams)},
+                    @if optionalParams
+                        {@optionalParameterValues(optionalParams)},
+                    @end
                     options=None):
                 @if documentation
                     {@documentation}
                 @end
-                @if {@defaultMutableValues(flattenedParams)}
-                    {@defaultMutableValues(flattenedParams)}
+                @if {@defaultMutableValues(optionalParams)}
+                    {@defaultMutableValues(optionalParams)}
                 @end
-                req = {@methodInputModule}.{@inputTypeName}(
-                    {@namedParameters(flattenedParams)})
+                @if requiredParams
+                    @if optionalParams
+                        req = {@methodInputModule}.{@inputTypeName}(
+                            {@namedParameters(requiredParams)},
+                            {@namedParameters(optionalParams)})
+                    @else
+                        req = {@methodInputModule}.{@inputTypeName}(
+                            {@namedParameters(requiredParams)})
+                    @end
+                @else
+                    req = {@methodInputModule}.{@inputTypeName}(
+                        {@namedParameters(optionalParams)})
+                @end
                 settings = self._defaults['{@methodName}'].merge(options)
                 {@callableConstructor(method)}
         @else
@@ -286,8 +303,14 @@
     @end
 @end
 
-@private parameterValues(flattenedParams)
-    @join field : flattenedParams on ",".add(BREAK)
+@private requiredParameterNames(params)
+    @join field : params on ",".add(BREAK)
+        {@context.wrapIfKeywordOrBuiltIn({@field.getSimpleName()})}
+    @end
+@end
+
+@private optionalParameterValues(params)
+    @join field : params on ",".add(BREAK)
         @let paramName = {@context.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
             @if {@context.isDefaultValueMutable(field)}
                 {@paramName}=None
@@ -298,8 +321,8 @@
     @end
 @end
 
-@private defaultMutableValues(flattenedParams)
-    @join field : flattenedParams if {@context.isDefaultValueMutable(field)} on BREAK
+@private defaultMutableValues(params)
+    @join field : params if {@context.isDefaultValueMutable(field)} on BREAK
         @let paramName = {@context.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
             if {@paramName} is None:
                 {@paramName} = {@context.defaultValue(field, importHandler)}
@@ -307,8 +330,8 @@
     @end
 @end
 
-@private namedParameters(flattenedParams)
-    @join field : flattenedParams on ",".add(BREAK)
+@private namedParameters(params)
+    @join field : params on ",".add(BREAK)
         @let paramName = {@field.getSimpleName()}
             {@paramName}={@context.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
         @end

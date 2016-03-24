@@ -2,9 +2,15 @@ package io.gapi.vgen;
 
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+
+import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -19,6 +25,8 @@ public class MethodConfig {
   private final FlatteningConfig flattening;
   private final String retryCodesConfigName;
   private final String retryParamsConfigName;
+  private final Iterable<Field> requiredFields;
+  private final Iterable<Field> optionalFields;
   private final BundlingConfig bundling;
   private final boolean hasRequestObjectMethod;
 
@@ -76,7 +84,7 @@ public class MethodConfig {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
-              "retry codes config used but not defined: '%s' (in method %s)",
+              "Retry codes config used but not defined: '%s' (in method %s)",
               retryCodesName, method.getFullName()));
       error = true;
     }
@@ -86,18 +94,41 @@ public class MethodConfig {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
-              "retry parameters config used but not defined: %s (in method %s)",
+              "Retry parameters config used but not defined: %s (in method %s)",
               retryParamsName, method.getFullName()));
       error = true;
     }
 
     boolean hasRequestObjectMethod = methodConfig.getRequestObjectMethod();
 
+    List<String> requiredFieldNames = methodConfig.getRequiredFieldsList();
+    ImmutableSet.Builder<Field> builder = ImmutableSet.builder();
+    for (String fieldName : requiredFieldNames) {
+      Field requiredField = method.getInputMessage().lookupField(fieldName);
+      if (requiredField != null) {
+        builder.add(requiredField);
+      } else {
+        Diag.error(SimpleLocation.TOPLEVEL, "Required field '%s' not found (in method %s)",
+            fieldName, method.getFullName());
+        error = true;
+      }
+    }
+    Set<Field> requiredFields = builder.build();
+
+    Iterable<Field> optionalFields = Iterables.filter(
+        new ServiceMessages().flattenedFields(method.getInputType()),
+        new Predicate<Field>() {
+          @Override
+          public boolean apply(Field input) {
+            return !(methodConfig.getRequiredFieldsList().contains(input.getSimpleName()));
+          }
+        });
+
     if (error) {
       return null;
     } else {
       return new MethodConfig(pageStreaming, flattening, retryCodesName, retryParamsName, bundling,
-          hasRequestObjectMethod);
+          hasRequestObjectMethod, requiredFields, optionalFields);
     }
   }
 
@@ -107,13 +138,17 @@ public class MethodConfig {
       String retryCodesConfigName,
       String retryParamsConfigName,
       BundlingConfig bundling,
-      boolean hasRequestObjectMethod) {
+      boolean hasRequestObjectMethod,
+      Iterable<Field> requiredFields,
+      Iterable<Field> optionalFields) {
     this.pageStreaming = pageStreaming;
     this.flattening = flattening;
     this.retryCodesConfigName = retryCodesConfigName;
     this.retryParamsConfigName = retryParamsConfigName;
     this.bundling = bundling;
     this.hasRequestObjectMethod = hasRequestObjectMethod;
+    this.requiredFields = requiredFields;
+    this.optionalFields = optionalFields;
   }
 
   /**
@@ -178,5 +213,19 @@ public class MethodConfig {
    */
   public boolean hasRequestObjectMethod() {
     return hasRequestObjectMethod;
+  }
+
+  /**
+   * Returns the set of fields of the method that are always required.
+   */
+  public Iterable<Field> getRequiredFields() {
+    return requiredFields;
+  }
+
+  /**
+   * Returns the set of fields of the method that are not always required.
+   */
+  public Iterable<Field> getOptionalFields() {
+    return optionalFields;
   }
 }
