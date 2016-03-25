@@ -39,9 +39,9 @@ public class PythonImportHandler {
   private final TreeMap<String, String> classNameImports = new TreeMap<String, String>();
 
   /**
-   * Bi-map from proto messages to their disambiguated class names.
+   * Bi-map from disambiguated class names to their proto elements.
    */
-  private final BiMap<ProtoElement, String> elementClassNames = HashBiMap.create();
+  private final BiMap<String, ProtoElement> classNameElements = HashBiMap.create();
 
   public static PythonImportHandler createServicePythonImportHandler(Interface service) {
     return new PythonImportHandler(service, false);
@@ -106,7 +106,7 @@ public class PythonImportHandler {
       name = prefix + name;
     }
     classNameImports.put(name, fullPath);
-    elementClassNames.put(messageType, name);
+    classNameElements.put(name, messageType);
     if (deep) {
       for (Field f : messageType.getNonCyclicFields()) {
         deepAddImport(f, deep);
@@ -118,8 +118,15 @@ public class PythonImportHandler {
    * Returns a disambiguated class name for a message given its ProtoElement
    * representation.
    */
-  public String disambiguatedClassName(ProtoElement elt) {
-    return elementClassNames.get(elt);
+  public String getDisambiguatedClassName(ProtoElement elt) {
+    return classNameElements.inverse().get(elt);
+  }
+
+  /**
+   * Returns the proto element representing the disambiguated class name.
+   */
+  public ProtoElement getElement(String name) {
+    return classNameElements.get(name);
   }
 
   /**
@@ -168,7 +175,7 @@ public class PythonImportHandler {
   }
 
   /**
-   * Returns the class name -> import map.
+   * Returns the class name -> fully qualified path map.
    */
   public TreeMap<String, String> getClassNameImports() {
     return classNameImports;
