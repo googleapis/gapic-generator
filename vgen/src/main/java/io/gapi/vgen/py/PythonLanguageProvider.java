@@ -170,6 +170,8 @@ public class PythonLanguageProvider extends LanguageProvider {
     List<String> comments;
     if (element instanceof Method) {
       return methodComments((Method) element, importHandler);
+    } else if (element instanceof MessageType) {
+      return messageComments((MessageType) element, importHandler);
     } else {
       return defaultComments(element);
     }
@@ -187,6 +189,68 @@ public class PythonLanguageProvider extends LanguageProvider {
   }
 
   /**
+   * Returns a comment string for field.
+   */
+  private String fieldComment(Field field, PythonImportHandler importHandler, boolean messages) {
+    TypeRef type = field.getType();
+    boolean closingBrace = false;
+
+    String cardinalityComment;
+    if (type.getCardinality() == Cardinality.REPEATED) {
+      cardinalityComment = "list[";
+      closingBrace = true;
+    } else {
+      cardinalityComment = "";
+    }
+    String typeComment;
+    switch (type.getKind()) {
+      case TYPE_MESSAGE:
+        typeComment = (messages ? ":class:`" : ":class:`messages.") +
+            importHandler.getDisambiguatedClassName(type.getMessageType()) + "`";
+        break;
+      case TYPE_ENUM:
+        Preconditions.checkArgument(type.getEnumType().getValues().size() > 0,
+            "enum must have a value");
+        typeComment = ":class:`" + importHandler.fullyQualifiedPath(type.getEnumType()) + "." +
+            type.getEnumType().getSimpleName() + "`";
+        break;
+      default:
+        if (type.isPrimitive()) {
+          typeComment = type.getPrimitiveTypeName();
+        } else {
+          throw new IllegalArgumentException("unknown type kind: " + type.getKind());
+        }
+        break;
+    }
+    return String.format("  %s (%s%s%s)\n",
+        field.getSimpleName(), cardinalityComment, typeComment, closingBrace ? "]" : "");
+  }
+
+  /**
+   * Return comments lines for a given message, consisting of proto doc and argument type
+   * documentation.
+   */
+  private List<String> messageComments(MessageType msg, PythonImportHandler importHandler) {
+    // Generate parameter types
+    StringBuilder paramTypesBuilder = new StringBuilder();
+    paramTypesBuilder.append("Attributes:\n");
+    for (Field field : msg.getFields()) {
+      paramTypesBuilder.append(fieldComment(field, importHandler, true));
+    }
+    String paramTypes = paramTypesBuilder.toString();
+    // Generate comment contents
+    StringBuilder contentBuilder = new StringBuilder();
+    if (msg.hasAttribute(ElementDocumentationAttribute.KEY)) {
+      contentBuilder.append(DocumentationUtil.getScopedDescription(msg));
+      if (!Strings.isNullOrEmpty(paramTypes)) {
+        contentBuilder.append("\n\n");
+      }
+    }
+    contentBuilder.append(paramTypes);
+    return convertToCommentedBlock(contentBuilder.toString());
+  }
+
+  /**
    * Return comments lines for a given method, consisting of proto doc and parameter type
    * documentation.
    */
@@ -195,45 +259,10 @@ public class PythonLanguageProvider extends LanguageProvider {
     StringBuilder paramTypesBuilder = new StringBuilder();
     paramTypesBuilder.append("Args:\n");
     for (Field field : this.messages().flattenedFields(msg.getInputType())) {
-      TypeRef type = field.getType();
-      boolean closingBrace = false;
-
-      String cardinalityComment;
-      if (type.getCardinality() == Cardinality.REPEATED) {
-        cardinalityComment = "list[";
-        closingBrace = true;
-      } else {
-        cardinalityComment = "";
-      }
-      String typeComment;
-      switch (type.getKind()) {
-        case TYPE_MESSAGE:
-          typeComment = ":class:`messages."
-              + importHandler.disambiguatedClassName(type.getMessageType()) + "`";
-          break;
-        case TYPE_ENUM:
-          Preconditions.checkArgument(type.getEnumType().getValues().size() > 0,
-              "enum must have a value");
-          typeComment = ":class:`" + importHandler.fullyQualifiedPath(type.getEnumType()) + "." +
-              type.getEnumType().getSimpleName() + "`";
-          break;
-        default:
-          if (type.isPrimitive()) {
-            typeComment = type.getPrimitiveTypeName();
-          } else {
-            throw new IllegalArgumentException("unknown type kind: " + type.getKind());
-          }
-          break;
-      }
-      paramTypesBuilder.append(
-          String.format("  %s (%s%s%s)\n",
-              field.getSimpleName(), cardinalityComment, typeComment, closingBrace ? "]" : ""));
+      paramTypesBuilder.append(fieldComment(field, importHandler, false));
     }
-
     paramTypesBuilder.append("  options (:class:`api_callable.CallOptions`)");
-
     String paramTypes = paramTypesBuilder.toString();
-
     // Generate return value type
     MessageType returnMessageType = msg.getOutputMessage();
     String returnType;
@@ -246,7 +275,6 @@ public class PythonLanguageProvider extends LanguageProvider {
           + importHandler.fileToModule(returnMessageType.getFile()) + "." + returnPath
           + returnMessageType.getSimpleName() + "` object.";
     }
-
     // Generate comment contents
     StringBuilder contentBuilder = new StringBuilder();
     if (msg.hasAttribute(ElementDocumentationAttribute.KEY)) {
@@ -259,7 +287,6 @@ public class PythonLanguageProvider extends LanguageProvider {
     contentBuilder.append(paramTypes);
     contentBuilder.append("\n\n");
     contentBuilder.append(returnType);
-
     return convertToCommentedBlock(contentBuilder.toString());
   }
 
@@ -285,7 +312,7 @@ public class PythonLanguageProvider extends LanguageProvider {
     switch (type.getKind()) {
       case TYPE_MESSAGE:
         return "messages." +
-            importHandler.disambiguatedClassName(type.getMessageType()) + "()";
+            importHandler.getDisambiguatedClassName(type.getMessageType()) + "()";
       case TYPE_ENUM:
         Preconditions.checkArgument(type.getEnumType().getValues().size() > 0,
             "enum must have a value");

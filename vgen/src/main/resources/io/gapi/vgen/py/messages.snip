@@ -45,11 +45,22 @@
     @end
 @end
 
+@private comments(element)
+    @join comment : context.comments(element, deepImportHandler)
+        {@comment}
+    @end
+@end
+
 @private messageClasses(service)
     @join entry : {@context.entrySet(@deepImportHandler.getClassNameImports())}
 
 
         class {@entry.getKey()}(message.Message):
+            @let element = deepImportHandler.getElement(entry.getKey())
+                @if {@comments(element)}
+                    {@comments(element)}
+                @end
+            @end
             __metaclass__ = python_message.GeneratedProtocolMessageType
             DESCRIPTOR = {@entry.getValue()}.DESCRIPTOR
     @end
