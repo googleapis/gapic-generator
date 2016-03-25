@@ -52,6 +52,7 @@
   {@context.addImport("com.google.common.collect.Lists")}
   {@context.addImport("com.google.common.collect.Sets")}
   {@context.addImport("io.grpc.Status")}
+  {@context.addImport("org.joda.time.Duration")}
 @end
 
 @private constants(service)
@@ -108,17 +109,17 @@
         params = RetryParams.newBuilder()
             .setRetryBackoff(
                 BackoffParams.newBuilder()
-                    .setInitialDelayMillis({@retryDef.getValue.getRetryBackoff.getInitialDelayMillis}L)
+                    .setInitialDelay(Duration.millis({@retryDef.getValue.getRetryBackoff.getInitialDelayMillis}L))
                     .setDelayMultiplier({@retryDef.getValue.getRetryBackoff.getDelayMultiplier})
-                    .setMaxDelayMillis({@retryDef.getValue.getRetryBackoff.getMaxDelayMillis}L)
+                    .setMaxDelay(Duration.millis({@retryDef.getValue.getRetryBackoff.getMaxDelayMillis}L))
                     .build())
             .setTimeoutBackoff(
                 BackoffParams.newBuilder()
-                    .setInitialDelayMillis({@retryDef.getValue.getTimeoutBackoff.getInitialDelayMillis}L)
+                    .setInitialDelay(Duration.millis({@retryDef.getValue.getTimeoutBackoff.getInitialDelayMillis}L))
                     .setDelayMultiplier({@retryDef.getValue.getTimeoutBackoff.getDelayMultiplier})
-                    .setMaxDelayMillis({@retryDef.getValue.getTimeoutBackoff.getMaxDelayMillis}L)
+                    .setMaxDelay(Duration.millis({@retryDef.getValue.getTimeoutBackoff.getMaxDelayMillis}L))
                     .build())
-            .setTotalTimeout({@retryDef.getValue.getTotalTimeout}L)
+            .setTotalTimeout(Duration.millis({@retryDef.getValue.getTotalTimeout}L))
             .build();
         definitions.put("{@retryDef.getKey}", params);
       @end
@@ -190,9 +191,22 @@
                 {@methodConstant}_PAGE_STR_DESC);
           @else
             @if {@isBundling}
-              {@methodName}Method = new BundlableBuilder<>(
-                  {@grpcName}.METHOD_{@methodConstant},
-                  {@methodConstant}_BUNDLING_DESC);
+              @let bundlingConfig = methodConfig.getBundling, \
+                   dummy = {@context.addImport("com.google.api.gax.grpc.BundlingSettings")}
+                BundlingSettings {@methodName}BundlingSettings =
+                    BundlingSettings.newBuilder()
+                        .setElementCountThreshold({@bundlingConfig.getElementCountThreshold})
+                        .setElementCountLimit({@bundlingConfig.getElementCountLimit})
+                        .setRequestByteThreshold({@bundlingConfig.getRequestByteThreshold})
+                        .setRequestByteLimit({@bundlingConfig.getRequestByteLimit})
+                        .setDelayThreshold(Duration.millis({@bundlingConfig.getDelayThresholdMillis}))
+                        .setBlockingCallCountThreshold(1)
+                        .build();
+                {@methodName}Method = new BundlableBuilder<>(
+                    {@grpcName}.METHOD_{@methodConstant},
+                    {@methodConstant}_BUNDLING_DESC,
+                    {@methodName}BundlingSettings);
+              @end
             @else
               {@methodName}Method = new Builder<>({@grpcName}.METHOD_{@methodConstant});
             @end
@@ -271,18 +285,18 @@
       @if {@isPageStreaming}
         @let pageStreaming = methodConfig.getPageStreaming(), \
              resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType())
-          public ApiCallable.PageStreamingBuilder<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>
+          public final ApiCallable.PageStreamingBuilder<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>
               {@methodName}Method() {
             return methods.{@methodName}Method;
           }
         @end
       @else
         @if {@isBundling}
-          public ApiCallable.BundlableBuilder<{@inTypeName}, {@outTypeName}> {@methodName}Method() {
+          public final ApiCallable.BundlableBuilder<{@inTypeName}, {@outTypeName}> {@methodName}Method() {
             return methods.{@methodName}Method;
           }
         @else
-          public ApiCallable.Builder<{@inTypeName}, {@outTypeName}> {@methodName}Method() {
+          public final ApiCallable.Builder<{@inTypeName}, {@outTypeName}> {@methodName}Method() {
             return methods.{@methodName}Method;
           }
         @end

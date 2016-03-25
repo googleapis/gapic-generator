@@ -16,6 +16,8 @@ import javax.annotation.Nullable;
 public class BundlingConfig {
   private final int elementCountThreshold;
   private final long requestByteThreshold;
+  private final int elementCountLimit;
+  private final long requestByteLimit;
   private final long delayThresholdMillis;
   private final Field bundledField;
   private final ImmutableList<FieldSelector> discriminatorFields;
@@ -25,13 +27,13 @@ public class BundlingConfig {
    * Creates an instance of BundlingConfig based on BundlingConfigProto, linking it
    * up with the provided method. On errors, null will be returned, and diagnostics
    * are reported to the diag collector.
-
    */
   @Nullable
   public static BundlingConfig createBundling(DiagCollector diagCollector,
       BundlingConfigProto bundlingConfig, Method method) {
 
-    String bundledFieldName = bundlingConfig.getBundleDescriptor().getBundledField();
+    BundlingDescriptorProto bundleDescriptor = bundlingConfig.getBundleDescriptor();
+    String bundledFieldName = bundleDescriptor.getBundledField();
     Field bundledField =
         method.getInputType().getMessageType().lookupField(bundledFieldName);
     if (bundledField == null) {
@@ -42,8 +44,7 @@ public class BundlingConfig {
     }
 
     ImmutableList.Builder<FieldSelector> discriminatorsBuilder = ImmutableList.builder();
-    for (String discriminatorName : bundlingConfig.getBundleDescriptor()
-        .getDiscriminatorFieldsList()) {
+    for (String discriminatorName : bundleDescriptor.getDiscriminatorFieldsList()) {
       FieldSelector selector =
           FieldSelector.resolve(method.getInputType().getMessageType(), discriminatorName);
       if (selector == null) {
@@ -55,7 +56,7 @@ public class BundlingConfig {
       discriminatorsBuilder.add(selector);
     }
 
-    String subresponseFieldName = bundlingConfig.getBundleDescriptor().getSubresponseField();
+    String subresponseFieldName = bundleDescriptor.getSubresponseField();
     Field subresponseField;
     if (!subresponseFieldName.isEmpty()) {
       subresponseField = method.getOutputType().getMessageType().lookupField(subresponseFieldName);
@@ -63,30 +64,39 @@ public class BundlingConfig {
       subresponseField = null;
     }
 
-    int elementCountThreshold = bundlingConfig.getThresholds().getElementCountThreshold();
-    long requestByteThreshold = bundlingConfig.getThresholds().getRequestByteThreshold();
+    BundlingSettingsProto bundlingSettings = bundlingConfig.getThresholds();
+    int elementCountThreshold = bundlingSettings.getElementCountThreshold();
+    long requestByteThreshold = bundlingSettings.getRequestByteThreshold();
+    int elementCountLimit = bundlingSettings.getElementCountLimit();
+    long requestByteLimit = bundlingSettings.getRequestByteLimit();
     long delayThresholdMillis = bundlingConfig.getThresholds().getDelayThresholdMillis();
 
     if (bundledFieldName == null) {
       return null;
     }
 
-    if (elementCountThreshold == 0 && requestByteThreshold == 0 && delayThresholdMillis == 0) {
+    if (elementCountThreshold <= 0 || requestByteThreshold <= 0 || delayThresholdMillis <= 0 ||
+        elementCountLimit <= 0 || requestByteLimit <= 0) {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL,
-          "No threshold was specified as a positive number: method = %s, message type = %s",
+          "Some thresholds/limits are not specified as a positive number: "
+          + "method = %s, message type = %s",
           method.getFullName(), method.getInputType().getMessageType().getFullName()));
     }
 
-    return new BundlingConfig(elementCountThreshold, requestByteThreshold, delayThresholdMillis,
+    return new BundlingConfig(elementCountThreshold, requestByteThreshold,
+        elementCountLimit, requestByteLimit, delayThresholdMillis,
         bundledField, discriminatorsBuilder.build(), subresponseField);
   }
 
   private BundlingConfig(int elementCountThreshold, long requestByteThreshold,
+      int elementCountLimit, long requestByteLimit,
       long delayThresholdMillis, Field bundledField,
       ImmutableList<FieldSelector> discriminatorFields,
       Field subresponseField) {
     this.elementCountThreshold = elementCountThreshold;
     this.requestByteThreshold = requestByteThreshold;
+    this.elementCountLimit = elementCountLimit;
+    this.requestByteLimit = requestByteLimit;
     this.delayThresholdMillis = delayThresholdMillis;
     this.bundledField = bundledField;
     this.discriminatorFields = discriminatorFields;
@@ -99,6 +109,14 @@ public class BundlingConfig {
 
   public long getRequestByteThreshold() {
     return requestByteThreshold;
+  }
+
+  public int getElementCountLimit() {
+    return elementCountLimit;
+  }
+
+  public long getRequestByteLimit() {
+    return requestByteLimit;
   }
 
   public long getDelayThresholdMillis() {
