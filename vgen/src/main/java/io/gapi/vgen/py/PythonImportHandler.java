@@ -6,7 +6,6 @@ import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
-import com.google.common.base.CaseFormat;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -14,7 +13,6 @@ import com.google.common.collect.HashBiMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.TreeMap;
 
 public class PythonImportHandler {
 
@@ -34,6 +32,7 @@ public class PythonImportHandler {
 
   public PythonImportHandler(Interface service) {
     // Add non-service-specific imports.
+    addImport(null, PythonImport.create("json", PythonImport.ImportType.STDLIB));
     addImport(null, PythonImport.create("os", PythonImport.ImportType.STDLIB));
     addImport(null, PythonImport.create("pkg_resources", PythonImport.ImportType.STDLIB));
     addImport(null, PythonImport.create("platform", PythonImport.ImportType.STDLIB));
@@ -44,7 +43,6 @@ public class PythonImportHandler {
         PythonImport.ImportType.THIRD_PARTY));
     addImport(null, PythonImport.create("google.gax", "path_template",
         PythonImport.ImportType.THIRD_PARTY));
-    addImport(null, PythonImport.create("yaml", PythonImport.ImportType.THIRD_PARTY));
 
     // Add method request-type imports.
     for (Method method : service.getMethods()) {

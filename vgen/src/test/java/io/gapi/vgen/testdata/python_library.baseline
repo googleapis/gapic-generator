@@ -24,6 +24,7 @@
 
 """Client library for the Google LibraryService interface."""
 
+import json
 import os
 import pkg_resources
 import platform
@@ -32,7 +33,6 @@ from google.gax import api_callable
 from google.gax import config
 from google.gax import path_template
 import google.gax
-import yaml
 
 from google.example.library.v1 import field_mask_pb2 as v1_field_mask_pb2
 from google.example.library.v1 import library_pb2
@@ -65,6 +65,30 @@ class LibraryServiceApi(object):
     _GAX_VERSION = pkg_resources.get_distribution('google-gax').version
 
     _DEFAULT_TIMEOUT = 30
+
+    _PAGE_DESCRIPTORS = {
+        'list_shelves': PageDescriptor(
+            'page_token',
+            'next_page_token',
+            'shelves'
+        )
+        'list_books': PageDescriptor(
+            'page_token',
+            'next_page_token',
+            'books'
+        )
+    }
+
+    _BUNDLE_DESCRIPTORS = {
+        'publish_series': BundleDescriptor(
+            'books',
+            [
+                'edition',
+                'shelf.name'
+            ],
+            'subresponse_field=book_names',
+        )
+    }
 
     # The scopes needed to make gRPC calls to all of the methods defined in
     # this service
@@ -139,15 +163,22 @@ class LibraryServiceApi(object):
         bundling_override = bundling_override or {}
         retrying_override = retrying_override or {}
         client_config = pkg_resources.resource_string(
-            __name__, 'library_service_api.yaml')
+            __name__, 'library_service_api_client_config.json')
         self._defaults = api_callable.construct_settings(
-            yaml.load(client_config), bundling_override, retrying_override,
-            config.STATUS_CODE_NAMES, timeout)
+            'google.example.library.v1.LibraryService',
+            json.loads(client_config),
+            bundling_override,
+            retrying_override,
+            config.STATUS_CODE_NAMES,
+            timeout,
+            bundle_descriptors=self._BUNDLE_DESCRIPTORS,
+            page_descriptors=self._PAGE_DESCRIPTORS
+        )
         google_apis_agent = '{}/{};{};gax/{};python/{}'.format(
             app_name,
             app_version,
             self._CODE_GEN_NAME_VERSION,
-            google.gax.__version__,
+            self._GAX_VERSION,
             platform.python_version()
         )
         self._headers = [('x-google-apis-agent', google_apis_agent)]
@@ -440,99 +471,6 @@ class LibraryServiceApi(object):
         return api_callable.ApiCallable(
             self.stub.MoveBook, settings=settings)(req, metadata=self._headers)
 
-============== file: library_service_api.yaml ==============
-# Copyright 2016 Google Inc. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-# Automatically generated configuration file. Do not edit.
-
-retry_codes_def:
-    - name: idempotent
-      retry_codes:
-          - DEADLINE_EXCEEDED
-          - UNAVAILABLE
-    - name: non_idempotent
-      retry_codes:
-retry_params:
-    - name: default
-      initial_retry_delay_millis: 100
-      retry_delay_multiplier: 1.2
-      max_retry_delay_millis: 1000
-      initial_rpc_timeout_millis: 300
-      rpc_timeout_multiplier: 1.3
-      max_rpc_timeout_millis: 3000
-      total_timeout_millis: 30000
-methods:
-    - name: create_shelf
-      retry_codes_name: non_idempotent
-      retry_params_name: default
-    - name: get_shelf
-      retry_codes_name: idempotent
-      retry_params_name: default
-    - name: list_shelves
-      retry_codes_name: idempotent
-      retry_params_name: default
-      page_streaming:
-          request:
-              token_field: page_token
-          response:
-              token_field: next_page_token
-              resources_field: shelves
-    - name: delete_shelf
-      retry_codes_name: idempotent
-      retry_params_name: default
-    - name: merge_shelves
-      retry_codes_name: non_idempotent
-      retry_params_name: default
-    - name: create_book
-      retry_codes_name: non_idempotent
-      retry_params_name: default
-    - name: publish_series
-      retry_codes_name: non_idempotent
-      retry_params_name: default
-      bundle_options:
-          element_count_threshold: 6
-          request_byte_threshold: 100000
-          delay_threshold: 500
-      bundle_descriptor:
-          bundled_field: books
-          request_discriminator_fields:
-              - edition
-              - shelf.name
-          subresponse_field: book_names
-    - name: get_book
-      retry_codes_name: idempotent
-      retry_params_name: default
-    - name: list_books
-      retry_codes_name: idempotent
-      retry_params_name: default
-      page_streaming:
-          request:
-              token_field: page_token
-          response:
-              token_field: next_page_token
-              resources_field: books
-    - name: delete_book
-      retry_codes_name: idempotent
-      retry_params_name: default
-    - name: update_book
-      retry_codes_name: idempotent
-      retry_params_name: default
-    - name: move_book
-      retry_codes_name: non_idempotent
-      retry_params_name: default
-
 ============== file: field_mask_pb2.py ==============
 # Copyright 2016 Google Inc. All rights reserved.
 #
@@ -556,6 +494,7 @@ class FieldMask(object):
 
     """
     pass
+
 ============== file: google/protobuf/any_pb2.py ==============
 # Copyright 2016 Google Inc. All rights reserved.
 #
@@ -612,6 +551,7 @@ class Any(object):
 
     """
     pass
+
 ============== file: google/protobuf/duration_pb2.py ==============
 # Copyright 2016 Google Inc. All rights reserved.
 #
@@ -677,6 +617,7 @@ class Duration(object):
 
     """
     pass
+
 ============== file: google/protobuf/field_mask_pb2.py ==============
 # Copyright 2016 Google Inc. All rights reserved.
 #
@@ -823,6 +764,7 @@ class FieldMask(object):
 
     """
     pass
+
 ============== file: google/protobuf/timestamp_pb2.py ==============
 # Copyright 2016 Google Inc. All rights reserved.
 #
@@ -901,6 +843,7 @@ class Timestamp(object):
 
     """
     pass
+
 ============== file: google/protobuf/wrappers_pb2.py ==============
 # Copyright 2016 Google Inc. All rights reserved.
 #
@@ -1032,6 +975,7 @@ class BytesValue(object):
 
     """
     pass
+
 ============== file: library_pb2.py ==============
 # Copyright 2016 Google Inc. All rights reserved.
 #
@@ -1314,3 +1258,4 @@ class MoveBookRequest(object):
 
     """
     pass
+

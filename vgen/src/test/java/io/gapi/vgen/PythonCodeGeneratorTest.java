@@ -1,7 +1,6 @@
 package io.gapi.vgen;
 
 import com.google.api.tools.framework.snippet.Doc;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.truth.Truth;
@@ -43,15 +42,12 @@ public class PythonCodeGeneratorTest  {
       // Should generate three files -- one for the class, one for the other for the configuration
       // yaml, and one for the messages class
       GeneratedResult codeResult = generateForSnippet(0);
-      GeneratedResult configResult = generateForSnippet(1);
       List<GeneratedResult> docsResult = generateForDocSnippet(0);
       Truth.assertThat(codeResult).isNotNull();
-      Truth.assertThat(configResult).isNotNull();
       Truth.assertThat(docsResult).isNotNull();
 
-      ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder();
+      ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String,Doc>();
       builder.put(codeResult.getFilename(), codeResult.getDoc());
-      builder.put(configResult.getFilename(), configResult.getDoc());
       for (GeneratedResult result : docsResult) {
         builder.put(result.getFilename(), result.getDoc());
       }
@@ -91,15 +87,12 @@ public class PythonCodeGeneratorTest  {
     @Override
     protected Object run() {
       GeneratedResult codeResult = generateForSnippet(0);
-      GeneratedResult configResult = generateForSnippet(1);
       List<GeneratedResult> docsResult = generateForDocSnippet(0);
       Truth.assertThat(codeResult).isNotNull();
-      Truth.assertThat(configResult).isNotNull();
       Truth.assertThat(docsResult).isNotNull();
 
-      ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder();
+      ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String,Doc>();
       builder.put(codeResult.getFilename(), codeResult.getDoc());
-      builder.put(configResult.getFilename(), configResult.getDoc());
       for (GeneratedResult result : docsResult) {
         builder.put(result.getFilename(), result.getDoc());
       }

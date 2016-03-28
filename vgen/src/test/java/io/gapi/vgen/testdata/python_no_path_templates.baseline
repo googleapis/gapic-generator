@@ -24,6 +24,7 @@
 
 """Client library for the Google NoTemplatesService interface."""
 
+import json
 import os
 import pkg_resources
 import platform
@@ -32,7 +33,6 @@ from google.gax import api_callable
 from google.gax import config
 from google.gax import path_template
 import google.gax
-import yaml
 
 from google.example.v1 import no_path_templates_pb2
 
@@ -101,15 +101,20 @@ class NoTemplatesServiceApi(object):
         bundling_override = bundling_override or {}
         retrying_override = retrying_override or {}
         client_config = pkg_resources.resource_string(
-            __name__, 'no_templates_service_api.yaml')
+            __name__, 'no_templates_service_api_client_config.json')
         self._defaults = api_callable.construct_settings(
-            yaml.load(client_config), bundling_override, retrying_override,
-            config.STATUS_CODE_NAMES, timeout)
+            'google.example.v1.NoTemplatesService',
+            json.loads(client_config),
+            bundling_override,
+            retrying_override,
+            config.STATUS_CODE_NAMES,
+            timeout
+        )
         google_apis_agent = '{}/{};{};gax/{};python/{}'.format(
             app_name,
             app_version,
             self._CODE_GEN_NAME_VERSION,
-            google.gax.__version__,
+            self._GAX_VERSION,
             platform.python_version()
         )
         self._headers = [('x-google-apis-agent', google_apis_agent)]
@@ -136,34 +141,4 @@ class NoTemplatesServiceApi(object):
         settings = self._defaults['increment'].merge(options)
         api_callable.ApiCallable(
             self.stub.Increment, settings=settings)(req, metadata=self._headers)
-
-============== file: no_templates_service_api.yaml ==============
-# Copyright 2016 Google Inc. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-# Automatically generated configuration file. Do not edit.
-
-retry_codes_def:
-retry_params:
-    - name: default
-      initial_retry_delay_millis: 100
-      retry_delay_multiplier: 1.2
-      max_retry_delay_millis: 1000
-      initial_rpc_timeout_millis: 300
-      rpc_timeout_multiplier: 1.3
-      max_rpc_timeout_millis: 3000
-      total_timeout_millis: 30000
-methods:
-    - name: increment
 
