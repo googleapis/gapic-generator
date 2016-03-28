@@ -11,6 +11,7 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.api.tools.framework.tools.ToolUtil;
+import com.google.auto.value.AutoValue;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
@@ -62,6 +63,15 @@ public class JavaLanguageProvider extends LanguageProvider {
      * and a set of accumulated types to be imported.
      */
     Doc generateClass(Interface iface, Doc body, Iterable<String> imports);
+
+    /**
+     * Generates a code sample for a method.
+     *
+     * This method is meant to be indirectly called from within the snippet itself.
+     * It takes a JavaDocConfig as an argument, since a lot of processing would have been completed
+     * by the time this method is invoked and it would be pointless to redo all of them.
+     */
+    Doc generateMethodSampleCode(JavaDocConfig config);
   }
 
   /**
@@ -79,34 +89,34 @@ public class JavaLanguageProvider extends LanguageProvider {
    */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Type, String>builder()
-      .put(Type.TYPE_BOOL, "boolean")
-      .put(Type.TYPE_DOUBLE, "double")
-      .put(Type.TYPE_FLOAT, "float")
-      .put(Type.TYPE_INT64, "long")
-      .put(Type.TYPE_UINT64, "long")
-      .put(Type.TYPE_SINT64, "long")
-      .put(Type.TYPE_FIXED64, "long")
-      .put(Type.TYPE_SFIXED64, "long")
-      .put(Type.TYPE_INT32, "int")
-      .put(Type.TYPE_UINT32, "int")
-      .put(Type.TYPE_SINT32, "int")
-      .put(Type.TYPE_FIXED32, "int")
-      .put(Type.TYPE_SFIXED32, "int")
-      .put(Type.TYPE_STRING, "java.lang.String")
-      .put(Type.TYPE_BYTES, "com.google.protobuf.ByteString")
-      .build();
+          .put(Type.TYPE_BOOL, "boolean")
+          .put(Type.TYPE_DOUBLE, "double")
+          .put(Type.TYPE_FLOAT, "float")
+          .put(Type.TYPE_INT64, "long")
+          .put(Type.TYPE_UINT64, "long")
+          .put(Type.TYPE_SINT64, "long")
+          .put(Type.TYPE_FIXED64, "long")
+          .put(Type.TYPE_SFIXED64, "long")
+          .put(Type.TYPE_INT32, "int")
+          .put(Type.TYPE_UINT32, "int")
+          .put(Type.TYPE_SINT32, "int")
+          .put(Type.TYPE_FIXED32, "int")
+          .put(Type.TYPE_SFIXED32, "int")
+          .put(Type.TYPE_STRING, "java.lang.String")
+          .put(Type.TYPE_BYTES, "com.google.protobuf.ByteString")
+          .build();
 
   /**
    * A map from unboxed Java type to boxed counterpart.
    */
   private static final ImmutableMap<String, String> BOXED_TYPE_MAP =
       ImmutableMap.<String, String>builder()
-      .put("boolean", "Boolean")
-      .put("int", "Integer")
-      .put("long", "Long")
-      .put("double", "Double")
-      .put("float", "Float")
-      .build();
+          .put("boolean", "Boolean")
+          .put("int", "Integer")
+          .put("long", "Long")
+          .put("double", "Double")
+          .put("float", "Float")
+          .build();
 
   /**
    * The path to the root of snippet resources.
@@ -125,6 +135,8 @@ public class JavaLanguageProvider extends LanguageProvider {
    */
   private final Map<String, Boolean> implicitImports = Maps.newHashMap();
 
+  private JavaSnippetSet snippets = null;
+
   /**
    * Constructs the Java language provider.
    */
@@ -133,8 +145,8 @@ public class JavaLanguageProvider extends LanguageProvider {
   }
 
   @Override
-  public void outputCode(String outputPath, List<GeneratedResult> results,
-      boolean archive) throws IOException {
+  public void outputCode(String outputPath, List<GeneratedResult> results, boolean archive)
+      throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
     for (GeneratedResult result : results) {
       String path = getApiConfig().getPackageName().replace('.', '/');
@@ -148,13 +160,15 @@ public class JavaLanguageProvider extends LanguageProvider {
   }
 
   @Override
-  public GeneratedResult generate(Interface service,
-      SnippetDescriptor snippetDescriptor) {
-    JavaSnippetSet snippets = SnippetSet.createSnippetInterface(
-        JavaSnippetSet.class,
-        SNIPPET_RESOURCE_ROOT,
-        snippetDescriptor.getSnippetInputName(),
-        ImmutableMap.<String, Object>of("context", this));
+  public GeneratedResult generate(Interface service, SnippetDescriptor snippetDescriptor) {
+    JavaSnippetSet snippets =
+        SnippetSet.createSnippetInterface(
+            JavaSnippetSet.class,
+            SNIPPET_RESOURCE_ROOT,
+            snippetDescriptor.getSnippetInputName(),
+            ImmutableMap.<String, Object>of("context", this));
+
+    this.snippets = snippets;
 
     Doc filenameDoc = snippets.generateFilename(service);
     String outputFilename = filenameDoc.prettyPrint();
@@ -222,8 +236,8 @@ public class JavaLanguageProvider extends LanguageProvider {
    * Gets the name of the class which is the grpc container for this service interface.
    */
   public String getGrpcName(Interface service) {
-    String fullName = String.format("%s.%sGrpc",
-        getJavaPackage(service.getFile()), service.getSimpleName());
+    String fullName =
+        String.format("%s.%sGrpc", getJavaPackage(service.getFile()), service.getSimpleName());
     return getTypeName(fullName);
   }
 
@@ -257,10 +271,11 @@ public class JavaLanguageProvider extends LanguageProvider {
   public String typeName(TypeRef type) {
     if (type.isMap()) {
       String mapTypeName = getTypeName("java.util.Map");
-      return String.format("%s<%s, %s>", mapTypeName,
+      return String.format(
+          "%s<%s, %s>",
+          mapTypeName,
           basicTypeNameBoxed(type.getMapKeyField().getType()),
-          basicTypeNameBoxed(type.getMapValueField().getType())
-      );
+          basicTypeNameBoxed(type.getMapValueField().getType()));
     } else if (type.isRepeated()) {
       String listTypeName = getTypeName("java.util.List");
       return String.format("%s<%s>", listTypeName, basicTypeNameBoxed(type));
@@ -374,6 +389,10 @@ public class JavaLanguageProvider extends LanguageProvider {
     return DocumentationUtil.getDescription(element);
   }
 
+  public String generateMethodSampleCode(JavaDocConfig config) {
+    return snippets.generateMethodSampleCode(config).prettyPrint();
+  }
+
   /**
    * Splits given text into lines and returns an iterable of strings each one representing a
    * line decorated for a javadoc documentation comment. Markdown will be translated to javadoc.
@@ -407,9 +426,11 @@ public class JavaLanguageProvider extends LanguageProvider {
       return byteStringTypeName + ".EMPTY";
     } else {
       throw new IllegalArgumentException(
-          String.format("Unsupported type for field %s - found %s, "
-              + "but expected TYPE_STRING or TYPE_BYTES",
-              field.getFullName(), field.getType().getKind()));
+          String.format(
+              "Unsupported type for field %s - found %s, "
+                  + "but expected TYPE_STRING or TYPE_BYTES",
+              field.getFullName(),
+              field.getType().getKind()));
     }
   }
 
@@ -424,5 +445,89 @@ public class JavaLanguageProvider extends LanguageProvider {
       buf.append("request.get" + lowerUnderscoreToUpperCamel(simpleName) + "()");
     }
     return buf.toString();
+  }
+
+  @AutoValue
+  abstract static class Variable {
+    public abstract String getType();
+
+    public abstract String getName();
+
+    public abstract String getDescription();
+  }
+
+  public Variable newVariable(String type, String name, String description) {
+    return new AutoValue_JavaLanguageProvider_Variable(type, name, description);
+  }
+
+  @AutoValue
+  abstract static class JavaDocConfig {
+    public abstract String getMethodName();
+
+    public abstract String getReturnType();
+
+    public abstract ImmutableList<Variable> getParams();
+
+    public abstract boolean isIterableVariant();
+
+    public abstract boolean isCallableVariant();
+
+    @AutoValue.Builder
+    abstract static class Builder {
+      public abstract Builder setMethodName(String methodName);
+
+      public abstract Builder setReturnType(String returnType);
+
+      public abstract Builder setParams(ImmutableList<Variable> params);
+
+      public Builder setParams(JavaLanguageProvider languageProvider, ImmutableList<Field> fields) {
+        ImmutableList.Builder<Variable> params = ImmutableList.<Variable>builder();
+        for (Field field : fields) {
+          params.add(
+              languageProvider.newVariable(
+                  languageProvider.typeName(field.getType()),
+                  languageProvider.lowerUnderscoreToLowerCamel(field.getSimpleName()),
+                  languageProvider.getDescription(field)));
+        }
+        return setParams(params.build());
+      }
+
+      public Builder setSingleParam(
+          JavaLanguageProvider languageProvider, TypeRef requestType, String name, String doc) {
+        return setParams(
+            ImmutableList.of(
+                languageProvider.newVariable(languageProvider.typeName(requestType), name, doc)));
+      }
+
+      public abstract Builder setIterableVariant(boolean iterable);
+
+      public abstract Builder setCallableVariant(boolean callable);
+
+      public abstract JavaDocConfig build();
+    }
+  }
+
+  public JavaDocConfig.Builder newJavaDocConfigBuilder() {
+    return new AutoValue_JavaLanguageProvider_JavaDocConfig.Builder();
+  }
+
+  public String returnTypeOrEmpty(TypeRef returnType) {
+    return messages().isEmptyType(returnType) ? "" : typeName(returnType);
+  }
+
+  public boolean getTrue() {
+    return true;
+  }
+
+  public boolean getFalse() {
+    return false;
+  }
+
+  public String requestParamDoc() {
+    return "The request object containing all of the parameters for the API call.";
+  }
+
+  public String requestParam() {
+    return "request";
   }
 }
