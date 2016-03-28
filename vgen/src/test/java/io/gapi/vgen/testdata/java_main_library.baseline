@@ -107,90 +107,82 @@ public class LibraryServiceApi implements AutoCloseable {
   private final ApiCallable<MoveBookRequest, Book> moveBookCallable;
 
 
+  /**
+   * A PathTemplate representing the fully-qualified path to represent
+   * a shelf resource.
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   */
+  private static final PathTemplate SHELF_PATH_TEMPLATE =
+      PathTemplate.create("shelves/{shelf}");
 
-  public static class ResourceNames {
-
-    /**
-     * A PathTemplate representing the fully-qualified path to represent
-     * a shelf resource.
-     *
-     * <!-- manual edit -->
-     * <!-- end manual edit -->
-     */
-    private static final PathTemplate SHELF_PATH_TEMPLATE =
-        PathTemplate.create("shelves/{shelf}");
-
-    /**
-     * A PathTemplate representing the fully-qualified path to represent
-     * a book resource.
-     *
-     * <!-- manual edit -->
-     * <!-- end manual edit -->
-     */
-    private static final PathTemplate BOOK_PATH_TEMPLATE =
-        PathTemplate.create("shelves/{shelf}/books/{book}");
+  /**
+   * A PathTemplate representing the fully-qualified path to represent
+   * a book resource.
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   */
+  private static final PathTemplate BOOK_PATH_TEMPLATE =
+      PathTemplate.create("shelves/{shelf}/books/{book}");
 
 
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a shelf resource.
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   */
+  public static final String formatShelfName(String shelf) {
+    return SHELF_PATH_TEMPLATE.instantiate(
+        "shelf", shelf);
+  }
 
-    private ResourceNames() {}
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a book resource.
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   */
+  public static final String formatBookName(String shelf, String book) {
+    return BOOK_PATH_TEMPLATE.instantiate(
+        "shelf", shelf,"book", book);
+  }
 
-    /**
-     * Formats a string containing the fully-qualified path to represent
-     * a shelf resource.
-     *
-     * <!-- manual edit -->
-     * <!-- end manual edit -->
-     */
-    public static final String formatShelfPath(String shelf) {
-      return SHELF_PATH_TEMPLATE.instantiate(
-          "shelf", shelf);
-    }
+  /**
+   * Parses the shelf from the given fully-qualified path which
+   * represents a shelf resource.
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   */
+  public static final String parseShelfFromShelfName(String shelfName) {
+    return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf");
+  }
 
-    /**
-     * Formats a string containing the fully-qualified path to represent
-     * a book resource.
-     *
-     * <!-- manual edit -->
-     * <!-- end manual edit -->
-     */
-    public static final String formatBookPath(String shelf, String book) {
-      return BOOK_PATH_TEMPLATE.instantiate(
-          "shelf", shelf,"book", book);
-    }
+  /**
+   * Parses the shelf from the given fully-qualified path which
+   * represents a book resource.
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   */
+  public static final String parseShelfFromBookName(String bookName) {
+    return BOOK_PATH_TEMPLATE.parse(bookName).get("shelf");
+  }
 
-    /**
-     * Parses the shelf from the given fully-qualified path which
-     * represents a shelf resource.
-     *
-     * <!-- manual edit -->
-     * <!-- end manual edit -->
-     */
-    public static final String parseShelfFromShelfPath(String shelfPath) {
-      return SHELF_PATH_TEMPLATE.parse(shelfPath).get("shelf");
-    }
-
-    /**
-     * Parses the shelf from the given fully-qualified path which
-     * represents a book resource.
-     *
-     * <!-- manual edit -->
-     * <!-- end manual edit -->
-     */
-    public static final String parseShelfFromBookPath(String bookPath) {
-      return BOOK_PATH_TEMPLATE.parse(bookPath).get("shelf");
-    }
-
-    /**
-     * Parses the book from the given fully-qualified path which
-     * represents a book resource.
-     *
-     * <!-- manual edit -->
-     * <!-- end manual edit -->
-     */
-    public static final String parseBookFromBookPath(String bookPath) {
-      return BOOK_PATH_TEMPLATE.parse(bookPath).get("book");
-    }
-
+  /**
+   * Parses the book from the given fully-qualified path which
+   * represents a book resource.
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   */
+  public static final String parseBookFromBookName(String bookName) {
+    return BOOK_PATH_TEMPLATE.parse(bookName).get("book");
   }
 
 
@@ -200,7 +192,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public static LibraryServiceApi create() throws IOException {
+  public static final LibraryServiceApi create() throws IOException {
     return create(LibraryServiceSettings.create());
   }
 
@@ -212,7 +204,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public static LibraryServiceApi create(LibraryServiceSettings settings) throws IOException {
+  public static final LibraryServiceApi create(LibraryServiceSettings settings) throws IOException {
     return new LibraryServiceApi(settings);
   }
 
@@ -271,7 +263,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param shelf The shelf to create.
    */
-  public Shelf createShelf(Shelf shelf) {
+  public final Shelf createShelf(Shelf shelf) {
     CreateShelfRequest request =
         CreateShelfRequest.newBuilder()
         .setShelf(shelf)
@@ -300,7 +292,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public ApiCallable<CreateShelfRequest, Shelf> createShelfCallable() {
+  public final ApiCallable<CreateShelfRequest, Shelf> createShelfCallable() {
     return createShelfCallable;
   }
 
@@ -315,7 +307,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param name The name of the shelf to retrieve.
    */
-  public Shelf getShelf(String name) {
+  public final Shelf getShelf(String name) {
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
         .setName(name)
@@ -334,7 +326,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param name The name of the shelf to retrieve.
    * @param message Field to verify that message-type query parameter gets flattened.
    */
-  public Shelf getShelf(String name, SomeMessage message) {
+  public final Shelf getShelf(String name, SomeMessage message) {
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
         .setName(name)
@@ -355,7 +347,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param message Field to verify that message-type query parameter gets flattened.
    * @param stringBuilder
    */
-  public Shelf getShelf(String name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
+  public final Shelf getShelf(String name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
         .setName(name)
@@ -386,7 +378,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public ApiCallable<GetShelfRequest, Shelf> getShelfCallable() {
+  public final ApiCallable<GetShelfRequest, Shelf> getShelfCallable() {
     return getShelfCallable;
   }
 
@@ -399,7 +391,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public Iterable<Shelf> listShelves() {
+  public final Iterable<Shelf> listShelves() {
     ListShelvesRequest request =
         ListShelvesRequest.newBuilder()
 
@@ -416,7 +408,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param request The request object containing all of the parameters for the API call.
    */
-  private Iterable<Shelf> listShelves(ListShelvesRequest request) {
+  private final Iterable<Shelf> listShelves(ListShelvesRequest request) {
     return listShelvesIterableCallable()
         .call(request);
   }
@@ -428,7 +420,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public ApiCallable<ListShelvesRequest, Iterable<Shelf>> listShelvesIterableCallable() {
+  public final ApiCallable<ListShelvesRequest, Iterable<Shelf>> listShelvesIterableCallable() {
     return listShelvesIterableCallable;
   }
 
@@ -439,7 +431,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public ApiCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
+  public final ApiCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
     return listShelvesCallable;
   }
 
@@ -454,7 +446,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param name The name of the shelf to delete.
    */
-  public void deleteShelf(String name) {
+  public final void deleteShelf(String name) {
     DeleteShelfRequest request =
         DeleteShelfRequest.newBuilder()
         .setName(name)
@@ -483,7 +475,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public ApiCallable<DeleteShelfRequest, Empty> deleteShelfCallable() {
+  public final ApiCallable<DeleteShelfRequest, Empty> deleteShelfCallable() {
     return deleteShelfCallable;
   }
 
@@ -501,7 +493,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param name The name of the shelf we're adding books to.
    * @param otherShelfName The name of the shelf we're removing books from and deleting.
    */
-  public Shelf mergeShelves(String name, String otherShelfName) {
+  public final Shelf mergeShelves(String name, String otherShelfName) {
     MergeShelvesRequest request =
         MergeShelvesRequest.newBuilder()
         .setName(name)
@@ -535,7 +527,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public ApiCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable() {
+  public final ApiCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable() {
     return mergeShelvesCallable;
   }
 
@@ -551,7 +543,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param name The name of the shelf in which the book is created.
    * @param book The book to create.
    */
-  public Book createBook(String name, Book book) {
+  public final Book createBook(String name, Book book) {
     CreateBookRequest request =
         CreateBookRequest.newBuilder()
         .setName(name)
@@ -581,7 +573,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public ApiCallable<CreateBookRequest, Book> createBookCallable() {
+  public final ApiCallable<CreateBookRequest, Book> createBookCallable() {
     return createBookCallable;
   }
 
@@ -598,7 +590,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param books The books to publish in the series.
    * @param edition The edition of the series
    */
-  public PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition) {
+  public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition) {
     PublishSeriesRequest request =
         PublishSeriesRequest.newBuilder()
         .setShelf(shelf)
@@ -629,7 +621,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public ApiCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable() {
+  public final ApiCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable() {
     return publishSeriesCallable;
   }
 
@@ -644,7 +636,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param name The name of the book to retrieve.
    */
-  public Book getBook(String name) {
+  public final Book getBook(String name) {
     GetBookRequest request =
         GetBookRequest.newBuilder()
         .setName(name)
@@ -673,7 +665,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public ApiCallable<GetBookRequest, Book> getBookCallable() {
+  public final ApiCallable<GetBookRequest, Book> getBookCallable() {
     return getBookCallable;
   }
 
@@ -686,7 +678,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public Iterable<Book> listBooks(String name, String filter) {
+  public final Iterable<Book> listBooks(String name, String filter) {
     ListBooksRequest request =
         ListBooksRequest.newBuilder()
         .setName(name)
@@ -704,7 +696,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param request The request object containing all of the parameters for the API call.
    */
-  public Iterable<Book> listBooks(ListBooksRequest request) {
+  public final Iterable<Book> listBooks(ListBooksRequest request) {
     return listBooksIterableCallable()
         .call(request);
   }
@@ -716,7 +708,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public ApiCallable<ListBooksRequest, Iterable<Book>> listBooksIterableCallable() {
+  public final ApiCallable<ListBooksRequest, Iterable<Book>> listBooksIterableCallable() {
     return listBooksIterableCallable;
   }
 
@@ -727,7 +719,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public ApiCallable<ListBooksRequest, ListBooksResponse> listBooksCallable() {
+  public final ApiCallable<ListBooksRequest, ListBooksResponse> listBooksCallable() {
     return listBooksCallable;
   }
 
@@ -742,7 +734,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param name The name of the book to delete.
    */
-  public void deleteBook(String name) {
+  public final void deleteBook(String name) {
     DeleteBookRequest request =
         DeleteBookRequest.newBuilder()
         .setName(name)
@@ -771,7 +763,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public ApiCallable<DeleteBookRequest, Empty> deleteBookCallable() {
+  public final ApiCallable<DeleteBookRequest, Empty> deleteBookCallable() {
     return deleteBookCallable;
   }
 
@@ -787,7 +779,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param name The name of the book to update.
    * @param book The book to update with.
    */
-  public Book updateBook(String name, Book book) {
+  public final Book updateBook(String name, Book book) {
     UpdateBookRequest request =
         UpdateBookRequest.newBuilder()
         .setName(name)
@@ -809,7 +801,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param updateMask A field mask to apply, rendered as an HTTP parameter.
    * @param physicalMask To test Python import clash resolution.
    */
-  public Book updateBook(String name, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
+  public final Book updateBook(String name, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
     UpdateBookRequest request =
         UpdateBookRequest.newBuilder()
         .setName(name)
@@ -841,7 +833,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public ApiCallable<UpdateBookRequest, Book> updateBookCallable() {
+  public final ApiCallable<UpdateBookRequest, Book> updateBookCallable() {
     return updateBookCallable;
   }
 
@@ -857,7 +849,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param name The name of the book to move.
    * @param otherShelfName The name of the destination shelf.
    */
-  public Book moveBook(String name, String otherShelfName) {
+  public final Book moveBook(String name, String otherShelfName) {
     MoveBookRequest request =
         MoveBookRequest.newBuilder()
         .setName(name)
@@ -887,7 +879,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public ApiCallable<MoveBookRequest, Book> moveBookCallable() {
+  public final ApiCallable<MoveBookRequest, Book> moveBookCallable() {
     return moveBookCallable;
   }
 
@@ -900,7 +892,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    */
   @Override
-  public void close() throws Exception {
+  public final void close() throws Exception {
     for (AutoCloseable closeable : closeables) {
       closeable.close();
     }

@@ -25,7 +25,7 @@
   public class {@context.getVeneerName(service)} implements AutoCloseable {
     {@members(service)}
 
-    {@resourceNamesInnerClass(service)}
+    {@resourceUtils(service)}
 
     {@constructors(service)}
 
@@ -47,17 +47,9 @@
   {@context.addImport("java.util.List")}
 @end
 
-@private resourceNamesInnerClass(service)
-
-  public static class ResourceNames {
-
-    {@resourceConstants(service)}
-
-    private ResourceNames() {}
-
-    {@resourceFunctions(service)}
-  }
-
+@private resourceUtils(service)
+  {@resourceConstants(service)}
+  {@resourceFunctions(service)}
 @end
 
 @private resourceConstants(service)
@@ -113,7 +105,7 @@
 @end
 
 @private formatResourceFunctionName(collectionConfig)
-  format{@resourcePath(collectionConfig)}
+  format{@resourceName(collectionConfig)}
 @end
 
 @private formatResourceFunctionParams(collectionConfig)
@@ -130,7 +122,7 @@
 
 @private parseResourceFunctions(collectionConfig)
   @join subField : collectionConfig.getNameTemplate.vars()
-    @let fieldPath = context.upperCamelToLowerCamel(resourcePath(collectionConfig))
+    @let fieldPath = context.upperCamelToLowerCamel(resourceName(collectionConfig))
       /**
        * Parses the {@subField} from the given fully-qualified path which
        * represents a {@context.lowerUnderscoreToLowerCamel(collectionConfig.getMethodBaseName)} resource.
@@ -138,7 +130,7 @@
       {@javaDocManualEdit()}
        */
       public static final String \
-          parse{@context.lowerUnderscoreToUpperCamel(subField)}From{@resourcePath(collectionConfig)}(\
+          parse{@context.lowerUnderscoreToUpperCamel(subField)}From{@resourceName(collectionConfig)}(\
           String {@fieldPath}) {
         return {@pathTemplateConstantName(collectionConfig)}.parse({@fieldPath}).get("{@subField}");
       }
@@ -147,8 +139,8 @@
   @end
 @end
 
-@private resourcePath(collectionConfig)
-  {@context.lowerUnderscoreToUpperCamel(collectionConfig.getMethodBaseName)}Path
+@private resourceName(collectionConfig)
+  {@context.lowerUnderscoreToUpperCamel(collectionConfig.getMethodBaseName)}Name
 @end
 
 @private members(service)
@@ -181,7 +173,7 @@
      *
     {@javaDocManualEdit()}
      */
-    public static {@className} create() throws IOException {
+    public static final {@className} create() throws IOException {
       return create({@settingsClassName(service)}.create());
     }
 
@@ -192,7 +184,7 @@
      *
     {@javaDocManualEdit()}
      */
-    public static {@className} create({@settingsClassName(service)} settings) throws IOException {
+    public static final {@className} create({@settingsClassName(service)} settings) throws IOException {
       return new {@className}(settings);
     }
 
@@ -302,7 +294,7 @@
   {@javaDocManualEdit()}
    */
   @@Override
-  public void close() throws Exception {
+  public final void close() throws Exception {
     for (AutoCloseable closeable : closeables) {
       closeable.close();
     }
@@ -323,7 +315,7 @@
        pageStreaming = methodConfig.getPageStreaming(), \
        resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
        requestTypeName = context.typeName(method.getInputType)
-    public Iterable<{@resourceTypeName}> \
+    public final Iterable<{@resourceTypeName}> \
         {@methodName}({@flattenedParameters(fields)}) {
       {@context.typeName(method.getInputType)} request =
           {@requestTypeName}.newBuilder()
@@ -340,7 +332,7 @@
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
        resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType())
-    {@accessModifier} Iterable<{@resourceTypeName}> {@methodName}({@inTypeName} request) {
+    {@accessModifier} final Iterable<{@resourceTypeName}> {@methodName}({@inTypeName} request) {
       return {@methodName}IterableCallable()
           .call(request);
     }
@@ -353,7 +345,7 @@
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
        resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType())
-    public ApiCallable<{@inTypeName}, Iterable<{@resourceTypeName}>> {@methodName}IterableCallable() {
+    public final ApiCallable<{@inTypeName}, Iterable<{@resourceTypeName}>> {@methodName}IterableCallable() {
       return {@methodName}IterableCallable;
     }
 
@@ -365,7 +357,7 @@
   @let returnType = context.methodReturnTypeName(method.getOutputType), \
        returnStatement = context.methodReturnStatement(method.getOutputType), \
        requestTypeName = context.typeName(method.getInputType)
-    public {@returnType} {@methodName}({@flattenedParameters(fields)}) {
+    public final {@returnType} {@methodName}({@flattenedParameters(fields)}) {
       {@context.typeName(method.getInputType)} request =
           {@requestTypeName}.newBuilder()
           {@builderSetCalls(fields)}
@@ -390,7 +382,7 @@
 
 @private methodReturningCallable(method, callableConstant, methodName, inTypeName, outTypeName)
   {@methodJavaDoc(method)}
-  public ApiCallable<{@inTypeName}, {@outTypeName}> {@methodName}Callable() {
+  public final ApiCallable<{@inTypeName}, {@outTypeName}> {@methodName}Callable() {
     return {@methodName}Callable;
   }
 

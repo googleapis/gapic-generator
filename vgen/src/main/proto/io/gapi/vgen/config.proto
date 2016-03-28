@@ -64,7 +64,6 @@ option java_package = "io.gapi.vgen";
 //       ...
 //     ...
 message ConfigProto {
-
   // The fully qualified name of the Java class of the language
   // provider. Must be provided.
   string language_provider = 1;
@@ -97,7 +96,6 @@ message LanguageSettingsProto {
 }
 
 message InterfaceConfigProto {
-
   // The fully qualified name of the API interface.
   string name = 1;
 
@@ -252,6 +250,12 @@ message BundlingSettingsProto {
   // The duration, in milliseconds, after which a bundle should be sent,
   // starting from the addition of the first message to that bundle.
   uint64 delay_threshold_millis = 3;
+
+  // The maximum number of elements collected in a bundle that could be accepted by server.
+  uint32 element_count_limit = 4;
+
+  // The maximum size of the request that could be accepted by server.
+  uint32 request_byte_limit = 5;
 }
 
 // `BundlingDescriptorProto` specifies the fields of the request message to be
