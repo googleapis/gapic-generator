@@ -17,7 +17,6 @@ import com.google.api.tools.framework.processors.resolver.Resolver;
 import com.google.api.tools.framework.tools.ToolDriverBase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
@@ -28,6 +27,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Main class for the code generator.
@@ -96,7 +96,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
       return;
     }
 
-    Multimap<Interface, GeneratedResult> docs = ArrayListMultimap.create();
+    List<GeneratedResult> docs = new ArrayList<GeneratedResult>();
     for (String snippetInputName : configProto.getSnippetFilesList()) {
       SnippetDescriptor snippetDescriptor =
           new SnippetDescriptor(snippetInputName);
@@ -104,9 +104,16 @@ public class CodeGeneratorApi extends ToolDriverBase {
       if (code == null) {
         continue;
       }
-      for (Map.Entry<Interface, GeneratedResult> entry : code.entrySet()) {
-        docs.put(entry.getKey(), entry.getValue());
+      docs.addAll(code.values());
+    }
+    // Generate doc snippets.
+    for (String snippetInputName : configProto.getDocSnippetFilesList()) {
+      SnippetDescriptor snippetDescriptor = new SnippetDescriptor(snippetInputName);
+      Map<String, GeneratedResult> code = generator.generateDocs(snippetDescriptor);
+      if (code == null) {
+        continue;
       }
+      docs.addAll(code.values());
     }
     generator.outputCode(options.get(OUTPUT_FILE), docs, configProto.getArchive());
   }

@@ -30,7 +30,7 @@ public class PythonProtoElements {
     ProtoElement parent = elt.getParent();
     // elt is a proto file itself, or elt is top-level
     if (parent == null || parent.getParent() == null) {
-      return null;
+      return "";
     }
     String prefix = parent.getSimpleName();
     for (parent = parent.getParent(); parent.getParent() != null; parent = parent.getParent()) {

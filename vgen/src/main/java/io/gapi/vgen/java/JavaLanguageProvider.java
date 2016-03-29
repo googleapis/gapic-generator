@@ -18,7 +18,6 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
 import com.google.common.io.Files;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
@@ -134,15 +133,12 @@ public class JavaLanguageProvider extends LanguageProvider {
   }
 
   @Override
-  public void outputCode(String outputPath, Multimap<Interface, GeneratedResult> services,
-      boolean archive)
-          throws IOException {
+  public void outputCode(String outputPath, List<GeneratedResult> results,
+      boolean archive) throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
-    for (Map.Entry<Interface, GeneratedResult> serviceEntry : services.entries()) {
-      Interface service = serviceEntry.getKey();
-      GeneratedResult generatedResult = serviceEntry.getValue();
+    for (GeneratedResult result : results) {
       String path = getApiConfig().getPackageName().replace('.', '/');
-      files.put(path + "/" + generatedResult.getFilename(), generatedResult.getDoc());
+      files.put(path + "/" + result.getFilename(), result.getDoc());
     }
     if (archive) {
       ToolUtil.writeJar(files, outputPath);

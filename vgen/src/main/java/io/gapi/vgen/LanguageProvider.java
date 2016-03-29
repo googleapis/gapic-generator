@@ -3,12 +3,13 @@ package io.gapi.vgen;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Multimap;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,11 +39,15 @@ public abstract class LanguageProvider {
   public abstract GeneratedResult generate(Interface service,
       SnippetDescriptor snippetDescriptor);
 
+  public GeneratedResult generateDoc(ProtoFile file, SnippetDescriptor descriptor) {
+    return null;
+  }
+
   /**
    * Outputs the code based on a per-service map.
    */
   public abstract void outputCode(String outputArchiveFile,
-      Multimap<Interface, GeneratedResult> services,
+      List<GeneratedResult> results,
       boolean archive) throws IOException;
 
   /**

@@ -1,5 +1,7 @@
 package io.gapi.vgen;
 
+import com.google.api.tools.framework.snippet.Doc;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.truth.Truth;
@@ -42,14 +44,18 @@ public class PythonCodeGeneratorTest  {
       // yaml, and one for the messages class
       GeneratedResult codeResult = generateForSnippet(0);
       GeneratedResult configResult = generateForSnippet(1);
-      GeneratedResult messagesResult = generateForSnippet(2);
+      List<GeneratedResult> docsResult = generateForDocSnippet(0);
       Truth.assertThat(codeResult).isNotNull();
       Truth.assertThat(configResult).isNotNull();
-      Truth.assertThat(messagesResult).isNotNull();
-      return ImmutableMap.of(
-          codeResult.getFilename(), codeResult.getDoc(),
-          configResult.getFilename(), configResult.getDoc(),
-          messagesResult.getFilename(), messagesResult.getDoc());
+      Truth.assertThat(docsResult).isNotNull();
+
+      ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder();
+      builder.put(codeResult.getFilename(), codeResult.getDoc());
+      builder.put(configResult.getFilename(), configResult.getDoc());
+      for (GeneratedResult result : docsResult) {
+        builder.put(result.getFilename(), result.getDoc());
+      }
+      return builder.build();
     }
 
     // Tests
@@ -86,14 +92,18 @@ public class PythonCodeGeneratorTest  {
     protected Object run() {
       GeneratedResult codeResult = generateForSnippet(0);
       GeneratedResult configResult = generateForSnippet(1);
-      GeneratedResult messagesResult = generateForSnippet(2);
+      List<GeneratedResult> docsResult = generateForDocSnippet(0);
       Truth.assertThat(codeResult).isNotNull();
       Truth.assertThat(configResult).isNotNull();
-      Truth.assertThat(messagesResult).isNotNull();
-      return ImmutableMap.of(
-          codeResult.getFilename(), codeResult.getDoc(),
-          configResult.getFilename(), configResult.getDoc(),
-          messagesResult.getFilename(), messagesResult.getDoc());
+      Truth.assertThat(docsResult).isNotNull();
+
+      ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder();
+      builder.put(codeResult.getFilename(), codeResult.getDoc());
+      builder.put(configResult.getFilename(), configResult.getDoc());
+      for (GeneratedResult result : docsResult) {
+        builder.put(result.getFilename(), result.getDoc());
+      }
+      return builder.build();
     }
 
     // Tests

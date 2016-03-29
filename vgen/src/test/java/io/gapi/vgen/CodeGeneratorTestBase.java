@@ -15,6 +15,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -80,13 +81,33 @@ public abstract class CodeGeneratorTestBase extends ConfigBaselineTestCase {
   }
 
   protected GeneratedResult generateForSnippet(int index) {
-    if (index >= config.getSnippetFilesCount()) {
+    Map<?, GeneratedResult> result = generateForSnippet(
+        config.getSnippetFilesList(), index, false);
+    Truth.assertThat(result.size()).isEqualTo(1);
+    return result.values().iterator().next();
+  }
+
+  protected List<GeneratedResult> generateForDocSnippet(int index) {
+    TreeMap<String, GeneratedResult> result = new TreeMap(
+        (Map<String, GeneratedResult>) generateForSnippet(
+            config.getDocSnippetFilesList(), index, true));
+    return new ArrayList(result.values());
+  }
+
+  private Map<?, GeneratedResult> generateForSnippet(List<String> snippetInputNames, int index,
+      boolean doc) {
+    if (index >= snippetInputNames.size()) {
       return null;
     }
-    String snippetInputName = config.getSnippetFilesList().get(index);
+    String snippetInputName = snippetInputNames.get(index);
     SnippetDescriptor resourceDescriptor =
           new SnippetDescriptor(snippetInputName);
-    Map<Interface, GeneratedResult> result = generator.generate(resourceDescriptor);
+    Map<?, GeneratedResult> result = null;
+    if (doc) {
+      result = generator.generateDocs(resourceDescriptor);
+    } else {
+      result = generator.generate(resourceDescriptor);
+    }
     if (result == null) {
       // Report diagnosis to baseline file.
       for (Diag diag : model.getDiags()) {
@@ -94,8 +115,7 @@ public abstract class CodeGeneratorTestBase extends ConfigBaselineTestCase {
       }
       return null;
     }
-    Truth.assertThat(result.size()).isEqualTo(1);
-    return result.values().iterator().next();
+    return result;
   }
 
   @Override

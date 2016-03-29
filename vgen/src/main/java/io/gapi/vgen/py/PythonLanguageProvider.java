@@ -8,6 +8,7 @@ import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.api.tools.framework.snippet.Doc;
@@ -19,7 +20,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import io.gapi.vgen.ApiConfig;
@@ -51,16 +51,14 @@ public class PythonLanguageProvider extends LanguageProvider {
     Doc generateFilename(Interface iface);
 
     /**
-     * Generates the body of the class for the service interface.
-     * @param iface
+     * Generates the result class, and a set of accumulated types to be imported.
      */
-    Doc generateBody(Interface iface);
+    Doc generateClass(Interface iface, Iterable<String> imports);
+  }
 
-    /**
-     * Generates the result class, based on the result for the body,
-     * and a set of accumulated types to be imported.
-     */
-    Doc generateClass(Interface iface, Doc body, Iterable<String> imports);
+  interface PythonDocSnippetSet {
+    Doc generateFilename(ProtoFile file);
+    Doc generateClass(ProtoFile file, Iterable<String> imports);
   }
 
   /**
@@ -112,15 +110,12 @@ public class PythonLanguageProvider extends LanguageProvider {
       .build();
 
   @Override
-  public void outputCode(String outputArchiveFile, Multimap<Interface, GeneratedResult> services,
-      boolean archive)
-          throws IOException {
+  public void outputCode(String outputArchiveFile, List<GeneratedResult> results,
+        boolean archive) throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
-    for (Map.Entry<Interface, GeneratedResult> serviceEntry : services.entries()) {
-      Interface service = serviceEntry.getKey();
-      GeneratedResult generatedResult = serviceEntry.getValue();
+    for (GeneratedResult result : results) {
       String path = getApiConfig().getPackageName().replace('.', '/');
-      files.put(path + "/" + generatedResult.getFilename(), generatedResult.getDoc());
+      files.put(path + "/" + result.getFilename(), result.getDoc());
     }
     if (archive) {
       ToolUtil.writeJar(files, outputArchiveFile);
@@ -138,28 +133,46 @@ public class PythonLanguageProvider extends LanguageProvider {
 
   @Override
   public GeneratedResult generate(Interface service, SnippetDescriptor snippetDescriptor) {
-    PythonImportHandler importHandler = PythonImportHandler.createServicePythonImportHandler(service);
-    PythonImportHandler deepImportHandler = PythonImportHandler.createMessagesPythonImportHandler(service);
+    PythonImportHandler importHandler = new PythonImportHandler(service);
     ImmutableMap<String, Object> globalMap = ImmutableMap.<String, Object>builder()
         .put("context", this)
         .put("pyproto", new PythonProtoElements())
         .put("importHandler", importHandler)
-        .put("deepImportHandler", deepImportHandler)
         .build();
     PythonSnippetSet snippets = SnippetSet.createSnippetInterface(
         PythonSnippetSet.class,
         SNIPPET_RESOURCE_ROOT,
         snippetDescriptor.getSnippetInputName(),
         globalMap);
-
     Doc filenameDoc = snippets.generateFilename(service);
     String outputFilename = filenameDoc.prettyPrint();
-
     List<String> importList = importHandler.calculateImports();
-    Doc body = snippets.generateBody(service);
-
     // Generate result.
-    Doc result = snippets.generateClass(service, body, importList);
+    Doc result = snippets.generateClass(service, importList);
+    return GeneratedResult.create(result, outputFilename);
+  }
+
+  public String filePath(ProtoFile file) {
+    return file.getSimpleName().replace(".proto", "_pb2.py");
+  }
+
+  @Override
+  public GeneratedResult generateDoc(ProtoFile file, SnippetDescriptor snippetDescriptor) {
+    PythonImportHandler importHandler = new PythonImportHandler(file);
+    ImmutableMap<String, Object> globalMap = ImmutableMap.<String, Object>builder()
+        .put("context", this)
+        .put("file", file)
+        .put("importHandler", importHandler)
+        .build();
+    PythonDocSnippetSet snippets = SnippetSet.createSnippetInterface(
+        PythonDocSnippetSet.class,
+        SNIPPET_RESOURCE_ROOT,
+        snippetDescriptor.getSnippetInputName(),
+        globalMap);
+    Doc filenameDoc = snippets.generateFilename(file);
+    String outputFilename = filenameDoc.prettyPrint();
+    List<String> importList = importHandler.calculateImports();
+    Doc result = snippets.generateClass(file, importList);
     return GeneratedResult.create(result, outputFilename);
   }
 
@@ -167,7 +180,6 @@ public class PythonLanguageProvider extends LanguageProvider {
    * Return a Python docstring to be associated with the given ProtoElement.
    */
   public List<String> comments(ProtoElement element, PythonImportHandler importHandler) {
-    List<String> comments;
     if (element instanceof Method) {
       return methodComments((Method) element, importHandler);
     } else if (element instanceof MessageType) {
@@ -191,7 +203,7 @@ public class PythonLanguageProvider extends LanguageProvider {
   /**
    * Returns a comment string for field.
    */
-  private String fieldComment(Field field, PythonImportHandler importHandler, boolean messages) {
+  private String fieldComment(Field field, PythonImportHandler importHandler) {
     TypeRef type = field.getType();
     boolean closingBrace = false;
 
@@ -205,13 +217,15 @@ public class PythonLanguageProvider extends LanguageProvider {
     String typeComment;
     switch (type.getKind()) {
       case TYPE_MESSAGE:
-        typeComment = (messages ? ":class:`" : ":class:`messages.") +
-            importHandler.getDisambiguatedClassName(type.getMessageType()) + "`";
+        String path = importHandler.fullyQualifiedPath(type.getMessageType());
+        typeComment = ":class:`" + (Strings.isNullOrEmpty(path) ? "" : (path + ".")) +
+            type.getMessageType().getSimpleName() + "`";
         break;
       case TYPE_ENUM:
         Preconditions.checkArgument(type.getEnumType().getValues().size() > 0,
             "enum must have a value");
-        typeComment = ":class:`" + importHandler.fullyQualifiedPath(type.getEnumType()) + "." +
+        String path2 = importHandler.fullyQualifiedPath(type.getEnumType());
+        typeComment = ":class:`" + (Strings.isNullOrEmpty(path2) ? "" : (path2 + ".")) +
             type.getEnumType().getSimpleName() + "`";
         break;
       default:
@@ -235,7 +249,7 @@ public class PythonLanguageProvider extends LanguageProvider {
     StringBuilder paramTypesBuilder = new StringBuilder();
     paramTypesBuilder.append("Attributes:\n");
     for (Field field : msg.getFields()) {
-      paramTypesBuilder.append(fieldComment(field, importHandler, true));
+      paramTypesBuilder.append(fieldComment(field, importHandler));
     }
     String paramTypes = paramTypesBuilder.toString();
     // Generate comment contents
@@ -259,7 +273,7 @@ public class PythonLanguageProvider extends LanguageProvider {
     StringBuilder paramTypesBuilder = new StringBuilder();
     paramTypesBuilder.append("Args:\n");
     for (Field field : this.messages().flattenedFields(msg.getInputType())) {
-      paramTypesBuilder.append(fieldComment(field, importHandler, false));
+      paramTypesBuilder.append(fieldComment(field, importHandler));
     }
     paramTypesBuilder.append("  options (:class:`api_callable.CallOptions`)");
     String paramTypes = paramTypesBuilder.toString();
@@ -311,8 +325,8 @@ public class PythonLanguageProvider extends LanguageProvider {
     }
     switch (type.getKind()) {
       case TYPE_MESSAGE:
-        return "messages." +
-            importHandler.getDisambiguatedClassName(type.getMessageType()) + "()";
+        return importHandler.fullyQualifiedPath(type.getMessageType()) + "." +
+            type.getMessageType().getSimpleName() + "()";
       case TYPE_ENUM:
         Preconditions.checkArgument(type.getEnumType().getValues().size() > 0,
             "enum must have a value");

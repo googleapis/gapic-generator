@@ -32,7 +32,6 @@ from google.gax import api_callable
 from google.gax import config
 from google.gax import path_template
 import google.gax
-import messages
 import yaml
 
 from google.example.library.v1 import field_mask_pb2 as v1_field_mask_pb2
@@ -63,7 +62,7 @@ class LibraryServiceApi(object):
 
     _CODE_GEN_NAME_VERSION = 'gapic/0.1.0'
 
-    _GAX_VERSION = pkg_resource.get_distribution('google.gax').version
+    _GAX_VERSION = pkg_resources.get_distribution('google-gax').version
 
     _DEFAULT_TIMEOUT = 30
 
@@ -169,7 +168,7 @@ class LibraryServiceApi(object):
         Creates a shelf, and returns the new Shelf.
 
         Args:
-          shelf (:class:`messages.Shelf`)
+          shelf (:class:`library_pb2.Shelf`)
           options (:class:`api_callable.CallOptions`)
 
         Returns:
@@ -192,17 +191,17 @@ class LibraryServiceApi(object):
 
         Args:
           name (string)
-          message (:class:`messages.SomeMessage`)
-          string_builder (:class:`messages.StringBuilder`)
+          message (:class:`library_pb2.SomeMessage`)
+          string_builder (:class:`library_pb2.StringBuilder`)
           options (:class:`api_callable.CallOptions`)
 
         Returns:
           A :class:`library_pb2.Shelf` object.
         """
         if message is None:
-            message = messages.SomeMessage()
+            message = library_pb2.SomeMessage()
         if string_builder is None:
-            string_builder = messages.StringBuilder()
+            string_builder = library_pb2.StringBuilder()
         req = library_pb2.GetShelfRequest(
             name=name,
             message=message,
@@ -283,7 +282,7 @@ class LibraryServiceApi(object):
 
         Args:
           name (string)
-          book (:class:`messages.Book`)
+          book (:class:`library_pb2.Book`)
           options (:class:`api_callable.CallOptions`)
 
         Returns:
@@ -306,8 +305,8 @@ class LibraryServiceApi(object):
         Creates a series of books.
 
         Args:
-          shelf (:class:`messages.Shelf`)
-          books (list[:class:`messages.Book`])
+          shelf (:class:`library_pb2.Shelf`)
+          books (list[:class:`library_pb2.Book`])
           edition (uint32)
           options (:class:`api_callable.CallOptions`)
 
@@ -397,18 +396,18 @@ class LibraryServiceApi(object):
 
         Args:
           name (string)
-          book (:class:`messages.Book`)
-          update_mask (:class:`messages.FieldMask`)
-          physical_mask (:class:`messages.V1FieldMaskFieldMask`)
+          book (:class:`library_pb2.Book`)
+          update_mask (:class:`protobuf_field_mask_pb2.FieldMask`)
+          physical_mask (:class:`v1_field_mask_pb2.FieldMask`)
           options (:class:`api_callable.CallOptions`)
 
         Returns:
           A :class:`library_pb2.Book` object.
         """
         if update_mask is None:
-            update_mask = messages.FieldMask()
+            update_mask = protobuf_field_mask_pb2.FieldMask()
         if physical_mask is None:
-            physical_mask = messages.V1FieldMaskFieldMask()
+            physical_mask = v1_field_mask_pb2.FieldMask()
         req = library_pb2.UpdateBookRequest(
             name=name,
             book=book,
@@ -534,7 +533,7 @@ methods:
       retry_codes_name: non_idempotent
       retry_params_name: default
 
-============== file: library_service_api_messages.py ==============
+============== file: field_mask_pb2.py ==============
 # Copyright 2016 Google Inc. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -548,29 +547,32 @@ methods:
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+
+class FieldMask(object):
+    """
+    Attributes:
+      materials (list[:class:`FieldMask.Material`])
+
+    """
+    pass
+============== file: google/protobuf/any_pb2.py ==============
+# Copyright 2016 Google Inc. All rights reserved.
 #
-# EDITING INSTRUCTIONS
-# This file was generated from the file
-# https://github.com/google/googleapis/blob/master/library.proto,
-# and updates to that file get reflected here through a refresh process.
-# For the short term, the refresh process will only be runnable by Google engineers.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# The only allowed edits are to method and file documentation. A 3-way
-# merge preserves those additions if the generated source changes.
-
-from google.protobuf import message
-from google.protobuf.internal import python_message
-
-from google.example.library.v1 import field_mask_pb2 as v1_field_mask_pb2
-from google.example.library.v1 import library_pb2
-from google.protobuf import any_pb2
-from google.protobuf import duration_pb2
-from google.protobuf import field_mask_pb2 as protobuf_field_mask_pb2
-from google.protobuf import timestamp_pb2
-from google.protobuf import wrappers_pb2
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 
-class Any(message.Message):
+class Any(object):
     """
     `Any` contains an arbitrary serialized message along with a URL
     that describes the type of the serialized message.
@@ -609,88 +611,24 @@ class Any(message.Message):
       value (bytes)
 
     """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = any_pb2.Any.DESCRIPTOR
+    pass
+============== file: google/protobuf/duration_pb2.py ==============
+# Copyright 2016 Google Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 
-class Book(message.Message):
-    """
-    A single book in the library.
-
-    Attributes:
-      name (string)
-      author (string)
-      title (string)
-      read (bool)
-      rating (:class:`library_pb2.Book.Rating`)
-      any_value (:class:`Any`)
-      struct_value (:class:`null`)
-      value_value (:class:`null`)
-      list_value_value (:class:`null`)
-      map_list_value_value (list[:class:`MapListValueValueEntry`])
-      time_value (:class:`Timestamp`)
-      duration_value (:class:`Duration`)
-      field_mask_value (:class:`FieldMask`)
-      int32_value (:class:`Int32Value`)
-      uint32_value (:class:`UInt32Value`)
-      int64_value (:class:`Int64Value`)
-      uint64_value (:class:`UInt64Value`)
-      float_value (:class:`FloatValue`)
-      double_value (:class:`DoubleValue`)
-      string_value (:class:`StringValue`)
-      bool_value (:class:`BoolValue`)
-      bytes_value (:class:`BytesValue`)
-      map_string_value (list[:class:`MapStringValueEntry`])
-      map_message_value (list[:class:`MapMessageValueEntry`])
-
-    """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = library_pb2.Book.DESCRIPTOR
-
-
-class BoolValue(message.Message):
-    """
-    Wrapper message for `bool`.
-
-    The JSON representation for `BoolValue` is JSON `true` and `false`.
-
-    Attributes:
-      value (bool)
-
-    """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = wrappers_pb2.BoolValue.DESCRIPTOR
-
-
-class BytesValue(message.Message):
-    """
-    Wrapper message for `bytes`.
-
-    The JSON representation for `BytesValue` is JSON string.
-
-    Attributes:
-      value (bytes)
-
-    """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = wrappers_pb2.BytesValue.DESCRIPTOR
-
-
-class DoubleValue(message.Message):
-    """
-    Wrapper message for `double`.
-
-    The JSON representation for `DoubleValue` is JSON number.
-
-    Attributes:
-      value (double)
-
-    """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = wrappers_pb2.DoubleValue.DESCRIPTOR
-
-
-class Duration(message.Message):
+class Duration(object):
     """
     A Duration represents a signed, fixed-length span of time represented
     as a count of seconds and fractions of seconds at nanosecond
@@ -738,11 +676,24 @@ class Duration(message.Message):
       nanos (int32)
 
     """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = duration_pb2.Duration.DESCRIPTOR
+    pass
+============== file: google/protobuf/field_mask_pb2.py ==============
+# Copyright 2016 Google Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 
-class FieldMask(message.Message):
+class FieldMask(object):
     """
     `FieldMask` represents a set of symbolic field paths, for example:
 
@@ -871,147 +822,24 @@ class FieldMask(message.Message):
       paths (list[string])
 
     """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = field_mask_pb2.FieldMask.DESCRIPTOR
+    pass
+============== file: google/protobuf/timestamp_pb2.py ==============
+# Copyright 2016 Google Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 
-class FloatValue(message.Message):
-    """
-    Wrapper message for `float`.
-
-    The JSON representation for `FloatValue` is JSON number.
-
-    Attributes:
-      value (float)
-
-    """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = wrappers_pb2.FloatValue.DESCRIPTOR
-
-
-class Int32Value(message.Message):
-    """
-    Wrapper message for `int32`.
-
-    The JSON representation for `Int32Value` is JSON number.
-
-    Attributes:
-      value (int32)
-
-    """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = wrappers_pb2.Int32Value.DESCRIPTOR
-
-
-class Int64Value(message.Message):
-    """
-    Wrapper message for `int64`.
-
-    The JSON representation for `Int64Value` is JSON string.
-
-    Attributes:
-      value (int64)
-
-    """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = wrappers_pb2.Int64Value.DESCRIPTOR
-
-
-class MapListValueValueEntry(message.Message):
-    """
-    Attributes:
-      key (string)
-      value (:class:`null`)
-
-    """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = library_pb2.Book.MapListValueValueEntry.DESCRIPTOR
-
-
-class MapMessageValueEntry(message.Message):
-    """
-    Attributes:
-      key (string)
-      value (:class:`SomeMessage`)
-
-    """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = library_pb2.Book.MapMessageValueEntry.DESCRIPTOR
-
-
-class MapStringValueEntry(message.Message):
-    """
-    Attributes:
-      key (int32)
-      value (string)
-
-    """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = library_pb2.Book.MapStringValueEntry.DESCRIPTOR
-
-
-class Shelf(message.Message):
-    """
-    A Shelf contains a collection of books with a theme.
-
-    Attributes:
-      name (string)
-      theme (string)
-      internal_theme (string)
-
-    """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = library_pb2.Shelf.DESCRIPTOR
-
-
-class SomeMessage(message.Message):
-    """
-    Attributes:
-      field (int32)
-      field2 (:class:`SomeMessage2`)
-
-    """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = library_pb2.SomeMessage.DESCRIPTOR
-
-
-class SomeMessage2(message.Message):
-    """
-    Attributes:
-      field1 (int32)
-
-    """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = library_pb2.SomeMessage2.DESCRIPTOR
-
-
-class StringBuilder(message.Message):
-    """
-    Creates a name conflict with java.lang type
-
-    Attributes:
-      name (string)
-
-    """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = library_pb2.StringBuilder.DESCRIPTOR
-
-
-class StringValue(message.Message):
-    """
-    Wrapper message for `string`.
-
-    The JSON representation for `StringValue` is JSON string.
-
-    Attributes:
-      value (string)
-
-    """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = wrappers_pb2.StringValue.DESCRIPTOR
-
-
-class Timestamp(message.Message):
+class Timestamp(object):
     """
     A Timestamp represents a point in time independent of any time zone
     or calendar, represented as seconds and fractions of seconds at
@@ -1072,25 +900,63 @@ class Timestamp(message.Message):
       nanos (int32)
 
     """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = timestamp_pb2.Timestamp.DESCRIPTOR
+    pass
+============== file: google/protobuf/wrappers_pb2.py ==============
+# Copyright 2016 Google Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 
-class UInt32Value(message.Message):
+class DoubleValue(object):
     """
-    Wrapper message for `uint32`.
+    Wrapper message for `double`.
 
-    The JSON representation for `UInt32Value` is JSON number.
+    The JSON representation for `DoubleValue` is JSON number.
 
     Attributes:
-      value (uint32)
+      value (double)
 
     """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = wrappers_pb2.UInt32Value.DESCRIPTOR
+    pass
 
 
-class UInt64Value(message.Message):
+class FloatValue(object):
+    """
+    Wrapper message for `float`.
+
+    The JSON representation for `FloatValue` is JSON number.
+
+    Attributes:
+      value (float)
+
+    """
+    pass
+
+
+class Int64Value(object):
+    """
+    Wrapper message for `int64`.
+
+    The JSON representation for `Int64Value` is JSON string.
+
+    Attributes:
+      value (int64)
+
+    """
+    pass
+
+
+class UInt64Value(object):
     """
     Wrapper message for `uint64`.
 
@@ -1100,16 +966,351 @@ class UInt64Value(message.Message):
       value (uint64)
 
     """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = wrappers_pb2.UInt64Value.DESCRIPTOR
+    pass
 
 
-class V1FieldMaskFieldMask(message.Message):
+class Int32Value(object):
+    """
+    Wrapper message for `int32`.
+
+    The JSON representation for `Int32Value` is JSON number.
+
+    Attributes:
+      value (int32)
+
+    """
+    pass
+
+
+class UInt32Value(object):
+    """
+    Wrapper message for `uint32`.
+
+    The JSON representation for `UInt32Value` is JSON number.
+
+    Attributes:
+      value (uint32)
+
+    """
+    pass
+
+
+class BoolValue(object):
+    """
+    Wrapper message for `bool`.
+
+    The JSON representation for `BoolValue` is JSON `true` and `false`.
+
+    Attributes:
+      value (bool)
+
+    """
+    pass
+
+
+class StringValue(object):
+    """
+    Wrapper message for `string`.
+
+    The JSON representation for `StringValue` is JSON string.
+
+    Attributes:
+      value (string)
+
+    """
+    pass
+
+
+class BytesValue(object):
+    """
+    Wrapper message for `bytes`.
+
+    The JSON representation for `BytesValue` is JSON string.
+
+    Attributes:
+      value (bytes)
+
+    """
+    pass
+============== file: library_pb2.py ==============
+# Copyright 2016 Google Inc. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from google.example.library.v1 import field_mask_pb2 as v1_field_mask_pb2
+from google.protobuf import any_pb2
+from google.protobuf import duration_pb2
+from google.protobuf import field_mask_pb2 as protobuf_field_mask_pb2
+from google.protobuf import struct_pb2
+from google.protobuf import timestamp_pb2
+from google.protobuf import wrappers_pb2
+
+
+class Book(object):
+    """
+    A single book in the library.
+
+    Attributes:
+      name (string)
+      author (string)
+      title (string)
+      read (bool)
+      rating (:class:`Book.Rating`)
+      any_value (:class:`any_pb2.Any`)
+      struct_value (:class:`struct_pb2.Struct`)
+      value_value (:class:`struct_pb2.Value`)
+      list_value_value (:class:`struct_pb2.ListValue`)
+      map_list_value_value (list[:class:`Book.MapListValueValueEntry`])
+      time_value (:class:`timestamp_pb2.Timestamp`)
+      duration_value (:class:`duration_pb2.Duration`)
+      field_mask_value (:class:`protobuf_field_mask_pb2.FieldMask`)
+      int32_value (:class:`wrappers_pb2.Int32Value`)
+      uint32_value (:class:`wrappers_pb2.UInt32Value`)
+      int64_value (:class:`wrappers_pb2.Int64Value`)
+      uint64_value (:class:`wrappers_pb2.UInt64Value`)
+      float_value (:class:`wrappers_pb2.FloatValue`)
+      double_value (:class:`wrappers_pb2.DoubleValue`)
+      string_value (:class:`wrappers_pb2.StringValue`)
+      bool_value (:class:`wrappers_pb2.BoolValue`)
+      bytes_value (:class:`wrappers_pb2.BytesValue`)
+      map_string_value (list[:class:`Book.MapStringValueEntry`])
+      map_message_value (list[:class:`Book.MapMessageValueEntry`])
+
+    """
+    pass
+
+
+class SomeMessage(object):
     """
     Attributes:
-      materials (list[:class:`v1_field_mask_pb2.FieldMask.Material`])
+      field (int32)
+      field2 (:class:`SomeMessage2`)
 
     """
-    __metaclass__ = python_message.GeneratedProtocolMessageType
-    DESCRIPTOR = v1_field_mask_pb2.FieldMask.DESCRIPTOR
+    pass
 
+
+class SomeMessage2(object):
+    """
+    Attributes:
+      field1 (int32)
+
+    """
+    pass
+
+
+class Shelf(object):
+    """
+    A Shelf contains a collection of books with a theme.
+
+    Attributes:
+      name (string)
+      theme (string)
+      internal_theme (string)
+
+    """
+    pass
+
+
+class CreateShelfRequest(object):
+    """
+    Request message for LibraryService.CreateShelf.
+
+    Attributes:
+      shelf (:class:`Shelf`)
+
+    """
+    pass
+
+
+class GetShelfRequest(object):
+    """
+    Request message for LibraryService.GetShelf.
+
+    Attributes:
+      name (string)
+      message (:class:`SomeMessage`)
+      string_builder (:class:`StringBuilder`)
+
+    """
+    pass
+
+
+class StringBuilder(object):
+    """
+    Creates a name conflict with java.lang type
+
+    Attributes:
+      name (string)
+
+    """
+    pass
+
+
+class ListShelvesRequest(object):
+    """
+    Request message for LibraryService.ListShelves.
+
+    Attributes:
+      page_size (int32)
+      page_token (string)
+
+    """
+    pass
+
+
+class ListShelvesResponse(object):
+    """
+    Request message for LibraryService.ListShelves.
+
+    Attributes:
+      shelves (list[:class:`Shelf`])
+      next_page_token (string)
+
+    """
+    pass
+
+
+class DeleteShelfRequest(object):
+    """
+    Request message for LibraryService.DeleteShelf.
+
+    Attributes:
+      name (string)
+
+    """
+    pass
+
+
+class MergeShelvesRequest(object):
+    """
+    Describes the shelf being removed (other_shelf_name) and updated
+    (name) in this merge.
+
+    Attributes:
+      name (string)
+      other_shelf_name (string)
+
+    """
+    pass
+
+
+class CreateBookRequest(object):
+    """
+    Request message for LibraryService.CreateBook.
+
+    Attributes:
+      name (string)
+      book (:class:`Book`)
+
+    """
+    pass
+
+
+class PublishSeriesRequest(object):
+    """
+    Request message for LibraryService.PublishSeries.
+
+    Attributes:
+      shelf (:class:`Shelf`)
+      books (list[:class:`Book`])
+      edition (uint32)
+
+    """
+    pass
+
+
+class PublishSeriesResponse(object):
+    """
+    Response message for LibraryService.PublishSeries.
+
+    Attributes:
+      book_names (list[string])
+
+    """
+    pass
+
+
+class GetBookRequest(object):
+    """
+    Request message for LibraryService.GetBook.
+
+    Attributes:
+      name (string)
+
+    """
+    pass
+
+
+class ListBooksRequest(object):
+    """
+    Request message for LibraryService.ListBooks.
+
+    Attributes:
+      name (string)
+      page_size (int32)
+      page_token (string)
+      filter (string)
+
+    """
+    pass
+
+
+class ListBooksResponse(object):
+    """
+    Response message for LibraryService.ListBooks.
+
+    Attributes:
+      books (list[:class:`Book`])
+      next_page_token (string)
+
+    """
+    pass
+
+
+class UpdateBookRequest(object):
+    """
+    Request message for LibraryService.UpdateBook.
+
+    Attributes:
+      name (string)
+      book (:class:`Book`)
+      update_mask (:class:`protobuf_field_mask_pb2.FieldMask`)
+      physical_mask (:class:`v1_field_mask_pb2.FieldMask`)
+
+    """
+    pass
+
+
+class DeleteBookRequest(object):
+    """
+    Request message for LibraryService.DeleteBook.
+
+    Attributes:
+      name (string)
+
+    """
+    pass
+
+
+class MoveBookRequest(object):
+    """
+    Describes what book to move (name) and what shelf we're moving it
+    to (other_shelf_name).
+
+    Attributes:
+      name (string)
+      other_shelf_name (string)
+
+    """
+    pass

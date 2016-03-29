@@ -13,7 +13,6 @@ import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import io.gapi.vgen.ApiConfig;
@@ -98,20 +97,17 @@ public class CSharpLanguageProvider extends LanguageProvider {
   }
 
   @Override
-  public void outputCode(String outputPath, Multimap<Interface, GeneratedResult> services,
+  public void outputCode(String outputArchiveFile, List<GeneratedResult> results,
       boolean archive) throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
-    for (Map.Entry<Interface, GeneratedResult> serviceEntry : services.entries()) {
-      Interface service = serviceEntry.getKey();
-      GeneratedResult generatedResult = serviceEntry.getValue();
-      String path = getNamespace(service.getFile()).replace('.', '/');
-      files.put(path + "/" + generatedResult.getFilename(), generatedResult.getDoc());
+    for (GeneratedResult result : results) {
+      String path = getApiConfig().getPackageName().replace('.', '/');
+      files.put(path + "/" + result.getFilename(), result.getDoc());
     }
-    // TODO(jonskeet): It's not clear why we'd want a jar file of .cs files, but...
     if (archive) {
-      ToolUtil.writeJar(files, outputPath);
+      ToolUtil.writeJar(files, outputArchiveFile);
     } else {
-      ToolUtil.writeFiles(files, outputPath);
+      ToolUtil.writeFiles(files, outputArchiveFile);
     }
   }
 

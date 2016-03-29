@@ -4,7 +4,7 @@
     {@context.upperCamelToLowerUnderscore(context.getVeneerName(service))}.py
 @end
 
-@snippet generateClass(service, body, imports)
+@snippet generateClass(service, imports)
     {@licenseSection(service)}
 
     {@moduleDocstring(service)}
@@ -12,10 +12,6 @@
     {@importSection(imports)}
 
 
-    {@body}
-@end
-
-@snippet generateBody(service)
     {@serviceClass(service)}
 @end
 
@@ -84,7 +80,7 @@
 
     _CODE_GEN_NAME_VERSION = 'gapic/0.1.0'
 
-    _GAX_VERSION = pkg_resource.get_distribution('google.gax').version
+    _GAX_VERSION = pkg_resources.get_distribution('google-gax').version
 
     _DEFAULT_TIMEOUT = 30
 

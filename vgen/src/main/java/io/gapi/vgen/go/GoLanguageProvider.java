@@ -19,7 +19,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import io.gapi.vgen.ApiConfig;
@@ -175,14 +174,12 @@ public class GoLanguageProvider extends LanguageProvider {
   }
 
   @Override
-  public void outputCode(String outputArchiveFile, Multimap<Interface, GeneratedResult> services,
-      boolean archive)
-          throws IOException {
+  public void outputCode(String outputArchiveFile, List<GeneratedResult> results,
+      boolean archive) throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
-    for (Map.Entry<Interface, GeneratedResult> serviceEntry : services.entries()) {
-      Interface service = serviceEntry.getKey();
-      GeneratedResult generatedResult = serviceEntry.getValue();
-      files.put(generatedResult.getFilename(), generatedResult.getDoc());
+    for (GeneratedResult result : results) {
+      String path = getApiConfig().getPackageName().replace('.', '/');
+      files.put(path + "/" + result.getFilename(), result.getDoc());
     }
     ToolUtil.writeFiles(files, outputArchiveFile);
   }
