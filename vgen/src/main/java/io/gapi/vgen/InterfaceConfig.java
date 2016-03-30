@@ -1,6 +1,5 @@
 package io.gapi.vgen;
 
-import com.google.api.gax.core.BackoffParams;
 import com.google.api.gax.core.RetryParams;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
@@ -11,6 +10,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+
+import org.joda.time.Duration;
 
 import io.grpc.Status;
 
@@ -114,23 +115,15 @@ public class InterfaceConfig {
     ImmutableMap.Builder<String, RetryParams> builder = ImmutableMap.<String, RetryParams>builder();
     for (RetryParamsDefinitionProto retryDef : interfaceConfigProto.getRetryParamsDefList()) {
       try {
-        BackoffParams retryDelay =
-            BackoffParams.newBuilder()
-                .setInitialDelayMillis(retryDef.getInitialRetryDelayMillis())
-                .setDelayMultiplier(retryDef.getRetryDelayMultiplier())
-                .setMaxDelayMillis(retryDef.getMaxRetryDelayMillis())
-                .build();
-        BackoffParams rpcTimeout =
-            BackoffParams.newBuilder()
-                .setInitialDelayMillis(retryDef.getInitialRpcTimeoutMillis())
-                .setDelayMultiplier(retryDef.getRpcTimeoutMultiplier())
-                .setMaxDelayMillis(retryDef.getMaxRpcTimeoutMillis())
-                .build();
         RetryParams params =
             RetryParams.newBuilder()
-                .setRetryBackoff(retryDelay)
-                .setTimeoutBackoff(rpcTimeout)
-                .setTotalTimeout(retryDef.getTotalTimeoutMillis())
+                .setInitialRetryDelay(Duration.millis(retryDef.getInitialRetryDelayMillis()))
+                .setRetryDelayMultiplier(retryDef.getRetryDelayMultiplier())
+                .setMaxRetryDelay(Duration.millis(retryDef.getMaxRetryDelayMillis()))
+                .setInitialRpcTimeout(Duration.millis(retryDef.getInitialRpcTimeoutMillis()))
+                .setRpcTimeoutMultiplier(retryDef.getRpcTimeoutMultiplier())
+                .setMaxRpcTimeout(Duration.millis(retryDef.getMaxRpcTimeoutMillis()))
+                .setTotalTimeout(Duration.millis(retryDef.getTotalTimeoutMillis()))
                 .build();
         builder.put(retryDef.getName(), params);
       } catch (IllegalStateException | NullPointerException e) {

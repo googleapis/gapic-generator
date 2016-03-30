@@ -91,12 +91,12 @@
 
     func {@retryDef.getKey}_RetryParams() []gax.CallOption {
     	return []gax.CallOption{
-    		gax.WithRetryInterval({@retryDef.getValue.getRetryBackoff.getInitialDelayMillis}*time.Millisecond),
-    		gax.WithIntervalMultiplier({@retryDef.getValue.getRetryBackoff.getDelayMultiplier}),
-    		gax.WithMaxInterval({@retryDef.getValue.getRetryBackoff.getMaxDelayMillis}*time.Millisecond),
-    		gax.WithTimeout({@retryDef.getValue.getTimeoutBackoff.getInitialDelayMillis}*time.Millisecond),
-    		gax.WithTimeoutMultiplier({@retryDef.getValue.getTimeoutBackoff.getDelayMultiplier}),
-    		gax.WithMaxTimeout({@retryDef.getValue.getTimeoutBackoff.getMaxDelayMillis}*time.Millisecond),
+    		gax.WithRetryInterval({@retryDef.getValue.getInitialRetryDelay.getMillis}*time.Millisecond),
+    		gax.WithIntervalMultiplier({@retryDef.getValue.getRetryDelayMultiplier}),
+    		gax.WithMaxInterval({@retryDef.getValue.getMaxRetryDelay.getMillis}*time.Millisecond),
+    		gax.WithTimeout({@retryDef.getValue.getInitialRpcTimeout.getMillis}*time.Millisecond),
+    		gax.WithTimeoutMultiplier({@retryDef.getValue.getRpcTimeoutMultiplier}),
+    		gax.WithMaxTimeout({@retryDef.getValue.getMaxRpcTimeout.getMillis}*time.Millisecond),
     	}
     }
     @end
