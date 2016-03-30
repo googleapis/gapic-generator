@@ -143,6 +143,7 @@ class NoTemplatesServiceApi(object):
         """
         req = no_path_templates_pb2.IncrementRequest()
         settings = self._defaults['increment'].merge(options)
-        api_callable.ApiCallable(
-            self.stub.Increment, settings=settings)(req, metadata=self._headers)
+        api_call = api_callable.create_api_call(
+            self.stub.Increment, settings=settings)
+        api_call(req, metadata=self._headers)
 
