@@ -178,8 +178,7 @@ public class GoLanguageProvider extends LanguageProvider {
       boolean archive) throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
     for (GeneratedResult result : results) {
-      String path = getApiConfig().getPackageName().replace('.', '/');
-      files.put(path + "/" + result.getFilename(), result.getDoc());
+      files.put(result.getFilename(), result.getDoc());
     }
     ToolUtil.writeFiles(files, outputArchiveFile);
   }
