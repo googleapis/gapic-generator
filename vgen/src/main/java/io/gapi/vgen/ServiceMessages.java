@@ -27,7 +27,7 @@ public class ServiceMessages {
    * Inputs a list of methods and returns only those which are page streaming.
    */
   public Iterable<Method> filterPageStreamingMethods(
-      InterfaceConfig config, List<Method> methods) {
+      final InterfaceConfig config, List<Method> methods) {
     Predicate<Method> isPageStreaming = new Predicate<Method>() {
       @Override
       public boolean apply(Method method) {
@@ -42,7 +42,7 @@ public class ServiceMessages {
    * Inputs a list of methods and returns only those which are bundling.
    */
   public Iterable<Method> filterBundlingMethods(
-      InterfaceConfig config, List<Method> methods) {
+      final InterfaceConfig config, List<Method> methods) {
     Predicate<Method> isBundling = new Predicate<Method>() {
       @Override
       public boolean apply(Method method) {

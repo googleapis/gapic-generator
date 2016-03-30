@@ -38,7 +38,7 @@ public class MethodConfig {
   @Nullable
   public static MethodConfig createMethodConfig(
       DiagCollector diagCollector,
-      MethodConfigProto methodConfig,
+      final MethodConfigProto methodConfig,
       Method method,
       ImmutableSet<String> retryCodesConfigNames,
       ImmutableSet<String> retryParamsConfigNames) {

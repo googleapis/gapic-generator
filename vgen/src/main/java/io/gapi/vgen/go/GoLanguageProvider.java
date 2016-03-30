@@ -295,8 +295,11 @@ public class GoLanguageProvider extends LanguageProvider {
       if (!methodConfig.isPageStreaming()) {
         continue;
       }
-      PageStreamingConfig config = methodConfig.getPageStreaming();
-      streamingConfigs.putIfAbsent(getIteratorTypeName(config), config);
+      final PageStreamingConfig config = methodConfig.getPageStreaming();
+      String typeName = getIteratorTypeName(config);
+      if (!streamingConfigs.containsKey(typeName)) {
+        streamingConfigs.put(typeName, config);
+      }
     }
     return streamingConfigs.values();
   }
