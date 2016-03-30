@@ -279,10 +279,8 @@ public class PythonLanguageProvider extends LanguageProvider {
     String paramTypes = paramTypesBuilder.toString();
     // Generate return value type
     MessageType returnMessageType = msg.getOutputMessage();
-    String returnType;
-    if (PythonProtoElements.isEmptyMessage(returnMessageType)) {
-      returnType = "Returns:\n  None.";
-    } else {
+    String returnType = null;
+    if (!PythonProtoElements.isEmptyMessage(returnMessageType)) {
       String returnPath = PythonProtoElements.prefixInFile(returnMessageType);
       returnPath = Strings.isNullOrEmpty(returnPath) ? "" : returnPath + ".";
       returnType = "Returns:\n  A :class:`"
@@ -299,8 +297,9 @@ public class PythonLanguageProvider extends LanguageProvider {
       }
     }
     contentBuilder.append(paramTypes);
-    contentBuilder.append("\n\n");
-    contentBuilder.append(returnType);
+    if (returnType != null) {
+      contentBuilder.append("\n\n" + returnType);
+    }
     return convertToCommentedBlock(contentBuilder.toString());
   }
 
