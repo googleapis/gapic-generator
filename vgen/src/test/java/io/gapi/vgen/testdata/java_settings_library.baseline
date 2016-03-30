@@ -127,18 +127,12 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     ImmutableMap.Builder<String, RetryParams> definitions = ImmutableMap.builder();
     RetryParams params = null;
     params = RetryParams.newBuilder()
-        .setRetryBackoff(
-            BackoffParams.newBuilder()
-                .setInitialDelay(Duration.millis(100L))
-                .setDelayMultiplier(1.2)
-                .setMaxDelay(Duration.millis(1000L))
-                .build())
-        .setTimeoutBackoff(
-            BackoffParams.newBuilder()
-                .setInitialDelay(Duration.millis(300L))
-                .setDelayMultiplier(1.3)
-                .setMaxDelay(Duration.millis(3000L))
-                .build())
+        .setInitialRetryDelay(Duration.millis(100L))
+        .setRetryDelayMultiplier(1.2)
+        .setMaxRetryDelay(Duration.millis(1000L))
+        .setInitialRpcTimeout(Duration.millis(300L))
+        .setRpcTimeoutMultiplier(1.3)
+        .setMaxRpcTimeout(Duration.millis(3000L))
         .setTotalTimeout(Duration.millis(30000L))
         .build();
     definitions.put("default", params);

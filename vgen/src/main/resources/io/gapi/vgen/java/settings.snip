@@ -107,19 +107,13 @@
       RetryParams params = null;
       @join retryDef : context.entrySet(interfaceConfig.getRetryParamsDefinition)
         params = RetryParams.newBuilder()
-            .setRetryBackoff(
-                BackoffParams.newBuilder()
-                    .setInitialDelay(Duration.millis({@retryDef.getValue.getRetryBackoff.getInitialDelayMillis}L))
-                    .setDelayMultiplier({@retryDef.getValue.getRetryBackoff.getDelayMultiplier})
-                    .setMaxDelay(Duration.millis({@retryDef.getValue.getRetryBackoff.getMaxDelayMillis}L))
-                    .build())
-            .setTimeoutBackoff(
-                BackoffParams.newBuilder()
-                    .setInitialDelay(Duration.millis({@retryDef.getValue.getTimeoutBackoff.getInitialDelayMillis}L))
-                    .setDelayMultiplier({@retryDef.getValue.getTimeoutBackoff.getDelayMultiplier})
-                    .setMaxDelay(Duration.millis({@retryDef.getValue.getTimeoutBackoff.getMaxDelayMillis}L))
-                    .build())
-            .setTotalTimeout(Duration.millis({@retryDef.getValue.getTotalTimeout}L))
+            .setInitialRetryDelay(Duration.millis({@retryDef.getValue.getInitialRetryDelay.getMillis}L))
+            .setRetryDelayMultiplier({@retryDef.getValue.getRetryDelayMultiplier})
+            .setMaxRetryDelay(Duration.millis({@retryDef.getValue.getMaxRetryDelay.getMillis}L))
+            .setInitialRpcTimeout(Duration.millis({@retryDef.getValue.getInitialRpcTimeout.getMillis}L))
+            .setRpcTimeoutMultiplier({@retryDef.getValue.getRpcTimeoutMultiplier})
+            .setMaxRpcTimeout(Duration.millis({@retryDef.getValue.getMaxRpcTimeout.getMillis}L))
+            .setTotalTimeout(Duration.millis({@retryDef.getValue.getTotalTimeout.getMillis}L))
             .build();
         definitions.put("{@retryDef.getKey}", params);
       @end
