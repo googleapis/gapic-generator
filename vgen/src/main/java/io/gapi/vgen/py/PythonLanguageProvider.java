@@ -217,14 +217,14 @@ public class PythonLanguageProvider extends LanguageProvider {
     String typeComment;
     switch (type.getKind()) {
       case TYPE_MESSAGE:
-        String path = importHandler.fullyQualifiedPath(type.getMessageType());
+        String path = importHandler.elementPath(type.getMessageType(), true);
         typeComment = ":class:`" + (Strings.isNullOrEmpty(path) ? "" : (path + ".")) +
             type.getMessageType().getSimpleName() + "`";
         break;
       case TYPE_ENUM:
         Preconditions.checkArgument(type.getEnumType().getValues().size() > 0,
             "enum must have a value");
-        String path2 = importHandler.fullyQualifiedPath(type.getEnumType());
+        String path2 = importHandler.elementPath(type.getEnumType(), true);
         typeComment = ":class:`" + (Strings.isNullOrEmpty(path2) ? "" : (path2 + ".")) +
             type.getEnumType().getSimpleName() + "`";
         break;
@@ -283,18 +283,17 @@ public class PythonLanguageProvider extends LanguageProvider {
     for (Field field : this.messages().flattenedFields(msg.getInputType())) {
       paramTypesBuilder.append(fieldComment(field, importHandler));
     }
-    paramTypesBuilder.append("  options (:class:`api_callable.CallOptions`): " +
+    paramTypesBuilder.append("  options (:class:`google.gax.CallOptions`): " +
         "Overrides the default\n    settings for this call, e.g, timeout, retries etc.");
     String paramTypes = paramTypesBuilder.toString();
     // Generate return value type
     MessageType returnMessageType = msg.getOutputMessage();
     String returnType = null;
     if (!PythonProtoElements.isEmptyMessage(returnMessageType)) {
-      String returnPath = PythonProtoElements.prefixInFile(returnMessageType);
-      returnPath = Strings.isNullOrEmpty(returnPath) ? "" : returnPath + ".";
+      String path = importHandler.elementPath(returnMessageType, true);
       returnType = "Returns:\n  A :class:`"
-          + importHandler.fileToModule(returnMessageType.getFile()) + "." + returnPath
-          + returnMessageType.getSimpleName() + "` object.";
+          + (Strings.isNullOrEmpty(path) ? "" : (path + ".")) +
+          returnMessageType.getSimpleName() + "` object.";
     }
     // Generate comment contents
     StringBuilder contentBuilder = new StringBuilder();
@@ -335,12 +334,12 @@ public class PythonLanguageProvider extends LanguageProvider {
     }
     switch (type.getKind()) {
       case TYPE_MESSAGE:
-        return importHandler.fullyQualifiedPath(type.getMessageType()) + "." +
+        return importHandler.elementPath(type.getMessageType(), false) + "." +
             type.getMessageType().getSimpleName() + "()";
       case TYPE_ENUM:
         Preconditions.checkArgument(type.getEnumType().getValues().size() > 0,
             "enum must have a value");
-        return importHandler.fullyQualifiedPath(type.getEnumType()) + "." +
+        return importHandler.elementPath(type.getEnumType(), false) + "." +
             type.getEnumType().getValues().get(0).getSimpleName();
       default:
         if (type.isPrimitive()) {
