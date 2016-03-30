@@ -90,7 +90,7 @@ public class MethodConfig {
     }
 
     String retryParamsName = methodConfig.getRetryParamsName();
-    if (!retryParamsConfigNames.contains(retryParamsName)) {
+    if (!retryParamsConfigNames.isEmpty() && !retryParamsConfigNames.contains(retryParamsName)) {
       diagCollector.addDiag(
           Diag.error(
               SimpleLocation.TOPLEVEL,
