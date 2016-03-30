@@ -290,8 +290,10 @@ public class PythonLanguageProvider extends LanguageProvider {
     // Generate comment contents
     StringBuilder contentBuilder = new StringBuilder();
     if (msg.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      contentBuilder.append(PythonSphinxCommentFixer.sphinxify(
-          DocumentationUtil.getScopedDescription(msg)));
+      String sphinxified = PythonSphinxCommentFixer.sphinxify(
+          DocumentationUtil.getScopedDescription(msg));
+      sphinxified = sphinxified.trim();
+      contentBuilder.append(sphinxified.replaceAll("\\s*\\n\\s*", "\n"));
       if (!Strings.isNullOrEmpty(paramTypes)) {
         contentBuilder.append("\n\n");
       }
