@@ -87,7 +87,7 @@
         @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
 
             _PAGE_DESCRIPTORS = {
-                @join method : context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
+                @join method : context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods) on {@", "}.add(BREAK)
                     @let pageStreaming = ifaceConfig.getMethodConfig(method).getPageStreaming(), \
                             requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
                             responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
@@ -106,7 +106,7 @@
 
             _BUNDLE_DESCRIPTORS = {
                 @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
-                    @join method : context.messages.filterBundlingMethods(ifaceConfig, service.getMethods)
+                    @join method : context.messages.filterBundlingMethods(ifaceConfig, service.getMethods) on {@", "}.add(BREAK)
                         @let bundling = ifaceConfig.getMethodConfig(method).getBundling(), \
                                 methodName = context.upperCamelToLowerUnderscore(method.getSimpleName)
                             '{@methodName}': BundleDescriptor(
@@ -309,12 +309,12 @@
 @end
 
 @private callableConstructor(method)
+    api_call = api_callable.create_api_call(
+        self.stub.{@method.getSimpleName()}, settings=settings)
     @if pyproto.isEmptyMessage(method.getOutputMessage)
-        api_callable.ApiCallable(
-            self.stub.{@method.getSimpleName()}, settings=settings)(req, metadata=self._headers)
+        api_call(req, metadata=self._headers)
     @else
-        return api_callable.ApiCallable(
-            self.stub.{@method.getSimpleName()}, settings=settings)(req, metadata=self._headers)
+        return api_call(req, metadata=self._headers)
     @end
 @end
 

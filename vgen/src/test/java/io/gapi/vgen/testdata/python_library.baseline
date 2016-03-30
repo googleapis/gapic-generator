@@ -71,7 +71,7 @@ class LibraryServiceApi(object):
             'page_token',
             'next_page_token',
             'shelves'
-        )
+        ),
         'list_books': PageDescriptor(
             'page_token',
             'next_page_token',
@@ -209,8 +209,9 @@ class LibraryServiceApi(object):
         req = library_pb2.CreateShelfRequest(
             shelf=shelf)
         settings = self._defaults['create_shelf'].merge(options)
-        return api_callable.ApiCallable(
-            self.stub.CreateShelf, settings=settings)(req, metadata=self._headers)
+        api_call = api_callable.create_api_call(
+            self.stub.CreateShelf, settings=settings)
+        return api_call(req, metadata=self._headers)
 
     def get_shelf(
             self,
@@ -240,8 +241,9 @@ class LibraryServiceApi(object):
             message=message,
             string_builder=string_builder)
         settings = self._defaults['get_shelf'].merge(options)
-        return api_callable.ApiCallable(
-            self.stub.GetShelf, settings=settings)(req, metadata=self._headers)
+        api_call = api_callable.create_api_call(
+            self.stub.GetShelf, settings=settings)
+        return api_call(req, metadata=self._headers)
 
     def list_shelves(
             self,
@@ -258,8 +260,9 @@ class LibraryServiceApi(object):
         """
         req = library_pb2.ListShelvesRequest()
         settings = self._defaults['list_shelves'].merge(options)
-        return api_callable.ApiCallable(
-            self.stub.ListShelves, settings=settings)(req, metadata=self._headers)
+        api_call = api_callable.create_api_call(
+            self.stub.ListShelves, settings=settings)
+        return api_call(req, metadata=self._headers)
 
     def delete_shelf(
             self,
@@ -276,8 +279,9 @@ class LibraryServiceApi(object):
         req = library_pb2.DeleteShelfRequest(
             name=name)
         settings = self._defaults['delete_shelf'].merge(options)
-        api_callable.ApiCallable(
-            self.stub.DeleteShelf, settings=settings)(req, metadata=self._headers)
+        api_call = api_callable.create_api_call(
+            self.stub.DeleteShelf, settings=settings)
+        api_call(req, metadata=self._headers)
 
     def merge_shelves(
             self,
@@ -302,8 +306,9 @@ class LibraryServiceApi(object):
             name=name,
             other_shelf_name=other_shelf_name)
         settings = self._defaults['merge_shelves'].merge(options)
-        return api_callable.ApiCallable(
-            self.stub.MergeShelves, settings=settings)(req, metadata=self._headers)
+        api_call = api_callable.create_api_call(
+            self.stub.MergeShelves, settings=settings)
+        return api_call(req, metadata=self._headers)
 
     def create_book(
             self,
@@ -326,8 +331,9 @@ class LibraryServiceApi(object):
             name=name,
             book=book)
         settings = self._defaults['create_book'].merge(options)
-        return api_callable.ApiCallable(
-            self.stub.CreateBook, settings=settings)(req, metadata=self._headers)
+        api_call = api_callable.create_api_call(
+            self.stub.CreateBook, settings=settings)
+        return api_call(req, metadata=self._headers)
 
     def publish_series(
             self,
@@ -353,8 +359,9 @@ class LibraryServiceApi(object):
             books=books,
             edition=edition)
         settings = self._defaults['publish_series'].merge(options)
-        return api_callable.ApiCallable(
-            self.stub.PublishSeries, settings=settings)(req, metadata=self._headers)
+        api_call = api_callable.create_api_call(
+            self.stub.PublishSeries, settings=settings)
+        return api_call(req, metadata=self._headers)
 
     def get_book(
             self,
@@ -374,8 +381,9 @@ class LibraryServiceApi(object):
         req = library_pb2.GetBookRequest(
             name=name)
         settings = self._defaults['get_book'].merge(options)
-        return api_callable.ApiCallable(
-            self.stub.GetBook, settings=settings)(req, metadata=self._headers)
+        api_call = api_callable.create_api_call(
+            self.stub.GetBook, settings=settings)
+        return api_call(req, metadata=self._headers)
 
     def list_books(
             self,
@@ -398,8 +406,9 @@ class LibraryServiceApi(object):
             name=name,
             filter=filter_)
         settings = self._defaults['list_books'].merge(options)
-        return api_callable.ApiCallable(
-            self.stub.ListBooks, settings=settings)(req, metadata=self._headers)
+        api_call = api_callable.create_api_call(
+            self.stub.ListBooks, settings=settings)
+        return api_call(req, metadata=self._headers)
 
     def delete_book(
             self,
@@ -416,8 +425,9 @@ class LibraryServiceApi(object):
         req = library_pb2.DeleteBookRequest(
             name=name)
         settings = self._defaults['delete_book'].merge(options)
-        api_callable.ApiCallable(
-            self.stub.DeleteBook, settings=settings)(req, metadata=self._headers)
+        api_call = api_callable.create_api_call(
+            self.stub.DeleteBook, settings=settings)
+        api_call(req, metadata=self._headers)
 
     def update_book(
             self,
@@ -450,8 +460,9 @@ class LibraryServiceApi(object):
             update_mask=update_mask,
             physical_mask=physical_mask)
         settings = self._defaults['update_book'].merge(options)
-        return api_callable.ApiCallable(
-            self.stub.UpdateBook, settings=settings)(req, metadata=self._headers)
+        api_call = api_callable.create_api_call(
+            self.stub.UpdateBook, settings=settings)
+        return api_call(req, metadata=self._headers)
 
     def move_book(
             self,
@@ -474,8 +485,9 @@ class LibraryServiceApi(object):
             name=name,
             other_shelf_name=other_shelf_name)
         settings = self._defaults['move_book'].merge(options)
-        return api_callable.ApiCallable(
-            self.stub.MoveBook, settings=settings)(req, metadata=self._headers)
+        api_call = api_callable.create_api_call(
+            self.stub.MoveBook, settings=settings)
+        return api_call(req, metadata=self._headers)
 
 ============== file: field_mask_pb2.py ==============
 # Copyright 2016 Google Inc. All rights reserved.

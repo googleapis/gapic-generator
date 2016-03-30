@@ -39,8 +39,7 @@ public class PythonCodeGeneratorTest  {
 
     @Override
     protected Object run() {
-      // Should generate three files -- one for the class, one for the other for the configuration
-      // yaml, and one for the messages class
+      // Should generate one file for the class, and a list of files for the protos
       GeneratedResult codeResult = generateForSnippet(0);
       List<GeneratedResult> docsResult = generateForDocSnippet(0);
       Truth.assertThat(codeResult).isNotNull();
