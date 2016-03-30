@@ -236,8 +236,16 @@ public class PythonLanguageProvider extends LanguageProvider {
         }
         break;
     }
-    return String.format("  %s (%s%s%s)\n",
+    String comment = String.format("  %s (%s%s%s)",
         field.getSimpleName(), cardinalityComment, typeComment, closingBrace ? "]" : "");
+    String paramComment = DocumentationUtil.getScopedDescription(field);
+    if (!Strings.isNullOrEmpty(paramComment)) {
+      if (paramComment.charAt(paramComment.length() - 1) == '\n') {
+        paramComment = paramComment.substring(0, paramComment.length() - 1);
+      }
+      comment += ": " + paramComment.replaceAll("(\\r?\\n)", "\n    ");
+    }
+    return comment + "\n";
   }
 
   /**
@@ -275,7 +283,8 @@ public class PythonLanguageProvider extends LanguageProvider {
     for (Field field : this.messages().flattenedFields(msg.getInputType())) {
       paramTypesBuilder.append(fieldComment(field, importHandler));
     }
-    paramTypesBuilder.append("  options (:class:`api_callable.CallOptions`)");
+    paramTypesBuilder.append("  options (:class:`api_callable.CallOptions`): " +
+        "Overrides the default\n    settings for this call, e.g, timeout, retries etc.");
     String paramTypes = paramTypesBuilder.toString();
     // Generate return value type
     MessageType returnMessageType = msg.getOutputMessage();
