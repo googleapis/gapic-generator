@@ -1,0 +1,338 @@
+@snippet generateFilename(service)
+  {@service.getSimpleName}Client.cs
+@end
+
+@snippet generateClass(service, body, imports)
+    // Copyright 2016 Google Inc. All Rights Reserved.
+    // Licensed under the Apache License Version 2.0.
+
+    // Generated code. DO NOT EDIT!
+
+    @join import : imports
+        using {@import};
+    @end
+
+    namespace {@context.getNamespace(service.getFile)}
+    {
+        {@body}
+    }
+@end
+
+@snippet generateBody(service)
+    {@imports()}
+    {@extensions(service.getSimpleName)}
+
+    {@settings(service.getSimpleName)}
+
+    {@abstractClient(service, service.getSimpleName)}
+
+    {@clientImpl(service, service.getSimpleName)}
+@end
+
+@private imports() fill
+    {@context.addImport("Google.Api.Gax")}
+    {@context.addImport("Grpc.Core")}
+    {@context.addImport("System")}
+    {@context.addImport("System.Collections.Generic")}
+    {@context.addImport("System.Collections.ObjectModel")}
+    {@context.addImport("System.Threading")}
+    {@context.addImport("System.Threading.Tasks")}
+@end
+
+@private extensions(name)
+    /// <summary>
+    /// Extension methods to assist with using <see cref="{@name}Client"/>.
+    /// </summary>
+    public static partial class {@name}Extensions
+    {
+        /// <summary>
+        /// Wrap a GRPC {@name} client for more convenient use.
+        /// </summary>
+        /// <param name="grpcClient">A GRPC client to wrap.</param>
+        /// <param name="settings">
+        /// An optional <see cref="{@name}Settings"/> to configure this wrapper.
+        /// If null or not specified, then the default settings are used.
+        /// </param>
+        /// <returns>A <see cref="{@name}Client"/> that wraps the specified GRPC client.</returns>
+        public static {@name}Client ToClient(
+            this {@name}.I{@name}Client grpcClient,
+            {@name}Settings settings = null
+        ) => new {@name}ClientImpl(grpcClient, settings);
+    }
+@end
+
+@private settings(name)
+    /// <summary>
+    /// Settings for a {@name} wrapper.
+    /// </summary>
+    public sealed partial class {@name}Settings : ServiceSettingsBase
+    {
+        /// <summary>
+        /// Get a new instance of the default <see cref="{@name}Settings"/>.
+        /// </summary>
+        /// <returns>A new instance of the default {@name}Settings.</returns>
+        public static {@name}Settings GetDefault() => new {@name}Settings();
+
+        /// <summary>
+        /// Creates a deep clone of this object, with all the same property values.
+        /// </summary>
+        /// <returns>A deep clone of this set of {@name} settings.</returns>
+        public {@name}Settings Clone() => CloneInto(new {@name}Settings
+        {
+        });
+    }
+@end
+
+@private asyncMethodDeclaration(method, modifier)
+    @join line : method.xmlDocAsync
+        {@line}
+    @end
+    
+    @if method.isPageStreaming == FALSE
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+    @end
+    /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+    /// <returns>A Task containing the RPC response.</returns>
+    public {@modifier} {@method.asyncReturnTypeName} {@method.name}Async(
+        @join param : method.params
+            {@param.typeName} {@param.name},
+        @end
+        @if method.isPageStreaming == FALSE
+            CancellationToken? cancellationToken = null,
+        @end
+        CallSettings callSettings = null)
+@end
+
+@private syncMethodDeclaration(method, modifier)
+    @join line : method.xmlDocSync
+        {@line}
+    @end
+    
+    /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+    /// <returns>The RPC response.</returns>
+    public {@modifier} {@method.syncReturnTypeName} {@method.name}(
+        @join param : method.params
+            {@param.typeName} {@param.name},
+        @end
+        CallSettings callSettings = null)
+@end
+
+@private abstractClient(service, name)
+    /// <summary>
+    /// {@name} client wrapper, for convenient use.
+    /// </summary>
+    public abstract partial class {@name}Client
+    {
+        @let serviceInfo = context.getServiceInfo(service)
+            /// <summary>
+            /// The default endpoint for the {@name} service, which is a host of \
+                "{@serviceInfo.host}" and a port of {@serviceInfo.port}.
+            /// </summary>
+            public static ServiceEndpoint DefaultEndpoint { get; } = \
+                new ServiceEndpoint("{@serviceInfo.host}", {@serviceInfo.port});
+
+            /// <summary>
+            /// The default {@name} scopes
+            /// </summary>
+            /// <remarks>
+            /// The default {@name} scopes are:
+            /// <list type="bullet">
+            @join scope : serviceInfo.scopes
+                /// <item><description>"{@scope}"</description></item>
+            @end
+            /// </list>
+            /// </remarks>
+            public static IReadOnlyList<string> Scopes { get; } = new ReadOnlyCollection<string>(new[] {
+                @join scope : context.getServiceConfig.getAuthScopes(service)
+                    "{@scope}",
+                @end
+            });
+        @end
+
+        @join pathTemplate : context.getPathTemplateInfos(service)
+            /// <summary>
+            /// Path template for a {@pathTemplate.docName} resource. Parameters:
+            /// <list type="bullet">
+            @join var : pathTemplate.vars
+                /// <item><description>{@var}</description></item>
+            @end
+            /// </list>
+            /// </summary>
+            public static PathTemplate {@pathTemplate.baseName}Template { get; } = \
+                new PathTemplate("{@pathTemplate.namePattern}");
+
+            /// <summary>
+            /// Creates a {@pathTemplate.docName} resource name from its component IDs.
+            /// </summary>
+            @join var : pathTemplate.vars
+                /// <param name="{@var}Id">The {@var} ID.</param>
+            @end
+            /// <returns>The full {@pathTemplate.docName} resource name.</returns>
+            public static string Get{@pathTemplate.baseName}Name({@pathTemplate.varArgDeclList}) => \
+                {@pathTemplate.baseName}Template.Expand({@pathTemplate.varArgUseList});
+
+        @end
+        /// <summary>
+        /// Asynchronously create a <see cref="{@name}Client"/> from default credentials.
+        /// </summary>
+        /// <param name="settings">Optional <see cref="{@name}Settings"/>.</param>
+        /// <param name="serviceEndpointSettings">Optional <see cref="ServiceEndpointSettings"/>.</param>
+        /// <param name="credentialScopes">Optional scopes for default credentials.</param>
+        /// <returns>A newly created <see cref="{@name}Client"/>.</returns>
+        public static Task<{@name}Client> CreateFromDefaultCredentialsAsync(
+            {@name}Settings settings = null,
+            ServiceEndpointSettings serviceEndpointSettings = null,
+            IEnumerable<string> credentialScopes = null)
+        {
+            return ClientHelper.CreateFromDefaultCredentialsAsync(
+                settings, serviceEndpointSettings, credentialScopes, ServiceDefaults.Scopes, CreateFromCredentials);
+        }
+
+        /// <summary>
+        /// Create a <see cref="{@name}Client"/> from default credentials.
+        /// </summary>
+        /// <param name="settings">Optional <see cref="{@name}Settings"/>.</param>
+        /// <param name="serviceEndpointSettings">Optional <see cref="ServiceEndpointSettings"/>.</param>
+        /// <param name="credentialScopes">Optional scopes for default credentials.</param>
+        /// <returns>A newly created <see cref="{@name}Client"/>.</returns>
+        public static {@name}Client CreateFromDefaultCredentials(
+            {@name}Settings settings = null,
+            ServiceEndpointSettings serviceEndpointSettings = null,
+            IEnumerable<string> credentialScopes = null)
+        {
+            return ClientHelper.CreateFromDefaultCredentials(
+                settings, serviceEndpointSettings, credentialScopes, ServiceDefaults.Scopes, CreateFromCredentials);
+        }
+
+        /// <summary>
+        /// Create a <see cref="{@name}Client"/> from the specified credentials.
+        /// </summary>
+        /// <param name="credentials">The credentials with which to configure the GRPC channel.</param>
+        /// <param name="settings">Optional <see cref="{@name}Settings"/>.</param>
+        /// <param name="serviceEndpointSettings">Optional <see cref="ServiceEndpointSettings"/>.</param>
+        /// <returns></returns>
+        public static {@name}Client CreateFromCredentials(
+            ChannelCredentials credentials,
+            {@name}Settings settings = null,
+            ServiceEndpointSettings serviceEndpointSettings = null)
+        {
+            Channel channel = ClientHelper.CreateChannel(
+                serviceEndpointSettings ?? GetDefaultServiceEndpointSettings(),
+                ServiceDefaults.Host, ServiceDefaults.Port, credentials);
+            {@name}.I{@name}Client grpcClient = new {@name}.{@name}Client(channel);
+            return new {@name}ClientImpl(grpcClient, settings);
+        }
+
+        /// <summary>
+        /// The underlying GRPC {@name} client.
+        /// </summary>
+        public virtual {@name}.I{@name}Client GrpcClient
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        @join method : context.getMethodInfos(service)
+            {@asyncMethodDeclaration(method, "virtual")}
+            {
+                throw new NotImplementedException();
+            }
+
+            {@syncMethodDeclaration(method, "virtual")}
+            {
+                throw new NotImplementedException();
+            }
+
+        @end
+    }
+@end
+
+@private clientImpl(service, name)
+    public sealed partial class {@name}ClientImpl : {@name}Client
+    {
+        @join pageStreamer : context.getPageStreamerInfos(service)
+            private static readonly PageStreamer<\
+                    {@pageStreamer.resourceTypeName}, \
+                    {@pageStreamer.requestTypeName}, \
+                    {@pageStreamer.responseTypeName}, \
+                    {@pageStreamer.tokenTypeName}\
+                    > {@pageStreamer.staticFieldName} =
+                new PageStreamer<\
+                        {@pageStreamer.resourceTypeName}, \
+                        {@pageStreamer.requestTypeName}, \
+                        {@pageStreamer.responseTypeName}, \
+                        {@pageStreamer.tokenTypeName}\
+                        >(
+                    (request, token) => {
+                        request.{@pageStreamer.requestPageTokenFieldName} = token;
+                        return request;
+                    },
+                    response => response.{@pageStreamer.responseNextPageTokenFieldName},
+                    response => response.{@pageStreamer.responseResourceFieldName},
+                    {@pageStreamer.emptyPageToken} // An empty page-token
+                );
+
+        @end
+        private readonly ClientHelper _clientHelper;
+
+        public {@name}ClientImpl({@name}.I{@name}Client grpcClient, {@name}Settings settings)
+        {
+            this.GrpcClient = grpcClient;
+            {@name}Settings effectiveSettings = settings ?? {@name}Settings.GetDefault();
+            _clientHelper = new ClientHelper(effectiveSettings);
+        }
+
+        public override {@name}.I{@name}Client GrpcClient { get; }
+
+        @join method : context.getMethodInfos(service)
+            {@asyncMethodDeclaration(method, "override")}
+            {
+                {@createRequest(method)}
+                @if method.isPageStreaming
+                    return {@method.pageStreaming.staticFieldName}.FetchAsync(
+                        request,
+                        (pageStreamRequest, cancellationToken) => GrpcClient.{@method.name}Async(
+                            pageStreamRequest,
+                            _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+                        ).ResponseAsync
+                    );
+                @else
+                    return GrpcClient.{@method.name}Async(
+                        request,
+                        _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+                    ).ResponseAsync;
+                @end
+            }
+
+            {@syncMethodDeclaration(method, "override")}
+            {
+                {@createRequest(method)}
+                @if method.isPageStreaming
+                    return {@method.pageStreaming.staticFieldName}.Fetch(
+                        request,
+                        pageStreamRequest => GrpcClient.{@method.name}(
+                            pageStreamRequest,
+                            _clientHelper.BuildCallOptions(null, callSettings))
+                    );
+                @else
+                    {@method.syncReturnStatement}GrpcClient.{@method.name}(
+                        request,
+                        _clientHelper.BuildCallOptions(null, callSettings));
+                @end
+            }
+
+        @end
+    }
+@end
+
+@private createRequest(method)
+    {@method.requestTypeName} request = new {@method.requestTypeName}
+    {
+        @join param : method.params
+            @if param.isRepeated
+                {@param.propertyName} = { {@param.name} },
+            @else
+                {@param.propertyName} = {@param.name},
+            @end
+        @end
+    };
+@end

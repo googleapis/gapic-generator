@@ -1,31 +1,46 @@
 package io.gapi.vgen.csharp;
 
+import com.google.api.gax.protobuf.PathTemplate;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.api.tools.framework.tools.ToolUtil;
+import com.google.auto.value.AutoValue;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
+import autovalue.shaded.com.google.common.common.collect.ImmutableList;
 import io.gapi.vgen.ApiConfig;
+import io.gapi.vgen.FlatteningConfig;
 import io.gapi.vgen.GeneratedResult;
+import io.gapi.vgen.InterfaceConfig;
 import io.gapi.vgen.LanguageProvider;
+import io.gapi.vgen.MethodConfig;
+import io.gapi.vgen.PageStreamingConfig;
+import io.gapi.vgen.ServiceConfig;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import javax.annotation.Nullable;
 
 /**
  * Language provider for C# codegen.
@@ -157,72 +172,237 @@ public class CSharpLanguageProvider extends LanguageProvider {
     return underscoresToCamelCase(file.getProto().getPackage(), true, true);
   }
 
-  /**
-   * Gets the name of the class which provides extension methods for this service interface.
-   */
-  public String getExtensionsClassName(Interface service) {
-    return service.getSimpleName() + "Extensions";
+  @AutoValue
+  public static abstract class ServiceInfo {
+    public static ServiceInfo create(
+        String host,
+        int port,
+        Iterable<String> scopes) {
+      return new AutoValue_CSharpLanguageProvider_ServiceInfo(
+          host, port, scopes);
+    }
+    public abstract String host();
+    public abstract int port();
+    public abstract Iterable<String> scopes();
   }
 
-  /**
-   * Gets the name of the class which provides factory methods for this service interface.
-   */
-  public String getFactoryClassName(Interface service) {
-    return service.getSimpleName() + "Factory";
+  public ServiceInfo getServiceInfo(Interface service) {
+    ServiceConfig serviceConfig = getServiceConfig();
+    return ServiceInfo.create(
+        serviceConfig.getServiceAddress(service),
+        serviceConfig.getServicePort(),
+        serviceConfig.getAuthScopes(service));
   }
 
-  /**
-   * Gets the name of the class which is the grpc container for this service interface.
-   */
-  public String getGrpcName(Interface service) {
-    return service.getSimpleName();
+  @AutoValue
+  public static abstract class ParamInfo {
+    public static ParamInfo create(
+        String name,
+        String typeName,
+        String propertyName,
+        boolean isRepeated) {
+      return new AutoValue_CSharpLanguageProvider_ParamInfo(
+          name, typeName, propertyName, isRepeated);
+    }
+    public abstract String name();
+    public abstract String typeName();
+    public abstract String propertyName();
+    public abstract boolean isRepeated();
   }
 
-  /**
-   * Gets the name of the client interface for this service.
-   */
-  public String getClientName(Interface service) {
-    return getGrpcName(service) + ".I" + service.getSimpleName() + "Client";
+  @AutoValue
+  public static abstract class PageStreamerInfo {
+    public static PageStreamerInfo create(
+        String resourceTypeName,
+        String requestTypeName,
+        String responseTypeName,
+        String tokenTypeName,
+        String staticFieldName,
+        String requestPageTokenFieldName,
+        String responseNextPageTokenFieldName,
+        String responseResourceFieldName,
+        String emptyPageToken) {
+      return new AutoValue_CSharpLanguageProvider_PageStreamerInfo(
+          resourceTypeName, requestTypeName, responseTypeName, tokenTypeName,
+          staticFieldName, requestPageTokenFieldName, responseNextPageTokenFieldName,
+          responseResourceFieldName, emptyPageToken);
+    }
+    public abstract String resourceTypeName();
+    public abstract String requestTypeName();
+    public abstract String responseTypeName();
+    public abstract String tokenTypeName();
+    public abstract String staticFieldName();
+    public abstract String requestPageTokenFieldName();
+    public abstract String responseNextPageTokenFieldName();
+    public abstract String responseResourceFieldName();
+    public abstract String emptyPageToken();
   }
 
-  /**
-   * Gets the name of the class which implements this service.
-   */
-  public String getClientImplementationName(Interface service) {
-    return getGrpcName(service) + "." + service.getSimpleName() + "Client";
+  @AutoValue
+  public static abstract class MethodInfo {
+    public static MethodInfo create(
+        String name,
+        String asyncReturnTypeName,
+        String syncReturnTypeName,
+        Iterable<ParamInfo> params,
+        boolean isPageStreaming,
+        PageStreamerInfo pageStreaming,
+        String requestTypeName,
+        String syncReturnStatement,
+        Iterable<String> xmlDocAsync,
+        Iterable<String> xmlDocSync) {
+      return new AutoValue_CSharpLanguageProvider_MethodInfo(
+          name, asyncReturnTypeName, syncReturnTypeName, params, isPageStreaming,
+          pageStreaming, requestTypeName, syncReturnStatement,
+          xmlDocAsync, xmlDocSync);
+    }
+    public abstract String name();
+    public abstract String asyncReturnTypeName();
+    public abstract String syncReturnTypeName();
+    public abstract Iterable<ParamInfo> params();
+    public abstract boolean isPageStreaming();
+    @Nullable public abstract PageStreamerInfo pageStreaming();
+    public abstract String requestTypeName();
+    public abstract String syncReturnStatement();
+    public abstract Iterable<String> xmlDocAsync();
+    public abstract Iterable<String> xmlDocSync();
   }
 
-  /**
-   * Given a TypeRef, returns the return statement for that type. Specifically, this will
-   * return an empty string for the empty type (we don't want a return statement for void).
-   */
-  public String methodReturnStatement(TypeRef type) {
-    return messages().isEmptyType(type) ? "" : "return ";
+  private MethodInfo createMethodInfo(InterfaceConfig interfaceConfig, Method method,
+      List<Field> flattening, PageStreamingConfig pageStreamingConfig) {
+    TypeRef returnType = method.getOutputType();
+    boolean returnTypeEmpty = messages().isEmptyType(returnType);
+    String asyncReturnTypeName;
+    String syncReturnTypeName;
+    if (returnTypeEmpty) {
+      asyncReturnTypeName = "Task";
+      syncReturnTypeName = "void";
+    } else {
+      if (pageStreamingConfig != null) {
+        TypeRef resourceType = pageStreamingConfig.getResourcesField().getType();
+        String elementTypeName = basicTypeName(resourceType);
+        asyncReturnTypeName = "IAsyncEnumerable<" + elementTypeName + ">";
+        syncReturnTypeName = "IEnumerable<" + elementTypeName + ">";
+      } else {
+        asyncReturnTypeName = "Task<" + typeName(returnType) + ">";
+        syncReturnTypeName = typeName(returnType);
+      }
+    }
+    Stream<ParamInfo> params = flattening.stream().map(field ->
+      ParamInfo.create(
+          lowerUnderscoreToLowerCamel(field.getSimpleName()),
+          typeName(field.getType()),
+          underscoresToCamelCase(field.getSimpleName(), true, false),
+          field.getType().isRepeated())
+    );
+    return MethodInfo.create(
+        method.getSimpleName(),
+        asyncReturnTypeName, syncReturnTypeName,
+        params.collect(Collectors.toList()),
+        pageStreamingConfig != null,
+        getPageStreamerInfo(interfaceConfig, method),
+        typeName(method.getInputType()),
+        returnTypeEmpty ? "" : "return ",
+        makeMethodXmlDoc(method, flattening, true),
+        makeMethodXmlDoc(method, flattening, false));
   }
 
-  /**
-   * Given a TypeRef, returns the String form of the type to be used as a return value.
-   * Special case: this will return "void" for the Empty return type.
-   */
-  public String methodReturnTypeName(TypeRef type) {
-    return messages().isEmptyType(type) ? "void" : typeName(type);
+  public List<MethodInfo> getMethodInfos(Interface service) {
+    // FlatteningConfig is just a List<Field>
+    InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
+    return service.getMethods().stream().flatMap(method -> {
+      MethodConfig methodConfig = interfaceConfig.getMethodConfig(method);
+      PageStreamingConfig pageStreamingConfig = methodConfig.getPageStreaming();
+      FlatteningConfig flatConfig = methodConfig.getFlattening();
+      if (flatConfig != null) {
+        return flatConfig.getFlatteningGroups().stream().map(
+            flattening -> createMethodInfo(interfaceConfig, method, flattening, pageStreamingConfig));
+      } else {
+        return Stream.of();
+      }
+    }).collect(Collectors.toList());
   }
 
-  /**
-   * Given a TypeRef, returns the String form of the type to be used as a return value from
-   * an async method.
-   * Special case: this will return "Task" for the Empty return type.
-   */
-  public String asyncMethodReturnTypeName(TypeRef type) {
-    return messages().isEmptyType(type) ? "Task" : "Task<" + typeName(type) + ">";
+  private PageStreamerInfo getPageStreamerInfo(InterfaceConfig interfaceConfig, Method method) {
+    MethodConfig methodConfig = interfaceConfig.getMethodConfig(method);
+    PageStreamingConfig pageStreamingConfig = methodConfig.getPageStreaming();
+    if (pageStreamingConfig == null) {
+      return null;
+    }
+    return PageStreamerInfo.create(
+        basicTypeName(pageStreamingConfig.getResourcesField().getType()),
+        typeName(method.getInputType()),
+        typeName(method.getOutputType()),
+        typeName(pageStreamingConfig.getRequestTokenField().getType()),
+        "s_" + firstLetterToLower(method.getSimpleName()) + "PageStreamer",
+        underscoresToCamelCase(pageStreamingConfig.getRequestTokenField().getSimpleName(), true, false),
+        underscoresToCamelCase(pageStreamingConfig.getResponseTokenField().getSimpleName(), true, false),
+        underscoresToCamelCase(pageStreamingConfig.getResourcesField().getSimpleName(), true, false),
+        "\"\""); // TODO(chrisbacon): Support non-string page-tokens
+  }
+
+  public List<PageStreamerInfo> getPageStreamerInfos(Interface service) {
+    InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
+    return service.getMethods().stream()
+        .map(method -> getPageStreamerInfo(interfaceConfig, method))
+        .filter(pageStreamerInfo -> pageStreamerInfo != null)
+        .collect(Collectors.toList());
+  }
+
+  @AutoValue
+  public static abstract class PathTemplateInfo {
+    public static PathTemplateInfo create(
+        String baseName,
+        String docName,
+        String namePattern,
+        Iterable<String> vars,
+        String varArgDeclList,
+        String varArgUseList) {
+      return new AutoValue_CSharpLanguageProvider_PathTemplateInfo(
+          baseName, docName, namePattern, vars, varArgDeclList, varArgUseList);
+    }
+    public abstract String baseName();
+    public abstract String docName();
+    public abstract String namePattern();
+    public abstract Iterable<String> vars();
+    public abstract String varArgDeclList();
+    public abstract String varArgUseList();
+  }
+
+  public List<PathTemplateInfo> getPathTemplateInfos(Interface service) {
+    InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
+    return interfaceConfig.getCollectionConfigs().stream()
+        .map(collection -> {
+          PathTemplate template = collection.getNameTemplate();
+          Set<String> vars = template.vars();
+          return PathTemplateInfo.create(
+              underscoresToCamelCase(collection.getMethodBaseName(), true, false),
+              underscoresToCamelCase(collection.getMethodBaseName(), false, false),
+              collection.getNamePattern(),
+              vars,
+              vars.stream()
+                  .map(var -> "string " + var + "Id")
+                  .reduce((a, b) -> a + ", " + b)
+                  .get(),
+              vars.stream()
+                  .map(var -> var + "Id")
+                  .reduce((a, b) -> a + ", " + b)
+                  .get());
+        })
+        .collect(Collectors.toList());
   }
 
   /**
    * Returns the C# representation of a reference to a type.
    */
-  public String typeName(TypeRef type) {
-    // TODO(jonskeet): Maps! (Use IDictionary<...>)
-    if (type.getCardinality() == Cardinality.REPEATED) {
+  private String typeName(TypeRef type) {
+    if (type.isMap()) {
+      TypeRef keyType = type.getMapKeyField().getType();
+      TypeRef valueType = type.getMapValueField().getType();
+      return "IDictionary<" + typeName(keyType) + ", " + typeName(valueType) + ">";
+    }
+    // Must check for map first, as a map is also repeated
+    if (type.isRepeated()) {
       return String.format("IEnumerable<%s>", basicTypeName(type));
     }
     return basicTypeName(type);
@@ -231,7 +411,7 @@ public class CSharpLanguageProvider extends LanguageProvider {
   /**
    * Returns the C# representation of a type, without cardinality.
    */
-  public String basicTypeName(TypeRef type) {
+  private String basicTypeName(TypeRef type) {
     String result = PRIMITIVE_TYPE_MAP.get(type.getKind());
     if (result != null) {
       return result;
@@ -249,58 +429,57 @@ public class CSharpLanguageProvider extends LanguageProvider {
   /**
    * Gets the full name of the message or enum type in C#.
    */
-  public String getTypeName(ProtoElement elem) {
+  private String getTypeName(ProtoElement elem) {
     // TODO: Handle nested types, and naming collisions. (The latter will probably require
     // using alias directives, which will be awkward...)
     addImport(getNamespace(elem.getFile()));
     return elem.getSimpleName();
   }
 
-  /**
-   * Returns the description of the proto element, in markdown format.
-   */
-  public String getDescription(ProtoElement element) {
-    return DocumentationUtil.getDescription(element);
+  private List<String> docLines(ProtoElement element, String prefix) {
+    Iterable<String> lines = Splitter.on(String.format("%n"))
+        .split(DocumentationUtil.getDescription(element));
+    return StreamSupport.stream(lines.spliterator(), false)
+        .map(line -> prefix + line.replace("&", "&amp;").replace("<", "&lt;"))
+        .collect(Collectors.toList());
   }
 
-  /**
-   * Splits given text into lines and returns an iterable of strings each one representing a
-   * line decorated for an XML documentation comment, wrapped in the given element
-   */
-  public Iterable<String> getXmlDocLines(String text, String element) {
-    // TODO(jonskeet): Convert markdown to XML documentation format.
-    List<String> result = new ArrayList<>();
-    result.add("/// <" + element + ">");
-    for (String line : Splitter.on(String.format("%n")).split(text)) {
-      result.add("/// " + line.replace("&", "&amp;").replace("<", "&lt;"));
+  private List<String> makeMethodXmlDoc(Method method, List<Field> params, boolean isAsync) {
+    List<String> parameters = params.stream()
+        .flatMap(param -> {
+            String header = "/// <param name=\"" + param.getSimpleName() + "\">";
+            List<String> lines = docLines(param, "");
+            if (lines.size() > 1) {
+              return ImmutableList.<String>builder()
+                  .add(header)
+                  .addAll(lines.stream().map(line -> "/// " + line).collect(Collectors.toList()))
+                  .add("/// </param>")
+                  .build().stream();
+            } else {
+              return Stream.of(header + lines.get(0) + "</param>");
+            }
+        })
+        .collect(Collectors.toList());
+    return ImmutableList.<String>builder()
+        .add("/// <summary>")
+        .addAll(docLines(method, "/// "))
+        .add("/// </summary>")
+        .addAll(parameters)
+        .build();
+  }
+
+  private String firstLetterToLower(String input) {
+    if (input != null && input.length() >= 1) {
+      return input.substring(0, 1).toLowerCase(Locale.ENGLISH) + input.substring(1);
+    } else {
+      return input;
     }
-    result.add("/// </" + element + ">");
-    return result;
-  }
-
-  /**
-   * Splits given text into lines and returns an iterable of strings each one representing a
-   * line decorated for an XML documentation comment, wrapped in the given element
-   */
-  public Iterable<String> getXmlParameterLines(String text, String parameterName) {
-    // TODO(jonskeet): Convert markdown to XML documentation format.
-    List<String> result = new ArrayList<>();
-    result.add("/// <paramref name=\"" + parameterName + "\">");
-    for (String line : Splitter.on(String.format("%n")).split(text)) {
-      result.add("/// " + line.replace("&", "&amp;").replace("<", "&lt;"));
-    }
-    result.add("/// </paramref>");
-    return result;
-  }
-
-  public String prependComma(String text) {
-    return text.isEmpty() ? "" : ", " + text;
   }
 
   // Copied from csharp_helpers.cc and converted into Java.
   // The existing lowerUnderscoreToUpperCamel etc don't handle dots in the way we want.
   // TODO: investigate that and add more common methods if necessary.
-  public String underscoresToCamelCase(
+  private String underscoresToCamelCase(
       String input, boolean capNextLetter, boolean preservePeriod) {
     StringBuilder result = new StringBuilder();
     for (int i = 0; i < input.length(); i++) {

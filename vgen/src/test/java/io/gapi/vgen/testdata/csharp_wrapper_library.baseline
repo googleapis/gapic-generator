@@ -1,0 +1,1379 @@
+// Copyright 2016 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+// Generated code. DO NOT EDIT!
+
+using Google.Api.Gax;
+using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Google.Example.Library.V1
+{
+
+    /// <summary>
+    /// Extension methods to assist with using <see cref="LibraryServiceClient"/>.
+    /// </summary>
+    public static partial class LibraryServiceExtensions
+    {
+        /// <summary>
+        /// Wrap a GRPC LibraryService client for more convenient use.
+        /// </summary>
+        /// <param name="grpcClient">A GRPC client to wrap.</param>
+        /// <param name="settings">
+        /// An optional <see cref="LibraryServiceSettings"/> to configure this wrapper.
+        /// If null or not specified, then the default settings are used.
+        /// </param>
+        /// <returns>A <see cref="LibraryServiceClient"/> that wraps the specified GRPC client.</returns>
+        public static LibraryServiceClient ToClient(
+            this LibraryService.ILibraryServiceClient grpcClient,
+            LibraryServiceSettings settings = null
+        ) => new LibraryServiceClientImpl(grpcClient, settings);
+    }
+
+    /// <summary>
+    /// Settings for a LibraryService wrapper.
+    /// </summary>
+    public sealed partial class LibraryServiceSettings : ServiceSettingsBase
+    {
+        /// <summary>
+        /// Get a new instance of the default <see cref="LibraryServiceSettings"/>.
+        /// </summary>
+        /// <returns>A new instance of the default LibraryServiceSettings.</returns>
+        public static LibraryServiceSettings GetDefault() => new LibraryServiceSettings();
+
+        /// <summary>
+        /// Creates a deep clone of this object, with all the same property values.
+        /// </summary>
+        /// <returns>A deep clone of this set of LibraryService settings.</returns>
+        public LibraryServiceSettings Clone() => CloneInto(new LibraryServiceSettings
+        {
+        });
+    }
+
+    /// <summary>
+    /// LibraryService client wrapper, for convenient use.
+    /// </summary>
+    public abstract partial class LibraryServiceClient
+    {
+        /// <summary>
+        /// The default endpoint for the LibraryService service, which is a host of "library-example.googleapis.com" and a port of 443.
+        /// </summary>
+        public static ServiceEndpoint DefaultEndpoint { get; } = new ServiceEndpoint("library-example.googleapis.com", 443);
+
+        /// <summary>
+        /// The default LibraryService scopes
+        /// </summary>
+        /// <remarks>
+        /// The default LibraryService scopes are:
+        /// <list type="bullet">
+        /// <item><description>"https://www.googleapis.com/auth/library"</description></item>
+        /// <item><description>"https://www.googleapis.com/auth/cloud-platform"</description></item>
+        /// </list>
+        /// </remarks>
+        public static IReadOnlyList<string> Scopes { get; } = new ReadOnlyCollection<string>(new[] {
+            "https://www.googleapis.com/auth/library",
+            "https://www.googleapis.com/auth/cloud-platform",
+        });
+
+        /// <summary>
+        /// Path template for a shelf resource. Parameters:
+        /// <list type="bullet">
+        /// <item><description>shelf</description></item>
+        /// </list>
+        /// </summary>
+        public static PathTemplate ShelfTemplate { get; } = new PathTemplate("shelves/{shelf}");
+
+        /// <summary>
+        /// Creates a shelf resource name from its component IDs.
+        /// </summary>
+        /// <param name="shelfId">The shelf ID.</param>
+        /// <returns>The full shelf resource name.</returns>
+        public static string GetShelfName(string shelfId) => ShelfTemplate.Expand(shelfId);
+
+        /// <summary>
+        /// Path template for a book resource. Parameters:
+        /// <list type="bullet">
+        /// <item><description>shelf</description></item>
+        /// <item><description>book</description></item>
+        /// </list>
+        /// </summary>
+        public static PathTemplate BookTemplate { get; } = new PathTemplate("shelves/{shelf}/books/{book}");
+
+        /// <summary>
+        /// Creates a book resource name from its component IDs.
+        /// </summary>
+        /// <param name="shelfId">The shelf ID.</param>
+        /// <param name="bookId">The book ID.</param>
+        /// <returns>The full book resource name.</returns>
+        public static string GetBookName(string shelfId, string bookId) => BookTemplate.Expand(shelfId, bookId);
+
+        /// <summary>
+        /// Asynchronously create a <see cref="LibraryServiceClient"/> from default credentials.
+        /// </summary>
+        /// <param name="settings">Optional <see cref="LibraryServiceSettings"/>.</param>
+        /// <param name="serviceEndpointSettings">Optional <see cref="ServiceEndpointSettings"/>.</param>
+        /// <param name="credentialScopes">Optional scopes for default credentials.</param>
+        /// <returns>A newly created <see cref="LibraryServiceClient"/>.</returns>
+        public static Task<LibraryServiceClient> CreateFromDefaultCredentialsAsync(
+            LibraryServiceSettings settings = null,
+            ServiceEndpointSettings serviceEndpointSettings = null,
+            IEnumerable<string> credentialScopes = null)
+        {
+            return ClientHelper.CreateFromDefaultCredentialsAsync(
+                settings, serviceEndpointSettings, credentialScopes, ServiceDefaults.Scopes, CreateFromCredentials);
+        }
+
+        /// <summary>
+        /// Create a <see cref="LibraryServiceClient"/> from default credentials.
+        /// </summary>
+        /// <param name="settings">Optional <see cref="LibraryServiceSettings"/>.</param>
+        /// <param name="serviceEndpointSettings">Optional <see cref="ServiceEndpointSettings"/>.</param>
+        /// <param name="credentialScopes">Optional scopes for default credentials.</param>
+        /// <returns>A newly created <see cref="LibraryServiceClient"/>.</returns>
+        public static LibraryServiceClient CreateFromDefaultCredentials(
+            LibraryServiceSettings settings = null,
+            ServiceEndpointSettings serviceEndpointSettings = null,
+            IEnumerable<string> credentialScopes = null)
+        {
+            return ClientHelper.CreateFromDefaultCredentials(
+                settings, serviceEndpointSettings, credentialScopes, ServiceDefaults.Scopes, CreateFromCredentials);
+        }
+
+        /// <summary>
+        /// Create a <see cref="LibraryServiceClient"/> from the specified credentials.
+        /// </summary>
+        /// <param name="credentials">The credentials with which to configure the GRPC channel.</param>
+        /// <param name="settings">Optional <see cref="LibraryServiceSettings"/>.</param>
+        /// <param name="serviceEndpointSettings">Optional <see cref="ServiceEndpointSettings"/>.</param>
+        /// <returns></returns>
+        public static LibraryServiceClient CreateFromCredentials(
+            ChannelCredentials credentials,
+            LibraryServiceSettings settings = null,
+            ServiceEndpointSettings serviceEndpointSettings = null)
+        {
+            Channel channel = ClientHelper.CreateChannel(
+                serviceEndpointSettings ?? GetDefaultServiceEndpointSettings(),
+                ServiceDefaults.Host, ServiceDefaults.Port, credentials);
+            LibraryService.ILibraryServiceClient grpcClient = new LibraryService.LibraryServiceClient(channel);
+            return new LibraryServiceClientImpl(grpcClient, settings);
+        }
+
+        /// <summary>
+        /// The underlying GRPC LibraryService client.
+        /// </summary>
+        public virtual LibraryService.ILibraryServiceClient GrpcClient
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        /// <summary>
+        /// Creates a shelf, and returns the new Shelf.
+        /// </summary>
+        /// <param name="shelf">The shelf to create.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task<Shelf> CreateShelfAsync(
+            Shelf shelf,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Creates a shelf, and returns the new Shelf.
+        /// </summary>
+        /// <param name="shelf">The shelf to create.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual Shelf CreateShelf(
+            Shelf shelf,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf to retrieve.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task<Shelf> GetShelfAsync(
+            string name,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf to retrieve.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual Shelf GetShelf(
+            string name,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf to retrieve.</param>
+        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task<Shelf> GetShelfAsync(
+            string name,
+            SomeMessage message,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf to retrieve.</param>
+        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual Shelf GetShelf(
+            string name,
+            SomeMessage message,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf to retrieve.</param>
+        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
+        /// <param name="string_builder"></param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task<Shelf> GetShelfAsync(
+            string name,
+            SomeMessage message,
+            StringBuilder stringBuilder,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf to retrieve.</param>
+        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
+        /// <param name="string_builder"></param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual Shelf GetShelf(
+            string name,
+            SomeMessage message,
+            StringBuilder stringBuilder,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Lists shelves.
+        /// </summary>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual IAsyncEnumerable<Shelf> ListShelvesAsync(
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Lists shelves.
+        /// </summary>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual IEnumerable<Shelf> ListShelves(
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Deletes a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf to delete.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task DeleteShelfAsync(
+            string name,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Deletes a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf to delete.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual void DeleteShelf(
+            string name,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Merges two shelves by adding all books from the shelf named
+        /// `other_shelf_name` to shelf `name`, and deletes
+        /// `other_shelf_name`. Returns the updated shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf we're adding books to.</param>
+        /// <param name="other_shelf_name">The name of the shelf we're removing books from and deleting.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task<Shelf> MergeShelvesAsync(
+            string name,
+            string otherShelfName,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Merges two shelves by adding all books from the shelf named
+        /// `other_shelf_name` to shelf `name`, and deletes
+        /// `other_shelf_name`. Returns the updated shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf we're adding books to.</param>
+        /// <param name="other_shelf_name">The name of the shelf we're removing books from and deleting.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual Shelf MergeShelves(
+            string name,
+            string otherShelfName,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Creates a book.
+        /// </summary>
+        /// <param name="name">The name of the shelf in which the book is created.</param>
+        /// <param name="book">The book to create.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task<Book> CreateBookAsync(
+            string name,
+            Book book,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Creates a book.
+        /// </summary>
+        /// <param name="name">The name of the shelf in which the book is created.</param>
+        /// <param name="book">The book to create.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual Book CreateBook(
+            string name,
+            Book book,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Creates a series of books.
+        /// </summary>
+        /// <param name="shelf">The shelf in which the series is created.</param>
+        /// <param name="books">The books to publish in the series.</param>
+        /// <param name="edition">The edition of the series</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task<PublishSeriesResponse> PublishSeriesAsync(
+            Shelf shelf,
+            IEnumerable<Book> books,
+            uint edition,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Creates a series of books.
+        /// </summary>
+        /// <param name="shelf">The shelf in which the series is created.</param>
+        /// <param name="books">The books to publish in the series.</param>
+        /// <param name="edition">The edition of the series</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual PublishSeriesResponse PublishSeries(
+            Shelf shelf,
+            IEnumerable<Book> books,
+            uint edition,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets a book.
+        /// </summary>
+        /// <param name="name">The name of the book to retrieve.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task<Book> GetBookAsync(
+            string name,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets a book.
+        /// </summary>
+        /// <param name="name">The name of the book to retrieve.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual Book GetBook(
+            string name,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Lists books in a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf whose books we'd like to list.</param>
+        /// <param name="filter">To test python built-in wrapping.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual IAsyncEnumerable<Book> ListBooksAsync(
+            string name,
+            string filter,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Lists books in a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf whose books we'd like to list.</param>
+        /// <param name="filter">To test python built-in wrapping.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual IEnumerable<Book> ListBooks(
+            string name,
+            string filter,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Deletes a book.
+        /// </summary>
+        /// <param name="name">The name of the book to delete.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task DeleteBookAsync(
+            string name,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Deletes a book.
+        /// </summary>
+        /// <param name="name">The name of the book to delete.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual void DeleteBook(
+            string name,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Updates a book.
+        /// </summary>
+        /// <param name="name">The name of the book to update.</param>
+        /// <param name="book">The book to update with.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task<Book> UpdateBookAsync(
+            string name,
+            Book book,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Updates a book.
+        /// </summary>
+        /// <param name="name">The name of the book to update.</param>
+        /// <param name="book">The book to update with.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual Book UpdateBook(
+            string name,
+            Book book,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Updates a book.
+        /// </summary>
+        /// <param name="name">The name of the book to update.</param>
+        /// <param name="book">The book to update with.</param>
+        /// <param name="update_mask">A field mask to apply, rendered as an HTTP parameter.</param>
+        /// <param name="physical_mask">To test Python import clash resolution.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task<Book> UpdateBookAsync(
+            string name,
+            Book book,
+            FieldMask updateMask,
+            FieldMask physicalMask,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Updates a book.
+        /// </summary>
+        /// <param name="name">The name of the book to update.</param>
+        /// <param name="book">The book to update with.</param>
+        /// <param name="update_mask">A field mask to apply, rendered as an HTTP parameter.</param>
+        /// <param name="physical_mask">To test Python import clash resolution.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual Book UpdateBook(
+            string name,
+            Book book,
+            FieldMask updateMask,
+            FieldMask physicalMask,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Moves a book to another shelf, and returns the new book.
+        /// </summary>
+        /// <param name="name">The name of the book to move.</param>
+        /// <param name="other_shelf_name">The name of the destination shelf.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task<Book> MoveBookAsync(
+            string name,
+            string otherShelfName,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Moves a book to another shelf, and returns the new book.
+        /// </summary>
+        /// <param name="name">The name of the book to move.</param>
+        /// <param name="other_shelf_name">The name of the destination shelf.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual Book MoveBook(
+            string name,
+            string otherShelfName,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+    }
+
+    public sealed partial class LibraryServiceClientImpl : LibraryServiceClient
+    {
+        private static readonly PageStreamer<Shelf, ListShelvesRequest, ListShelvesResponse, string> s_listShelvesPageStreamer =
+            new PageStreamer<Shelf, ListShelvesRequest, ListShelvesResponse, string>(
+                (request, token) => {
+                    request.PageToken = token;
+                    return request;
+                },
+                response => response.NextPageToken,
+                response => response.Shelves,
+                "" // An empty page-token
+            );
+
+        private static readonly PageStreamer<Book, ListBooksRequest, ListBooksResponse, string> s_listBooksPageStreamer =
+            new PageStreamer<Book, ListBooksRequest, ListBooksResponse, string>(
+                (request, token) => {
+                    request.PageToken = token;
+                    return request;
+                },
+                response => response.NextPageToken,
+                response => response.Books,
+                "" // An empty page-token
+            );
+
+        private readonly ClientHelper _clientHelper;
+
+        public LibraryServiceClientImpl(LibraryService.ILibraryServiceClient grpcClient, LibraryServiceSettings settings)
+        {
+            this.GrpcClient = grpcClient;
+            LibraryServiceSettings effectiveSettings = settings ?? LibraryServiceSettings.GetDefault();
+            _clientHelper = new ClientHelper(effectiveSettings);
+        }
+
+        public override LibraryService.ILibraryServiceClient GrpcClient { get; }
+
+        /// <summary>
+        /// Creates a shelf, and returns the new Shelf.
+        /// </summary>
+        /// <param name="shelf">The shelf to create.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override Task<Shelf> CreateShelfAsync(
+            Shelf shelf,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            CreateShelfRequest request = new CreateShelfRequest
+            {
+                Shelf = shelf,
+            };
+            return GrpcClient.CreateShelfAsync(
+                request,
+                _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+            ).ResponseAsync;
+        }
+
+        /// <summary>
+        /// Creates a shelf, and returns the new Shelf.
+        /// </summary>
+        /// <param name="shelf">The shelf to create.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override Shelf CreateShelf(
+            Shelf shelf,
+            CallSettings callSettings = null)
+        {
+            CreateShelfRequest request = new CreateShelfRequest
+            {
+                Shelf = shelf,
+            };
+            return GrpcClient.CreateShelf(
+                request,
+                _clientHelper.BuildCallOptions(null, callSettings));
+        }
+
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf to retrieve.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override Task<Shelf> GetShelfAsync(
+            string name,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            GetShelfRequest request = new GetShelfRequest
+            {
+                Name = name,
+            };
+            return GrpcClient.GetShelfAsync(
+                request,
+                _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+            ).ResponseAsync;
+        }
+
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf to retrieve.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override Shelf GetShelf(
+            string name,
+            CallSettings callSettings = null)
+        {
+            GetShelfRequest request = new GetShelfRequest
+            {
+                Name = name,
+            };
+            return GrpcClient.GetShelf(
+                request,
+                _clientHelper.BuildCallOptions(null, callSettings));
+        }
+
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf to retrieve.</param>
+        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override Task<Shelf> GetShelfAsync(
+            string name,
+            SomeMessage message,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            GetShelfRequest request = new GetShelfRequest
+            {
+                Name = name,
+                Message = message,
+            };
+            return GrpcClient.GetShelfAsync(
+                request,
+                _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+            ).ResponseAsync;
+        }
+
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf to retrieve.</param>
+        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override Shelf GetShelf(
+            string name,
+            SomeMessage message,
+            CallSettings callSettings = null)
+        {
+            GetShelfRequest request = new GetShelfRequest
+            {
+                Name = name,
+                Message = message,
+            };
+            return GrpcClient.GetShelf(
+                request,
+                _clientHelper.BuildCallOptions(null, callSettings));
+        }
+
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf to retrieve.</param>
+        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
+        /// <param name="string_builder"></param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override Task<Shelf> GetShelfAsync(
+            string name,
+            SomeMessage message,
+            StringBuilder stringBuilder,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            GetShelfRequest request = new GetShelfRequest
+            {
+                Name = name,
+                Message = message,
+                StringBuilder = stringBuilder,
+            };
+            return GrpcClient.GetShelfAsync(
+                request,
+                _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+            ).ResponseAsync;
+        }
+
+        /// <summary>
+        /// Gets a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf to retrieve.</param>
+        /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
+        /// <param name="string_builder"></param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override Shelf GetShelf(
+            string name,
+            SomeMessage message,
+            StringBuilder stringBuilder,
+            CallSettings callSettings = null)
+        {
+            GetShelfRequest request = new GetShelfRequest
+            {
+                Name = name,
+                Message = message,
+                StringBuilder = stringBuilder,
+            };
+            return GrpcClient.GetShelf(
+                request,
+                _clientHelper.BuildCallOptions(null, callSettings));
+        }
+
+        /// <summary>
+        /// Lists shelves.
+        /// </summary>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override IAsyncEnumerable<Shelf> ListShelvesAsync(
+            CallSettings callSettings = null)
+        {
+            ListShelvesRequest request = new ListShelvesRequest
+            {
+            };
+            return s_listShelvesPageStreamer.FetchAsync(
+                request,
+                (pageStreamRequest, cancellationToken) => GrpcClient.ListShelvesAsync(
+                    pageStreamRequest,
+                    _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+                ).ResponseAsync
+            );
+        }
+
+        /// <summary>
+        /// Lists shelves.
+        /// </summary>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override IEnumerable<Shelf> ListShelves(
+            CallSettings callSettings = null)
+        {
+            ListShelvesRequest request = new ListShelvesRequest
+            {
+            };
+            return s_listShelvesPageStreamer.Fetch(
+                request,
+                pageStreamRequest => GrpcClient.ListShelves(
+                    pageStreamRequest,
+                    _clientHelper.BuildCallOptions(null, callSettings))
+            );
+        }
+
+        /// <summary>
+        /// Deletes a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf to delete.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override Task DeleteShelfAsync(
+            string name,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            DeleteShelfRequest request = new DeleteShelfRequest
+            {
+                Name = name,
+            };
+            return GrpcClient.DeleteShelfAsync(
+                request,
+                _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+            ).ResponseAsync;
+        }
+
+        /// <summary>
+        /// Deletes a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf to delete.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override void DeleteShelf(
+            string name,
+            CallSettings callSettings = null)
+        {
+            DeleteShelfRequest request = new DeleteShelfRequest
+            {
+                Name = name,
+            };
+            GrpcClient.DeleteShelf(
+                request,
+                _clientHelper.BuildCallOptions(null, callSettings));
+        }
+
+        /// <summary>
+        /// Merges two shelves by adding all books from the shelf named
+        /// `other_shelf_name` to shelf `name`, and deletes
+        /// `other_shelf_name`. Returns the updated shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf we're adding books to.</param>
+        /// <param name="other_shelf_name">The name of the shelf we're removing books from and deleting.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override Task<Shelf> MergeShelvesAsync(
+            string name,
+            string otherShelfName,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            MergeShelvesRequest request = new MergeShelvesRequest
+            {
+                Name = name,
+                OtherShelfName = otherShelfName,
+            };
+            return GrpcClient.MergeShelvesAsync(
+                request,
+                _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+            ).ResponseAsync;
+        }
+
+        /// <summary>
+        /// Merges two shelves by adding all books from the shelf named
+        /// `other_shelf_name` to shelf `name`, and deletes
+        /// `other_shelf_name`. Returns the updated shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf we're adding books to.</param>
+        /// <param name="other_shelf_name">The name of the shelf we're removing books from and deleting.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override Shelf MergeShelves(
+            string name,
+            string otherShelfName,
+            CallSettings callSettings = null)
+        {
+            MergeShelvesRequest request = new MergeShelvesRequest
+            {
+                Name = name,
+                OtherShelfName = otherShelfName,
+            };
+            return GrpcClient.MergeShelves(
+                request,
+                _clientHelper.BuildCallOptions(null, callSettings));
+        }
+
+        /// <summary>
+        /// Creates a book.
+        /// </summary>
+        /// <param name="name">The name of the shelf in which the book is created.</param>
+        /// <param name="book">The book to create.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override Task<Book> CreateBookAsync(
+            string name,
+            Book book,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            CreateBookRequest request = new CreateBookRequest
+            {
+                Name = name,
+                Book = book,
+            };
+            return GrpcClient.CreateBookAsync(
+                request,
+                _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+            ).ResponseAsync;
+        }
+
+        /// <summary>
+        /// Creates a book.
+        /// </summary>
+        /// <param name="name">The name of the shelf in which the book is created.</param>
+        /// <param name="book">The book to create.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override Book CreateBook(
+            string name,
+            Book book,
+            CallSettings callSettings = null)
+        {
+            CreateBookRequest request = new CreateBookRequest
+            {
+                Name = name,
+                Book = book,
+            };
+            return GrpcClient.CreateBook(
+                request,
+                _clientHelper.BuildCallOptions(null, callSettings));
+        }
+
+        /// <summary>
+        /// Creates a series of books.
+        /// </summary>
+        /// <param name="shelf">The shelf in which the series is created.</param>
+        /// <param name="books">The books to publish in the series.</param>
+        /// <param name="edition">The edition of the series</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override Task<PublishSeriesResponse> PublishSeriesAsync(
+            Shelf shelf,
+            IEnumerable<Book> books,
+            uint edition,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            PublishSeriesRequest request = new PublishSeriesRequest
+            {
+                Shelf = shelf,
+                Books = { books },
+                Edition = edition,
+            };
+            return GrpcClient.PublishSeriesAsync(
+                request,
+                _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+            ).ResponseAsync;
+        }
+
+        /// <summary>
+        /// Creates a series of books.
+        /// </summary>
+        /// <param name="shelf">The shelf in which the series is created.</param>
+        /// <param name="books">The books to publish in the series.</param>
+        /// <param name="edition">The edition of the series</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override PublishSeriesResponse PublishSeries(
+            Shelf shelf,
+            IEnumerable<Book> books,
+            uint edition,
+            CallSettings callSettings = null)
+        {
+            PublishSeriesRequest request = new PublishSeriesRequest
+            {
+                Shelf = shelf,
+                Books = { books },
+                Edition = edition,
+            };
+            return GrpcClient.PublishSeries(
+                request,
+                _clientHelper.BuildCallOptions(null, callSettings));
+        }
+
+        /// <summary>
+        /// Gets a book.
+        /// </summary>
+        /// <param name="name">The name of the book to retrieve.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override Task<Book> GetBookAsync(
+            string name,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            GetBookRequest request = new GetBookRequest
+            {
+                Name = name,
+            };
+            return GrpcClient.GetBookAsync(
+                request,
+                _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+            ).ResponseAsync;
+        }
+
+        /// <summary>
+        /// Gets a book.
+        /// </summary>
+        /// <param name="name">The name of the book to retrieve.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override Book GetBook(
+            string name,
+            CallSettings callSettings = null)
+        {
+            GetBookRequest request = new GetBookRequest
+            {
+                Name = name,
+            };
+            return GrpcClient.GetBook(
+                request,
+                _clientHelper.BuildCallOptions(null, callSettings));
+        }
+
+        /// <summary>
+        /// Lists books in a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf whose books we'd like to list.</param>
+        /// <param name="filter">To test python built-in wrapping.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override IAsyncEnumerable<Book> ListBooksAsync(
+            string name,
+            string filter,
+            CallSettings callSettings = null)
+        {
+            ListBooksRequest request = new ListBooksRequest
+            {
+                Name = name,
+                Filter = filter,
+            };
+            return s_listBooksPageStreamer.FetchAsync(
+                request,
+                (pageStreamRequest, cancellationToken) => GrpcClient.ListBooksAsync(
+                    pageStreamRequest,
+                    _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+                ).ResponseAsync
+            );
+        }
+
+        /// <summary>
+        /// Lists books in a shelf.
+        /// </summary>
+        /// <param name="name">The name of the shelf whose books we'd like to list.</param>
+        /// <param name="filter">To test python built-in wrapping.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override IEnumerable<Book> ListBooks(
+            string name,
+            string filter,
+            CallSettings callSettings = null)
+        {
+            ListBooksRequest request = new ListBooksRequest
+            {
+                Name = name,
+                Filter = filter,
+            };
+            return s_listBooksPageStreamer.Fetch(
+                request,
+                pageStreamRequest => GrpcClient.ListBooks(
+                    pageStreamRequest,
+                    _clientHelper.BuildCallOptions(null, callSettings))
+            );
+        }
+
+        /// <summary>
+        /// Deletes a book.
+        /// </summary>
+        /// <param name="name">The name of the book to delete.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override Task DeleteBookAsync(
+            string name,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            DeleteBookRequest request = new DeleteBookRequest
+            {
+                Name = name,
+            };
+            return GrpcClient.DeleteBookAsync(
+                request,
+                _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+            ).ResponseAsync;
+        }
+
+        /// <summary>
+        /// Deletes a book.
+        /// </summary>
+        /// <param name="name">The name of the book to delete.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override void DeleteBook(
+            string name,
+            CallSettings callSettings = null)
+        {
+            DeleteBookRequest request = new DeleteBookRequest
+            {
+                Name = name,
+            };
+            GrpcClient.DeleteBook(
+                request,
+                _clientHelper.BuildCallOptions(null, callSettings));
+        }
+
+        /// <summary>
+        /// Updates a book.
+        /// </summary>
+        /// <param name="name">The name of the book to update.</param>
+        /// <param name="book">The book to update with.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override Task<Book> UpdateBookAsync(
+            string name,
+            Book book,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            UpdateBookRequest request = new UpdateBookRequest
+            {
+                Name = name,
+                Book = book,
+            };
+            return GrpcClient.UpdateBookAsync(
+                request,
+                _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+            ).ResponseAsync;
+        }
+
+        /// <summary>
+        /// Updates a book.
+        /// </summary>
+        /// <param name="name">The name of the book to update.</param>
+        /// <param name="book">The book to update with.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override Book UpdateBook(
+            string name,
+            Book book,
+            CallSettings callSettings = null)
+        {
+            UpdateBookRequest request = new UpdateBookRequest
+            {
+                Name = name,
+                Book = book,
+            };
+            return GrpcClient.UpdateBook(
+                request,
+                _clientHelper.BuildCallOptions(null, callSettings));
+        }
+
+        /// <summary>
+        /// Updates a book.
+        /// </summary>
+        /// <param name="name">The name of the book to update.</param>
+        /// <param name="book">The book to update with.</param>
+        /// <param name="update_mask">A field mask to apply, rendered as an HTTP parameter.</param>
+        /// <param name="physical_mask">To test Python import clash resolution.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override Task<Book> UpdateBookAsync(
+            string name,
+            Book book,
+            FieldMask updateMask,
+            FieldMask physicalMask,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            UpdateBookRequest request = new UpdateBookRequest
+            {
+                Name = name,
+                Book = book,
+                UpdateMask = updateMask,
+                PhysicalMask = physicalMask,
+            };
+            return GrpcClient.UpdateBookAsync(
+                request,
+                _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+            ).ResponseAsync;
+        }
+
+        /// <summary>
+        /// Updates a book.
+        /// </summary>
+        /// <param name="name">The name of the book to update.</param>
+        /// <param name="book">The book to update with.</param>
+        /// <param name="update_mask">A field mask to apply, rendered as an HTTP parameter.</param>
+        /// <param name="physical_mask">To test Python import clash resolution.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override Book UpdateBook(
+            string name,
+            Book book,
+            FieldMask updateMask,
+            FieldMask physicalMask,
+            CallSettings callSettings = null)
+        {
+            UpdateBookRequest request = new UpdateBookRequest
+            {
+                Name = name,
+                Book = book,
+                UpdateMask = updateMask,
+                PhysicalMask = physicalMask,
+            };
+            return GrpcClient.UpdateBook(
+                request,
+                _clientHelper.BuildCallOptions(null, callSettings));
+        }
+
+        /// <summary>
+        /// Moves a book to another shelf, and returns the new book.
+        /// </summary>
+        /// <param name="name">The name of the book to move.</param>
+        /// <param name="other_shelf_name">The name of the destination shelf.</param>
+        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override Task<Book> MoveBookAsync(
+            string name,
+            string otherShelfName,
+            CancellationToken? cancellationToken = null,
+            CallSettings callSettings = null)
+        {
+            MoveBookRequest request = new MoveBookRequest
+            {
+                Name = name,
+                OtherShelfName = otherShelfName,
+            };
+            return GrpcClient.MoveBookAsync(
+                request,
+                _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+            ).ResponseAsync;
+        }
+
+        /// <summary>
+        /// Moves a book to another shelf, and returns the new book.
+        /// </summary>
+        /// <param name="name">The name of the book to move.</param>
+        /// <param name="other_shelf_name">The name of the destination shelf.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override Book MoveBook(
+            string name,
+            string otherShelfName,
+            CallSettings callSettings = null)
+        {
+            MoveBookRequest request = new MoveBookRequest
+            {
+                Name = name,
+                OtherShelfName = otherShelfName,
+            };
+            return GrpcClient.MoveBook(
+                request,
+                _clientHelper.BuildCallOptions(null, callSettings));
+        }
+
+    }
+}
