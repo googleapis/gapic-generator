@@ -37,6 +37,10 @@ public class PythonImportHandler {
     addImport(null, PythonImport.create("pkg_resources", PythonImport.ImportType.STDLIB));
     addImport(null, PythonImport.create("platform", PythonImport.ImportType.STDLIB));
     addImport(null, PythonImport.create("google.gax", PythonImport.ImportType.THIRD_PARTY));
+    addImport(null, PythonImport.create("google.gax", "BundleDescriptor",
+        PythonImport.ImportType.THIRD_PARTY));
+    addImport(null, PythonImport.create("google.gax", "PageDescriptor",
+        PythonImport.ImportType.THIRD_PARTY));
     addImport(null, PythonImport.create("google.gax", "api_callable",
         PythonImport.ImportType.THIRD_PARTY));
     addImport(null, PythonImport.create("google.gax", "config",
@@ -73,12 +77,18 @@ public class PythonImportHandler {
   }
 
   /**
-   * Returns the full path to a message or element.
+   * Returns the path to a proto element. If fullyQualified is false, returns the fully
+   * qualified path.
    * Ex: for path.to.type.HelloWorld, it returns path.to.type
    */
-  public String fullyQualifiedPath(ProtoElement elt) {
+  public String elementPath(ProtoElement elt, boolean fullyQualified) {
     String prefix = PythonProtoElements.prefixInFile(elt);
-    String path = fileToModule(elt.getFile());
+    String path;
+    if (fullyQualified) {
+      path = elt.getFile().getProto().getPackage() + "." + PythonProtoElements.getPbFileName(elt);
+    } else {
+      path = fileToModule(elt.getFile());
+    }
     if (Strings.isNullOrEmpty(path)) {
       return prefix;
     } else {
