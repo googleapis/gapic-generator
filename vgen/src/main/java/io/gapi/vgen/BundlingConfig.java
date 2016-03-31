@@ -75,14 +75,6 @@ public class BundlingConfig {
       return null;
     }
 
-    if (elementCountThreshold <= 0 || requestByteThreshold <= 0 || delayThresholdMillis <= 0 ||
-        elementCountLimit <= 0 || requestByteLimit <= 0) {
-      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL,
-          "Some thresholds/limits are not specified as a positive number: "
-          + "method = %s, message type = %s",
-          method.getFullName(), method.getInputType().getMessageType().getFullName()));
-    }
-
     return new BundlingConfig(elementCountThreshold, requestByteThreshold,
         elementCountLimit, requestByteLimit, delayThresholdMillis,
         bundledField, discriminatorsBuilder.build(), subresponseField);
