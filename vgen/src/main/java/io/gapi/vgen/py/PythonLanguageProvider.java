@@ -133,7 +133,8 @@ public class PythonLanguageProvider extends LanguageProvider {
 
   @Override
   public GeneratedResult generate(Interface service, SnippetDescriptor snippetDescriptor) {
-    PythonImportHandler importHandler = new PythonImportHandler(service);
+    PythonImportHandler importHandler =
+        new PythonImportHandler(service, getApiConfig().getInterfaceConfig(service));
     ImmutableMap<String, Object> globalMap = ImmutableMap.<String, Object>builder()
         .put("context", this)
         .put("pyproto", new PythonProtoElements())

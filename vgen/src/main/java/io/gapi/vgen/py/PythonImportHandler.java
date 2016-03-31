@@ -9,6 +9,10 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Iterables;
+
+import io.gapi.vgen.InterfaceConfig;
+import io.gapi.vgen.ServiceMessages;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,17 +34,26 @@ public class PythonImportHandler {
    */
   private final BiMap<ProtoFile, String> fileImports = HashBiMap.create();
 
-  public PythonImportHandler(Interface service) {
+  public PythonImportHandler(Interface service, InterfaceConfig config) {
     // Add non-service-specific imports.
     addImport(null, PythonImport.create("json", PythonImport.ImportType.STDLIB));
     addImport(null, PythonImport.create("os", PythonImport.ImportType.STDLIB));
     addImport(null, PythonImport.create("pkg_resources", PythonImport.ImportType.STDLIB));
     addImport(null, PythonImport.create("platform", PythonImport.ImportType.STDLIB));
     addImport(null, PythonImport.create("google.gax", PythonImport.ImportType.THIRD_PARTY));
-    addImport(null, PythonImport.create("google.gax", "BundleDescriptor",
-        PythonImport.ImportType.THIRD_PARTY));
-    addImport(null, PythonImport.create("google.gax", "PageDescriptor",
-        PythonImport.ImportType.THIRD_PARTY));
+
+    if (Iterables.size(
+        new ServiceMessages().filterPageStreamingMethods(config, service.getMethods())) > 0) {
+      addImport(null, PythonImport.create("google.gax", "PageDescriptor",
+          PythonImport.ImportType.THIRD_PARTY));
+    }
+
+    if (Iterables.size(
+        new ServiceMessages().filterBundlingMethods(config, service.getMethods())) > 0) {
+      addImport(null, PythonImport.create("google.gax", "BundleDescriptor",
+          PythonImport.ImportType.THIRD_PARTY));
+    }
+
     addImport(null, PythonImport.create("google.gax", "api_callable",
         PythonImport.ImportType.THIRD_PARTY));
     addImport(null, PythonImport.create("google.gax", "config",
