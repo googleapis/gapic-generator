@@ -310,6 +310,9 @@ public class PythonLanguageProvider extends LanguageProvider {
     if (returnType != null) {
       contentBuilder.append("\n\n" + returnType);
     }
+
+    contentBuilder.append(
+        "\n\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
     return convertToCommentedBlock(contentBuilder.toString());
   }
 
