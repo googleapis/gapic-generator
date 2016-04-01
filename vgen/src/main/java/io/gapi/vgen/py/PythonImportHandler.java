@@ -92,24 +92,33 @@ public class PythonImportHandler {
   /**
    * Returns the path to a proto element. If fullyQualified is false, returns the fully
    * qualified path.
-   * Ex: for path.to.type.HelloWorld, it returns path.to.type
+   *
+   * For example, with message `Hello.World` under import `hello`, if fullyQualified is
+   * true:  for `path.to.hello.Hello.World`, it returns `path.to.hello.Hello.World`
+   * false: for `path.to.hello.Hello.World`, it returns `hello.Hello.World`
    */
   public String elementPath(ProtoElement elt, boolean fullyQualified) {
     String prefix = PythonProtoElements.prefixInFile(elt);
     String path;
+
     if (fullyQualified) {
       path = elt.getFile().getProto().getPackage() + "." + PythonProtoElements.getPbFileName(elt);
     } else {
       path = fileToModule(elt.getFile());
     }
+
     if (Strings.isNullOrEmpty(path)) {
-      return prefix;
+      // path is either empty or the prefix string.
+      path = prefix;
     } else {
-      if (Strings.isNullOrEmpty(prefix)) {
-        return path;
+      // If path isn't empty:
+      if (!Strings.isNullOrEmpty(prefix)) {
+        // If prefix isn't empty, append it to path.
+        path += "." + prefix;
       }
-      return path + "." + prefix;
     }
+    path += "." + elt.getSimpleName();
+    return path;
   }
 
   /*

@@ -230,17 +230,21 @@ public class PythonLanguageProvider extends LanguageProvider {
   private String fieldTypeCardinalityComment(Field field, PythonImportHandler importHandler) {
     TypeRef type = field.getType();
     boolean closingBrace = false;
-
-    String cardinalityComment;
+    String prefix;
     if (type.getCardinality() == Cardinality.REPEATED) {
-      cardinalityComment = "list[";
+      if (type.isMap()) {
+        prefix = String.format("dict[%s, ", fieldTypeComment(type.getMapKeyField(),
+            importHandler));
+      } else {
+        prefix = "list[";
+      }
       closingBrace = true;
     } else {
-      cardinalityComment = "";
+      prefix = "";
     }
     String typeComment = fieldTypeComment(field, importHandler);
     return String.format("%s%s%s",
-        cardinalityComment, typeComment, closingBrace ? "]" : "");
+        prefix, typeComment, closingBrace ? "]" : "");
   }
 
   /**
@@ -248,18 +252,11 @@ public class PythonLanguageProvider extends LanguageProvider {
    */
   private String fieldTypeComment(Field field, PythonImportHandler importHandler) {
     TypeRef type = field.getType();
-
     switch (type.getKind()) {
       case TYPE_MESSAGE:
-        String path = importHandler.elementPath(type.getMessageType(), true);
-        return ":class:`" + (Strings.isNullOrEmpty(path) ? "" : (path + ".")) +
-            type.getMessageType().getSimpleName() + "`";
+        return ":class:`" + importHandler.elementPath(type.getMessageType(), true) + "`";
       case TYPE_ENUM:
-        Preconditions.checkArgument(type.getEnumType().getValues().size() > 0,
-            "enum must have a value");
-        String path2 = importHandler.elementPath(type.getEnumType(), true);
-        return ":class:`" + (Strings.isNullOrEmpty(path2) ? "" : (path2 + ".")) +
-            type.getEnumType().getSimpleName() + "`";
+        return ":class:`" + importHandler.elementPath(type.getEnumType(), true) + "`";
       default:
         if (type.isPrimitive()) {
           return type.getPrimitiveTypeName();
@@ -322,8 +319,7 @@ public class PythonLanguageProvider extends LanguageProvider {
     }
 
     String path = importHandler.elementPath(returnMessageType, true);
-    String classInfo = ":class:`" + (Strings.isNullOrEmpty(path) ? "" : (path + "."))
-        + returnMessageType.getSimpleName() + "` instance";
+    String classInfo = ":class:`" + path + "` instance";
     MethodConfig config = getApiConfig().getInterfaceConfig((Interface) method.getParent())
         .getMethodConfig(method);
 
@@ -355,7 +351,6 @@ public class PythonLanguageProvider extends LanguageProvider {
     String paramTypes = paramTypesBuilder.toString();
 
     String returnType = returnTypeComment(msg, importHandler);
-
     // Generate comment contents
     StringBuilder contentBuilder = new StringBuilder();
     if (msg.hasAttribute(ElementDocumentationAttribute.KEY)) {
@@ -398,13 +393,11 @@ public class PythonLanguageProvider extends LanguageProvider {
     }
     switch (type.getKind()) {
       case TYPE_MESSAGE:
-        return importHandler.elementPath(type.getMessageType(), false) + "." +
-            type.getMessageType().getSimpleName() + "()";
+        return importHandler.elementPath(type.getMessageType(), false) + "()";
       case TYPE_ENUM:
         Preconditions.checkArgument(type.getEnumType().getValues().size() > 0,
             "enum must have a value");
-        return importHandler.elementPath(type.getEnumType(), false) + "." +
-            type.getEnumType().getValues().get(0).getSimpleName();
+        return importHandler.elementPath(type.getEnumType().getValues().get(0), false);
       default:
         if (type.isPrimitive()) {
           return DEFAULT_VALUE_MAP.get(type.getKind());
