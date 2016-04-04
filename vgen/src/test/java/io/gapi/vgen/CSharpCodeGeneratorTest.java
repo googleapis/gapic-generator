@@ -31,16 +31,11 @@ public class CSharpCodeGeneratorTest extends CodeGeneratorTestBase {
     // snippet we want to test. While additional YAML files can override single values, they
     // append to list values.)
     return ImmutableList.of(
-      new Object[] {
-          "csharp_extensions",
-          new String[] { "library_veneer.yaml", "csharp_veneer.yaml" },
-          "extensions.snip"
-      },
-      new Object[] {
-          "csharp_factory",
-          new String[] { "library_veneer.yaml", "csharp_veneer.yaml" },
-          "factory.snip"
-      });
+        new Object[] {
+            "csharp_wrapper",
+            new String[] { "library_veneer.yaml", "csharp_veneer.yaml"},
+            "wrapper.snip"
+        });
   }
 
   // Tests
