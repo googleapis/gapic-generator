@@ -1,78 +1,31 @@
 # Introduction
 
-GAPI tools consist of the following sub projects:
+Google API tools consist of two tools:
 
-- The [GAPI tools framework](https://gapi.git.corp.google.com/gapi-tools-framework), a set of
-  libraries to process _API services_, that is a collection of protocol buffer definitions and
-  configuration files.
-- The [GAPI generators and synchronizers](./vgen), which produce wrappers around GRPC apis
-  which can be enriched by manually edited code.
+- The Google API Code Generator, which produces client code wrappers around GRPC
+  APIs which can be enriched by manually edited code.
+- The Google API Code Synchronizer, which can merge updates in the generated
+  code wrapper to an existing code wrapper which might have manual edits.
 
-For a usage example, see the
-[gapi-example-library-java](https://gapi.git.corp.google.com/gapi-example-library-java) repository.
+More Google API tools will be introduced in the future.
 
-For instructions how to setup a development environment, see [gapi-dev/README.md](https://gapi.git.corp.google.com/gapi-dev/+/master/README.md).
+## The Google API Code Generator
 
+We currently support the generation of client code wrappers in three languages:
+Java, Python, C#. There are two ways to generate client code wrappers:
 
-# Design Notes
+1. Invoking directly through a gradle task (see the build.gradle:runVGen task).
+2. Invoking a code generation pipeline through
+   [artman]( https://github.com/googleapis/artman/blob/master/USAGE.rst).
 
-## The GAPI Org
+## The Google API Code Synchronizer
 
-Google APIs and tools are expected to live in a dedicated organization on github, with tentative
-name "gapi". (We currently model gapi on [git-on-borg](https://go/git-on-borg) at URL
-[https://gapi.git.corp.google.com]()).
+The process currently hard-wires `kdiff3` for merging and conflict resolution.
+`kdiff3` runs in auto mode and will only pop up a UI if conflict resolution is
+not possible (note: X display needed in this case). There are two ways to invoke
+code synchronizer:
 
-The GAPI org contains projects for protos and projects for compiled and enhanced ('veneered')
-GRPC clients for the according protos. The later ones are language specific. It also contains
-the tools to work with those projects.
-
-Language specific client projects aggregate the according proto projects as git
-[submodules](https://git-scm.com/docs/git-submodule), so their source can be
-included in the compilation (note that we may later change this by introducing a proto packaging
-mechanism instead). For example:
-
-- [gapi-example-library-proto](https://gapi.git.corp.google.com/gapi-example-library-proto)
-  contains the protocol buffers and service configuration for the book library example.
-- [gapi-example-library-java](https://gapi.git.corp.google.com/gapi-example-library-java) contains
-  the generated Java GRPC client, as well as veneers for it. The above proto repository is
-  aggregated as a submodule at `${projectDir}/modules/gapi-example-library-proto`.
-
-## The Veneer Synchronizer
-
-Veneer wrappers are stored at the regular source location, i.e. `./src/${sourceSetName}`. The
-veneer synchronizer creates or updates wrappers at this location. The synchronizer is not
-called implicitly as part of a regular build step but explicitly when the protos or configurations
-have changed, or for initial veneer creation.
-
-The synchronizer can be invoked directly through a gradle task(see build.gradle:runSynchronizer
-task) or [the code generation pipeline](https://gapi.git.corp.google.com/pipeline).
-
-Synchronization works as follows:
-
-1. The veneer generator is called, and the output stored in a temporary location.
-2. An automatic 3-way merge is attempted using
-   - the persisted baseline file for the old generated output found in
-     `./baseline/${sourceSet}`;
-   - the newly generated output;
-   - and the edited source of the wrapper, found in `./src/${sourceSet}`.
-3. If merge succeeds, the baseline and the edited source are updated.
-
-In case no source for the veneer exists yet, the generated one is simply copied into the source
-as well as the baseline folder.
-
-The process currently hard-wires `kdiff3` for merging and conflict resolution. `kdiff3` runs in auto
-mode and will only pop up a UI if conflict resolution is not possible (note: X display needed in
-this case).
-
-# Deployment
-
-Use the following command to deploy Gapi tools framework to a private maven
-repository:
-
-    ./gradlew uploadArchives
-
-Note: you will need to set privateOssrhUsername and privateOssrhPassword in
-{USER_HOME}/.gradle/gradle.properties file (create one if it doesn't exist).
-
-    privateOssrhUsername=deployment
-    privateOssrhPassword=<check out go/vkit-dev-credentials>
+1. Invoking directly through a gradle task (see the build.gradle:runSynchronizer
+   task).
+2. Invoking a code generation pipeline which contains synchronization step
+   through [artman](https://github.com/googleapis/artman/blob/master/USAGE.rst).
