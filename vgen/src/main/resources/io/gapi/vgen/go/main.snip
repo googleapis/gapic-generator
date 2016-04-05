@@ -252,15 +252,24 @@
             @else
 
                 {@methodComment(method, methodName)}
-                func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) ({@outTypeName}, error) {
-                	callOpts := append({@retryParamsName}_RetryParams(), client.CallOptions["{@methodName}"]...)
-                	callOpts = append(callOpts, opts...)
-                	resp, err := gax.Invoke(ctx, req, client.{@lowerMethodName}, callOpts...)
-                	if err != nil {
-                		return nil, err
-                	}
-                        return resp.({@outTypeName}), nil
-                }
+                @if {@context.isEmpty(method.getOutputType)}
+                    func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) error {
+                    	callOpts := append({@retryParamsName}_RetryParams(), client.CallOptions["{@methodName}"]...)
+                    	callOpts = append(callOpts, opts...)
+                    	_, err := gax.Invoke(ctx, req, client.{@lowerMethodName}, callOpts...)
+                    	return err
+                    }
+                @else
+                    func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) ({@outTypeName}, error) {
+                    	callOpts := append({@retryParamsName}_RetryParams(), client.CallOptions["{@methodName}"]...)
+                    	callOpts = append(callOpts, opts...)
+                    	resp, err := gax.Invoke(ctx, req, client.{@lowerMethodName}, callOpts...)
+                    	if err != nil {
+                    		return nil, err
+                    	}
+                    	return resp.({@outTypeName}), nil
+                    }
+                @end
 
             @end
 

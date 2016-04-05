@@ -274,6 +274,13 @@ public class GoLanguageProvider extends LanguageProvider {
   }
 
   /**
+   * Returns true if the speficied type is the Empty type.
+   */
+  public boolean isEmpty(TypeRef type) {
+    return type.isMessage() && type.getMessageType().getFullName().equals("google.protobuf.Empty");
+  }
+
+  /**
    * Returns the Go Type name for the resources field.
    *
    * Note that this returns the individual element type of the resources in the message.
