@@ -25,12 +25,15 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import io.gapi.vgen.ApiConfig;
 import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.LanguageProvider;
+import io.gapi.vgen.MethodConfig;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 /**
  * Language provider for Python codegen.
@@ -202,9 +205,9 @@ public class PythonLanguageProvider extends LanguageProvider {
   }
 
   /**
-   * Returns a comment string for field.
+   * Returns type information for a field in Sphinx docstring style.
    */
-  private String fieldComment(Field field, PythonImportHandler importHandler) {
+  private String fieldTypeCardinalityComment(Field field, PythonImportHandler importHandler) {
     TypeRef type = field.getType();
     boolean closingBrace = false;
 
@@ -215,30 +218,43 @@ public class PythonLanguageProvider extends LanguageProvider {
     } else {
       cardinalityComment = "";
     }
-    String typeComment;
+    String typeComment = fieldTypeComment(field, importHandler);
+    return String.format("%s%s%s",
+        cardinalityComment, typeComment, closingBrace ? "]" : "");
+  }
+
+  /**
+   * Returns type information for a field in Sphinx docstring style.
+   */
+  private String fieldTypeComment(Field field, PythonImportHandler importHandler) {
+    TypeRef type = field.getType();
+
     switch (type.getKind()) {
       case TYPE_MESSAGE:
         String path = importHandler.elementPath(type.getMessageType(), true);
-        typeComment = ":class:`" + (Strings.isNullOrEmpty(path) ? "" : (path + ".")) +
+        return ":class:`" + (Strings.isNullOrEmpty(path) ? "" : (path + ".")) +
             type.getMessageType().getSimpleName() + "`";
-        break;
       case TYPE_ENUM:
         Preconditions.checkArgument(type.getEnumType().getValues().size() > 0,
             "enum must have a value");
         String path2 = importHandler.elementPath(type.getEnumType(), true);
-        typeComment = ":class:`" + (Strings.isNullOrEmpty(path2) ? "" : (path2 + ".")) +
+        return ":class:`" + (Strings.isNullOrEmpty(path2) ? "" : (path2 + ".")) +
             type.getEnumType().getSimpleName() + "`";
-        break;
       default:
         if (type.isPrimitive()) {
-          typeComment = type.getPrimitiveTypeName();
+          return type.getPrimitiveTypeName();
         } else {
           throw new IllegalArgumentException("unknown type kind: " + type.getKind());
         }
-        break;
     }
-    String comment = String.format("  %s (%s%s%s)",
-        field.getSimpleName(), cardinalityComment, typeComment, closingBrace ? "]" : "");
+  }
+
+  /**
+   * Returns a comment string for field, consisting of type information and proto comment.
+   */
+  private String fieldComment(Field field, PythonImportHandler importHandler) {
+    String comment = String.format("  %s (%s)", field.getSimpleName(),
+        fieldTypeCardinalityComment(field, importHandler));
     String paramComment = DocumentationUtil.getScopedDescription(field);
     if (!Strings.isNullOrEmpty(paramComment)) {
       if (paramComment.charAt(paramComment.length() - 1) == '\n') {
@@ -274,6 +290,36 @@ public class PythonLanguageProvider extends LanguageProvider {
   }
 
   /**
+   * Return Sphinx-style return type string for the given method, or null if the return type is
+   * None.
+   */
+  @Nullable
+  private String returnTypeComment(Method method, PythonImportHandler importHandler) {
+    MessageType returnMessageType = method.getOutputMessage();
+    if (PythonProtoElements.isEmptyMessage(returnMessageType)) {
+      return null;
+
+    }
+
+    String path = importHandler.elementPath(returnMessageType, true);
+    String classInfo = ":class:`" + (Strings.isNullOrEmpty(path) ? "" : (path + "."))
+        + returnMessageType.getSimpleName() + "` instance";
+    MethodConfig config = getApiConfig().getInterfaceConfig((Interface) method.getParent())
+        .getMethodConfig(method);
+
+    if (config.isPageStreaming()) {
+      return "Yields:\n  Instances of "
+        + fieldTypeComment(config.getPageStreaming().getResourcesField(), importHandler)
+        + "\n  unless page streaming is disabled through the call options. If"
+        + "\n  page streaming is disabled, a single \n  " + classInfo + "\n  is returned.";
+
+    } else {
+      return "Returns:\n  A " + classInfo + ".";
+    }
+  }
+
+
+  /**
    * Return comments lines for a given method, consisting of proto doc and parameter type
    * documentation.
    */
@@ -287,15 +333,9 @@ public class PythonLanguageProvider extends LanguageProvider {
     paramTypesBuilder.append("  options (:class:`google.gax.CallOptions`): " +
         "Overrides the default\n    settings for this call, e.g, timeout, retries etc.");
     String paramTypes = paramTypesBuilder.toString();
-    // Generate return value type
-    MessageType returnMessageType = msg.getOutputMessage();
-    String returnType = null;
-    if (!PythonProtoElements.isEmptyMessage(returnMessageType)) {
-      String path = importHandler.elementPath(returnMessageType, true);
-      returnType = "Returns:\n  A :class:`"
-          + (Strings.isNullOrEmpty(path) ? "" : (path + ".")) +
-          returnMessageType.getSimpleName() + "` object.";
-    }
+
+    String returnType = returnTypeComment(msg, importHandler);
+
     // Generate comment contents
     StringBuilder contentBuilder = new StringBuilder();
     if (msg.hasAttribute(ElementDocumentationAttribute.KEY)) {
