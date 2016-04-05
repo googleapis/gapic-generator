@@ -117,8 +117,7 @@ public class PythonLanguageProvider extends LanguageProvider {
         boolean archive) throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
     for (GeneratedResult result : results) {
-      String path = getApiConfig().getPackageName().replace('.', '/');
-      files.put(path + "/" + result.getFilename(), result.getDoc());
+      files.put(result.getFilename(), result.getDoc());
     }
     if (archive) {
       ToolUtil.writeJar(files, outputArchiveFile);
@@ -153,7 +152,14 @@ public class PythonLanguageProvider extends LanguageProvider {
     List<String> importList = importHandler.calculateImports();
     // Generate result.
     Doc result = snippets.generateClass(service, importList);
-    return GeneratedResult.create(result, outputFilename);
+
+    String pathPrefix;
+    if (!Strings.isNullOrEmpty(getApiConfig().getPackageName())) {
+      pathPrefix = getApiConfig().getPackageName().replace('.', '/') + "/";
+    } else {
+      pathPrefix = "";
+    }
+    return GeneratedResult.create(result, pathPrefix + outputFilename);
   }
 
   public String filePath(ProtoFile file) {
