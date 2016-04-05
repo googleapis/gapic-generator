@@ -94,7 +94,7 @@ public class JavaLanguageProvider extends LanguageProvider {
   private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.protos";
 
   /**
-   * A regexp to match types from java.lang. Assumes well-formed qualified type names.
+   * A prefix to match types from java.lang. Assumes well-formed qualified type names.
    */
   private static final String JAVA_LANG_TYPE_PREFIX = "java.lang.";
 
@@ -118,6 +118,28 @@ public class JavaLanguageProvider extends LanguageProvider {
           .put(Type.TYPE_SFIXED32, "int")
           .put(Type.TYPE_STRING, "java.lang.String")
           .put(Type.TYPE_BYTES, "com.google.protobuf.ByteString")
+          .build();
+
+  /**
+   * A map from primitive types in proto to zero value in Java
+   */
+  private static final ImmutableMap<Type, String> PRIMITIVE_ZERO_VALUE =
+      ImmutableMap.<Type, String>builder()
+          .put(Type.TYPE_BOOL, "false")
+          .put(Type.TYPE_DOUBLE, "0.0")
+          .put(Type.TYPE_FLOAT, "0.0F")
+          .put(Type.TYPE_INT64, "0L")
+          .put(Type.TYPE_UINT64, "0L")
+          .put(Type.TYPE_SINT64, "0L")
+          .put(Type.TYPE_FIXED64, "0L")
+          .put(Type.TYPE_SFIXED64, "0L")
+          .put(Type.TYPE_INT32, "0")
+          .put(Type.TYPE_UINT32, "0")
+          .put(Type.TYPE_SINT32, "0")
+          .put(Type.TYPE_FIXED32, "0")
+          .put(Type.TYPE_SFIXED32, "0")
+          .put(Type.TYPE_STRING, "\"\"")
+          .put(Type.TYPE_BYTES, "ByteString.EMPTY")
           .build();
 
   /**
@@ -299,6 +321,29 @@ public class JavaLanguageProvider extends LanguageProvider {
   }
 
   /**
+   * Returns the Java representation of a zero value for that type, to be used in code sample doc.
+   *
+   * Parametric types may use the diamond operator, since the return value will be used only in
+   * initialization.
+   */
+  public String zeroValue(TypeRef type) {
+    // Don't call getTypeName; we don't need to import these.
+    if (type.isMap()) {
+      return "new HashMap<>()";
+    }
+    if (type.isRepeated()) {
+      return "new ArrayList<>()";
+    }
+    if (PRIMITIVE_ZERO_VALUE.containsKey(type.getKind())) {
+      return PRIMITIVE_ZERO_VALUE.get(type.getKind());
+    }
+    if (type.isMessage()) {
+      return typeName(type) + ".newBuilder().build()";
+    }
+    return "null";
+  }
+
+  /**
    * Returns the Java representation of a type, without cardinality, in boxed form.
    */
   public String basicTypeNameBoxed(TypeRef type) {
@@ -463,14 +508,14 @@ public class JavaLanguageProvider extends LanguageProvider {
 
   @AutoValue
   abstract static class Variable {
-    public abstract String getType();
+    public abstract TypeRef getType();
 
     public abstract String getName();
 
     public abstract String getDescription();
   }
 
-  public Variable newVariable(String type, String name, String description) {
+  public Variable newVariable(TypeRef type, String name, String description) {
     return new AutoValue_JavaLanguageProvider_Variable(type, name, description);
   }
 
@@ -499,7 +544,7 @@ public class JavaLanguageProvider extends LanguageProvider {
         for (Field field : fields) {
           params.add(
               languageProvider.newVariable(
-                  languageProvider.typeName(field.getType()),
+                  field.getType(),
                   languageProvider.lowerUnderscoreToLowerCamel(field.getSimpleName()),
                   languageProvider.getDescription(field)));
         }
@@ -510,7 +555,7 @@ public class JavaLanguageProvider extends LanguageProvider {
           JavaLanguageProvider languageProvider, TypeRef requestType, String name, String doc) {
         return setParams(
             ImmutableList.of(
-                languageProvider.newVariable(languageProvider.typeName(requestType), name, doc)));
+                languageProvider.newVariable(requestType, name, doc)));
       }
 
       public abstract Builder setIterableVariant(boolean iterable);
