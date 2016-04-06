@@ -142,7 +142,7 @@
             @end
             /// </list>
             /// </remarks>
-            public static IReadOnlyList<string> Scopes { get; } = new ReadOnlyCollection<string>(new[] {
+            public static IReadOnlyList<string> DefaultScopes { get; } = new ReadOnlyCollection<string>(new[] {
                 @join scope : context.getServiceConfig.getAuthScopes(service)
                     "{@scope}",
                 @end
@@ -172,54 +172,44 @@
                 {@pathTemplate.baseName}Template.Expand({@pathTemplate.varArgUseList});
 
         @end
+        // Note: we could have parameterless overloads of Create and CreateAsync,
+        // documented to just use the default endpoint, settings and credentials.
+        // Pros:
+        // - Might be more reassuring on first use
+        // - Allows method group conversions
+        // Con: overloads!
+
         /// <summary>
-        /// Asynchronously create a <see cref="{@name}Client"/> from default credentials.
+        /// Asynchronously creates a <see cref="{@name}Client"/>, applying defaults for all unspecified settings.
         /// </summary>
+        /// <param name="endpoint">Optional <see cref="ServiceEndpoint"/>.</param>
         /// <param name="settings">Optional <see cref="{@name}Settings"/>.</param>
-        /// <param name="serviceEndpointSettings">Optional <see cref="ServiceEndpointSettings"/>.</param>
-        /// <param name="credentialScopes">Optional scopes for default credentials.</param>
-        /// <returns>A newly created <see cref="{@name}Client"/>.</returns>
-        public static Task<{@name}Client> CreateFromDefaultCredentialsAsync(
+        /// <param name="credentials">Optional <see cref="ChannelCredentials"/>.</param>
+        /// <returns>The task representing the created <see cref="{@name}Client"/>.</returns>
+        public static async Task<{@name}Client> CreateAsync(
+            ServiceEndpoint endpoint = null,
             {@name}Settings settings = null,
-            ServiceEndpointSettings serviceEndpointSettings = null,
-            IEnumerable<string> credentialScopes = null)
+            ChannelCredentials credentials = null)
         {
-            return ClientHelper.CreateFromDefaultCredentialsAsync(
-                settings, serviceEndpointSettings, credentialScopes, ServiceDefaults.Scopes, CreateFromCredentials);
+            Channel channel = await ClientHelper.CreateChannelAsync(endpoint ?? DefaultEndpoint, credentials).ConfigureAwait(false);
+            {@name}.{@name}Client grpcClient = new {@name}.{@name}Client(channel);
+            return new {@name}ClientImpl(grpcClient, settings);
         }
 
         /// <summary>
-        /// Create a <see cref="{@name}Client"/> from default credentials.
+        /// Synchronously creates a <see cref="{@name}Client"/>, applying defaults for all unspecified settings.
         /// </summary>
+        /// <param name="endpoint">Optional <see cref="ServiceEndpoint"/>.</param>
         /// <param name="settings">Optional <see cref="{@name}Settings"/>.</param>
-        /// <param name="serviceEndpointSettings">Optional <see cref="ServiceEndpointSettings"/>.</param>
-        /// <param name="credentialScopes">Optional scopes for default credentials.</param>
-        /// <returns>A newly created <see cref="{@name}Client"/>.</returns>
-        public static {@name}Client CreateFromDefaultCredentials(
+        /// <param name="credentials">Optional <see cref="ChannelCredentials"/>.</param>
+        /// <returns>The created <see cref="{@name}Client"/>.</returns>
+        public static {@name}Client Create(
+            ServiceEndpoint endpoint = null,
             {@name}Settings settings = null,
-            ServiceEndpointSettings serviceEndpointSettings = null,
-            IEnumerable<string> credentialScopes = null)
+            ChannelCredentials credentials = null)
         {
-            return ClientHelper.CreateFromDefaultCredentials(
-                settings, serviceEndpointSettings, credentialScopes, ServiceDefaults.Scopes, CreateFromCredentials);
-        }
-
-        /// <summary>
-        /// Create a <see cref="{@name}Client"/> from the specified credentials.
-        /// </summary>
-        /// <param name="credentials">The credentials with which to configure the GRPC channel.</param>
-        /// <param name="settings">Optional <see cref="{@name}Settings"/>.</param>
-        /// <param name="serviceEndpointSettings">Optional <see cref="ServiceEndpointSettings"/>.</param>
-        /// <returns></returns>
-        public static {@name}Client CreateFromCredentials(
-            ChannelCredentials credentials,
-            {@name}Settings settings = null,
-            ServiceEndpointSettings serviceEndpointSettings = null)
-        {
-            Channel channel = ClientHelper.CreateChannel(
-                serviceEndpointSettings ?? GetDefaultServiceEndpointSettings(),
-                ServiceDefaults.Host, ServiceDefaults.Port, credentials);
-            {@name}.I{@name}Client grpcClient = new {@name}.{@name}Client(channel);
+            Channel channel = ClientHelper.CreateChannel(endpoint ?? DefaultEndpoint, credentials);
+            {@name}.{@name}Client grpcClient = new {@name}.{@name}Client(channel);
             return new {@name}ClientImpl(grpcClient, settings);
         }
 
