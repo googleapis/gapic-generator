@@ -75,7 +75,7 @@ namespace Google.Example.Library.V1
         /// <item><description>"https://www.googleapis.com/auth/cloud-platform"</description></item>
         /// </list>
         /// </remarks>
-        public static IReadOnlyList<string> Scopes { get; } = new ReadOnlyCollection<string>(new[] {
+        public static IReadOnlyList<string> DefaultScopes { get; } = new ReadOnlyCollection<string>(new[] {
             "https://www.googleapis.com/auth/library",
             "https://www.googleapis.com/auth/cloud-platform",
         });
@@ -112,54 +112,44 @@ namespace Google.Example.Library.V1
         /// <returns>The full book resource name.</returns>
         public static string GetBookName(string shelfId, string bookId) => BookTemplate.Expand(shelfId, bookId);
 
+        // Note: we could have parameterless overloads of Create and CreateAsync,
+        // documented to just use the default endpoint, settings and credentials.
+        // Pros:
+        // - Might be more reassuring on first use
+        // - Allows method group conversions
+        // Con: overloads!
+
         /// <summary>
-        /// Asynchronously create a <see cref="LibraryServiceClient"/> from default credentials.
+        /// Asynchronously creates a <see cref="LibraryServiceClient"/>, applying defaults for all unspecified settings.
         /// </summary>
+        /// <param name="endpoint">Optional <see cref="ServiceEndpoint"/>.</param>
         /// <param name="settings">Optional <see cref="LibraryServiceSettings"/>.</param>
-        /// <param name="serviceEndpointSettings">Optional <see cref="ServiceEndpointSettings"/>.</param>
-        /// <param name="credentialScopes">Optional scopes for default credentials.</param>
-        /// <returns>A newly created <see cref="LibraryServiceClient"/>.</returns>
-        public static Task<LibraryServiceClient> CreateFromDefaultCredentialsAsync(
+        /// <param name="credentials">Optional <see cref="ChannelCredentials"/>.</param>
+        /// <returns>The task representing the created <see cref="LibraryServiceClient"/>.</returns>
+        public static async Task<LibraryServiceClient> CreateAsync(
+            ServiceEndpoint endpoint = null,
             LibraryServiceSettings settings = null,
-            ServiceEndpointSettings serviceEndpointSettings = null,
-            IEnumerable<string> credentialScopes = null)
+            ChannelCredentials credentials = null)
         {
-            return ClientHelper.CreateFromDefaultCredentialsAsync(
-                settings, serviceEndpointSettings, credentialScopes, ServiceDefaults.Scopes, CreateFromCredentials);
+            Channel channel = await ClientHelper.CreateChannelAsync(endpoint ?? DefaultEndpoint, credentials).ConfigureAwait(false);
+            LibraryService.LibraryServiceClient grpcClient = new LibraryService.LibraryServiceClient(channel);
+            return new LibraryServiceClientImpl(grpcClient, settings);
         }
 
         /// <summary>
-        /// Create a <see cref="LibraryServiceClient"/> from default credentials.
+        /// Synchronously creates a <see cref="LibraryServiceClient"/>, applying defaults for all unspecified settings.
         /// </summary>
+        /// <param name="endpoint">Optional <see cref="ServiceEndpoint"/>.</param>
         /// <param name="settings">Optional <see cref="LibraryServiceSettings"/>.</param>
-        /// <param name="serviceEndpointSettings">Optional <see cref="ServiceEndpointSettings"/>.</param>
-        /// <param name="credentialScopes">Optional scopes for default credentials.</param>
-        /// <returns>A newly created <see cref="LibraryServiceClient"/>.</returns>
-        public static LibraryServiceClient CreateFromDefaultCredentials(
+        /// <param name="credentials">Optional <see cref="ChannelCredentials"/>.</param>
+        /// <returns>The created <see cref="LibraryServiceClient"/>.</returns>
+        public static LibraryServiceClient Create(
+            ServiceEndpoint endpoint = null,
             LibraryServiceSettings settings = null,
-            ServiceEndpointSettings serviceEndpointSettings = null,
-            IEnumerable<string> credentialScopes = null)
+            ChannelCredentials credentials = null)
         {
-            return ClientHelper.CreateFromDefaultCredentials(
-                settings, serviceEndpointSettings, credentialScopes, ServiceDefaults.Scopes, CreateFromCredentials);
-        }
-
-        /// <summary>
-        /// Create a <see cref="LibraryServiceClient"/> from the specified credentials.
-        /// </summary>
-        /// <param name="credentials">The credentials with which to configure the GRPC channel.</param>
-        /// <param name="settings">Optional <see cref="LibraryServiceSettings"/>.</param>
-        /// <param name="serviceEndpointSettings">Optional <see cref="ServiceEndpointSettings"/>.</param>
-        /// <returns></returns>
-        public static LibraryServiceClient CreateFromCredentials(
-            ChannelCredentials credentials,
-            LibraryServiceSettings settings = null,
-            ServiceEndpointSettings serviceEndpointSettings = null)
-        {
-            Channel channel = ClientHelper.CreateChannel(
-                serviceEndpointSettings ?? GetDefaultServiceEndpointSettings(),
-                ServiceDefaults.Host, ServiceDefaults.Port, credentials);
-            LibraryService.ILibraryServiceClient grpcClient = new LibraryService.LibraryServiceClient(channel);
+            Channel channel = ClientHelper.CreateChannel(endpoint ?? DefaultEndpoint, credentials);
+            LibraryService.LibraryServiceClient grpcClient = new LibraryService.LibraryServiceClient(channel);
             return new LibraryServiceClientImpl(grpcClient, settings);
         }
 
