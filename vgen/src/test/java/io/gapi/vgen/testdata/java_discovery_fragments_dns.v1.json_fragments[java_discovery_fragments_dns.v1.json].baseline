@@ -1,0 +1,542 @@
+
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/dns_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.dns.Dns;
+import com.google.api.services.dns.model.Change;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class DnsExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'create' method:
+    // * Identifies the project addressed by this request.
+    String project = "";
+    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    String managedZone = "";
+
+    Change content = new Change();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    Dns.Changes.Create request = dnsService.changes().create(project, managedZone, content);
+    Change response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/dns_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.dns.Dns;
+import com.google.api.services.dns.model.Change;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class DnsExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+    // * Identifies the project addressed by this request.
+    String project = "";
+    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    String managedZone = "";
+    // * The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
+    String changeId = "";
+
+    Dns.Changes.Get request = dnsService.changes().get(project, managedZone, changeId);
+    Change response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/dns_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.dns.Dns;
+import com.google.api.services.dns.model.Change;
+import com.google.api.services.dns.model.ChangesListResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class DnsExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+    // * Identifies the project addressed by this request.
+    String project = "";
+    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    String managedZone = "";
+
+    Dns.Changes.List request = dnsService.changes().list(project, managedZone);
+    ChangesListResponse response;
+    do {
+      response = request.execute();
+      if (response.getChanges() == null)
+        continue;
+
+      for (Change change : response.getChanges()) {
+        // TODO: Add code here to process the 'change' resource
+      }
+
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/dns_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.dns.Dns;
+import com.google.api.services.dns.model.ManagedZone;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class DnsExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'create' method:
+    // * Identifies the project addressed by this request.
+    String project = "";
+
+    ManagedZone content = new ManagedZone();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    Dns.ManagedZones.Create request = dnsService.managedZones().create(project, content);
+    ManagedZone response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/dns_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.dns.Dns;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class DnsExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'delete' method:
+    // * Identifies the project addressed by this request.
+    String project = "";
+    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    String managedZone = "";
+
+    Dns.ManagedZones.Delete request = dnsService.managedZones().delete(project, managedZone);
+    request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/dns_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.dns.Dns;
+import com.google.api.services.dns.model.ManagedZone;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class DnsExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+    // * Identifies the project addressed by this request.
+    String project = "";
+    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    String managedZone = "";
+
+    Dns.ManagedZones.Get request = dnsService.managedZones().get(project, managedZone);
+    ManagedZone response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/dns_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.dns.Dns;
+import com.google.api.services.dns.model.ManagedZone;
+import com.google.api.services.dns.model.ManagedZonesListResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class DnsExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+    // * Identifies the project addressed by this request.
+    String project = "";
+
+    Dns.ManagedZones.List request = dnsService.managedZones().list(project);
+    ManagedZonesListResponse response;
+    do {
+      response = request.execute();
+      if (response.getManagedZones() == null)
+        continue;
+
+      for (ManagedZone managedZone : response.getManagedZones()) {
+        // TODO: Add code here to process the 'managedZone' resource
+      }
+
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/dns_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.dns.Dns;
+import com.google.api.services.dns.model.Project;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class DnsExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+    // * Identifies the project addressed by this request.
+    String project = "";
+
+    Dns.Projects.Get request = dnsService.projects().get(project);
+    Project response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/dns_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/dns/v1/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.dns.Dns;
+import com.google.api.services.dns.model.ResourceRecordSet;
+import com.google.api.services.dns.model.ResourceRecordSetsListResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class DnsExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+    // * Identifies the project addressed by this request.
+    String project = "";
+    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    String managedZone = "";
+
+    Dns.ResourceRecordSets.List request = dnsService.resourceRecordSets().list(project, managedZone);
+    ResourceRecordSetsListResponse response;
+    do {
+      response = request.execute();
+      if (response.getRrsets() == null)
+        continue;
+
+      for (ResourceRecordSet resourceRecordSet : response.getRrsets()) {
+        // TODO: Add code here to process the 'resourceRecordSet' resource
+      }
+
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
+  }
+}

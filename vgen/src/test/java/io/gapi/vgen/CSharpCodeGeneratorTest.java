@@ -31,7 +31,7 @@ public class CSharpCodeGeneratorTest extends CodeGeneratorTestBase {
 
   public CSharpCodeGeneratorTest(String name, String[] veneerConfigFileNames, String snippetName) {
     super(name, veneerConfigFileNames, snippetName);
-    getTestDataLocator().addTestDataSource(io.gapi.vgen.csharp.CSharpLanguageProvider.class, "");
+    getTestDataLocator().addTestDataSource(io.gapi.vgen.csharp.CSharpGapicContext.class, "");
   }
 
   /**

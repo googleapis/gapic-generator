@@ -1,0 +1,2238 @@
+
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'delete' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+    // * The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
+    long id = 0;
+
+    SQLAdmin.BackupRuns.Delete request = sqladminService.backupRuns().delete(project, instance, id);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.BackupRun;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+    // * The ID of this Backup Run.
+    long id = 0;
+
+    SQLAdmin.BackupRuns.Get request = sqladminService.backupRuns().get(project, instance, id);
+    BackupRun response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.BackupRun;
+import com.google.api.services.sqladmin.model.BackupRunsListResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+
+    SQLAdmin.BackupRuns.List request = sqladminService.backupRuns().list(project, instance);
+    BackupRunsListResponse response;
+    do {
+      response = request.execute();
+      if (response.getItems() == null)
+        continue;
+
+      for (BackupRun backupRun : response.getItems()) {
+        // TODO: Add code here to process the 'backupRun' resource
+      }
+
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'delete' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Database instance ID. This does not include the project ID.
+    String instance = "";
+    // * Name of the database to be deleted in the instance.
+    String database = "";
+
+    SQLAdmin.Databases.Delete request = sqladminService.databases().delete(project, instance, database);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Database;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Database instance ID. This does not include the project ID.
+    String instance = "";
+    // * Name of the database in the instance.
+    String database = "";
+
+    SQLAdmin.Databases.Get request = sqladminService.databases().get(project, instance, database);
+    Database response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Database;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'insert' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Database instance ID. This does not include the project ID.
+    String instance = "";
+
+    Database content = new Database();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    SQLAdmin.Databases.Insert request = sqladminService.databases().insert(project, instance, content);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.DatabasesListResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+    // * Project ID of the project for which to list Cloud SQL instances.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+
+    SQLAdmin.Databases.List request = sqladminService.databases().list(project, instance);
+    DatabasesListResponse response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Database;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'patch' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Database instance ID. This does not include the project ID.
+    String instance = "";
+    // * Name of the database to be updated in the instance.
+    String database = "";
+
+    Database content = new Database();
+    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
+
+    SQLAdmin.Databases.Patch request = sqladminService.databases().patch(project, instance, database, content);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Database;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'update' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Database instance ID. This does not include the project ID.
+    String instance = "";
+    // * Name of the database to be updated in the instance.
+    String database = "";
+
+    Database content = new Database();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    SQLAdmin.Databases.Update request = sqladminService.databases().update(project, instance, database, content);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.FlagsListResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+
+    SQLAdmin.Flags.List request = sqladminService.flags().list();
+    FlagsListResponse response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.InstancesCloneRequest;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'clone' method:
+    // * Project ID of the source as well as the clone Cloud SQL instance.
+    String project = "";
+    // * The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
+    String instance = "";
+
+    InstancesCloneRequest content = new InstancesCloneRequest();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    SQLAdmin.Instances.Clone request = sqladminService.instances().clone(project, instance, content);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'delete' method:
+    // * Project ID of the project that contains the instance to be deleted.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+
+    SQLAdmin.Instances.Delete request = sqladminService.instances().delete(project, instance);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.InstancesExportRequest;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'export' method:
+    // * Project ID of the project that contains the instance to be exported.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+
+    InstancesExportRequest content = new InstancesExportRequest();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    SQLAdmin.Instances.Export request = sqladminService.instances().export(project, instance, content);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.InstancesFailoverRequest;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'failover' method:
+    // * ID of the project that contains the read replica.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+
+    InstancesFailoverRequest content = new InstancesFailoverRequest();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    SQLAdmin.Instances.Failover request = sqladminService.instances().failover(project, instance, content);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.DatabaseInstance;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Database instance ID. This does not include the project ID.
+    String instance = "";
+
+    SQLAdmin.Instances.Get request = sqladminService.instances().get(project, instance);
+    DatabaseInstance response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.InstancesImportRequest;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'sqladminImport' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+
+    InstancesImportRequest content = new InstancesImportRequest();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    SQLAdmin.Instances.SQLAdminImport request = sqladminService.instances().sqladminImport(project, instance, content);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.DatabaseInstance;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'insert' method:
+    // * Project ID of the project to which the newly created Cloud SQL instances should belong.
+    String project = "";
+
+    DatabaseInstance content = new DatabaseInstance();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    SQLAdmin.Instances.Insert request = sqladminService.instances().insert(project, content);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.DatabaseInstance;
+import com.google.api.services.sqladmin.model.InstancesListResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+    // * Project ID of the project for which to list Cloud SQL instances.
+    String project = "";
+
+    SQLAdmin.Instances.List request = sqladminService.instances().list(project);
+    InstancesListResponse response;
+    do {
+      response = request.execute();
+      if (response.getItems() == null)
+        continue;
+
+      for (DatabaseInstance databaseInstance : response.getItems()) {
+        // TODO: Add code here to process the 'databaseInstance' resource
+      }
+
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.DatabaseInstance;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'patch' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+
+    DatabaseInstance content = new DatabaseInstance();
+    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
+
+    SQLAdmin.Instances.Patch request = sqladminService.instances().patch(project, instance, content);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'promoteReplica' method:
+    // * ID of the project that contains the read replica.
+    String project = "";
+    // * Cloud SQL read replica instance name.
+    String instance = "";
+
+    SQLAdmin.Instances.PromoteReplica request = sqladminService.instances().promoteReplica(project, instance);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'resetSslConfig' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+
+    SQLAdmin.Instances.ResetSslConfig request = sqladminService.instances().resetSslConfig(project, instance);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'restart' method:
+    // * Project ID of the project that contains the instance to be restarted.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+
+    SQLAdmin.Instances.Restart request = sqladminService.instances().restart(project, instance);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.InstancesRestoreBackupRequest;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'restoreBackup' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+
+    InstancesRestoreBackupRequest content = new InstancesRestoreBackupRequest();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    SQLAdmin.Instances.RestoreBackup request = sqladminService.instances().restoreBackup(project, instance, content);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'startReplica' method:
+    // * ID of the project that contains the read replica.
+    String project = "";
+    // * Cloud SQL read replica instance name.
+    String instance = "";
+
+    SQLAdmin.Instances.StartReplica request = sqladminService.instances().startReplica(project, instance);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'stopReplica' method:
+    // * ID of the project that contains the read replica.
+    String project = "";
+    // * Cloud SQL read replica instance name.
+    String instance = "";
+
+    SQLAdmin.Instances.StopReplica request = sqladminService.instances().stopReplica(project, instance);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.DatabaseInstance;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'update' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+
+    DatabaseInstance content = new DatabaseInstance();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    SQLAdmin.Instances.Update request = sqladminService.instances().update(project, instance, content);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Instance operation ID.
+    String operation = "";
+
+    SQLAdmin.Operations.Get request = sqladminService.operations().get(project, operation);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Operation;
+import com.google.api.services.sqladmin.model.OperationsListResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+
+    SQLAdmin.Operations.List request = sqladminService.operations().list(project, instance);
+    OperationsListResponse response;
+    do {
+      response = request.execute();
+      if (response.getItems() == null)
+        continue;
+
+      for (Operation operation : response.getItems()) {
+        // TODO: Add code here to process the 'operation' resource
+      }
+
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.SslCert;
+import com.google.api.services.sqladmin.model.SslCertsCreateEphemeralRequest;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'createEphemeral' method:
+    // * Project ID of the Cloud SQL project.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+
+    SslCertsCreateEphemeralRequest content = new SslCertsCreateEphemeralRequest();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    SQLAdmin.SslCerts.CreateEphemeral request = sqladminService.sslCerts().createEphemeral(project, instance, content);
+    SslCert response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'delete' method:
+    // * Project ID of the project that contains the instance to be deleted.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+    // * Sha1 FingerPrint.
+    String sha1Fingerprint = "";
+
+    SQLAdmin.SslCerts.Delete request = sqladminService.sslCerts().delete(project, instance, sha1Fingerprint);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.SslCert;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+    // * Sha1 FingerPrint.
+    String sha1Fingerprint = "";
+
+    SQLAdmin.SslCerts.Get request = sqladminService.sslCerts().get(project, instance, sha1Fingerprint);
+    SslCert response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.SslCertsInsertRequest;
+import com.google.api.services.sqladmin.model.SslCertsInsertResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'insert' method:
+    // * Project ID of the project to which the newly created Cloud SQL instances should belong.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+
+    SslCertsInsertRequest content = new SslCertsInsertRequest();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    SQLAdmin.SslCerts.Insert request = sqladminService.sslCerts().insert(project, instance, content);
+    SslCertsInsertResponse response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.SslCertsListResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+    // * Project ID of the project for which to list Cloud SQL instances.
+    String project = "";
+    // * Cloud SQL instance ID. This does not include the project ID.
+    String instance = "";
+
+    SQLAdmin.SslCerts.List request = sqladminService.sslCerts().list(project, instance);
+    SslCertsListResponse response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.TiersListResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+    // * Project ID of the project for which to list tiers.
+    String project = "";
+
+    SQLAdmin.Tiers.List request = sqladminService.tiers().list(project);
+    TiersListResponse response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'delete' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Database instance ID. This does not include the project ID.
+    String instance = "";
+    // * Host of the user in the instance.
+    String host = "";
+    // * Name of the user in the instance.
+    String name = "";
+
+    SQLAdmin.Users.Delete request = sqladminService.users().delete(project, instance, host, name);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Operation;
+import com.google.api.services.sqladmin.model.User;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'insert' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Database instance ID. This does not include the project ID.
+    String instance = "";
+
+    User content = new User();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    SQLAdmin.Users.Insert request = sqladminService.users().insert(project, instance, content);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.UsersListResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Database instance ID. This does not include the project ID.
+    String instance = "";
+
+    SQLAdmin.Users.List request = sqladminService.users().list(project, instance);
+    UsersListResponse response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/sqladmin/v1beta4/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.sqladmin.SQLAdmin;
+import com.google.api.services.sqladmin.model.Operation;
+import com.google.api.services.sqladmin.model.User;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class SQLAdminExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    SQLAdmin sqladminService = new SQLAdmin.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'update' method:
+    // * Project ID of the project that contains the instance.
+    String project = "";
+    // * Database instance ID. This does not include the project ID.
+    String instance = "";
+    // * Host of the user in the instance.
+    String host = "";
+    // * Name of the user in the instance.
+    String name = "";
+
+    User content = new User();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    SQLAdmin.Users.Update request = sqladminService.users().update(project, instance, host, name, content);
+    Operation response = request.execute();
+  }
+}

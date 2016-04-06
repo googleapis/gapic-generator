@@ -18,125 +18,43 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
-import com.google.common.base.CaseFormat;
-import com.google.common.base.Preconditions;
+import com.google.common.collect.Multimap;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
- * Base class for language providers.
+ * A LanguageProvider performs code or fragment generation using on a proto-based
+ * Model for a particular language.
+ *
+ * NOTE: The name is more general that its use case - it currently excludes
+ * discovery-based use cases.
  */
-public abstract class LanguageProvider {
+public interface LanguageProvider {
 
-  private final Model model;
-  private final ApiConfig apiConfig;
-
-  private final ServiceMessages serviceMessages;
-  private final ServiceConfig serviceConfig;
+  Model getModel();
 
   /**
-   * Constructs the abstract instance of the language provider..
+   * Generates the code for the given interface using the given snippet.
    */
-  protected LanguageProvider(Model model, ApiConfig apiConfig) {
-    this.model = Preconditions.checkNotNull(model);
-    this.apiConfig = Preconditions.checkNotNull(apiConfig);
-    this.serviceMessages = new ServiceMessages();
-    this.serviceConfig = new ServiceConfig();
-  }
-
-  /**
-   * Generates code for the given service interface.
-   */
-  public abstract GeneratedResult generate(Interface service,
+  GeneratedResult generateCode(Interface iface,
       SnippetDescriptor snippetDescriptor);
 
-  public GeneratedResult generateDoc(ProtoFile file, SnippetDescriptor descriptor) {
-    return null;
-  }
+  /**
+   * Generates the doc for the given proto file and snippet.
+   */
+  GeneratedResult generateDoc(ProtoFile file, SnippetDescriptor descriptor);
 
   /**
-   * Outputs the code based on a per-service map.
+   * Generates a fragment for the given method.
    */
-  public abstract void outputCode(String outputArchiveFile,
-      List<GeneratedResult> results,
-      boolean archive) throws IOException;
+  GeneratedResult generateFragments(Method method,
+      SnippetDescriptor snippetDescriptor);
 
   /**
-   * Returns the associated model.
+   * Outputs the given elements to the given output path.
    */
-  public Model getModel() {
-    return model;
-  }
+  <Element> void output(String outputPath,
+      Multimap<Element, GeneratedResult> elements, boolean archive)
+          throws IOException;
 
-  /**
-   * Returns the associated config.
-   */
-  public ApiConfig getApiConfig() {
-    return apiConfig;
-  }
-
-  public ServiceMessages messages() {
-    return serviceMessages;
-  }
-
-  public ServiceConfig getServiceConfig() {
-    return serviceConfig;
-  }
-
-  public boolean isIdempotent(Method method) {
-    return Resources.isIdempotent(method);
-  }
-
-  /**
-   * Return the name of the class which is the veneer for this service interface.
-   */
-  public String getVeneerName(Interface service) {
-    return service.getSimpleName() + "Api";
-  }
-
-  // Helpers for Subclasses and Snippets
-  // ===================================
-
-  // Note the below methods are instance-based, even if they don't depend on instance state,
-  // so they can be accessed by templates.
-
-  public String upperCamelToUpperUnderscore(String name) {
-    return CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, name);
-  }
-
-  public String upperCamelToLowerCamel(String name) {
-    return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, name);
-  }
-
-  public String upperCamelToLowerUnderscore(String name) {
-    return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
-  }
-
-  public String lowerUnderscoreToUpperUnderscore(String name) {
-    return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_UNDERSCORE, name);
-  }
-
-  public String lowerUnderscoreToUpperCamel(String name) {
-    return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, name);
-  }
-
-  public String lowerUnderscoreToLowerCamel(String name) {
-    return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, name);
-  }
-
-  public String lowerCamelToUpperCamel(String name) {
-    return CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, name);
-  }
-
-  /*
-   * This method is necessary to call m.entrySet() from snippets,
-   * due to method resolution complexities.
-   * See com.google.api.tools.framework.snippet.Elem::findMethod for more details.
-   */
-  public <K, V> Collection<Map.Entry<K, V>> entrySet(Map<K, V> m) {
-    return m.entrySet();
-  }
 }

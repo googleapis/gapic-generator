@@ -31,7 +31,7 @@ public class JavaCodeGeneratorTest extends CodeGeneratorTestBase {
 
   public JavaCodeGeneratorTest(String name, String[] veneerConfigFileNames, String snippetName) {
     super(name, veneerConfigFileNames, snippetName);
-    getTestDataLocator().addTestDataSource(io.gapi.vgen.java.JavaLanguageProvider.class, "");
+    getTestDataLocator().addTestDataSource(io.gapi.vgen.java.JavaGapicContext.class, "");
   }
 
   /**

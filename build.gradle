@@ -63,6 +63,9 @@ subprojects {
       protoc:  'com.google.protobuf:protoc:3.0.0-beta-1',
       protobufGradlePlugin: 'com.google.protobuf:protobuf-gradle-plugin:0.7.2-SNAPSHOT',
 
+      // JSON
+      jackson: 'com.fasterxml.jackson.core:jackson-databind:2.7.0',
+
       // Formatter
       javaFomatter: 'com.google.googlejavaformat:google-java-format:0.1-alpha'
     ]
@@ -82,19 +85,21 @@ subprojects {
     mavenLocal()
   }
 
-  dependencies {
+dependencies {
     compile libraries.guava,
-      libraries.jsr305,
       libraries.autovalue,
-      libraries.protobuf,
       libraries.cglib,
-      libraries.guice,
-      libraries.commonsLang,
       libraries.commonsCli,
+      libraries.commonsLang,
+      libraries.gax,
+      libraries.guice,
+      libraries.jackson,
+      libraries.javaFomatter,
+      libraries.jsr305,
+      libraries.protobuf,
       libraries.snakeyaml,
       libraries.toolsFx,
-      libraries.javaFomatter,
-      libraries.gax
+      libraries.toolsFxTesting
 
     testCompile libraries.junit,
       libraries.mockito,
@@ -270,6 +275,16 @@ project(':vgen') {
   task runConfigGen(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'io.gapi.vgen.config.ConfigGeneratorTool'
+    if (project.hasProperty('clargs')) {
+      args = clargs.split(',').toList()
+    }
+  }
+
+  // Task to run DiscoveryFragmentGeneratorTool
+  // =================================================================
+  task runDiscoGen(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'io.gapi.vgen.DiscoveryFragmentGeneratorTool'
     if (project.hasProperty('clargs')) {
       args = clargs.split(',').toList()
     }

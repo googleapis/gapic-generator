@@ -33,6 +33,7 @@ import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.TypeLiteral;
 import com.google.protobuf.Message;
@@ -41,24 +42,25 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Main class for the code generator.
  */
 public class CodeGeneratorApi extends ToolDriverBase {
 
-  public static final Option<String> OUTPUT_FILE = ToolOptions.createOption(
-      String.class,
-      "output_file",
-      "The name of the output file or folder to put generated code.",
-      "");
+  public static final Option<String> OUTPUT_FILE =
+      ToolOptions.createOption(
+          String.class,
+          "output_file",
+          "The name of the output file or folder to put generated code.",
+          "");
 
-  public static final Option<List<String>> GENERATOR_CONFIG_FILES = ToolOptions.createOption(
-      new TypeLiteral<List<String>>(){},
-      "config_files",
-      "The list of Yaml configuration files for the code generator.",
-      ImmutableList.<String>of());
+  public static final Option<List<String>> GENERATOR_CONFIG_FILES =
+      ToolOptions.createOption(
+          new TypeLiteral<List<String>>() {},
+          "config_files",
+          "The list of YAML configuration files for the code generator.",
+          ImmutableList.<String>of());
 
   /**
    * Constructs a code generator api based on given options.
@@ -101,35 +103,37 @@ public class CodeGeneratorApi extends ToolDriverBase {
       return;
     }
 
-    CodeGenerator generator =
-        new CodeGenerator.Builder()
-            .setConfigProto(configProto)
-            .setModel(model)
-            .build();
+    CodeGenerator generator = CodeGenerator.create(configProto, model);
     if (generator == null) {
       return;
     }
 
-    List<GeneratedResult> docs = new ArrayList<GeneratedResult>();
+    Multimap<Interface, GeneratedResult> docs = ArrayListMultimap.create();
     for (String snippetInputName : configProto.getSnippetFilesList()) {
-      SnippetDescriptor snippetDescriptor =
-          new SnippetDescriptor(snippetInputName);
+      SnippetDescriptor snippetDescriptor = new SnippetDescriptor(snippetInputName);
       Map<Interface, GeneratedResult> code = generator.generate(snippetDescriptor);
       if (code == null) {
         continue;
       }
-      docs.addAll(code.values());
+      for (Map.Entry<Interface, GeneratedResult> entry : code.entrySet()) {
+        docs.put(entry.getKey(), entry.getValue());
+      }
     }
+    generator.output(options.get(OUTPUT_FILE), docs, configProto.getArchive());
+
     // Generate doc snippets.
+    Multimap<String, GeneratedResult> docDocs = ArrayListMultimap.create();
     for (String snippetInputName : configProto.getDocSnippetFilesList()) {
       SnippetDescriptor snippetDescriptor = new SnippetDescriptor(snippetInputName);
       Map<String, GeneratedResult> code = generator.generateDocs(snippetDescriptor);
       if (code == null) {
         continue;
       }
-      docs.addAll(code.values());
+      for (Map.Entry<String, GeneratedResult> entry : code.entrySet()) {
+        docDocs.put(entry.getKey(), entry.getValue());
+      }
     }
-    generator.outputCode(options.get(OUTPUT_FILE), docs, configProto.getArchive());
+    generator.output(options.get(OUTPUT_FILE), docDocs, configProto.getArchive());
   }
 
   private ConfigProto loadConfigFromFiles(List<String> configFileNames) {
@@ -138,8 +142,8 @@ public class CodeGeneratorApi extends ToolDriverBase {
       return null;
     }
     ImmutableMap<String, Message> supportedConfigTypes =
-        ImmutableMap.<String, Message>of(ConfigProto.getDescriptor().getFullName(),
-            ConfigProto.getDefaultInstance());
+        ImmutableMap.<String, Message>of(
+            ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
     ConfigProto configProto =
         (ConfigProto) MultiYamlReader.read(model, configFiles, supportedConfigTypes);
     return configProto;

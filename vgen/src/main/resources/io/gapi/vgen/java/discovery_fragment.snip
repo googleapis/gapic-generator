@@ -1,0 +1,231 @@
+@snippet generateFilename(method)
+  {@method.getName}.frag.java
+@end
+
+@snippet generateClass(method, body, imports)
+  @let api = context.getApi, \
+       apiName = api.getName, \
+       apiVersion = api.getVersion, \
+       serviceTitle = context.getService.getTitle
+    /*
+     * PRE-REQUISITES:
+     * ---------------
+     * 1. If not already done, enable the {@serviceTitle} and check quota for your project at
+     *    https://console.developers.google.com/apis/api/{@apiName}_component/quotas
+     * 2. To install the client library on Maven or Gradle, check installation instructions at
+     *    https://github.com/google/google-api-java-client.
+     *    On other build systems, you can add the jar files to your project from
+     *    https://developers.google.com/resources/api-libraries/download/{@apiName}/{@apiVersion}/java
+     * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+     *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+     */
+
+    @join import : imports
+      import {@import};
+    @end
+
+    {@body}
+  @end
+@end
+
+@snippet generateBody(method)
+  {@alwaysImport()}
+
+  @let ApiName = context.getApiPackage, \
+       apiaryConfig = context.getApiaryConfig, \
+       params = apiaryConfig.getMethodParams(method.getName)
+    public class {@ApiName}Example {
+      public static void main(String[] args) throws IOException, GeneralSecurityException {
+        // Authentication is provided by gcloud tool when running locally
+        // and by built-in service accounts when running on GAE, GCE or GKE.
+        GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+        // The createScopedRequired method returns true when running on GAE or a local developer
+        // machine. In that case, the desired scopes must be passed in manually. When the code is
+        // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+        // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+        if (credential.createScopedRequired()) {
+          credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+        }
+
+        HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+        {@ApiName} {@serviceName()} = new {@ApiName}.Builder(httpTransport, jsonFactory, credential)
+          .setApplicationName("Google Cloud Platform Sample")
+          .build();
+        {@initialize(method, params)}
+
+        {@request(method)}
+        @if context.isPageStreaming(method)
+          {@iterableCall(method)}
+        @else
+          {@compactCall(method)}
+        @end
+      }
+    }
+  @end
+@end
+
+@snippet iterableCall(method)
+  @let responseType = context.getTypeUrl(method.getResponseTypeUrl), \
+       responseTypeRef = context.getApiaryConfig.getType(responseType), \
+       resourceField = context.getFirstRepeatedField(responseTypeRef), \
+       resources = context.getResourcesName(resourceField), \
+       resourceType = context.elementTypeName(responseTypeRef, resourceField)
+    {@responseType} response;
+    do {
+      response = request.execute();
+      if (response.get{@resources}() == null)
+        continue;
+
+      # TODO(tcoffee): add sample processing code to show visible results
+      @if context.isMapField(responseTypeRef, resourceField.getName)
+        for ({@resourceType} item : response.get{@resources}().entrySet()) {
+          // TODO: Add code here to process the 'item' entry
+        }
+      @else
+        @let resourceName = context.upperCamelToLowerCamel(context.getSimpleName(resourceType))
+          for ({@resourceType} {@resourceName} : response.get{@resources}()) {
+            // TODO: Add code here to process the '{@resourceName}' resource
+          }
+        @end
+      @end
+
+      # used to handle inconsistency in log entries list method for Logging API
+      # remove exceptional case if inconsistency is resolved
+      @if context.isLogEntriesListMethod(method)
+        {@requestName()}.setPageToken(response.getNextPageToken());
+      @else
+        request.setPageToken(response.getNextPageToken());
+      @end
+    } while (response.getNextPageToken() != null);
+  @end
+@end
+
+# TODO(tcoffee): add additional commented code for individual fields of request objects?
+@snippet compactCall(method)
+  @if context.isResponseEmpty(method)
+    request.execute();
+  @else
+    @let responseType = context.getTypeUrl(method.getResponseTypeUrl)
+      {@responseType} response = request.execute();
+    @end
+  @end
+@end
+
+@snippet request(method)
+  @let methodName = context.getMethodName(method), \
+       clientRequestType = context.getClientRequestType(method), \
+       resourcesPath = context.getApiaryConfig.getResources(method.getName)
+    @if context.hasRequestField(method)
+      {@initializeRequest(method)}
+    @end
+    {@clientRequestType} request = \
+        {@serviceName()}.{@elementPath(resourcesPath)}.{@methodName}({@arguments(method)});
+  @end
+@end
+
+# TODO(tcoffee): configure snippet grouping to handle long argument lists
+@snippet arguments(method)
+  @if context.hasRequestField(method)
+    @let requestType = context.getTypeUrl(context.getRequestField(method)), \
+         params = context.getFlatMethodParams(method)
+      @if params
+        {@argumentList(params)}, {@requestName()}
+      @else
+        {@requestName()}
+      @end
+    @end
+  @else
+    {@argumentList(context.getMethodParams(method))}
+  @end
+@end
+
+# TODO(tcoffee): generate appropriately typed default values for params
+@snippet initialize(method, params)
+  @let methodName = context.getMethodName(method), \
+       apiaryConfig = context.getApiaryConfig, \
+       signatureType = apiaryConfig.getType(method.getRequestTypeUrl), \
+       params = context.getFlatMethodParams(method)
+    @if params
+
+      // TODO: Change placeholders below to values for parameters to the '{@methodName}' method:
+
+    @end
+    @join param : params
+      @let paramField = context.getField(signatureType, param), \
+           paramType = context.typeName(signatureType, paramField), \
+           paramValue = context.typeDefaultValue(signatureType, paramField), \
+           paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
+        {@item(paramDescription)}
+        {@paramType} {@param} = {@paramValue}
+      @end
+    @end
+  @end
+@end
+
+@snippet initializeRequest(method)
+  @let requestType = context.getTypeUrl(context.getRequestField(method))
+    {@requestType} {@requestName()} = new {@requestType}();
+    @if context.isPatch(method)
+      // TODO: Add code here to assign values to desired fields of the '{@requestName()}' object to be changed
+
+
+    @else
+      // TODO: Add code here to assign values to desired fields of the '{@requestName()}' object
+
+
+    @end
+  @end
+@end
+
+@snippet serviceName()
+  @let apiName = context.getApi.getName
+    {@apiName}Service
+  @end
+@end
+
+# name "content" used for request body as in API Explorer to avoid collisions
+@snippet requestName()
+  content
+@end
+
+@snippet item(description)
+  @if description
+    // * {@description}
+  @end
+@end
+
+@snippet typePath(types)
+  @join type : types on "."
+    @let Type = context.lowerCamelToUpperCamel(type)
+      {@Type}
+    @end
+  @end
+@end
+
+@snippet elementPath(elements)
+  @join element : elements on "."
+    {@element}()
+  @end
+@end
+
+@snippet argumentList(arguments)
+  @join argument : arguments on ", "
+    {@argument}
+  @end
+@end
+
+@private alwaysImport() fill
+  {@context.addImport("java.io.IOException")}
+  {@context.addImport("java.security.GeneralSecurityException")}
+  {@context.addImport("java.util.Collections")}
+  {@context.addImport("com.google.api.client.googleapis.auth.oauth2.GoogleCredential")}
+  {@context.addImport("com.google.api.client.googleapis.javanet.GoogleNetHttpTransport")}
+  {@context.addImport("com.google.api.client.http.HttpTransport")}
+  {@context.addImport("com.google.api.client.json.JsonFactory")}
+  {@context.addImport("com.google.api.client.json.jackson2.JacksonFactory")}
+@end
+
+@snippet generateMethodSampleCode(docConfig)
+@end

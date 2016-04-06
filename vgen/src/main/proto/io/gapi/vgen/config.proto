@@ -15,6 +15,7 @@ option java_package = "io.gapi.vgen";
 //     type: io.gapi.vgen.ConfigProto
 //     language_provider: io.gapi.vgen.java.JavaLanguageProvider
 //     snippet_files: main.snip
+//     fragment_files: fragment.snip
 //     interfaces:
 //     - name: google.example.library.v1.LibraryService
 //       collections:
@@ -76,10 +77,6 @@ message ConfigProto {
   // list with the entry `main.snip`.
   repeated string snippet_files = 2;
 
-  // The snippet template files used for doc generation. Intended to generate
-  // proto docs in PythonLanguageProvider.
-  repeated string doc_snippet_files = 6;
-
   // For languages which produce multiple outputs, specifies whether
   // the produced output should be put in an archive.
   bool archive = 3;
@@ -89,6 +86,17 @@ message ConfigProto {
 
   // The language of the generated code.
   string language = 5;
+
+  // The snippet template files used for fragment generation. Each file is used
+  // to produce one example snippet for each method. If the snippet file name is
+  // simple (does not contain a `/`), it is looked up as a resource relative to
+  // the package of the language provider class. If it contains a `/`, it is
+  // looked up in the file system.
+  repeated string fragment_files = 6;
+
+  // The snippet template files used for doc generation. Intended to generate
+  // proto docs in PythonLanguageProvider.
+  repeated string doc_snippet_files = 7;
 
   // A list of API interface configurations.
   repeated InterfaceConfigProto interfaces = 10;

@@ -54,7 +54,6 @@
 
 @private resourceConstants(service)
   {@pathTemplateConstants(service)}
-
 @end
 
 @private pathTemplateConstants(service)
@@ -315,12 +314,12 @@
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
        resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType())
-    {@methodJavaDoc(method, context.newJavaDocConfigBuilder \
+    {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
       .setMethodName(methodName) \
       .setReturnType(resourceTypeName) \
-      .setSingleParam(context, method.getInputType, context.requestParam, context.requestParamDoc) \
-      .setIterableVariant(context.getTrue) \
-      .setCallableVariant(context.getFalse) \
+      .setSingleParam(context, method.getInputType, context.java.requestParam, context.java.requestParamDoc) \
+      .setIterableVariant(context.java.getTrue) \
+      .setCallableVariant(context.java.getFalse) \
       .build)}
     {@accessModifier} final Iterable<{@resourceTypeName}> {@methodName}({@inTypeName} request) {
       return {@methodName}IterableCallable()
@@ -334,12 +333,12 @@
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
        resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType())
-    {@methodJavaDoc(method, context.newJavaDocConfigBuilder \
+    {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
       .setMethodName(methodName) \
       .setReturnType(resourceTypeName) \
-      .setSingleParam(context, method.getInputType, context.requestParam, context.requestParamDoc) \
-      .setIterableVariant(context.getTrue) \
-      .setCallableVariant(context.getTrue) \
+      .setSingleParam(context, method.getInputType, context.java.requestParam, context.java.requestParamDoc) \
+      .setIterableVariant(context.java.getTrue) \
+      .setCallableVariant(context.java.getTrue) \
       .build)}
     public final ApiCallable<{@inTypeName}, Iterable<{@resourceTypeName}>> {@methodName}IterableCallable() {
       return {@methodName}IterableCallable;
@@ -366,12 +365,12 @@
 @end
 
 @private methodWithRequestParam(method, methodName, inTypeName, outTypeName, accessModifier)
-  {@methodJavaDoc(method, context.newJavaDocConfigBuilder \
+  {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
       .setMethodName(context.upperCamelToLowerCamel(method.getSimpleName)) \
       .setReturnType(context.returnTypeOrEmpty(method.getOutputType)) \
-      .setSingleParam(context, method.getInputType, context.requestParam, context.requestParamDoc) \
-      .setIterableVariant(context.getFalse) \
-      .setCallableVariant(context.getFalse) \
+      .setSingleParam(context, method.getInputType, context.java.requestParam, context.java.requestParamDoc) \
+      .setIterableVariant(context.java.getFalse) \
+      .setCallableVariant(context.java.getFalse) \
       .build)}
   @let returnType = context.methodReturnTypeName(method.getOutputType), \
        returnStatement = context.methodReturnStatement(method.getOutputType)
@@ -383,12 +382,12 @@
 @end
 
 @private methodReturningCallable(method, callableConstant, methodName, inTypeName, outTypeName)
-  {@methodJavaDoc(method, context.newJavaDocConfigBuilder \
+  {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
       .setMethodName(methodName) \
       .setReturnType(context.returnTypeOrEmpty(method.getOutputType)) \
-      .setSingleParam(context, method.getInputType, context.requestParam, context.requestParamDoc) \
-      .setIterableVariant(context.getFalse) \
-      .setCallableVariant(context.getTrue) \
+      .setSingleParam(context, method.getInputType, context.java.requestParam, context.java.requestParamDoc) \
+      .setIterableVariant(context.java.getFalse) \
+      .setCallableVariant(context.java.getTrue) \
       .build)}
   public final ApiCallable<{@inTypeName}, {@outTypeName}> {@methodName}Callable() {
     return {@methodName}Callable;
@@ -413,12 +412,12 @@
      * <code>
      * try ({@context.getVeneerName(service)} {@serviceApiVariable} = {@context.getVeneerName(service)}.defaultInstance()) {
      *   // make calls here
-    @join commentLine : context.getJavaDocLines(context.generateMethodSampleCode(context.newJavaDocConfigBuilder \
+    @join commentLine : context.java.getJavaDocLines(context.generateMethodSampleCode(context.java.newJavaDocConfigBuilder \
                                .setMethodName(context.upperCamelToLowerCamel(firstFlattenedMethod.getSimpleName)) \
                                .setReturnType(context.returnTypeOrEmpty(firstFlattenedMethod.getOutputType)) \
                                .setParams(context, firstFlattenedMethodConfig.getFlattening().getFlatteningGroups().get(0)) \
-                               .setIterableVariant(context.getFalse) \
-                               .setCallableVariant(context.getFalse) \
+                               .setIterableVariant(context.java.getFalse) \
+                               .setCallableVariant(context.java.getFalse) \
                                .build))
       {@commentLine}
     @end
@@ -479,22 +478,22 @@
 @end
 
 @private flattenedMethodJavaDoc(method, methodName, fields)
-  {@methodJavaDoc(method, context.newJavaDocConfigBuilder \
+  {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
       .setMethodName(methodName) \
       .setReturnType(context.returnTypeOrEmpty(method.getOutputType)) \
       .setParams(context, fields) \
-      .setIterableVariant(context.getFalse) \
-      .setCallableVariant(context.getFalse) \
+      .setIterableVariant(context.java.getFalse) \
+      .setCallableVariant(context.java.getFalse) \
       .build)}
 @end
 
 @private iterableFlattenedMethodJavaDoc(method, methodName, resourceName, fields)
-  {@methodJavaDoc(method, context.newJavaDocConfigBuilder \
+  {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
       .setMethodName(methodName) \
       .setReturnType(resourceName) \
       .setParams(context, fields) \
-      .setIterableVariant(context.getTrue) \
-      .setCallableVariant(context.getFalse) \
+      .setIterableVariant(context.java.getTrue) \
+      .setCallableVariant(context.java.getFalse) \
       .build)}
 @end
 
@@ -505,7 +504,7 @@
   @if context.getApiConfig.generateSamples
     {@javaDocEmptyLine()}
     {@javaDocEmptyLine()} <pre><code>
-    @join commentLine : context.getJavaDocLines(context.generateMethodSampleCode(docConfig))
+    @join commentLine : context.java.getJavaDocLines(context.generateMethodSampleCode(docConfig))
       {@commentLine}
     @end
     {@javaDocEmptyLine()} </code></pre>
@@ -516,7 +515,7 @@
   @else
     {@javaDocEmptyLine()}
     @join param : docConfig.getParams
-      @join commentLine : context.getJavaDocLinesWithPrefix(param.getDescription, paramDocLinePrefix(param))
+      @join commentLine : context.java.getJavaDocLinesWithPrefix(param.getDescription, paramDocLinePrefix(param))
         {@commentLine}
       @end
     @end

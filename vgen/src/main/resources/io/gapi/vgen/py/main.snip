@@ -401,13 +401,13 @@
 
 @private requiredParameterNames(params)
     @join field : params on ",".add(BREAK)
-        {@context.wrapIfKeywordOrBuiltIn({@field.getSimpleName()})}
+        {@context.python.wrapIfKeywordOrBuiltIn({@field.getSimpleName()})}
     @end
 @end
 
 @private optionalParameterValues(params)
     @join field : params on ",".add(BREAK)
-        @let paramName = {@context.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
+        @let paramName = {@context.python.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
             @if {@context.isDefaultValueMutable(field)}
                 {@paramName}=None
             @else
@@ -419,7 +419,7 @@
 
 @private defaultMutableValues(params)
     @join field : params if {@context.isDefaultValueMutable(field)} on BREAK
-        @let paramName = {@context.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
+        @let paramName = {@context.python.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
             if {@paramName} is None:
                 {@paramName} = {@context.defaultValue(field, importHandler)}
         @end
@@ -429,7 +429,7 @@
 @private namedParameters(params)
     @join field : params on ",".add(BREAK)
         @let paramName = {@field.getSimpleName()}
-            {@paramName}={@context.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
+            {@paramName}={@context.python.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
         @end
     @end
 @end

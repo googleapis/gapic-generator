@@ -15,8 +15,9 @@
 package io.gapi.vgen;
 
 import com.google.api.tools.framework.tools.ToolOptions;
-import org.apache.commons.cli.DefaultParser;
+
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
