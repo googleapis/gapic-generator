@@ -167,8 +167,8 @@
      *
     {@javaDocManualEdit()}
      */
-    public static final {@className} create() throws IOException {
-      return create({@settingsClassName(service)}.create());
+    public static final {@className} defaultInstance() throws IOException {
+      return create({@settingsClassName(service)}.defaultInstance());
     }
 
     /**
@@ -197,25 +197,15 @@
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              isPageStreaming = methodConfig.isPageStreaming, \
              isBundling = methodConfig.isBundling
+          this.{@methodName}Callable = ApiCallable.create(settings.{@methodName}Settings(), settings);
+          @if {@isPageStreaming}
+            this.{@methodName}IterableCallable =
+                ApiCallable.createIterable(settings.{@methodName}Settings(), settings);
+          @end
           @if {@isBundling}
-            @let inTypeName = context.typeName(method.getInputType), \
-                 outTypeName = context.typeName(method.getOutputType), \
-                 dummy = context.addImport("com.google.api.gax.grpc.ApiCallable.BundlableApiCallableInfo"), \
-                 dummy2 = context.addImport("com.google.api.gax.grpc.BundlerFactory")
-              BundlableApiCallableInfo<{@inTypeName}, {@outTypeName}> bundlable{@method.getSimpleName} =
-                  settings.{@methodName}Method().buildBundlable(settings);
-              this.{@methodName}Callable = bundlable{@method.getSimpleName}.getApiCallable();
-              BundlerFactory<{@inTypeName}, {@outTypeName}> {@methodName}BundlerFactory =
-                 bundlable{@method.getSimpleName}.getBundlerFactory();
-              if ({@methodName}BundlerFactory != null) {
-                this.closeables.add({@methodName}BundlerFactory);
-              }
-            @end
-          @else
-            this.{@methodName}Callable = settings.{@methodName}Method().build(settings);
-            @if {@isPageStreaming}
-              this.{@methodName}IterableCallable = settings.{@methodName}Method().buildPageStreaming(settings);
-            @end
+            if (settings.{@methodName}Settings().getBundlerFactory() != null) {
+              closeables.add(settings.{@methodName}Settings().getBundlerFactory());
+            }
           @end
         @end
       @end

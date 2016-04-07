@@ -31,8 +31,8 @@ import com.google.auto.value.AutoValue;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import io.gapi.vgen.ApiConfig;
@@ -44,7 +44,6 @@ import io.gapi.vgen.PageStreamingConfig;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
-import java.lang.Character;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -493,7 +492,7 @@ public class GoLanguageProvider extends LanguageProvider {
     imports.add(GoImport.create("google.golang.org/cloud/internal/transport"));
     imports.add(GoImport.create("github.com/googleapis/gax-go", "gax"));
 
-    if (!getApiConfig().getInterfaceConfig(service).getRetryParamsDefinition().isEmpty()) {
+    if (!getApiConfig().getInterfaceConfig(service).getRetrySettingsDefinition().isEmpty()) {
       coreImports.add(GoImport.create("time"));
     }
 
