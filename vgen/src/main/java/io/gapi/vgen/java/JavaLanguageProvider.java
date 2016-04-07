@@ -33,6 +33,8 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.common.escape.Escaper;
+import com.google.common.escape.Escapers;
 import com.google.common.io.Files;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
@@ -159,6 +161,17 @@ public class JavaLanguageProvider extends LanguageProvider {
    */
   private static final String SNIPPET_RESOURCE_ROOT =
       JavaLanguageProvider.class.getPackage().getName().replace('.', '/');
+
+  /**
+   * Escaper for formatting javadoc strings.
+   */
+  private static final Escaper JAVADOC_ESCAPER =
+      Escapers.builder()
+      .addEscape('&', "&amp;")
+      .addEscape('<', "&lt;")
+      .addEscape('>', "&gt;")
+      .addEscape('*', "&ast;")
+      .build();
 
   /**
    * A bi-map from full names to short names indicating the import map.
@@ -469,8 +482,8 @@ public class JavaLanguageProvider extends LanguageProvider {
     // TODO(wgg): convert markdown to javadoc
     List<String> result = new ArrayList<>();
     String linePrefix = firstLinePrefix;
+    text = JAVADOC_ESCAPER.escape(text);
     for (String line : Splitter.on(String.format("%n")).split(text)) {
-      line = line.replace("*/", "&ast;/");
       result.add(" * " + linePrefix + line);
       linePrefix = "";
     }

@@ -74,10 +74,10 @@ import java.util.List;
  * resource model:
  *
  * - The API has a collection of [Shelf][google.example.library.v1.Shelf]
- *   resources, named ``shelves/*``
+ *   resources, named ``shelves/&ast;``
  *
  * - Each Shelf has a collection of [Book][google.example.library.v1.Book]
- *   resources, named `shelves/&ast;/books/*`
+ *   resources, named `shelves/&ast;/books/&ast;`
  *
  * Check out [cloud docs!](/library/example/link).
  *
@@ -254,6 +254,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    *
    * @param shelf The shelf to create.
+   * @throws ApiException if the remote call fails
    */
   public final Shelf createShelf(Shelf shelf) {
     CreateShelfRequest request =
@@ -278,6 +279,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
+   * @throws ApiException if the remote call fails
    */
   private Shelf createShelf(CreateShelfRequest request) {
     return createShelfCallable().call(request);
@@ -296,6 +298,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
+   * @throws ApiException if the remote call fails
    */
   public final ApiCallable<CreateShelfRequest, Shelf> createShelfCallable() {
     return createShelfCallable;
@@ -317,6 +320,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    *
    * @param name The name of the shelf to retrieve.
+   * @throws ApiException if the remote call fails
    */
   public final Shelf getShelf(String name) {
     GetShelfRequest request =
@@ -343,6 +347,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param name The name of the shelf to retrieve.
    * @param message Field to verify that message-type query parameter gets flattened.
+   * @throws ApiException if the remote call fails
    */
   public final Shelf getShelf(String name, SomeMessage message) {
     GetShelfRequest request =
@@ -372,6 +377,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param name The name of the shelf to retrieve.
    * @param message Field to verify that message-type query parameter gets flattened.
    * @param stringBuilder
+   * @throws ApiException if the remote call fails
    */
   public final Shelf getShelf(String name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
     GetShelfRequest request =
@@ -398,6 +404,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
+   * @throws ApiException if the remote call fails
    */
   public Shelf getShelf(GetShelfRequest request) {
     return getShelfCallable().call(request);
@@ -416,6 +423,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
+   * @throws ApiException if the remote call fails
    */
   public final ApiCallable<GetShelfRequest, Shelf> getShelfCallable() {
     return getShelfCallable;
@@ -437,6 +445,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
+   * @throws ApiException if the remote call fails
    */
   public final Iterable<Shelf> listShelves() {
     ListShelvesRequest request =
@@ -462,6 +471,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
+   * @throws ApiException if the remote call fails
    */
   private final Iterable<Shelf> listShelves(ListShelvesRequest request) {
     return listShelvesIterableCallable()
@@ -483,6 +493,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
+   * @throws ApiException if the remote call fails
    */
   public final ApiCallable<ListShelvesRequest, Iterable<Shelf>> listShelvesIterableCallable() {
     return listShelvesIterableCallable;
@@ -501,6 +512,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
+   * @throws ApiException if the remote call fails
    */
   public final ApiCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
     return listShelvesCallable;
@@ -522,6 +534,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    *
    * @param name The name of the shelf to delete.
+   * @throws ApiException if the remote call fails
    */
   public final void deleteShelf(String name) {
     DeleteShelfRequest request =
@@ -546,6 +559,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
+   * @throws ApiException if the remote call fails
    */
   private void deleteShelf(DeleteShelfRequest request) {
     deleteShelfCallable().call(request);
@@ -564,6 +578,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
+   * @throws ApiException if the remote call fails
    */
   public final ApiCallable<DeleteShelfRequest, Empty> deleteShelfCallable() {
     return deleteShelfCallable;
@@ -589,6 +604,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param name The name of the shelf we're adding books to.
    * @param otherShelfName The name of the shelf we're removing books from and deleting.
+   * @throws ApiException if the remote call fails
    */
   public final Shelf mergeShelves(String name, String otherShelfName) {
     MergeShelvesRequest request =
@@ -616,6 +632,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
+   * @throws ApiException if the remote call fails
    */
   public Shelf mergeShelves(MergeShelvesRequest request) {
     return mergeShelvesCallable().call(request);
@@ -636,6 +653,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
+   * @throws ApiException if the remote call fails
    */
   public final ApiCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable() {
     return mergeShelvesCallable;
@@ -659,6 +677,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param name The name of the shelf in which the book is created.
    * @param book The book to create.
+   * @throws ApiException if the remote call fails
    */
   public final Book createBook(String name, Book book) {
     CreateBookRequest request =
@@ -684,6 +703,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
+   * @throws ApiException if the remote call fails
    */
   public Book createBook(CreateBookRequest request) {
     return createBookCallable().call(request);
@@ -702,6 +722,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
+   * @throws ApiException if the remote call fails
    */
   public final ApiCallable<CreateBookRequest, Book> createBookCallable() {
     return createBookCallable;
@@ -715,7 +736,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * {@code
    * Shelf shelf = Shelf.newBuilder().build();
-   * List<Book> books = new ArrayList<>();
+   * List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    * int edition = 0;
    *
    * PublishSeriesResponse callResult = publishSeries(shelf, books, edition);
@@ -727,6 +748,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param shelf The shelf in which the series is created.
    * @param books The books to publish in the series.
    * @param edition The edition of the series
+   * @throws ApiException if the remote call fails
    */
   public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition) {
     PublishSeriesRequest request =
@@ -753,6 +775,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
+   * @throws ApiException if the remote call fails
    */
   public PublishSeriesResponse publishSeries(PublishSeriesRequest request) {
     return publishSeriesCallable().call(request);
@@ -771,6 +794,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
+   * @throws ApiException if the remote call fails
    */
   public final ApiCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable() {
     return publishSeriesCallable;
@@ -792,6 +816,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    *
    * @param name The name of the book to retrieve.
+   * @throws ApiException if the remote call fails
    */
   public final Book getBook(String name) {
     GetBookRequest request =
@@ -816,6 +841,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
+   * @throws ApiException if the remote call fails
    */
   private Book getBook(GetBookRequest request) {
     return getBookCallable().call(request);
@@ -834,6 +860,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
+   * @throws ApiException if the remote call fails
    */
   public final ApiCallable<GetBookRequest, Book> getBookCallable() {
     return getBookCallable;
@@ -859,6 +886,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param name The name of the shelf whose books we'd like to list.
    * @param filter To test python built-in wrapping.
+   * @throws ApiException if the remote call fails
    */
   public final Iterable<Book> listBooks(String name, String filter) {
     ListBooksRequest request =
@@ -885,6 +913,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
+   * @throws ApiException if the remote call fails
    */
   public final Iterable<Book> listBooks(ListBooksRequest request) {
     return listBooksIterableCallable()
@@ -906,6 +935,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
+   * @throws ApiException if the remote call fails
    */
   public final ApiCallable<ListBooksRequest, Iterable<Book>> listBooksIterableCallable() {
     return listBooksIterableCallable;
@@ -924,6 +954,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
+   * @throws ApiException if the remote call fails
    */
   public final ApiCallable<ListBooksRequest, ListBooksResponse> listBooksCallable() {
     return listBooksCallable;
@@ -945,6 +976,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    *
    * @param name The name of the book to delete.
+   * @throws ApiException if the remote call fails
    */
   public final void deleteBook(String name) {
     DeleteBookRequest request =
@@ -969,6 +1001,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
+   * @throws ApiException if the remote call fails
    */
   private void deleteBook(DeleteBookRequest request) {
     deleteBookCallable().call(request);
@@ -987,6 +1020,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
+   * @throws ApiException if the remote call fails
    */
   public final ApiCallable<DeleteBookRequest, Empty> deleteBookCallable() {
     return deleteBookCallable;
@@ -1010,6 +1044,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param name The name of the book to update.
    * @param book The book to update with.
+   * @throws ApiException if the remote call fails
    */
   public final Book updateBook(String name, Book book) {
     UpdateBookRequest request =
@@ -1041,6 +1076,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param book The book to update with.
    * @param updateMask A field mask to apply, rendered as an HTTP parameter.
    * @param physicalMask To test Python import clash resolution.
+   * @throws ApiException if the remote call fails
    */
   public final Book updateBook(String name, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
     UpdateBookRequest request =
@@ -1068,6 +1104,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
+   * @throws ApiException if the remote call fails
    */
   public Book updateBook(UpdateBookRequest request) {
     return updateBookCallable().call(request);
@@ -1086,6 +1123,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
+   * @throws ApiException if the remote call fails
    */
   public final ApiCallable<UpdateBookRequest, Book> updateBookCallable() {
     return updateBookCallable;
@@ -1109,6 +1147,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @param name The name of the book to move.
    * @param otherShelfName The name of the destination shelf.
+   * @throws ApiException if the remote call fails
    */
   public final Book moveBook(String name, String otherShelfName) {
     MoveBookRequest request =
@@ -1134,6 +1173,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
+   * @throws ApiException if the remote call fails
    */
   public Book moveBook(MoveBookRequest request) {
     return moveBookCallable().call(request);
@@ -1152,6 +1192,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
+   * @throws ApiException if the remote call fails
    */
   public final ApiCallable<MoveBookRequest, Book> moveBookCallable() {
     return moveBookCallable;
