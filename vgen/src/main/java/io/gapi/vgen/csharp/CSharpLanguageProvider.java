@@ -18,6 +18,7 @@ import com.google.api.gax.protobuf.PathTemplate;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
@@ -31,6 +32,7 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
+
 import autovalue.shaded.com.google.common.common.collect.ImmutableList;
 import io.gapi.vgen.ApiConfig;
 import io.gapi.vgen.FlatteningConfig;
@@ -43,7 +45,6 @@ import io.gapi.vgen.ServiceConfig;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -444,10 +445,20 @@ public class CSharpLanguageProvider extends LanguageProvider {
    * Gets the full name of the message or enum type in C#.
    */
   private String getTypeName(ProtoElement elem) {
-    // TODO: Handle nested types, and naming collisions. (The latter will probably require
-    // using alias directives, which will be awkward...)
+    // TODO: Handle naming collisions. This will probably require
+    // using alias directives, which will be awkward...
+
+    // Handle nested types, construct the required type prefix
+    ProtoElement parentEl = elem.getParent();
+    String prefix = "";
+    while (parentEl != null && parentEl instanceof MessageType) {
+      prefix = parentEl.getSimpleName() + ".Types." + prefix;
+      parentEl = parentEl.getParent();
+    }
+    // Add an import for the type, if not already imported
     addImport(getNamespace(elem.getFile()));
-    return elem.getSimpleName();
+    // Return the combined type prefix and type name
+    return prefix + elem.getSimpleName();
   }
 
   private List<String> docLines(ProtoElement element, String prefix) {
