@@ -38,7 +38,7 @@ public class MethodConfig {
   private final PageStreamingConfig pageStreaming;
   private final FlatteningConfig flattening;
   private final String retryCodesConfigName;
-  private final String retryParamsConfigName;
+  private final String retrySettingsConfigName;
   private final Iterable<Field> requiredFields;
   private final Iterable<Field> optionalFields;
   private final BundlingConfig bundling;
@@ -150,7 +150,7 @@ public class MethodConfig {
       PageStreamingConfig pageStreaming,
       FlatteningConfig flattening,
       String retryCodesConfigName,
-      String retryParamsConfigName,
+      String retrySettingsConfigName,
       BundlingConfig bundling,
       boolean hasRequestObjectMethod,
       Iterable<Field> requiredFields,
@@ -158,7 +158,7 @@ public class MethodConfig {
     this.pageStreaming = pageStreaming;
     this.flattening = flattening;
     this.retryCodesConfigName = retryCodesConfigName;
-    this.retryParamsConfigName = retryParamsConfigName;
+    this.retrySettingsConfigName = retrySettingsConfigName;
     this.bundling = bundling;
     this.hasRequestObjectMethod = hasRequestObjectMethod;
     this.requiredFields = requiredFields;
@@ -203,8 +203,8 @@ public class MethodConfig {
   /**
    * Returns the name of the retry params config this method uses.
    */
-  public String getRetryParamsConfigName() {
-    return retryParamsConfigName;
+  public String getRetrySettingsConfigName() {
+    return retrySettingsConfigName;
   }
 
   /**

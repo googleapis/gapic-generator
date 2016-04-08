@@ -34,8 +34,6 @@
 package com.google.gcloud.pubsub.spi;
 
 import com.google.api.gax.grpc.ApiCallable;
-import com.google.api.gax.grpc.ApiCallable.BundlableApiCallableInfo;
-import com.google.api.gax.grpc.BundlerFactory;
 import com.google.api.gax.protobuf.PathTemplate;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.CreateBookRequest;
@@ -178,8 +176,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public static final LibraryServiceApi create() throws IOException {
-    return create(LibraryServiceSettings.create());
+  public static final LibraryServiceApi defaultInstance() throws IOException {
+    return create(LibraryServiceSettings.defaultInstance());
   }
 
   /**
@@ -205,27 +203,25 @@ public class LibraryServiceApi implements AutoCloseable {
   protected LibraryServiceApi(LibraryServiceSettings settings) throws IOException {
     this.channel = settings.getChannel();
 
-    this.createShelfCallable = settings.createShelfMethod().build(settings);
-    this.getShelfCallable = settings.getShelfMethod().build(settings);
-    this.listShelvesCallable = settings.listShelvesMethod().build(settings);
-    this.listShelvesIterableCallable = settings.listShelvesMethod().buildPageStreaming(settings);
-    this.deleteShelfCallable = settings.deleteShelfMethod().build(settings);
-    this.mergeShelvesCallable = settings.mergeShelvesMethod().build(settings);
-    this.createBookCallable = settings.createBookMethod().build(settings);
-    BundlableApiCallableInfo<PublishSeriesRequest, PublishSeriesResponse> bundlablePublishSeries =
-        settings.publishSeriesMethod().buildBundlable(settings);
-    this.publishSeriesCallable = bundlablePublishSeries.getApiCallable();
-    BundlerFactory<PublishSeriesRequest, PublishSeriesResponse> publishSeriesBundlerFactory =
-       bundlablePublishSeries.getBundlerFactory();
-    if (publishSeriesBundlerFactory != null) {
-      this.closeables.add(publishSeriesBundlerFactory);
+    this.createShelfCallable = ApiCallable.create(settings.createShelfSettings(), settings);
+    this.getShelfCallable = ApiCallable.create(settings.getShelfSettings(), settings);
+    this.listShelvesCallable = ApiCallable.create(settings.listShelvesSettings(), settings);
+    this.listShelvesIterableCallable =
+        ApiCallable.createIterable(settings.listShelvesSettings(), settings);
+    this.deleteShelfCallable = ApiCallable.create(settings.deleteShelfSettings(), settings);
+    this.mergeShelvesCallable = ApiCallable.create(settings.mergeShelvesSettings(), settings);
+    this.createBookCallable = ApiCallable.create(settings.createBookSettings(), settings);
+    this.publishSeriesCallable = ApiCallable.create(settings.publishSeriesSettings(), settings);
+    if (settings.publishSeriesSettings().getBundlerFactory() != null) {
+      closeables.add(settings.publishSeriesSettings().getBundlerFactory());
     }
-    this.getBookCallable = settings.getBookMethod().build(settings);
-    this.listBooksCallable = settings.listBooksMethod().build(settings);
-    this.listBooksIterableCallable = settings.listBooksMethod().buildPageStreaming(settings);
-    this.deleteBookCallable = settings.deleteBookMethod().build(settings);
-    this.updateBookCallable = settings.updateBookMethod().build(settings);
-    this.moveBookCallable = settings.moveBookMethod().build(settings);
+    this.getBookCallable = ApiCallable.create(settings.getBookSettings(), settings);
+    this.listBooksCallable = ApiCallable.create(settings.listBooksSettings(), settings);
+    this.listBooksIterableCallable =
+        ApiCallable.createIterable(settings.listBooksSettings(), settings);
+    this.deleteBookCallable = ApiCallable.create(settings.deleteBookSettings(), settings);
+    this.updateBookCallable = ApiCallable.create(settings.updateBookSettings(), settings);
+    this.moveBookCallable = ApiCallable.create(settings.moveBookSettings(), settings);
 
     if (settings.shouldAutoCloseChannel()) {
       closeables.add(

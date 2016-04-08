@@ -87,7 +87,7 @@
     	{@pathTemplateVarName(collectionConfig)} = gax.MustCompilePathTemplate("{@collectionConfig.getNamePattern}")
     	@end
     )
-    @join retryDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetryParamsDefinition)
+    @join retryDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetrySettingsDefinition)
 
     func {@retryDef.getKey}_RetryParams() []gax.CallOption {
     	return []gax.CallOption{
@@ -188,7 +188,7 @@
              inTypeName = context.typeName(method.getInputType), \
              outTypeName = context.typeName(method.getOutputType), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-             retryParamsName = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method).getRetryParamsConfigName, \
+             retryParamsName = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method).getRetrySettingsConfigName, \
              isPageStreaming = methodConfig.isPageStreaming
             @if {@isPageStreaming}
                 @let pageStreaming = methodConfig.getPageStreaming(), \
