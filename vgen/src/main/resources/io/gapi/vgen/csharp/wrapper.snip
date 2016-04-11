@@ -3,13 +3,13 @@
 @end
 
 @snippet generateClass(service, body, imports)
-    // Copyright 2016 Google Inc
+    // Copyright 2016 Google Inc. All Rights Reserved.
     //
     // Licensed under the Apache License, Version 2.0 (the "License");
     // you may not use this file except in compliance with the License.
     // You may obtain a copy of the License at
     //
-    //      http: *www.apache.org/licenses/LICENSE-2.0
+    //     http://www.apache.org/licenses/LICENSE-2.0
     //
     // Unless required by applicable law or agreed to in writing, software
     // distributed under the License is distributed on an "AS IS" BASIS,
@@ -94,24 +94,26 @@
     }
 @end
 
-@private asyncMethodDeclaration(method, modifier)
+@private asyncMethodDeclaration(method, modifier, withCallSettings)
     @join line : method.xmlDocAsync
         {@line}
     @end
     
-    @if method.isPageStreaming == FALSE
-        /// <param name="cancellationToken">If not null, a <see cref="CancellationToken"/> to use for this RPC.</param>
+    @if withCallSettings
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+    @else
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
     @end
-    /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
     /// <returns>A Task containing the RPC response.</returns>
     public {@modifier} {@method.asyncReturnTypeName} {@method.name}Async(
         @join param : method.params
             {@param.typeName} {@param.name},
         @end
-        @if method.isPageStreaming == FALSE
-            CancellationToken? cancellationToken = null,
+        @if withCallSettings
+            CallSettings callSettings = null)
+        @else
+            CancellationToken cancellationToken)
         @end
-        CallSettings callSettings = null)
 @end
 
 @private syncMethodDeclaration(method, modifier)
@@ -233,11 +235,19 @@
         }
 
         @join method : context.getMethodInfos(service)
-            {@asyncMethodDeclaration(method, "virtual")}
+            {@asyncMethodDeclaration(method, "virtual", TRUE)}
             {
                 throw new NotImplementedException();
             }
 
+            @if method.isPageStreaming == FALSE
+                {@asyncMethodDeclaration(method, "virtual", FALSE)} => {@method.name}Async(
+                        @join param : method.params
+                            {@param.name},
+                        @end
+                        new CallSettings { CancellationToken = cancellationToken });
+
+            @end
             {@syncMethodDeclaration(method, "virtual")}
             {
                 throw new NotImplementedException();
@@ -285,7 +295,7 @@
         public override {@name}.I{@name}Client GrpcClient { get; }
 
         @join method : context.getMethodInfos(service)
-            {@asyncMethodDeclaration(method, "override")}
+            {@asyncMethodDeclaration(method, "override", TRUE)}
             {
                 {@createRequest(method)}
                 @if method.isPageStreaming
@@ -299,7 +309,7 @@
                 @else
                     return GrpcClient.{@method.name}Async(
                         request,
-                        _clientHelper.BuildCallOptions(cancellationToken, callSettings)
+                        _clientHelper.BuildCallOptions(null, callSettings)
                     ).ResponseAsync;
                 @end
             }
