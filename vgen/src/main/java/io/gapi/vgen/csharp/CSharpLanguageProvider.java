@@ -429,6 +429,11 @@ public class CSharpLanguageProvider extends LanguageProvider {
   private String basicTypeName(TypeRef type) {
     String result = PRIMITIVE_TYPE_MAP.get(type.getKind());
     if (result != null) {
+      if (type.getKind() == Type.TYPE_BYTES) {
+        // Special handling of ByteString.
+        // It requires a 'using' directive, unlike all other primitive types.
+        addImport("Google.Protobuf");
+      }
       return result;
     }
     switch (type.getKind()) {
