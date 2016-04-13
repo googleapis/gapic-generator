@@ -21,6 +21,7 @@
   {@alwaysImport()}
 
   {@autoGenClassWarning()}
+  {@settingsJavaDoc(service)}
   @@javax.annotation.Generated("by GAPIC")
   public class {@settingsClassName(service)} extends ServiceApiSettings {
 
@@ -52,6 +53,38 @@
   {@context.addImport("org.joda.time.Duration")}
   {@context.addImport("java.io.IOException")}
   {@context.addImport("java.util.concurrent.ScheduledExecutorService")}
+@end
+
+@private settingsJavaDoc(service)
+  @let settingsVariable = context.upperCamelToLowerCamel(settingsClassName(service)), \
+       firstFlattenedMethod = context.getFirstFlattenedMethod(service)
+    /**
+     * Settings class to configure an instance of {@@link {@context.getVeneerName(service)}}.
+     *
+     * <p>The default instance has everything set to sensible defaults:
+     *
+     * <ul>
+     * <li>The default service address ({@context.getServiceConfig.getServiceAddress(service)}) and default port ({@context.getServiceConfig.getServicePort()})
+     * are used.
+     * <li>Credentials are acquired automatically through Application Default Credentials.
+     * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+     * </ul>
+     *
+     * <p>The builder of this class is recursive, so contained classes are themselves builders.
+     * When build() is called, the tree of builders is called to create the complete settings
+     * object. For example, to set the total timeout of {@firstFlattenedMethod.getSimpleName} to 30 seconds:
+     *
+     * <pre>
+     * <code>
+     * {@settingsClassName(service)}.Builder {@settingsVariable}Builder =
+     *     {@settingsClassName(service)}.defaultInstance().toBuilder();
+     * {@settingsVariable}Builder.{@firstFlattenedMethod.getSimpleName}Settings().getRetrySettingsBuilder()
+     *     .setTotalTimeout(Duration.standardSeconds(30));
+     * {@settingsClassName(service)} {@settingsVariable} = {@settingsVariable}Builder.build();
+     * </code>
+     * </pre>
+     */
+  @end
 @end
 
 @private constants(service)
@@ -86,14 +119,23 @@
   {@methodGetters(service)}
 
   @let className = @settingsClassName(service)
+    /**
+     * Returns an instance of this class with recommended defaults.
+     */
     public static {@className} defaultInstance() throws IOException {
       return newBuilder().build();
     }
 
+    /**
+     * Returns a new builder for this class.
+     */
     public static Builder newBuilder() {
       return new Builder();
     }
 
+    /**
+     * Returns a builder containing all the values of this settings class.
+     */
     public Builder toBuilder() {
       return new Builder(this);
     }
@@ -138,6 +180,9 @@
          outTypeName = context.typeName(method.getOutputType), \
          isPageStreaming = methodConfig.isPageStreaming, \
          isBundling = methodConfig.isBundling
+      /**
+       * Returns the object with the settings used for calls to {@methodName}.
+       */
       @if {@isPageStreaming}
         @let pageStreaming = methodConfig.getPageStreaming(), \
              resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
@@ -326,6 +371,9 @@
 @end
 
 @private innerBuilderClass(service)
+  /**
+   * Builder for {@settingsClassName(service)}.
+   */
   public static class Builder extends ServiceApiSettings.Builder {
     private final ImmutableList<ApiCallSettings.Builder> methodSettingsBuilders;
 
@@ -395,6 +443,11 @@
     return this;
   }
 
+  /**
+   * Applies the given settings to all of the API methods in this service. Only
+   * values that are non-null will be applied, so this method is not capable
+   * of un-setting any values.
+   */
   public Builder applyToAllApiMethods(ApiCallSettings.Builder apiCallSettings) throws Exception {
     super.applyToAllApiMethods(methodSettingsBuilders, apiCallSettings);
     return this;
@@ -407,6 +460,9 @@
          outTypeName = context.typeName(method.getOutputType), \
          isPageStreaming = methodConfig.isPageStreaming, \
          isBundling = methodConfig.isBundling
+      /**
+       * Returns the builder for the settings used for calls to {@methodName}.
+       */
       @if {@isPageStreaming}
         @let pageStreaming = methodConfig.getPageStreaming(), \
              resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \

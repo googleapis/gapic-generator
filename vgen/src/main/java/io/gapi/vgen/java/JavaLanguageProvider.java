@@ -18,6 +18,7 @@ import com.google.api.tools.framework.aspects.documentation.model.DocumentationU
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -41,6 +42,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import io.gapi.vgen.ApiConfig;
 import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.LanguageProvider;
+import io.gapi.vgen.MethodConfig;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.File;
@@ -517,6 +519,17 @@ public class JavaLanguageProvider extends LanguageProvider {
       buf.append("request.get" + lowerUnderscoreToUpperCamel(simpleName) + "()");
     }
     return buf.toString();
+  }
+
+  public Method getFirstFlattenedMethod(Interface service) {
+    for (Method method : service.getMethods()) {
+      MethodConfig methodConfig =
+          getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+      if (methodConfig.isFlattening()) {
+        return method;
+      }
+    }
+    throw new RuntimeException("No flattened methods available.");
   }
 
   @AutoValue

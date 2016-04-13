@@ -82,6 +82,32 @@ import org.joda.time.Duration;
 
 
 // AUTO-GENERATED DOCUMENTATION AND CLASS - see instructions at the top of the file for editing.
+/**
+ * Settings class to configure an instance of {@link LibraryServiceApi}.
+ *
+ * <p>The default instance has everything set to sensible defaults:
+ *
+ * <ul>
+ * <li>The default service address (library-example.googleapis.com) and default port (443)
+ * are used.
+ * <li>Credentials are acquired automatically through Application Default Credentials.
+ * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+ * </ul>
+ *
+ * <p>The builder of this class is recursive, so contained classes are themselves builders.
+ * When build() is called, the tree of builders is called to create the complete settings
+ * object. For example, to set the total timeout of CreateShelf to 30 seconds:
+ *
+ * <pre>
+ * <code>
+ * LibraryServiceSettings.Builder libraryServiceSettingsBuilder =
+ *     LibraryServiceSettings.defaultInstance().toBuilder();
+ * libraryServiceSettingsBuilder.CreateShelfSettings().getRetrySettingsBuilder()
+ *     .setTotalTimeout(Duration.standardSeconds(30));
+ * LibraryServiceSettings libraryServiceSettings = libraryServiceSettingsBuilder.build();
+ * </code>
+ * </pre>
+ */
 @javax.annotation.Generated("by GAPIC")
 public class LibraryServiceSettings extends ServiceApiSettings {
 
@@ -127,65 +153,110 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   private final SimpleCallSettings<UpdateBookRequest, Book> updateBookSettings;
   private final SimpleCallSettings<MoveBookRequest, Book> moveBookSettings;
 
+  /**
+   * Returns the object with the settings used for calls to createShelf.
+   */
   public SimpleCallSettings<CreateShelfRequest, Shelf> createShelfSettings() {
     return createShelfSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to getShelf.
+   */
   public SimpleCallSettings<GetShelfRequest, Shelf> getShelfSettings() {
     return getShelfSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to listShelves.
+   */
   public PageStreamingCallSettings<ListShelvesRequest, ListShelvesResponse, Shelf>
       listShelvesSettings() {
     return listShelvesSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to deleteShelf.
+   */
   public SimpleCallSettings<DeleteShelfRequest, Empty> deleteShelfSettings() {
     return deleteShelfSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to mergeShelves.
+   */
   public SimpleCallSettings<MergeShelvesRequest, Shelf> mergeShelvesSettings() {
     return mergeShelvesSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to createBook.
+   */
   public SimpleCallSettings<CreateBookRequest, Book> createBookSettings() {
     return createBookSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to publishSeries.
+   */
   public BundlingCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
     return publishSeriesSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to getBook.
+   */
   public SimpleCallSettings<GetBookRequest, Book> getBookSettings() {
     return getBookSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to listBooks.
+   */
   public PageStreamingCallSettings<ListBooksRequest, ListBooksResponse, Book>
       listBooksSettings() {
     return listBooksSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to deleteBook.
+   */
   public SimpleCallSettings<DeleteBookRequest, Empty> deleteBookSettings() {
     return deleteBookSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to updateBook.
+   */
   public SimpleCallSettings<UpdateBookRequest, Book> updateBookSettings() {
     return updateBookSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to moveBook.
+   */
   public SimpleCallSettings<MoveBookRequest, Book> moveBookSettings() {
     return moveBookSettings;
   }
 
 
+  /**
+   * Returns an instance of this class with recommended defaults.
+   */
   public static LibraryServiceSettings defaultInstance() throws IOException {
     return newBuilder().build();
   }
 
+  /**
+   * Returns a new builder for this class.
+   */
   public static Builder newBuilder() {
     return new Builder();
   }
 
+  /**
+   * Returns a builder containing all the values of this settings class.
+   */
   public Builder toBuilder() {
     return new Builder(this);
   }
@@ -326,6 +397,9 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       };
 
 
+  /**
+   * Builder for LibraryServiceSettings.
+   */
   public static class Builder extends ServiceApiSettings.Builder {
     private final ImmutableList<ApiCallSettings.Builder> methodSettingsBuilders;
 
@@ -496,57 +570,98 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       return this;
     }
 
+    /**
+     * Applies the given settings to all of the API methods in this service. Only
+     * values that are non-null will be applied, so this method is not capable
+     * of un-setting any values.
+     */
     public Builder applyToAllApiMethods(ApiCallSettings.Builder apiCallSettings) throws Exception {
       super.applyToAllApiMethods(methodSettingsBuilders, apiCallSettings);
       return this;
     }
 
+    /**
+     * Returns the builder for the settings used for calls to createShelf.
+     */
     public SimpleCallSettings.Builder<CreateShelfRequest, Shelf> createShelfSettings() {
       return createShelfSettings;
     }
 
+    /**
+     * Returns the builder for the settings used for calls to getShelf.
+     */
     public SimpleCallSettings.Builder<GetShelfRequest, Shelf> getShelfSettings() {
       return getShelfSettings;
     }
 
+    /**
+     * Returns the builder for the settings used for calls to listShelves.
+     */
     public PageStreamingCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, Shelf>
         listShelvesSettings() {
       return listShelvesSettings;
     }
 
+    /**
+     * Returns the builder for the settings used for calls to deleteShelf.
+     */
     public SimpleCallSettings.Builder<DeleteShelfRequest, Empty> deleteShelfSettings() {
       return deleteShelfSettings;
     }
 
+    /**
+     * Returns the builder for the settings used for calls to mergeShelves.
+     */
     public SimpleCallSettings.Builder<MergeShelvesRequest, Shelf> mergeShelvesSettings() {
       return mergeShelvesSettings;
     }
 
+    /**
+     * Returns the builder for the settings used for calls to createBook.
+     */
     public SimpleCallSettings.Builder<CreateBookRequest, Book> createBookSettings() {
       return createBookSettings;
     }
 
+    /**
+     * Returns the builder for the settings used for calls to publishSeries.
+     */
     public BundlingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings() {
       return publishSeriesSettings;
     }
 
+    /**
+     * Returns the builder for the settings used for calls to getBook.
+     */
     public SimpleCallSettings.Builder<GetBookRequest, Book> getBookSettings() {
       return getBookSettings;
     }
 
+    /**
+     * Returns the builder for the settings used for calls to listBooks.
+     */
     public PageStreamingCallSettings.Builder<ListBooksRequest, ListBooksResponse, Book>
         listBooksSettings() {
       return listBooksSettings;
     }
 
+    /**
+     * Returns the builder for the settings used for calls to deleteBook.
+     */
     public SimpleCallSettings.Builder<DeleteBookRequest, Empty> deleteBookSettings() {
       return deleteBookSettings;
     }
 
+    /**
+     * Returns the builder for the settings used for calls to updateBook.
+     */
     public SimpleCallSettings.Builder<UpdateBookRequest, Book> updateBookSettings() {
       return updateBookSettings;
     }
 
+    /**
+     * Returns the builder for the settings used for calls to moveBook.
+     */
     public SimpleCallSettings.Builder<MoveBookRequest, Book> moveBookSettings() {
       return moveBookSettings;
     }

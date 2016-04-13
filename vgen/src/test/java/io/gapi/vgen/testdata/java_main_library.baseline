@@ -79,6 +79,60 @@ import java.util.List;
  *
  * Check out [cloud docs!](/library/example/link).
  *
+ * <p>This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods. Sample code to get started:
+ *
+ * <pre>
+ * <code>
+ * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.defaultInstance()) {
+ *   // make calls here
+ * Shelf shelf = Shelf.newBuilder().build();
+ * Shelf callResult = createShelf(shelf);
+ * }
+ * </code>
+ * </pre>
+ *
+ * <p>Note: close() needs to be called on the libraryServiceApi object to clean up resources such
+ * as threads. In the example above, try-with-resources is used, which automatically calls
+ * close().
+ *
+ * <p>The surface of this class includes several types of Java methods for each of the API's methods:
+ *
+ * <ol>
+ * <li> A "flattened" method. With this type of method, the fields of the request type have been
+ * converted into function parameters. It may be the case that not all fields are available
+ * as parameters, and not every API method will have a flattened method entry point.
+ * <li> A "request object" method. This type of method only takes one parameter, a request
+ * object, which must be constructed before the call. Not every API method will have a request
+ * object method.
+ * <li> A "callable" method. This type of method takes no parameters and returns an immutable
+ * ApiCallable object, which can be used to initiate calls to the service.
+ * </ol>
+ *
+ * <p>See the individual methods for example code.
+ *
+ * <p>Many parameters require resource names to be formatted in a particular way. To assist
+ * with these names, this class includes a format method for each type of name, and additionally
+ * a parse method to extract the individual identifiers contained within names that are
+ * returned.
+ *
+ * <p>This class can be customized by passing in a custom instance of LibraryServiceSettings to
+ * create(). For example:
+ *
+ * <!-- TODO(garrettjones) refactor code to make this simpler -->
+ * <pre>
+ * <code>
+ * ConnectionSettings defaultConnectionSettings =
+ *     LibraryServiceSettings.defaultInstance().toBuilder().getConnectionSettings();
+ * ConnectionSettings updatedConnectionSettings =
+ *     defaultConnectionSettings.toBuilder().provideCredentialsWith(myCredentials).build();
+ * LibraryServiceSettings libraryServiceSettings = LibraryServiceSettings.defaultInstance().toBuilder().
+ *     provideChannelWith(updatedConnectionSettings)
+ *     .build();
+ * LibraryServiceApi libraryServiceApi = LibraryServiceApi.create(libraryServiceSettings);
+ * </code>
+ * </pre>
+ *
  * <!-- manual edit -->
  * <!-- end manual edit -->
  */
@@ -240,19 +294,16 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Creates a shelf, and returns the new Shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * Shelf shelf = Shelf.newBuilder().build();
-   *
    * Shelf callResult = createShelf(shelf);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param shelf The shelf to create.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf createShelf(Shelf shelf) {
     CreateShelfRequest request =
@@ -267,19 +318,16 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Creates a shelf, and returns the new Shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * CreateShelfRequest request = CreateShelfRequest.newBuilder().build();
-   *
    * Shelf callResult = createShelf(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   private Shelf createShelf(CreateShelfRequest request) {
     return createShelfCallable().call(request);
@@ -289,17 +337,14 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Creates a shelf, and returns the new Shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * CreateShelfRequest request = CreateShelfRequest.newBuilder().build();
-   *
    * Shelf callResult = createShelfCallable().call(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final ApiCallable<CreateShelfRequest, Shelf> createShelfCallable() {
     return createShelfCallable;
@@ -311,19 +356,16 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Gets a shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * String name = "";
-   *
    * Shelf callResult = getShelf(name);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param name The name of the shelf to retrieve.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf getShelf(String name) {
     GetShelfRequest request =
@@ -338,21 +380,18 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Gets a shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * String name = "";
    * SomeMessage message = SomeMessage.newBuilder().build();
-   *
    * Shelf callResult = getShelf(name, message);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param name The name of the shelf to retrieve.
    * @param message Field to verify that message-type query parameter gets flattened.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf getShelf(String name, SomeMessage message) {
     GetShelfRequest request =
@@ -368,15 +407,12 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Gets a shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * String name = "";
    * SomeMessage message = SomeMessage.newBuilder().build();
    * com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
-   *
    * Shelf callResult = getShelf(name, message, stringBuilder);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
@@ -384,7 +420,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param name The name of the shelf to retrieve.
    * @param message Field to verify that message-type query parameter gets flattened.
    * @param stringBuilder
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf getShelf(String name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
     GetShelfRequest request =
@@ -401,19 +437,16 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Gets a shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * GetShelfRequest request = GetShelfRequest.newBuilder().build();
-   *
    * Shelf callResult = getShelf(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public Shelf getShelf(GetShelfRequest request) {
     return getShelfCallable().call(request);
@@ -423,17 +456,14 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Gets a shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * GetShelfRequest request = GetShelfRequest.newBuilder().build();
-   *
    * Shelf callResult = getShelfCallable().call(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final ApiCallable<GetShelfRequest, Shelf> getShelfCallable() {
     return getShelfCallable;
@@ -445,19 +475,17 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Lists shelves.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    *
    * for (Shelf elements : listShelves()) {
    *   // doThingsWith(elements);
    * }
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Iterable<Shelf> listShelves() {
     ListShelvesRequest request =
@@ -471,21 +499,18 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Lists shelves.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
-   *
    * for (Shelf elements : listShelves(request)) {
    *   // doThingsWith(elements);
    * }
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   private final Iterable<Shelf> listShelves(ListShelvesRequest request) {
     return listShelvesIterableCallable()
@@ -496,19 +521,16 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Lists shelves.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
-   *
    * for (Shelf elements : listShelvesCallable().call(request)) {
    *   // doThingsWith(elements);
    * }
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final ApiCallable<ListShelvesRequest, Iterable<Shelf>> listShelvesIterableCallable() {
     return listShelvesIterableCallable;
@@ -518,17 +540,14 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Lists shelves.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
-   *
    * ListShelvesResponse callResult = listShelvesCallable().call(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final ApiCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
     return listShelvesCallable;
@@ -540,19 +559,16 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Deletes a shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * String name = "";
-   *
    * deleteShelf(name);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param name The name of the shelf to delete.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final void deleteShelf(String name) {
     DeleteShelfRequest request =
@@ -567,19 +583,16 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Deletes a shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * DeleteShelfRequest request = DeleteShelfRequest.newBuilder().build();
-   *
    * deleteShelf(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   private void deleteShelf(DeleteShelfRequest request) {
     deleteShelfCallable().call(request);
@@ -589,17 +602,14 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Deletes a shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * DeleteShelfRequest request = DeleteShelfRequest.newBuilder().build();
-   *
    * deleteShelfCallable().call(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final ApiCallable<DeleteShelfRequest, Empty> deleteShelfCallable() {
     return deleteShelfCallable;
@@ -613,21 +623,18 @@ public class LibraryServiceApi implements AutoCloseable {
    * `other_shelf_name` to shelf `name`, and deletes
    * `other_shelf_name`. Returns the updated shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * String name = "";
    * String otherShelfName = "";
-   *
    * Shelf callResult = mergeShelves(name, otherShelfName);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param name The name of the shelf we're adding books to.
    * @param otherShelfName The name of the shelf we're removing books from and deleting.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf mergeShelves(String name, String otherShelfName) {
     MergeShelvesRequest request =
@@ -645,19 +652,16 @@ public class LibraryServiceApi implements AutoCloseable {
    * `other_shelf_name` to shelf `name`, and deletes
    * `other_shelf_name`. Returns the updated shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * MergeShelvesRequest request = MergeShelvesRequest.newBuilder().build();
-   *
    * Shelf callResult = mergeShelves(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public Shelf mergeShelves(MergeShelvesRequest request) {
     return mergeShelvesCallable().call(request);
@@ -669,17 +673,14 @@ public class LibraryServiceApi implements AutoCloseable {
    * `other_shelf_name` to shelf `name`, and deletes
    * `other_shelf_name`. Returns the updated shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * MergeShelvesRequest request = MergeShelvesRequest.newBuilder().build();
-   *
    * Shelf callResult = mergeShelvesCallable().call(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final ApiCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable() {
     return mergeShelvesCallable;
@@ -691,21 +692,18 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Creates a book.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * String name = "";
    * Book book = Book.newBuilder().build();
-   *
    * Book callResult = createBook(name, book);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param name The name of the shelf in which the book is created.
    * @param book The book to create.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book createBook(String name, Book book) {
     CreateBookRequest request =
@@ -721,19 +719,16 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Creates a book.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * CreateBookRequest request = CreateBookRequest.newBuilder().build();
-   *
    * Book callResult = createBook(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public Book createBook(CreateBookRequest request) {
     return createBookCallable().call(request);
@@ -743,17 +738,14 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Creates a book.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * CreateBookRequest request = CreateBookRequest.newBuilder().build();
-   *
    * Book callResult = createBookCallable().call(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final ApiCallable<CreateBookRequest, Book> createBookCallable() {
     return createBookCallable;
@@ -765,15 +757,12 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Creates a series of books.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * Shelf shelf = Shelf.newBuilder().build();
    * List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    * int edition = 0;
-   *
    * PublishSeriesResponse callResult = publishSeries(shelf, books, edition);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
@@ -781,7 +770,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param shelf The shelf in which the series is created.
    * @param books The books to publish in the series.
    * @param edition The edition of the series
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition) {
     PublishSeriesRequest request =
@@ -798,19 +787,16 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Creates a series of books.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * PublishSeriesRequest request = PublishSeriesRequest.newBuilder().build();
-   *
    * PublishSeriesResponse callResult = publishSeries(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public PublishSeriesResponse publishSeries(PublishSeriesRequest request) {
     return publishSeriesCallable().call(request);
@@ -820,17 +806,14 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Creates a series of books.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * PublishSeriesRequest request = PublishSeriesRequest.newBuilder().build();
-   *
    * PublishSeriesResponse callResult = publishSeriesCallable().call(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final ApiCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable() {
     return publishSeriesCallable;
@@ -842,19 +825,16 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Gets a book.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * String name = "";
-   *
    * Book callResult = getBook(name);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param name The name of the book to retrieve.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book getBook(String name) {
     GetBookRequest request =
@@ -869,19 +849,16 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Gets a book.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * GetBookRequest request = GetBookRequest.newBuilder().build();
-   *
    * Book callResult = getBook(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   private Book getBook(GetBookRequest request) {
     return getBookCallable().call(request);
@@ -891,17 +868,14 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Gets a book.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * GetBookRequest request = GetBookRequest.newBuilder().build();
-   *
    * Book callResult = getBookCallable().call(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final ApiCallable<GetBookRequest, Book> getBookCallable() {
     return getBookCallable;
@@ -913,23 +887,20 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Lists books in a shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * String name = "";
    * String filter = "";
-   *
    * for (Book elements : listBooks(name, filter)) {
    *   // doThingsWith(elements);
    * }
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param name The name of the shelf whose books we'd like to list.
    * @param filter To test python built-in wrapping.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Iterable<Book> listBooks(String name, String filter) {
     ListBooksRequest request =
@@ -944,21 +915,18 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Lists books in a shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * ListBooksRequest request = ListBooksRequest.newBuilder().build();
-   *
    * for (Book elements : listBooks(request)) {
    *   // doThingsWith(elements);
    * }
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Iterable<Book> listBooks(ListBooksRequest request) {
     return listBooksIterableCallable()
@@ -969,19 +937,16 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Lists books in a shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * ListBooksRequest request = ListBooksRequest.newBuilder().build();
-   *
    * for (Book elements : listBooksCallable().call(request)) {
    *   // doThingsWith(elements);
    * }
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final ApiCallable<ListBooksRequest, Iterable<Book>> listBooksIterableCallable() {
     return listBooksIterableCallable;
@@ -991,17 +956,14 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Lists books in a shelf.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * ListBooksRequest request = ListBooksRequest.newBuilder().build();
-   *
    * ListBooksResponse callResult = listBooksCallable().call(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final ApiCallable<ListBooksRequest, ListBooksResponse> listBooksCallable() {
     return listBooksCallable;
@@ -1013,19 +975,16 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Deletes a book.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * String name = "";
-   *
    * deleteBook(name);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param name The name of the book to delete.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final void deleteBook(String name) {
     DeleteBookRequest request =
@@ -1040,19 +999,16 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Deletes a book.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * DeleteBookRequest request = DeleteBookRequest.newBuilder().build();
-   *
    * deleteBook(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   private void deleteBook(DeleteBookRequest request) {
     deleteBookCallable().call(request);
@@ -1062,17 +1018,14 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Deletes a book.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * DeleteBookRequest request = DeleteBookRequest.newBuilder().build();
-   *
    * deleteBookCallable().call(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final ApiCallable<DeleteBookRequest, Empty> deleteBookCallable() {
     return deleteBookCallable;
@@ -1084,21 +1037,18 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Updates a book.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * String name = "";
    * Book book = Book.newBuilder().build();
-   *
    * Book callResult = updateBook(name, book);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param name The name of the book to update.
    * @param book The book to update with.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book updateBook(String name, Book book) {
     UpdateBookRequest request =
@@ -1114,16 +1064,13 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Updates a book.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * String name = "";
    * Book book = Book.newBuilder().build();
    * FieldMask updateMask = FieldMask.newBuilder().build();
    * com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
-   *
    * Book callResult = updateBook(name, book, updateMask, physicalMask);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
@@ -1132,7 +1079,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param book The book to update with.
    * @param updateMask A field mask to apply, rendered as an HTTP parameter.
    * @param physicalMask To test Python import clash resolution.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book updateBook(String name, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
     UpdateBookRequest request =
@@ -1150,19 +1097,16 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Updates a book.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * UpdateBookRequest request = UpdateBookRequest.newBuilder().build();
-   *
    * Book callResult = updateBook(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public Book updateBook(UpdateBookRequest request) {
     return updateBookCallable().call(request);
@@ -1172,17 +1116,14 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Updates a book.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * UpdateBookRequest request = UpdateBookRequest.newBuilder().build();
-   *
    * Book callResult = updateBookCallable().call(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final ApiCallable<UpdateBookRequest, Book> updateBookCallable() {
     return updateBookCallable;
@@ -1194,21 +1135,18 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Moves a book to another shelf, and returns the new book.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * String name = "";
    * String otherShelfName = "";
-   *
    * Book callResult = moveBook(name, otherShelfName);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param name The name of the book to move.
    * @param otherShelfName The name of the destination shelf.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book moveBook(String name, String otherShelfName) {
     MoveBookRequest request =
@@ -1224,19 +1162,16 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Moves a book to another shelf, and returns the new book.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * MoveBookRequest request = MoveBookRequest.newBuilder().build();
-   *
    * Book callResult = moveBook(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public Book moveBook(MoveBookRequest request) {
     return moveBookCallable().call(request);
@@ -1246,17 +1181,14 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Moves a book to another shelf, and returns the new book.
    *
-   * <pre>
-   * {@code
+   * <pre><code>
    * MoveBookRequest request = MoveBookRequest.newBuilder().build();
-   *
    * Book callResult = moveBookCallable().call(request);
-   * }
-   * </pre>
+   * </code></pre>
    *
    * <!-- manual edit -->
    * <!-- end manual edit -->
-   * @throws ApiException if the remote call fails
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final ApiCallable<MoveBookRequest, Book> moveBookCallable() {
     return moveBookCallable;
