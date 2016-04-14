@@ -102,14 +102,14 @@ public class Resources {
    * can be used with PathTemplate.
    */
   public static String templatize(FieldSegment fieldSegment) {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder builder = new StringBuilder();
 
     for (String collectionName : getWildcardCollectionNames(fieldSegment)) {
         String paramName = Inflector.singularize(collectionName);
-        buf.append("/" + collectionName + "/{" + paramName + "}");
+        builder.append("/" + collectionName + "/{" + paramName + "}");
     }
 
-    return buf.toString();
+    return builder.toString();
   }
 
   private static boolean isTemplateFieldSegment(PathSegment pathSegment) {
