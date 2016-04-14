@@ -52,7 +52,7 @@ public class FlatteningConfigGenerator implements MethodConfigGenerator {
         parameterList.add(field.getSimpleName());
       }
     }
-    if (parameterList.size() <= FLATTENING_THRESHOLD) {
+    if (parameterList.size() > 0 && parameterList.size() <= FLATTENING_THRESHOLD) {
       return createFlatteningConfig(parameterList);
     } else {
       return null;
