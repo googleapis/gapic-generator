@@ -23,10 +23,8 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.Iterables;
 
 import io.gapi.vgen.InterfaceConfig;
-import io.gapi.vgen.ServiceMessages;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,18 +54,6 @@ public class PythonImportHandler {
     addImport(null, PythonImport.create("platform", PythonImport.ImportType.STDLIB));
     addImport(null, PythonImport.create("google.gax", PythonImport.ImportType.THIRD_PARTY));
 
-    if (Iterables.size(
-        new ServiceMessages().filterPageStreamingMethods(config, service.getMethods())) > 0) {
-      addImport(null, PythonImport.create("google.gax", "PageDescriptor",
-          PythonImport.ImportType.THIRD_PARTY));
-    }
-
-    if (Iterables.size(
-        new ServiceMessages().filterBundlingMethods(config, service.getMethods())) > 0) {
-      addImport(null, PythonImport.create("google.gax", "BundleDescriptor",
-          PythonImport.ImportType.THIRD_PARTY));
-    }
-
     addImport(null, PythonImport.create("google.gax", "api_callable",
         PythonImport.ImportType.THIRD_PARTY));
     addImport(null, PythonImport.create("google.gax", "config",
@@ -82,7 +68,7 @@ public class PythonImportHandler {
           PythonImport.ImportType.APP));
       for (Field field : method.getInputType().getMessageType().getMessageFields()) {
         MessageType messageType = field.getType().getMessageType();
-        PythonImport imp = addImport(messageType.getFile(),
+        addImport(messageType.getFile(),
             PythonImport.create(messageType.getFile().getProto().getPackage(),
             PythonProtoElements.getPbFileName(messageType), PythonImport.ImportType.APP));
       }
@@ -95,7 +81,7 @@ public class PythonImportHandler {
         MessageType messageType = field.getType().getMessageType();
         // Don't include imports to messages in the same file.
         if (!messageType.getFile().equals(file)) {
-          PythonImport imp = addImport(messageType.getFile(),
+          addImport(messageType.getFile(),
               PythonImport.create(messageType.getFile().getProto().getPackage(),
               PythonProtoElements.getPbFileName(messageType), PythonImport.ImportType.APP));
         }

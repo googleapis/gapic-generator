@@ -12,6 +12,11 @@
     {@importSection(imports)}
 
 
+    @if aliasSection(service)
+        {@aliasSection(service)}
+
+
+    @end
     {@serviceClass(service)}
 @end
 
@@ -47,6 +52,24 @@
 @private importSection(imports)
     @join import : imports
         {@import}
+    @end
+@end
+
+@private aliasSection(service)
+    @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
+            bundling = context.messages.filterBundlingMethods(ifaceConfig, service.getMethods), \
+            pageStreaming = context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
+        @if bundling
+            _BundleDesc = google.gax.BundleDescriptor
+        @end
+        # Note that this should be inside the page streaming conditional. But a snippets bug
+        # causes the indentation to render improperly if so. The result is that sometimes we
+        # generate too much whitespace, which can be removed by yapf in the pipeline.
+        {@BREAK}
+        @if pageStreaming
+
+            _PageDesc = google.gax.PageDescriptor
+        @end
     @end
 @end
 
@@ -93,7 +116,7 @@
                             responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
                             resources = pageStreaming.getResourcesField().getSimpleName(), \
                             methodName = context.upperCamelToLowerUnderscore(method.getSimpleName)
-                        '{@methodName}': PageDescriptor(
+                        '{@methodName}': _PageDesc(
                             '{@requestToken}',
                             '{@responseToken}',
                             '{@resources}'
@@ -109,7 +132,7 @@
                     @join method : context.messages.filterBundlingMethods(ifaceConfig, service.getMethods) on {@", "}.add(BREAK)
                         @let bundling = ifaceConfig.getMethodConfig(method).getBundling(), \
                                 methodName = context.upperCamelToLowerUnderscore(method.getSimpleName)
-                            '{@methodName}': BundleDescriptor(
+                            '{@methodName}': _BundleDesc(
                                 {@bundleDescriptorBody(bundling, method)}
                             )
                         @end
