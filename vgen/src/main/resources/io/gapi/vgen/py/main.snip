@@ -1,7 +1,7 @@
 @extends "common.snip"
 
 @snippet generateFilename(service)
-    {@context.upperCamelToLowerUnderscore(context.getVeneerName(service))}.py
+    {@context.upperCamelToLowerUnderscore(context.getApiWrapperName(service))}.py
 @end
 
 @snippet generateClass(service, imports)
@@ -76,7 +76,7 @@
 @private serviceClass(service)
     @let path_templates = {@pathTemplateSection(service)}, \
          documentation = {@comments(service)}
-        class {@context.getVeneerName(service)}(object):
+        class {@context.getApiWrapperName(service)}(object):
             @if documentation
                 {@documentation}
 
@@ -230,7 +230,7 @@
               app_version (string): The version of the calling service.
 
             Returns:
-              A {@context.getVeneerName(service)} object.
+              A {@context.getApiWrapperName(service)} object.
             """
             if scopes is None:
                 scopes = self._ALL_SCOPES

@@ -26,11 +26,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Example usage: (assuming environment variable BASE is the base directory of the project
-// containing the yamls, descriptor set, and output)
+// containing the YAMLs, descriptor set, and output)
 //
 //     CodeGeneratorTool --descriptor_set=$BASE/src/main/generated/_descriptors/bigtable.desc \
 //        --service_yaml=$BASE/src/main/configs/bigtabletableadmin.yaml \
-//        --veneer_yaml=$BASE/src/main/configs/bigtable_table_veneer.yaml \
+//        --gapic_yaml=$BASE/src/main/configs/bigtable_table_gapic.yaml \
 //        --output=$BASE
 public class CodeGeneratorTool {
   public static void main(String[] args) throws Exception {
@@ -45,21 +45,21 @@ public class CodeGeneratorTool {
         .build());
     options.addOption(Option.builder()
         .longOpt("service_yaml")
-        .desc("The service yaml configuration file or files.")
+        .desc("The service YAML configuration file or files.")
         .hasArg()
         .argName("SERVICE-YAML")
         .required(true)
         .build());
     options.addOption(Option.builder()
-        .longOpt("veneer_yaml")
-        .desc("The Veneer yaml configuration file or files.")
+        .longOpt("gapic_yaml")
+        .desc("The GAPIC YAML configuration file or files.")
         .hasArg()
-        .argName("VENEER-YAML")
+        .argName("GAPIC-YAML")
         .required(true)
         .build());
     options.addOption(Option.builder("o")
         .longOpt("output")
-        .desc("The directory in which to output the generated Veneer.")
+        .desc("The directory in which to output the generated client library.")
         .hasArg()
         .argName("OUTPUT-DIRECTORY")
         .build());
@@ -72,7 +72,7 @@ public class CodeGeneratorTool {
 
     int exitCode = generate(cl.getOptionValue("descriptor_set"),
                             cl.getOptionValues("service_yaml"),
-                            cl.getOptionValues("veneer_yaml"),
+                            cl.getOptionValues("gapic_yaml"),
                             cl.getOptionValue("output", ""));
     System.exit(exitCode);
   }

@@ -34,8 +34,8 @@ public class PythonCodeGeneratorTest  {
   @RunWith(Parameterized.class)
   public static class PythonLibraryBaseline extends CodeGeneratorTestBase {
 
-    public PythonLibraryBaseline(String name, String[] veneerConfigFileNames) {
-      super(name, veneerConfigFileNames);
+    public PythonLibraryBaseline(String name, String[] gapicConfigFileNames) {
+      super(name, gapicConfigFileNames);
     }
 
     /**
@@ -47,7 +47,7 @@ public class PythonCodeGeneratorTest  {
       return ImmutableList.of(
         new Object[] {
             "python",
-            new String[]{"io/gapi/vgen/py/python_veneer.yaml", "library_veneer.yaml"}
+            new String[]{"io/gapi/vgen/py/python_gapic.yaml", "library_gapic.yaml"}
         });
     }
 
@@ -80,8 +80,8 @@ public class PythonCodeGeneratorTest  {
   @RunWith(Parameterized.class)
   public static class PythonNoPathTemplatesBaseline extends CodeGeneratorTestBase {
 
-    public PythonNoPathTemplatesBaseline(String name, String[] veneerConfigFileNames) {
-      super(name, veneerConfigFileNames);
+    public PythonNoPathTemplatesBaseline(String name, String[] gapicConfigFileNames) {
+      super(name, gapicConfigFileNames);
     }
 
     /**
@@ -93,7 +93,7 @@ public class PythonCodeGeneratorTest  {
       return ImmutableList.of(
         new Object[] {
             "python",
-            new String[]{"io/gapi/vgen/py/python_veneer.yaml", "no_path_templates_veneer.yaml"}
+            new String[]{"io/gapi/vgen/py/python_gapic.yaml", "no_path_templates_gapic.yaml"}
         });
     }
 

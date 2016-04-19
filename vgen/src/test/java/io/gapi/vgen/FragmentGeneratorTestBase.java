@@ -28,8 +28,8 @@ import java.util.Map;
 @RunWith(Parameterized.class)
 public abstract class FragmentGeneratorTestBase extends GeneratorTestBase {
 
-  public FragmentGeneratorTestBase(String name, String[] veneerConfigFileNames) {
-    super(name, veneerConfigFileNames);
+  public FragmentGeneratorTestBase(String name, String[] gapicConfigFileNames) {
+    super(name, gapicConfigFileNames);
   }
 
   @Override

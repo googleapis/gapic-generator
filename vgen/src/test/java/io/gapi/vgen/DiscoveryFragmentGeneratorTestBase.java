@@ -29,8 +29,8 @@ import java.util.Map;
 public abstract class DiscoveryFragmentGeneratorTestBase extends DiscoveryGeneratorTestBase {
 
   public DiscoveryFragmentGeneratorTestBase(String name, String discoveryDocFileName,
-      String[] veneerConfigFileNames) {
-    super(name, discoveryDocFileName, veneerConfigFileNames);
+      String[] gapicConfigFileNames) {
+    super(name, discoveryDocFileName, gapicConfigFileNames);
   }
 
   @Override

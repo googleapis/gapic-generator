@@ -31,12 +31,12 @@ import java.util.ArrayList;
 @RunWith(Parameterized.class)
 public abstract class CodeGeneratorTestBase extends GeneratorTestBase {
 
-  public CodeGeneratorTestBase(String name, String[] veneerConfigFileNames, String snippetName) {
-    super(name, veneerConfigFileNames, snippetName);
+  public CodeGeneratorTestBase(String name, String[] gapicConfigFileNames, String snippetName) {
+    super(name, gapicConfigFileNames, snippetName);
   }
 
-  public CodeGeneratorTestBase(String name, String[] veneerConfigFileNames) {
-    super(name, veneerConfigFileNames);
+  public CodeGeneratorTestBase(String name, String[] gapicConfigFileNames) {
+    super(name, gapicConfigFileNames);
   }
 
   protected GeneratedResult generateForSnippet(int index) {

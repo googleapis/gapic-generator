@@ -31,13 +31,13 @@ import java.util.List;
 public class JavaDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGeneratorTestBase {
 
   public JavaDiscoveryFragmentGeneratorTest(
-      String name, String discoveryDocFileName, String[] veneerConfigFileNames) {
-    super(name, discoveryDocFileName, veneerConfigFileNames);
+      String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
+    super(name, discoveryDocFileName, gapicConfigFileNames);
   }
 
   /**
    * Declares test parameters, each one an array of values passed to the constructor, with
-   * the first element a name, the second a discovery doc, and the third a partial veneer config.
+   * the first element a name, the second a discovery doc, and the third a partial GAPIC config.
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
@@ -49,7 +49,7 @@ public class JavaDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGenerat
           new Object[] {
             "java_discovery_fragments_" + fileName,
             "discoveries/" + fileName,
-            new String[] {"io/gapi/vgen/java/java_discovery_veneer.yaml"}
+            new String[] {"io/gapi/vgen/java/java_discovery_gapic.yaml"}
           });
     }
     return builder.build();

@@ -79,7 +79,7 @@ public class DiscoveryFragmentGeneratorApi {
             com.google.common.io.Files.newReader(
                 new File(options.get(DISCOVERY_DOC)), Charset.forName("UTF8")));
 
-    // Read the yaml config and convert it to proto.
+    // Read the YAML config and convert it to proto.
     List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
     if (configFileNames.size() == 0) {
       error(String.format("--%s must be provided", GENERATOR_CONFIG_FILES.name()));

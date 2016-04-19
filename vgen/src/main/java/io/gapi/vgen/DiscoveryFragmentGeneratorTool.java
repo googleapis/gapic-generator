@@ -11,10 +11,10 @@ import org.apache.commons.cli.Options;
 import java.util.Arrays;
 
 // Example usage: (assuming environment variable BASE is the base directory of the project
-// containing the yaml config, discovery doc, and output)
+// containing the YAML config, discovery doc, and output)
 //
 //     DiscoveryFragmentGeneratorTool --discovery_doc=$BASE/<service>.json \
-//        --veneer_yaml=$BASE/<service>_veneer.yaml \
+//        --gapic_yaml=$BASE/<service>_gapic.yaml \
 //        --output=$BASE
 public class DiscoveryFragmentGeneratorTool {
   public static void main(String[] args) throws Exception {
@@ -28,10 +28,10 @@ public class DiscoveryFragmentGeneratorTool {
         .required(true)
         .build());
     options.addOption(Option.builder()
-        .longOpt("veneer_yaml")
-        .desc("The Veneer YAML configuration file or files.")
+        .longOpt("gapic_yaml")
+        .desc("The GAPIC YAML configuration file or files.")
         .hasArg()
-        .argName("VENEER-YAML")
+        .argName("GAPIC-YAML")
         .required(true)
         .build());
     options.addOption(Option.builder("o")
@@ -48,7 +48,7 @@ public class DiscoveryFragmentGeneratorTool {
     }
 
     generate(cl.getOptionValue("discovery_doc"),
-             cl.getOptionValues("veneer_yaml"),
+             cl.getOptionValues("gapic_yaml"),
              cl.getOptionValue("output", ""));
   }
 

@@ -31,8 +31,8 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class GoCodeGeneratorTest extends CodeGeneratorTestBase {
 
-  public GoCodeGeneratorTest(String name, String[] veneerConfigFileNames) {
-    super(name, veneerConfigFileNames);
+  public GoCodeGeneratorTest(String name, String[] gapicConfigFileNames) {
+    super(name, gapicConfigFileNames);
   }
 
   /**
@@ -44,8 +44,8 @@ public class GoCodeGeneratorTest extends CodeGeneratorTestBase {
     return ImmutableList.of(
       new Object[] {
           "go", new String[]{
-              "io/gapi/vgen/go/go_veneer.yaml",
-              "library_veneer.yaml",
+              "io/gapi/vgen/go/go_gapic.yaml",
+              "library_gapic.yaml",
           }
       });
   }
