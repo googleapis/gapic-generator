@@ -46,7 +46,7 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
 
   private final String name;
   private final String discoveryDocFileName;
-  private final String[] veneerConfigFileNames;
+  private final String[] gapicConfigFileNames;
   private final String snippetName;
   protected ConfigProto config;
   protected DiscoveryImporter discoveryImporter;
@@ -54,17 +54,17 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
   public DiscoveryGeneratorTestBase(
       String name,
       String discoveryDocFileName,
-      String[] veneerConfigFileNames,
+      String[] gapicConfigFileNames,
       String snippetName) {
     this.name = name;
     this.discoveryDocFileName = discoveryDocFileName;
-    this.veneerConfigFileNames = veneerConfigFileNames;
+    this.gapicConfigFileNames = gapicConfigFileNames;
     this.snippetName = snippetName;
   }
 
   public DiscoveryGeneratorTestBase(
-      String name, String discoveryDocFileName, String[] veneerConfigFileNames) {
-    this(name, discoveryDocFileName, veneerConfigFileNames, null);
+      String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
+    this(name, discoveryDocFileName, gapicConfigFileNames, null);
   }
 
   protected void setupDiscovery() {
@@ -128,10 +128,10 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
     List<String> inputNames = new ArrayList<>();
     List<String> inputs = new ArrayList<>();
 
-    for (String veneerConfigFileName : veneerConfigFileNames) {
-      URL veneerConfigUrl = getTestDataLocator().findTestData(veneerConfigFileName);
-      String configData = getTestDataLocator().readTestData(veneerConfigUrl);
-      inputNames.add(veneerConfigFileName);
+    for (String gapicConfigFileName : gapicConfigFileNames) {
+      URL gapicConfigUrl = getTestDataLocator().findTestData(gapicConfigFileName);
+      String configData = getTestDataLocator().readTestData(gapicConfigUrl);
+      inputNames.add(gapicConfigFileName);
       inputs.add(configData);
     }
 

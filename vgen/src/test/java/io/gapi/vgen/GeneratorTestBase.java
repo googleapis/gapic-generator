@@ -39,18 +39,18 @@ public abstract class GeneratorTestBase extends ConfigBaselineTestCase {
   // ======
 
   private final String name;
-  private final String[] veneerConfigFileNames;
+  private final String[] gapicConfigFileNames;
   private final String snippetName;
   protected ConfigProto config;
 
-  public GeneratorTestBase(String name, String[] veneerConfigFileNames, String snippetName) {
+  public GeneratorTestBase(String name, String[] gapicConfigFileNames, String snippetName) {
     this.name = name;
-    this.veneerConfigFileNames = veneerConfigFileNames;
+    this.gapicConfigFileNames = gapicConfigFileNames;
     this.snippetName = snippetName;
   }
 
-  public GeneratorTestBase(String name, String[] veneerConfigFileNames) {
-    this(name, veneerConfigFileNames, null);
+  public GeneratorTestBase(String name, String[] gapicConfigFileNames) {
+    this(name, gapicConfigFileNames, null);
   }
 
   @Override protected void setupModel() {
@@ -89,10 +89,10 @@ public abstract class GeneratorTestBase extends ConfigBaselineTestCase {
     List<String> inputNames = new ArrayList<>();
     List<String> inputs = new ArrayList<>();
 
-    for (String veneerConfigFileName : veneerConfigFileNames) {
-      URL veneerConfigUrl = getTestDataLocator().findTestData(veneerConfigFileName);
-      String configData = getTestDataLocator().readTestData(veneerConfigUrl);
-      inputNames.add(veneerConfigFileName);
+    for (String gapicConfigFileName : gapicConfigFileNames) {
+      URL gapicConfigUrl = getTestDataLocator().findTestData(gapicConfigFileName);
+      String configData = getTestDataLocator().readTestData(gapicConfigUrl);
+      inputNames.add(gapicConfigFileName);
       inputs.add(configData);
     }
 

@@ -21,7 +21,7 @@ import com.google.common.base.Preconditions;
 
 /**
  * A LanguageContext that provides helpers specific to the use case
- * of Gapic (code-generation of client libraries built on gRPC, or
+ * of GAPIC (code-generation of client libraries built on gRPC, or
  * code fragments for those client libraries).
  */
 public class GapicContext extends LanguageContext {
@@ -69,9 +69,9 @@ public class GapicContext extends LanguageContext {
   }
 
   /**
-   * Return the name of the class which is the veneer for this service interface.
+   * Return the name of the class which is the GAPIC wrapper for this service interface.
    */
-  public String getVeneerName(Interface service) {
+  public String getApiWrapperName(Interface service) {
     return service.getSimpleName() + "Api";
   }
 

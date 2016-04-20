@@ -29,8 +29,8 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class CSharpCodeGeneratorTest extends CodeGeneratorTestBase {
 
-  public CSharpCodeGeneratorTest(String name, String[] veneerConfigFileNames, String snippetName) {
-    super(name, veneerConfigFileNames, snippetName);
+  public CSharpCodeGeneratorTest(String name, String[] gapicConfigFileNames, String snippetName) {
+    super(name, gapicConfigFileNames, snippetName);
     getTestDataLocator().addTestDataSource(io.gapi.vgen.csharp.CSharpGapicContext.class, "");
   }
 
@@ -41,13 +41,13 @@ public class CSharpCodeGeneratorTest extends CodeGeneratorTestBase {
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
     // TODO(jonskeet): Remove the separate YAML files when we have a better way of overriding
-    // which snippets to use. (Ideally we should use csharp_veneer.yaml and only override which
+    // which snippets to use. (Ideally we should use csharp_gapic.yaml and only override which
     // snippet we want to test. While additional YAML files can override single values, they
     // append to list values.)
     return ImmutableList.of(
         new Object[] {
             "csharp_wrapper",
-            new String[] { "library_veneer.yaml", "csharp_veneer.yaml"},
+            new String[] { "library_gapic.yaml", "csharp_gapic.yaml"},
             "wrapper.snip"
         });
   }

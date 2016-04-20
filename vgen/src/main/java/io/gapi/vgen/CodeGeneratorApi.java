@@ -91,7 +91,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
   @Override
   protected void process() throws Exception {
 
-    // Read the yaml config and convert it to proto.
+    // Read the YAML config and convert it to proto.
     List<String> configFileNames = options.get(GENERATOR_CONFIG_FILES);
     if (configFileNames.size() == 0) {
       error(String.format("--%s must be provided", GENERATOR_CONFIG_FILES.name()));

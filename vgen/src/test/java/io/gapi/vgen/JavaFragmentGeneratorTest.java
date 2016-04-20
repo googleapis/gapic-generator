@@ -29,8 +29,8 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class JavaFragmentGeneratorTest extends FragmentGeneratorTestBase {
 
-  public JavaFragmentGeneratorTest(String name, String[] veneerConfigFileNames) {
-    super(name, veneerConfigFileNames);
+  public JavaFragmentGeneratorTest(String name, String[] gapicConfigFileNames) {
+    super(name, gapicConfigFileNames);
   }
 
   /**
@@ -42,8 +42,8 @@ public class JavaFragmentGeneratorTest extends FragmentGeneratorTestBase {
     return ImmutableList.of(
       new Object[] {
           "java_fragments", new String[] {
-              "io/gapi/vgen/java/java_veneer.yaml",
-              "library_veneer.yaml",
+              "io/gapi/vgen/java/java_gapic.yaml",
+              "library_gapic.yaml",
           }
       });
   }

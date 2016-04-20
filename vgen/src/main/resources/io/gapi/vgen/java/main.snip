@@ -1,7 +1,7 @@
 @extends "common.snip"
 
 @snippet generateFilename(service)
-  {@context.getVeneerName(service)}.java
+  {@context.getApiWrapperName(service)}.java
 @end
 
 @snippet generateClass(service, body, imports)
@@ -22,7 +22,7 @@
 
   {@serviceJavaDoc(service)}
   @@javax.annotation.Generated("by GAPIC")
-  public class {@context.getVeneerName(service)} implements AutoCloseable {
+  public class {@context.getApiWrapperName(service)} implements AutoCloseable {
     {@members(service)}
 
     {@resourceUtils(service)}
@@ -160,7 +160,7 @@
 @end
 
 @private constructors(service)
-  @let className = context.getVeneerName(service)
+  @let className = context.getApiWrapperName(service)
     /**
      * Constructs an instance of {@className} with default settings.
      *
@@ -397,7 +397,7 @@
 
 @private serviceJavaDoc(service)
   {@autoGenServiceWarning()}
-  @let serviceApiVariable = context.upperCamelToLowerCamel(context.getVeneerName(service)), \
+  @let serviceApiVariable = context.upperCamelToLowerCamel(context.getApiWrapperName(service)), \
        settingsVariable = context.upperCamelToLowerCamel(settingsClassName(service)), \
        # TODO: support the case where the API has no flattened methods.
        firstFlattenedMethod = context.getFirstFlattenedMethod(service), \
@@ -410,7 +410,7 @@
      *
      * <pre>
      * <code>
-     * try ({@context.getVeneerName(service)} {@serviceApiVariable} = {@context.getVeneerName(service)}.defaultInstance()) {
+     * try ({@context.getApiWrapperName(service)} {@serviceApiVariable} = {@context.getApiWrapperName(service)}.defaultInstance()) {
      *   // make calls here
     @join commentLine : context.java.getJavaDocLines(context.generateMethodSampleCode(context.java.newJavaDocConfigBuilder \
                                .setMethodName(context.upperCamelToLowerCamel(firstFlattenedMethod.getSimpleName)) \
@@ -462,8 +462,8 @@
      * {@settingsClassName(service)} {@settingsVariable} = {@settingsClassName(service)}.defaultInstance().toBuilder().
      *     provideChannelWith(updatedConnectionSettings)
      *     .build();
-     * {@context.getVeneerName(service)} {@serviceApiVariable} = \
-         {@context.getVeneerName(service)}.create({@settingsVariable});
+     * {@context.getApiWrapperName(service)} {@serviceApiVariable} = \
+         {@context.getApiWrapperName(service)}.create({@settingsVariable});
      * </code>
      * </pre>
      *
