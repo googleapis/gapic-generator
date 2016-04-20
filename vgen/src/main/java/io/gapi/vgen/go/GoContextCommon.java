@@ -20,9 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A class that provides helper methods for snippet files generating Go code
- * to get data and perform data transformations that are difficult or messy to do
- * in the snippets themselves.
+ * A class that provides helper methods for snippet files generating Go code to get data and perform
+ * data transformations that are difficult or messy to do in the snippets themselves.
  */
 public class GoContextCommon {
   /**

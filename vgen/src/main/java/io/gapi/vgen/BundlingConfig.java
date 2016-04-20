@@ -38,23 +38,25 @@ public class BundlingConfig {
   private final Field subresponseField;
 
   /**
-   * Creates an instance of BundlingConfig based on BundlingConfigProto, linking it
-   * up with the provided method. On errors, null will be returned, and diagnostics
-   * are reported to the diag collector.
+   * Creates an instance of BundlingConfig based on BundlingConfigProto, linking it up with the
+   * provided method. On errors, null will be returned, and diagnostics are reported to the diag
+   * collector.
    */
   @Nullable
-  public static BundlingConfig createBundling(DiagCollector diagCollector,
-      BundlingConfigProto bundlingConfig, Method method) {
+  public static BundlingConfig createBundling(
+      DiagCollector diagCollector, BundlingConfigProto bundlingConfig, Method method) {
 
     BundlingDescriptorProto bundleDescriptor = bundlingConfig.getBundleDescriptor();
     String bundledFieldName = bundleDescriptor.getBundledField();
-    Field bundledField =
-        method.getInputType().getMessageType().lookupField(bundledFieldName);
+    Field bundledField = method.getInputType().getMessageType().lookupField(bundledFieldName);
     if (bundledField == null) {
-      diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL,
-          "Bundled field missing for bundle config: method = %s, message type = %s, field = %s",
-          method.getFullName(), method.getInputType().getMessageType().getFullName(),
-          bundledFieldName));
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Bundled field missing for bundle config: method = %s, message type = %s, field = %s",
+              method.getFullName(),
+              method.getInputType().getMessageType().getFullName(),
+              bundledFieldName));
     }
 
     ImmutableList.Builder<FieldSelector> discriminatorsBuilder = ImmutableList.builder();
@@ -62,10 +64,14 @@ public class BundlingConfig {
       FieldSelector selector =
           FieldSelector.resolve(method.getInputType().getMessageType(), discriminatorName);
       if (selector == null) {
-        diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL,
-            "Discriminator field missing for bundle config: method = %s, message type = %s, "
-                + "field = %s", method.getFullName(),
-                method.getInputType().getMessageType().getFullName(), discriminatorName));
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Discriminator field missing for bundle config: method = %s, message type = %s, "
+                    + "field = %s",
+                method.getFullName(),
+                method.getInputType().getMessageType().getFullName(),
+                discriminatorName));
       }
       discriminatorsBuilder.add(selector);
     }
@@ -89,14 +95,24 @@ public class BundlingConfig {
       return null;
     }
 
-    return new BundlingConfig(elementCountThreshold, requestByteThreshold,
-        elementCountLimit, requestByteLimit, delayThresholdMillis,
-        bundledField, discriminatorsBuilder.build(), subresponseField);
+    return new BundlingConfig(
+        elementCountThreshold,
+        requestByteThreshold,
+        elementCountLimit,
+        requestByteLimit,
+        delayThresholdMillis,
+        bundledField,
+        discriminatorsBuilder.build(),
+        subresponseField);
   }
 
-  private BundlingConfig(int elementCountThreshold, long requestByteThreshold,
-      int elementCountLimit, long requestByteLimit,
-      long delayThresholdMillis, Field bundledField,
+  private BundlingConfig(
+      int elementCountThreshold,
+      long requestByteThreshold,
+      int elementCountLimit,
+      long requestByteLimit,
+      long delayThresholdMillis,
+      Field bundledField,
       ImmutableList<FieldSelector> discriminatorFields,
       Field subresponseField) {
     this.elementCountThreshold = elementCountThreshold;
@@ -146,4 +162,3 @@ public class BundlingConfig {
     return subresponseField;
   }
 }
-

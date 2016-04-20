@@ -17,10 +17,9 @@ package io.gapi.vgen.go;
 import com.google.api.tools.framework.snippet.Doc;
 
 /**
- * Entry points for a Go snippet set. Generation is partitioned into a first phase
- * which generates the content of the class without package and imports header,
- * and a second phase which completes the class based on the knowledge of which
- * other classes have been imported.
+ * Entry points for a Go snippet set. Generation is partitioned into a first phase which generates
+ * the content of the class without package and imports header, and a second phase which completes
+ * the class based on the knowledge of which other classes have been imported.
  */
 interface GoSnippetSet<Element> {
 
@@ -35,8 +34,8 @@ interface GoSnippetSet<Element> {
   Doc generateBody(Element element);
 
   /**
-   * Generates the result class, based on the result for the body,
-   * and a set of accumulated types to be imported.
+   * Generates the result class, based on the result for the body, and a set of accumulated types to
+   * be imported.
    */
   Doc generateClass(Element element, Doc body);
 }

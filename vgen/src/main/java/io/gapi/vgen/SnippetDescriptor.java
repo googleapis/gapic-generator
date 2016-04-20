@@ -28,5 +28,4 @@ public class SnippetDescriptor {
   public String getSnippetInputName() {
     return snippetInputName;
   }
-
 }

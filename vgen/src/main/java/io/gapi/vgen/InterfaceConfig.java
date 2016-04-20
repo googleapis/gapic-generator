@@ -46,10 +46,9 @@ public class InterfaceConfig {
   private final ImmutableMap<String, RetrySettings> retrySettingsDefinition;
 
   /**
-   * Creates an instance of InterfaceConfig based on ConfigProto, linking up
-   * method configurations with specified methods in methodConfigMap.
-   * On errors, null will be returned, and diagnostics are reported to
-   * the model.
+   * Creates an instance of InterfaceConfig based on ConfigProto, linking up method configurations
+   * with specified methods in methodConfigMap. On errors, null will be returned, and diagnostics
+   * are reported to the model.
    */
   @Nullable
   public static InterfaceConfig createInterfaceConfig(
@@ -112,8 +111,11 @@ public class InterfaceConfig {
           codes.add(Status.Code.valueOf(codeText));
         } catch (IllegalArgumentException e) {
           diagCollector.addDiag(
-              Diag.error(SimpleLocation.TOPLEVEL, "status code not found: '%s' (in interface %s)",
-                  codeText, interfaceConfigProto.getName()));
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "status code not found: '%s' (in interface %s)",
+                  codeText,
+                  interfaceConfigProto.getName()));
         }
       }
       builder.put(retryDef.getName(), Sets.immutableEnumSet(codes));
@@ -143,9 +145,11 @@ public class InterfaceConfig {
         builder.put(retryDef.getName(), settings);
       } catch (IllegalStateException | NullPointerException e) {
         diagCollector.addDiag(
-            Diag.error(SimpleLocation.TOPLEVEL,
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
                 "error while creating retry params: %s (in interface %s)",
-                e, interfaceConfigProto.getName()));
+                e,
+                interfaceConfigProto.getName()));
       }
     }
     if (diagCollector.getErrorCount() > 0) {

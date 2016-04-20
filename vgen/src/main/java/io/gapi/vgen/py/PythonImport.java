@@ -17,7 +17,6 @@ package io.gapi.vgen.py;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Strings;
 
-
 /*
  * Class to represent one python import.
  */
@@ -41,10 +40,9 @@ abstract class PythonImport {
   /*
    * Create a Python import with the given module, attribute and local names.
    */
-  public static PythonImport create(String moduleName, String attributeName, String localName,
-      ImportType type) {
-    return new AutoValue_PythonImport(
-        moduleName, attributeName, localName, type);
+  public static PythonImport create(
+      String moduleName, String attributeName, String localName, ImportType type) {
+    return new AutoValue_PythonImport(moduleName, attributeName, localName, type);
   }
 
   /*
@@ -62,8 +60,10 @@ abstract class PythonImport {
   }
 
   public String importString() {
-    return (Strings.isNullOrEmpty(moduleName()) ? "" : "from " + moduleName() + " ") + "import "
-        + attributeName() + (Strings.isNullOrEmpty(localName()) ? "" : " as " + localName());
+    return (Strings.isNullOrEmpty(moduleName()) ? "" : "from " + moduleName() + " ")
+        + "import "
+        + attributeName()
+        + (Strings.isNullOrEmpty(localName()) ? "" : " as " + localName());
   }
 
   /*
@@ -98,9 +98,10 @@ abstract class PythonImport {
 
     // Add local name
     if (Strings.isNullOrEmpty(localName())) {
-      disambiguation = PythonImport.create(
-          disambiguation.moduleName(), disambiguation.attributeName(),
-          disambiguation.shortName().replace('.', '_'), disambiguation.type());
+      disambiguation =
+          PythonImport.create(
+              disambiguation.moduleName(), disambiguation.attributeName(),
+              disambiguation.shortName().replace('.', '_'), disambiguation.type());
 
       if (!disambiguation.shortName().equals(oldShortName)) {
         return disambiguation;
@@ -127,20 +128,27 @@ abstract class PythonImport {
 
     // Move a first package
     if (!found) {
-      return PythonImport.create(disambiguation.moduleName(), disambiguation.attributeName(),
+      return PythonImport.create(
+          disambiguation.moduleName(),
+          disambiguation.attributeName(),
           moduleNamePackages[moduleNamePackages.length - 1] + "_" + disambiguation.shortName(),
           disambiguation.type());
 
-    // Move another package
+      // Move another package
     } else if (found && i >= 0) {
-      return PythonImport.create(disambiguation.moduleName(), disambiguation.attributeName(),
-          moduleNamePackages[i] + "_" + disambiguation.shortName(), disambiguation.type());
+      return PythonImport.create(
+          disambiguation.moduleName(),
+          disambiguation.attributeName(),
+          moduleNamePackages[i] + "_" + disambiguation.shortName(),
+          disambiguation.type());
 
-    // Mangle
+      // Mangle
     } else {
-      return PythonImport.create(disambiguation.moduleName(), disambiguation.attributeName(),
-          disambiguation.shortName() + "_", disambiguation.type());
+      return PythonImport.create(
+          disambiguation.moduleName(),
+          disambiguation.attributeName(),
+          disambiguation.shortName() + "_",
+          disambiguation.type());
     }
   }
-
 }

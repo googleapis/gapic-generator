@@ -30,11 +30,12 @@ public class FlatteningConfig {
   private final ImmutableList<ImmutableList<Field>> flatteningGroups;
 
   /**
-   * Creates an instance of FlatteningConfig based on FlatteningConfigProto, linking it
-   * up with the provided method.
+   * Creates an instance of FlatteningConfig based on FlatteningConfigProto, linking it up with the
+   * provided method.
    */
-  @Nullable public static FlatteningConfig createFlattening(DiagCollector diagCollector,
-      FlatteningConfigProto flattening, Method method) {
+  @Nullable
+  public static FlatteningConfig createFlattening(
+      DiagCollector diagCollector, FlatteningConfigProto flattening, Method method) {
     boolean missing = false;
     ImmutableList.Builder<ImmutableList<Field>> flatteningGroupsBuilder = ImmutableList.builder();
     for (FlatteningGroupProto flatteningGroup : flattening.getGroupsList()) {
@@ -44,9 +45,13 @@ public class FlatteningConfig {
         if (parameterField != null) {
           parametersBuilder.add(parameterField);
         } else {
-          diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL,
-              "Field missing for flattening: method = %s, message type = %s, field = %s",
-              method.getFullName(), method.getInputMessage().getFullName(), parameter));
+          diagCollector.addDiag(
+              Diag.error(
+                  SimpleLocation.TOPLEVEL,
+                  "Field missing for flattening: method = %s, message type = %s, field = %s",
+                  method.getFullName(),
+                  method.getInputMessage().getFullName(),
+                  parameter));
           missing = true;
         }
       }

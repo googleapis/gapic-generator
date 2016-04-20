@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,10 +51,7 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
   protected DiscoveryImporter discoveryImporter;
 
   public DiscoveryGeneratorTestBase(
-      String name,
-      String discoveryDocFileName,
-      String[] gapicConfigFileNames,
-      String snippetName) {
+      String name, String discoveryDocFileName, String[] gapicConfigFileNames, String snippetName) {
     this.name = name;
     this.discoveryDocFileName = discoveryDocFileName;
     this.gapicConfigFileNames = gapicConfigFileNames;

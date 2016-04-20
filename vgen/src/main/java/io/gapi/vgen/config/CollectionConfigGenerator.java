@@ -36,8 +36,7 @@ public class CollectionConfigGenerator {
   public List<Object> generate(Interface service) {
     List<Object> output = new LinkedList<Object>();
 
-    Iterable<FieldSegment> segments =
-        Resources.getFieldSegmentsFromHttpPaths(service.getMethods());
+    Iterable<FieldSegment> segments = Resources.getFieldSegmentsFromHttpPaths(service.getMethods());
     for (FieldSegment segment : segments) {
       Map<String, Object> collectionMap = new LinkedHashMap<String, Object>();
       collectionMap.put(CONFIG_KEY_NAME_PATTERN, Resources.templatize(segment));
@@ -49,8 +48,7 @@ public class CollectionConfigGenerator {
 
   private String getMethodBaseName(FieldSegment segment) {
     // TODO(shinfan): Consider finding a better way to determine the name if possible.
-    List<String> params =
-        Lists.newArrayList(Resources.getParamsForResourceNameWildcards(segment));
+    List<String> params = Lists.newArrayList(Resources.getParamsForResourceNameWildcards(segment));
     return params.get(params.size() - 1);
   }
 }

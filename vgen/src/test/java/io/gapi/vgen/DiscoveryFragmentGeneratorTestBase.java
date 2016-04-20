@@ -28,18 +28,18 @@ import java.util.Map;
 @RunWith(Parameterized.class)
 public abstract class DiscoveryFragmentGeneratorTestBase extends DiscoveryGeneratorTestBase {
 
-  public DiscoveryFragmentGeneratorTestBase(String name, String discoveryDocFileName,
-      String[] gapicConfigFileNames) {
+  public DiscoveryFragmentGeneratorTestBase(
+      String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
     super(name, discoveryDocFileName, gapicConfigFileNames);
   }
 
   @Override
   protected Object run() {
     String snippetInputName = config.getFragmentFilesList().get(0);
-    SnippetDescriptor resourceDescriptor =
-          new SnippetDescriptor(snippetInputName);
+    SnippetDescriptor resourceDescriptor = new SnippetDescriptor(snippetInputName);
     Map<Method, GeneratedResult> result =
-        DiscoveryFragmentGenerator.create(config, discoveryImporter).generateFragments(resourceDescriptor);
+        DiscoveryFragmentGenerator.create(config, discoveryImporter)
+            .generateFragments(resourceDescriptor);
     if (result == null) {
       return null;
     } else {

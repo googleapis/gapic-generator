@@ -30,11 +30,11 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
+import autovalue.shaded.com.google.common.common.collect.ImmutableList;
 import io.gapi.vgen.ApiConfig;
 import io.gapi.vgen.FlatteningConfig;
 import io.gapi.vgen.GapicContext;
 import io.gapi.vgen.InterfaceConfig;
-import io.gapi.vgen.LanguageContext;
 import io.gapi.vgen.MethodConfig;
 import io.gapi.vgen.PageStreamingConfig;
 import io.gapi.vgen.ServiceConfig;
@@ -47,8 +47,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javax.annotation.Nullable;
-
-import autovalue.shaded.com.google.common.common.collect.ImmutableList;
 
 /**
  * A GapicContext specialized for C#.
@@ -94,8 +92,8 @@ public class CSharpGapicContext extends GapicContext {
   // ===============
 
   /**
-   * Adds the given type name to the import list. Returns an empty string so that the
-   * output is not affected.
+   * Adds the given type name to the import list. Returns an empty string so that the output is not
+   * affected.
    */
   public String addImport(String namespace) {
     return csharpCommon.addImport(namespace);
@@ -123,15 +121,14 @@ public class CSharpGapicContext extends GapicContext {
 
   @AutoValue
   public static abstract class ServiceInfo {
-    public static ServiceInfo create(
-        String host,
-        int port,
-        Iterable<String> scopes) {
-      return new AutoValue_CSharpGapicContext_ServiceInfo(
-          host, port, scopes);
+    public static ServiceInfo create(String host, int port, Iterable<String> scopes) {
+      return new AutoValue_CSharpGapicContext_ServiceInfo(host, port, scopes);
     }
+
     public abstract String host();
+
     public abstract int port();
+
     public abstract Iterable<String> scopes();
   }
 
@@ -146,16 +143,16 @@ public class CSharpGapicContext extends GapicContext {
   @AutoValue
   public static abstract class ParamInfo {
     public static ParamInfo create(
-        String name,
-        String typeName,
-        String propertyName,
-        boolean isRepeated) {
-      return new AutoValue_CSharpGapicContext_ParamInfo(
-          name, typeName, propertyName, isRepeated);
+        String name, String typeName, String propertyName, boolean isRepeated) {
+      return new AutoValue_CSharpGapicContext_ParamInfo(name, typeName, propertyName, isRepeated);
     }
+
     public abstract String name();
+
     public abstract String typeName();
+
     public abstract String propertyName();
+
     public abstract boolean isRepeated();
   }
 
@@ -172,18 +169,33 @@ public class CSharpGapicContext extends GapicContext {
         String responseResourceFieldName,
         String emptyPageToken) {
       return new AutoValue_CSharpGapicContext_PageStreamerInfo(
-          resourceTypeName, requestTypeName, responseTypeName, tokenTypeName,
-          staticFieldName, requestPageTokenFieldName, responseNextPageTokenFieldName,
-          responseResourceFieldName, emptyPageToken);
+          resourceTypeName,
+          requestTypeName,
+          responseTypeName,
+          tokenTypeName,
+          staticFieldName,
+          requestPageTokenFieldName,
+          responseNextPageTokenFieldName,
+          responseResourceFieldName,
+          emptyPageToken);
     }
+
     public abstract String resourceTypeName();
+
     public abstract String requestTypeName();
+
     public abstract String responseTypeName();
+
     public abstract String tokenTypeName();
+
     public abstract String staticFieldName();
+
     public abstract String requestPageTokenFieldName();
+
     public abstract String responseNextPageTokenFieldName();
+
     public abstract String responseResourceFieldName();
+
     public abstract String emptyPageToken();
   }
 
@@ -201,24 +213,45 @@ public class CSharpGapicContext extends GapicContext {
         Iterable<String> xmlDocAsync,
         Iterable<String> xmlDocSync) {
       return new AutoValue_CSharpGapicContext_MethodInfo(
-          name, asyncReturnTypeName, syncReturnTypeName, params, isPageStreaming,
-          pageStreaming, requestTypeName, syncReturnStatement,
-          xmlDocAsync, xmlDocSync);
+          name,
+          asyncReturnTypeName,
+          syncReturnTypeName,
+          params,
+          isPageStreaming,
+          pageStreaming,
+          requestTypeName,
+          syncReturnStatement,
+          xmlDocAsync,
+          xmlDocSync);
     }
+
     public abstract String name();
+
     public abstract String asyncReturnTypeName();
+
     public abstract String syncReturnTypeName();
+
     public abstract Iterable<ParamInfo> params();
+
     public abstract boolean isPageStreaming();
-    @Nullable public abstract PageStreamerInfo pageStreaming();
+
+    @Nullable
+    public abstract PageStreamerInfo pageStreaming();
+
     public abstract String requestTypeName();
+
     public abstract String syncReturnStatement();
+
     public abstract Iterable<String> xmlDocAsync();
+
     public abstract Iterable<String> xmlDocSync();
   }
 
-  private MethodInfo createMethodInfo(InterfaceConfig interfaceConfig, Method method,
-      List<Field> flattening, PageStreamingConfig pageStreamingConfig) {
+  private MethodInfo createMethodInfo(
+      InterfaceConfig interfaceConfig,
+      Method method,
+      List<Field> flattening,
+      PageStreamingConfig pageStreamingConfig) {
     TypeRef returnType = method.getOutputType();
     boolean returnTypeEmpty = messages().isEmptyType(returnType);
     String asyncReturnTypeName;
@@ -237,16 +270,20 @@ public class CSharpGapicContext extends GapicContext {
         syncReturnTypeName = typeName(returnType);
       }
     }
-    Stream<ParamInfo> params = flattening.stream().map(field ->
-      ParamInfo.create(
-          lowerUnderscoreToLowerCamel(field.getSimpleName()),
-          typeName(field.getType()),
-          csharpCommon.underscoresToCamelCase(field.getSimpleName(), true, false),
-          field.getType().isRepeated())
-    );
+    Stream<ParamInfo> params =
+        flattening
+            .stream()
+            .map(
+                field ->
+                    ParamInfo.create(
+                        lowerUnderscoreToLowerCamel(field.getSimpleName()),
+                        typeName(field.getType()),
+                        csharpCommon.underscoresToCamelCase(field.getSimpleName(), true, false),
+                        field.getType().isRepeated()));
     return MethodInfo.create(
         method.getSimpleName(),
-        asyncReturnTypeName, syncReturnTypeName,
+        asyncReturnTypeName,
+        syncReturnTypeName,
         params.collect(Collectors.toList()),
         pageStreamingConfig != null,
         getPageStreamerInfo(interfaceConfig, method),
@@ -259,17 +296,27 @@ public class CSharpGapicContext extends GapicContext {
   public List<MethodInfo> getMethodInfos(Interface service) {
     // FlatteningConfig is just a List<Field>
     InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
-    return service.getMethods().stream().flatMap(method -> {
-      MethodConfig methodConfig = interfaceConfig.getMethodConfig(method);
-      PageStreamingConfig pageStreamingConfig = methodConfig.getPageStreaming();
-      FlatteningConfig flatConfig = methodConfig.getFlattening();
-      if (flatConfig != null) {
-        return flatConfig.getFlatteningGroups().stream().map(
-            flattening -> createMethodInfo(interfaceConfig, method, flattening, pageStreamingConfig));
-      } else {
-        return Stream.of();
-      }
-    }).collect(Collectors.toList());
+    return service
+        .getMethods()
+        .stream()
+        .flatMap(
+            method -> {
+              MethodConfig methodConfig = interfaceConfig.getMethodConfig(method);
+              PageStreamingConfig pageStreamingConfig = methodConfig.getPageStreaming();
+              FlatteningConfig flatConfig = methodConfig.getFlattening();
+              if (flatConfig != null) {
+                return flatConfig
+                    .getFlatteningGroups()
+                    .stream()
+                    .map(
+                        flattening ->
+                            createMethodInfo(
+                                interfaceConfig, method, flattening, pageStreamingConfig));
+              } else {
+                return Stream.of();
+              }
+            })
+        .collect(Collectors.toList());
   }
 
   private PageStreamerInfo getPageStreamerInfo(InterfaceConfig interfaceConfig, Method method) {
@@ -284,15 +331,20 @@ public class CSharpGapicContext extends GapicContext {
         typeName(method.getOutputType()),
         typeName(pageStreamingConfig.getRequestTokenField().getType()),
         "s_" + firstLetterToLower(method.getSimpleName()) + "PageStreamer",
-        csharpCommon.underscoresToCamelCase(pageStreamingConfig.getRequestTokenField().getSimpleName(), true, false),
-        csharpCommon.underscoresToCamelCase(pageStreamingConfig.getResponseTokenField().getSimpleName(), true, false),
-        csharpCommon.underscoresToCamelCase(pageStreamingConfig.getResourcesField().getSimpleName(), true, false),
+        csharpCommon.underscoresToCamelCase(
+            pageStreamingConfig.getRequestTokenField().getSimpleName(), true, false),
+        csharpCommon.underscoresToCamelCase(
+            pageStreamingConfig.getResponseTokenField().getSimpleName(), true, false),
+        csharpCommon.underscoresToCamelCase(
+            pageStreamingConfig.getResourcesField().getSimpleName(), true, false),
         "\"\""); // TODO(chrisbacon): Support non-string page-tokens
   }
 
   public List<PageStreamerInfo> getPageStreamerInfos(Interface service) {
     InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
-    return service.getMethods().stream()
+    return service
+        .getMethods()
+        .stream()
         .map(method -> getPageStreamerInfo(interfaceConfig, method))
         .filter(pageStreamerInfo -> pageStreamerInfo != null)
         .collect(Collectors.toList());
@@ -310,34 +362,40 @@ public class CSharpGapicContext extends GapicContext {
       return new AutoValue_CSharpGapicContext_PathTemplateInfo(
           baseName, docName, namePattern, vars, varArgDeclList, varArgUseList);
     }
+
     public abstract String baseName();
+
     public abstract String docName();
+
     public abstract String namePattern();
+
     public abstract Iterable<String> vars();
+
     public abstract String varArgDeclList();
+
     public abstract String varArgUseList();
   }
 
   public List<PathTemplateInfo> getPathTemplateInfos(Interface service) {
     InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
-    return interfaceConfig.getCollectionConfigs().stream()
-        .map(collection -> {
-          PathTemplate template = collection.getNameTemplate();
-          Set<String> vars = template.vars();
-          return PathTemplateInfo.create(
-              csharpCommon.underscoresToCamelCase(collection.getMethodBaseName(), true, false),
-              csharpCommon.underscoresToCamelCase(collection.getMethodBaseName(), false, false),
-              collection.getNamePattern(),
-              vars,
-              vars.stream()
-                  .map(var -> "string " + var + "Id")
-                  .reduce((a, b) -> a + ", " + b)
-                  .get(),
-              vars.stream()
-                  .map(var -> var + "Id")
-                  .reduce((a, b) -> a + ", " + b)
-                  .get());
-        })
+    return interfaceConfig
+        .getCollectionConfigs()
+        .stream()
+        .map(
+            collection -> {
+              PathTemplate template = collection.getNameTemplate();
+              Set<String> vars = template.vars();
+              return PathTemplateInfo.create(
+                  csharpCommon.underscoresToCamelCase(collection.getMethodBaseName(), true, false),
+                  csharpCommon.underscoresToCamelCase(collection.getMethodBaseName(), false, false),
+                  collection.getNamePattern(),
+                  vars,
+                  vars.stream()
+                      .map(var -> "string " + var + "Id")
+                      .reduce((a, b) -> a + ", " + b)
+                      .get(),
+                  vars.stream().map(var -> var + "Id").reduce((a, b) -> a + ", " + b).get());
+            })
         .collect(Collectors.toList());
   }
 
@@ -401,29 +459,34 @@ public class CSharpGapicContext extends GapicContext {
   }
 
   private List<String> docLines(ProtoElement element, String prefix) {
-    Iterable<String> lines = Splitter.on(String.format("%n"))
-        .split(DocumentationUtil.getDescription(element));
+    Iterable<String> lines =
+        Splitter.on(String.format("%n")).split(DocumentationUtil.getDescription(element));
     return StreamSupport.stream(lines.spliterator(), false)
         .map(line -> prefix + line.replace("&", "&amp;").replace("<", "&lt;"))
         .collect(Collectors.toList());
   }
 
   private List<String> makeMethodXmlDoc(Method method, List<Field> params, boolean isAsync) {
-    List<String> parameters = params.stream()
-        .flatMap(param -> {
-            String header = "/// <param name=\"" + param.getSimpleName() + "\">";
-            List<String> lines = docLines(param, "");
-            if (lines.size() > 1) {
-              return ImmutableList.<String>builder()
-                  .add(header)
-                  .addAll(lines.stream().map(line -> "/// " + line).collect(Collectors.toList()))
-                  .add("/// </param>")
-                  .build().stream();
-            } else {
-              return Stream.of(header + lines.get(0) + "</param>");
-            }
-        })
-        .collect(Collectors.toList());
+    List<String> parameters =
+        params
+            .stream()
+            .flatMap(
+                param -> {
+                  String header = "/// <param name=\"" + param.getSimpleName() + "\">";
+                  List<String> lines = docLines(param, "");
+                  if (lines.size() > 1) {
+                    return ImmutableList.<String>builder()
+                        .add(header)
+                        .addAll(
+                            lines.stream().map(line -> "/// " + line).collect(Collectors.toList()))
+                        .add("/// </param>")
+                        .build()
+                        .stream();
+                  } else {
+                    return Stream.of(header + lines.get(0) + "</param>");
+                  }
+                })
+            .collect(Collectors.toList());
     return ImmutableList.<String>builder()
         .add("/// <summary>")
         .addAll(docLines(method, "/// "))

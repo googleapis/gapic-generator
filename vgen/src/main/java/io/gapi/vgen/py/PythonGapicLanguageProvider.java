@@ -80,12 +80,7 @@ public class PythonGapicLanguageProvider implements GapicLanguageProvider {
   public GeneratedResult generateDoc(ProtoFile file, SnippetDescriptor snippetDescriptor) {
     ImmutableMap<String, Object> globalMap = ImmutableMap.of("file", file);
     return provider.generate(
-        file,
-        snippetDescriptor,
-        context,
-        new PythonImportHandler(file),
-        globalMap,
-        "");
+        file, snippetDescriptor, context, new PythonImportHandler(file), globalMap, "");
   }
 
   @Override

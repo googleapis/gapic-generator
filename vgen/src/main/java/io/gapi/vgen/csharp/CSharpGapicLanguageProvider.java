@@ -23,8 +23,8 @@ import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.collect.Multimap;
 
 import io.gapi.vgen.ApiConfig;
-import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.GapicLanguageProvider;
+import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
@@ -50,9 +50,9 @@ public class CSharpGapicLanguageProvider implements GapicLanguageProvider {
   }
 
   @Override
-  public <Element> void output(String outputPath,
-      Multimap<Element, GeneratedResult> elements, boolean archive)
-          throws IOException {
+  public <Element> void output(
+      String outputPath, Multimap<Element, GeneratedResult> elements, boolean archive)
+      throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
     for (Map.Entry<Element, GeneratedResult> entry : elements.entries()) {
       Element element = entry.getKey();
@@ -75,19 +75,18 @@ public class CSharpGapicLanguageProvider implements GapicLanguageProvider {
 
   @Override
   public GeneratedResult generateCode(Interface service, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(service, snippetDescriptor, context,
-        context.getNamespace(service.getFile()));
+    return provider.generate(
+        service, snippetDescriptor, context, context.getNamespace(service.getFile()));
   }
 
   @Override
   public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(method, snippetDescriptor, context,
-        context.getNamespace(method.getParent().getFile()));
+    return provider.generate(
+        method, snippetDescriptor, context, context.getNamespace(method.getParent().getFile()));
   }
 
   @Override
   public GeneratedResult generateDoc(ProtoFile file, SnippetDescriptor descriptor) {
     return null;
   }
-
 }

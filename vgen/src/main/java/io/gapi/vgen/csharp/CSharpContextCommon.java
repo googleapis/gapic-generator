@@ -21,9 +21,8 @@ import java.util.List;
 import java.util.TreeSet;
 
 /**
- * A class that provides helper methods for snippet files generating C# code
- * to get data and perform data transformations that are difficult or messy to do
- * in the snippets themselves.
+ * A class that provides helper methods for snippet files generating C# code to get data and perform
+ * data transformations that are difficult or messy to do in the snippets themselves.
  */
 public class CSharpContextCommon {
 
@@ -39,8 +38,8 @@ public class CSharpContextCommon {
   }
 
   /**
-   * Adds the given type name to the import list. Returns an empty string so that the
-   * output is not affected.
+   * Adds the given type name to the import list. Returns an empty string so that the output is not
+   * affected.
    */
   public String addImport(String namespace) {
     imports.add(namespace);
@@ -51,8 +50,8 @@ public class CSharpContextCommon {
   // ===============
 
   /**
-   * Splits given text into lines and returns an iterable of strings each one representing a
-   * line decorated for an XML documentation comment, wrapped in the given element
+   * Splits given text into lines and returns an iterable of strings each one representing a line
+   * decorated for an XML documentation comment, wrapped in the given element
    */
   public Iterable<String> getXmlDocLines(String text, String element) {
     // TODO(jonskeet): Convert markdown to XML documentation format.
@@ -66,8 +65,8 @@ public class CSharpContextCommon {
   }
 
   /**
-   * Splits given text into lines and returns an iterable of strings each one representing a
-   * line decorated for an XML documentation comment, wrapped in the given element
+   * Splits given text into lines and returns an iterable of strings each one representing a line
+   * decorated for an XML documentation comment, wrapped in the given element
    */
   public Iterable<String> getXmlParameterLines(String text, String parameterName) {
     // TODO(jonskeet): Convert markdown to XML documentation format.

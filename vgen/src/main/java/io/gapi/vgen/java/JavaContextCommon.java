@@ -26,7 +26,6 @@ import com.google.common.collect.Maps;
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
 
-import io.gapi.vgen.LanguageContext;
 import io.gapi.vgen.LanguageUtil;
 
 import java.util.ArrayList;
@@ -35,9 +34,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A class that provides helper methods for snippet files generating Java code
- * to get data and perform data transformations that are difficult or messy to do
- * in the snippets themselves.
+ * A class that provides helper methods for snippet files generating Java code to get data and
+ * perform data transformations that are difficult or messy to do in the snippets themselves.
  */
 public class JavaContextCommon {
 
@@ -51,23 +49,23 @@ public class JavaContextCommon {
    */
   private static final Escaper JAVADOC_ESCAPER =
       Escapers.builder()
-      .addEscape('&', "&amp;")
-      .addEscape('<', "&lt;")
-      .addEscape('>', "&gt;")
-      .addEscape('*', "&ast;")
-      .build();
+          .addEscape('&', "&amp;")
+          .addEscape('<', "&lt;")
+          .addEscape('>', "&gt;")
+          .addEscape('*', "&ast;")
+          .build();
 
   /**
    * A map from unboxed Java primitive type name to boxed counterpart.
    */
   private static final ImmutableMap<String, String> BOXED_TYPE_MAP =
       ImmutableMap.<String, String>builder()
-      .put("boolean", "Boolean")
-      .put("int", "Integer")
-      .put("long", "Long")
-      .put("float", "Float")
-      .put("double", "Double")
-      .build();
+          .put("boolean", "Boolean")
+          .put("int", "Integer")
+          .put("long", "Long")
+          .put("float", "Float")
+          .put("double", "Double")
+          .build();
 
   /**
    * A bi-map from full names to short names indicating the import map.
@@ -75,8 +73,8 @@ public class JavaContextCommon {
   private final BiMap<String, String> imports = HashBiMap.create();
 
   /**
-   * A map from simple type name to a boolean, indicating whether its in java.lang or not.
-   * If a simple type name is not in the map, this information is unknown.
+   * A map from simple type name to a boolean, indicating whether its in java.lang or not. If a
+   * simple type name is not in the map, this information is unknown.
    */
   private final Map<String, Boolean> implicitImports = Maps.newHashMap();
 
@@ -128,16 +126,16 @@ public class JavaContextCommon {
   }
 
   /**
-   * Splits given text into lines and returns an iterable of strings each one representing a
-   * line decorated for a javadoc documentation comment. Markdown will be translated to javadoc.
+   * Splits given text into lines and returns an iterable of strings each one representing a line
+   * decorated for a javadoc documentation comment. Markdown will be translated to javadoc.
    */
   public Iterable<String> getJavaDocLines(String text) {
     return getJavaDocLinesWithPrefix(text, "");
   }
 
   /**
-   * Splits given text into lines and returns an iterable of strings each one representing a
-   * line decorated for a javadoc documentation comment, with the first line prefixed with
+   * Splits given text into lines and returns an iterable of strings each one representing a line
+   * decorated for a javadoc documentation comment, with the first line prefixed with
    * firstLinePrefix. Markdown will be translated to javadoc.
    */
   public Iterable<String> getJavaDocLinesWithPrefix(String text, String firstLinePrefix) {
@@ -207,9 +205,7 @@ public class JavaContextCommon {
 
       public Builder setSingleParam(
           JavaGapicContext languageProvider, TypeRef requestType, String name, String doc) {
-        return setParams(
-            ImmutableList.of(
-                s_newVariable(requestType, name, doc)));
+        return setParams(ImmutableList.of(s_newVariable(requestType, name, doc)));
       }
 
       public abstract Builder setIterableVariant(boolean iterable);
@@ -244,8 +240,8 @@ public class JavaContextCommon {
     // Clean up the imports.
     List<String> cleanedImports = new ArrayList<>();
     for (String imported : imports.keySet()) {
-      if (imported.startsWith(JAVA_LANG_TYPE_PREFIX) ||
-          defaultPackagePrefix != null && imported.startsWith(defaultPackagePrefix)) {
+      if (imported.startsWith(JAVA_LANG_TYPE_PREFIX)
+          || defaultPackagePrefix != null && imported.startsWith(defaultPackagePrefix)) {
         // Imported type is in java.lang or in package, can be ignored.
         continue;
       }

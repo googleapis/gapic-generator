@@ -20,26 +20,29 @@ public class DiscoveryFragmentGeneratorTool {
   public static void main(String[] args) throws Exception {
     Options options = new Options();
     options.addOption("h", "help", false, "show usage");
-    options.addOption(Option.builder()
-        .longOpt("discovery_doc")
-        .desc("The Discovery doc representing the service description.")
-        .hasArg()
-        .argName("DISCOVERY-DOC")
-        .required(true)
-        .build());
-    options.addOption(Option.builder()
-        .longOpt("gapic_yaml")
-        .desc("The GAPIC YAML configuration file or files.")
-        .hasArg()
-        .argName("GAPIC-YAML")
-        .required(true)
-        .build());
-    options.addOption(Option.builder("o")
-        .longOpt("output")
-        .desc("The directory in which to output the generated fragments.")
-        .hasArg()
-        .argName("OUTPUT-DIRECTORY")
-        .build());
+    options.addOption(
+        Option.builder()
+            .longOpt("discovery_doc")
+            .desc("The Discovery doc representing the service description.")
+            .hasArg()
+            .argName("DISCOVERY-DOC")
+            .required(true)
+            .build());
+    options.addOption(
+        Option.builder()
+            .longOpt("gapic_yaml")
+            .desc("The GAPIC YAML configuration file or files.")
+            .hasArg()
+            .argName("GAPIC-YAML")
+            .required(true)
+            .build());
+    options.addOption(
+        Option.builder("o")
+            .longOpt("output")
+            .desc("The directory in which to output the generated fragments.")
+            .hasArg()
+            .argName("OUTPUT-DIRECTORY")
+            .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
     if (cl.hasOption("help")) {
@@ -47,19 +50,21 @@ public class DiscoveryFragmentGeneratorTool {
       formater.printHelp("CodeGeneratorTool", options);
     }
 
-    generate(cl.getOptionValue("discovery_doc"),
-             cl.getOptionValues("gapic_yaml"),
-             cl.getOptionValue("output", ""));
+    generate(
+        cl.getOptionValue("discovery_doc"),
+        cl.getOptionValues("gapic_yaml"),
+        cl.getOptionValue("output", ""));
   }
 
   @SuppressWarnings("unchecked")
-  private static void generate(String discoveryDoc,
-      String[] generatorConfigs, String outputDirectory) throws Exception {
+  private static void generate(
+      String discoveryDoc, String[] generatorConfigs, String outputDirectory) throws Exception {
 
     ToolOptions options = ToolOptions.create();
     options.set(DiscoveryFragmentGeneratorApi.DISCOVERY_DOC, discoveryDoc);
     options.set(DiscoveryFragmentGeneratorApi.OUTPUT_FILE, outputDirectory);
-    options.set(DiscoveryFragmentGeneratorApi.GENERATOR_CONFIG_FILES, Arrays.asList(generatorConfigs));
+    options.set(
+        DiscoveryFragmentGeneratorApi.GENERATOR_CONFIG_FILES, Arrays.asList(generatorConfigs));
     DiscoveryFragmentGeneratorApi generator = new DiscoveryFragmentGeneratorApi(options);
     generator.run();
   }

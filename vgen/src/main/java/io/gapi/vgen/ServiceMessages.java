@@ -42,12 +42,13 @@ public class ServiceMessages {
    */
   public Iterable<Method> filterPageStreamingMethods(
       final InterfaceConfig config, List<Method> methods) {
-    Predicate<Method> isPageStreaming = new Predicate<Method>() {
-      @Override
-      public boolean apply(Method method) {
-        return config.getMethodConfig(method).isPageStreaming();
-      }
-    };
+    Predicate<Method> isPageStreaming =
+        new Predicate<Method>() {
+          @Override
+          public boolean apply(Method method) {
+            return config.getMethodConfig(method).isPageStreaming();
+          }
+        };
 
     return Iterables.filter(methods, isPageStreaming);
   }
@@ -57,19 +58,20 @@ public class ServiceMessages {
    */
   public Iterable<Method> filterBundlingMethods(
       final InterfaceConfig config, List<Method> methods) {
-    Predicate<Method> isBundling = new Predicate<Method>() {
-      @Override
-      public boolean apply(Method method) {
-        return config.getMethodConfig(method).isBundling();
-      }
-    };
+    Predicate<Method> isBundling =
+        new Predicate<Method>() {
+          @Override
+          public boolean apply(Method method) {
+            return config.getMethodConfig(method).isBundling();
+          }
+        };
 
     return Iterables.filter(methods, isBundling);
   }
 
   /**
-   * Returns the list of flattened fields from the given request type, excluding
-   * fields related to page streaming.
+   * Returns the list of flattened fields from the given request type, excluding fields related to
+   * page streaming.
    */
   public Iterable<Field> flattenedFields(TypeRef requestType) {
     List<Field> fields = new ArrayList<>();

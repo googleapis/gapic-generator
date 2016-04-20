@@ -21,8 +21,8 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.collect.Multimap;
 
 import io.gapi.vgen.ApiConfig;
-import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.GapicLanguageProvider;
+import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
@@ -46,9 +46,9 @@ public class GoGapicLanguageProvider implements GapicLanguageProvider {
   }
 
   @Override
-  public <Element> void output(String outputPath,
-      Multimap<Element, GeneratedResult> elements, boolean archive)
-          throws IOException {
+  public <Element> void output(
+      String outputPath, Multimap<Element, GeneratedResult> elements, boolean archive)
+      throws IOException {
     provider.output(outputPath, elements, archive);
   }
 
@@ -66,5 +66,4 @@ public class GoGapicLanguageProvider implements GapicLanguageProvider {
   public GeneratedResult generateDoc(ProtoFile file, SnippetDescriptor descriptor) {
     return null;
   }
-
 }

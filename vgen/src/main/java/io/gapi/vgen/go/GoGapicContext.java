@@ -51,34 +51,34 @@ public class GoGapicContext extends GapicContext {
    */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Type, String>builder()
-      .put(Type.TYPE_BOOL, "bool")
-      .put(Type.TYPE_DOUBLE, "float64")
-      .put(Type.TYPE_FLOAT, "float32")
-      .put(Type.TYPE_INT64, "int64")
-      .put(Type.TYPE_UINT64, "uint64")
-      .put(Type.TYPE_SINT64, "int64")
-      .put(Type.TYPE_FIXED64, "int64")
-      .put(Type.TYPE_SFIXED64, "int64")
-      .put(Type.TYPE_INT32, "int32")
-      .put(Type.TYPE_UINT32, "uint32")
-      .put(Type.TYPE_SINT32, "int32")
-      .put(Type.TYPE_FIXED32, "int32")
-      .put(Type.TYPE_SFIXED32, "int32")
-      .put(Type.TYPE_STRING, "string")
-      .put(Type.TYPE_BYTES, "[]byte")
-      .build();
+          .put(Type.TYPE_BOOL, "bool")
+          .put(Type.TYPE_DOUBLE, "float64")
+          .put(Type.TYPE_FLOAT, "float32")
+          .put(Type.TYPE_INT64, "int64")
+          .put(Type.TYPE_UINT64, "uint64")
+          .put(Type.TYPE_SINT64, "int64")
+          .put(Type.TYPE_FIXED64, "int64")
+          .put(Type.TYPE_SFIXED64, "int64")
+          .put(Type.TYPE_INT32, "int32")
+          .put(Type.TYPE_UINT32, "uint32")
+          .put(Type.TYPE_SINT32, "int32")
+          .put(Type.TYPE_FIXED32, "int32")
+          .put(Type.TYPE_SFIXED32, "int32")
+          .put(Type.TYPE_STRING, "string")
+          .put(Type.TYPE_BYTES, "[]byte")
+          .build();
 
   /**
-   * The import path for GAX.
-   * TODO(mukai): Change this address when it's decided to merge into gcloud-golang.
+   * The import path for GAX. TODO(mukai): Change this address when it's decided to merge into
+   * gcloud-golang.
    */
   private static final String GAX_PACKAGE_BASE = "github.com/googleapis/gax-go";
 
   /**
    * The import path for generated pb.go files for core-proto files.
    *
-   * Right now this and CORE_PROTO_PACKAGES are not used, assumed they are placed
-   * inside of this package, which is recommended by gcloud-golang team.
+   * Right now this and CORE_PROTO_PACKAGES are not used, assumed they are placed inside of this
+   * package, which is recommended by gcloud-golang team.
    *
    * TODO(mukai): Set the proper location when the location is known.
    */
@@ -91,12 +91,12 @@ public class GoGapicContext extends GapicContext {
    */
   private static final ImmutableSet<String> CORE_PROTO_PACKAGES =
       ImmutableSet.<String>builder()
-      .add("google/api")
-      .add("google/longrunning")
-      .add("google/protobuf")
-      .add("google/rpc")
-      .add("google/type")
-      .build();
+          .add("google/api")
+          .add("google/longrunning")
+          .add("google/protobuf")
+          .add("google/rpc")
+          .add("google/type")
+          .build();
 
   private final GoContextCommon goCommon;
 
@@ -148,7 +148,7 @@ public class GoGapicContext extends GapicContext {
     if (type.isMap()) {
       String keyName = typeName(type.getMapKeyField().getType());
       String valueName = typeName(type.getMapValueField().getType());
-      return "map[" + keyName + "]"  + valueName;
+      return "map[" + keyName + "]" + valueName;
     } else {
       String name;
       if (type.isMessage()) {
@@ -169,10 +169,9 @@ public class GoGapicContext extends GapicContext {
   /**
    * Returns the Go Type name for the resources field.
    *
-   * Note that this returns the individual element type of the resources in the message.
-   * For example, if SomeResponse has 'repeated string contents' field, the return value
-   * should be 'string', not '[]string', and that's why the snippet can't use typeName()
-   * directly.
+   * Note that this returns the individual element type of the resources in the message. For
+   * example, if SomeResponse has 'repeated string contents' field, the return value should be
+   * 'string', not '[]string', and that's why the snippet can't use typeName() directly.
    */
   public String getResourceTypeName(Field field) {
     // Creating a copy with 'required' to extract the type name but isn't affected by
@@ -189,8 +188,8 @@ public class GoGapicContext extends GapicContext {
   }
 
   /**
-   * Returns the list of page streaming configs, grouped by the element type.
-   * In Go, the iterator structs are defined per element type.
+   * Returns the list of page streaming configs, grouped by the element type. In Go, the iterator
+   * structs are defined per element type.
    */
   public Iterable<PageStreamingConfig> getPageStreamingConfigs(Interface service) {
     Map<String, PageStreamingConfig> streamingConfigs = new LinkedHashMap<>();
@@ -250,8 +249,8 @@ public class GoGapicContext extends GapicContext {
   }
 
   /**
-   * Returns the zero-value representation for the specified type in Go.
-   * See: https://golang.org/ref/spec#The_zero_value
+   * Returns the zero-value representation for the specified type in Go. See:
+   * https://golang.org/ref/spec#The_zero_value
    */
   public String zeroValue(TypeRef type) {
     if (type.isRepeated() || type.isMap() || type.isMessage()) {
@@ -275,12 +274,16 @@ public class GoGapicContext extends GapicContext {
   }
 
   /**
-   * Returns the Go type name of (gRPC's) response-streaming methods which receives
-   * the element objects.
+   * Returns the Go type name of (gRPC's) response-streaming methods which receives the element
+   * objects.
    */
   public String getStreamReceiver(Interface service, Method method) {
-    return localPackageName(service) + "." + service.getSimpleName() + "_" +
-        method.getSimpleName() + "Client";
+    return localPackageName(service)
+        + "."
+        + service.getSimpleName()
+        + "_"
+        + method.getSimpleName()
+        + "Client";
   }
 
   /**
@@ -294,13 +297,16 @@ public class GoGapicContext extends GapicContext {
   }
 
   public Iterable<String> getFieldComments(Field field) {
-    return goCommon.getCommentLines("\n" + lowerUnderscoreToLowerCamel(field.getSimpleName()) + ": " +
-                           DocumentationUtil.getScopedDescription(field));
+    return goCommon.getCommentLines(
+        "\n"
+            + lowerUnderscoreToLowerCamel(field.getSimpleName())
+            + ": "
+            + DocumentationUtil.getScopedDescription(field));
   }
 
   /**
-   * Returns the doc comments of a method in Go style.
-   * Right now this assumes comment of gRPC methods starts with a verb.
+   * Returns the doc comments of a method in Go style. Right now this assumes comment of gRPC
+   * methods starts with a verb.
    */
   public Iterable<String> getMethodComments(Method method, String methodName) {
     if (!method.hasAttribute(ElementDocumentationAttribute.KEY)) {
@@ -330,7 +336,7 @@ public class GoGapicContext extends GapicContext {
   public Iterable<String> getCollectionParams(Interface service) {
     TreeSet<String> params = new TreeSet<>();
     for (CollectionConfig config :
-             getApiConfig().getInterfaceConfig(service).getCollectionConfigs()) {
+        getApiConfig().getInterfaceConfig(service).getCollectionConfigs()) {
       for (String param : config.getNameTemplate().vars()) {
         params.add(param);
       }
@@ -348,11 +354,9 @@ public class GoGapicContext extends GapicContext {
   }
 
   /**
-   * Calculates the set of imports and returns a sorted set of Go import output strings.
-   * This imitates the same order which gofmt does, which means:
-   *  - core imports (Go standard libraries) in alphabetical order
-   *  - a blank line (so an empty string)
-   *  - other imports, alphabetical order
+   * Calculates the set of imports and returns a sorted set of Go import output strings. This
+   * imitates the same order which gofmt does, which means: - core imports (Go standard libraries)
+   * in alphabetical order - a blank line (so an empty string) - other imports, alphabetical order
    *
    * Each of the lines (except for the blank line) starts with a tab character '\t' for the
    * indentation within the 'import' section in Go file.
@@ -381,8 +385,7 @@ public class GoGapicContext extends GapicContext {
       imports.add(createMessageImport(inputMessage));
       imports.add(createMessageImport(outputMessage));
       if (methodConfig.isPageStreaming()) {
-        TypeRef resourceType =
-            methodConfig.getPageStreaming().getResourcesField().getType();
+        TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
         if (resourceType.isMessage()) {
           imports.add(createMessageImport(resourceType.getMessageType()));
         }

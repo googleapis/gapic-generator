@@ -39,8 +39,8 @@ import java.util.TreeMap;
 // Delay for now to reduce merge conflict.
 
 /**
- * DiscoveryImporter parses a Discovery Doc into a {@link com.google.api.Service} object
- * and an additional {@link ApiaryConfig} object for data not accommodated by Service.
+ * DiscoveryImporter parses a Discovery Doc into a {@link com.google.api.Service} object and an
+ * additional {@link ApiaryConfig} object for data not accommodated by Service.
  *
  * The current implementation also provides a main method used for manual sanity checking.
  */
@@ -96,10 +96,9 @@ public class DiscoveryImporter {
   /**
    * Parses the file.
    *
-   * Imports all RPC methods under "resources" and all types under "schemas".
-   * Since the discovery doc and Service have different ways to handle nested structures,
-   * "synthetic" types are made as a glue layer.
-   * All such types have names beginning with "synthetic$"
+   * Imports all RPC methods under "resources" and all types under "schemas". Since the discovery
+   * doc and Service have different ways to handle nested structures, "synthetic" types are made as
+   * a glue layer. All such types have names beginning with "synthetic$"
    */
   public static DiscoveryImporter parse(Reader reader) throws IOException {
     ObjectMapper mapper = new ObjectMapper();
@@ -146,7 +145,7 @@ public class DiscoveryImporter {
     importer.service = serv;
 
     importer.config.getTypes().putAll(importer.types);
-    for (Type type: importer.types.values()) {
+    for (Type type : importer.types.values()) {
       for (Field field : type.getFieldsList()) {
         importer.config.getFields().put(type, field.getName(), field);
       }
@@ -244,8 +243,8 @@ public class DiscoveryImporter {
     throw new IllegalArgumentException("unknown type: " + typeText);
   }
 
-  private Field arrayFieldFrom(Field.Builder builder,
-      String typeName, String fieldName, JsonNode items) {
+  private Field arrayFieldFrom(
+      Field.Builder builder, String typeName, String fieldName, JsonNode items) {
     builder.setCardinality(Field.Cardinality.CARDINALITY_REPEATED);
 
     if (items.get("type") != null) {
@@ -281,12 +280,11 @@ public class DiscoveryImporter {
   }
 
   /**
-   * Parses {@code root} as a member of "additionalProperties" of an object
-   * and adds it to {@code types}.
+   * Parses {@code root} as a member of "additionalProperties" of an object and adds it to
+   * {@code types}.
    *
-   * Properties are expressed as types, but are not strictly types as defined by discovery.
-   * They are not to be instantiated. Rather they provide a "schema" describing how data should
-   * be laid out.
+   * Properties are expressed as types, but are not strictly types as defined by discovery. They are
+   * not to be instantiated. Rather they provide a "schema" describing how data should be laid out.
    */
   private String createSyntheticTypeForProperty(JsonNode root) {
     String typeName = getNewSyntheticName();
@@ -335,9 +333,9 @@ public class DiscoveryImporter {
   }
 
   /**
-   * Parses and adds methods listed in {@code root} into {@code methods}.
-   * For each method, its namespace is recorded in {@link ApiaryConfig#resources}
-   * and its parameter order in {@link ApiaryConfig#methodParams}.
+   * Parses and adds methods listed in {@code root} into {@code methods}. For each method, its
+   * namespace is recorded in {@link ApiaryConfig#resources} and its parameter order in
+   * {@link ApiaryConfig#methodParams}.
    */
   private void addMethods(JsonNode root) {
     addMethods(root, new ArrayDeque<String>());
@@ -359,13 +357,11 @@ public class DiscoveryImporter {
   /**
    * Parses a single method.
    *
-   * In discovery, a method can take multiple parameters, but in Service they can only take one.
-   * For this reason, a synthetic type is created for each method to "pull together" the parameters.
-   * For example, if a discovery-doc method takes two parameters,
-   * a string {@code s} and a number {@code i},
-   * it will be instead structured as having one parameter.
-   * The type of the parameter will be a message with two fields:
-   * a string {@code s} and a number {@code i}.
+   * In discovery, a method can take multiple parameters, but in Service they can only take one. For
+   * this reason, a synthetic type is created for each method to "pull together" the parameters. For
+   * example, if a discovery-doc method takes two parameters, a string {@code s} and a number
+   * {@code i}, it will be instead structured as having one parameter. The type of the parameter
+   * will be a message with two fields: a string {@code s} and a number {@code i}.
    */
   private Method methodFrom(JsonNode root) {
     String methodName = root.get("id").asText();
@@ -412,17 +408,17 @@ public class DiscoveryImporter {
   }
 
   /**
-   * Maps the discovery doc type ({@code kindName}) and format {@code formatNode}
-   * into {@link Field.Kind}.
+   * Maps the discovery doc type ({@code kindName}) and format {@code formatNode} into
+   * {@link Field.Kind}.
    *
-   * If {@code kindName} is not {@code "string"},
-   * {@code TYPE_TABLE} is consulted for the appropriate {@link Field.Kind}.
+   * If {@code kindName} is not {@code "string"}, {@code TYPE_TABLE} is consulted for the
+   * appropriate {@link Field.Kind}.
    *
    * Otherwise, if {@code kindName} is {@code "int64"} or {@code "uint64"}, the corresponding
    * {@link Field.Kind} is returned.
    *
-   * Otherwise, the returned {@link Field.Kind} is simply {@link Field.Kind.TYPE_STRING},
-   * and its format, if exists, is recorded in {@link ApiaryConfig#stringFormat}.
+   * Otherwise, the returned {@link Field.Kind} is simply {@link Field.Kind.TYPE_STRING}, and its
+   * format, if exists, is recorded in {@link ApiaryConfig#stringFormat}.
    */
   private Field.Kind getFieldKind(String type, String field, String kindName, JsonNode formatNode) {
     String format = "";
@@ -432,13 +428,13 @@ public class DiscoveryImporter {
     if (kindName.equals("string")) {
       if (formatNode != null) {
         switch (format) {
-        case "int64":
-          return Field.Kind.TYPE_INT64;
-        case "uint64":
-          return Field.Kind.TYPE_UINT64;
-        default:
-          config.getStringFormat().put(type, field, format);
-          // fall through
+          case "int64":
+            return Field.Kind.TYPE_INT64;
+          case "uint64":
+            return Field.Kind.TYPE_UINT64;
+          default:
+            config.getStringFormat().put(type, field, format);
+            // fall through
         }
       }
       return Field.Kind.TYPE_STRING;

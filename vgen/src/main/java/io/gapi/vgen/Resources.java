@@ -37,8 +37,8 @@ import java.util.TreeMap;
 public class Resources {
 
   /**
-   * Generate parameter names for wildcards in a resource path, based on singularized
-   * collection names.
+   * Generate parameter names for wildcards in a resource path, based on singularized collection
+   * names.
    */
   public static Iterable<String> getParamsForResourceNameWildcards(FieldSegment fieldSegment) {
     Preconditions.checkArgument(isTemplateFieldSegment(fieldSegment));
@@ -58,9 +58,9 @@ public class Resources {
   }
 
   /**
-   * Returns the field segments referenced in the http attributes of the given methods.
-   * Each FieldSegment will be composed of a field name and a path segment, representing an
-   * abstract resource name with wildcards.
+   * Returns the field segments referenced in the http attributes of the given methods. Each
+   * FieldSegment will be composed of a field name and a path segment, representing an abstract
+   * resource name with wildcards.
    */
   public static Iterable<FieldSegment> getFieldSegmentsFromHttpPaths(List<Method> methods) {
     // Using a map with the string representation of the resource path to avoid duplication
@@ -88,8 +88,7 @@ public class Resources {
   }
 
   /**
-   * Returns true if the method is idempotent according to the http method kind
-   * (GET, PUT, DELETE).
+   * Returns true if the method is idempotent according to the http method kind (GET, PUT, DELETE).
    */
   public static boolean isIdempotent(Method method) {
     HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);
@@ -98,15 +97,15 @@ public class Resources {
   }
 
   /**
-   * Returns the templatized form of the resource path (replacing each * with a name) which
-   * can be used with PathTemplate.
+   * Returns the templatized form of the resource path (replacing each * with a name) which can be
+   * used with PathTemplate.
    */
   public static String templatize(FieldSegment fieldSegment) {
     StringBuilder builder = new StringBuilder();
 
     for (String collectionName : getWildcardCollectionNames(fieldSegment)) {
-        String paramName = Inflector.singularize(collectionName);
-        builder.append("/" + collectionName + "/{" + paramName + "}");
+      String paramName = Inflector.singularize(collectionName);
+      builder.append("/" + collectionName + "/{" + paramName + "}");
     }
 
     return builder.toString();
@@ -134,7 +133,8 @@ public class Resources {
 
     PathSegment lastSegment = null;
     for (PathSegment pathSegment : fieldSegment.getSubPath()) {
-      if (pathSegment instanceof WildcardSegment && lastSegment != null
+      if (pathSegment instanceof WildcardSegment
+          && lastSegment != null
           && lastSegment instanceof LiteralSegment) {
         String collectionName = ((LiteralSegment) lastSegment).getLiteral();
         collectionNames.add(collectionName);

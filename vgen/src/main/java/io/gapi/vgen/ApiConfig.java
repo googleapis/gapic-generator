@@ -45,10 +45,9 @@ public abstract class ApiConfig {
   public abstract boolean generateSamples();
 
   /**
-   * Creates an instance of ApiConfig based on ConfigProto, linking up
-   * API interface configurations with specified interfaces in interfaceConfigMap.
-   * On errors, null will be returned, and diagnostics are reported to
-   * the model.
+   * Creates an instance of ApiConfig based on ConfigProto, linking up API interface configurations
+   * with specified interfaces in interfaceConfigMap. On errors, null will be returned, and
+   * diagnostics are reported to the model.
    */
   @Nullable
   public static ApiConfig createApiConfig(Model model, ConfigProto configProto) {

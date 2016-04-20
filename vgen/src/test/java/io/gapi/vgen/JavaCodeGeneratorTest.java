@@ -35,22 +35,18 @@ public class JavaCodeGeneratorTest extends CodeGeneratorTestBase {
   }
 
   /**
-   * Declares test parameters, each one an array of values passed to the constructor, with
-   * the first element a name, the second a config of this name.
+   * Declares test parameters, each one an array of values passed to the constructor, with the first
+   * element a name, the second a config of this name.
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
     return ImmutableList.of(
-      new Object[] {
-          "java_main",
-          new String[]{ "java_gapic.yaml", "library_gapic.yaml" },
-          "main.snip"
-      },
-      new Object[] {
-          "java_settings",
-          new String[]{ "java_gapic.yaml", "library_gapic.yaml" },
-          "settings.snip"
-      });
+        new Object[] {
+          "java_main", new String[] {"java_gapic.yaml", "library_gapic.yaml"}, "main.snip"
+        },
+        new Object[] {
+          "java_settings", new String[] {"java_gapic.yaml", "library_gapic.yaml"}, "settings.snip"
+        });
   }
 
   // Tests

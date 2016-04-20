@@ -21,8 +21,8 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.collect.Multimap;
 
 import io.gapi.vgen.ApiConfig;
-import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.GapicLanguageProvider;
+import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
@@ -46,22 +46,22 @@ public class JavaGapicLanguageProvider implements GapicLanguageProvider {
   }
 
   @Override
-  public <Element> void output(String outputPath,
-      Multimap<Element, GeneratedResult> elements, boolean archive)
-          throws IOException {
+  public <Element> void output(
+      String outputPath, Multimap<Element, GeneratedResult> elements, boolean archive)
+      throws IOException {
     String root = context.getApiConfig().getPackageName().replace('.', '/');
     provider.output(root, outputPath, elements, archive);
   }
 
   @Override
   public GeneratedResult generateCode(Interface service, SnippetDescriptor snippetDescriptor) {
-      return provider.generate(service, snippetDescriptor, context,
-          context.getApiConfig().getPackageName() + ".");
+    return provider.generate(
+        service, snippetDescriptor, context, context.getApiConfig().getPackageName() + ".");
   }
 
   @Override
   public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor) {
-      return provider.generate(method, snippetDescriptor, context);
+    return provider.generate(method, snippetDescriptor, context);
   }
 
   @Override

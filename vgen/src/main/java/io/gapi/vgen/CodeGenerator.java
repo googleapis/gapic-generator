@@ -26,7 +26,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,11 +51,11 @@ public class CodeGenerator {
   }
 
   /**
-   * Generates code for the model. Returns a map from service interface to code for the
-   * service. Returns null if generation failed.
+   * Generates code for the model. Returns a map from service interface to code for the service.
+   * Returns null if generation failed.
    */
-  @Nullable public Map<Interface, GeneratedResult> generate(
-      SnippetDescriptor snippetDescriptor) {
+  @Nullable
+  public Map<Interface, GeneratedResult> generate(SnippetDescriptor snippetDescriptor) {
     // Establish required stage for generation.
     provider.getModel().establishStage(Merged.KEY);
     if (provider.getModel().getErrorCount() > 0) {
@@ -80,7 +79,8 @@ public class CodeGenerator {
     return generated.build();
   }
 
-  @Nullable public Map<String, GeneratedResult> generateDocs(SnippetDescriptor snippetDescriptor) {
+  @Nullable
+  public Map<String, GeneratedResult> generateDocs(SnippetDescriptor snippetDescriptor) {
     Set<ProtoFile> files = new HashSet<ProtoFile>();
     for (Interface iface : provider.getModel().getSymbolTable().getInterfaces()) {
       for (Method method : iface.getMethods()) {
@@ -115,11 +115,12 @@ public class CodeGenerator {
 
   /**
    * Delegates creating code to language provider. Takes the result list from
-   * {@link GapicLanguageProvider#outputCode(String, List)} and stores it in a
-   * language-specific way.
+   * {@link GapicLanguageProvider#outputCode(String, List)} and stores it in a language-specific
+   * way.
    */
-  public <Element> void output(String outputFile, Multimap<Element, GeneratedResult> results,
-      boolean archive) throws IOException {
+  public <Element> void output(
+      String outputFile, Multimap<Element, GeneratedResult> results, boolean archive)
+      throws IOException {
     provider.output(outputFile, results, archive);
   }
 }

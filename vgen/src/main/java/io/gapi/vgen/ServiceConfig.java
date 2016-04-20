@@ -36,8 +36,7 @@ public class ServiceConfig {
   }
 
   /**
-   * Return the service port.
-   * TODO(cbao): Read the port from config.
+   * Return the service port. TODO(cbao): Read the port from config.
    */
   public Integer getServicePort() {
     return 443;

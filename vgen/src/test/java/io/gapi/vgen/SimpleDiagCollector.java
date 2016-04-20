@@ -14,11 +14,11 @@
  */
 package io.gapi.vgen;
 
-import java.util.List;
-
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.common.collect.Lists;
+
+import java.util.List;
 
 public class SimpleDiagCollector implements DiagCollector {
   private final List<Diag> diags = Lists.newArrayList();

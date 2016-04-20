@@ -35,20 +35,26 @@ public class PythonLanguageProvider {
       PythonContextCommon.class.getPackage().getName().replace('.', '/');
 
   @SuppressWarnings("unchecked")
-  public <Element> GeneratedResult generate(Element element, SnippetDescriptor snippetDescriptor,
-      PythonGapicContext context, PythonImportHandler importHandler,
-      ImmutableMap<String, Object> globalMap, String pathPrefix) {
-    globalMap = ImmutableMap.<String, Object>builder()
-        .putAll(globalMap)
-        .put("context", context)
-        .put("importHandler", importHandler)
-        .build();
+  public <Element> GeneratedResult generate(
+      Element element,
+      SnippetDescriptor snippetDescriptor,
+      PythonGapicContext context,
+      PythonImportHandler importHandler,
+      ImmutableMap<String, Object> globalMap,
+      String pathPrefix) {
+    globalMap =
+        ImmutableMap.<String, Object>builder()
+            .putAll(globalMap)
+            .put("context", context)
+            .put("importHandler", importHandler)
+            .build();
 
-    PythonSnippetSet<Element> snippets = SnippetSet.createSnippetInterface(
-        PythonSnippetSet.class,
-        SNIPPET_RESOURCE_ROOT,
-        snippetDescriptor.getSnippetInputName(),
-        globalMap);
+    PythonSnippetSet<Element> snippets =
+        SnippetSet.createSnippetInterface(
+            PythonSnippetSet.class,
+            SNIPPET_RESOURCE_ROOT,
+            snippetDescriptor.getSnippetInputName(),
+            globalMap);
 
     Doc filenameDoc = snippets.generateFilename(element);
     String outputFilename = filenameDoc.prettyPrint();

@@ -29,20 +29,21 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 /**
- * ApiaryConfig contains additional information about discovery docs
- * parsed by {@link DiscoveryImporter} that do not easily fit into {@link com.google.api.Service}
- * itself.
+ * ApiaryConfig contains additional information about discovery docs parsed by
+ * {@link DiscoveryImporter} that do not easily fit into {@link com.google.api.Service} itself.
  */
 public class ApiaryConfig {
   /**
    * Maps method name to an ordered list of parameters that the method takes.
    */
-  private final ListMultimap<String, String> methodParams = ArrayListMultimap.<String, String>create();
+  private final ListMultimap<String, String> methodParams =
+      ArrayListMultimap.<String, String>create();
 
   /**
    * Maps (type name, field name) to textual description of that field.
    */
-  private final Table<String, String, String> fieldDescription = HashBasedTable.<String, String, String>create();
+  private final Table<String, String, String> fieldDescription =
+      HashBasedTable.<String, String, String>create();
 
   /**
    * Maps method name to its HTTP method kind.
@@ -55,18 +56,20 @@ public class ApiaryConfig {
   private final ListMultimap<String, String> resources = ArrayListMultimap.<String, String>create();
 
   /**
-   * A pair (type name, field name) is in this table if specified as "additionalProperties"
-   * in the discovery doc, indicating that the field type is a map from string to the named type.
+   * A pair (type name, field name) is in this table if specified as "additionalProperties" in the
+   * discovery doc, indicating that the field type is a map from string to the named type.
    */
-  private final Table<String, String, Boolean> additionalProperties = HashBasedTable.<String, String, Boolean>create();
+  private final Table<String, String, Boolean> additionalProperties =
+      HashBasedTable.<String, String, Boolean>create();
 
   /**
-   * Specifies the format of the field. A pair (type name, field name) is in this table
-   * if the type of the field is "string" and specific format is given in the discovery doc.
-   * The format is one of {"int64", "uint64", "byte", "date", "date-time"}.
-   * Note: other string formats from the discovery doc are encoded as types in the Service.
+   * Specifies the format of the field. A pair (type name, field name) is in this table if the type
+   * of the field is "string" and specific format is given in the discovery doc. The format is one
+   * of {"int64", "uint64", "byte", "date", "date-time"}. Note: other string formats from the
+   * discovery doc are encoded as types in the Service.
    */
-  private final Table<String, String, String> stringFormat = HashBasedTable.<String, String, String>create();
+  private final Table<String, String, String> stringFormat =
+      HashBasedTable.<String, String, String>create();
 
   /*
    * Maps type name to type (from {@link DiscoveryImporter}).

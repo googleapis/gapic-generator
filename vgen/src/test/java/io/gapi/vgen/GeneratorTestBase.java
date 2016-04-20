@@ -53,7 +53,8 @@ public abstract class GeneratorTestBase extends ConfigBaselineTestCase {
     this(name, gapicConfigFileNames, null);
   }
 
-  @Override protected void setupModel() {
+  @Override
+  protected void setupModel() {
     super.setupModel();
 
     config = readConfig(model);
@@ -66,13 +67,15 @@ public abstract class GeneratorTestBase extends ConfigBaselineTestCase {
     }
   }
 
-  @Override protected boolean suppressDiagnosis() {
+  @Override
+  protected boolean suppressDiagnosis() {
     // Suppress linter warnings
     return true;
   }
 
   @Override
-  @Nullable protected abstract Object run() throws Exception;
+  @Nullable
+  protected abstract Object run() throws Exception;
 
   @Override
   protected String baselineFileName() {
@@ -97,16 +100,15 @@ public abstract class GeneratorTestBase extends ConfigBaselineTestCase {
     }
 
     ImmutableMap<String, Message> supportedConfigTypes =
-        ImmutableMap.<String, Message>of(ConfigProto.getDescriptor().getFullName(),
-            ConfigProto.getDefaultInstance());
+        ImmutableMap.<String, Message>of(
+            ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
     ConfigProto configProto =
         (ConfigProto) MultiYamlReader.read(model, inputNames, inputs, supportedConfigTypes);
 
     if (snippetName != null) {
       // Filtering can be made more sophisticated later if required
-      configProto = configProto.toBuilder()
-          .clearSnippetFiles().addSnippetFiles(snippetName)
-          .build();
+      configProto =
+          configProto.toBuilder().clearSnippetFiles().addSnippetFiles(snippetName).build();
     }
 
     return configProto;

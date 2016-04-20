@@ -22,31 +22,10 @@ import com.google.common.collect.ImmutableSet;
 import java.util.List;
 
 /**
- * A class that provides helper methods for snippet files generating Python code
- * to get data and perform data transformations that are difficult or messy to do
- * in the snippets themselves.
+ * A class that provides helper methods for snippet files generating Python code to get data and
+ * perform data transformations that are difficult or messy to do in the snippets themselves.
  */
 public class PythonContextCommon {
-
-  /**
-   * A set of python keywords and built-ins.
-   * Built-ins derived from: https://docs.python.org/2/library/functions.html
-   */
-  private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
-      ImmutableSet.<String>builder()
-      .add("and", "as", "assert", "break", "class", "continue", "def", "del", "elif", "else",
-          "except", "exec", "finally", "for", "from", "global", "if", "import", "in", "is",
-          "lambda", "not", "or", "pass", "print", "raise", "return", "try", "while", "with",
-          "yield", "abs", "all", "any", "basestring", "bin", "bool", "bytearray", "callable", "chr",
-          "classmethod", "cmp", "compile", "complex", "delattr", "dict", "dir", "divmod",
-          "enumerate", "eval", "execfile", "file", "filter", "float", "format", "frozenset",
-          "getattr", "globals", "hasattr", "hash", "help", "hex", "id", "input", "int",
-          "isinstance", "issubclass", "iter", "len", "list", "locals", "long", "map", "max",
-          "memoryview", "min", "next", "object", "oct", "open", "ord", "pow", "print", "property",
-          "range", "raw_input", "reduce", "reload", "repr", "reversed", "round", "set", "setattr",
-          "slice", "sorted", "staticmethod", "str", "sum", "super", "tuple", "type", "unichr",
-          "unicode", "vars", "xrange", "zip", "__import__")
-      .build();
 
   // Snippet Helpers
   // ===============
@@ -83,4 +62,123 @@ public class PythonContextCommon {
     }
     return builder.build();
   }
+
+  // Python Keywords
+  // ===============
+
+  /**
+   * A set of python keywords and built-ins. Built-ins derived from:
+   * https://docs.python.org/2/library/functions.html
+   */
+  private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
+      ImmutableSet.<String>builder()
+          .add(
+              "and",
+              "as",
+              "assert",
+              "break",
+              "class",
+              "continue",
+              "def",
+              "del",
+              "elif",
+              "else",
+              "except",
+              "exec",
+              "finally",
+              "for",
+              "from",
+              "global",
+              "if",
+              "import",
+              "in",
+              "is",
+              "lambda",
+              "not",
+              "or",
+              "pass",
+              "print",
+              "raise",
+              "return",
+              "try",
+              "while",
+              "with",
+              "yield",
+              "abs",
+              "all",
+              "any",
+              "basestring",
+              "bin",
+              "bool",
+              "bytearray",
+              "callable",
+              "chr",
+              "classmethod",
+              "cmp",
+              "compile",
+              "complex",
+              "delattr",
+              "dict",
+              "dir",
+              "divmod",
+              "enumerate",
+              "eval",
+              "execfile",
+              "file",
+              "filter",
+              "float",
+              "format",
+              "frozenset",
+              "getattr",
+              "globals",
+              "hasattr",
+              "hash",
+              "help",
+              "hex",
+              "id",
+              "input",
+              "int",
+              "isinstance",
+              "issubclass",
+              "iter",
+              "len",
+              "list",
+              "locals",
+              "long",
+              "map",
+              "max",
+              "memoryview",
+              "min",
+              "next",
+              "object",
+              "oct",
+              "open",
+              "ord",
+              "pow",
+              "print",
+              "property",
+              "range",
+              "raw_input",
+              "reduce",
+              "reload",
+              "repr",
+              "reversed",
+              "round",
+              "set",
+              "setattr",
+              "slice",
+              "sorted",
+              "staticmethod",
+              "str",
+              "sum",
+              "super",
+              "tuple",
+              "type",
+              "unichr",
+              "unicode",
+              "vars",
+              "xrange",
+              "zip",
+              "__import__")
+          .build();
 }

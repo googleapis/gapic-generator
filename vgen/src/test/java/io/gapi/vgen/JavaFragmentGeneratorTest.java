@@ -34,18 +34,18 @@ public class JavaFragmentGeneratorTest extends FragmentGeneratorTestBase {
   }
 
   /**
-   * Declares test parameters, each one an array of values passed to the constructor, with
-   * the first element a name, the second a config of this name.
+   * Declares test parameters, each one an array of values passed to the constructor, with the first
+   * element a name, the second a config of this name.
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
     return ImmutableList.of(
-      new Object[] {
-          "java_fragments", new String[] {
-              "io/gapi/vgen/java/java_gapic.yaml",
-              "library_gapic.yaml",
+        new Object[] {
+          "java_fragments",
+          new String[] {
+            "io/gapi/vgen/java/java_gapic.yaml", "library_gapic.yaml",
           }
-      });
+        });
   }
 
   // Tests

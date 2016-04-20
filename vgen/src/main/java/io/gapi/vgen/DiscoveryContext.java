@@ -76,10 +76,10 @@ public abstract class DiscoveryContext extends LanguageContext {
   }
 
   /**
-  * Returns the simple name of the method with given ID.
-  */
+   * Returns the simple name of the method with given ID.
+   */
   public String getMethodName(Method method) {
-   return getSimpleName(getRename(method.getName(), RENAMED_METHOD_MAP));
+    return getSimpleName(getRename(method.getName(), RENAMED_METHOD_MAP));
   }
 
   public String getSimpleName(String name) {
@@ -122,8 +122,8 @@ public abstract class DiscoveryContext extends LanguageContext {
 
   @Nullable
   public Field getRequestField(Method method) {
-    return getField(apiaryConfig.getType(method.getRequestTypeUrl()),
-        DiscoveryImporter.REQUEST_FIELD_NAME);
+    return getField(
+        apiaryConfig.getType(method.getRequestTypeUrl()), DiscoveryImporter.REQUEST_FIELD_NAME);
   }
 
   public List<String> getMethodParams(Method method) {
@@ -186,23 +186,26 @@ public abstract class DiscoveryContext extends LanguageContext {
   // remove if inconsistency is resolved in discovery docs
   public boolean isCloudMonitoringListMethod(Method method) {
     Api api = getApi();
-    return api.getName().equals("cloudmonitoring") && api.getVersion().equals("v2beta2") &&
-        isPageStreaming(method);
+    return api.getName().equals("cloudmonitoring")
+        && api.getVersion().equals("v2beta2")
+        && isPageStreaming(method);
   }
 
   // used to handle inconsistency in log entries list method for Logging API
   // remove if inconsistency is resolved
   public boolean isLogEntriesListMethod(Method method) {
     Api api = getApi();
-    return api.getName().equals("logging") && api.getVersion().equals("v2beta1") &&
-        method.getName().equals("logging.entries.list");
+    return api.getName().equals("logging")
+        && api.getVersion().equals("v2beta1")
+        && method.getName().equals("logging.entries.list");
   }
 
   // used to handle inconsistency in users list method for SQLAdmin API
   // remove if inconsistency is resolved
   public boolean isSQLAdminUsersListMethod(Method method) {
     Api api = getApi();
-    return api.getName().equals("sqladmin") && api.getVersion().equals("v1beta4") &&
-        method.getName().equals("sql.users.list");
+    return api.getName().equals("sqladmin")
+        && api.getVersion().equals("v1beta4")
+        && method.getName().equals("sql.users.list");
   }
 }

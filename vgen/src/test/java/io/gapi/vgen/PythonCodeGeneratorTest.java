@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * Python code generator baseline tests.
  */
-public class PythonCodeGeneratorTest  {
+public class PythonCodeGeneratorTest {
 
   @RunWith(Parameterized.class)
   public static class PythonLibraryBaseline extends CodeGeneratorTestBase {
@@ -39,16 +39,15 @@ public class PythonCodeGeneratorTest  {
     }
 
     /**
-     * Declares test parameters, each one an array of values passed to the constructor, with
-     * the first element a name, the second a config of this name.
+     * Declares test parameters, each one an array of values passed to the constructor, with the
+     * first element a name, the second a config of this name.
      */
     @Parameters(name = "{0}")
     public static List<Object[]> testedConfigs() {
       return ImmutableList.of(
-        new Object[] {
-            "python",
-            new String[]{"io/gapi/vgen/py/python_gapic.yaml", "library_gapic.yaml"}
-        });
+          new Object[] {
+            "python", new String[] {"io/gapi/vgen/py/python_gapic.yaml", "library_gapic.yaml"}
+          });
     }
 
     @Override
@@ -59,7 +58,7 @@ public class PythonCodeGeneratorTest  {
       Truth.assertThat(codeResult).isNotNull();
       Truth.assertThat(docsResult).isNotNull();
 
-      ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String,Doc>();
+      ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String, Doc>();
       builder.put(codeResult.getFilename(), codeResult.getDoc());
       for (GeneratedResult result : docsResult) {
         builder.put(result.getFilename(), result.getDoc());
@@ -74,7 +73,6 @@ public class PythonCodeGeneratorTest  {
     public void library() throws Exception {
       test("library");
     }
-
   }
 
   @RunWith(Parameterized.class)
@@ -85,16 +83,16 @@ public class PythonCodeGeneratorTest  {
     }
 
     /**
-     * Declares test parameters, each one an array of values passed to the constructor, with
-     * the first element a name, the second a config of this name.
+     * Declares test parameters, each one an array of values passed to the constructor, with the
+     * first element a name, the second a config of this name.
      */
     @Parameters(name = "{0}")
     public static List<Object[]> testedConfigs() {
       return ImmutableList.of(
-        new Object[] {
+          new Object[] {
             "python",
-            new String[]{"io/gapi/vgen/py/python_gapic.yaml", "no_path_templates_gapic.yaml"}
-        });
+            new String[] {"io/gapi/vgen/py/python_gapic.yaml", "no_path_templates_gapic.yaml"}
+          });
     }
 
     @Override
@@ -104,7 +102,7 @@ public class PythonCodeGeneratorTest  {
       Truth.assertThat(codeResult).isNotNull();
       Truth.assertThat(docsResult).isNotNull();
 
-      ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String,Doc>();
+      ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String, Doc>();
       builder.put(codeResult.getFilename(), codeResult.getDoc());
       for (GeneratedResult result : docsResult) {
         builder.put(result.getFilename(), result.getDoc());
@@ -115,12 +113,9 @@ public class PythonCodeGeneratorTest  {
     // Tests
     // =====
 
-
     @Test
     public void no_path_templates() throws Exception {
       test("no_path_templates");
     }
-
   }
-
 }

@@ -14,33 +14,13 @@
  */
 package io.gapi.vgen.csharp;
 
-import com.google.api.gax.protobuf.PathTemplate;
-import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.ProtoFile;
-import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-import autovalue.shaded.com.google.common.common.collect.ImmutableList;
-import io.gapi.vgen.ApiConfig;
-import io.gapi.vgen.FlatteningConfig;
 import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.SnippetDescriptor;
 
-import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -55,13 +35,17 @@ public class CSharpLanguageProvider {
       CSharpContextCommon.class.getPackage().getName().replace('.', '/');
 
   @SuppressWarnings("unchecked")
-  public <Element> GeneratedResult generate(Element element,
-      SnippetDescriptor snippetDescriptor, CSharpGapicContext context, String serviceNamespace) {
-    CSharpSnippetSet<Element> snippets = SnippetSet.createSnippetInterface(
-        CSharpSnippetSet.class,
-        SNIPPET_RESOURCE_ROOT,
-        snippetDescriptor.getSnippetInputName(),
-        ImmutableMap.<String, Object>of("context", context));
+  public <Element> GeneratedResult generate(
+      Element element,
+      SnippetDescriptor snippetDescriptor,
+      CSharpGapicContext context,
+      String serviceNamespace) {
+    CSharpSnippetSet<Element> snippets =
+        SnippetSet.createSnippetInterface(
+            CSharpSnippetSet.class,
+            SNIPPET_RESOURCE_ROOT,
+            snippetDescriptor.getSnippetInputName(),
+            ImmutableMap.<String, Object>of("context", context));
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
 

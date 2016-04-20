@@ -20,12 +20,14 @@ import com.google.protobuf.Api;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
+
+import org.junit.Test;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
-import org.junit.Test;
 
 public class DiscoveryImporterTest {
   private static Reader getReader(String file) throws IOException {
@@ -132,7 +134,8 @@ public class DiscoveryImporterTest {
     Truth.assertThat(type).isNotNull();
     Truth.assertThat(type.getName()).isEqualTo("CreativeDealIds");
     Truth.assertThat(type.getFieldsList()).hasSize(1);
-    Truth.assertThat(type.getFields(0).getCardinality()).isEqualTo(Field.Cardinality.CARDINALITY_REPEATED);
+    Truth.assertThat(type.getFields(0).getCardinality())
+        .isEqualTo(Field.Cardinality.CARDINALITY_REPEATED);
     Truth.assertThat(type.getFields(0).getKind()).isEqualTo(Field.Kind.TYPE_MESSAGE);
     type = imp.getTypes().get(type.getFields(0).getTypeUrl());
     Truth.assertThat(type).isNotNull();
@@ -143,11 +146,13 @@ public class DiscoveryImporterTest {
     Truth.assertThat(type).isNotNull();
     Truth.assertThat(type.getName()).isEqualTo("Report");
     Truth.assertThat(type.getFieldsList()).hasSize(1);
-    Truth.assertThat(type.getFields(0).getCardinality()).isEqualTo(Field.Cardinality.CARDINALITY_REPEATED);
+    Truth.assertThat(type.getFields(0).getCardinality())
+        .isEqualTo(Field.Cardinality.CARDINALITY_REPEATED);
     Truth.assertThat(type.getFields(0).getKind()).isEqualTo(Field.Kind.TYPE_MESSAGE);
     type = imp.getTypes().get(type.getFields(0).getTypeUrl());
     Truth.assertThat(type).isNotNull();
-    Truth.assertThat(type.getFields(0).getCardinality()).isEqualTo(Field.Cardinality.CARDINALITY_REPEATED);
+    Truth.assertThat(type.getFields(0).getCardinality())
+        .isEqualTo(Field.Cardinality.CARDINALITY_REPEATED);
     Truth.assertThat(type.getFields(0).getKind()).isEqualTo(Field.Kind.TYPE_STRING);
   }
 }

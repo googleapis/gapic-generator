@@ -44,23 +44,26 @@ import javax.annotation.Nullable;
  * Main class for the discovery doc fragment generator.
  */
 public class DiscoveryFragmentGeneratorApi {
-  public static final Option<String> DISCOVERY_DOC = ToolOptions.createOption(
-      String.class,
-      "discovery_doc",
-      "The Discovery doc representing the service description.",
-      "");
+  public static final Option<String> DISCOVERY_DOC =
+      ToolOptions.createOption(
+          String.class,
+          "discovery_doc",
+          "The Discovery doc representing the service description.",
+          "");
 
-  public static final Option<String> OUTPUT_FILE = ToolOptions.createOption(
-      String.class,
-      "output_file",
-      "The name of the output file or folder to put generated code.",
-      "");
+  public static final Option<String> OUTPUT_FILE =
+      ToolOptions.createOption(
+          String.class,
+          "output_file",
+          "The name of the output file or folder to put generated code.",
+          "");
 
-  public static final Option<List<String>> GENERATOR_CONFIG_FILES = ToolOptions.createOption(
-      new TypeLiteral<List<String>>(){},
-      "config_files",
-      "The list of YAML configuration files for the fragment generator.",
-      ImmutableList.<String>of());
+  public static final Option<List<String>> GENERATOR_CONFIG_FILES =
+      ToolOptions.createOption(
+          new TypeLiteral<List<String>>() {},
+          "config_files",
+          "The list of YAML configuration files for the fragment generator.",
+          ImmutableList.<String>of());
 
   private final ToolOptions options;
   private final String dataPath;
@@ -91,15 +94,15 @@ public class DiscoveryFragmentGeneratorApi {
       return;
     }
 
-    DiscoveryFragmentGenerator generator = DiscoveryFragmentGenerator.create(configProto, discovery);
+    DiscoveryFragmentGenerator generator =
+        DiscoveryFragmentGenerator.create(configProto, discovery);
     if (generator == null) {
       return;
     }
 
     Multimap<Method, GeneratedResult> docs = ArrayListMultimap.create();
     for (String snippetInputName : configProto.getFragmentFilesList()) {
-      SnippetDescriptor snippetDescriptor =
-          new SnippetDescriptor(snippetInputName);
+      SnippetDescriptor snippetDescriptor = new SnippetDescriptor(snippetInputName);
       Map<Method, GeneratedResult> code = generator.generateFragments(snippetDescriptor);
       if (code == null) {
         continue;
@@ -118,8 +121,8 @@ public class DiscoveryFragmentGeneratorApi {
   private ConfigProto loadConfigFromFiles(List<String> configFileNames) {
     List<File> configFiles = pathsToFiles(configFileNames);
     ImmutableMap<String, Message> supportedConfigTypes =
-        ImmutableMap.<String, Message>of(ConfigProto.getDescriptor().getFullName(),
-            ConfigProto.getDefaultInstance());
+        ImmutableMap.<String, Message>of(
+            ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
     // Use DiagCollector to collect errors from config read since user errors may arise here
     DiagCollector diagCollector = new SimpleDiag();
     ConfigProto configProto =

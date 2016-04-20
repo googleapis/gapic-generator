@@ -30,8 +30,8 @@ import javax.annotation.Nullable;
  * Discovery doc code fragment generator.
  *
  * It uses the method and type data in the Discovery doc to create code snippets following the
- * commonly used patterns in the API client libraries. Exceptions to these patterns are handled in
- * a case-by-case basis.
+ * commonly used patterns in the API client libraries. Exceptions to these patterns are handled in a
+ * case-by-case basis.
  */
 public class DiscoveryFragmentGenerator {
 
@@ -68,8 +68,8 @@ public class DiscoveryFragmentGenerator {
   }
 
   /**
-   * Generates fragments for the model. Returns a map from each method to a fragment for the
-   * method. Returns null if generation failed.
+   * Generates fragments for the model. Returns a map from each method to a fragment for the method.
+   * Returns null if generation failed.
    */
   @Nullable
   public Map<Method, GeneratedResult> generateFragments(SnippetDescriptor snippetDescriptor) {

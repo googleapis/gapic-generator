@@ -21,18 +21,14 @@ import com.google.protobuf.Method;
 import java.io.IOException;
 
 /**
- * A DiscoveryLanguageProvider performs fragment generation using discovery-based
- * input.
+ * A DiscoveryLanguageProvider performs fragment generation using discovery-based input.
  */
 public interface DiscoveryLanguageProvider {
 
-  public GeneratedResult generateFragments(Method method,
-      SnippetDescriptor snippetDescriptor);
+  public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor);
 
-  public void output(String outputPath,
-      Multimap<Method, GeneratedResult> methods, boolean archive)
-          throws IOException;
+  public void output(String outputPath, Multimap<Method, GeneratedResult> methods, boolean archive)
+      throws IOException;
 
   public Service getService();
-
 }

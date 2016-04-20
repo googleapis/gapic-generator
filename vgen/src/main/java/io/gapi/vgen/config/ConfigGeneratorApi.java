@@ -44,11 +44,9 @@ import java.util.Map;
  */
 public class ConfigGeneratorApi extends ToolDriverBase {
 
-  public static final Option<String> OUTPUT_FILE = ToolOptions.createOption(
-      String.class,
-      "output_file",
-      "The path of the output file to put generated config.",
-      "");
+  public static final Option<String> OUTPUT_FILE =
+      ToolOptions.createOption(
+          String.class, "output_file", "The path of the output file to put generated config.", "");
   private static final String CONFIG_KEY_SERVICE_NAME = "name";
   private static final String CONFIG_KEY_METHOD_NAME = "name";
   private static final String CONFIG_KEY_INTERFACES = "interfaces";
@@ -99,9 +97,8 @@ public class ConfigGeneratorApi extends ToolDriverBase {
   }
 
   private List<Object> generateMethodConfigs(Interface service) {
-    List<MethodConfigGenerator> methodConfigGenerators = Arrays.asList(
-        new FlatteningConfigGenerator(),
-        new PageStreamingConfigGenerator());
+    List<MethodConfigGenerator> methodConfigGenerators =
+        Arrays.asList(new FlatteningConfigGenerator(), new PageStreamingConfigGenerator());
     List<Object> methods = new LinkedList<Object>();
     for (Method method : service.getMethods()) {
       Map<String, Object> methodConfig = new LinkedHashMap<String, Object>();

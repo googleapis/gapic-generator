@@ -24,8 +24,12 @@ public class PythonProtoElements {
   public static String getPbFileName(ProtoElement element) {
     // FileDescriptorProto.name returns file name, relative to root of the source tree. Return the
     // last segment of the file name without proto extension appended by "_pb2".
-    String filename = element.getFile().getProto().getName().substring(
-        element.getFile().getProto().getName().lastIndexOf("/") + 1);
+    String filename =
+        element
+            .getFile()
+            .getProto()
+            .getName()
+            .substring(element.getFile().getProto().getName().lastIndexOf("/") + 1);
     return filename.substring(0, filename.length() - ".proto".length()) + "_pb2";
   }
 
@@ -37,8 +41,8 @@ public class PythonProtoElements {
   }
 
   /**
-   * The dot-separated nested messages that contain an element in a Proto file.
-   * Returns null if the element is top-level or a proto file itself.
+   * The dot-separated nested messages that contain an element in a Proto file. Returns null if the
+   * element is top-level or a proto file itself.
    */
   public static String prefixInFile(ProtoElement elt) {
     ProtoElement parent = elt.getParent();

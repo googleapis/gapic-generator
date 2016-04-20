@@ -28,6 +28,6 @@ public abstract class GeneratedResult {
   }
 
   public abstract Doc getDoc();
-  public abstract String getFilename();
 
+  public abstract String getFilename();
 }

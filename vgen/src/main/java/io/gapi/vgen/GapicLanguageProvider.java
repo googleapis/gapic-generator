@@ -23,8 +23,8 @@ import com.google.common.collect.Multimap;
 import java.io.IOException;
 
 /**
- * A GapicLanguageProvider performs code or fragment generation using on a proto-based
- * Model for a particular language.
+ * A GapicLanguageProvider performs code or fragment generation using on a proto-based Model for a
+ * particular language.
  */
 public interface GapicLanguageProvider {
 
@@ -48,8 +48,7 @@ public interface GapicLanguageProvider {
   /**
    * Outputs the given elements to the given output path.
    */
-  <Element> void output(String outputPath,
-      Multimap<Element, GeneratedResult> elements, boolean archive)
-          throws IOException;
-
+  <Element> void output(
+      String outputPath, Multimap<Element, GeneratedResult> elements, boolean archive)
+      throws IOException;
 }

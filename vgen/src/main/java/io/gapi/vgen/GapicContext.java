@@ -20,9 +20,8 @@ import com.google.api.tools.framework.model.Model;
 import com.google.common.base.Preconditions;
 
 /**
- * A LanguageContext that provides helpers specific to the use case
- * of GAPIC (code-generation of client libraries built on gRPC, or
- * code fragments for those client libraries).
+ * A LanguageContext that provides helpers specific to the use case of GAPIC (code-generation of
+ * client libraries built on gRPC, or code fragments for those client libraries).
  */
 public class GapicContext extends LanguageContext {
 
@@ -74,5 +73,4 @@ public class GapicContext extends LanguageContext {
   public String getApiWrapperName(Interface service) {
     return service.getSimpleName() + "Api";
   }
-
 }

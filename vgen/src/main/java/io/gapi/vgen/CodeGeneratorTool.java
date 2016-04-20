@@ -36,49 +36,58 @@ public class CodeGeneratorTool {
   public static void main(String[] args) throws Exception {
     Options options = new Options();
     options.addOption("h", "help", false, "show usage");
-    options.addOption(Option.builder()
-        .longOpt("descriptor_set")
-        .desc("The descriptor set representing the compiled input protos.")
-        .hasArg()
-        .argName("DESCRIPTOR-SET")
-        .required(true)
-        .build());
-    options.addOption(Option.builder()
-        .longOpt("service_yaml")
-        .desc("The service YAML configuration file or files.")
-        .hasArg()
-        .argName("SERVICE-YAML")
-        .required(true)
-        .build());
-    options.addOption(Option.builder()
-        .longOpt("gapic_yaml")
-        .desc("The GAPIC YAML configuration file or files.")
-        .hasArg()
-        .argName("GAPIC-YAML")
-        .required(true)
-        .build());
-    options.addOption(Option.builder("o")
-        .longOpt("output")
-        .desc("The directory in which to output the generated client library.")
-        .hasArg()
-        .argName("OUTPUT-DIRECTORY")
-        .build());
+    options.addOption(
+        Option.builder()
+            .longOpt("descriptor_set")
+            .desc("The descriptor set representing the compiled input protos.")
+            .hasArg()
+            .argName("DESCRIPTOR-SET")
+            .required(true)
+            .build());
+    options.addOption(
+        Option.builder()
+            .longOpt("service_yaml")
+            .desc("The service YAML configuration file or files.")
+            .hasArg()
+            .argName("SERVICE-YAML")
+            .required(true)
+            .build());
+    options.addOption(
+        Option.builder()
+            .longOpt("gapic_yaml")
+            .desc("The GAPIC YAML configuration file or files.")
+            .hasArg()
+            .argName("GAPIC-YAML")
+            .required(true)
+            .build());
+    options.addOption(
+        Option.builder("o")
+            .longOpt("output")
+            .desc("The directory in which to output the generated client library.")
+            .hasArg()
+            .argName("OUTPUT-DIRECTORY")
+            .build());
 
     CommandLine cl = (new DefaultParser()).parse(options, args);
-    if(cl.hasOption("help")) {
+    if (cl.hasOption("help")) {
       HelpFormatter formater = new HelpFormatter();
       formater.printHelp("CodeGeneratorTool", options);
     }
 
-    int exitCode = generate(cl.getOptionValue("descriptor_set"),
-                            cl.getOptionValues("service_yaml"),
-                            cl.getOptionValues("gapic_yaml"),
-                            cl.getOptionValue("output", ""));
+    int exitCode =
+        generate(
+            cl.getOptionValue("descriptor_set"),
+            cl.getOptionValues("service_yaml"),
+            cl.getOptionValues("gapic_yaml"),
+            cl.getOptionValue("output", ""));
     System.exit(exitCode);
   }
 
-  private static int generate(String descriptorSet, String[] apiConfigs,
-      String[] generatorConfigs, String outputDirectory) {
+  private static int generate(
+      String descriptorSet,
+      String[] apiConfigs,
+      String[] generatorConfigs,
+      String outputDirectory) {
 
     ToolOptions options = ToolOptions.create();
     options.set(ToolOptions.DESCRIPTOR_SET, descriptorSet);
@@ -97,5 +106,3 @@ public class CodeGeneratorTool {
     return codeGen.run();
   }
 }
-
-

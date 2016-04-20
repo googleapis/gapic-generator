@@ -30,8 +30,8 @@ import javax.annotation.Nullable;
 
 // TODO(garrettjones) consider using AutoValue in this class and related classes.
 /**
- * MethodConfig represents the code-gen config for a method, and includes the
- * specification of features like page streaming and parameter flattening.
+ * MethodConfig represents the code-gen config for a method, and includes the specification of
+ * features like page streaming and parameter flattening.
  */
 public class MethodConfig {
 
@@ -45,9 +45,8 @@ public class MethodConfig {
   private final boolean hasRequestObjectMethod;
 
   /**
-   * Creates an instance of MethodConfig based on MethodConfigProto, linking it
-   * up with the provided method. On errors, null will be returned, and
-   * diagnostics are reported to the diag collector.
+   * Creates an instance of MethodConfig based on MethodConfigProto, linking it up with the provided
+   * method. On errors, null will be returned, and diagnostics are reported to the diag collector.
    */
   @Nullable
   public static MethodConfig createMethodConfig(
@@ -86,8 +85,7 @@ public class MethodConfig {
     if (BundlingConfigProto.getDefaultInstance().equals(methodConfig.getBundling())) {
       bundling = null;
     } else {
-      bundling =
-          BundlingConfig.createBundling(diagCollector, methodConfig.getBundling(), method);
+      bundling = BundlingConfig.createBundling(diagCollector, methodConfig.getBundling(), method);
       if (bundling == null) {
         error = true;
       }
@@ -99,7 +97,8 @@ public class MethodConfig {
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Retry codes config used but not defined: '%s' (in method %s)",
-              retryCodesName, method.getFullName()));
+              retryCodesName,
+              method.getFullName()));
       error = true;
     }
 
@@ -109,7 +108,8 @@ public class MethodConfig {
           Diag.error(
               SimpleLocation.TOPLEVEL,
               "Retry parameters config used but not defined: %s (in method %s)",
-              retryParamsName, method.getFullName()));
+              retryParamsName,
+              method.getFullName()));
       error = true;
     }
 
@@ -122,27 +122,38 @@ public class MethodConfig {
       if (requiredField != null) {
         builder.add(requiredField);
       } else {
-        Diag.error(SimpleLocation.TOPLEVEL, "Required field '%s' not found (in method %s)",
-            fieldName, method.getFullName());
+        Diag.error(
+            SimpleLocation.TOPLEVEL,
+            "Required field '%s' not found (in method %s)",
+            fieldName,
+            method.getFullName());
         error = true;
       }
     }
     Set<Field> requiredFields = builder.build();
 
-    Iterable<Field> optionalFields = Iterables.filter(
-        new ServiceMessages().flattenedFields(method.getInputType()),
-        new Predicate<Field>() {
-          @Override
-          public boolean apply(Field input) {
-            return !(methodConfig.getRequiredFieldsList().contains(input.getSimpleName()));
-          }
-        });
+    Iterable<Field> optionalFields =
+        Iterables.filter(
+            new ServiceMessages().flattenedFields(method.getInputType()),
+            new Predicate<Field>() {
+              @Override
+              public boolean apply(Field input) {
+                return !(methodConfig.getRequiredFieldsList().contains(input.getSimpleName()));
+              }
+            });
 
     if (error) {
       return null;
     } else {
-      return new MethodConfig(pageStreaming, flattening, retryCodesName, retryParamsName, bundling,
-          hasRequestObjectMethod, requiredFields, optionalFields);
+      return new MethodConfig(
+          pageStreaming,
+          flattening,
+          retryCodesName,
+          retryParamsName,
+          bundling,
+          hasRequestObjectMethod,
+          requiredFields,
+          optionalFields);
     }
   }
 
@@ -222,8 +233,7 @@ public class MethodConfig {
   }
 
   /**
-   * Returns whether the generation of the method taking a request object
-   * is turned on.
+   * Returns whether the generation of the method taking a request object is turned on.
    */
   public boolean hasRequestObjectMethod() {
     return hasRequestObjectMethod;

@@ -49,8 +49,7 @@ public class PythonImportTest {
 
   @Test
   public void testImport_disambiguate_noLocalNameAndNoModuleName() {
-    PythonImport imp =
-        PythonImport.create("foo", PythonImport.ImportType.STDLIB).disambiguate();
+    PythonImport imp = PythonImport.create("foo", PythonImport.ImportType.STDLIB).disambiguate();
     Truth.assertThat(imp.importString()).isEqualTo("import foo as foo_");
   }
 
@@ -98,17 +97,17 @@ public class PythonImportTest {
 
   @Test
   public void testImport_disambiguate_mangle() {
-    PythonImport imp = PythonImport.create(
-        "a.b_c.d", "e", "a_b_c_d_e", PythonImport.ImportType.STDLIB).disambiguate();
+    PythonImport imp =
+        PythonImport.create("a.b_c.d", "e", "a_b_c_d_e", PythonImport.ImportType.STDLIB)
+            .disambiguate();
     Truth.assertThat(imp.importString()).isEqualTo("from a.b_c.d import e as a_b_c_d_e_");
   }
 
   @Test
   public void testImport_disambiguate_doubleMangle() {
-    PythonImport imp = PythonImport.create(
-        "a.b_c.d", "e", "a_b_c_d_e_", PythonImport.ImportType.STDLIB).disambiguate();
+    PythonImport imp =
+        PythonImport.create("a.b_c.d", "e", "a_b_c_d_e_", PythonImport.ImportType.STDLIB)
+            .disambiguate();
     Truth.assertThat(imp.importString()).isEqualTo("from a.b_c.d import e as a_b_c_d_e__");
   }
-
 }
-

@@ -35,8 +35,8 @@ public class CSharpCodeGeneratorTest extends CodeGeneratorTestBase {
   }
 
   /**
-   * Declares test parameters, each one an array of values passed to the constructor, with
-   * the first element a name, the second a config of this name.
+   * Declares test parameters, each one an array of values passed to the constructor, with the first
+   * element a name, the second a config of this name.
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
@@ -46,9 +46,7 @@ public class CSharpCodeGeneratorTest extends CodeGeneratorTestBase {
     // append to list values.)
     return ImmutableList.of(
         new Object[] {
-            "csharp_wrapper",
-            new String[] { "library_gapic.yaml", "csharp_gapic.yaml"},
-            "wrapper.snip"
+          "csharp_wrapper", new String[] {"library_gapic.yaml", "csharp_gapic.yaml"}, "wrapper.snip"
         });
   }
 

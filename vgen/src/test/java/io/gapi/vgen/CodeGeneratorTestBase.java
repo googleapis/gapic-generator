@@ -20,10 +20,10 @@ import com.google.common.truth.Truth;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * Base class for code generator baseline tests.
@@ -40,27 +40,26 @@ public abstract class CodeGeneratorTestBase extends GeneratorTestBase {
   }
 
   protected GeneratedResult generateForSnippet(int index) {
-    Map<?, GeneratedResult> result = generateForSnippet(
-        config.getSnippetFilesList(), index, false);
+    Map<?, GeneratedResult> result = generateForSnippet(config.getSnippetFilesList(), index, false);
     Truth.assertThat(result.size()).isEqualTo(1);
     return result.values().iterator().next();
   }
 
   protected List<GeneratedResult> generateForDocSnippet(int index) {
-    TreeMap<String, GeneratedResult> result = new TreeMap(
-        (Map<String, GeneratedResult>) generateForSnippet(
-            config.getDocSnippetFilesList(), index, true));
+    TreeMap<String, GeneratedResult> result =
+        new TreeMap(
+            (Map<String, GeneratedResult>)
+                generateForSnippet(config.getDocSnippetFilesList(), index, true));
     return new ArrayList(result.values());
   }
 
-  private Map<?, GeneratedResult> generateForSnippet(List<String> snippetInputNames, int index,
-      boolean doc) {
+  private Map<?, GeneratedResult> generateForSnippet(
+      List<String> snippetInputNames, int index, boolean doc) {
     if (index >= snippetInputNames.size()) {
       return null;
     }
     String snippetInputName = snippetInputNames.get(index);
-    SnippetDescriptor resourceDescriptor =
-          new SnippetDescriptor(snippetInputName);
+    SnippetDescriptor resourceDescriptor = new SnippetDescriptor(snippetInputName);
     Map<?, GeneratedResult> result = null;
     if (doc) {
       result = CodeGenerator.create(config, model).generateDocs(resourceDescriptor);

@@ -40,9 +40,9 @@ public class PythonImportHandler {
   private final BiMap<String, PythonImport> stringImports = HashBiMap.create();
 
   /**
-   * Bi-map from proto files to short names for imports. Should only be modified through
-   * addImport() to maintain the invariant that elements of this map are in 1:1 correspondence with
-   * those in stringImports.
+   * Bi-map from proto files to short names for imports. Should only be modified through addImport()
+   * to maintain the invariant that elements of this map are in 1:1 correspondence with those in
+   * stringImports.
    */
   private final BiMap<ProtoFile, String> fileImports = HashBiMap.create();
 
@@ -54,23 +54,31 @@ public class PythonImportHandler {
     addImport(null, PythonImport.create("platform", PythonImport.ImportType.STDLIB));
     addImport(null, PythonImport.create("google.gax", PythonImport.ImportType.THIRD_PARTY));
 
-    addImport(null, PythonImport.create("google.gax", "api_callable",
-        PythonImport.ImportType.THIRD_PARTY));
-    addImport(null, PythonImport.create("google.gax", "config",
-        PythonImport.ImportType.THIRD_PARTY));
-    addImport(null, PythonImport.create("google.gax", "path_template",
-        PythonImport.ImportType.THIRD_PARTY));
+    addImport(
+        null,
+        PythonImport.create("google.gax", "api_callable", PythonImport.ImportType.THIRD_PARTY));
+    addImport(
+        null, PythonImport.create("google.gax", "config", PythonImport.ImportType.THIRD_PARTY));
+    addImport(
+        null,
+        PythonImport.create("google.gax", "path_template", PythonImport.ImportType.THIRD_PARTY));
 
     // Add method request-type imports.
     for (Method method : service.getMethods()) {
-      addImport(method.getFile(), PythonImport.create(method.getFile().getProto().getPackage(),
-          PythonProtoElements.getPbFileName(method.getInputMessage()),
-          PythonImport.ImportType.APP));
+      addImport(
+          method.getFile(),
+          PythonImport.create(
+              method.getFile().getProto().getPackage(),
+              PythonProtoElements.getPbFileName(method.getInputMessage()),
+              PythonImport.ImportType.APP));
       for (Field field : method.getInputType().getMessageType().getMessageFields()) {
         MessageType messageType = field.getType().getMessageType();
-        addImport(messageType.getFile(),
-            PythonImport.create(messageType.getFile().getProto().getPackage(),
-            PythonProtoElements.getPbFileName(messageType), PythonImport.ImportType.APP));
+        addImport(
+            messageType.getFile(),
+            PythonImport.create(
+                messageType.getFile().getProto().getPackage(),
+                PythonProtoElements.getPbFileName(messageType),
+                PythonImport.ImportType.APP));
       }
     }
   }
@@ -81,21 +89,24 @@ public class PythonImportHandler {
         MessageType messageType = field.getType().getMessageType();
         // Don't include imports to messages in the same file.
         if (!messageType.getFile().equals(file)) {
-          addImport(messageType.getFile(),
-              PythonImport.create(messageType.getFile().getProto().getPackage(),
-              PythonProtoElements.getPbFileName(messageType), PythonImport.ImportType.APP));
+          addImport(
+              messageType.getFile(),
+              PythonImport.create(
+                  messageType.getFile().getProto().getPackage(),
+                  PythonProtoElements.getPbFileName(messageType),
+                  PythonImport.ImportType.APP));
         }
       }
     }
   }
 
   /**
-   * Returns the path to a proto element. If fullyQualified is false, returns the fully
-   * qualified path.
+   * Returns the path to a proto element. If fullyQualified is false, returns the fully qualified
+   * path.
    *
-   * For example, with message `Hello.World` under import `hello`, if fullyQualified is
-   * true:  for `path.to.hello.Hello.World`, it returns `path.to.hello.Hello.World`
-   * false: for `path.to.hello.Hello.World`, it returns `hello.Hello.World`
+   * For example, with message `Hello.World` under import `hello`, if fullyQualified is true: for
+   * `path.to.hello.Hello.World`, it returns `path.to.hello.Hello.World` false: for
+   * `path.to.hello.Hello.World`, it returns `hello.Hello.World`
    */
   public String elementPath(ProtoElement elt, boolean fullyQualified) {
     String prefix = PythonProtoElements.prefixInFile(elt);
@@ -131,11 +142,11 @@ public class PythonImportHandler {
       stringImports.put(imp.shortName(), imp);
       return imp;
 
-    // Redundant import
+      // Redundant import
     } else if (stringImports.get(imp.shortName()).importString().equals(imp.importString())) {
       return imp;
 
-    // Conflict
+      // Conflict
     } else {
       String oldShortName = imp.shortName();
       PythonImport formerImp = stringImports.remove(oldShortName);
@@ -146,8 +157,8 @@ public class PythonImportHandler {
 
       // If we mangled both names, un-mangle the older one; otherwise we'll be in an infinite
       // mangling cycle.
-      if (disambiguatedNewImp.shortName().equals(oldShortName + "_") &&
-          disambiguatedOldImp.shortName().equals(oldShortName + "_")) {
+      if (disambiguatedNewImp.shortName().equals(oldShortName + "_")
+          && disambiguatedOldImp.shortName().equals(oldShortName + "_")) {
         disambiguatedOldImp = formerImp;
       }
 
@@ -165,7 +176,7 @@ public class PythonImportHandler {
     List<String> thirdPartyResult = new ArrayList<>();
     List<String> appResult = new ArrayList<>();
     for (PythonImport protoImport : stringImports.values()) {
-      switch(protoImport.type()) {
+      switch (protoImport.type()) {
         case STDLIB:
           stdlibResult.add(protoImport.importString());
           break;

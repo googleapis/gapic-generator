@@ -43,50 +43,44 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
    */
   private static final ImmutableMap<Field.Kind, String> FIELD_TYPE_MAP =
       ImmutableMap.<Field.Kind, String>builder()
-      .put(Field.Kind.TYPE_UNKNOWN, "java.lang.Object")
-      // TODO(tcoffee): check validity on actual cases
-      .put(Field.Kind.TYPE_BOOL, "boolean")
-      .put(Field.Kind.TYPE_INT32, "int")
-      .put(Field.Kind.TYPE_UINT32, "int")
-      .put(Field.Kind.TYPE_INT64, "long")
-      .put(Field.Kind.TYPE_UINT64, "long")
-      .put(Field.Kind.TYPE_FLOAT, "float")
-      .put(Field.Kind.TYPE_DOUBLE, "double")
-      .put(Field.Kind.TYPE_STRING, "java.lang.String")
-      .build();
+          .put(Field.Kind.TYPE_UNKNOWN, "java.lang.Object")
+          // TODO(tcoffee): check validity on actual cases
+          .put(Field.Kind.TYPE_BOOL, "boolean")
+          .put(Field.Kind.TYPE_INT32, "int")
+          .put(Field.Kind.TYPE_UINT32, "int")
+          .put(Field.Kind.TYPE_INT64, "long")
+          .put(Field.Kind.TYPE_UINT64, "long")
+          .put(Field.Kind.TYPE_FLOAT, "float")
+          .put(Field.Kind.TYPE_DOUBLE, "double")
+          .put(Field.Kind.TYPE_STRING, "java.lang.String")
+          .build();
 
   /**
    * A map from types to renamed counterparts in Java client libraries.
    */
   private static final ImmutableMap<String, String> RENAMED_TYPE_MAP =
       ImmutableMap.<String, String>builder()
-      .put(
-          "storage.model.Object",
-          "storage.model.StorageObject")
-      .put(
-          "SQLAdmin.Instances.Import",
-          "SQLAdmin.Instances.SQLAdminImport")
-      .build();
+          .put("storage.model.Object", "storage.model.StorageObject")
+          .put("SQLAdmin.Instances.Import", "SQLAdmin.Instances.SQLAdminImport")
+          .build();
 
   /**
    * A map from unboxed Java primitive type name to corresponding class reference.
    */
   private static final ImmutableMap<String, Class<?>> PRIMITIVE_CLASS_MAP =
       ImmutableMap.<String, Class<?>>builder()
-      .put("boolean", boolean.class)
-      .put("int", int.class)
-      .put("long", long.class)
-      .put("float", float.class)
-      .put("double", double.class)
-      .build();
+          .put("boolean", boolean.class)
+          .put("int", int.class)
+          .put("long", long.class)
+          .put("float", float.class)
+          .put("double", double.class)
+          .build();
 
   static {
     RENAMED_METHOD_MAP =
-      ImmutableMap.<String, String>builder()
-      .put(
-          "sql.instances.import",
-          "sql.instances.sqladminImport")
-      .build();
+        ImmutableMap.<String, String>builder()
+            .put("sql.instances.import", "sql.instances.sqladminImport")
+            .build();
   }
 
   // TODO(tcoffee): revisit default capitalization behavior based on wider survey of APIs
@@ -95,22 +89,12 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
    */
   private static final ImmutableMap<String, String> RENAMED_PACKAGE_MAP =
       ImmutableMap.<String, String>builder()
-      .put(
-          "Cloudmonitoring",
-          "CloudMonitoring")
-      .put(
-          "Cloudresourcemanager",
-          "CloudResourceManager")
-      .put(
-          "Clouduseraccounts",
-          "CloudUserAccounts")
-      .put(
-          "Deploymentmanager",
-          "DeploymentManager")
-      .put(
-          "Sqladmin",
-          "SQLAdmin")
-      .build();
+          .put("Cloudmonitoring", "CloudMonitoring")
+          .put("Cloudresourcemanager", "CloudResourceManager")
+          .put("Clouduseraccounts", "CloudUserAccounts")
+          .put("Deploymentmanager", "DeploymentManager")
+          .put("Sqladmin", "SQLAdmin")
+          .build();
 
   /**
    * A set of names of APIs whose package paths include their version number.
@@ -159,9 +143,9 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
   }
 
   /**
-  * Takes a fully-qualified type name and returns its simple name, and also saves the
-  * type in the import list.
-  */
+   * Takes a fully-qualified type name and returns its simple name, and also saves the type in the
+   * import list.
+   */
   public String getTypeName(String typeName) {
     int lastDotIndex = typeName.lastIndexOf('.');
     if (lastDotIndex < 0) {
@@ -173,9 +157,9 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
   }
 
   /**
-  * Adds the given type name to the import list. Returns an empty string so that the
-  * output is not affected in snippets.
-  */
+   * Adds the given type name to the import list. Returns an empty string so that the output is not
+   * affected in snippets.
+   */
   public String addImport(String typeName) {
     // used for its side effect of adding the type to the import list if the short name
     // hasn't been imported yet
@@ -202,8 +186,9 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
    * in the import list.
    */
   public String getApiPackage() {
-    return getTypeName(getApiRootUrl() +
-        getRename(lowerCamelToUpperCamel(this.getApi().getName()), RENAMED_PACKAGE_MAP));
+    return getTypeName(
+        getApiRootUrl()
+            + getRename(lowerCamelToUpperCamel(this.getApi().getName()), RENAMED_PACKAGE_MAP));
   }
 
   /*
@@ -245,10 +230,11 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
       Type items = this.getApiaryConfig().getType(fieldTypeName);
       if (isMapField(type, fieldName)) {
-        return String.format("%s<%s, %s>", getTypeName("java.util.Map"),
+        return String.format(
+            "%s<%s, %s>",
+            getTypeName("java.util.Map"),
             typeName(items, this.getField(items, "key")),
-            typeName(items, this.getField(items, "value"))
-        );
+            typeName(items, this.getField(items, "value")));
       } else {
         return String.format("%s<%s>", getTypeName("java.util.List"), elementTypeName(field));
       }
@@ -269,10 +255,11 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
     String fieldTypeName = field.getTypeUrl();
     Type items = this.getApiaryConfig().getType(fieldTypeName);
     if (isMapField(type, fieldName)) {
-      return String.format("%s.Entry<%s, %s>", getTypeName("java.util.Map"),
+      return String.format(
+          "%s.Entry<%s, %s>",
+          getTypeName("java.util.Map"),
           typeName(items, this.getField(items, "key")),
-          typeName(items, this.getField(items, "value"))
-      );
+          typeName(items, this.getField(items, "value")));
     } else {
       return elementTypeName(field);
     }
@@ -306,8 +293,8 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
   }
 
   /**
-   * Returns the Java representation of the type of a basic-typed field.
-   * If the type is a Java primitive, basicTypeName returns it in unboxed form.
+   * Returns the Java representation of the type of a basic-typed field. If the type is a Java
+   * primitive, basicTypeName returns it in unboxed form.
    */
   public String basicTypeName(Field field) {
     String result = FIELD_TYPE_MAP.get(field.getKind());
@@ -331,13 +318,14 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
       String fieldTypeName = field.getTypeUrl();
       Type items = this.getApiaryConfig().getType(fieldTypeName);
       if (isMapField(type, field.getName())) {
-        return String.format("new %s<%s, %s>();", getTypeName("java.util.HashMap"),
+        return String.format(
+            "new %s<%s, %s>();",
+            getTypeName("java.util.HashMap"),
             typeName(items, this.getField(items, "key")),
-            typeName(items, this.getField(items, "value"))
-        );
+            typeName(items, this.getField(items, "value")));
       } else {
-        return String.format("new %s<%s>();", getTypeName("java.util.ArrayList"),
-            elementTypeName(field));
+        return String.format(
+            "new %s<%s>();", getTypeName("java.util.ArrayList"), elementTypeName(field));
       }
     } else {
       String typeName = FIELD_TYPE_MAP.get(field.getKind());
@@ -351,17 +339,19 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
           if (stringFormat != null) {
             switch (stringFormat) {
               case "byte":
-                return "\"\"; " +
-                    "  // base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648 ";
+                return "\"\"; "
+                    + "  // base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648 ";
               case "date":
                 // TODO(tcoffee): does new DateTime(new Date(0L)).toStringRfc3339() work?
-                return "\"1969-12-31\";" +
-                    "  // \"YYYY-MM-DD\": " +
-                    "see java.text.SimpleDateFormat";
+                return "\"1969-12-31\";"
+                    + "  // \"YYYY-MM-DD\": "
+                    + "see java.text.SimpleDateFormat";
               case "date-time":
-                return "\"" + new DateTime(0L).toStringRfc3339() + "\";" +
-                    "  // \"YYYY-MM-DDThh:mm:ss.fffZ\" (UTC): " +
-                    "see com.google.api.client.util.DateTime.toStringRfc3339()";
+                return "\""
+                    + new DateTime(0L).toStringRfc3339()
+                    + "\";"
+                    + "  // \"YYYY-MM-DDThh:mm:ss.fffZ\" (UTC): "
+                    + "see com.google.api.client.util.DateTime.toStringRfc3339()";
               default:
                 // fall through
             }

@@ -14,12 +14,11 @@
  */
 package io.gapi.vgen;
 
+import com.google.api.gax.protobuf.PathTemplate;
+import com.google.api.gax.protobuf.ValidationException;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
-
-import com.google.api.gax.protobuf.PathTemplate;
-import com.google.api.gax.protobuf.ValidationException;
 
 import javax.annotation.Nullable;
 
@@ -32,11 +31,12 @@ public class CollectionConfig {
   private final String methodBaseName;
 
   /**
-   * Creates an instance of CollectionConfig based on CollectionConfigProto. On errors, null will
-   * be returned, and diagnostics are reported to the diag collector.
+   * Creates an instance of CollectionConfig based on CollectionConfigProto. On errors, null will be
+   * returned, and diagnostics are reported to the diag collector.
    */
-  @Nullable public static CollectionConfig createCollection(DiagCollector diagCollector,
-      CollectionConfigProto collectionConfigProto) {
+  @Nullable
+  public static CollectionConfig createCollection(
+      DiagCollector diagCollector, CollectionConfigProto collectionConfigProto) {
     String namePattern = collectionConfigProto.getNamePattern();
     PathTemplate nameTemplate;
     try {

@@ -19,6 +19,10 @@ import com.google.api.tools.framework.model.testing.TestConfig;
 import com.google.api.tools.framework.model.testing.TestDataLocator;
 import com.google.api.tools.framework.tools.ToolOptions;
 
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
 import io.gapi.vgen.config.ConfigGeneratorApi;
 
 import java.io.File;
@@ -29,10 +33,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Collections;
-
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
-import org.junit.Test;
 
 public class ConfigGenerationTest {
   @Rule public TemporaryFolder tempDir = new TemporaryFolder();
@@ -57,8 +57,7 @@ public class ConfigGenerationTest {
 
     URL baselineUrl = locator.findTestData(baselineName);
     if (baselineUrl == null) {
-      throw new IllegalStateException(
-          String.format("baseline not found: %s", baselineName));
+      throw new IllegalStateException(String.format("baseline not found: %s", baselineName));
     }
     String baselineContent = locator.readTestData(baselineUrl);
     String outputContent =
@@ -72,7 +71,8 @@ public class ConfigGenerationTest {
               baselineName);
       Files.createDirectories(saveFile.getParent());
       Files.copy(Paths.get(outFile), saveFile, StandardCopyOption.REPLACE_EXISTING);
-      throw new IllegalStateException(String.format("baseline failed, output saved at %s", saveFile));
+      throw new IllegalStateException(
+          String.format("baseline failed, output saved at %s", saveFile));
     }
   }
 }

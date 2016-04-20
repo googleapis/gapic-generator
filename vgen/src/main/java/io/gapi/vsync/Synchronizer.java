@@ -41,49 +41,46 @@ import java.util.List;
  */
 public class Synchronizer extends SimpleFileVisitor<Path> {
 
-  public static final Option<String> SOURCE_PATH = ToolOptions.createOption(
-      String.class,
-      "source_path",
-      "The path to the folder for synchronized code.",
-      "");
+  public static final Option<String> SOURCE_PATH =
+      ToolOptions.createOption(
+          String.class, "source_path", "The path to the folder for synchronized code.", "");
 
-  public static final Option<String> GENERATED_PATH = ToolOptions.createOption(
-      String.class,
-      "generated_path",
-      "The path to the folder for generated code.",
-      "");
+  public static final Option<String> GENERATED_PATH =
+      ToolOptions.createOption(
+          String.class, "generated_path", "The path to the folder for generated code.", "");
 
-  public static final Option<String> BASELINE_PATH = ToolOptions.createOption(
-      String.class,
-      "baseline_path",
-      "The path to the folder for basline of generated code.",
-      "");
+  public static final Option<String> BASELINE_PATH =
+      ToolOptions.createOption(
+          String.class,
+          "baseline_path",
+          "The path to the folder for basline of generated code.",
+          "");
 
-  public static final Option<String> KDIFF3 = ToolOptions.createOption(
-      String.class,
-      "kdiff3",
-      "Path to the kdiff3 tool.",
-      "/usr/bin/kdiff3");
+  public static final Option<String> KDIFF3 =
+      ToolOptions.createOption(
+          String.class, "kdiff3", "Path to the kdiff3 tool.", "/usr/bin/kdiff3");
 
-  public static final Option<Boolean> AUTO_MERGE = ToolOptions.createOption(
-      Boolean.class,
-      "auto",
-      "Whether to use the --auto option of kdiff3, such that no gui is launched if conflicts "
-      + "can be resolved.",
-      true);
+  public static final Option<Boolean> AUTO_MERGE =
+      ToolOptions.createOption(
+          Boolean.class,
+          "auto",
+          "Whether to use the --auto option of kdiff3, such that no gui is launched if conflicts "
+              + "can be resolved.",
+          true);
 
-  public static final Option<Boolean> AUTO_RESOLUTION = ToolOptions.createOption(
-      Boolean.class,
-      "qall",
-      "If false, use the --qall option of kdiff3 which turns off smart conflict resolution.",
-      true);
+  public static final Option<Boolean> AUTO_RESOLUTION =
+      ToolOptions.createOption(
+          Boolean.class,
+          "qall",
+          "If false, use the --qall option of kdiff3 which turns off smart conflict resolution.",
+          true);
 
-  public static final Option<Boolean> IGNORE_BASE = ToolOptions.createOption(
-      Boolean.class,
-      "ignore_base",
-      "If true, the baseline will be ignored and two-way merge will be used.",
-      true);
-
+  public static final Option<Boolean> IGNORE_BASE =
+      ToolOptions.createOption(
+          Boolean.class,
+          "ignore_base",
+          "If true, the baseline will be ignored and two-way merge will be used.",
+          true);
 
   private final ToolOptions options;
   private final List<Diag> diagnosis = new ArrayList<>();
@@ -103,7 +100,10 @@ public class Synchronizer extends SimpleFileVisitor<Path> {
     try {
       Files.walkFileTree(Paths.get(options.get(GENERATED_PATH)), this);
     } catch (IOException e) {
-      error("I/O error: %s (%s): %s", e.getMessage(), e.getClass().getSimpleName(),
+      error(
+          "I/O error: %s (%s): %s",
+          e.getMessage(),
+          e.getClass().getSimpleName(),
           Throwables.getStackTraceAsString(e));
     }
     return diagnosis;
@@ -115,7 +115,7 @@ public class Synchronizer extends SimpleFileVisitor<Path> {
     }
   }
 
-  private void error(String message, Object...args) {
+  private void error(String message, Object... args) {
     diagnosis.add(Diag.error(SimpleLocation.TOPLEVEL, message, args));
   }
 
@@ -157,15 +157,13 @@ public class Synchronizer extends SimpleFileVisitor<Path> {
       cmdArgs.add(sourcePath.toString());
       cmdArgs.add("--fname");
       cmdArgs.add("EDITED " + relativePath);
-      Process process = new ProcessBuilder()
-          .command(cmdArgs)
-          .redirectErrorStream(true)
-          .start();
+      Process process = new ProcessBuilder().command(cmdArgs).redirectErrorStream(true).start();
       InputStreamReader stdout = new InputStreamReader(process.getInputStream());
       try {
         int resultCode = process.waitFor();
         if (resultCode != 0) {
-          error("unresolved merge conflict for '%s', aborting. Output:%n%s",
+          error(
+              "unresolved merge conflict for '%s', aborting. Output:%n%s",
               relativePath,
               CharStreams.toString(stdout));
           return FileVisitResult.TERMINATE;
@@ -175,7 +173,8 @@ public class Synchronizer extends SimpleFileVisitor<Path> {
           Files.copy(sourcePath, baselinePath);
         }
       } catch (InterruptedException e) {
-        error("interrupted during merge conflict resolution for '%s', aborting. Output:%n%s",
+        error(
+            "interrupted during merge conflict resolution for '%s', aborting. Output:%n%s",
             relativePath,
             CharStreams.toString(stdout));
         return FileVisitResult.TERMINATE;

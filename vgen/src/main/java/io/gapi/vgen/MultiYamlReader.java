@@ -33,10 +33,17 @@ import javax.annotation.Nullable;
 
 public class MultiYamlReader {
 
-  @Nullable public static Message read(DiagCollector collector, List<String> inputNames,
-      List<String> inputs, Map<String, Message> supportedConfigTypes) {
-    Preconditions.checkArgument(inputNames.size() == inputs.size(),
-        "size() of inputNames and inputs not equal: %d != %d", inputNames.size(), inputs.size());
+  @Nullable
+  public static Message read(
+      DiagCollector collector,
+      List<String> inputNames,
+      List<String> inputs,
+      Map<String, Message> supportedConfigTypes) {
+    Preconditions.checkArgument(
+        inputNames.size() == inputs.size(),
+        "size() of inputNames and inputs not equal: %d != %d",
+        inputNames.size(),
+        inputs.size());
     Message.Builder messageBuilder = null;
     for (int i = 0; i < inputs.size(); i++) {
       String inputName = inputNames.get(i);
@@ -58,8 +65,9 @@ public class MultiYamlReader {
     }
   }
 
-  @Nullable public static Message read(DiagCollector collector, List<File> files,
-      Map<String, Message> supportedConfigTypes) {
+  @Nullable
+  public static Message read(
+      DiagCollector collector, List<File> files, Map<String, Message> supportedConfigTypes) {
     List<String> inputNames = new ArrayList<>();
     List<String> inputs = new ArrayList<>();
     for (File file : files) {
@@ -68,8 +76,12 @@ public class MultiYamlReader {
         String fileContent = Files.toString(file, Charset.forName("UTF8"));
         inputs.add(fileContent);
       } catch (IOException e) {
-        collector.addDiag(Diag.error(SimpleLocation.TOPLEVEL,
-            "Cannot read configuration file '%s': %s", file.getName(), e.getMessage()));
+        collector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Cannot read configuration file '%s': %s",
+                file.getName(),
+                e.getMessage()));
       }
     }
     if (collector.getErrorCount() > 0) {
@@ -78,5 +90,4 @@ public class MultiYamlReader {
       return read(collector, inputNames, inputs, supportedConfigTypes);
     }
   }
-
 }

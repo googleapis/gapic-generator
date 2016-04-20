@@ -63,5 +63,4 @@ public class LanguageUtil {
   public static String lowerCamelToUpperCamel(String name) {
     return CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, name);
   }
-
 }

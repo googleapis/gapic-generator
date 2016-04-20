@@ -113,8 +113,8 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
   // ===============
 
   /**
-   * Takes a fully-qualified type name and returns its simple name, and also saves the
-   * type in the import list.
+   * Takes a fully-qualified type name and returns its simple name, and also saves the type in the
+   * import list.
    */
   public String getTypeName(String typeName) {
     int lastDotIndex = typeName.lastIndexOf('.');
@@ -126,8 +126,8 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
   }
 
   /**
-   * Adds the given type name to the import list. Returns an empty string so that the
-   * output is not affected in snippets.
+   * Adds the given type name to the import list. Returns an empty string so that the output is not
+   * affected in snippets.
    */
   public String addImport(String typeName) {
     // used for its side effect of adding the type to the import list if the short name
@@ -157,8 +157,8 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
   }
 
   /**
-   * Given a TypeRef, returns the return statement for that type. Specifically, this will
-   * return an empty string for the empty type (we don't want a return statement for void).
+   * Given a TypeRef, returns the return statement for that type. Specifically, this will return an
+   * empty string for the empty type (we don't want a return statement for void).
    */
   public String methodReturnStatement(TypeRef type) {
     if (messages().isEmptyType(type)) {
@@ -169,8 +169,8 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
   }
 
   /**
-   * Given a TypeRef, returns the String form of the type to be used as a return value.
-   * Special case: this will return "void" for the Empty return type.
+   * Given a TypeRef, returns the String form of the type to be used as a return value. Special
+   * case: this will return "void" for the Empty return type.
    */
   public String methodReturnTypeName(TypeRef type) {
     if (messages().isEmptyType(type)) {
@@ -234,8 +234,8 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
   }
 
   /**
-   * Returns the Java representation of a type, without cardinality.
-   * If the type is a Java primitive, basicTypeName returns it in unboxed form.
+   * Returns the Java representation of a type, without cardinality. If the type is a Java
+   * primitive, basicTypeName returns it in unboxed form.
    */
   public String basicTypeName(TypeRef type) {
     String result = PRIMITIVE_TYPE_MAP.get(type.getKind());
@@ -334,5 +334,4 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
     }
     throw new RuntimeException("No flattened methods available.");
   }
-
 }

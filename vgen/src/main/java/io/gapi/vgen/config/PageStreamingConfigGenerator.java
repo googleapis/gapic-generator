@@ -112,11 +112,12 @@ public class PageStreamingConfigGenerator implements MethodConfigGenerator {
     } else {
       if (repeatedFieldNames.size() > 1) {
         // TODO(shinfan): Add a warning system that is used when heuristic decision cannot be made.
-        System.err.printf("Warning: Page Streaming resource field could not be heuristically"
-            + " determined for method %s\n", method.getSimpleName());
+        System.err.printf(
+            "Warning: Page Streaming resource field could not be heuristically"
+                + " determined for method %s\n",
+            method.getSimpleName());
       }
       return null;
     }
   }
-
 }

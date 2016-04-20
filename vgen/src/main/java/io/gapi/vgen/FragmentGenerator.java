@@ -42,11 +42,11 @@ public class FragmentGenerator {
   }
 
   /**
-   * Generates fragments for the model. Returns a map from each method to a fragment for the
-   * method. Returns null if generation failed.
+   * Generates fragments for the model. Returns a map from each method to a fragment for the method.
+   * Returns null if generation failed.
    */
-  @Nullable public Map<Method, GeneratedResult> generateFragments(
-      SnippetDescriptor snippetDescriptor) {
+  @Nullable
+  public Map<Method, GeneratedResult> generateFragments(SnippetDescriptor snippetDescriptor) {
     // Establish required stage for generation.
     provider.getModel().establishStage(Merged.KEY);
     if (provider.getModel().getErrorCount() > 0) {
@@ -76,9 +76,9 @@ public class FragmentGenerator {
    * Delegates creating fragments to language provider. Takes the result map from
    * {@link GapicLanguageProvider#output} and stores it in a language-specific way.
    */
-  public void outputFragments(String outputFile,
-      Multimap<Method, GeneratedResult> methods, boolean archive)
-          throws IOException {
+  public void outputFragments(
+      String outputFile, Multimap<Method, GeneratedResult> methods, boolean archive)
+      throws IOException {
     provider.output(outputFile, methods, archive);
   }
 }
