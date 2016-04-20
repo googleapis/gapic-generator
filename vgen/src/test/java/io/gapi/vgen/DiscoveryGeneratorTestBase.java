@@ -25,6 +25,7 @@ import com.google.protobuf.MessageOrBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -50,25 +51,29 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
   protected ConfigProto config;
   protected DiscoveryImporter discoveryImporter;
 
-  public DiscoveryGeneratorTestBase(String name, String discoveryDocFileName,
-      String[] veneerConfigFileNames, String snippetName) {
+  public DiscoveryGeneratorTestBase(
+      String name,
+      String discoveryDocFileName,
+      String[] veneerConfigFileNames,
+      String snippetName) {
     this.name = name;
     this.discoveryDocFileName = discoveryDocFileName;
     this.veneerConfigFileNames = veneerConfigFileNames;
     this.snippetName = snippetName;
   }
 
-  public DiscoveryGeneratorTestBase(String name, String discoveryDocFileName,
-      String[] veneerConfigFileNames) {
+  public DiscoveryGeneratorTestBase(
+      String name, String discoveryDocFileName, String[] veneerConfigFileNames) {
     this(name, discoveryDocFileName, veneerConfigFileNames, null);
   }
 
   protected void setupDiscovery() {
     try {
-      discoveryImporter = DiscoveryImporter.parse(
-          Files.newReader(
-              new File(getTestDataLocator().getTestDataAsFile(discoveryDocFileName).toString()),
-              Charset.forName("UTF8")));
+      discoveryImporter =
+          DiscoveryImporter.parse(
+              new StringReader(
+                  getTestDataLocator()
+                      .readTestData(getTestDataLocator().findTestData(discoveryDocFileName))));
     } catch (IOException e) {
       throw new IllegalArgumentException("Problem creating Generator", e);
     }
@@ -131,13 +136,12 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
     }
 
     ImmutableMap<String, Message> supportedConfigTypes =
-        ImmutableMap.<String, Message>of(ConfigProto.getDescriptor().getFullName(),
-            ConfigProto.getDefaultInstance());
+        ImmutableMap.<String, Message>of(
+            ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
     // Use DiagCollector to collect errors from config read since user errors may arise here
     DiagCollector diagCollector = new SimpleDiag();
     ConfigProto configProto =
-        (ConfigProto) MultiYamlReader.read(diagCollector,
-            inputNames, inputs, supportedConfigTypes);
+        (ConfigProto) MultiYamlReader.read(diagCollector, inputNames, inputs, supportedConfigTypes);
     if (diagCollector.getErrorCount() > 0) {
       System.err.println(diagCollector.toString());
       return null;
@@ -145,9 +149,8 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
 
     if (snippetName != null) {
       // Filtering can be made more sophisticated later if required
-      configProto = configProto.toBuilder()
-          .clearSnippetFiles().addSnippetFiles(snippetName)
-          .build();
+      configProto =
+          configProto.toBuilder().clearSnippetFiles().addSnippetFiles(snippetName).build();
     }
 
     return configProto;
