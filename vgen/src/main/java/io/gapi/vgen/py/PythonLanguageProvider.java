@@ -16,10 +16,8 @@ package io.gapi.vgen.py;
 
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 
-import io.gapi.vgen.ApiConfig;
 import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.SnippetDescriptor;
 
@@ -37,14 +35,15 @@ public class PythonLanguageProvider {
       PythonContextCommon.class.getPackage().getName().replace('.', '/');
 
   @SuppressWarnings("unchecked")
-  public <Element> GeneratedResult generate(Element element, ApiConfig apiConfig,
-      SnippetDescriptor snippetDescriptor, PythonGapicContext context,
-      PythonImportHandler importHandler) {
-    ImmutableMap<String, Object> globalMap = ImmutableMap.<String, Object>builder()
+  public <Element> GeneratedResult generate(Element element, SnippetDescriptor snippetDescriptor,
+      PythonGapicContext context, PythonImportHandler importHandler,
+      ImmutableMap<String, Object> globalMap, String pathPrefix) {
+    globalMap = ImmutableMap.<String, Object>builder()
+        .putAll(globalMap)
         .put("context", context)
-        .put("pyproto", new PythonProtoElements())
         .put("importHandler", importHandler)
         .build();
+
     PythonSnippetSet<Element> snippets = SnippetSet.createSnippetInterface(
         PythonSnippetSet.class,
         SNIPPET_RESOURCE_ROOT,
@@ -56,12 +55,6 @@ public class PythonLanguageProvider {
     List<String> importList = importHandler.calculateImports();
     // Generate result.
     Doc result = snippets.generateClass(element, importList);
-    String pathPrefix;
-    if (!Strings.isNullOrEmpty(apiConfig.getPackageName())) {
-      pathPrefix = apiConfig.getPackageName().replace('.', '/') + "/";
-    } else {
-      pathPrefix = "";
-    }
     return GeneratedResult.create(result, pathPrefix + outputFilename);
   }
 }

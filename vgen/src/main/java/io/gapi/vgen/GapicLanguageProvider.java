@@ -33,8 +33,7 @@ public interface GapicLanguageProvider {
   /**
    * Generates the code for the given interface using the given snippet.
    */
-  GeneratedResult generateCode(Interface iface,
-      SnippetDescriptor snippetDescriptor);
+  GeneratedResult generateCode(Interface iface, SnippetDescriptor snippetDescriptor);
 
   /**
    * Generates the doc for the given proto file and snippet.
@@ -44,8 +43,7 @@ public interface GapicLanguageProvider {
   /**
    * Generates a fragment for the given method.
    */
-  GeneratedResult generateFragments(Method method,
-      SnippetDescriptor snippetDescriptor);
+  GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor);
 
   /**
    * Outputs the given elements to the given output path.

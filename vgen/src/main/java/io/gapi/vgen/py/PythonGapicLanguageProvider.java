@@ -19,20 +19,18 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.snippet.Doc;
-import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 
 import io.gapi.vgen.ApiConfig;
-import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.GapicLanguageProvider;
+import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -80,63 +78,46 @@ public class PythonGapicLanguageProvider implements GapicLanguageProvider {
 
   @Override
   public GeneratedResult generateDoc(ProtoFile file, SnippetDescriptor snippetDescriptor) {
-    PythonImportHandler importHandler = new PythonImportHandler(file);
-    ImmutableMap<String, Object> globalMap =
-        ImmutableMap.<String, Object>builder()
-            .put("context", context)
-            .put("file", file)
-            .put("importHandler", importHandler)
-            .build();
-    PythonSnippetSet snippets =
-        SnippetSet.createSnippetInterface(
-            PythonSnippetSet.class,
-            PythonLanguageProvider.SNIPPET_RESOURCE_ROOT,
-            snippetDescriptor.getSnippetInputName(),
-            globalMap);
-    Doc filenameDoc = snippets.generateFilename(file);
-    String outputFilename = filenameDoc.prettyPrint();
-    List<String> importList = importHandler.calculateImports();
-    Doc result = snippets.generateClass(file, importList);
-    return GeneratedResult.create(result, outputFilename);
+    ImmutableMap<String, Object> globalMap = ImmutableMap.of("file", file);
+    return provider.generate(
+        file,
+        snippetDescriptor,
+        context,
+        new PythonImportHandler(file),
+        globalMap,
+        "");
   }
 
+  @Override
   public GeneratedResult generateCode(Interface service, SnippetDescriptor snippetDescriptor) {
-    PythonImportHandler importHandler =
-        new PythonImportHandler(service, context.getApiConfig().getInterfaceConfig(service));
-    ImmutableMap<String, Object> globalMap =
-        ImmutableMap.<String, Object>builder()
-            .put("context", context)
-            .put("pyproto", new PythonProtoElements())
-            .put("importHandler", importHandler)
-            .build();
-    PythonSnippetSet snippets =
-        SnippetSet.createSnippetInterface(
-            PythonSnippetSet.class,
-            PythonLanguageProvider.SNIPPET_RESOURCE_ROOT,
-            snippetDescriptor.getSnippetInputName(),
-            globalMap);
-    Doc filenameDoc = snippets.generateFilename(service);
-    String outputFilename = filenameDoc.prettyPrint();
-    List<String> importList = importHandler.calculateImports();
-    // Generate result.
-    Doc result = snippets.generateClass(service, importList);
-    String pathPrefix;
-    if (!Strings.isNullOrEmpty(context.getApiConfig().getPackageName())) {
-      pathPrefix = context.getApiConfig().getPackageName().replace('.', '/') + "/";
-    } else {
-      pathPrefix = "";
-    }
-    return GeneratedResult.create(result, pathPrefix + outputFilename);
+    ImmutableMap<String, Object> globalMap = ImmutableMap.of("pyproto", new PythonProtoElements());
+    return provider.generate(
+        service,
+        snippetDescriptor,
+        context,
+        new PythonImportHandler(service, context.getApiConfig().getInterfaceConfig(service)),
+        globalMap,
+        packagePathPrefix());
   }
 
   @Override
   public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor) {
+    ImmutableMap<String, Object> globalMap = ImmutableMap.of("pyproto", new PythonProtoElements());
     return provider.generate(
         method,
-        context.getApiConfig(),
         snippetDescriptor,
         context,
-        new PythonImportHandler(method.getParent().getFile()));
+        new PythonImportHandler(method.getParent().getFile()),
+        globalMap,
+        packagePathPrefix());
   }
 
+  private String packagePathPrefix() {
+    String packageName = context.getApiConfig().getPackageName();
+    if (Strings.isNullOrEmpty(packageName)) {
+      return "";
+    } else {
+      return packageName.replace('.', '/') + "/";
+    }
+  }
 }
