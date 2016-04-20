@@ -34,7 +34,7 @@ public abstract class FragmentGeneratorTestBase extends GeneratorTestBase {
 
   @Override
   protected Object run() {
-    LanguageProvider languageProvider = GeneratorBuilderUtil.createLanguageProvider(config, model);
+    GapicLanguageProvider languageProvider = GeneratorBuilderUtil.createLanguageProvider(config, model);
     String snippetInputName = config.getFragmentFilesList().get(0);
     SnippetDescriptor resourceDescriptor =
           new SnippetDescriptor(snippetInputName);

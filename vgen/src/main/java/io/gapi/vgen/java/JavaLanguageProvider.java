@@ -35,7 +35,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import com.google.common.collect.Multimap;
 
 import io.gapi.vgen.GeneratedResult;
-import io.gapi.vgen.LanguageProvider;
+import io.gapi.vgen.GapicLanguageProvider;
 import io.gapi.vgen.MethodConfig;
 import io.gapi.vgen.SnippetDescriptor;
 

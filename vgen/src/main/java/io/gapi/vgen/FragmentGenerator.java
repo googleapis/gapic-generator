@@ -31,13 +31,13 @@ import javax.annotation.Nullable;
  */
 public class FragmentGenerator {
 
-  private final LanguageProvider provider;
+  private final GapicLanguageProvider provider;
 
-  public FragmentGenerator(LanguageProvider provider) {
+  public FragmentGenerator(GapicLanguageProvider provider) {
     this.provider = Preconditions.checkNotNull(provider);
   }
 
-  public static FragmentGenerator create(LanguageProvider provider) {
+  public static FragmentGenerator create(GapicLanguageProvider provider) {
     return new FragmentGenerator(provider);
   }
 
@@ -74,7 +74,7 @@ public class FragmentGenerator {
 
   /**
    * Delegates creating fragments to language provider. Takes the result map from
-   * {@link LanguageProvider#output} and stores it in a language-specific way.
+   * {@link GapicLanguageProvider#output} and stores it in a language-specific way.
    */
   public void outputFragments(String outputFile,
       Multimap<Method, GeneratedResult> methods, boolean archive)

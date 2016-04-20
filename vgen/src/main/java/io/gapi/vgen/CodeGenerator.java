@@ -41,9 +41,9 @@ import javax.annotation.Nullable;
  */
 public class CodeGenerator {
 
-  private final LanguageProvider provider;
+  private final GapicLanguageProvider provider;
 
-  public CodeGenerator(LanguageProvider provider) {
+  public CodeGenerator(GapicLanguageProvider provider) {
     this.provider = Preconditions.checkNotNull(provider);
   }
 
@@ -115,7 +115,7 @@ public class CodeGenerator {
 
   /**
    * Delegates creating code to language provider. Takes the result list from
-   * {@link LanguageProvider#outputCode(String, List)} and stores it in a
+   * {@link GapicLanguageProvider#outputCode(String, List)} and stores it in a
    * language-specific way.
    */
   public <Element> void output(String outputFile, Multimap<Element, GeneratedResult> results,

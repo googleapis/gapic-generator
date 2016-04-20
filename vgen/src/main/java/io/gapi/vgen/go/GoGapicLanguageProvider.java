@@ -22,7 +22,7 @@ import com.google.common.collect.Multimap;
 
 import io.gapi.vgen.ApiConfig;
 import io.gapi.vgen.GeneratedResult;
-import io.gapi.vgen.LanguageProvider;
+import io.gapi.vgen.GapicLanguageProvider;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ import java.io.IOException;
 /**
  * The LanguageProvider which runs Gapic code generation for Go.
  */
-public class GoGapicLanguageProvider implements LanguageProvider {
+public class GoGapicLanguageProvider implements GapicLanguageProvider {
 
   private final GoGapicContext context;
   private final GoLanguageProvider provider;

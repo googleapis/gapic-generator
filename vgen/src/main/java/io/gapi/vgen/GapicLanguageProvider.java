@@ -23,13 +23,10 @@ import com.google.common.collect.Multimap;
 import java.io.IOException;
 
 /**
- * A LanguageProvider performs code or fragment generation using on a proto-based
+ * A GapicLanguageProvider performs code or fragment generation using on a proto-based
  * Model for a particular language.
- *
- * NOTE: The name is more general that its use case - it currently excludes
- * discovery-based use cases.
  */
-public interface LanguageProvider {
+public interface GapicLanguageProvider {
 
   Model getModel();
 

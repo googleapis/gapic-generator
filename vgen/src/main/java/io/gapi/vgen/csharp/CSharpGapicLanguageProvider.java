@@ -24,7 +24,7 @@ import com.google.common.collect.Multimap;
 
 import io.gapi.vgen.ApiConfig;
 import io.gapi.vgen.GeneratedResult;
-import io.gapi.vgen.LanguageProvider;
+import io.gapi.vgen.GapicLanguageProvider;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ import java.util.Map;
 /**
  * The LanguageProvider which runs Gapic code generation for C#.
  */
-public class CSharpGapicLanguageProvider implements LanguageProvider {
+public class CSharpGapicLanguageProvider implements GapicLanguageProvider {
 
   private final CSharpGapicContext context;
   private final CSharpLanguageProvider provider;
