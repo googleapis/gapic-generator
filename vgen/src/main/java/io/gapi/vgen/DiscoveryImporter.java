@@ -391,6 +391,10 @@ public class DiscoveryImporter {
     types.put(synthetic, type);
     builder.setRequestTypeUrl(synthetic);
 
+    if (root.get("supportsMediaUpload") != null && root.get("supportsMediaUpload").asBoolean()) {
+     config.getMediaUpload().add(methodName);
+   }
+
     // TODO: add google.api.http
     return builder.build();
   }
