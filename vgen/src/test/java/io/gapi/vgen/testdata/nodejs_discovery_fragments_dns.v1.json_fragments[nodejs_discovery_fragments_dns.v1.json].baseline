@@ -1,0 +1,299 @@
+
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'create' method:
+
+    // * Identifies the project addressed by this request.
+    request.project = "";
+    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    request.managedZone = "";
+    request.resource = {};
+
+    dns.changes.create(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+
+    // * Identifies the project addressed by this request.
+    request.project = "";
+    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    request.managedZone = "";
+    // * The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
+    request.changeId = "";
+
+    dns.changes.get(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+    // * Identifies the project addressed by this request.
+    request.project = "";
+    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    request.managedZone = "";
+
+
+    var recur = function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+        if (result.nextPageToken) {
+          request.pageToken = result.nextPageToken;
+          dns.changes.list(request, recur);
+        }
+      }
+    };
+
+    dns.changes.list(request, recur);
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'create' method:
+
+    // * Identifies the project addressed by this request.
+    request.project = "";
+    request.resource = {};
+
+    dns.managedZones.create(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'delete' method:
+
+    // * Identifies the project addressed by this request.
+    request.project = "";
+    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    request.managedZone = "";
+
+    dns.managedZones.delete(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+
+    // * Identifies the project addressed by this request.
+    request.project = "";
+    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    request.managedZone = "";
+
+    dns.managedZones.get(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+    // * Identifies the project addressed by this request.
+    request.project = "";
+
+
+    var recur = function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+        if (result.nextPageToken) {
+          request.pageToken = result.nextPageToken;
+          dns.managedZones.list(request, recur);
+        }
+      }
+    };
+
+    dns.managedZones.list(request, recur);
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+
+    // * Identifies the project addressed by this request.
+    request.project = "";
+
+    dns.projects.get(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+    // * Identifies the project addressed by this request.
+    request.project = "";
+    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    request.managedZone = "";
+
+
+    var recur = function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+        if (result.nextPageToken) {
+          request.pageToken = result.nextPageToken;
+          dns.resourceRecordSets.list(request, recur);
+        }
+      }
+    };
+
+    dns.resourceRecordSets.list(request, recur);
+   }
+});

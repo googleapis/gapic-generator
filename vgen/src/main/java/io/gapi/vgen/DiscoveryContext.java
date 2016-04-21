@@ -59,7 +59,7 @@ public abstract class DiscoveryContext extends LanguageContext {
   /**
    * A map from method IDs in discovery doc to renamed counterparts in Java client libraries.
    */
-  protected static ImmutableMap<String, String> RENAMED_METHOD_MAP;
+  protected static ImmutableMap<String, String> RENAMED_METHOD_MAP = ImmutableMap.of();
 
   // Helpers for Subclasses and Snippets
   // ===================================

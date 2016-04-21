@@ -1,0 +1,256 @@
+
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'predict' method:
+
+    // * The project associated with the model.
+    request.project = "";
+    // * The name of a hosted model.
+    request.hostedModelName = "";
+    request.resource = {};
+
+    prediction.hostedmodels.predict(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'analyze' method:
+
+    // * The project associated with the model.
+    request.project = "";
+    // * The unique name for the predictive model.
+    request.id = "";
+
+    prediction.trainedmodels.analyze(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'delete' method:
+
+    // * The project associated with the model.
+    request.project = "";
+    // * The unique name for the predictive model.
+    request.id = "";
+
+    prediction.trainedmodels.delete(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+
+    // * The project associated with the model.
+    request.project = "";
+    // * The unique name for the predictive model.
+    request.id = "";
+
+    prediction.trainedmodels.get(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'insert' method:
+
+    // * The project associated with the model.
+    request.project = "";
+    request.resource = {};
+
+    prediction.trainedmodels.insert(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+    // * The project associated with the model.
+    request.project = "";
+
+
+    var recur = function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+        if (result.nextPageToken) {
+          request.pageToken = result.nextPageToken;
+          prediction.trainedmodels.list(request, recur);
+        }
+      }
+    };
+
+    prediction.trainedmodels.list(request, recur);
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'predict' method:
+
+    // * The project associated with the model.
+    request.project = "";
+    // * The unique name for the predictive model.
+    request.id = "";
+    request.resource = {};
+
+    prediction.trainedmodels.predict(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'update' method:
+
+    // * The project associated with the model.
+    request.project = "";
+    // * The unique name for the predictive model.
+    request.id = "";
+    request.resource = {};
+
+    prediction.trainedmodels.update(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});

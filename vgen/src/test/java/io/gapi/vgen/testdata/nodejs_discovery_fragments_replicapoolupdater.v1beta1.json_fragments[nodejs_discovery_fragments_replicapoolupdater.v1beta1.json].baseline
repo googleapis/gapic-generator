@@ -1,0 +1,347 @@
+
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'cancel' method:
+
+    // * The Google Developers Console project name.
+    request.project = "";
+    // * The name of the zone in which the update's target resides.
+    request.zone = "";
+    // * The name of the update.
+    request.rollingUpdate = "";
+
+    replicapoolupdater.rollingUpdates.cancel(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+
+    // * The Google Developers Console project name.
+    request.project = "";
+    // * The name of the zone in which the update's target resides.
+    request.zone = "";
+    // * The name of the update.
+    request.rollingUpdate = "";
+
+    replicapoolupdater.rollingUpdates.get(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'insert' method:
+
+    // * The Google Developers Console project name.
+    request.project = "";
+    // * The name of the zone in which the update's target resides.
+    request.zone = "";
+    request.resource = {};
+
+    replicapoolupdater.rollingUpdates.insert(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+    // * The Google Developers Console project name.
+    request.project = "";
+    // * The name of the zone in which the update's target resides.
+    request.zone = "";
+
+
+    var recur = function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+        if (result.nextPageToken) {
+          request.pageToken = result.nextPageToken;
+          replicapoolupdater.rollingUpdates.list(request, recur);
+        }
+      }
+    };
+
+    replicapoolupdater.rollingUpdates.list(request, recur);
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'listInstanceUpdates' method:
+
+    // * The Google Developers Console project name.
+    request.project = "";
+    // * The name of the zone in which the update's target resides.
+    request.zone = "";
+    // * The name of the update.
+    request.rollingUpdate = "";
+
+
+    var recur = function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+        if (result.nextPageToken) {
+          request.pageToken = result.nextPageToken;
+          replicapoolupdater.rollingUpdates.listInstanceUpdates(request, recur);
+        }
+      }
+    };
+
+    replicapoolupdater.rollingUpdates.listInstanceUpdates(request, recur);
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'pause' method:
+
+    // * The Google Developers Console project name.
+    request.project = "";
+    // * The name of the zone in which the update's target resides.
+    request.zone = "";
+    // * The name of the update.
+    request.rollingUpdate = "";
+
+    replicapoolupdater.rollingUpdates.pause(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'resume' method:
+
+    // * The Google Developers Console project name.
+    request.project = "";
+    // * The name of the zone in which the update's target resides.
+    request.zone = "";
+    // * The name of the update.
+    request.rollingUpdate = "";
+
+    replicapoolupdater.rollingUpdates.resume(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'rollback' method:
+
+    // * The Google Developers Console project name.
+    request.project = "";
+    // * The name of the zone in which the update's target resides.
+    request.zone = "";
+    // * The name of the update.
+    request.rollingUpdate = "";
+
+    replicapoolupdater.rollingUpdates.rollback(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+
+    // * Name of the project scoping this request.
+    request.project = "";
+    // * Name of the zone scoping this request.
+    request.zone = "";
+    // * Name of the operation resource to return.
+    request.operation = "";
+
+    replicapoolupdater.zoneOperations.get(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+    // * Name of the project scoping this request.
+    request.project = "";
+    // * Name of the zone scoping this request.
+    request.zone = "";
+
+
+    var recur = function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+        if (result.nextPageToken) {
+          request.pageToken = result.nextPageToken;
+          replicapoolupdater.zoneOperations.list(request, recur);
+        }
+      }
+    };
+
+    replicapoolupdater.zoneOperations.list(request, recur);
+   }
+});

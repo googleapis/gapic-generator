@@ -1,0 +1,159 @@
+
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+
+    // * The resource name of the billing account to retrieve. For example, `billingAccounts/012345-567890-ABCDEF`.
+    request.name = "";
+
+    cloudbilling.billingAccounts.get(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+
+
+    var recur = function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+        if (result.nextPageToken) {
+          request.pageToken = result.nextPageToken;
+          cloudbilling.billingAccounts.list(request, recur);
+        }
+      }
+    };
+
+    cloudbilling.billingAccounts.list(request, recur);
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+    // * The resource name of the billing account associated with the projects that you want to list. For example, `billingAccounts/012345-567890-ABCDEF`.
+    request.name = "";
+
+
+    var recur = function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+        if (result.nextPageToken) {
+          request.pageToken = result.nextPageToken;
+          cloudbilling.billingAccounts.projects.list(request, recur);
+        }
+      }
+    };
+
+    cloudbilling.billingAccounts.projects.list(request, recur);
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'getBillingInfo' method:
+
+    // * The resource name of the project for which billing information is retrieved. For example, `projects/tokyo-rain-123`.
+    request.name = "";
+
+    cloudbilling.projects.getBillingInfo(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'updateBillingInfo' method:
+
+    // * The resource name of the project associated with the billing information that you want to update. For example, `projects/tokyo-rain-123`.
+    request.name = "";
+    request.resource = {};
+
+    cloudbilling.projects.updateBillingInfo(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});

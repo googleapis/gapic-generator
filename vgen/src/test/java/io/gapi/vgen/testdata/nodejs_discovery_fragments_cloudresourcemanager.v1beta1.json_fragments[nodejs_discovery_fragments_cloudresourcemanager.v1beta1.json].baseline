@@ -1,0 +1,454 @@
+
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+
+    // * The id of the Organization resource to fetch.
+    request.organizationId = "";
+
+    cloudresourcemanager.organizations.get(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'getIamPolicy' method:
+
+    // * REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `getIamPolicy` documentation.
+    request.resource_ = "";
+    request.resource = {};
+
+    cloudresourcemanager.organizations.getIamPolicy(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+
+
+    var recur = function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+        if (result.nextPageToken) {
+          request.pageToken = result.nextPageToken;
+          cloudresourcemanager.organizations.list(request, recur);
+        }
+      }
+    };
+
+    cloudresourcemanager.organizations.list(request, recur);
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'setIamPolicy' method:
+
+    // * REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `setIamPolicy` documentation.
+    request.resource_ = "";
+    request.resource = {};
+
+    cloudresourcemanager.organizations.setIamPolicy(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'testIamPermissions' method:
+
+    // * REQUIRED: The resource for which the policy detail is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `testIamPermissions` documentation.
+    request.resource_ = "";
+    request.resource = {};
+
+    cloudresourcemanager.organizations.testIamPermissions(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'update' method:
+
+    // * An immutable id for the Organization that is assigned on creation. This should be omitted when creating a new Organization. This field is read-only.
+    request.organizationId = "";
+    request.resource = {};
+
+    cloudresourcemanager.organizations.update(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'create' method:
+
+    request.resource = {};
+
+    cloudresourcemanager.projects.create(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'delete' method:
+
+    // * The Project ID (for example, `foo-bar-123`). Required.
+    request.projectId = "";
+
+    cloudresourcemanager.projects.delete(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+
+    // * The Project ID (for example, `my-project-123`). Required.
+    request.projectId = "";
+
+    cloudresourcemanager.projects.get(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'getIamPolicy' method:
+
+    // * REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `getIamPolicy` documentation.
+    request.resource_ = "";
+    request.resource = {};
+
+    cloudresourcemanager.projects.getIamPolicy(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+
+
+    var recur = function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+        if (result.nextPageToken) {
+          request.pageToken = result.nextPageToken;
+          cloudresourcemanager.projects.list(request, recur);
+        }
+      }
+    };
+
+    cloudresourcemanager.projects.list(request, recur);
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'setIamPolicy' method:
+
+    // * REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `setIamPolicy` documentation.
+    request.resource_ = "";
+    request.resource = {};
+
+    cloudresourcemanager.projects.setIamPolicy(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'testIamPermissions' method:
+
+    // * REQUIRED: The resource for which the policy detail is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `testIamPermissions` documentation.
+    request.resource_ = "";
+    request.resource = {};
+
+    cloudresourcemanager.projects.testIamPermissions(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'undelete' method:
+
+    // * The project ID (for example, `foo-bar-123`). Required.
+    request.projectId = "";
+    request.resource = {};
+
+    cloudresourcemanager.projects.undelete(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
+var google = require('googleapis');
+var pubsub = google.pubsub('v1');
+var GoogleAuth = require('google-auth-library');
+
+(new GoogleAuth).getApplicationDefault(function(err, authClient) {
+  if (err === null) {
+    if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+      var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+      authClient = authClient.createScoped(scopes);
+    }
+
+    var request = {
+      auth: authClient
+    };
+
+    // TODO: Change placeholders below to values for parameters to the 'update' method:
+
+    // * The project ID (for example, `my-project-123`). Required.
+    request.projectId = "";
+    request.resource = {};
+
+    cloudresourcemanager.projects.update(request, function(error, result) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(result);
+      }
+    });
+   }
+});
