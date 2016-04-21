@@ -126,6 +126,10 @@ public abstract class DiscoveryContext extends LanguageContext {
         apiaryConfig.getType(method.getRequestTypeUrl()), DiscoveryImporter.REQUEST_FIELD_NAME);
   }
 
+  public boolean hasMediaUpload(Method method) {
+    return apiaryConfig.getMediaUpload().contains(method.getName());
+  }
+
   public List<String> getMethodParams(Method method) {
     // used to handle inconsistency in list methods for Cloud Monitoring API
     // remove if inconsistency is resolved in discovery docs

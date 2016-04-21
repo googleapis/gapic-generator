@@ -23,8 +23,10 @@ import com.google.protobuf.Field;
 import com.google.protobuf.Type;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -71,6 +73,11 @@ public class ApiaryConfig {
   private final Table<String, String, String> stringFormat =
       HashBasedTable.<String, String, String>create();
 
+  /**
+   * Records whether or not the method allows media upload.
+   */
+  private final Set<String> mediaUpload = new HashSet<>();
+
   /*
    * Maps type name to type (from {@link DiscoveryImporter}).
    */
@@ -111,6 +118,10 @@ public class ApiaryConfig {
 
   public Table<Type, String, Field> getFields() {
     return fields;
+  }
+
+  public Set<String> getMediaUpload() {
+    return mediaUpload;
   }
 
   /**
