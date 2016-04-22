@@ -47,7 +47,7 @@ public class RubyGapicLanguageProvider implements GapicLanguageProvider {
   }
 
   String getPackageRoot() {
-    ArrayList<String> dirs = new ArrayList();
+    ArrayList<String> dirs = new ArrayList<>();
     for (String moduleName : context.getApiConfig().getPackageName().split("::")) {
       dirs.add(moduleName.toLowerCase());
     }

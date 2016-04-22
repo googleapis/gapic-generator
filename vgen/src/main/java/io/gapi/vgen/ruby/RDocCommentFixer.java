@@ -18,7 +18,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Utility class for formatting python comments to follow RDoc style.
+ * Utility class for formatting source comments to follow RDoc style.
+ * @todo extract the common interface with PythonSphinxCommentFixer.
  */
 public class RDocCommentFixer {
 

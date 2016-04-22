@@ -77,7 +77,6 @@ public class RubyGapicContext extends GapicContext {
    */
   private String fieldTypeCardinalityComment(Field field) {
     TypeRef type = field.getType();
-    boolean needsClosing = false;
 
     String cardinalityComment;
     String closing;
@@ -118,7 +117,7 @@ public class RubyGapicContext extends GapicContext {
 
   /**
    * Return YARD return type string for the given method, or null if the return type is
-   * None.
+   * nil.
    */
   @Nullable
   private String returnTypeComment(Method method) {
@@ -158,7 +157,7 @@ public class RubyGapicContext extends GapicContext {
     }
     paramTypesBuilder.append("@param options [Google::Gax::CallOptions] \n" +
                              "  Overrides the default settings for this call, e.g, timeout,\n" +
-                             "  retries etc.");
+                             "  retries, etc.");
     String paramTypes = paramTypesBuilder.toString();
 
     String returnType = returnTypeComment(msg);
@@ -184,7 +183,7 @@ public class RubyGapicContext extends GapicContext {
   }
 
   /**
-   * Return a non-conflicting safe name if name is a python built-in.
+   * Return a non-conflicting safe name if name is a Ruby built-in.
    */
   public String wrapIfKeywordOrBuiltIn(String name) {
     if (KEYWORD_BUILT_IN_SET.contains(name)) {
@@ -232,7 +231,7 @@ public class RubyGapicContext extends GapicContext {
         if (lastDot < 0) {
           return fullName;
         }
-        List<String> rubyNames = new ArrayList<String>();
+        List<String> rubyNames = new ArrayList<>();
         for (String name : fullName.substring(0, lastDot).split("\\.")) {
           rubyNames.add(lowerUnderscoreToUpperCamel(name));
         }
