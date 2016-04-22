@@ -40,6 +40,12 @@ sourceSets {
   }
 }
 
+task setupProtocEnvironment << {
+  test.setEnvironment(PROTOC_COMPILER: project.protobuf.tools.protoc.path)
+}
+
+test.dependsOn setupProtocEnvironment
+
 task showRuntimeClassPath << {
   println sourceSets.main.runtimeClasspath.asPath
 }
