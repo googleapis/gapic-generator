@@ -36,7 +36,7 @@ public final class GeneratorBuilderUtil {
     void error(String message, Object... args);
   }
 
-  public static GapicLanguageProvider createLanguageProvider(ConfigProto configProto, Model model) {
+  public static GapicLanguageProvider createLanguageProvider(ConfigProto configProto, final Model model) {
     Preconditions.checkNotNull(model);
     Preconditions.checkNotNull(configProto);
 
