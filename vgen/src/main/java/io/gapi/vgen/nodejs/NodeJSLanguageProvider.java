@@ -48,10 +48,9 @@ public class NodeJSLanguageProvider {
       files.put(root + "/" + generatedResult.getFilename(), generatedResult.getDoc());
     }
     if (archive) {
-      ToolUtil.writeJar(files, outputPath);
-    } else {
-      ToolUtil.writeFiles(files, outputPath);
+      throw new IllegalArgumentException("NodeJS does not support archive");
     }
+    ToolUtil.writeFiles(files, outputPath);
   }
 
   @SuppressWarnings("unchecked")

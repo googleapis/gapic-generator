@@ -63,16 +63,15 @@ public class NodeJSDiscoveryContext extends DiscoveryContext {
         switch (stringFormat) {
           case "byte":
             return "\"\"; "
-                + "  // base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648 ";
+                + "  // base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648";
           case "date":
             // TODO(tcoffee): does new DateTime(new Date(0L)).toStringRfc3339() work?
-            return "\"1969-12-31\";" + "  // \"YYYY-MM-DD\": " + "see java.text.SimpleDateFormat";
+            return "\"1969-12-31\";" + "  // \"YYYY-MM-DD\"";
           case "date-time":
             return "\""
                 + new DateTime(0L).toStringRfc3339()
                 + "\";"
-                + "  // \"YYYY-MM-DDThh:mm:ss.fffZ\" (UTC): "
-                + "see com.google.api.client.util.DateTime.toStringRfc3339()";
+                + "  // \"YYYY-MM-DDThh:mm:ss.fffZ\" (UTC)";
           default:
             // fall through
         }
