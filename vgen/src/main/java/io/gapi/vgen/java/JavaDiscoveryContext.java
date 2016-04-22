@@ -76,12 +76,10 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
           .put("double", double.class)
           .build();
 
-  static {
-    RENAMED_METHOD_MAP =
-        ImmutableMap.<String, String>builder()
-            .put("sql.instances.import", "sql.instances.sqladminImport")
-            .build();
-  }
+  private static final ImmutableMap<String, String> RENAMED_METHOD_MAP =
+      ImmutableMap.<String, String>builder()
+          .put("sql.instances.import", "sql.instances.sqladminImport")
+          .build();
 
   // TODO(tcoffee): revisit default capitalization behavior based on wider survey of APIs
   /**
@@ -128,6 +126,11 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
 
   // Snippet Helpers
   // ===============
+
+  @Override
+  public String getMethodName(Method method) {
+    return getSimpleName(getRename(method.getName(), RENAMED_METHOD_MAP));
+  }
 
   private String getTypeRename(String typeName) {
     boolean full = typeName.startsWith(JAVA_SERVICE_TYPE_PREFIX);

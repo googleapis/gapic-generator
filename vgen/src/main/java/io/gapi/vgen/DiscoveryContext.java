@@ -56,11 +56,6 @@ public abstract class DiscoveryContext extends LanguageContext {
     return apiaryConfig;
   }
 
-  /**
-   * A map from method IDs in discovery doc to renamed counterparts in Java client libraries.
-   */
-  protected static ImmutableMap<String, String> RENAMED_METHOD_MAP = ImmutableMap.of();
-
   // Helpers for Subclasses and Snippets
   // ===================================
 
@@ -79,7 +74,7 @@ public abstract class DiscoveryContext extends LanguageContext {
    * Returns the simple name of the method with given ID.
    */
   public String getMethodName(Method method) {
-    return getSimpleName(getRename(method.getName(), RENAMED_METHOD_MAP));
+    return getSimpleName(method.getName());
   }
 
   public String getSimpleName(String name) {
