@@ -46,10 +46,9 @@ public class GoGapicLanguageProvider implements GapicLanguageProvider {
   }
 
   @Override
-  public <Element> void output(
-      String outputPath, Multimap<Element, GeneratedResult> elements, boolean archive)
+  public <Element> void output(String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
-    provider.output(outputPath, elements, archive);
+    provider.output(outputPath, elements);
   }
 
   @Override

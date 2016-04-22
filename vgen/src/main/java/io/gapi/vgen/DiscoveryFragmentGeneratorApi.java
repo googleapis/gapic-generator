@@ -111,7 +111,7 @@ public class DiscoveryFragmentGeneratorApi {
         docs.put(entry.getKey(), entry.getValue());
       }
     }
-    generator.outputFragments(options.get(OUTPUT_FILE), docs, configProto.getArchive());
+    generator.outputFragments(options.get(OUTPUT_FILE), docs);
   }
 
   public void run() throws Exception {

@@ -46,11 +46,10 @@ public class JavaGapicLanguageProvider implements GapicLanguageProvider {
   }
 
   @Override
-  public <Element> void output(
-      String outputPath, Multimap<Element, GeneratedResult> elements, boolean archive)
+  public <Element> void output(String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
     String root = context.getApiConfig().getPackageName().replace('.', '/');
-    provider.output(root, outputPath, elements, archive);
+    provider.output(root, outputPath, elements);
   }
 
   @Override

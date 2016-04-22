@@ -48,7 +48,6 @@ public interface GapicLanguageProvider {
   /**
    * Outputs the given elements to the given output path.
    */
-  <Element> void output(
-      String outputPath, Multimap<Element, GeneratedResult> elements, boolean archive)
+  <Element> void output(String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException;
 }

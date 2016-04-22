@@ -27,7 +27,7 @@ public interface DiscoveryLanguageProvider {
 
   public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor);
 
-  public void output(String outputPath, Multimap<Method, GeneratedResult> methods, boolean archive)
+  public void output(String outputPath, Multimap<Method, GeneratedResult> methods)
       throws IOException;
 
   public Service getService();
