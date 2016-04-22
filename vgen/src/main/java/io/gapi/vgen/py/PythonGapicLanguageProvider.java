@@ -78,14 +78,14 @@ public class PythonGapicLanguageProvider implements GapicLanguageProvider {
 
   @Override
   public GeneratedResult generateDoc(ProtoFile file, SnippetDescriptor snippetDescriptor) {
-    ImmutableMap<String, Object> globalMap = ImmutableMap.of("file", file);
+    ImmutableMap<String, Object> globalMap = ImmutableMap.of("file", (Object) file);
     return provider.generate(
         file, snippetDescriptor, context, new PythonImportHandler(file), globalMap, "");
   }
 
   @Override
   public GeneratedResult generateCode(Interface service, SnippetDescriptor snippetDescriptor) {
-    ImmutableMap<String, Object> globalMap = ImmutableMap.of("pyproto", new PythonProtoElements());
+    ImmutableMap<String, Object> globalMap = ImmutableMap.of("pyproto", (Object) new PythonProtoElements());
     return provider.generate(
         service,
         snippetDescriptor,
@@ -97,7 +97,7 @@ public class PythonGapicLanguageProvider implements GapicLanguageProvider {
 
   @Override
   public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor) {
-    ImmutableMap<String, Object> globalMap = ImmutableMap.of("pyproto", new PythonProtoElements());
+    ImmutableMap<String, Object> globalMap = ImmutableMap.of("pyproto", (Object) new PythonProtoElements());
     return provider.generate(
         method,
         snippetDescriptor,

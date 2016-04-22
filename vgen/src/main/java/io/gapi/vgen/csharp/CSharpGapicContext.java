@@ -25,13 +25,17 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
+import com.google.common.base.Function;
+import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import autovalue.shaded.com.google.common.common.collect.ImmutableList;
 import io.gapi.vgen.ApiConfig;
+import io.gapi.vgen.CollectionConfig;
 import io.gapi.vgen.FlatteningConfig;
 import io.gapi.vgen.GapicContext;
 import io.gapi.vgen.InterfaceConfig;
@@ -39,12 +43,10 @@ import io.gapi.vgen.MethodConfig;
 import io.gapi.vgen.PageStreamingConfig;
 import io.gapi.vgen.ServiceConfig;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import javax.annotation.Nullable;
 
@@ -270,21 +272,21 @@ public class CSharpGapicContext extends GapicContext {
         syncReturnTypeName = typeName(returnType);
       }
     }
-    Stream<ParamInfo> params =
-        flattening
-            .stream()
-            .map(
-                field ->
-                    ParamInfo.create(
-                        lowerUnderscoreToLowerCamel(field.getSimpleName()),
-                        typeName(field.getType()),
-                        csharpCommon.underscoresToCamelCase(field.getSimpleName(), true, false),
-                        field.getType().isRepeated()));
+    Iterable<ParamInfo> params = FluentIterable.from(flattening)
+        .transform(new Function<Field, ParamInfo>() {
+          @Override public ParamInfo apply(Field field) {
+            return ParamInfo.create(
+                lowerUnderscoreToLowerCamel(field.getSimpleName()),
+                typeName(field.getType()),
+                csharpCommon.underscoresToCamelCase(field.getSimpleName(), true, false),
+                field.getType().isRepeated());
+          }
+        });
     return MethodInfo.create(
         method.getSimpleName(),
         asyncReturnTypeName,
         syncReturnTypeName,
-        params.collect(Collectors.toList()),
+        params,
         pageStreamingConfig != null,
         getPageStreamerInfo(interfaceConfig, method),
         typeName(method.getInputType()),
@@ -295,28 +297,26 @@ public class CSharpGapicContext extends GapicContext {
 
   public List<MethodInfo> getMethodInfos(Interface service) {
     // FlatteningConfig is just a List<Field>
-    InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
-    return service
-        .getMethods()
-        .stream()
-        .flatMap(
-            method -> {
-              MethodConfig methodConfig = interfaceConfig.getMethodConfig(method);
-              PageStreamingConfig pageStreamingConfig = methodConfig.getPageStreaming();
-              FlatteningConfig flatConfig = methodConfig.getFlattening();
-              if (flatConfig != null) {
-                return flatConfig
-                    .getFlatteningGroups()
-                    .stream()
-                    .map(
-                        flattening ->
-                            createMethodInfo(
-                                interfaceConfig, method, flattening, pageStreamingConfig));
-              } else {
-                return Stream.of();
-              }
-            })
-        .collect(Collectors.toList());
+    final InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
+    return FluentIterable.from(service.getMethods())
+        .transformAndConcat(new Function<Method, Iterable<MethodInfo>>() {
+          @Override public Iterable<MethodInfo> apply(final Method method) {
+            MethodConfig methodConfig = interfaceConfig.getMethodConfig(method);
+            final PageStreamingConfig pageStreamingConfig = methodConfig.getPageStreaming();
+            FlatteningConfig flatConfig = methodConfig.getFlattening();
+            if (flatConfig != null) {
+              return FluentIterable.from(flatConfig.getFlatteningGroups()).transform(
+                  new Function<List<Field>, MethodInfo>() {
+                    @Override public MethodInfo apply(List<Field> flattening) {
+                      return createMethodInfo(interfaceConfig, method, flattening, pageStreamingConfig);
+                    }
+                  });
+            } else {
+              return Collections.emptyList();
+            }
+          }
+        })
+        .toList();
   }
 
   private PageStreamerInfo getPageStreamerInfo(InterfaceConfig interfaceConfig, Method method) {
@@ -341,13 +341,15 @@ public class CSharpGapicContext extends GapicContext {
   }
 
   public List<PageStreamerInfo> getPageStreamerInfos(Interface service) {
-    InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
-    return service
-        .getMethods()
-        .stream()
-        .map(method -> getPageStreamerInfo(interfaceConfig, method))
-        .filter(pageStreamerInfo -> pageStreamerInfo != null)
-        .collect(Collectors.toList());
+    final InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
+    return FluentIterable.from(service.getMethods())
+        .transform(new Function<Method, PageStreamerInfo>() {
+          @Override public PageStreamerInfo apply(Method method) {
+            return getPageStreamerInfo(interfaceConfig, method);
+          }
+        })
+        .filter(Predicates.notNull())
+        .toList();
   }
 
   @AutoValue
@@ -378,25 +380,27 @@ public class CSharpGapicContext extends GapicContext {
 
   public List<PathTemplateInfo> getPathTemplateInfos(Interface service) {
     InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
-    return interfaceConfig
-        .getCollectionConfigs()
-        .stream()
-        .map(
-            collection -> {
-              PathTemplate template = collection.getNameTemplate();
-              Set<String> vars = template.vars();
-              return PathTemplateInfo.create(
-                  csharpCommon.underscoresToCamelCase(collection.getMethodBaseName(), true, false),
-                  csharpCommon.underscoresToCamelCase(collection.getMethodBaseName(), false, false),
-                  collection.getNamePattern(),
-                  vars,
-                  vars.stream()
-                      .map(var -> "string " + var + "Id")
-                      .reduce((a, b) -> a + ", " + b)
-                      .get(),
-                  vars.stream().map(var -> var + "Id").reduce((a, b) -> a + ", " + b).get());
-            })
-        .collect(Collectors.toList());
+    return FluentIterable.from(interfaceConfig.getCollectionConfigs())
+        .transform(new Function<CollectionConfig, PathTemplateInfo>() {
+          @Override public PathTemplateInfo apply(CollectionConfig collection) {
+            PathTemplate template = collection.getNameTemplate();
+            Set<String> vars = template.vars();
+            StringBuilder varArgDeclList = new StringBuilder();
+            StringBuilder varArgUseList = new StringBuilder();
+            for (String var : vars) {
+              varArgDeclList.append("string " + var + "Id, ");
+              varArgUseList.append(var + "Id, ");
+            }
+            return PathTemplateInfo.create(
+                csharpCommon.underscoresToCamelCase(collection.getMethodBaseName(), true, false),
+                csharpCommon.underscoresToCamelCase(collection.getMethodBaseName(), false, false),
+                collection.getNamePattern(),
+                vars,
+                varArgDeclList.substring(0, varArgDeclList.length() - 2),
+                varArgUseList.substring(0, varArgUseList.length() - 2));
+          }
+        })
+        .toList();
   }
 
   /**
@@ -458,35 +462,41 @@ public class CSharpGapicContext extends GapicContext {
     return prefix + elem.getSimpleName();
   }
 
-  private List<String> docLines(ProtoElement element, String prefix) {
-    Iterable<String> lines =
-        Splitter.on(String.format("%n")).split(DocumentationUtil.getDescription(element));
-    return StreamSupport.stream(lines.spliterator(), false)
-        .map(line -> prefix + line.replace("&", "&amp;").replace("<", "&lt;"))
-        .collect(Collectors.toList());
+  private List<String> docLines(ProtoElement element, final String prefix) {
+    FluentIterable<String> lines = FluentIterable.from(
+        Splitter.on(String.format("%n")).split(DocumentationUtil.getDescription(element))
+    );
+    return lines
+        .transform(new Function<String, String>() {
+          @Override public String apply(String line) {
+            return prefix + line.replace("&", "&amp;").replace("<", "&lt;");
+          }
+        })
+        .toList();
   }
 
   private List<String> makeMethodXmlDoc(Method method, List<Field> params, boolean isAsync) {
-    List<String> parameters =
-        params
-            .stream()
-            .flatMap(
-                param -> {
-                  String header = "/// <param name=\"" + param.getSimpleName() + "\">";
-                  List<String> lines = docLines(param, "");
-                  if (lines.size() > 1) {
-                    return ImmutableList.<String>builder()
-                        .add(header)
-                        .addAll(
-                            lines.stream().map(line -> "/// " + line).collect(Collectors.toList()))
-                        .add("/// </param>")
-                        .build()
-                        .stream();
-                  } else {
-                    return Stream.of(header + lines.get(0) + "</param>");
-                  }
-                })
-            .collect(Collectors.toList());
+    Iterable<String> parameters = FluentIterable.from(params)
+        .transformAndConcat(new Function<Field, Iterable<String>>() {
+          @Override public Iterable<String> apply(Field param) {
+            String header = "/// <param name=\"" + param.getSimpleName() + "\">";
+            List<String> lines = docLines(param, "");
+            if (lines.size() > 1) {
+              return ImmutableList.<String>builder()
+                  .add(header)
+                  .addAll(FluentIterable.from(lines).transform(
+                      new Function<String, String>() {
+                        @Override public String apply(String line) {
+                          return "/// " + line;
+                        }
+                      }))
+                  .add("/// </param>")
+                  .build();
+            } else {
+              return Collections.singletonList(header + lines.get(0) + "</param>");
+            }
+          }
+        });
     return ImmutableList.<String>builder()
         .add("/// <summary>")
         .addAll(docLines(method, "/// "))

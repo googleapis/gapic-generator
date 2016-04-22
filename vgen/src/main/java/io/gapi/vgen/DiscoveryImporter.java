@@ -69,7 +69,7 @@ public class DiscoveryImporter {
           .put("string", "", Field.Kind.TYPE_STRING)
           .build();
 
-  private static Iterable<Map.Entry<String, JsonNode>> iterFields(JsonNode n) {
+  private static Iterable<Map.Entry<String, JsonNode>> iterFields(final JsonNode n) {
     return new Iterable<Map.Entry<String, JsonNode>>() {
       @Override
       public Iterator<Map.Entry<String, JsonNode>> iterator() {
@@ -81,7 +81,7 @@ public class DiscoveryImporter {
     };
   }
 
-  private static Iterable<JsonNode> elements(JsonNode n) {
+  private static Iterable<JsonNode> elements(final JsonNode n) {
     return new Iterable<JsonNode>() {
       @Override
       public Iterator<JsonNode> iterator() {
