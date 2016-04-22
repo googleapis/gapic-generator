@@ -77,7 +77,7 @@
      * <pre>
      * <code>
      * {@settingsClassName(service)}.Builder {@settingsVariable}Builder =
-     *     {@settingsClassName(service)}.defaultInstance().toBuilder();
+     *     {@settingsClassName(service)}.defaultBuilder();
      * {@settingsVariable}Builder.{@firstFlattenedMethod.getSimpleName}Settings().getRetrySettingsBuilder()
      *     .setTotalTimeout(Duration.standardSeconds(30));
      * {@settingsClassName(service)} {@settingsVariable} = {@settingsVariable}Builder.build();
@@ -111,6 +111,15 @@
       @end
       .build();
 
+  /**
+   * The default connection settings of the service.
+   */
+  public static final ConnectionSettings DEFAULT_CONNECTION_SETTINGS =
+      ConnectionSettings.newBuilder()
+          .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
+          .setPort(DEFAULT_SERVICE_PORT)
+          .provideCredentialsWith(DEFAULT_SERVICE_SCOPES)
+          .build();
 @end
 
 @private members(service)
@@ -123,7 +132,14 @@
      * Returns an instance of this class with recommended defaults.
      */
     public static {@className} defaultInstance() throws IOException {
-      return newBuilder().build();
+      return defaultBuilder().build();
+    }
+
+    /**
+     * Returns a builder for this class with recommended defaults.
+     */
+    public static Builder defaultBuilder() {
+      return Builder.createDefault();
     }
 
     /**
@@ -540,11 +556,7 @@
 
 @private builderConstructors(service)
   private Builder() {
-    super(ConnectionSettings.builder()
-        .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
-        .setPort(DEFAULT_SERVICE_PORT)
-        .provideCredentialsWith(DEFAULT_SERVICE_SCOPES)
-        .build());
+    super(DEFAULT_CONNECTION_SETTINGS);
 
     @let serviceName = service.getSimpleName, \
          grpcName = context.getGrpcName(service)
@@ -560,35 +572,21 @@
             @let dummy = {@context.addImport("com.google.api.gax.grpc.PageStreamingCallSettings")}
               {@methodName}Settings = PageStreamingCallSettings.newBuilder(
                   {@grpcName}.METHOD_{@methodConstant},
-                  {@methodConstant}_PAGE_STR_DESC)
-                      .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@retryCodesName}"))
-                      .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("{@RetrySettingsName}"));
+                  {@methodConstant}_PAGE_STR_DESC);
 
             @end
           @else
             @if {@isBundling}
               @let bundlingConfig = methodConfig.getBundling, \
                    dummy = {@context.addImport("com.google.api.gax.grpc.BundlingSettings")}
-                BundlingSettings.Builder {@methodName}BundlingSettingsBuilder =
-                    BundlingSettings.newBuilder()
-                        .setElementCountThreshold({@bundlingConfig.getElementCountThreshold})
-                        .setElementCountLimit({@bundlingConfig.getElementCountLimit})
-                        .setRequestByteThreshold({@bundlingConfig.getRequestByteThreshold})
-                        .setRequestByteLimit({@bundlingConfig.getRequestByteLimit})
-                        .setDelayThreshold(Duration.millis({@bundlingConfig.getDelayThresholdMillis}))
-                        .setBlockingCallCountThreshold(1);
                 {@methodName}Settings = BundlingCallSettings.newBuilder(
                     {@grpcName}.METHOD_{@methodConstant},
                     {@methodConstant}_BUNDLING_DESC)
-                        .setBundlingSettingsBuilder({@methodName}BundlingSettingsBuilder)
-                        .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@retryCodesName}"))
-                        .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("{@RetrySettingsName}"));
+                        .setBundlingSettingsBuilder(BundlingSettings.newBuilder());
 
               @end
             @else
-              {@methodName}Settings = SimpleCallSettings.newBuilder({@grpcName}.METHOD_{@methodConstant})
-                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@retryCodesName}"))
-                  .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("{@RetrySettingsName}"));
+              {@methodName}Settings = SimpleCallSettings.newBuilder({@grpcName}.METHOD_{@methodConstant});
 
             @end
           @end
@@ -598,6 +596,54 @@
     methodSettingsBuilders = ImmutableList.<ApiCallSettings.Builder>of(
         {@settingsList(service)}
     );
+  }
+
+  private static Builder createDefault() {
+    Builder builder = new Builder();
+    @let serviceName = service.getSimpleName, \
+         grpcName = context.getGrpcName(service)
+      @join method : service.getMethods
+        @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
+             methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
+             methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+             retryCodesName = methodConfig.getRetryCodesConfigName, \
+             RetrySettingsName = methodConfig.getRetrySettingsConfigName, \
+             isPageStreaming = methodConfig.isPageStreaming, \
+             isBundling = methodConfig.isBundling
+          @if {@isPageStreaming}
+            @let dummy = {@context.addImport("com.google.api.gax.grpc.PageStreamingCallSettings")}
+              builder.{@methodName}Settings()
+                      .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@retryCodesName}"))
+                      .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("{@RetrySettingsName}"));
+
+            @end
+          @else
+            @if {@isBundling}
+              @let bundlingConfig = methodConfig.getBundling, \
+                   dummy = {@context.addImport("com.google.api.gax.grpc.BundlingSettings")}
+                builder.{@methodName}Settings().getBundlingSettingsBuilder()
+                        .setElementCountThreshold({@bundlingConfig.getElementCountThreshold})
+                        .setElementCountLimit({@bundlingConfig.getElementCountLimit})
+                        .setRequestByteThreshold({@bundlingConfig.getRequestByteThreshold})
+                        .setRequestByteLimit({@bundlingConfig.getRequestByteLimit})
+                        .setDelayThreshold(Duration.millis({@bundlingConfig.getDelayThresholdMillis}))
+                        .setBlockingCallCountThreshold(1);
+                builder.{@methodName}Settings()
+                        .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@retryCodesName}"))
+                        .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("{@RetrySettingsName}"));
+
+              @end
+            @else
+              builder.{@methodName}Settings()
+                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@retryCodesName}"))
+                  .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("{@RetrySettingsName}"));
+
+            @end
+          @end
+        @end
+      @end
+    @end
+    return builder;
   }
 
   private Builder({@settingsClassName(service)} settings) {
