@@ -250,7 +250,7 @@ public class RubyGapicContext extends GapicContext {
 
   /**
    * Convert the content string into a commented block that can be directly printed out in the
-   * generated py files.
+   * generated ruby files.
    */
   private List<String> convertToCommentedBlock(String content) {
     if (Strings.isNullOrEmpty(content)) {
