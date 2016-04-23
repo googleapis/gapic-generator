@@ -42,17 +42,13 @@ public class JavaLanguageProvider {
       JavaContextCommon.class.getPackage().getName().replace('.', '/');
 
   public <Element> void output(
-      String root, String outputPath, Multimap<Element, GeneratedResult> elements, boolean archive)
+      String root, String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
     for (GeneratedResult generatedResult : elements.values()) {
       files.put(root + "/" + generatedResult.getFilename(), generatedResult.getDoc());
     }
-    if (archive) {
-      ToolUtil.writeJar(files, outputPath);
-    } else {
-      ToolUtil.writeFiles(files, outputPath);
-    }
+    ToolUtil.writeFiles(files, outputPath);
   }
 
   @SuppressWarnings("unchecked")

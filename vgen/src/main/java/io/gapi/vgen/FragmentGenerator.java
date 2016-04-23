@@ -76,9 +76,8 @@ public class FragmentGenerator {
    * Delegates creating fragments to language provider. Takes the result map from
    * {@link GapicLanguageProvider#output} and stores it in a language-specific way.
    */
-  public void outputFragments(
-      String outputFile, Multimap<Method, GeneratedResult> methods, boolean archive)
+  public void outputFragments(String outputFile, Multimap<Method, GeneratedResult> methods)
       throws IOException {
-    provider.output(outputFile, methods, archive);
+    provider.output(outputFile, methods);
   }
 }

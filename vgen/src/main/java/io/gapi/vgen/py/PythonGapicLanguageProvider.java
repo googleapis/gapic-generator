@@ -52,8 +52,7 @@ public class PythonGapicLanguageProvider implements GapicLanguageProvider {
   }
 
   @Override
-  public <Element> void output(
-      String outputPath, Multimap<Element, GeneratedResult> elements, boolean archive)
+  public <Element> void output(String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
     String packageRoot = context.getApiConfig().getPackageName().replace('.', '/');
     Map<String, Doc> files = new LinkedHashMap<>();
@@ -68,12 +67,7 @@ public class PythonGapicLanguageProvider implements GapicLanguageProvider {
       }
       files.put(root + "/" + generatedResult.getFilename(), generatedResult.getDoc());
     }
-    if (archive) {
-      // TODO: something more appropriate for Python packaging?
-      ToolUtil.writeJar(files, outputPath);
-    } else {
-      ToolUtil.writeFiles(files, outputPath);
-    }
+    ToolUtil.writeFiles(files, outputPath);
   }
 
   @Override
@@ -85,7 +79,8 @@ public class PythonGapicLanguageProvider implements GapicLanguageProvider {
 
   @Override
   public GeneratedResult generateCode(Interface service, SnippetDescriptor snippetDescriptor) {
-    ImmutableMap<String, Object> globalMap = ImmutableMap.of("pyproto", (Object) new PythonProtoElements());
+    ImmutableMap<String, Object> globalMap =
+        ImmutableMap.of("pyproto", (Object) new PythonProtoElements());
     return provider.generate(
         service,
         snippetDescriptor,
@@ -97,7 +92,8 @@ public class PythonGapicLanguageProvider implements GapicLanguageProvider {
 
   @Override
   public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor) {
-    ImmutableMap<String, Object> globalMap = ImmutableMap.of("pyproto", (Object) new PythonProtoElements());
+    ImmutableMap<String, Object> globalMap =
+        ImmutableMap.of("pyproto", (Object) new PythonProtoElements());
     return provider.generate(
         method,
         snippetDescriptor,

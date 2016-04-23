@@ -39,8 +39,7 @@ public class GoLanguageProvider {
   private static final String SNIPPET_RESOURCE_ROOT =
       GoContextCommon.class.getPackage().getName().replace('.', '/');
 
-  public <Element> void output(
-      String outputPath, Multimap<Element, GeneratedResult> elements, boolean archive)
+  public <Element> void output(String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
     for (GeneratedResult generatedResult : elements.values()) {

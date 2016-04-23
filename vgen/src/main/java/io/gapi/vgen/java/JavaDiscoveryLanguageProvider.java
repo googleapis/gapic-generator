@@ -44,7 +44,7 @@ public class JavaDiscoveryLanguageProvider implements DiscoveryLanguageProvider 
   }
 
   @Override
-  public void output(String outputPath, Multimap<Method, GeneratedResult> methods, boolean archive)
+  public void output(String outputPath, Multimap<Method, GeneratedResult> methods)
       throws IOException {
     Api api = getService().getApis(0);
     String root =
@@ -55,7 +55,7 @@ public class JavaDiscoveryLanguageProvider implements DiscoveryLanguageProvider 
             + "/"
             + context.getApiRevision()
             + "/";
-    provider.output(root, outputPath, methods, archive);
+    provider.output(root, outputPath, methods);
   }
 
   @Override

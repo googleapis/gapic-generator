@@ -119,7 +119,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
         docs.put(entry.getKey(), entry.getValue());
       }
     }
-    generator.output(options.get(OUTPUT_FILE), docs, configProto.getArchive());
+    generator.output(options.get(OUTPUT_FILE), docs);
 
     // Generate doc snippets.
     Multimap<String, GeneratedResult> docDocs = ArrayListMultimap.create();
@@ -133,7 +133,7 @@ public class CodeGeneratorApi extends ToolDriverBase {
         docDocs.put(entry.getKey(), entry.getValue());
       }
     }
-    generator.output(options.get(OUTPUT_FILE), docDocs, configProto.getArchive());
+    generator.output(options.get(OUTPUT_FILE), docDocs);
   }
 
   private ConfigProto loadConfigFromFiles(List<String> configFileNames) {

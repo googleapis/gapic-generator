@@ -118,9 +118,8 @@ public class CodeGenerator {
    * {@link GapicLanguageProvider#outputCode(String, List)} and stores it in a language-specific
    * way.
    */
-  public <Element> void output(
-      String outputFile, Multimap<Element, GeneratedResult> results, boolean archive)
+  public <Element> void output(String outputFile, Multimap<Element, GeneratedResult> results)
       throws IOException {
-    provider.output(outputFile, results, archive);
+    provider.output(outputFile, results);
   }
 }

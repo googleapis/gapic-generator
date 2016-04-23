@@ -50,8 +50,7 @@ public class CSharpGapicLanguageProvider implements GapicLanguageProvider {
   }
 
   @Override
-  public <Element> void output(
-      String outputPath, Multimap<Element, GeneratedResult> elements, boolean archive)
+  public <Element> void output(String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
     for (Map.Entry<Element, GeneratedResult> entry : elements.entries()) {
@@ -66,11 +65,7 @@ public class CSharpGapicLanguageProvider implements GapicLanguageProvider {
       String path = context.getNamespace(service.getFile()).replace('.', '/');
       files.put(path + "/" + generatedResult.getFilename(), generatedResult.getDoc());
     }
-    if (archive) {
-      ToolUtil.writeJar(files, outputPath);
-    } else {
-      ToolUtil.writeFiles(files, outputPath);
-    }
+    ToolUtil.writeFiles(files, outputPath);
   }
 
   @Override
