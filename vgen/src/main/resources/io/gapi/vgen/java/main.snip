@@ -455,12 +455,10 @@
      * <!-- TODO(garrettjones) refactor code to make this simpler -->
      * <pre>
      * <code>
-     * ConnectionSettings defaultConnectionSettings =
-     *     {@settingsClassName(service)}.defaultInstance().toBuilder().getConnectionSettings();
      * ConnectionSettings updatedConnectionSettings =
-     *     defaultConnectionSettings.toBuilder().provideCredentialsWith(myCredentials).build();
-     * {@settingsClassName(service)} {@settingsVariable} = {@settingsClassName(service)}.defaultInstance().toBuilder().
-     *     provideChannelWith(updatedConnectionSettings)
+     *     {@settingsClassName(service)}.DEFAULT_CONNECTION_SETTINGS.toBuilder().provideCredentialsWith(myCredentials).build();
+     * {@settingsClassName(service)} {@settingsVariable} = {@settingsClassName(service)}.defaultBuilder()
+     *     .provideChannelWith(updatedConnectionSettings)
      *     .build();
      * {@context.getApiWrapperName(service)} {@serviceApiVariable} = \
          {@context.getApiWrapperName(service)}.create({@settingsVariable});
