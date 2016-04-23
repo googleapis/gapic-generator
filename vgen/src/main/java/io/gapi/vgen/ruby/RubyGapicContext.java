@@ -133,8 +133,8 @@ public class RubyGapicContext extends GapicContext {
     if (config.isPageStreaming()) {
       String resourceType = rubyTypeName(config.getPageStreaming().getResourcesField().getType());
       return "@return [\n"
-          + "    Google::Gax::PagedEnumerable<" + resourceType + ">,\n"
-          + "    " + classInfo + "]\n"
+          + "  Google::Gax::PagedEnumerable<" + resourceType + ">,\n"
+          + "  " + classInfo + "]\n"
           + "  An enumerable of " + resourceType + " instances unless\n"
           + "  page streaming is disabled through the call options. If page\n"
           + "  streaming is disabled, a single " + classInfo + "\n"
@@ -250,7 +250,7 @@ public class RubyGapicContext extends GapicContext {
 
   /**
    * Convert the content string into a commented block that can be directly printed out in the
-   * generated ruby files.
+   * generated Ruby files.
    */
   private List<String> convertToCommentedBlock(String content) {
     if (Strings.isNullOrEmpty(content)) {
