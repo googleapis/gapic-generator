@@ -40,7 +40,7 @@ public class RubyLanguageProvider {
       RubyGapicLanguageProvider.class.getPackage().getName().replace('.', '/');
 
   public <Element> void output(
-      String root, String outputPath, Multimap<Element, GeneratedResult> elements, boolean archive)
+      String root, String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
     for (Map.Entry<Element, GeneratedResult> entry : elements.entries()) {
@@ -51,12 +51,7 @@ public class RubyLanguageProvider {
       }
       files.put(root + "/" + generatedResult.getFilename(), generatedResult.getDoc());
     }
-    if (archive) {
-      // TODO: something more appropriate for Ruby packaging?
-      ToolUtil.writeJar(files, outputPath);
-    } else {
-      ToolUtil.writeFiles(files, outputPath);
-    }
+    ToolUtil.writeFiles(files, outputPath);
   }
 
   @SuppressWarnings("unchecked")

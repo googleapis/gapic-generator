@@ -56,10 +56,10 @@ public class RubyGapicLanguageProvider implements GapicLanguageProvider {
 
   @Override
   public <Element> void output(
-      String outputPath, Multimap<Element, GeneratedResult> elements, boolean archive)
+      String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
     String packageRoot = getPackageRoot();
-    provider.output("lib/" + packageRoot, outputPath, elements, archive);
+    provider.output("lib/" + packageRoot, outputPath, elements);
   }
 
   @Override
