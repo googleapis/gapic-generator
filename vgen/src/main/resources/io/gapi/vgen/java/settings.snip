@@ -225,10 +225,8 @@
 @private constructors(service)
   @let className = @settingsClassName(service)
     private {@className}(Builder settingsBuilder) throws IOException {
-      super(settingsBuilder.getOrBuildChannel(),
-            settingsBuilder.shouldAutoCloseChannel(),
-            settingsBuilder.getOrBuildExecutor(),
-            settingsBuilder.getConnectionSettings(),
+      super(settingsBuilder.getChannelProvider(),
+            settingsBuilder.getExecutorProvider(),
             settingsBuilder.getGeneratorName(),
             settingsBuilder.getGeneratorVersion(),
             settingsBuilder.getClientLibName(),
@@ -427,6 +425,21 @@
 
 @private builderMethods(service)
   @@Override
+  public Builder setExecutorProvider(ExecutorProvider executorProvider) {
+    super.setExecutorProvider(executorProvider);
+    return this;
+  }
+  @@Override
+  public Builder provideExecutorWith(final ScheduledExecutorService executor) {
+    super.provideExecutorWith(executor);
+    return this;
+  }
+  @@Override
+  public Builder setChannelProvider(ChannelProvider channelProvider) {
+    super.setChannelProvider(channelProvider);
+    return this;
+  }
+  @@Override
   public Builder provideChannelWith(ManagedChannel channel, boolean shouldAutoClose) {
     super.provideChannelWith(channel, shouldAutoClose);
     return this;
@@ -434,11 +447,6 @@
   @@Override
   public Builder provideChannelWith(ConnectionSettings settings) {
     super.provideChannelWith(settings);
-    return this;
-  }
-  @@Override
-  public Builder setExecutor(ScheduledExecutorService executor) {
-    super.setExecutor(executor);
     return this;
   }
   @@Override
