@@ -1,0 +1,232 @@
+
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var cloudmonitoring = google.cloudmonitoring('v2beta2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'create' method:
+
+    // The project id. The value can be the numeric project ID or string-based project name.
+    project: "",
+    resource: {},
+    // Auth client
+    auth: authClient
+  };
+
+  cloudmonitoring.metricDescriptors.create(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var cloudmonitoring = google.cloudmonitoring('v2beta2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'delete' method:
+
+    // The project ID to which the metric belongs.
+    project: "",
+    // Name of the metric.
+    metric: "",
+    // Auth client
+    auth: authClient
+  };
+
+  cloudmonitoring.metricDescriptors.delete(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var cloudmonitoring = google.cloudmonitoring('v2beta2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+    // The project id. The value can be the numeric project ID or string-based project name.
+    project: "",
+    // Auth client
+    auth: authClient
+  };
+
+
+  var recur = function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+      if (result.nextPageToken) {
+        request.pageToken = result.nextPageToken;
+        cloudmonitoring.metricDescriptors.list(request, recur);
+      }
+    }
+  };
+
+  cloudmonitoring.metricDescriptors.list(request, recur);
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var cloudmonitoring = google.cloudmonitoring('v2beta2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+    // The project ID to which this time series belongs. The value can be the numeric project ID or string-based project name.
+    project: "",
+    // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example, compute.googleapis.com/instance/disk/read_ops_count.
+    metric: "",
+    // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
+    youngest: "",
+    // Auth client
+    auth: authClient
+  };
+
+
+  var recur = function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+      if (result.nextPageToken) {
+        request.pageToken = result.nextPageToken;
+        cloudmonitoring.timeseries.list(request, recur);
+      }
+    }
+  };
+
+  cloudmonitoring.timeseries.list(request, recur);
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var cloudmonitoring = google.cloudmonitoring('v2beta2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'write' method:
+
+    // The project ID. The value can be the numeric project ID or string-based project name.
+    project: "",
+    resource: {},
+    // Auth client
+    auth: authClient
+  };
+
+  cloudmonitoring.timeseries.write(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var cloudmonitoring = google.cloudmonitoring('v2beta2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+    // The project ID to which this time series belongs. The value can be the numeric project ID or string-based project name.
+    project: "",
+    // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example, compute.googleapis.com/instance/disk/read_ops_count.
+    metric: "",
+    // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
+    youngest: "",
+    // Auth client
+    auth: authClient
+  };
+
+
+  var recur = function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+      if (result.nextPageToken) {
+        request.pageToken = result.nextPageToken;
+        cloudmonitoring.timeseriesDescriptors.list(request, recur);
+      }
+    }
+  };
+
+  cloudmonitoring.timeseriesDescriptors.list(request, recur);
+});

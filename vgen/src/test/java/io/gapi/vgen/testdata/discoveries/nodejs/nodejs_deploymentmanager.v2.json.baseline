@@ -1,0 +1,562 @@
+
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var deploymentmanager = google.deploymentmanager('v2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'cancelPreview' method:
+
+    // The project ID for this request.
+    project: "",
+    // The name of the deployment for this request.
+    deployment: "",
+    resource: {},
+    // Auth client
+    auth: authClient
+  };
+
+  deploymentmanager.deployments.cancelPreview(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var deploymentmanager = google.deploymentmanager('v2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'delete' method:
+
+    // The project ID for this request.
+    project: "",
+    // The name of the deployment for this request.
+    deployment: "",
+    // Auth client
+    auth: authClient
+  };
+
+  deploymentmanager.deployments.delete(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var deploymentmanager = google.deploymentmanager('v2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+
+    // The project ID for this request.
+    project: "",
+    // The name of the deployment for this request.
+    deployment: "",
+    // Auth client
+    auth: authClient
+  };
+
+  deploymentmanager.deployments.get(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var deploymentmanager = google.deploymentmanager('v2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'insert' method:
+
+    // The project ID for this request.
+    project: "",
+    resource: {},
+    // Auth client
+    auth: authClient
+  };
+
+  deploymentmanager.deployments.insert(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var deploymentmanager = google.deploymentmanager('v2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+    // The project ID for this request.
+    project: "",
+    // Auth client
+    auth: authClient
+  };
+
+
+  var recur = function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+      if (result.nextPageToken) {
+        request.pageToken = result.nextPageToken;
+        deploymentmanager.deployments.list(request, recur);
+      }
+    }
+  };
+
+  deploymentmanager.deployments.list(request, recur);
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var deploymentmanager = google.deploymentmanager('v2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'patch' method:
+
+    // The project ID for this request.
+    project: "",
+    // The name of the deployment for this request.
+    deployment: "",
+    resource: {},
+    // Auth client
+    auth: authClient
+  };
+
+  deploymentmanager.deployments.patch(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var deploymentmanager = google.deploymentmanager('v2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'stop' method:
+
+    // The project ID for this request.
+    project: "",
+    // The name of the deployment for this request.
+    deployment: "",
+    resource: {},
+    // Auth client
+    auth: authClient
+  };
+
+  deploymentmanager.deployments.stop(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var deploymentmanager = google.deploymentmanager('v2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'update' method:
+
+    // The project ID for this request.
+    project: "",
+    // The name of the deployment for this request.
+    deployment: "",
+    resource: {},
+    // Auth client
+    auth: authClient
+  };
+
+  deploymentmanager.deployments.update(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var deploymentmanager = google.deploymentmanager('v2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+
+    // The project ID for this request.
+    project: "",
+    // The name of the deployment for this request.
+    deployment: "",
+    // The name of the manifest for this request.
+    manifest: "",
+    // Auth client
+    auth: authClient
+  };
+
+  deploymentmanager.manifests.get(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var deploymentmanager = google.deploymentmanager('v2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+    // The project ID for this request.
+    project: "",
+    // The name of the deployment for this request.
+    deployment: "",
+    // Auth client
+    auth: authClient
+  };
+
+
+  var recur = function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+      if (result.nextPageToken) {
+        request.pageToken = result.nextPageToken;
+        deploymentmanager.manifests.list(request, recur);
+      }
+    }
+  };
+
+  deploymentmanager.manifests.list(request, recur);
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var deploymentmanager = google.deploymentmanager('v2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+
+    // The project ID for this request.
+    project: "",
+    // The name of the operation for this request.
+    operation: "",
+    // Auth client
+    auth: authClient
+  };
+
+  deploymentmanager.operations.get(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var deploymentmanager = google.deploymentmanager('v2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+    // The project ID for this request.
+    project: "",
+    // Auth client
+    auth: authClient
+  };
+
+
+  var recur = function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+      if (result.nextPageToken) {
+        request.pageToken = result.nextPageToken;
+        deploymentmanager.operations.list(request, recur);
+      }
+    }
+  };
+
+  deploymentmanager.operations.list(request, recur);
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var deploymentmanager = google.deploymentmanager('v2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+
+    // The project ID for this request.
+    project: "",
+    // The name of the deployment for this request.
+    deployment: "",
+    // The name of the resource for this request.
+    resource_: "",
+    // Auth client
+    auth: authClient
+  };
+
+  deploymentmanager.resources.get(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var deploymentmanager = google.deploymentmanager('v2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+    // The project ID for this request.
+    project: "",
+    // The name of the deployment for this request.
+    deployment: "",
+    // Auth client
+    auth: authClient
+  };
+
+
+  var recur = function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+      if (result.nextPageToken) {
+        request.pageToken = result.nextPageToken;
+        deploymentmanager.resources.list(request, recur);
+      }
+    }
+  };
+
+  deploymentmanager.resources.list(request, recur);
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var deploymentmanager = google.deploymentmanager('v2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+    // The project ID for this request.
+    project: "",
+    // Auth client
+    auth: authClient
+  };
+
+
+  var recur = function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+      if (result.nextPageToken) {
+        request.pageToken = result.nextPageToken;
+        deploymentmanager.types.list(request, recur);
+      }
+    }
+  };
+
+  deploymentmanager.types.list(request, recur);
+});

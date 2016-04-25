@@ -23,7 +23,6 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.List;
 
 /**
@@ -69,12 +68,5 @@ public class JavaDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGenerat
   @Test
   public void fragments() throws Exception {
     test();
-  }
-
-  private static final class DiscoveryFile implements FileFilter {
-    @Override
-    public boolean accept(File file) {
-      return file.isFile() && file.getName().endsWith(".json");
-    }
   }
 }

@@ -1,0 +1,385 @@
+
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var autoscaler = google.autoscaler('v1beta2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'delete' method:
+
+    // Project ID of Autoscaler resource.
+    project: "",
+    // Zone name of Autoscaler resource.
+    zone: "",
+    // Name of the Autoscaler resource.
+    autoscaler: "",
+    // Auth client
+    auth: authClient
+  };
+
+  autoscaler.autoscalers.delete(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var autoscaler = google.autoscaler('v1beta2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+
+    // Project ID of Autoscaler resource.
+    project: "",
+    // Zone name of Autoscaler resource.
+    zone: "",
+    // Name of the Autoscaler resource.
+    autoscaler: "",
+    // Auth client
+    auth: authClient
+  };
+
+  autoscaler.autoscalers.get(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var autoscaler = google.autoscaler('v1beta2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'insert' method:
+
+    // Project ID of Autoscaler resource.
+    project: "",
+    // Zone name of Autoscaler resource.
+    zone: "",
+    resource: {},
+    // Auth client
+    auth: authClient
+  };
+
+  autoscaler.autoscalers.insert(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var autoscaler = google.autoscaler('v1beta2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+    // Project ID of Autoscaler resource.
+    project: "",
+    // Zone name of Autoscaler resource.
+    zone: "",
+    // Auth client
+    auth: authClient
+  };
+
+
+  var recur = function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+      if (result.nextPageToken) {
+        request.pageToken = result.nextPageToken;
+        autoscaler.autoscalers.list(request, recur);
+      }
+    }
+  };
+
+  autoscaler.autoscalers.list(request, recur);
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var autoscaler = google.autoscaler('v1beta2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'patch' method:
+
+    // Project ID of Autoscaler resource.
+    project: "",
+    // Zone name of Autoscaler resource.
+    zone: "",
+    // Name of the Autoscaler resource.
+    autoscaler: "",
+    resource: {},
+    // Auth client
+    auth: authClient
+  };
+
+  autoscaler.autoscalers.patch(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var autoscaler = google.autoscaler('v1beta2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'update' method:
+
+    // Project ID of Autoscaler resource.
+    project: "",
+    // Zone name of Autoscaler resource.
+    zone: "",
+    // Name of the Autoscaler resource.
+    autoscaler: "",
+    resource: {},
+    // Auth client
+    auth: authClient
+  };
+
+  autoscaler.autoscalers.update(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var autoscaler = google.autoscaler('v1beta2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'delete' method:
+
+
+    project: "",
+
+    zone: "",
+
+    operation: "",
+    // Auth client
+    auth: authClient
+  };
+
+  autoscaler.zoneOperations.delete(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var autoscaler = google.autoscaler('v1beta2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+
+
+    project: "",
+
+    zone: "",
+
+    operation: "",
+    // Auth client
+    auth: authClient
+  };
+
+  autoscaler.zoneOperations.get(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var autoscaler = google.autoscaler('v1beta2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+
+    project: "",
+
+    zone: "",
+    // Auth client
+    auth: authClient
+  };
+
+
+  var recur = function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+      if (result.nextPageToken) {
+        request.pageToken = result.nextPageToken;
+        autoscaler.zoneOperations.list(request, recur);
+      }
+    }
+  };
+
+  autoscaler.zoneOperations.list(request, recur);
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var autoscaler = google.autoscaler('v1beta2');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+
+    project: "",
+    // Auth client
+    auth: authClient
+  };
+
+
+  var recur = function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+      if (result.nextPageToken) {
+        request.pageToken = result.nextPageToken;
+        autoscaler.zones.list(request, recur);
+      }
+    }
+  };
+
+  autoscaler.zones.list(request, recur);
+});

@@ -24,6 +24,7 @@ import com.google.protobuf.Message;
 import com.google.protobuf.MessageOrBuilder;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
@@ -144,5 +145,12 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
     }
 
     return configProto;
+  }
+
+  static final class DiscoveryFile implements FileFilter {
+    @Override
+    public boolean accept(File file) {
+      return file.isFile() && file.getName().endsWith(".json");
+    }
   }
 }

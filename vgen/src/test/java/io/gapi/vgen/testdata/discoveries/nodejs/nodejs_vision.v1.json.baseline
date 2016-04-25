@@ -1,0 +1,33 @@
+
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var vision = google.vision('v1');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'annotate' method:
+
+    resource: {},
+    // Auth client
+    auth: authClient
+  };
+
+  vision.images.annotate(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});

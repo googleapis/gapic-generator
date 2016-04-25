@@ -1,0 +1,110 @@
+
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var cloudtrace = google.cloudtrace('v1');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'patchTraces' method:
+
+    // ID of the Cloud project where the trace data is stored.
+    projectId: "",
+    resource: {},
+    // Auth client
+    auth: authClient
+  };
+
+  cloudtrace.projects.patchTraces(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var cloudtrace = google.cloudtrace('v1');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+
+    // ID of the Cloud project where the trace data is stored.
+    projectId: "",
+    // ID of the trace to return.
+    traceId: "",
+    // Auth client
+    auth: authClient
+  };
+
+  cloudtrace.projects.traces.get(request, function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+    }
+  });
+});
+var google = require('googleapis');
+var GoogleAuth = require('google-auth-library');
+
+var authFactory = new GoogleAuth();
+var cloudtrace = google.cloudtrace('v1');
+
+authFactory.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log('Authentication failed because of ', err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+
+    // ID of the Cloud project where the trace data is stored.
+    projectId: "",
+    // Auth client
+    auth: authClient
+  };
+
+
+  var recur = function(err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(result);
+      if (result.nextPageToken) {
+        request.pageToken = result.nextPageToken;
+        cloudtrace.projects.traces.list(request, recur);
+      }
+    }
+  };
+
+  cloudtrace.projects.traces.list(request, recur);
+});

@@ -52,33 +52,33 @@ public class NodeJSDiscoveryContext extends DiscoveryContext {
    */
   public String typeDefaultValue(Type type, Field field) {
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
-      return isMapField(type, field.getName()) ? "{};" : "[];";
+      return isMapField(type, field.getName()) ? "{}," : "[],";
     }
     if (DEFAULT_VALUES.containsKey(field.getKind())) {
-      return DEFAULT_VALUES.get(field.getKind()) + ";";
+      return DEFAULT_VALUES.get(field.getKind()) + ",";
     }
     if (field.getKind() == Field.Kind.TYPE_STRING) {
       String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
       if (stringFormat != null) {
         switch (stringFormat) {
           case "byte":
-            return "\"\"; "
+            return "\"\", "
                 + "  // base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648";
           case "date":
             // TODO(tcoffee): does new DateTime(new Date(0L)).toStringRfc3339() work?
-            return "\"1969-12-31\";" + "  // \"YYYY-MM-DD\"";
+            return "\"1969-12-31\"," + "  // \"YYYY-MM-DD\"";
           case "date-time":
             return "\""
                 + new DateTime(0L).toStringRfc3339()
-                + "\";"
+                + "\","
                 + "  // \"YYYY-MM-DDThh:mm:ss.fffZ\" (UTC)";
           default:
             // fall through
         }
       }
-      return "\"\";";
+      return "\"\",";
     }
-    return "null;";
+    return "null,";
   }
 
   private static final ImmutableMap<String, String> MAP_PARAM_NAME =

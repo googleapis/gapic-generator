@@ -7,28 +7,32 @@
       apiName = api.getName, \
       apiVersion = api.getVersion
     var google = require('googleapis');
-    var {@apiName} = google.{@apiName}('{@apiVersion}');
     var GoogleAuth = require('google-auth-library');
 
-    (new GoogleAuth).getApplicationDefault(function(err, authClient) {
-      if (err === null) {
-        if (authClient.createScopedRequired && authClient.createScopedRequired()) {
-          var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
-          authClient = authClient.createScoped(scopes);
-        }
+    var authFactory = new GoogleAuth();
+    var {@apiName} = google.{@apiName}('{@apiVersion}');
 
-        var request = {
-          auth: authClient
-        };
+    authFactory.getApplicationDefault(function(err, authClient) {
+      if (err) {
+        console.log('Authentication failed because of ', err);
+        return;
+      }
+      if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+        var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+        authClient = authClient.createScoped(scopes);
+      }
 
+      var {@requestName()} = {
         {@initialize(method)}
+        // Auth client
+        auth: authClient
+      };
 
-        @if context.isPageStreaming(method)
-          {@iterableCall(method)}
-        @else
-          {@compactCall(method)}
-        @end
-       }
+      @if context.isPageStreaming(method)
+        {@iterableCall(method)}
+      @else
+        {@compactCall(method)}
+      @end
     });
   @end
 @end
@@ -45,18 +49,18 @@
            paramValue = context.typeDefaultValue(signatureType, paramField), \
            paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
         {@item(paramDescription)}
-        request.{@context.mapParamName(param)} = {@paramValue}
+        {@context.mapParamName(param)}: {@paramValue}
       @end
     @end
     @if context.hasRequestField(method)
-      request.resource = {};
+      resource: {},
     @end
   @end
 @end
 
 @private item(description)
   @if description
-    // * {@description}
+    // {@description}
   @end
 @end
 
@@ -69,9 +73,9 @@
 @private compactCall(method)
   @let methodName = context.getMethodName(method), \
        resourcesPath = context.getApiaryConfig.getResources(method.getName)
-    {@context.getApi.getName}.{@elementPath(resourcesPath)}.{@methodName}(request, function(error, result) {
-      if (error) {
-        console.log(error);
+    {@context.getApi.getName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, function(err, result) {
+      if (err) {
+        console.log(err);
       } else {
         console.log(result);
       }
@@ -83,18 +87,22 @@
   @let methodName = context.getMethodName(method), \
        resourcesPath = context.getApiaryConfig.getResources(method.getName)
 
-    var recur = function(error, result) {
-      if (error) {
-        console.log(error);
+    var recur = function(err, result) {
+      if (err) {
+        console.log(err);
       } else {
         console.log(result);
         if (result.nextPageToken) {
-          request.pageToken = result.nextPageToken;
-          {@context.getApi.getName}.{@elementPath(resourcesPath)}.{@methodName}(request, recur);
+          {@requestName()}.pageToken = result.nextPageToken;
+          {@context.getApi.getName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, recur);
         }
       }
     };
 
-    {@context.getApi.getName}.{@elementPath(resourcesPath)}.{@methodName}(request, recur);
+    {@context.getApi.getName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, recur);
   @end
+@end
+
+@private requestName()
+  request
 @end
