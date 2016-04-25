@@ -18,6 +18,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Multimap;
 
 import io.gapi.vgen.ApiConfig;
@@ -51,7 +52,7 @@ public class RubyGapicLanguageProvider implements GapicLanguageProvider {
     for (String moduleName : context.getApiConfig().getPackageName().split("::")) {
       dirs.add(moduleName.toLowerCase());
     }
-    return String.join("/", dirs);
+    return Joiner.on("/").join(dirs);
   }
 
   @Override

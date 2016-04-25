@@ -25,6 +25,7 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -236,7 +237,7 @@ public class RubyGapicContext extends GapicContext {
           rubyNames.add(lowerUnderscoreToUpperCamel(name));
         }
         rubyNames.add(typeRef.getMessageType().getSimpleName());
-        return String.join("::", rubyNames);
+        return Joiner.on("::").join(rubyNames);
       }
       default: {
         String name = PRIMITIVE_TYPE_NAMES.get(typeRef.getKind());
