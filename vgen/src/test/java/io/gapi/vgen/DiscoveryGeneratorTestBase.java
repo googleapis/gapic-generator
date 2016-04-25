@@ -111,13 +111,7 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
 
   @Override
   protected String baselineFileName() {
-    String methodName = testName.getMethodName();
-    Matcher m = BASELINE_PATTERN.matcher(methodName);
-    if (m.find()) {
-      return m.group(2) + "_" + m.group(1) + ".baseline";
-    } else {
-      return name + "_" + methodName + ".baseline";
-    }
+    return name + ".baseline";
   }
 
   private ConfigProto readConfig() {

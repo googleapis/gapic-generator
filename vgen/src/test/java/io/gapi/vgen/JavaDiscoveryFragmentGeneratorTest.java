@@ -16,12 +16,14 @@ package io.gapi.vgen;
 
 import com.google.common.collect.ImmutableList;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.List;
 
 /**
@@ -44,15 +46,21 @@ public class JavaDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGenerat
     File dir =
         new File(System.getProperty("user.dir"), "src/test/java/io/gapi/vgen/testdata/discoveries");
     ImmutableList.Builder<Object[]> builder = ImmutableList.<Object[]>builder();
-    for (String fileName : dir.list()) {
+    for (File file : dir.listFiles(new DiscoveryFile())) {
+      String fileName = file.getName();
       builder.add(
           new Object[] {
-            "java_discovery_fragments_" + fileName,
+            "java_" + fileName,
             "discoveries/" + fileName,
             new String[] {"io/gapi/vgen/java/java_discovery_gapic.yaml"}
           });
     }
     return builder.build();
+  }
+
+  @Before
+  public void putTestDirectory() {
+    getTestDataLocator().addTestDataSource(this.getClass(), "testdata/discoveries/java");
   }
 
   // Tests
@@ -61,5 +69,12 @@ public class JavaDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGenerat
   @Test
   public void fragments() throws Exception {
     test();
+  }
+
+  private static final class DiscoveryFile implements FileFilter {
+    @Override
+    public boolean accept(File file) {
+      return file.isFile() && file.getName().endsWith(".json");
+    }
   }
 }
