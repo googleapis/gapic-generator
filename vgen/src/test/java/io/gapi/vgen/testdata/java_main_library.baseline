@@ -60,6 +60,8 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import javax.naming.OperationNotSupportedException;
 
 // Manually-added imports: add custom (non-generated) imports after this point.
 
@@ -136,7 +138,9 @@ import java.util.List;
  */
 @javax.annotation.Generated("by GAPIC")
 public class LibraryServiceApi implements AutoCloseable {
+  private final LibraryServiceSettings settings;
   private final ManagedChannel channel;
+  private final ScheduledExecutorService executor;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
   private final ApiCallable<CreateShelfRequest, Shelf> createShelfCallable;
@@ -156,6 +160,9 @@ public class LibraryServiceApi implements AutoCloseable {
   private final ApiCallable<UpdateBookRequest, Book> updateBookCallable;
   private final ApiCallable<MoveBookRequest, Book> moveBookCallable;
 
+  public final LibraryServiceSettings getSettings() {
+    return settings;
+  }
 
   private static final PathTemplate SHELF_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf}");
@@ -227,7 +234,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public static final LibraryServiceApi defaultInstance() throws IOException {
+  public static final LibraryServiceApi defaultInstance() throws IOException, OperationNotSupportedException {
     return create(LibraryServiceSettings.defaultBuilder().build());
   }
 
@@ -239,7 +246,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public static final LibraryServiceApi create(LibraryServiceSettings settings) throws IOException {
+  public static final LibraryServiceApi create(LibraryServiceSettings settings) throws IOException, OperationNotSupportedException {
     return new LibraryServiceApi(settings);
   }
 
@@ -251,28 +258,30 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  protected LibraryServiceApi(LibraryServiceSettings settings) throws IOException {
+  protected LibraryServiceApi(LibraryServiceSettings settings) throws IOException, OperationNotSupportedException {
+    this.settings = settings;
     this.channel = settings.getOrBuildChannel();
+    this.executor = settings.getOrBuildExecutor();
 
-    this.createShelfCallable = ApiCallable.create(settings.createShelfSettings(), settings);
-    this.getShelfCallable = ApiCallable.create(settings.getShelfSettings(), settings);
-    this.listShelvesCallable = ApiCallable.create(settings.listShelvesSettings(), settings);
+    this.createShelfCallable = ApiCallable.create(settings.createShelfSettings(), this.channel, this.executor);
+    this.getShelfCallable = ApiCallable.create(settings.getShelfSettings(), this.channel, this.executor);
+    this.listShelvesCallable = ApiCallable.create(settings.listShelvesSettings(), this.channel, this.executor);
     this.listShelvesIterableCallable =
-        ApiCallable.createIterable(settings.listShelvesSettings(), settings);
-    this.deleteShelfCallable = ApiCallable.create(settings.deleteShelfSettings(), settings);
-    this.mergeShelvesCallable = ApiCallable.create(settings.mergeShelvesSettings(), settings);
-    this.createBookCallable = ApiCallable.create(settings.createBookSettings(), settings);
-    this.publishSeriesCallable = ApiCallable.create(settings.publishSeriesSettings(), settings);
+        ApiCallable.createIterable(settings.listShelvesSettings(), this.channel, this.executor);
+    this.deleteShelfCallable = ApiCallable.create(settings.deleteShelfSettings(), this.channel, this.executor);
+    this.mergeShelvesCallable = ApiCallable.create(settings.mergeShelvesSettings(), this.channel, this.executor);
+    this.createBookCallable = ApiCallable.create(settings.createBookSettings(), this.channel, this.executor);
+    this.publishSeriesCallable = ApiCallable.create(settings.publishSeriesSettings(), this.channel, this.executor);
     if (settings.publishSeriesSettings().getBundlerFactory() != null) {
       closeables.add(settings.publishSeriesSettings().getBundlerFactory());
     }
-    this.getBookCallable = ApiCallable.create(settings.getBookSettings(), settings);
-    this.listBooksCallable = ApiCallable.create(settings.listBooksSettings(), settings);
+    this.getBookCallable = ApiCallable.create(settings.getBookSettings(), this.channel, this.executor);
+    this.listBooksCallable = ApiCallable.create(settings.listBooksSettings(), this.channel, this.executor);
     this.listBooksIterableCallable =
-        ApiCallable.createIterable(settings.listBooksSettings(), settings);
-    this.deleteBookCallable = ApiCallable.create(settings.deleteBookSettings(), settings);
-    this.updateBookCallable = ApiCallable.create(settings.updateBookSettings(), settings);
-    this.moveBookCallable = ApiCallable.create(settings.moveBookSettings(), settings);
+        ApiCallable.createIterable(settings.listBooksSettings(), this.channel, this.executor);
+    this.deleteBookCallable = ApiCallable.create(settings.deleteBookSettings(), this.channel, this.executor);
+    this.updateBookCallable = ApiCallable.create(settings.updateBookSettings(), this.channel, this.executor);
+    this.moveBookCallable = ApiCallable.create(settings.moveBookSettings(), this.channel, this.executor);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -280,6 +289,15 @@ public class LibraryServiceApi implements AutoCloseable {
           @Override
           public void close() throws IOException {
             channel.shutdown();
+          }
+        });
+    }
+    if (settings.getExecutorProvider().shouldAutoClose()) {
+      closeables.add(
+        new Closeable() {
+          @Override
+          public void close() throws IOException {
+            executor.shutdown();
           }
         });
     }
