@@ -33,11 +33,11 @@
     {@imports()}
     {@extensions(service.getSimpleName)}
 
-    {@settings(service.getSimpleName)}
+    {@settings(context.getRetryInfo(service), context.getMethodInfos(service), service.getSimpleName)}
 
     {@abstractClient(service, service.getSimpleName)}
 
-    {@clientImpl(service, service.getSimpleName)}
+    {@clientImpl(service, service.getSimpleName, context.getMethodInfos(service))}
 @end
 
 @private imports() fill
@@ -72,7 +72,7 @@
     }
 @end
 
-@private settings(name)
+@private settings(retry, methods, name)
     /// <summary>
     /// Settings for a {@name} wrapper.
     /// </summary>
@@ -85,17 +85,125 @@
         public static {@name}Settings GetDefault() => new {@name}Settings();
 
         /// <summary>
+        /// Constructs a new {@name}Settings object with default settings.
+        /// </summary>
+        public {@name}Settings() { }
+
+        private {@name}Settings({@name}Settings existing) : base(existing)
+        {
+            GaxPreconditions.CheckNotNull(existing, nameof(existing));
+            @join method : methods
+                {@method.name}Retry = existing.{@method.name}Retry?.Clone();
+            @end
+        }
+
+        @join def : retry.defs
+            /// <summary>
+            /// The filter specifying which RPC <see cref="StatusCode"/>s are eligible for retry
+            /// for "{@def.name}" <see cref="{@name}Client"/> RPC methods.
+            /// </summary>
+            /// <remarks>
+            @if def.anyStatusCodes
+                /// The eligible RPC <see cref="StatusCode"/>s for retry for "{@def.name}" RPC methods are:
+                /// <list type="bullet">
+                @join statusCodeName : def.statusCodeNames
+                /// <item><description><see cref="StatusCode.{@statusCodeName}"/></description></item>
+                @end
+                /// </list>
+            @else
+                /// There are no RPC <see cref="StatusCode">s eligilbe for retry for "{@def.name}" RPC methods.
+            @end
+            /// </remarks>
+            public static Predicate<RpcException> {@def.name}RetryFilter { get; } =
+                RetrySettings.FilterForStatusCodes({@def.statusCodeUseList});
+
+        @end
+        @join setting : retry.settings
+            /// <summary>
+            /// "{@setting.name}" retry backoff for <see cref="{@name}Client"/> RPC methods.
+            /// </summary>
+            /// <returns>The "{@setting.name}" retry backoff for <see cref="{@name}Client"/> RPC methods.</returns>
+            /// <remarks>
+            /// The "{@setting.name}" retry backoff for <see cref="{@name}Client"/> RPC methods is defined as:
+            /// <list type="bullet">
+            /// <item><description>Initial delay: {@setting.delayMs} milliseconds</description></item>
+            /// <item><description>Delay multiplier: {@setting.delayMultiplier}</description></item>
+            /// <item><description>Maximum delay: {@setting.delayMaxMs} milliseconds</description></item>
+            /// </list>
+            /// </remarks>
+            public static BackoffSettings Get{@setting.name}RetryBackoff() => new BackoffSettings
+            {
+                Delay = TimeSpan.FromMilliseconds({@setting.delayMs}),
+                DelayMultiplier = {@setting.delayMultiplier},
+                MaxDelay = TimeSpan.FromMilliseconds({@setting.delayMaxMs}),
+            };
+
+            /// <summary>
+            /// "{@setting.name}" timeout backoff for <see cref="{@name}Client"/> RPC methods.
+            /// </summary>
+            /// <returns>The "{@setting.name}" timeout backoff for <see cref="{@name}Client"/> RPC methods.</returns>
+            /// <remarks>
+            /// The "{@setting.name}" timeout backoff for <see cref="{@name}Client"/> RPC methods is defined as:
+            /// <list type="bullet">
+            /// <item><description>Initial timeout: {@setting.timeoutMs} milliseconds</description></item>
+            /// <item><description>Timeout multiplier: {@setting.timeoutMultiplier}</description></item>
+            /// <item><description>Maximum timeout: {@setting.timeoutMaxMs} milliseconds</description></item>
+            /// </list>
+            /// </remarks>
+            public static BackoffSettings Get{@setting.name}TimeoutBackoff() => new BackoffSettings
+            {
+                Delay = TimeSpan.FromMilliseconds({@setting.timeoutMs}),
+                DelayMultiplier = {@setting.timeoutMultiplier},
+                MaxDelay = TimeSpan.FromMilliseconds({@setting.timeoutMaxMs}),
+            };
+
+        @end
+        @join method : methods
+            /// <summary>
+            /// <see cref="RetrySettings"/> for asynchronous and synchronous calls to
+            /// <see cref="{@name}Client.{@method.name}"/> and <see cref="{@name}Client.{@method.name}Async"/>.
+            /// </summary>
+            /// <remarks>
+            /// The default <see cref="{@name}Client.{@method.name}"/> and
+            /// <see cref="{@name}Client.{@method.name}Async"/> <see cref="RetrySettings"/> are:
+            /// <list type="bullet">
+            /// <item><description>Initial retry delay: {@method.retrySetting.delayMs} milliseconds</description></item>
+            /// <item><description>Retry delay multiplier: {@method.retrySetting.delayMultiplier}</description></item>
+            /// <item><description>Retry maximum delay: {@method.retrySetting.delayMaxMs} milliseconds</description></item>
+            /// <item><description>Initial timeout: {@method.retrySetting.timeoutMs} milliseconds</description></item>
+            /// <item><description>Timeout multiplier: {@method.retrySetting.timeoutMultiplier}</description></item>
+            /// <item><description>Timeout maximum delay: {@method.retrySetting.timeoutMaxMs} milliseconds</description></item>
+            /// </list>
+            /// Retry will be attempted on the following response status codes:
+            /// <list>
+            @if method.retryCodes.anyStatusCodes
+                @join statusCodeName : method.retryCodes.statusCodeNames
+                    /// <item><description><see cref="StatusCode.{@statusCodeName}"/></description></item>
+                @end
+            @else
+                /// <item><description>No status codes</description></item>
+            @end
+            /// </list>
+            /// </remarks>
+            public RetrySettings {@method.name}Retry { get; set; } = new RetrySettings
+            {
+                RetryBackoff = Get{@method.retrySetting.name}RetryBackoff(),
+                TimeoutBackoff = Get{@method.retrySetting.name}TimeoutBackoff(),
+                RetryFilter = {@method.retryCodes.name}RetryFilter,
+            };
+
+        @end
+
+        /// <summary>
         /// Creates a deep clone of this object, with all the same property values.
         /// </summary>
         /// <returns>A deep clone of this set of {@name} settings.</returns>
-        public {@name}Settings Clone() => CloneInto(new {@name}Settings
-        {
-        });
+        public {@name}Settings Clone() => new {@name}Settings(this);
     }
 @end
 
-@private asyncMethodDeclaration(method, modifier, withCallSettings)
-    @join line : method.xmlDocAsync
+@private asyncMethodDeclaration(method, flat, modifier, withCallSettings)
+    @join line : flat.xmlDocAsync
         {@line}
     @end
     
@@ -106,7 +214,7 @@
     @end
     /// <returns>A Task containing the RPC response.</returns>
     public {@modifier} {@method.asyncReturnTypeName} {@method.name}Async(
-        @join param : method.params
+        @join param : flat.params
             {@param.typeName} {@param.name},
         @end
         @if withCallSettings
@@ -116,15 +224,15 @@
         @end
 @end
 
-@private syncMethodDeclaration(method, modifier)
-    @join line : method.xmlDocSync
+@private syncMethodDeclaration(method, flat, modifier)
+    @join line : flat.xmlDocSync
         {@line}
     @end
     
     /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
     /// <returns>The RPC response.</returns>
     public {@modifier} {@method.syncReturnTypeName} {@method.name}(
-        @join param : method.params
+        @join param : flat.params
             {@param.typeName} {@param.name},
         @end
         CallSettings callSettings = null)
@@ -235,29 +343,31 @@
         }
 
         @join method : context.getMethodInfos(service)
-            {@asyncMethodDeclaration(method, "virtual", TRUE)}
-            {
-                throw new NotImplementedException();
-            }
+            @join flat : method.flats
+                {@asyncMethodDeclaration(method, flat, "virtual", TRUE)}
+                {
+                    throw new NotImplementedException();
+                }
 
-            @if method.isPageStreaming == FALSE
-                {@asyncMethodDeclaration(method, "virtual", FALSE)} => {@method.name}Async(
-                        @join param : method.params
-                            {@param.name},
-                        @end
-                        new CallSettings { CancellationToken = cancellationToken });
+                @if method.isPageStreaming == FALSE
+                    {@asyncMethodDeclaration(method, flat, "virtual", FALSE)} => {@method.name}Async(
+                            @join param : flat.params
+                                {@param.name},
+                            @end
+                            new CallSettings { CancellationToken = cancellationToken });
+
+                @end
+                {@syncMethodDeclaration(method, flat, "virtual")}
+                {
+                    throw new NotImplementedException();
+                }
 
             @end
-            {@syncMethodDeclaration(method, "virtual")}
-            {
-                throw new NotImplementedException();
-            }
-
         @end
     }
 @end
 
-@private clientImpl(service, name)
+@private clientImpl(service, name, methods)
     public sealed partial class {@name}ClientImpl : {@name}Client
     {
         @join pageStreamer : context.getPageStreamerInfos(service)
@@ -284,66 +394,61 @@
 
         @end
         private readonly ClientHelper _clientHelper;
+        @join method : methods
+            private readonly ApiCall<{@method.requestTypeName}, {@method.responseTypeName}> _call{@method.name};
+        @end
 
         public {@name}ClientImpl({@name}.I{@name}Client grpcClient, {@name}Settings settings)
         {
             this.GrpcClient = grpcClient;
             {@name}Settings effectiveSettings = settings ?? {@name}Settings.GetDefault();
+            IClock effectiveClock = effectiveSettings.Clock ?? SystemClock.Instance;
             _clientHelper = new ClientHelper(effectiveSettings);
+            @join method : methods
+                _call{@method.name} = _clientHelper.BuildApiCall<{@method.requestTypeName}, {@method.responseTypeName}>(\
+                        GrpcClient.{@method.name}Async, GrpcClient.{@method.name})
+                    .WithRetry(effectiveSettings.{@method.name}Retry, effectiveClock, null);
+            @end
         }
 
         public override {@name}.I{@name}Client GrpcClient { get; }
 
         @join method : context.getMethodInfos(service)
-            {@asyncMethodDeclaration(method, "override", TRUE)}
-            {
-                {@createRequest(method)}
+            @join flat : method.flats
                 @if method.isPageStreaming
-                    return {@method.pageStreaming.staticFieldName}.FetchAsync(
-                        request,
-                        (pageStreamRequest, cancellationToken) => GrpcClient.{@method.name}Async(
-                            pageStreamRequest,
-                            _clientHelper.BuildCallOptions(cancellationToken, callSettings)
-                        ).ResponseAsync
-                    );
-                @else
-                    return GrpcClient.{@method.name}Async(
-                        request,
-                        _clientHelper.BuildCallOptions(null, callSettings)
-                    ).ResponseAsync;
-                @end
-            }
+                    {@asyncMethodDeclaration(method, flat, "override", TRUE)} => {@method.pageStreaming.staticFieldName}.FetchAsync(
+                            callSettings,
+                            {@createRequest(method, flat)},
+                            _call{@method.name});
 
-            {@syncMethodDeclaration(method, "override")}
-            {
-                {@createRequest(method)}
-                @if method.isPageStreaming
-                    return {@method.pageStreaming.staticFieldName}.Fetch(
-                        request,
-                        pageStreamRequest => GrpcClient.{@method.name}(
-                            pageStreamRequest,
-                            _clientHelper.BuildCallOptions(null, callSettings))
-                    );
+                    {@syncMethodDeclaration(method, flat, "override")} => {@method.pageStreaming.staticFieldName}.Fetch(
+                            callSettings,
+                            {@createRequest(method, flat)},
+                            _call{@method.name});
                 @else
-                    {@method.syncReturnStatement}GrpcClient.{@method.name}(
-                        request,
-                        _clientHelper.BuildCallOptions(null, callSettings));
-                @end
-            }
+                    {@asyncMethodDeclaration(method, flat, "override", TRUE)} => _call{@method.name}.Async(
+                            {@createRequest(method, flat)},
+                            callSettings);
 
+                    {@syncMethodDeclaration(method, flat, "override")} => _call{@method.name}.Sync(
+                            {@createRequest(method, flat)},
+                            callSettings);
+                @end
+
+            @end
         @end
     }
 @end
 
-@private createRequest(method)
-    {@method.requestTypeName} request = new {@method.requestTypeName}
+@private createRequest(method, flat)
+    new {@method.requestTypeName}
     {
-        @join param : method.params
+        @join param : flat.params
             @if param.isRepeated
                 {@param.propertyName} = { {@param.name} },
             @else
                 {@param.propertyName} = {@param.name},
             @end
         @end
-    };
+    }
 @end

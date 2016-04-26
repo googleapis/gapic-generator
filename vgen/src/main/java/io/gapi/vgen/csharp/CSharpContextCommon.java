@@ -86,6 +86,14 @@ public class CSharpContextCommon {
     return s_underscoresToCamelCase(input, capNextLetter, preservePeriod);
   }
 
+  public static String s_underscoresToCamelCase(String input) {
+    return s_underscoresToCamelCase(input, false, false);
+  }
+
+  public static String s_underscoresToPascalCase(String input) {
+    return s_underscoresToCamelCase(input, true, false);
+  }
+
   // Copied from csharp_helpers.cc and converted into Java.
   // The existing lowerUnderscoreToUpperCamel etc don't handle dots in the way we want.
   // TODO: investigate that and add more common methods if necessary.
@@ -103,7 +111,7 @@ public class CSharpContextCommon {
         if (i == 0 && !capNextLetter) {
           // Force first letter to lower-case unless explicitly told to
           // capitalize it.
-          result.append(Character.toUpperCase(c));
+          result.append(Character.toLowerCase(c));
         } else {
           // Capital letters after the first are left as-is.
           result.append(c);
@@ -129,5 +137,13 @@ public class CSharpContextCommon {
   public TreeSet<String> getImports() {
     imports.remove(serviceNamespace);
     return imports;
+  }
+  
+  public static Iterable<String> s_prefix(Iterable<String> input, String prefix) {
+    ArrayList<String> output = new ArrayList<>();
+    for (String s : input) {
+      output.add(prefix + s);
+    }
+    return output;
   }
 }

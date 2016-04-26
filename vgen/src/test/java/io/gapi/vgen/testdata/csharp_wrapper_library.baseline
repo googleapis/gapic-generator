@@ -58,12 +58,426 @@ namespace Google.Example.Library.V1
         public static LibraryServiceSettings GetDefault() => new LibraryServiceSettings();
 
         /// <summary>
+        /// Constructs a new LibraryServiceSettings object with default settings.
+        /// </summary>
+        public LibraryServiceSettings() { }
+
+        private LibraryServiceSettings(LibraryServiceSettings existing) : base(existing)
+        {
+            GaxPreconditions.CheckNotNull(existing, nameof(existing));
+            CreateShelfRetry = existing.CreateShelfRetry?.Clone();
+            GetShelfRetry = existing.GetShelfRetry?.Clone();
+            ListShelvesRetry = existing.ListShelvesRetry?.Clone();
+            DeleteShelfRetry = existing.DeleteShelfRetry?.Clone();
+            MergeShelvesRetry = existing.MergeShelvesRetry?.Clone();
+            CreateBookRetry = existing.CreateBookRetry?.Clone();
+            PublishSeriesRetry = existing.PublishSeriesRetry?.Clone();
+            GetBookRetry = existing.GetBookRetry?.Clone();
+            ListBooksRetry = existing.ListBooksRetry?.Clone();
+            DeleteBookRetry = existing.DeleteBookRetry?.Clone();
+            UpdateBookRetry = existing.UpdateBookRetry?.Clone();
+            MoveBookRetry = existing.MoveBookRetry?.Clone();
+        }
+
+        /// <summary>
+        /// The filter specifying which RPC <see cref="StatusCode"/>s are eligible for retry
+        /// for "Idempotent" <see cref="LibraryServiceClient"/> RPC methods.
+        /// </summary>
+        /// <remarks>
+        /// The eligible RPC <see cref="StatusCode"/>s for retry for "Idempotent" RPC methods are:
+        /// <list type="bullet">
+        /// <item><description><see cref="StatusCode.DeadlineExceeded"/></description></item>
+        /// <item><description><see cref="StatusCode.Unavailable"/></description></item>
+        /// </list>
+        /// </remarks>
+        public static Predicate<RpcException> IdempotentRetryFilter { get; } =
+            RetrySettings.FilterForStatusCodes(StatusCode.DeadlineExceeded, StatusCode.Unavailable);
+
+        /// <summary>
+        /// The filter specifying which RPC <see cref="StatusCode"/>s are eligible for retry
+        /// for "NonIdempotent" <see cref="LibraryServiceClient"/> RPC methods.
+        /// </summary>
+        /// <remarks>
+        /// There are no RPC <see cref="StatusCode">s eligilbe for retry for "NonIdempotent" RPC methods.
+        /// </remarks>
+        public static Predicate<RpcException> NonIdempotentRetryFilter { get; } =
+            RetrySettings.FilterForStatusCodes();
+
+        /// <summary>
+        /// "Default" retry backoff for <see cref="LibraryServiceClient"/> RPC methods.
+        /// </summary>
+        /// <returns>The "Default" retry backoff for <see cref="LibraryServiceClient"/> RPC methods.</returns>
+        /// <remarks>
+        /// The "Default" retry backoff for <see cref="LibraryServiceClient"/> RPC methods is defined as:
+        /// <list type="bullet">
+        /// <item><description>Initial delay: 100 milliseconds</description></item>
+        /// <item><description>Delay multiplier: 1.2</description></item>
+        /// <item><description>Maximum delay: 1000 milliseconds</description></item>
+        /// </list>
+        /// </remarks>
+        public static BackoffSettings GetDefaultRetryBackoff() => new BackoffSettings
+        {
+            Delay = TimeSpan.FromMilliseconds(100),
+            DelayMultiplier = 1.2,
+            MaxDelay = TimeSpan.FromMilliseconds(1000),
+        };
+
+        /// <summary>
+        /// "Default" timeout backoff for <see cref="LibraryServiceClient"/> RPC methods.
+        /// </summary>
+        /// <returns>The "Default" timeout backoff for <see cref="LibraryServiceClient"/> RPC methods.</returns>
+        /// <remarks>
+        /// The "Default" timeout backoff for <see cref="LibraryServiceClient"/> RPC methods is defined as:
+        /// <list type="bullet">
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Maximum timeout: 3000 milliseconds</description></item>
+        /// </list>
+        /// </remarks>
+        public static BackoffSettings GetDefaultTimeoutBackoff() => new BackoffSettings
+        {
+            Delay = TimeSpan.FromMilliseconds(300),
+            DelayMultiplier = 1.3,
+            MaxDelay = TimeSpan.FromMilliseconds(3000),
+        };
+
+        /// <summary>
+        /// <see cref="RetrySettings"/> for asynchronous and synchronous calls to
+        /// <see cref="LibraryServiceClient.CreateShelf"/> and <see cref="LibraryServiceClient.CreateShelfAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.CreateShelf"/> and
+        /// <see cref="LibraryServiceClient.CreateShelfAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description>No status codes</description></item>
+        /// </list>
+        /// </remarks>
+        public RetrySettings CreateShelfRetry { get; set; } = new RetrySettings
+        {
+            RetryBackoff = GetDefaultRetryBackoff(),
+            TimeoutBackoff = GetDefaultTimeoutBackoff(),
+            RetryFilter = NonIdempotentRetryFilter,
+        };
+
+        /// <summary>
+        /// <see cref="RetrySettings"/> for asynchronous and synchronous calls to
+        /// <see cref="LibraryServiceClient.GetShelf"/> and <see cref="LibraryServiceClient.GetShelfAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.GetShelf"/> and
+        /// <see cref="LibraryServiceClient.GetShelfAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description><see cref="StatusCode.DeadlineExceeded"/></description></item>
+        /// <item><description><see cref="StatusCode.Unavailable"/></description></item>
+        /// </list>
+        /// </remarks>
+        public RetrySettings GetShelfRetry { get; set; } = new RetrySettings
+        {
+            RetryBackoff = GetDefaultRetryBackoff(),
+            TimeoutBackoff = GetDefaultTimeoutBackoff(),
+            RetryFilter = IdempotentRetryFilter,
+        };
+
+        /// <summary>
+        /// <see cref="RetrySettings"/> for asynchronous and synchronous calls to
+        /// <see cref="LibraryServiceClient.ListShelves"/> and <see cref="LibraryServiceClient.ListShelvesAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.ListShelves"/> and
+        /// <see cref="LibraryServiceClient.ListShelvesAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description><see cref="StatusCode.DeadlineExceeded"/></description></item>
+        /// <item><description><see cref="StatusCode.Unavailable"/></description></item>
+        /// </list>
+        /// </remarks>
+        public RetrySettings ListShelvesRetry { get; set; } = new RetrySettings
+        {
+            RetryBackoff = GetDefaultRetryBackoff(),
+            TimeoutBackoff = GetDefaultTimeoutBackoff(),
+            RetryFilter = IdempotentRetryFilter,
+        };
+
+        /// <summary>
+        /// <see cref="RetrySettings"/> for asynchronous and synchronous calls to
+        /// <see cref="LibraryServiceClient.DeleteShelf"/> and <see cref="LibraryServiceClient.DeleteShelfAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.DeleteShelf"/> and
+        /// <see cref="LibraryServiceClient.DeleteShelfAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description><see cref="StatusCode.DeadlineExceeded"/></description></item>
+        /// <item><description><see cref="StatusCode.Unavailable"/></description></item>
+        /// </list>
+        /// </remarks>
+        public RetrySettings DeleteShelfRetry { get; set; } = new RetrySettings
+        {
+            RetryBackoff = GetDefaultRetryBackoff(),
+            TimeoutBackoff = GetDefaultTimeoutBackoff(),
+            RetryFilter = IdempotentRetryFilter,
+        };
+
+        /// <summary>
+        /// <see cref="RetrySettings"/> for asynchronous and synchronous calls to
+        /// <see cref="LibraryServiceClient.MergeShelves"/> and <see cref="LibraryServiceClient.MergeShelvesAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.MergeShelves"/> and
+        /// <see cref="LibraryServiceClient.MergeShelvesAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description>No status codes</description></item>
+        /// </list>
+        /// </remarks>
+        public RetrySettings MergeShelvesRetry { get; set; } = new RetrySettings
+        {
+            RetryBackoff = GetDefaultRetryBackoff(),
+            TimeoutBackoff = GetDefaultTimeoutBackoff(),
+            RetryFilter = NonIdempotentRetryFilter,
+        };
+
+        /// <summary>
+        /// <see cref="RetrySettings"/> for asynchronous and synchronous calls to
+        /// <see cref="LibraryServiceClient.CreateBook"/> and <see cref="LibraryServiceClient.CreateBookAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.CreateBook"/> and
+        /// <see cref="LibraryServiceClient.CreateBookAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description>No status codes</description></item>
+        /// </list>
+        /// </remarks>
+        public RetrySettings CreateBookRetry { get; set; } = new RetrySettings
+        {
+            RetryBackoff = GetDefaultRetryBackoff(),
+            TimeoutBackoff = GetDefaultTimeoutBackoff(),
+            RetryFilter = NonIdempotentRetryFilter,
+        };
+
+        /// <summary>
+        /// <see cref="RetrySettings"/> for asynchronous and synchronous calls to
+        /// <see cref="LibraryServiceClient.PublishSeries"/> and <see cref="LibraryServiceClient.PublishSeriesAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.PublishSeries"/> and
+        /// <see cref="LibraryServiceClient.PublishSeriesAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description>No status codes</description></item>
+        /// </list>
+        /// </remarks>
+        public RetrySettings PublishSeriesRetry { get; set; } = new RetrySettings
+        {
+            RetryBackoff = GetDefaultRetryBackoff(),
+            TimeoutBackoff = GetDefaultTimeoutBackoff(),
+            RetryFilter = NonIdempotentRetryFilter,
+        };
+
+        /// <summary>
+        /// <see cref="RetrySettings"/> for asynchronous and synchronous calls to
+        /// <see cref="LibraryServiceClient.GetBook"/> and <see cref="LibraryServiceClient.GetBookAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.GetBook"/> and
+        /// <see cref="LibraryServiceClient.GetBookAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description><see cref="StatusCode.DeadlineExceeded"/></description></item>
+        /// <item><description><see cref="StatusCode.Unavailable"/></description></item>
+        /// </list>
+        /// </remarks>
+        public RetrySettings GetBookRetry { get; set; } = new RetrySettings
+        {
+            RetryBackoff = GetDefaultRetryBackoff(),
+            TimeoutBackoff = GetDefaultTimeoutBackoff(),
+            RetryFilter = IdempotentRetryFilter,
+        };
+
+        /// <summary>
+        /// <see cref="RetrySettings"/> for asynchronous and synchronous calls to
+        /// <see cref="LibraryServiceClient.ListBooks"/> and <see cref="LibraryServiceClient.ListBooksAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.ListBooks"/> and
+        /// <see cref="LibraryServiceClient.ListBooksAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description><see cref="StatusCode.DeadlineExceeded"/></description></item>
+        /// <item><description><see cref="StatusCode.Unavailable"/></description></item>
+        /// </list>
+        /// </remarks>
+        public RetrySettings ListBooksRetry { get; set; } = new RetrySettings
+        {
+            RetryBackoff = GetDefaultRetryBackoff(),
+            TimeoutBackoff = GetDefaultTimeoutBackoff(),
+            RetryFilter = IdempotentRetryFilter,
+        };
+
+        /// <summary>
+        /// <see cref="RetrySettings"/> for asynchronous and synchronous calls to
+        /// <see cref="LibraryServiceClient.DeleteBook"/> and <see cref="LibraryServiceClient.DeleteBookAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.DeleteBook"/> and
+        /// <see cref="LibraryServiceClient.DeleteBookAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description><see cref="StatusCode.DeadlineExceeded"/></description></item>
+        /// <item><description><see cref="StatusCode.Unavailable"/></description></item>
+        /// </list>
+        /// </remarks>
+        public RetrySettings DeleteBookRetry { get; set; } = new RetrySettings
+        {
+            RetryBackoff = GetDefaultRetryBackoff(),
+            TimeoutBackoff = GetDefaultTimeoutBackoff(),
+            RetryFilter = IdempotentRetryFilter,
+        };
+
+        /// <summary>
+        /// <see cref="RetrySettings"/> for asynchronous and synchronous calls to
+        /// <see cref="LibraryServiceClient.UpdateBook"/> and <see cref="LibraryServiceClient.UpdateBookAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.UpdateBook"/> and
+        /// <see cref="LibraryServiceClient.UpdateBookAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description><see cref="StatusCode.DeadlineExceeded"/></description></item>
+        /// <item><description><see cref="StatusCode.Unavailable"/></description></item>
+        /// </list>
+        /// </remarks>
+        public RetrySettings UpdateBookRetry { get; set; } = new RetrySettings
+        {
+            RetryBackoff = GetDefaultRetryBackoff(),
+            TimeoutBackoff = GetDefaultTimeoutBackoff(),
+            RetryFilter = IdempotentRetryFilter,
+        };
+
+        /// <summary>
+        /// <see cref="RetrySettings"/> for asynchronous and synchronous calls to
+        /// <see cref="LibraryServiceClient.MoveBook"/> and <see cref="LibraryServiceClient.MoveBookAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.MoveBook"/> and
+        /// <see cref="LibraryServiceClient.MoveBookAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description>No status codes</description></item>
+        /// </list>
+        /// </remarks>
+        public RetrySettings MoveBookRetry { get; set; } = new RetrySettings
+        {
+            RetryBackoff = GetDefaultRetryBackoff(),
+            TimeoutBackoff = GetDefaultTimeoutBackoff(),
+            RetryFilter = NonIdempotentRetryFilter,
+        };
+
+
+        /// <summary>
         /// Creates a deep clone of this object, with all the same property values.
         /// </summary>
         /// <returns>A deep clone of this set of LibraryService settings.</returns>
-        public LibraryServiceSettings Clone() => CloneInto(new LibraryServiceSettings
-        {
-        });
+        public LibraryServiceSettings Clone() => new LibraryServiceSettings(this);
     }
 
     /// <summary>
@@ -835,12 +1249,49 @@ namespace Google.Example.Library.V1
             );
 
         private readonly ClientHelper _clientHelper;
+        private readonly ApiCall<CreateShelfRequest, Shelf> _callCreateShelf;
+        private readonly ApiCall<GetShelfRequest, Shelf> _callGetShelf;
+        private readonly ApiCall<ListShelvesRequest, ListShelvesResponse> _callListShelves;
+        private readonly ApiCall<DeleteShelfRequest, Empty> _callDeleteShelf;
+        private readonly ApiCall<MergeShelvesRequest, Shelf> _callMergeShelves;
+        private readonly ApiCall<CreateBookRequest, Book> _callCreateBook;
+        private readonly ApiCall<PublishSeriesRequest, PublishSeriesResponse> _callPublishSeries;
+        private readonly ApiCall<GetBookRequest, Book> _callGetBook;
+        private readonly ApiCall<ListBooksRequest, ListBooksResponse> _callListBooks;
+        private readonly ApiCall<DeleteBookRequest, Empty> _callDeleteBook;
+        private readonly ApiCall<UpdateBookRequest, Book> _callUpdateBook;
+        private readonly ApiCall<MoveBookRequest, Book> _callMoveBook;
 
         public LibraryServiceClientImpl(LibraryService.ILibraryServiceClient grpcClient, LibraryServiceSettings settings)
         {
             this.GrpcClient = grpcClient;
             LibraryServiceSettings effectiveSettings = settings ?? LibraryServiceSettings.GetDefault();
+            IClock effectiveClock = effectiveSettings.Clock ?? SystemClock.Instance;
             _clientHelper = new ClientHelper(effectiveSettings);
+            _callCreateShelf = _clientHelper.BuildApiCall<CreateShelfRequest, Shelf>(GrpcClient.CreateShelfAsync, GrpcClient.CreateShelf)
+                .WithRetry(effectiveSettings.CreateShelfRetry, effectiveClock, null);
+            _callGetShelf = _clientHelper.BuildApiCall<GetShelfRequest, Shelf>(GrpcClient.GetShelfAsync, GrpcClient.GetShelf)
+                .WithRetry(effectiveSettings.GetShelfRetry, effectiveClock, null);
+            _callListShelves = _clientHelper.BuildApiCall<ListShelvesRequest, ListShelvesResponse>(GrpcClient.ListShelvesAsync, GrpcClient.ListShelves)
+                .WithRetry(effectiveSettings.ListShelvesRetry, effectiveClock, null);
+            _callDeleteShelf = _clientHelper.BuildApiCall<DeleteShelfRequest, Empty>(GrpcClient.DeleteShelfAsync, GrpcClient.DeleteShelf)
+                .WithRetry(effectiveSettings.DeleteShelfRetry, effectiveClock, null);
+            _callMergeShelves = _clientHelper.BuildApiCall<MergeShelvesRequest, Shelf>(GrpcClient.MergeShelvesAsync, GrpcClient.MergeShelves)
+                .WithRetry(effectiveSettings.MergeShelvesRetry, effectiveClock, null);
+            _callCreateBook = _clientHelper.BuildApiCall<CreateBookRequest, Book>(GrpcClient.CreateBookAsync, GrpcClient.CreateBook)
+                .WithRetry(effectiveSettings.CreateBookRetry, effectiveClock, null);
+            _callPublishSeries = _clientHelper.BuildApiCall<PublishSeriesRequest, PublishSeriesResponse>(GrpcClient.PublishSeriesAsync, GrpcClient.PublishSeries)
+                .WithRetry(effectiveSettings.PublishSeriesRetry, effectiveClock, null);
+            _callGetBook = _clientHelper.BuildApiCall<GetBookRequest, Book>(GrpcClient.GetBookAsync, GrpcClient.GetBook)
+                .WithRetry(effectiveSettings.GetBookRetry, effectiveClock, null);
+            _callListBooks = _clientHelper.BuildApiCall<ListBooksRequest, ListBooksResponse>(GrpcClient.ListBooksAsync, GrpcClient.ListBooks)
+                .WithRetry(effectiveSettings.ListBooksRetry, effectiveClock, null);
+            _callDeleteBook = _clientHelper.BuildApiCall<DeleteBookRequest, Empty>(GrpcClient.DeleteBookAsync, GrpcClient.DeleteBook)
+                .WithRetry(effectiveSettings.DeleteBookRetry, effectiveClock, null);
+            _callUpdateBook = _clientHelper.BuildApiCall<UpdateBookRequest, Book>(GrpcClient.UpdateBookAsync, GrpcClient.UpdateBook)
+                .WithRetry(effectiveSettings.UpdateBookRetry, effectiveClock, null);
+            _callMoveBook = _clientHelper.BuildApiCall<MoveBookRequest, Book>(GrpcClient.MoveBookAsync, GrpcClient.MoveBook)
+                .WithRetry(effectiveSettings.MoveBookRetry, effectiveClock, null);
         }
 
         public override LibraryService.ILibraryServiceClient GrpcClient { get; }
@@ -853,17 +1304,12 @@ namespace Google.Example.Library.V1
         /// <returns>A Task containing the RPC response.</returns>
         public override Task<Shelf> CreateShelfAsync(
             Shelf shelf,
-            CallSettings callSettings = null)
-        {
-            CreateShelfRequest request = new CreateShelfRequest
-            {
-                Shelf = shelf,
-            };
-            return GrpcClient.CreateShelfAsync(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings)
-            ).ResponseAsync;
-        }
+            CallSettings callSettings = null) => _callCreateShelf.Async(
+                new CreateShelfRequest
+                {
+                    Shelf = shelf,
+                },
+                callSettings);
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
@@ -873,17 +1319,12 @@ namespace Google.Example.Library.V1
         /// <returns>The RPC response.</returns>
         public override Shelf CreateShelf(
             Shelf shelf,
-            CallSettings callSettings = null)
-        {
-            CreateShelfRequest request = new CreateShelfRequest
-            {
-                Shelf = shelf,
-            };
-            return GrpcClient.CreateShelf(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings));
-        }
-
+            CallSettings callSettings = null) => _callCreateShelf.Sync(
+                new CreateShelfRequest
+                {
+                    Shelf = shelf,
+                },
+                callSettings);
         /// <summary>
         /// Gets a shelf.
         /// </summary>
@@ -892,17 +1333,12 @@ namespace Google.Example.Library.V1
         /// <returns>A Task containing the RPC response.</returns>
         public override Task<Shelf> GetShelfAsync(
             string name,
-            CallSettings callSettings = null)
-        {
-            GetShelfRequest request = new GetShelfRequest
-            {
-                Name = name,
-            };
-            return GrpcClient.GetShelfAsync(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings)
-            ).ResponseAsync;
-        }
+            CallSettings callSettings = null) => _callGetShelf.Async(
+                new GetShelfRequest
+                {
+                    Name = name,
+                },
+                callSettings);
 
         /// <summary>
         /// Gets a shelf.
@@ -912,17 +1348,12 @@ namespace Google.Example.Library.V1
         /// <returns>The RPC response.</returns>
         public override Shelf GetShelf(
             string name,
-            CallSettings callSettings = null)
-        {
-            GetShelfRequest request = new GetShelfRequest
-            {
-                Name = name,
-            };
-            return GrpcClient.GetShelf(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings));
-        }
-
+            CallSettings callSettings = null) => _callGetShelf.Sync(
+                new GetShelfRequest
+                {
+                    Name = name,
+                },
+                callSettings);
         /// <summary>
         /// Gets a shelf.
         /// </summary>
@@ -933,18 +1364,13 @@ namespace Google.Example.Library.V1
         public override Task<Shelf> GetShelfAsync(
             string name,
             SomeMessage message,
-            CallSettings callSettings = null)
-        {
-            GetShelfRequest request = new GetShelfRequest
-            {
-                Name = name,
-                Message = message,
-            };
-            return GrpcClient.GetShelfAsync(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings)
-            ).ResponseAsync;
-        }
+            CallSettings callSettings = null) => _callGetShelf.Async(
+                new GetShelfRequest
+                {
+                    Name = name,
+                    Message = message,
+                },
+                callSettings);
 
         /// <summary>
         /// Gets a shelf.
@@ -956,18 +1382,13 @@ namespace Google.Example.Library.V1
         public override Shelf GetShelf(
             string name,
             SomeMessage message,
-            CallSettings callSettings = null)
-        {
-            GetShelfRequest request = new GetShelfRequest
-            {
-                Name = name,
-                Message = message,
-            };
-            return GrpcClient.GetShelf(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings));
-        }
-
+            CallSettings callSettings = null) => _callGetShelf.Sync(
+                new GetShelfRequest
+                {
+                    Name = name,
+                    Message = message,
+                },
+                callSettings);
         /// <summary>
         /// Gets a shelf.
         /// </summary>
@@ -980,19 +1401,14 @@ namespace Google.Example.Library.V1
             string name,
             SomeMessage message,
             StringBuilder stringBuilder,
-            CallSettings callSettings = null)
-        {
-            GetShelfRequest request = new GetShelfRequest
-            {
-                Name = name,
-                Message = message,
-                StringBuilder = stringBuilder,
-            };
-            return GrpcClient.GetShelfAsync(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings)
-            ).ResponseAsync;
-        }
+            CallSettings callSettings = null) => _callGetShelf.Async(
+                new GetShelfRequest
+                {
+                    Name = name,
+                    Message = message,
+                    StringBuilder = stringBuilder,
+                },
+                callSettings);
 
         /// <summary>
         /// Gets a shelf.
@@ -1006,38 +1422,26 @@ namespace Google.Example.Library.V1
             string name,
             SomeMessage message,
             StringBuilder stringBuilder,
-            CallSettings callSettings = null)
-        {
-            GetShelfRequest request = new GetShelfRequest
-            {
-                Name = name,
-                Message = message,
-                StringBuilder = stringBuilder,
-            };
-            return GrpcClient.GetShelf(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings));
-        }
-
+            CallSettings callSettings = null) => _callGetShelf.Sync(
+                new GetShelfRequest
+                {
+                    Name = name,
+                    Message = message,
+                    StringBuilder = stringBuilder,
+                },
+                callSettings);
         /// <summary>
         /// Lists shelves.
         /// </summary>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>A Task containing the RPC response.</returns>
         public override IAsyncEnumerable<Shelf> ListShelvesAsync(
-            CallSettings callSettings = null)
-        {
-            ListShelvesRequest request = new ListShelvesRequest
-            {
-            };
-            return s_listShelvesPageStreamer.FetchAsync(
-                request,
-                (pageStreamRequest, cancellationToken) => GrpcClient.ListShelvesAsync(
-                    pageStreamRequest,
-                    _clientHelper.BuildCallOptions(cancellationToken, callSettings)
-                ).ResponseAsync
-            );
-        }
+            CallSettings callSettings = null) => s_listShelvesPageStreamer.FetchAsync(
+                callSettings,
+                new ListShelvesRequest
+                {
+                },
+                _callListShelves);
 
         /// <summary>
         /// Lists shelves.
@@ -1045,19 +1449,12 @@ namespace Google.Example.Library.V1
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>The RPC response.</returns>
         public override IEnumerable<Shelf> ListShelves(
-            CallSettings callSettings = null)
-        {
-            ListShelvesRequest request = new ListShelvesRequest
-            {
-            };
-            return s_listShelvesPageStreamer.Fetch(
-                request,
-                pageStreamRequest => GrpcClient.ListShelves(
-                    pageStreamRequest,
-                    _clientHelper.BuildCallOptions(null, callSettings))
-            );
-        }
-
+            CallSettings callSettings = null) => s_listShelvesPageStreamer.Fetch(
+                callSettings,
+                new ListShelvesRequest
+                {
+                },
+                _callListShelves);
         /// <summary>
         /// Deletes a shelf.
         /// </summary>
@@ -1066,17 +1463,12 @@ namespace Google.Example.Library.V1
         /// <returns>A Task containing the RPC response.</returns>
         public override Task DeleteShelfAsync(
             string name,
-            CallSettings callSettings = null)
-        {
-            DeleteShelfRequest request = new DeleteShelfRequest
-            {
-                Name = name,
-            };
-            return GrpcClient.DeleteShelfAsync(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings)
-            ).ResponseAsync;
-        }
+            CallSettings callSettings = null) => _callDeleteShelf.Async(
+                new DeleteShelfRequest
+                {
+                    Name = name,
+                },
+                callSettings);
 
         /// <summary>
         /// Deletes a shelf.
@@ -1086,17 +1478,12 @@ namespace Google.Example.Library.V1
         /// <returns>The RPC response.</returns>
         public override void DeleteShelf(
             string name,
-            CallSettings callSettings = null)
-        {
-            DeleteShelfRequest request = new DeleteShelfRequest
-            {
-                Name = name,
-            };
-            GrpcClient.DeleteShelf(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings));
-        }
-
+            CallSettings callSettings = null) => _callDeleteShelf.Sync(
+                new DeleteShelfRequest
+                {
+                    Name = name,
+                },
+                callSettings);
         /// <summary>
         /// Merges two shelves by adding all books from the shelf named
         /// `other_shelf_name` to shelf `name`, and deletes
@@ -1109,18 +1496,13 @@ namespace Google.Example.Library.V1
         public override Task<Shelf> MergeShelvesAsync(
             string name,
             string otherShelfName,
-            CallSettings callSettings = null)
-        {
-            MergeShelvesRequest request = new MergeShelvesRequest
-            {
-                Name = name,
-                OtherShelfName = otherShelfName,
-            };
-            return GrpcClient.MergeShelvesAsync(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings)
-            ).ResponseAsync;
-        }
+            CallSettings callSettings = null) => _callMergeShelves.Async(
+                new MergeShelvesRequest
+                {
+                    Name = name,
+                    OtherShelfName = otherShelfName,
+                },
+                callSettings);
 
         /// <summary>
         /// Merges two shelves by adding all books from the shelf named
@@ -1134,18 +1516,13 @@ namespace Google.Example.Library.V1
         public override Shelf MergeShelves(
             string name,
             string otherShelfName,
-            CallSettings callSettings = null)
-        {
-            MergeShelvesRequest request = new MergeShelvesRequest
-            {
-                Name = name,
-                OtherShelfName = otherShelfName,
-            };
-            return GrpcClient.MergeShelves(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings));
-        }
-
+            CallSettings callSettings = null) => _callMergeShelves.Sync(
+                new MergeShelvesRequest
+                {
+                    Name = name,
+                    OtherShelfName = otherShelfName,
+                },
+                callSettings);
         /// <summary>
         /// Creates a book.
         /// </summary>
@@ -1156,18 +1533,13 @@ namespace Google.Example.Library.V1
         public override Task<Book> CreateBookAsync(
             string name,
             Book book,
-            CallSettings callSettings = null)
-        {
-            CreateBookRequest request = new CreateBookRequest
-            {
-                Name = name,
-                Book = book,
-            };
-            return GrpcClient.CreateBookAsync(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings)
-            ).ResponseAsync;
-        }
+            CallSettings callSettings = null) => _callCreateBook.Async(
+                new CreateBookRequest
+                {
+                    Name = name,
+                    Book = book,
+                },
+                callSettings);
 
         /// <summary>
         /// Creates a book.
@@ -1179,18 +1551,13 @@ namespace Google.Example.Library.V1
         public override Book CreateBook(
             string name,
             Book book,
-            CallSettings callSettings = null)
-        {
-            CreateBookRequest request = new CreateBookRequest
-            {
-                Name = name,
-                Book = book,
-            };
-            return GrpcClient.CreateBook(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings));
-        }
-
+            CallSettings callSettings = null) => _callCreateBook.Sync(
+                new CreateBookRequest
+                {
+                    Name = name,
+                    Book = book,
+                },
+                callSettings);
         /// <summary>
         /// Creates a series of books.
         /// </summary>
@@ -1203,19 +1570,14 @@ namespace Google.Example.Library.V1
             Shelf shelf,
             IEnumerable<Book> books,
             uint edition,
-            CallSettings callSettings = null)
-        {
-            PublishSeriesRequest request = new PublishSeriesRequest
-            {
-                Shelf = shelf,
-                Books = { books },
-                Edition = edition,
-            };
-            return GrpcClient.PublishSeriesAsync(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings)
-            ).ResponseAsync;
-        }
+            CallSettings callSettings = null) => _callPublishSeries.Async(
+                new PublishSeriesRequest
+                {
+                    Shelf = shelf,
+                    Books = { books },
+                    Edition = edition,
+                },
+                callSettings);
 
         /// <summary>
         /// Creates a series of books.
@@ -1229,19 +1591,14 @@ namespace Google.Example.Library.V1
             Shelf shelf,
             IEnumerable<Book> books,
             uint edition,
-            CallSettings callSettings = null)
-        {
-            PublishSeriesRequest request = new PublishSeriesRequest
-            {
-                Shelf = shelf,
-                Books = { books },
-                Edition = edition,
-            };
-            return GrpcClient.PublishSeries(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings));
-        }
-
+            CallSettings callSettings = null) => _callPublishSeries.Sync(
+                new PublishSeriesRequest
+                {
+                    Shelf = shelf,
+                    Books = { books },
+                    Edition = edition,
+                },
+                callSettings);
         /// <summary>
         /// Gets a book.
         /// </summary>
@@ -1250,17 +1607,12 @@ namespace Google.Example.Library.V1
         /// <returns>A Task containing the RPC response.</returns>
         public override Task<Book> GetBookAsync(
             string name,
-            CallSettings callSettings = null)
-        {
-            GetBookRequest request = new GetBookRequest
-            {
-                Name = name,
-            };
-            return GrpcClient.GetBookAsync(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings)
-            ).ResponseAsync;
-        }
+            CallSettings callSettings = null) => _callGetBook.Async(
+                new GetBookRequest
+                {
+                    Name = name,
+                },
+                callSettings);
 
         /// <summary>
         /// Gets a book.
@@ -1270,17 +1622,12 @@ namespace Google.Example.Library.V1
         /// <returns>The RPC response.</returns>
         public override Book GetBook(
             string name,
-            CallSettings callSettings = null)
-        {
-            GetBookRequest request = new GetBookRequest
-            {
-                Name = name,
-            };
-            return GrpcClient.GetBook(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings));
-        }
-
+            CallSettings callSettings = null) => _callGetBook.Sync(
+                new GetBookRequest
+                {
+                    Name = name,
+                },
+                callSettings);
         /// <summary>
         /// Lists books in a shelf.
         /// </summary>
@@ -1291,21 +1638,14 @@ namespace Google.Example.Library.V1
         public override IAsyncEnumerable<Book> ListBooksAsync(
             string name,
             string filter,
-            CallSettings callSettings = null)
-        {
-            ListBooksRequest request = new ListBooksRequest
-            {
-                Name = name,
-                Filter = filter,
-            };
-            return s_listBooksPageStreamer.FetchAsync(
-                request,
-                (pageStreamRequest, cancellationToken) => GrpcClient.ListBooksAsync(
-                    pageStreamRequest,
-                    _clientHelper.BuildCallOptions(cancellationToken, callSettings)
-                ).ResponseAsync
-            );
-        }
+            CallSettings callSettings = null) => s_listBooksPageStreamer.FetchAsync(
+                callSettings,
+                new ListBooksRequest
+                {
+                    Name = name,
+                    Filter = filter,
+                },
+                _callListBooks);
 
         /// <summary>
         /// Lists books in a shelf.
@@ -1317,21 +1657,14 @@ namespace Google.Example.Library.V1
         public override IEnumerable<Book> ListBooks(
             string name,
             string filter,
-            CallSettings callSettings = null)
-        {
-            ListBooksRequest request = new ListBooksRequest
-            {
-                Name = name,
-                Filter = filter,
-            };
-            return s_listBooksPageStreamer.Fetch(
-                request,
-                pageStreamRequest => GrpcClient.ListBooks(
-                    pageStreamRequest,
-                    _clientHelper.BuildCallOptions(null, callSettings))
-            );
-        }
-
+            CallSettings callSettings = null) => s_listBooksPageStreamer.Fetch(
+                callSettings,
+                new ListBooksRequest
+                {
+                    Name = name,
+                    Filter = filter,
+                },
+                _callListBooks);
         /// <summary>
         /// Deletes a book.
         /// </summary>
@@ -1340,17 +1673,12 @@ namespace Google.Example.Library.V1
         /// <returns>A Task containing the RPC response.</returns>
         public override Task DeleteBookAsync(
             string name,
-            CallSettings callSettings = null)
-        {
-            DeleteBookRequest request = new DeleteBookRequest
-            {
-                Name = name,
-            };
-            return GrpcClient.DeleteBookAsync(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings)
-            ).ResponseAsync;
-        }
+            CallSettings callSettings = null) => _callDeleteBook.Async(
+                new DeleteBookRequest
+                {
+                    Name = name,
+                },
+                callSettings);
 
         /// <summary>
         /// Deletes a book.
@@ -1360,17 +1688,12 @@ namespace Google.Example.Library.V1
         /// <returns>The RPC response.</returns>
         public override void DeleteBook(
             string name,
-            CallSettings callSettings = null)
-        {
-            DeleteBookRequest request = new DeleteBookRequest
-            {
-                Name = name,
-            };
-            GrpcClient.DeleteBook(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings));
-        }
-
+            CallSettings callSettings = null) => _callDeleteBook.Sync(
+                new DeleteBookRequest
+                {
+                    Name = name,
+                },
+                callSettings);
         /// <summary>
         /// Updates a book.
         /// </summary>
@@ -1381,18 +1704,13 @@ namespace Google.Example.Library.V1
         public override Task<Book> UpdateBookAsync(
             string name,
             Book book,
-            CallSettings callSettings = null)
-        {
-            UpdateBookRequest request = new UpdateBookRequest
-            {
-                Name = name,
-                Book = book,
-            };
-            return GrpcClient.UpdateBookAsync(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings)
-            ).ResponseAsync;
-        }
+            CallSettings callSettings = null) => _callUpdateBook.Async(
+                new UpdateBookRequest
+                {
+                    Name = name,
+                    Book = book,
+                },
+                callSettings);
 
         /// <summary>
         /// Updates a book.
@@ -1404,18 +1722,13 @@ namespace Google.Example.Library.V1
         public override Book UpdateBook(
             string name,
             Book book,
-            CallSettings callSettings = null)
-        {
-            UpdateBookRequest request = new UpdateBookRequest
-            {
-                Name = name,
-                Book = book,
-            };
-            return GrpcClient.UpdateBook(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings));
-        }
-
+            CallSettings callSettings = null) => _callUpdateBook.Sync(
+                new UpdateBookRequest
+                {
+                    Name = name,
+                    Book = book,
+                },
+                callSettings);
         /// <summary>
         /// Updates a book.
         /// </summary>
@@ -1430,20 +1743,15 @@ namespace Google.Example.Library.V1
             Book book,
             FieldMask updateMask,
             FieldMask physicalMask,
-            CallSettings callSettings = null)
-        {
-            UpdateBookRequest request = new UpdateBookRequest
-            {
-                Name = name,
-                Book = book,
-                UpdateMask = updateMask,
-                PhysicalMask = physicalMask,
-            };
-            return GrpcClient.UpdateBookAsync(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings)
-            ).ResponseAsync;
-        }
+            CallSettings callSettings = null) => _callUpdateBook.Async(
+                new UpdateBookRequest
+                {
+                    Name = name,
+                    Book = book,
+                    UpdateMask = updateMask,
+                    PhysicalMask = physicalMask,
+                },
+                callSettings);
 
         /// <summary>
         /// Updates a book.
@@ -1459,20 +1767,15 @@ namespace Google.Example.Library.V1
             Book book,
             FieldMask updateMask,
             FieldMask physicalMask,
-            CallSettings callSettings = null)
-        {
-            UpdateBookRequest request = new UpdateBookRequest
-            {
-                Name = name,
-                Book = book,
-                UpdateMask = updateMask,
-                PhysicalMask = physicalMask,
-            };
-            return GrpcClient.UpdateBook(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings));
-        }
-
+            CallSettings callSettings = null) => _callUpdateBook.Sync(
+                new UpdateBookRequest
+                {
+                    Name = name,
+                    Book = book,
+                    UpdateMask = updateMask,
+                    PhysicalMask = physicalMask,
+                },
+                callSettings);
         /// <summary>
         /// Moves a book to another shelf, and returns the new book.
         /// </summary>
@@ -1483,18 +1786,13 @@ namespace Google.Example.Library.V1
         public override Task<Book> MoveBookAsync(
             string name,
             string otherShelfName,
-            CallSettings callSettings = null)
-        {
-            MoveBookRequest request = new MoveBookRequest
-            {
-                Name = name,
-                OtherShelfName = otherShelfName,
-            };
-            return GrpcClient.MoveBookAsync(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings)
-            ).ResponseAsync;
-        }
+            CallSettings callSettings = null) => _callMoveBook.Async(
+                new MoveBookRequest
+                {
+                    Name = name,
+                    OtherShelfName = otherShelfName,
+                },
+                callSettings);
 
         /// <summary>
         /// Moves a book to another shelf, and returns the new book.
@@ -1506,17 +1804,12 @@ namespace Google.Example.Library.V1
         public override Book MoveBook(
             string name,
             string otherShelfName,
-            CallSettings callSettings = null)
-        {
-            MoveBookRequest request = new MoveBookRequest
-            {
-                Name = name,
-                OtherShelfName = otherShelfName,
-            };
-            return GrpcClient.MoveBook(
-                request,
-                _clientHelper.BuildCallOptions(null, callSettings));
-        }
-
+            CallSettings callSettings = null) => _callMoveBook.Sync(
+                new MoveBookRequest
+                {
+                    Name = name,
+                    OtherShelfName = otherShelfName,
+                },
+                callSettings);
     }
 }
