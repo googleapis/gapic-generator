@@ -301,8 +301,8 @@
     {@"@classmethod"}
     def {@collectionConfig.getMethodBaseName}_path(cls, {@createResourceFunctionParams(collectionConfig)}):
         """Returns a fully-qualified {@collectionConfig.getMethodBaseName} resource name string."""
-        return cls.{@pathTemplateName(collectionConfig)}.instantiate({
-            {@createInstantiateDictionary(collectionConfig)}
+        return cls.{@pathTemplateName(collectionConfig)}.render({
+            {@createRenderDictionary(collectionConfig)}
         })
 @end
 
@@ -312,7 +312,7 @@
     @end
 @end
 
-@private createInstantiateDictionary(collectionConfig)
+@private createRenderDictionary(collectionConfig)
     @join param: collectionConfig.getNameTemplate.vars() on BREAK
         '{@param}': {@param},
     @end
