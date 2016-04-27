@@ -1331,13 +1331,20 @@ authFactory.getApplicationDefault(function(err, authClient) {
     auth: authClient
   };
 
-  sqladmin.users.list(request, function(err, result) {
+
+  var recur = function(err, result) {
     if (err) {
       console.log(err);
     } else {
       console.log(result);
+      if (result.nextPageToken) {
+        request.pageToken = result.nextPageToken;
+        sqladmin.users.list(request, recur);
+      }
     }
-  });
+  };
+
+  sqladmin.users.list(request, recur);
 });
 var google = require('googleapis');
 var GoogleAuth = require('google-auth-library');
