@@ -98,15 +98,15 @@ module Google
 
           # Returns a fully-qualified shelf resource name string.
           def self.shelf_path(shelf)
-            SHELF_PATH_TEMPLATE.instantiate(
-              'shelf' => shelf)
+            SHELF_PATH_TEMPLATE.render(
+              :'shelf' => shelf)
           end
 
           # Returns a fully-qualified book resource name string.
           def self.book_path(shelf, book)
-            BOOK_PATH_TEMPLATE.instantiate(
-              'shelf' => shelf,
-              'book' => book)
+            BOOK_PATH_TEMPLATE.render(
+              :'shelf' => shelf,
+              :'book' => book)
           end
 
           # @param service_path [String]
@@ -161,7 +161,7 @@ module Google
             end
             google_api_client = "#{app_name}/#{app_version} " \
               "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze
-            @headers = { 'x-goog-api-client' => google_api_client }
+            @headers = { :'x-goog-api-client' => google_api_client }
             @stub = Google::Gax::Grpc.create_stub(
               service_path,
               port,
