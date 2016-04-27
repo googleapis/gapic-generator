@@ -55,6 +55,13 @@
     @if context.hasRequestField(method)
       resource: {},
     @end
+    @if context.hasMediaUpload(method)
+      media: {
+        // See https://github.com/google/google-api-nodejs-client#media-uploads
+        mimeType: 'text/plain',
+        body: 'Hello World!'
+      },
+    @end
   @end
 @end
 
