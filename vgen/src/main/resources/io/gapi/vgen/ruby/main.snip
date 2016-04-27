@@ -219,7 +219,7 @@
       {@constructDefaults(service)}
       google_api_client = "#{app_name}/#{app_version} " @\
         "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze
-      @@headers = { 'x-goog-api-client' => google_api_client }
+      @@headers = { :'x-goog-api-client' => google_api_client }
       @@stub = Google::Gax::Grpc.create_stub(
         service_path,
         port,
@@ -278,8 +278,8 @@
 @private createResourceFunction(collectionConfig)
   @# Returns a fully-qualified {@collectionConfig.getMethodBaseName} resource name string.
   def self.{@collectionConfig.getMethodBaseName}_path({@createResourceFunctionParams(collectionConfig)})
-    {@pathTemplateName(collectionConfig)}.instantiate(
-      {@createInstantiateDictionary(collectionConfig)})
+    {@pathTemplateName(collectionConfig)}.render(
+      {@createRenderDictionary(collectionConfig)})
   end
 @end
 
@@ -289,9 +289,9 @@
   @end
 @end
 
-@private createInstantiateDictionary(collectionConfig)
+@private createRenderDictionary(collectionConfig)
   @join param: collectionConfig.getNameTemplate.vars() on {@","}.add(BREAK)
-    '{@param}' => {@param}
+    :'{@param}' => {@param}
   @end
 @end
 

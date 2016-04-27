@@ -221,24 +221,35 @@ public class RubyGapicContext extends GapicContext {
   }
 
   /**
+   * Returns the name of Ruby class for the given proto element.
+   */
+  private String rubyTypeNameForProtoElement(ProtoElement element) {
+    String fullName = element.getFullName();
+    int lastDot = fullName.lastIndexOf('.');
+    if (lastDot < 0) {
+      return fullName;
+    }
+    List<String> rubyNames = new ArrayList<>();
+    for (String name : fullName.substring(0, lastDot).split("\\.")) {
+      if (Character.isUpperCase(name.charAt(0))) {
+        rubyNames.add(name);
+      } else {
+        rubyNames.add(lowerUnderscoreToUpperCamel(name));
+      }
+    }
+    rubyNames.add(element.getSimpleName());
+    return Joiner.on("::").join(rubyNames);
+  }
+
+  /**
    * Returns the name of Ruby class for the given typeRef.
    */
   public String rubyTypeName(TypeRef typeRef) {
     switch (typeRef.getKind()) {
       case TYPE_MESSAGE:
-      case TYPE_ENUM: {
-        String fullName = typeRef.getMessageType().getFullName();
-        int lastDot = fullName.lastIndexOf('.');
-        if (lastDot < 0) {
-          return fullName;
-        }
-        List<String> rubyNames = new ArrayList<>();
-        for (String name : fullName.substring(0, lastDot).split("\\.")) {
-          rubyNames.add(lowerUnderscoreToUpperCamel(name));
-        }
-        rubyNames.add(typeRef.getMessageType().getSimpleName());
-        return Joiner.on("::").join(rubyNames);
-      }
+        return rubyTypeNameForProtoElement(typeRef.getMessageType());
+      case TYPE_ENUM:
+        return rubyTypeNameForProtoElement(typeRef.getEnumType());
       default: {
         String name = PRIMITIVE_TYPE_NAMES.get(typeRef.getKind());
         if (!Strings.isNullOrEmpty(name)) {
