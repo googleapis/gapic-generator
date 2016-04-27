@@ -173,6 +173,8 @@ public class JavaContextCommon {
 
   @AutoValue
   abstract static class JavaDocConfig {
+    public abstract String getApiName();
+
     public abstract String getMethodName();
 
     public abstract String getReturnType();
@@ -185,6 +187,8 @@ public class JavaContextCommon {
 
     @AutoValue.Builder
     abstract static class Builder {
+      public abstract Builder setApiName(String serviceName);
+
       public abstract Builder setMethodName(String methodName);
 
       public abstract Builder setReturnType(String returnType);
