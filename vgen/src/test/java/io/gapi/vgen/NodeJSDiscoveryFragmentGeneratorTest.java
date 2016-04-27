@@ -1,17 +1,3 @@
-/* Copyright 2016 Google Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.gapi.vgen;
 
 import com.google.common.collect.ImmutableList;
@@ -29,16 +15,16 @@ import java.util.List;
  * Java discovery doc fragment generator baseline tests.
  */
 @RunWith(Parameterized.class)
-public class JavaDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGeneratorTestBase {
+public class NodeJSDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGeneratorTestBase {
 
-  public JavaDiscoveryFragmentGeneratorTest(
+  public NodeJSDiscoveryFragmentGeneratorTest(
       String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
     super(name, discoveryDocFileName, gapicConfigFileNames);
   }
 
   /**
-   * Declares test parameters, each one an array of values passed to the constructor, with the first
-   * element a name, the second a discovery doc, and the third a partial GAPIC config.
+   * Declares test parameters, each one an array of values passed to the constructor, with
+   * the first element a name, the second a discovery doc, and the third a partial gapic config.
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
@@ -49,9 +35,9 @@ public class JavaDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGenerat
       String fileName = file.getName();
       builder.add(
           new Object[] {
-            "java_" + fileName,
+            "nodejs_" + fileName,
             "discoveries/" + fileName,
-            new String[] {"io/gapi/vgen/java/java_discovery_gapic.yaml"}
+            new String[] {"io/gapi/vgen/nodejs/nodejs_discovery_gapic.yaml"}
           });
     }
     return builder.build();
@@ -59,7 +45,7 @@ public class JavaDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGenerat
 
   @Before
   public void putTestDirectory() {
-    getTestDataLocator().addTestDataSource(this.getClass(), "testdata/discoveries/java");
+    getTestDataLocator().addTestDataSource(this.getClass(), "testdata/discoveries/nodejs");
   }
 
   // Tests

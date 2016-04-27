@@ -1,0 +1,108 @@
+@snippet generateFilename(method)
+  {@method.getName}.frag.njs
+@end
+
+@snippet generateBody(method)
+  @let api = context.getApi, \
+      apiName = api.getName, \
+      apiVersion = api.getVersion
+    var google = require('googleapis');
+    var GoogleAuth = require('google-auth-library');
+
+    var authFactory = new GoogleAuth();
+    var {@apiName} = google.{@apiName}('{@apiVersion}');
+
+    authFactory.getApplicationDefault(function(err, authClient) {
+      if (err) {
+        console.log('Authentication failed because of ', err);
+        return;
+      }
+      if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+        var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+        authClient = authClient.createScoped(scopes);
+      }
+
+      var {@requestName()} = {
+        {@initialize(method)}
+        // Auth client
+        auth: authClient
+      };
+
+      @if context.isPageStreaming(method)
+        {@iterableCall(method)}
+      @else
+        {@compactCall(method)}
+      @end
+    });
+  @end
+@end
+
+@private initialize(method)
+  @let methodName = context.getMethodName(method), \
+        apiaryConfig = context.getApiaryConfig, \
+        signatureType = apiaryConfig.getType(method.getRequestTypeUrl), \
+        params = context.getFlatMethodParams(method)
+    // TODO: Change placeholders below to values for parameters to the '{@methodName}' method:
+
+    @join param : params
+      @let paramField = context.getField(signatureType, param), \
+           paramValue = context.typeDefaultValue(signatureType, paramField), \
+           paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
+        {@item(paramDescription)}
+        {@context.mapParamName(param)}: {@paramValue}
+      @end
+    @end
+    @if context.hasRequestField(method)
+      resource: {},
+    @end
+  @end
+@end
+
+@private item(description)
+  @if description
+    // {@description}
+  @end
+@end
+
+@private elementPath(resourcePath)
+  @join r : resourcePath on "."
+    {@r}
+  @end
+@end
+
+@private compactCall(method)
+  @let methodName = context.getMethodName(method), \
+       resourcesPath = context.getApiaryConfig.getResources(method.getName)
+    {@context.getApi.getName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, function(err, result) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(result);
+      }
+    });
+  @end
+@end
+
+@private iterableCall(method)
+  @let methodName = context.getMethodName(method), \
+       resourcesPath = context.getApiaryConfig.getResources(method.getName)
+
+    var recur = function(err, result) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(result);
+        if (result.nextPageToken) {
+          {@requestName()}.pageToken = result.nextPageToken;
+          {@context.getApi.getName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, recur);
+        }
+      }
+    };
+
+    {@context.getApi.getName}.{@elementPath(resourcesPath)}.{@methodName}({@requestName()}, recur);
+  @end
+@end
+
+@private requestName()
+  request
+@end
