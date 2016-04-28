@@ -196,8 +196,8 @@
      */
     protected {@className}({@settingsClassName(service)} settings) throws IOException {
       this.settings = settings;
-      this.executor = settings.getExecutorProvider().getExecutor();
-      this.channel = settings.getChannelProvider().getChannel(this.executor);
+      this.executor = settings.getExecutorProvider().getOrBuildExecutor();
+      this.channel = settings.getChannelProvider().getOrBuildChannel(this.executor);
 
       @join method : service.getMethods
         @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \

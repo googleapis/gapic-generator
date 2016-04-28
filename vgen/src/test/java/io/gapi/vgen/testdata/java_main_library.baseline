@@ -259,8 +259,8 @@ public class LibraryServiceApi implements AutoCloseable {
    */
   protected LibraryServiceApi(LibraryServiceSettings settings) throws IOException {
     this.settings = settings;
-    this.executor = settings.getExecutorProvider().getExecutor();
-    this.channel = settings.getChannelProvider().getChannel(this.executor);
+    this.executor = settings.getExecutorProvider().getOrBuildExecutor();
+    this.channel = settings.getChannelProvider().getOrBuildChannel(this.executor);
 
     this.createShelfCallable = ApiCallable.create(settings.createShelfSettings(), this.channel, this.executor);
     this.getShelfCallable = ApiCallable.create(settings.getShelfSettings(), this.channel, this.executor);
