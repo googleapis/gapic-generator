@@ -14,6 +14,9 @@
  */
 package io.gapi.vgen.ruby;
 
+import com.google.common.base.Splitter;
+
+import java.lang.Character;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,7 +31,9 @@ public class RDocCommentFixer {
   private static final Pattern CLOUD_LINK_PATTERN = Pattern.compile(
       "\\[([^\\]]+)\\]\\(([^\\)]+)\\)");
   private static final Pattern PROTO_LINK_PATTERN = Pattern.compile(
-      "\\[([^\\]]+)\\]\\[[^\\]]+\\]");
+      "\\[([^\\]]+)\\]\\[[^\\]]*\\]");
+  private static final Pattern HEADLINE_PATTERN = Pattern.compile(
+      "^#+", Pattern.MULTILINE);
 
   /**
    * Returns a Sphinx-formatted comment string.
@@ -36,7 +41,31 @@ public class RDocCommentFixer {
   public static String rdocify(String comment) {
     comment = BACK_QUOTE_PATTERN.matcher(comment).replaceAll("+");
     comment = rdocifyProtoMarkdownLinks(comment);
-    return rdocifyCloudMarkdownLinks(comment);
+    comment = rdocifyCloudMarkdownLinks(comment);
+    comment = rdocifyHeadline(comment);
+    return cleanupTrailingWhitespaces(comment);
+  }
+
+  private static String protoToRubyDoc(String comment) {
+    boolean messageFound = false;
+    boolean isFirstSegment = true;
+    String result = "";
+    for (String name : Splitter.on(".").splitToList(comment)) {
+      char firstChar = name.charAt(0);
+      if (Character.isUpperCase(firstChar)) {
+        messageFound = true;
+        result += (isFirstSegment ? "" : "::") + name;
+      } else if (messageFound) {
+        // Lowercase segment after message is found is field.
+        // In Ruby, it is referred as "Message#field" format.
+        result += "#" + name;
+      } else {
+        result += (isFirstSegment ? "" : "::") +
+            Character.toUpperCase(firstChar) + name.substring(1);
+      }
+      isFirstSegment = false;
+    }
+    return result;
   }
 
   /**
@@ -49,7 +78,7 @@ public class RDocCommentFixer {
       return comment;
     }
     do {
-      m.appendReplacement(sb, String.format("%s", m.group(1)));
+      m.appendReplacement(sb, String.format("%s", protoToRubyDoc(m.group(1))));
     } while (m.find());
     m.appendTail(sb);
     return sb.toString();
@@ -65,10 +94,31 @@ public class RDocCommentFixer {
       return comment;
     }
     do {
+      String url = m.group(2);
+      if (url.indexOf("http") != 0) {
+        url = "https://cloud.google.com" + url;
+      }
       m.appendReplacement(
-          sb, String.format("{%s}[https://cloud.google.com%s]", m.group(1), m.group(2)));
+          sb, String.format("{%s}[%s]", m.group(1), url));
     } while (m.find());
     m.appendTail(sb);
     return sb.toString();
+  }
+
+  private static String rdocifyHeadline(String comment) {
+    StringBuffer sb = new StringBuffer();
+    Matcher m = HEADLINE_PATTERN.matcher(comment);
+    if (!m.find()) {
+      return comment;
+    }
+    do {
+      m.appendReplacement(sb, m.group().replace("#", "="));
+    } while (m.find());
+    m.appendTail(sb);
+    return sb.toString();
+  }
+
+  private static String cleanupTrailingWhitespaces(String comment) {
+    return comment.trim();
   }
 }
