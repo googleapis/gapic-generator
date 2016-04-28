@@ -46,7 +46,6 @@
   {@context.addImport("java.util.ArrayList")}
   {@context.addImport("java.util.List")}
   {@context.addImport("java.util.concurrent.ScheduledExecutorService")}
-  {@context.addImport("javax.naming.OperationNotSupportedException")}
 @end
 
 @private resourceUtils(service)
@@ -173,7 +172,7 @@
      *
     {@javaDocManualEdit()}
      */
-    public static final {@className} defaultInstance() throws IOException, OperationNotSupportedException {
+    public static final {@className} createWithDefaults() throws IOException, IllegalStateException {
       return create({@settingsClassName(service)}.defaultBuilder().build());
     }
 
@@ -184,7 +183,7 @@
      *
     {@javaDocManualEdit()}
      */
-    public static final {@className} create({@settingsClassName(service)} settings) throws IOException, OperationNotSupportedException {
+    public static final {@className} create({@settingsClassName(service)} settings) throws IOException, IllegalStateException {
       return new {@className}(settings);
     }
 
@@ -195,10 +194,10 @@
      *
     {@javaDocManualEdit()}
      */
-    protected {@className}({@settingsClassName(service)} settings) throws IOException, OperationNotSupportedException {
+    protected {@className}({@settingsClassName(service)} settings) throws IOException, IllegalStateException {
       this.settings = settings;
-      this.channel = settings.getOrBuildChannel();
-      this.executor = settings.getOrBuildExecutor();
+      this.executor = settings.getExecutorProvider().getExecutor();
+      this.channel = settings.getChannelProvider().getChannel(this.executor);
 
       @join method : service.getMethods
         @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \

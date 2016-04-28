@@ -61,7 +61,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
-import javax.naming.OperationNotSupportedException;
 
 // Manually-added imports: add custom (non-generated) imports after this point.
 
@@ -234,7 +233,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public static final LibraryServiceApi defaultInstance() throws IOException, OperationNotSupportedException {
+  public static final LibraryServiceApi createWithDefaults() throws IOException, IllegalStateException {
     return create(LibraryServiceSettings.defaultBuilder().build());
   }
 
@@ -246,7 +245,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public static final LibraryServiceApi create(LibraryServiceSettings settings) throws IOException, OperationNotSupportedException {
+  public static final LibraryServiceApi create(LibraryServiceSettings settings) throws IOException, IllegalStateException {
     return new LibraryServiceApi(settings);
   }
 
@@ -258,10 +257,10 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  protected LibraryServiceApi(LibraryServiceSettings settings) throws IOException, OperationNotSupportedException {
+  protected LibraryServiceApi(LibraryServiceSettings settings) throws IOException, IllegalStateException {
     this.settings = settings;
-    this.channel = settings.getOrBuildChannel();
-    this.executor = settings.getOrBuildExecutor();
+    this.executor = settings.getExecutorProvider().getExecutor();
+    this.channel = settings.getChannelProvider().getChannel(this.executor);
 
     this.createShelfCallable = ApiCallable.create(settings.createShelfSettings(), this.channel, this.executor);
     this.getShelfCallable = ApiCallable.create(settings.getShelfSettings(), this.channel, this.executor);
