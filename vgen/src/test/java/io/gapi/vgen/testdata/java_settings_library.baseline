@@ -271,10 +271,8 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   }
 
   private LibraryServiceSettings(Builder settingsBuilder) throws IOException {
-    super(settingsBuilder.getOrBuildChannel(),
-          settingsBuilder.shouldAutoCloseChannel(),
-          settingsBuilder.getOrBuildExecutor(),
-          settingsBuilder.getConnectionSettings(),
+    super(settingsBuilder.getChannelProvider(),
+          settingsBuilder.getExecutorProvider(),
           settingsBuilder.getGeneratorName(),
           settingsBuilder.getGeneratorVersion(),
           settingsBuilder.getClientLibName(),
@@ -578,6 +576,11 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     }
 
     @Override
+    public Builder provideExecutorWith(ScheduledExecutorService executor, boolean shouldAutoClose) {
+      super.provideExecutorWith(executor, shouldAutoClose);
+      return this;
+    }
+    @Override
     public Builder provideChannelWith(ManagedChannel channel, boolean shouldAutoClose) {
       super.provideChannelWith(channel, shouldAutoClose);
       return this;
@@ -585,11 +588,6 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     @Override
     public Builder provideChannelWith(ConnectionSettings settings) {
       super.provideChannelWith(settings);
-      return this;
-    }
-    @Override
-    public Builder setExecutor(ScheduledExecutorService executor) {
-      super.setExecutor(executor);
       return this;
     }
     @Override

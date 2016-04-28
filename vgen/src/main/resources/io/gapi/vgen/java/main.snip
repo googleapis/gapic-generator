@@ -45,6 +45,7 @@
   {@context.addImport("java.io.IOException")}
   {@context.addImport("java.util.ArrayList")}
   {@context.addImport("java.util.List")}
+  {@context.addImport("java.util.concurrent.ScheduledExecutorService")}
 @end
 
 @private resourceUtils(service)
@@ -137,7 +138,9 @@
 @end
 
 @private members(service)
+  private final {@settingsClassName(service)} settings;
   private final ManagedChannel channel;
+  private final ScheduledExecutorService executor;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
   @join method : service.getMethods
@@ -157,6 +160,9 @@
     @end
   @end
 
+  public final {@settingsClassName(service)} getSettings() {
+    return settings;
+  }
 @end
 
 @private constructors(service)
@@ -166,8 +172,8 @@
      *
     {@javaDocManualEdit()}
      */
-    public static final {@className} defaultInstance() throws IOException {
-      return create({@settingsClassName(service)}.defaultInstance());
+    public static final {@className} createWithDefaults() throws IOException {
+      return create({@settingsClassName(service)}.defaultBuilder().build());
     }
 
     /**
@@ -189,17 +195,19 @@
     {@javaDocManualEdit()}
      */
     protected {@className}({@settingsClassName(service)} settings) throws IOException {
-      this.channel = settings.getChannel();
+      this.settings = settings;
+      this.executor = settings.getExecutorProvider().getOrBuildExecutor();
+      this.channel = settings.getChannelProvider().getOrBuildChannel(this.executor);
 
       @join method : service.getMethods
         @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              isPageStreaming = methodConfig.isPageStreaming, \
              isBundling = methodConfig.isBundling
-          this.{@methodName}Callable = ApiCallable.create(settings.{@methodName}Settings(), settings);
+          this.{@methodName}Callable = ApiCallable.create(settings.{@methodName}Settings(), this.channel, this.executor);
           @if {@isPageStreaming}
             this.{@methodName}IterableCallable =
-                ApiCallable.createIterable(settings.{@methodName}Settings(), settings);
+                ApiCallable.createIterable(settings.{@methodName}Settings(), this.channel, this.executor);
           @end
           @if {@isBundling}
             if (settings.{@methodName}Settings().getBundlerFactory() != null) {
@@ -209,12 +217,21 @@
         @end
       @end
 
-      if (settings.shouldAutoCloseChannel()) {
+      if (settings.getChannelProvider().shouldAutoClose()) {
         closeables.add(
           new Closeable() {
             @@Override
             public void close() throws IOException {
               channel.shutdown();
+            }
+          });
+      }
+      if (settings.getExecutorProvider().shouldAutoClose()) {
+        closeables.add(
+          new Closeable() {
+            @@Override
+            public void close() throws IOException {
+              executor.shutdown();
             }
           });
       }
@@ -410,7 +427,7 @@
      *
      * <pre>
      * <code>
-     * try ({@context.getApiWrapperName(service)} {@serviceApiVariable} = {@context.getApiWrapperName(service)}.defaultInstance()) {
+     * try ({@context.getApiWrapperName(service)} {@serviceApiVariable} = {@context.getApiWrapperName(service)}.createWithDefaults()) {
      *   // make calls here
     @join commentLine : context.java.getJavaDocLines(context.generateMethodSampleCode(context.java.newJavaDocConfigBuilder \
                                .setMethodName(context.upperCamelToLowerCamel(firstFlattenedMethod.getSimpleName)) \
