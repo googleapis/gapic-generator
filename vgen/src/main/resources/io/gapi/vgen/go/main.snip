@@ -89,14 +89,11 @@
     )
     @join retryDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetrySettingsDefinition)
 
-    func {@retryDef.getKey}_RetryParams() []gax.CallOption {
+    func {@retryDef.getKey}RetryParams() []gax.CallOption {
     	return []gax.CallOption{
-    		gax.WithRetryInterval({@retryDef.getValue.getInitialRetryDelay.getMillis}*time.Millisecond),
-    		gax.WithIntervalMultiplier({@retryDef.getValue.getRetryDelayMultiplier}),
-    		gax.WithMaxInterval({@retryDef.getValue.getMaxRetryDelay.getMillis}*time.Millisecond),
-    		gax.WithTimeout({@retryDef.getValue.getInitialRpcTimeout.getMillis}*time.Millisecond),
-    		gax.WithTimeoutMultiplier({@retryDef.getValue.getRpcTimeoutMultiplier}),
-    		gax.WithMaxTimeout({@retryDef.getValue.getMaxRpcTimeout.getMillis}*time.Millisecond),
+    		gax.WithTimeout(30000*time.Millisecond),
+    		gax.WithDelayTimeoutSettings({@retryDef.getValue.getInitialRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getRetryDelayMultiplier}),
+    		gax.WithRPCTimeoutSettings({@retryDef.getValue.getInitialRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getRpcTimeoutMultiplier}),
     	}
     }
     @end
@@ -202,7 +199,7 @@
 
                     {@methodComment(method, methodName)}
                     func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) (*{@iteratorTypeName}, error) {
-                    	callOpts := append({@retryParamsName}_RetryParams(), client.CallOptions["{@methodName}"]...)
+                    	callOpts := append({@retryParamsName}RetryParams(), client.CallOptions["{@methodName}"]...)
                     	callOpts = append(callOpts, opts...)
                     	@if {@method.getResponseStreaming}
                     	result, err := gax.Invoke(ctx, req, client.{@lowerMethodName}, callOpts...)
@@ -254,14 +251,14 @@
                 {@methodComment(method, methodName)}
                 @if {@context.isEmpty(method.getOutputType)}
                     func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) error {
-                    	callOpts := append({@retryParamsName}_RetryParams(), client.CallOptions["{@methodName}"]...)
+                    	callOpts := append({@retryParamsName}RetryParams(), client.CallOptions["{@methodName}"]...)
                     	callOpts = append(callOpts, opts...)
                     	_, err := gax.Invoke(ctx, req, client.{@lowerMethodName}, callOpts...)
                     	return err
                     }
                 @else
                     func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) ({@outTypeName}, error) {
-                    	callOpts := append({@retryParamsName}_RetryParams(), client.CallOptions["{@methodName}"]...)
+                    	callOpts := append({@retryParamsName}RetryParams(), client.CallOptions["{@methodName}"]...)
                     	callOpts = append(callOpts, opts...)
                     	resp, err := gax.Invoke(ctx, req, client.{@lowerMethodName}, callOpts...)
                     	if err != nil {
