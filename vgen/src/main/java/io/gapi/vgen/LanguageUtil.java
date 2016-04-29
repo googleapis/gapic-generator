@@ -48,6 +48,10 @@ public class LanguageUtil {
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
   }
 
+  public static String upperUnderscoreToUpperCamel(String name) {
+    return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, name);
+  }
+
   public static String lowerUnderscoreToUpperUnderscore(String name) {
     return CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_UNDERSCORE, name);
   }

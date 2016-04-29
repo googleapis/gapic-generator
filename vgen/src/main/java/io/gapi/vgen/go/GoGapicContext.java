@@ -72,7 +72,7 @@ public class GoGapicContext extends GapicContext {
    * The import path for GAX. TODO(mukai): Change this address when it's decided to merge into
    * gcloud-golang.
    */
-  private static final String GAX_PACKAGE_BASE = "github.com/googleapis/gax-go";
+  private static final String GAX_PACKAGE_BASE = "github.com/googleapis/gax-golang";
 
   /**
    * The import path for generated pb.go files for core-proto files.
@@ -368,9 +368,10 @@ public class GoGapicContext extends GapicContext {
     // Add non-service-specific imports.
     imports.add(GoImport.create("golang.org/x/net/context"));
     imports.add(GoImport.create("google.golang.org/grpc"));
+    imports.add(GoImport.create("google.golang.org/grpc/codes"));
     imports.add(GoImport.create("google.golang.org/cloud"));
     imports.add(GoImport.create("google.golang.org/cloud/internal/transport"));
-    imports.add(GoImport.create("github.com/googleapis/gax-go", "gax"));
+    imports.add(GoImport.create(GAX_PACKAGE_BASE, "gax"));
 
     if (!getApiConfig().getInterfaceConfig(service).getRetrySettingsDefinition().isEmpty()) {
       coreImports.add(GoImport.create("time"));
