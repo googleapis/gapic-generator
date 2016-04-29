@@ -105,12 +105,6 @@ public abstract class DiscoveryContext extends LanguageContext {
   }
 
   public boolean hasRequestField(Method method) {
-    // used to handle inconsistency in list methods for Cloud Monitoring API
-    // remove if inconsistency is resolved in discovery docs
-    if (isCloudMonitoringListMethod(method)) {
-      return false;
-    }
-
     List<String> params = apiaryConfig.getMethodParams(method.getName());
     return params.size() > 0 && isRequestField(getLast(params));
   }
@@ -126,12 +120,6 @@ public abstract class DiscoveryContext extends LanguageContext {
   }
 
   public List<String> getMethodParams(Method method) {
-    // used to handle inconsistency in list methods for Cloud Monitoring API
-    // remove if inconsistency is resolved in discovery docs
-    if (isCloudMonitoringListMethod(method)) {
-      return getMost(apiaryConfig.getMethodParams(method.getName()));
-    }
-
     return apiaryConfig.getMethodParams(method.getName());
   }
 
@@ -157,12 +145,6 @@ public abstract class DiscoveryContext extends LanguageContext {
   }
 
   public boolean isPageStreaming(Method method) {
-    // used to handle inconsistency in users list method for SQLAdmin API
-    // remove if inconsistency is resolved
-    if (isSQLAdminUsersListMethod(method)) {
-      return false;
-    }
-
     if (isResponseEmpty(method)) {
       return false;
     }
@@ -176,35 +158,5 @@ public abstract class DiscoveryContext extends LanguageContext {
 
   public boolean isPatch(Method method) {
     return apiaryConfig.getHttpMethod(method.getName()).equals("PATCH");
-  }
-
-  // Flaggers for Exceptional Inconsistencies
-  // ========================================
-
-  // used to handle inconsistency in list methods for Cloud Monitoring API
-  // remove if inconsistency is resolved in discovery docs
-  public boolean isCloudMonitoringListMethod(Method method) {
-    Api api = getApi();
-    return api.getName().equals("cloudmonitoring")
-        && api.getVersion().equals("v2beta2")
-        && isPageStreaming(method);
-  }
-
-  // used to handle inconsistency in log entries list method for Logging API
-  // remove if inconsistency is resolved
-  public boolean isLogEntriesListMethod(Method method) {
-    Api api = getApi();
-    return api.getName().equals("logging")
-        && api.getVersion().equals("v2beta1")
-        && method.getName().equals("logging.entries.list");
-  }
-
-  // used to handle inconsistency in users list method for SQLAdmin API
-  // remove if inconsistency is resolved
-  public boolean isSQLAdminUsersListMethod(Method method) {
-    Api api = getApi();
-    return api.getName().equals("sqladmin")
-        && api.getVersion().equals("v1beta4")
-        && method.getName().equals("sql.users.list");
   }
 }

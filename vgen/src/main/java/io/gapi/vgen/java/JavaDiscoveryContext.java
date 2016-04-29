@@ -28,6 +28,8 @@ import io.gapi.vgen.ApiaryConfig;
 import io.gapi.vgen.DiscoveryContext;
 import io.gapi.vgen.DiscoveryImporter;
 
+import java.util.List;
+
 /**
  * A DiscoveryContext specialized for Java.
  */
@@ -364,5 +366,66 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
       }
       return "null;";
     }
+  }
+
+  // Flaggers for Exceptional Inconsistencies
+  // ========================================
+
+  // used to handle inconsistency in list methods for Cloud Monitoring API
+  // remove if inconsistency is resolved in discovery docs
+  private boolean isCloudMonitoringListMethod(Method method) {
+    Api api = getApi();
+    return api.getName().equals("cloudmonitoring")
+        && api.getVersion().equals("v2beta2")
+        && isPageStreaming(method);
+  }
+
+  // used to handle inconsistency in log entries list method for Logging API
+  // remove if inconsistency is resolved
+  public boolean isLogEntriesListMethod(Method method) {
+    Api api = getApi();
+    return api.getName().equals("logging")
+        && api.getVersion().equals("v2beta1")
+        && method.getName().equals("logging.entries.list");
+  }
+
+  // used to handle inconsistency in users list method for SQLAdmin API
+  // remove if inconsistency is resolved
+  private boolean isSQLAdminUsersListMethod(Method method) {
+    Api api = getApi();
+    return api.getName().equals("sqladmin")
+        && api.getVersion().equals("v1beta4")
+        && method.getName().equals("sql.users.list");
+  }
+
+  @Override
+  public boolean hasRequestField(Method method) {
+    // used to handle inconsistency in list methods for Cloud Monitoring API
+    // remove if inconsistency is resolved in discovery docs
+    if (isCloudMonitoringListMethod(method)) {
+      return false;
+    }
+    return super.hasRequestField(method);
+  }
+
+  @Override
+  public List<String> getMethodParams(Method method) {
+    // used to handle inconsistency in list methods for Cloud Monitoring API
+    // remove if inconsistency is resolved in discovery docs
+    if (isCloudMonitoringListMethod(method)) {
+      return getMost(getApiaryConfig().getMethodParams(method.getName()));
+    }
+
+    return super.getMethodParams(method);
+  }
+
+  @Override
+  public boolean isPageStreaming(Method method) {
+    // used to handle inconsistency in users list method for SQLAdmin API
+    // remove if inconsistency is resolved
+    if (isSQLAdminUsersListMethod(method)) {
+      return false;
+    }
+    return super.isPageStreaming(method);
   }
 }

@@ -14,10 +14,11 @@
  */
 package io.gapi.vgen.nodejs;
 
-import com.google.api.Service;
 import com.google.api.client.util.DateTime;
+import com.google.api.Service;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
+import com.google.protobuf.Method;
 import com.google.protobuf.Type;
 
 import io.gapi.vgen.ApiaryConfig;
@@ -50,7 +51,16 @@ public class NodeJSDiscoveryContext extends DiscoveryContext {
    * Generates placeholder assignment (to end of line) for field of type based on field kind and,
    * for explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.
    */
-  public String typeDefaultValue(Type type, Field field) {
+  public String typeDefaultValue(Type type, Field field, Method method) {
+    // used to handle inconsistency in translate v2 API.
+    if (getApi().getName().equals("translate")
+        && getApi().getVersion().equals("v2")
+        && (method.getName().equals("language.detections.list")
+            || method.getName().equals("language.translations.list"))
+        && field.getName().equals("q")) {
+      return "\"\",";
+    }
+
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
       return isMapField(type, field.getName()) ? "{}," : "[],";
     }
@@ -62,7 +72,7 @@ public class NodeJSDiscoveryContext extends DiscoveryContext {
       if (stringFormat != null) {
         switch (stringFormat) {
           case "byte":
-            return "\"\", "
+            return "\"\","
                 + "  // base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648";
           case "date":
             // TODO(tcoffee): does new DateTime(new Date(0L)).toStringRfc3339() work?
