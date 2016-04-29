@@ -1,0 +1,567 @@
+
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/deploymentmanager/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := deploymentmanager.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'cancelPreview' method:
+  // The project ID for this request.
+  project := ""
+  // The name of the deployment for this request.
+  deployment := ""
+                  requestBody := &deploymentmanager.DeploymentsCancelPreviewRequest{}
+
+  callResult, err := service.Deployments.CancelPreview(project, deployment, requestBody).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/deploymentmanager/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := deploymentmanager.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'delete' method:
+  // The project ID for this request.
+  project := ""
+  // The name of the deployment for this request.
+  deployment := ""
+
+  callResult, err := service.Deployments.Delete(project, deployment).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/deploymentmanager/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := deploymentmanager.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'get' method:
+  // The project ID for this request.
+  project := ""
+  // The name of the deployment for this request.
+  deployment := ""
+
+  callResult, err := service.Deployments.Get(project, deployment).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/deploymentmanager/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := deploymentmanager.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'insert' method:
+  // The project ID for this request.
+  project := ""
+               requestBody := &deploymentmanager.Deployment{}
+
+  callResult, err := service.Deployments.Insert(project, requestBody).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/deploymentmanager/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := deploymentmanager.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'list' method:
+  // The project ID for this request.
+  project := ""
+
+  fn := func(page *deploymentmanager.DeploymentsListResponse) error {
+    for i, v := range page.Deployments {
+      _, _ = i, v
+    }
+    return nil
+  }
+  err = service.Deployments.List(project).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/deploymentmanager/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := deploymentmanager.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'patch' method:
+  // The project ID for this request.
+  project := ""
+  // The name of the deployment for this request.
+  deployment := ""
+                  requestBody := &deploymentmanager.Deployment{}
+
+  callResult, err := service.Deployments.Patch(project, deployment, requestBody).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/deploymentmanager/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := deploymentmanager.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'stop' method:
+  // The project ID for this request.
+  project := ""
+  // The name of the deployment for this request.
+  deployment := ""
+                  requestBody := &deploymentmanager.DeploymentsStopRequest{}
+
+  callResult, err := service.Deployments.Stop(project, deployment, requestBody).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/deploymentmanager/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := deploymentmanager.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'update' method:
+  // The project ID for this request.
+  project := ""
+  // The name of the deployment for this request.
+  deployment := ""
+                  requestBody := &deploymentmanager.Deployment{}
+
+  callResult, err := service.Deployments.Update(project, deployment, requestBody).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/deploymentmanager/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := deploymentmanager.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'get' method:
+  // The project ID for this request.
+  project := ""
+  // The name of the deployment for this request.
+  deployment := ""
+  // The name of the manifest for this request.
+  manifest := ""
+
+  callResult, err := service.Manifests.Get(project, deployment, manifest).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/deploymentmanager/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := deploymentmanager.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'list' method:
+  // The project ID for this request.
+  project := ""
+  // The name of the deployment for this request.
+  deployment := ""
+
+  fn := func(page *deploymentmanager.ManifestsListResponse) error {
+    for i, v := range page.Manifests {
+      _, _ = i, v
+    }
+    return nil
+  }
+  err = service.Manifests.List(project, deployment).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/deploymentmanager/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := deploymentmanager.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'get' method:
+  // The project ID for this request.
+  project := ""
+  // The name of the operation for this request.
+  operation := ""
+
+  callResult, err := service.Operations.Get(project, operation).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/deploymentmanager/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := deploymentmanager.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'list' method:
+  // The project ID for this request.
+  project := ""
+
+  fn := func(page *deploymentmanager.OperationsListResponse) error {
+    for i, v := range page.Operations {
+      _, _ = i, v
+    }
+    return nil
+  }
+  err = service.Operations.List(project).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/deploymentmanager/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := deploymentmanager.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'get' method:
+  // The project ID for this request.
+  project := ""
+  // The name of the deployment for this request.
+  deployment := ""
+  // The name of the resource for this request.
+  resource := ""
+
+  callResult, err := service.Resources.Get(project, deployment, resource).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/deploymentmanager/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := deploymentmanager.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'list' method:
+  // The project ID for this request.
+  project := ""
+  // The name of the deployment for this request.
+  deployment := ""
+
+  fn := func(page *deploymentmanager.ResourcesListResponse) error {
+    for i, v := range page.Resources {
+      _, _ = i, v
+    }
+    return nil
+  }
+  err = service.Resources.List(project, deployment).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/deploymentmanager/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := deploymentmanager.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'list' method:
+  // The project ID for this request.
+  project := ""
+
+  fn := func(page *deploymentmanager.TypesListResponse) error {
+    for i, v := range page.Types {
+      _, _ = i, v
+    }
+    return nil
+  }
+  err = service.Types.List(project).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}

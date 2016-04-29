@@ -1,0 +1,279 @@
+
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/clouddebugger/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := clouddebugger.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'list' method:
+  // Identifies the debuggee.
+  debuggeeId := ""
+
+  callResult, err := service.Controller.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/clouddebugger/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := clouddebugger.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'update' method:
+  // Identifies the debuggee being debugged.
+  debuggeeId := ""
+  // Breakpoint identifier, unique in the scope of the debuggee.
+  id := ""
+          requestBody := &clouddebugger.UpdateActiveBreakpointRequest{}
+
+  callResult, err := service.Controller.Debuggees.Breakpoints.Update(debuggeeId, id, requestBody).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/clouddebugger/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := clouddebugger.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'register' method:
+
+  requestBody := &clouddebugger.RegisterDebuggeeRequest{}
+
+  callResult, err := service.Controller.Debuggees.Register(requestBody).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/clouddebugger/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := clouddebugger.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'delete' method:
+  // ID of the debuggee whose breakpoint to delete.
+  debuggeeId := ""
+  // ID of the breakpoint to delete.
+  breakpointId := ""
+
+  callResult, err := service.Debugger.Debuggees.Breakpoints.Delete(debuggeeId, breakpointId).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/clouddebugger/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := clouddebugger.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'get' method:
+  // ID of the debuggee whose breakpoint to get.
+  debuggeeId := ""
+  // ID of the breakpoint to get.
+  breakpointId := ""
+
+  callResult, err := service.Debugger.Debuggees.Breakpoints.Get(debuggeeId, breakpointId).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/clouddebugger/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := clouddebugger.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'list' method:
+  // ID of the debuggee whose breakpoints to list.
+  debuggeeId := ""
+
+  callResult, err := service.Debugger.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/clouddebugger/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := clouddebugger.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'set' method:
+  // ID of the debuggee where the breakpoint is to be set.
+  debuggeeId := ""
+                  requestBody := &clouddebugger.Breakpoint{}
+
+  callResult, err := service.Debugger.Debuggees.Breakpoints.Set(debuggeeId, requestBody).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/clouddebugger/v2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := clouddebugger.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+
+
+  callResult, err := service.Debugger.Debuggees.List().Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}

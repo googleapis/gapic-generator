@@ -1,0 +1,391 @@
+
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/replicapoolupdater/v1beta1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := replicapoolupdater.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'cancel' method:
+  // The Google Developers Console project name.
+  project := ""
+  // The name of the zone in which the update's target resides.
+  zone := ""
+  // The name of the update.
+  rollingUpdate := ""
+
+  callResult, err := service.RollingUpdates.Cancel(project, zone, rollingUpdate).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/replicapoolupdater/v1beta1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := replicapoolupdater.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'get' method:
+  // The Google Developers Console project name.
+  project := ""
+  // The name of the zone in which the update's target resides.
+  zone := ""
+  // The name of the update.
+  rollingUpdate := ""
+
+  callResult, err := service.RollingUpdates.Get(project, zone, rollingUpdate).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/replicapoolupdater/v1beta1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := replicapoolupdater.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'insert' method:
+  // The Google Developers Console project name.
+  project := ""
+  // The name of the zone in which the update's target resides.
+  zone := ""
+            requestBody := &replicapoolupdater.RollingUpdate{}
+
+  callResult, err := service.RollingUpdates.Insert(project, zone, requestBody).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/replicapoolupdater/v1beta1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := replicapoolupdater.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'list' method:
+  // The Google Developers Console project name.
+  project := ""
+  // The name of the zone in which the update's target resides.
+  zone := ""
+
+  fn := func(page *replicapoolupdater.RollingUpdateList) error {
+    for i, v := range page.Items {
+      _, _ = i, v
+    }
+    return nil
+  }
+  err = service.RollingUpdates.List(project, zone).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/replicapoolupdater/v1beta1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := replicapoolupdater.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'listInstanceUpdates' method:
+  // The Google Developers Console project name.
+  project := ""
+  // The name of the zone in which the update's target resides.
+  zone := ""
+  // The name of the update.
+  rollingUpdate := ""
+
+  fn := func(page *replicapoolupdater.InstanceUpdateList) error {
+    for i, v := range page.Items {
+      _, _ = i, v
+    }
+    return nil
+  }
+  err = service.RollingUpdates.ListInstanceUpdates(project, zone, rollingUpdate).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/replicapoolupdater/v1beta1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := replicapoolupdater.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'pause' method:
+  // The Google Developers Console project name.
+  project := ""
+  // The name of the zone in which the update's target resides.
+  zone := ""
+  // The name of the update.
+  rollingUpdate := ""
+
+  callResult, err := service.RollingUpdates.Pause(project, zone, rollingUpdate).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/replicapoolupdater/v1beta1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := replicapoolupdater.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'resume' method:
+  // The Google Developers Console project name.
+  project := ""
+  // The name of the zone in which the update's target resides.
+  zone := ""
+  // The name of the update.
+  rollingUpdate := ""
+
+  callResult, err := service.RollingUpdates.Resume(project, zone, rollingUpdate).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/replicapoolupdater/v1beta1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := replicapoolupdater.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'rollback' method:
+  // The Google Developers Console project name.
+  project := ""
+  // The name of the zone in which the update's target resides.
+  zone := ""
+  // The name of the update.
+  rollingUpdate := ""
+
+  callResult, err := service.RollingUpdates.Rollback(project, zone, rollingUpdate).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/replicapoolupdater/v1beta1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := replicapoolupdater.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'get' method:
+  // Name of the project scoping this request.
+  project := ""
+  // Name of the zone scoping this request.
+  zone := ""
+  // Name of the operation resource to return.
+  operation := ""
+
+  callResult, err := service.ZoneOperations.Get(project, zone, operation).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/replicapoolupdater/v1beta1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, replicapoolupdater.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := replicapoolupdater.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'list' method:
+  // Name of the project scoping this request.
+  project := ""
+  // Name of the zone scoping this request.
+  zone := ""
+
+  fn := func(page *replicapoolupdater.OperationList) error {
+    for i, v := range page.Items {
+      _, _ = i, v
+    }
+    return nil
+  }
+  err = service.ZoneOperations.List(project, zone).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}

@@ -1,0 +1,418 @@
+
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+
+
+  callResult, err := service.V1.GetGoogleServiceAccount().Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'get' method:
+  // The ID of the Google Developers Console project that the Google service account is associated with. Required.
+  projectId := ""
+
+  callResult, err := service.GoogleServiceAccounts.Get(projectId).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'create' method:
+
+  requestBody := &storagetransfer.TransferJob{}
+
+  callResult, err := service.TransferJobs.Create(requestBody).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'get' method:
+  // The job to get. Required.
+  jobName := ""
+
+  callResult, err := service.TransferJobs.Get(jobName).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+
+
+  fn := func(page *storagetransfer.ListTransferJobsResponse) error {
+    for i, v := range page.TransferJobs {
+      _, _ = i, v
+    }
+    return nil
+  }
+  err = service.TransferJobs.List().Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'patch' method:
+  // The name of job to update. Required.
+  jobName := ""
+               requestBody := &storagetransfer.UpdateTransferJobRequest{}
+
+  callResult, err := service.TransferJobs.Patch(jobName, requestBody).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'cancel' method:
+  // The name of the operation resource to be cancelled.
+  name := ""
+
+  callResult, err := service.TransferOperations.Cancel(name).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'delete' method:
+  // The name of the operation resource to be deleted.
+  name := ""
+
+  callResult, err := service.TransferOperations.Delete(name).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'get' method:
+  // The name of the operation resource.
+  name := ""
+
+  callResult, err := service.TransferOperations.Get(name).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'list' method:
+  // The value `transferOperations`.
+  name := ""
+
+  fn := func(page *storagetransfer.ListOperationsResponse) error {
+    for i, v := range page.Operations {
+      _, _ = i, v
+    }
+    return nil
+  }
+  err = service.TransferOperations.List(name).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'pause' method:
+  // The name of the transfer operation. Required.
+  name := ""
+            requestBody := &storagetransfer.PauseTransferOperationRequest{}
+
+  callResult, err := service.TransferOperations.Pause(name, requestBody).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'resume' method:
+  // The name of the transfer operation. Required.
+  name := ""
+            requestBody := &storagetransfer.ResumeTransferOperationRequest{}
+
+  callResult, err := service.TransferOperations.Resume(name, requestBody).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}

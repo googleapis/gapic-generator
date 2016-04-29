@@ -368,6 +368,11 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
     }
   }
 
+  @Override
+  public boolean isResponseEmpty(Method method) {
+    return super.isResponseEmpty(method) || method.getResponseTypeUrl().equals("Empty");
+  }
+
   // Flaggers for Exceptional Inconsistencies
   // ========================================
 

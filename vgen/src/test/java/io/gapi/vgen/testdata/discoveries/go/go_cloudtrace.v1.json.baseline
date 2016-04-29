@@ -1,0 +1,111 @@
+
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/cloudtrace/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, cloudtrace.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := cloudtrace.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'patchTraces' method:
+  // ID of the Cloud project where the trace data is stored.
+  projectId := ""
+                 requestBody := &cloudtrace.Traces{}
+
+  callResult, err := service.Projects.PatchTraces(projectId, requestBody).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/cloudtrace/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, cloudtrace.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := cloudtrace.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'get' method:
+  // ID of the Cloud project where the trace data is stored.
+  projectId := ""
+  // ID of the trace to return.
+  traceId := ""
+
+  callResult, err := service.Projects.Traces.Get(projectId, traceId).Context(ctx).Do()
+  _ = callResult
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/cloudtrace/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  // client, err := google.DefaultClient(ctx, cloudtrace.CloudPlatformScope)
+  client, err := google.DefaultClient(ctx)
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := cloudtrace.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to values for parameters to the 'list' method:
+  // ID of the Cloud project where the trace data is stored.
+  projectId := ""
+
+  fn := func(page *cloudtrace.ListTracesResponse) error {
+    for i, v := range page.Traces {
+      _, _ = i, v
+    }
+    return nil
+  }
+  err = service.Projects.Traces.List(projectId).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}

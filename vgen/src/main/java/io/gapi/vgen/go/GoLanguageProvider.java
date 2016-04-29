@@ -50,7 +50,7 @@ public class GoLanguageProvider {
 
   @SuppressWarnings("unchecked")
   public <Element> GeneratedResult generate(
-      Element element, SnippetDescriptor snippetDescriptor, GoGapicContext context) {
+      Element element, SnippetDescriptor snippetDescriptor, Object context) {
     GoSnippetSet<Element> snippets =
         SnippetSet.createSnippetInterface(
             GoSnippetSet.class,
