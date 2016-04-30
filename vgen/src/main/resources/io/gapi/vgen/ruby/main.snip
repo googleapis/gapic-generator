@@ -267,6 +267,10 @@
 
 @private createResourceFunction(collectionConfig)
   @# Returns a fully-qualified {@collectionConfig.getEntityName} resource name string.
+  @join param : collectionConfig.getNameTemplate.vars()
+  @# @@param {@param} [String]
+  @end
+  @# @@return [String]
   def self.{@collectionConfig.getEntityName}_path({@createResourceFunctionParams(collectionConfig)})
     {@pathTemplateName(collectionConfig)}.render(
       {@createRenderDictionary(collectionConfig)})
