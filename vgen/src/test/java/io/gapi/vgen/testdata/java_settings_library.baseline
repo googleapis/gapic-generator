@@ -576,6 +576,10 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     }
 
     @Override
+    protected abstract ConnectionSettings getDefaultConnectionSettings() {
+      return DEFAULT_CONNECTION_SETTINGS;
+    }
+    @Override
     public Builder provideExecutorWith(ScheduledExecutorService executor, boolean shouldAutoClose) {
       super.provideExecutorWith(executor, shouldAutoClose);
       return this;
@@ -588,6 +592,16 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     @Override
     public Builder provideChannelWith(ConnectionSettings settings) {
       super.provideChannelWith(settings);
+      return this;
+    }
+    @Override
+    public Builder provideChannelWith(Credentials credentials) {
+      super.provideChannelWith(credentials);
+      return this;
+    }
+    @Override
+    public Builder provideChannelWith(List<String> scopes) {
+      super.provideChannelWith(scopes);
       return this;
     }
     @Override
