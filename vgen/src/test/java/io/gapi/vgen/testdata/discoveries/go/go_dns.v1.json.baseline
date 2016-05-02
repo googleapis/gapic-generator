@@ -31,10 +31,11 @@ func main() {
                    requestBody := &dns.Change{}
 
   callResult, err := service.Changes.Create(project, managedZone, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -69,10 +70,11 @@ func main() {
   changeId := ""
 
   callResult, err := service.Changes.Get(project, managedZone, changeId).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -105,8 +107,10 @@ func main() {
   managedZone := ""
 
   fn := func(page *dns.ChangesListResponse) error {
-    for i, v := range page.Changes {
-      _, _ = i, v
+    // doThingsWith(page)
+    for i, element := range page.Changes {
+      // doThingsWith(element)
+      _, _ = i, element
     }
     return nil
   }
@@ -145,10 +149,11 @@ func main() {
                requestBody := &dns.ManagedZone{}
 
   callResult, err := service.ManagedZones.Create(project, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -216,10 +221,11 @@ func main() {
   managedZone := ""
 
   callResult, err := service.ManagedZones.Get(project, managedZone).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -250,8 +256,10 @@ func main() {
   project := ""
 
   fn := func(page *dns.ManagedZonesListResponse) error {
-    for i, v := range page.ManagedZones {
-      _, _ = i, v
+    // doThingsWith(page)
+    for i, element := range page.ManagedZones {
+      // doThingsWith(element)
+      _, _ = i, element
     }
     return nil
   }
@@ -289,10 +297,11 @@ func main() {
   project := ""
 
   callResult, err := service.Projects.Get(project).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -325,8 +334,10 @@ func main() {
   managedZone := ""
 
   fn := func(page *dns.ResourceRecordSetsListResponse) error {
-    for i, v := range page.Rrsets {
-      _, _ = i, v
+    // doThingsWith(page)
+    for i, element := range page.Rrsets {
+      // doThingsWith(element)
+      _, _ = i, element
     }
     return nil
   }

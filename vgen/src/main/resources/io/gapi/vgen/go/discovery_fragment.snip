@@ -44,14 +44,17 @@ func main() {
 @private compactCall(method)
   @if context.isResponseEmpty(method)
     err = {@methodPath(method)}({@callArg(method)}).Context(ctx).Do()
+    if err != nil {
+      log.Fatal(err)
+    }
   @else
     callResult, err := {@methodPath(method)}({@callArg(method)}).Context(ctx).Do()
+    if err != nil {
+      log.Fatal(err)
+    }
+    // doThingsWith(callResult)
     _ = callResult
   @end
-
-  if err != nil {
-    log.Fatal(err)
-  }
 @end
 
 @private iterableCall(method)
@@ -60,8 +63,10 @@ func main() {
       resourceField = context.getFirstRepeatedField(responseTypeRef), \
       resources = context.getResourcesName(resourceField)
     fn := func(page *{@context.getApi.getName}.{@responseType}) error {
-      for i, v := range page.{@resources} {
-        _, _ = i, v
+      // doThingsWith(page)
+      for i, element := range page.{@resources} {
+        // doThingsWith(element)
+        _, _ = i, element
       }
       return nil
     }

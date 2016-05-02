@@ -29,10 +29,11 @@ func main() {
                  requestBody := &dataflow.Job{}
 
   callResult, err := service.Projects.Jobs.Create(projectId, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -65,10 +66,11 @@ func main() {
   jobId := ""
 
   callResult, err := service.Projects.Jobs.Get(projectId, jobId).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -101,10 +103,11 @@ func main() {
   jobId := ""
 
   callResult, err := service.Projects.Jobs.GetMetrics(projectId, jobId).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -135,8 +138,10 @@ func main() {
   projectId := ""
 
   fn := func(page *dataflow.ListJobsResponse) error {
-    for i, v := range page.Jobs {
-      _, _ = i, v
+    // doThingsWith(page)
+    for i, element := range page.Jobs {
+      // doThingsWith(element)
+      _, _ = i, element
     }
     return nil
   }
@@ -176,8 +181,10 @@ func main() {
   jobId := ""
 
   fn := func(page *dataflow.ListJobMessagesResponse) error {
-    for i, v := range page.JobMessages {
-      _, _ = i, v
+    // doThingsWith(page)
+    for i, element := range page.JobMessages {
+      // doThingsWith(element)
+      _, _ = i, element
     }
     return nil
   }
@@ -218,10 +225,11 @@ func main() {
              requestBody := &dataflow.Job{}
 
   callResult, err := service.Projects.Jobs.Update(projectId, jobId, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -255,10 +263,11 @@ func main() {
              requestBody := &dataflow.LeaseWorkItemRequest{}
 
   callResult, err := service.Projects.Jobs.WorkItems.Lease(projectId, jobId, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -292,10 +301,11 @@ func main() {
              requestBody := &dataflow.ReportWorkItemStatusRequest{}
 
   callResult, err := service.Projects.Jobs.WorkItems.ReportStatus(projectId, jobId, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -327,8 +337,9 @@ func main() {
                  requestBody := &dataflow.SendWorkerMessagesRequest{}
 
   callResult, err := service.Projects.WorkerMessages(projectId, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }

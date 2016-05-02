@@ -28,10 +28,11 @@ func main() {
   name := ""
 
   callResult, err := service.BillingAccounts.Get(name).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -60,8 +61,10 @@ func main() {
 
 
   fn := func(page *cloudbilling.ListBillingAccountsResponse) error {
-    for i, v := range page.BillingAccounts {
-      _, _ = i, v
+    // doThingsWith(page)
+    for i, element := range page.BillingAccounts {
+      // doThingsWith(element)
+      _, _ = i, element
     }
     return nil
   }
@@ -99,8 +102,10 @@ func main() {
   name := ""
 
   fn := func(page *cloudbilling.ListProjectBillingInfoResponse) error {
-    for i, v := range page.ProjectBillingInfo {
-      _, _ = i, v
+    // doThingsWith(page)
+    for i, element := range page.ProjectBillingInfo {
+      // doThingsWith(element)
+      _, _ = i, element
     }
     return nil
   }
@@ -138,10 +143,11 @@ func main() {
   name := ""
 
   callResult, err := service.Projects.GetBillingInfo(name).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -173,8 +179,9 @@ func main() {
             requestBody := &cloudbilling.ProjectBillingInfo{}
 
   callResult, err := service.Projects.UpdateBillingInfo(name, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }

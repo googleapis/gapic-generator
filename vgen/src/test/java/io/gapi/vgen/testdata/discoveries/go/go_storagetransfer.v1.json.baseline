@@ -26,10 +26,11 @@ func main() {
 
 
   callResult, err := service.V1.GetGoogleServiceAccount().Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -60,10 +61,11 @@ func main() {
   projectId := ""
 
   callResult, err := service.GoogleServiceAccounts.Get(projectId).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -94,10 +96,11 @@ func main() {
   requestBody := &storagetransfer.TransferJob{}
 
   callResult, err := service.TransferJobs.Create(requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -128,10 +131,11 @@ func main() {
   jobName := ""
 
   callResult, err := service.TransferJobs.Get(jobName).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -160,8 +164,10 @@ func main() {
 
 
   fn := func(page *storagetransfer.ListTransferJobsResponse) error {
-    for i, v := range page.TransferJobs {
-      _, _ = i, v
+    // doThingsWith(page)
+    for i, element := range page.TransferJobs {
+      // doThingsWith(element)
+      _, _ = i, element
     }
     return nil
   }
@@ -200,10 +206,11 @@ func main() {
                requestBody := &storagetransfer.UpdateTransferJobRequest{}
 
   callResult, err := service.TransferJobs.Patch(jobName, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -234,10 +241,11 @@ func main() {
   name := ""
 
   callResult, err := service.TransferOperations.Cancel(name).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -268,10 +276,11 @@ func main() {
   name := ""
 
   callResult, err := service.TransferOperations.Delete(name).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -302,10 +311,11 @@ func main() {
   name := ""
 
   callResult, err := service.TransferOperations.Get(name).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -336,8 +346,10 @@ func main() {
   name := ""
 
   fn := func(page *storagetransfer.ListOperationsResponse) error {
-    for i, v := range page.Operations {
-      _, _ = i, v
+    // doThingsWith(page)
+    for i, element := range page.Operations {
+      // doThingsWith(element)
+      _, _ = i, element
     }
     return nil
   }
@@ -376,10 +388,11 @@ func main() {
             requestBody := &storagetransfer.PauseTransferOperationRequest{}
 
   callResult, err := service.TransferOperations.Pause(name, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -411,8 +424,9 @@ func main() {
             requestBody := &storagetransfer.ResumeTransferOperationRequest{}
 
   callResult, err := service.TransferOperations.Resume(name, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }

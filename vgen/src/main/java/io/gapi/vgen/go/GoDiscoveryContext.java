@@ -24,9 +24,6 @@ import io.gapi.vgen.ApiaryConfig;
 import io.gapi.vgen.DiscoveryContext;
 
 public class GoDiscoveryContext extends DiscoveryContext {
-  /**
-   * Constructs the Go language provider.
-   */
   public GoDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
     super(service, apiaryConfig);
   }
@@ -81,7 +78,7 @@ public class GoDiscoveryContext extends DiscoveryContext {
           .build();
 
   /**
-   * Returns the Go representation of the type of a field of a type.
+   * Returns the Go representation of a type's field's type.
    */
   private String typeName(Type type, Field field) {
     String fieldName = field.getName();

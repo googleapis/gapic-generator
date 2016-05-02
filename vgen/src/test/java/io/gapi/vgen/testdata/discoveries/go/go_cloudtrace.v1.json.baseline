@@ -29,10 +29,11 @@ func main() {
                  requestBody := &cloudtrace.Traces{}
 
   callResult, err := service.Projects.PatchTraces(projectId, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -65,10 +66,11 @@ func main() {
   traceId := ""
 
   callResult, err := service.Projects.Traces.Get(projectId, traceId).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -99,8 +101,10 @@ func main() {
   projectId := ""
 
   fn := func(page *cloudtrace.ListTracesResponse) error {
-    for i, v := range page.Traces {
-      _, _ = i, v
+    // doThingsWith(page)
+    for i, element := range page.Traces {
+      // doThingsWith(element)
+      _, _ = i, element
     }
     return nil
   }

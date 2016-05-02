@@ -32,10 +32,11 @@ func main() {
   autoscaler_ := ""
 
   callResult, err := service.Autoscalers.Delete(project, zone, autoscaler_).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -70,10 +71,11 @@ func main() {
   autoscaler_ := ""
 
   callResult, err := service.Autoscalers.Get(project, zone, autoscaler_).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -107,10 +109,11 @@ func main() {
             requestBody := &autoscaler.Autoscaler{}
 
   callResult, err := service.Autoscalers.Insert(project, zone, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -143,8 +146,10 @@ func main() {
   zone := ""
 
   fn := func(page *autoscaler.AutoscalerListResponse) error {
-    for i, v := range page.Items {
-      _, _ = i, v
+    // doThingsWith(page)
+    for i, element := range page.Items {
+      // doThingsWith(element)
+      _, _ = i, element
     }
     return nil
   }
@@ -187,10 +192,11 @@ func main() {
                    requestBody := &autoscaler.Autoscaler{}
 
   callResult, err := service.Autoscalers.Patch(project, zone, autoscaler_, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -226,10 +232,11 @@ func main() {
                    requestBody := &autoscaler.Autoscaler{}
 
   callResult, err := service.Autoscalers.Update(project, zone, autoscaler_, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -301,10 +308,11 @@ func main() {
   operation := ""
 
   callResult, err := service.ZoneOperations.Get(project, zone, operation).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -337,8 +345,10 @@ func main() {
   zone := ""
 
   fn := func(page *autoscaler.OperationList) error {
-    for i, v := range page.Items {
-      _, _ = i, v
+    // doThingsWith(page)
+    for i, element := range page.Items {
+      // doThingsWith(element)
+      _, _ = i, element
     }
     return nil
   }
@@ -376,8 +386,10 @@ func main() {
   project := ""
 
   fn := func(page *autoscaler.ZoneList) error {
-    for i, v := range page.Items {
-      _, _ = i, v
+    // doThingsWith(page)
+    for i, element := range page.Items {
+      // doThingsWith(element)
+      _, _ = i, element
     }
     return nil
   }

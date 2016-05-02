@@ -31,10 +31,11 @@ func main() {
                        requestBody := &prediction.Input{}
 
   callResult, err := service.Hostedmodels.Predict(project, hostedModelName, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -67,10 +68,11 @@ func main() {
   id := ""
 
   callResult, err := service.Trainedmodels.Analyze(project, id).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -138,10 +140,11 @@ func main() {
   id := ""
 
   callResult, err := service.Trainedmodels.Get(project, id).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -173,10 +176,11 @@ func main() {
                requestBody := &prediction.Insert{}
 
   callResult, err := service.Trainedmodels.Insert(project, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -207,8 +211,10 @@ func main() {
   project := ""
 
   fn := func(page *prediction.List) error {
-    for i, v := range page.Items {
-      _, _ = i, v
+    // doThingsWith(page)
+    for i, element := range page.Items {
+      // doThingsWith(element)
+      _, _ = i, element
     }
     return nil
   }
@@ -249,10 +255,11 @@ func main() {
           requestBody := &prediction.Input{}
 
   callResult, err := service.Trainedmodels.Predict(project, id, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -286,8 +293,9 @@ func main() {
           requestBody := &prediction.Update{}
 
   callResult, err := service.Trainedmodels.Update(project, id, requestBody).Context(ctx).Do()
-  _ = callResult
   if err != nil {
     log.Fatal(err)
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
