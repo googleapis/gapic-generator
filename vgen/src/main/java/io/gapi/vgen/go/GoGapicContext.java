@@ -32,6 +32,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import io.gapi.vgen.ApiConfig;
 import io.gapi.vgen.CollectionConfig;
 import io.gapi.vgen.GapicContext;
+import io.gapi.vgen.LanguageUtil;
 import io.gapi.vgen.MethodConfig;
 import io.gapi.vgen.PageStreamingConfig;
 
@@ -167,7 +168,7 @@ public class GoGapicContext extends GapicContext {
   }
 
   /**
-   * Returns the Go Type name for the resources field.
+   * Returns the Go type name for the resources field.
    *
    * Note that this returns the individual element type of the resources in the message. For
    * example, if SomeResponse has 'repeated string contents' field, the return value should be
@@ -210,42 +211,37 @@ public class GoGapicContext extends GapicContext {
   }
 
   public String getNextPageTokenType(Interface service, PageStreamingConfig config) {
-    TypeRef tokenType = config.getRequestTokenField().getType();
-    String iteratorType = getIteratorTypeName(config);
-    Map<String, PageStreamingConfig> streamingConfigs = new LinkedHashMap<>();
-    for (Method method : service.getMethods()) {
-      MethodConfig methodConfig =
-          getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+    return typeName(config.getRequestTokenField().getType());
+  }
 
-      if (!methodConfig.isPageStreaming()) {
-        continue;
-      }
-      PageStreamingConfig aConfig = methodConfig.getPageStreaming();
-      if (aConfig == config || !getIteratorTypeName(aConfig).equals(iteratorType)) {
-        continue;
-      }
-      TypeRef aTokenType = aConfig.getRequestTokenField().getType();
-      if (!aTokenType.equals(tokenType)) {
-        return "interface{}";
-      }
+  /**
+   * Returns the upper camel prefix name for the resource field.
+   *
+   * Specifically:
+   * `repeated float hellos`: `Float`
+   * `repeated World worlds`: `World`
+   */
+  private String getSimpleResourcesTypeName(PageStreamingConfig config) {
+    TypeRef type = config.getResourcesField().getType();
+    if (type.isMessage()) {
+      return type.getMessageType().getSimpleName();
+    } else {
+      return LanguageUtil.lowerCamelToUpperCamel(type.getPrimitiveTypeName());
     }
-    return typeName(tokenType);
   }
 
   /**
    * Returns the Go type name for the page struct in the page-streaming iterator.
    */
   public String getIteratorPageTypeName(PageStreamingConfig config) {
-    MessageType messageType = config.getResourcesField().getType().getMessageType();
-    return messageType.getProto().getName() + "Page";
+    return getSimpleResourcesTypeName(config) + "Page";
   }
 
   /**
    * Returns the Go type name for the page-streaming iterator implementation of the method.
    */
   public String getIteratorTypeName(PageStreamingConfig config) {
-    MessageType messageType = config.getResourcesField().getType().getMessageType();
-    return messageType.getProto().getName() + "Iterator";
+    return getSimpleResourcesTypeName(config) + "Iterator";
   }
 
   /**

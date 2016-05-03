@@ -441,6 +441,41 @@ func (client *Client) MoveBook(ctx context.Context, req *google_example_library_
 }
 
 
+// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+// ListStrings lists a primitive resource. To test go page streaming.
+func (client *Client) ListStrings(ctx context.Context, req *google_example_library_v1.ListStringsRequest, opts ...gax.CallOption) (*StringIterator, error) {
+	callOpts := append(idempotentRetryCodes(), defaultRetryParams(), client.CallOptions["ListStrings"]...)
+	callOpts = append(callOpts, opts...)
+	atLastPage := false
+	return &StringIterator{
+		apiCall: func() (StringPage, error) {
+			if atLastPage {
+				return StringPage{}, io.EOF
+			}
+			var resp *google_example_library_v1.ListStringsResponse
+			err := gax.Invoke(ctx, func (c context.Context) error {
+				var err error
+				resp, err = client.client.ListStrings(c, req)
+				return err
+			}, callOpts...)
+			if err != nil {
+				return StringPage{}, err
+			}
+			if resp.NextPageToken == "" {
+				atLastPage = true
+			} else {
+				req.PageToken = resp.NextPageToken
+			}
+			return StringPage{
+				Items: resp.Strings,
+				NextPageToken: resp.NextPageToken,
+			}, nil
+		},
+	}, nil
+}
+
+
 // Iterators.
 //
 
@@ -518,6 +553,49 @@ func (iterator *BookIterator) Advance() error {
 // Next returns the next element in the stream. This returns io.EOF at the end of
 // the stream.
 func (iterator *BookIterator) Next() (*google_example_library_v1.Book, error) {
+	for iterator.currentIndex >= len(iterator.Page.Items) {
+		err := iterator.Advance()
+		if err != nil {
+			return nil, err
+		}
+		iterator.currentIndex = 0
+	}
+	result := iterator.Page.Items[iterator.currentIndex]
+	iterator.currentIndex++
+	return result, nil
+}
+
+// StringPage represents a page in a stream of StringIterator.
+// This will be updated through StringIterator.Advance.
+type StringPage struct {
+	// The elements in the current page.
+	Items []string
+
+	// The token to get the next page response. This can be used to resume the iteration.
+	NextPageToken string
+}
+
+// StringIterator manages a stream of string.
+type StringIterator struct {
+	// The current page data.
+	Page         StringPage
+	currentIndex int
+	apiCall      func() (StringPage, error)
+}
+
+// Advance moves to the next page and updates its internal data.
+// This returns io.EOF if no more pages exist.
+func (iterator *StringIterator) Advance() error {
+	page, err := iterator.apiCall()
+	if err == nil {
+		iterator.Page = page
+	}
+	return err
+}
+
+// Next returns the next element in the stream. This returns io.EOF at the end of
+// the stream.
+func (iterator *StringIterator) Next() (string, error) {
 	for iterator.currentIndex >= len(iterator.Page.Items) {
 		err := iterator.Advance()
 		if err != nil {
