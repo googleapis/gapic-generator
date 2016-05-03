@@ -95,6 +95,11 @@ service LibraryService {
   rpc MoveBook(MoveBookRequest) returns (Book) {
     option (google.api.http) = { post: "/v1/{name=shelves/*/books/*}:move" body: "*" };
   }
+
+  // Lists a primitive resource. To test go page streaming.
+  rpc ListStrings(ListStringsRequest) returns (ListStringsResponse) {
+    option (google.api.http) = { get: "/v1/strings" };
+  }
 }
 
 // A single book in the library.
@@ -326,4 +331,15 @@ message MoveBookRequest {
 
   // The name of the destination shelf.
   string other_shelf_name = 2;
+}
+
+message ListStringsRequest {
+  string name = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListStringsResponse {
+  repeated string strings = 1;
+  string next_page_token = 2;
 }

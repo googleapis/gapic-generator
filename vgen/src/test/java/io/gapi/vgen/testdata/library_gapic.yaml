@@ -198,3 +198,16 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     request_object_method: true
+  - name: ListStrings
+    flattening:
+      groups:
+      - parameters: []
+    page_streaming:
+      request:
+        token_field: page_token
+      response:
+        token_field: next_page_token
+        resources_field: strings
+    retry_codes_name: idempotent
+    retry_params_name: default
+    request_object_method: false

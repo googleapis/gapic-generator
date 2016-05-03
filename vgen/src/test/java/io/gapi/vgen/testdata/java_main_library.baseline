@@ -46,6 +46,8 @@ import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
 import com.google.example.library.v1.ListShelvesRequest;
 import com.google.example.library.v1.ListShelvesResponse;
+import com.google.example.library.v1.ListStringsRequest;
+import com.google.example.library.v1.ListStringsResponse;
 import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.PublishSeriesRequest;
@@ -155,6 +157,9 @@ public class LibraryServiceApi implements AutoCloseable {
   private final ApiCallable<DeleteBookRequest, Empty> deleteBookCallable;
   private final ApiCallable<UpdateBookRequest, Book> updateBookCallable;
   private final ApiCallable<MoveBookRequest, Book> moveBookCallable;
+  private final ApiCallable<ListStringsRequest, ListStringsResponse> listStringsCallable;
+  private final ApiCallable<ListStringsRequest, Iterable<String>>
+      listStringsIterableCallable;
 
   public final LibraryServiceSettings getSettings() {
     return settings;
@@ -278,6 +283,9 @@ public class LibraryServiceApi implements AutoCloseable {
     this.deleteBookCallable = ApiCallable.create(settings.deleteBookSettings(), this.channel, this.executor);
     this.updateBookCallable = ApiCallable.create(settings.updateBookSettings(), this.channel, this.executor);
     this.moveBookCallable = ApiCallable.create(settings.moveBookSettings(), this.channel, this.executor);
+    this.listStringsCallable = ApiCallable.create(settings.listStringsSettings(), this.channel, this.executor);
+    this.listStringsIterableCallable =
+        ApiCallable.createIterable(settings.listStringsSettings(), this.channel, this.executor);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -1311,6 +1319,99 @@ public class LibraryServiceApi implements AutoCloseable {
    */
   public final ApiCallable<MoveBookRequest, Book> moveBookCallable() {
     return moveBookCallable;
+  }
+
+  // ----- listStrings -----
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Lists a primitive resource. To test go page streaming.
+   *
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *
+   *   for (String elements : libraryServiceApi.listStrings()) {
+   *     // doThingsWith(elements);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   *
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Iterable<String> listStrings() {
+    ListStringsRequest request =
+        ListStringsRequest.newBuilder()
+
+        .build();
+    return listStrings(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Lists a primitive resource. To test go page streaming.
+   *
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
+   *
+   *   for (String elements : libraryServiceApi.listStrings(request)) {
+   *     // doThingsWith(elements);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  private final Iterable<String> listStrings(ListStringsRequest request) {
+    return listStringsIterableCallable()
+        .call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Lists a primitive resource. To test go page streaming.
+   *
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
+   *
+   *   for (String elements : libraryServiceApi.listStringsIterableCallable().call(request)) {
+   *     // doThingsWith(elements);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   */
+  public final ApiCallable<ListStringsRequest, Iterable<String>> listStringsIterableCallable() {
+    return listStringsIterableCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Lists a primitive resource. To test go page streaming.
+   *
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
+   *
+   *   ListStringsResponse callResult = libraryServiceApi.listStringsCallable().call(request);
+   * }
+   * </code></pre>
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   */
+  public final ApiCallable<ListStringsRequest, ListStringsResponse> listStringsCallable() {
+    return listStringsCallable;
   }
 
 

@@ -61,6 +61,8 @@ import com.google.example.library.v1.ListBooksRequest;
 import com.google.example.library.v1.ListBooksResponse;
 import com.google.example.library.v1.ListShelvesRequest;
 import com.google.example.library.v1.ListShelvesResponse;
+import com.google.example.library.v1.ListStringsRequest;
+import com.google.example.library.v1.ListStringsResponse;
 import com.google.example.library.v1.MergeShelvesRequest;
 import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.PublishSeriesRequest;
@@ -161,6 +163,9 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   private final SimpleCallSettings<DeleteBookRequest, Empty> deleteBookSettings;
   private final SimpleCallSettings<UpdateBookRequest, Book> updateBookSettings;
   private final SimpleCallSettings<MoveBookRequest, Book> moveBookSettings;
+  private final PageStreamingCallSettings<ListStringsRequest, ListStringsResponse, String>
+      listStringsSettings;
+
 
   /**
    * Returns the object with the settings used for calls to createShelf.
@@ -248,6 +253,14 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     return moveBookSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to listStrings.
+   */
+  public PageStreamingCallSettings<ListStringsRequest, ListStringsResponse, String>
+      listStringsSettings() {
+    return listStringsSettings;
+  }
+
 
   /**
    * Returns a builder for this class with recommended defaults.
@@ -290,6 +303,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     deleteBookSettings = settingsBuilder.deleteBookSettings().build();
     updateBookSettings = settingsBuilder.updateBookSettings().build();
     moveBookSettings = settingsBuilder.moveBookSettings().build();
+    listStringsSettings = settingsBuilder.listStringsSettings().build();
   }
 
   private static PageStreamingDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
@@ -337,6 +351,30 @@ public class LibraryServiceSettings extends ServiceApiSettings {
         @Override
         public Iterable<Book> extractResources(ListBooksResponse payload) {
           return payload.getBooksList();
+        }
+      };
+
+  private static PageStreamingDescriptor<ListStringsRequest, ListStringsResponse, String> LIST_STRINGS_PAGE_STR_DESC =
+      new PageStreamingDescriptor<ListStringsRequest, ListStringsResponse, String>() {
+        @Override
+        public Object emptyToken() {
+          return "";
+        }
+        @Override
+        public ListStringsRequest injectToken(
+            ListStringsRequest payload, Object token) {
+          return ListStringsRequest
+            .newBuilder(payload)
+            .setPageToken((String) token)
+            .build();
+        }
+        @Override
+        public Object extractNextToken(ListStringsResponse payload) {
+          return payload.getNextPageToken();
+        }
+        @Override
+        public Iterable<String> extractResources(ListStringsResponse payload) {
+          return payload.getStringsList();
         }
       };
 
@@ -424,6 +462,8 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     private SimpleCallSettings.Builder<DeleteBookRequest, Empty> deleteBookSettings;
     private SimpleCallSettings.Builder<UpdateBookRequest, Book> updateBookSettings;
     private SimpleCallSettings.Builder<MoveBookRequest, Book> moveBookSettings;
+    private PageStreamingCallSettings.Builder<ListStringsRequest, ListStringsResponse, String>
+        listStringsSettings;
 
     private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -489,8 +529,12 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
       moveBookSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_MOVE_BOOK);
 
+      listStringsSettings = PageStreamingCallSettings.newBuilder(
+          LibraryServiceGrpc.METHOD_LIST_STRINGS,
+          LIST_STRINGS_PAGE_STR_DESC);
+
       methodSettingsBuilders = ImmutableList.<ApiCallSettings.Builder>of(
-          createShelfSettings,getShelfSettings,listShelvesSettings,deleteShelfSettings,mergeShelvesSettings,createBookSettings,publishSeriesSettings,getBookSettings,listBooksSettings,deleteBookSettings,updateBookSettings,moveBookSettings
+          createShelfSettings,getShelfSettings,listShelvesSettings,deleteShelfSettings,mergeShelvesSettings,createBookSettings,publishSeriesSettings,getBookSettings,listBooksSettings,deleteBookSettings,updateBookSettings,moveBookSettings,listStringsSettings
       );
     }
 
@@ -551,6 +595,10 @@ public class LibraryServiceSettings extends ServiceApiSettings {
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
+      builder.listStringsSettings()
+              .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+              .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+
       return builder;
     }
 
@@ -569,9 +617,10 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       deleteBookSettings = settings.deleteBookSettings.toBuilder();
       updateBookSettings = settings.updateBookSettings.toBuilder();
       moveBookSettings = settings.moveBookSettings.toBuilder();
+      listStringsSettings = settings.listStringsSettings.toBuilder();
 
       methodSettingsBuilders = ImmutableList.<ApiCallSettings.Builder>of(
-          createShelfSettings,getShelfSettings,listShelvesSettings,deleteShelfSettings,mergeShelvesSettings,createBookSettings,publishSeriesSettings,getBookSettings,listBooksSettings,deleteBookSettings,updateBookSettings,moveBookSettings
+          createShelfSettings,getShelfSettings,listShelvesSettings,deleteShelfSettings,mergeShelvesSettings,createBookSettings,publishSeriesSettings,getBookSettings,listBooksSettings,deleteBookSettings,updateBookSettings,moveBookSettings,listStringsSettings
       );
     }
 
@@ -709,6 +758,14 @@ public class LibraryServiceSettings extends ServiceApiSettings {
      */
     public SimpleCallSettings.Builder<MoveBookRequest, Book> moveBookSettings() {
       return moveBookSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to listStrings.
+     */
+    public PageStreamingCallSettings.Builder<ListStringsRequest, ListStringsResponse, String>
+        listStringsSettings() {
+      return listStringsSettings;
     }
 
     @Override

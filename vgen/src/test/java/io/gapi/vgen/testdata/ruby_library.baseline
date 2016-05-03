@@ -63,7 +63,11 @@ module Google
             'list_books' => Google::Gax::PageDescriptor.new(
               'page_token',
               'next_page_token',
-              'books')
+              'books'),
+            'list_strings' => Google::Gax::PageDescriptor.new(
+              'page_token',
+              'next_page_token',
+              'strings')
           }.freeze
 
           private_constant :PAGE_DESCRIPTORS
@@ -463,6 +467,31 @@ module Google
             settings = @defaults['move_book'].merge(options)
             api_call = Google::Gax.create_api_call(
               @stub.method(:move_book), settings)
+            api_call.call(req, **@headers)
+          end
+
+          # Lists a primitive resource. To test go page streaming.
+          #
+          # @param name [String]
+          # @param options [Google::Gax::CallOptions]
+          #   Overrides the default settings for this call, e.g, timeout,
+          #   retries, etc.
+          # @return [
+          #   Google::Gax::PagedEnumerable<String>,
+          #   Google::Example::Library::V1::ListStringsResponse]
+          #   An enumerable of String instances unless
+          #   page streaming is disabled through the call options. If page
+          #   streaming is disabled, a single Google::Example::Library::V1::ListStringsResponse
+          #   instance is returned.
+          # @raise [Google::Gax::GaxError] if the RPC is aborted.
+          def list_strings(
+            name: '',
+            options: nil)
+            req = Google::Example::Library::V1::ListStringsRequest.new(
+              name: name)
+            settings = @defaults['list_strings'].merge(options)
+            api_call = Google::Gax.create_api_call(
+              @stub.method(:list_strings), settings)
             api_call.call(req, **@headers)
           end
         end
@@ -1240,6 +1269,20 @@ module Google
         #   @return [String]
         #     The name of the destination shelf.
         class MoveBookRequest; end
+
+        # @!attribute [rw] name
+        #   @return [String]
+        # @!attribute [rw] page_size
+        #   @return [Integer]
+        # @!attribute [rw] page_token
+        #   @return [String]
+        class ListStringsRequest; end
+
+        # @!attribute [rw] strings
+        #   @return [Array<String>]
+        # @!attribute [rw] next_page_token
+        #   @return [String]
+        class ListStringsResponse; end
       end
     end
   end
