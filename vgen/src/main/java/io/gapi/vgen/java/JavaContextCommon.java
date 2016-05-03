@@ -181,7 +181,7 @@ public class JavaContextCommon {
 
     public abstract ImmutableList<Variable> getParams();
 
-    public abstract boolean isIterableVariant();
+    public abstract boolean isPagedVariant();
 
     public abstract boolean isCallableVariant();
 
@@ -212,7 +212,7 @@ public class JavaContextCommon {
         return setParams(ImmutableList.of(s_newVariable(requestType, name, doc)));
       }
 
-      public abstract Builder setIterableVariant(boolean iterable);
+      public abstract Builder setPagedVariant(boolean paged);
 
       public abstract Builder setCallableVariant(boolean callable);
 

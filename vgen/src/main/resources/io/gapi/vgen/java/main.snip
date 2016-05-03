@@ -152,9 +152,10 @@
       private final ApiCallable<{@inTypeName}, {@outTypeName}> {@methodName}Callable;
       @if {@isPageStreaming}
         @let pageStreaming = methodConfig.getPageStreaming(), \
-             resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType())
-          private final ApiCallable<{@inTypeName}, Iterable<{@resourceTypeName}>>
-              {@methodName}IterableCallable;
+             resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
+             dummy = context.addImport("com.google.api.gax.core.PageAccessor")
+          private final ApiCallable<{@inTypeName}, PageAccessor<{@resourceTypeName}>>
+              {@methodName}PagedCallable;
         @end
       @end
     @end
@@ -206,8 +207,8 @@
              isBundling = methodConfig.isBundling
           this.{@methodName}Callable = ApiCallable.create(settings.{@methodName}Settings(), this.channel, this.executor);
           @if {@isPageStreaming}
-            this.{@methodName}IterableCallable =
-                ApiCallable.createIterable(settings.{@methodName}Settings(), this.channel, this.executor);
+            this.{@methodName}PagedCallable =
+                ApiCallable.createPagedVariant(settings.{@methodName}Settings(), this.channel, this.executor);
           @end
           @if {@isBundling}
             if (settings.{@methodName}Settings().getBundlerFactory() != null) {
@@ -257,12 +258,12 @@
         @if {@isFlattening}
           @join flatteningGroup: \
               methodConfig.getFlattening().getFlatteningGroups()
-            {@iterableFlattenedMethod(service, method, methodName, flatteningGroup)}
+            {@pagedFlattenedMethod(service, method, methodName, flatteningGroup)}
           @end
           {@BREAK}
         @end
-        {@iterableMethodWithRequestParam(service, method, methodName, inTypeName, outTypeName, requestObjectMethodAccessStr)}
-        {@methodReturningIterableCallable(service, method, methodName, inTypeName, outTypeName)}
+        {@pagedMethodWithRequestParam(service, method, methodName, inTypeName, outTypeName, requestObjectMethodAccessStr)}
+        {@methodReturningPagedCallable(service, method, methodName, inTypeName, outTypeName)}
       @else
         @if {@isFlattening}
           @join flatteningGroup : \
@@ -309,13 +310,13 @@
 
 @end
 
-@private iterableFlattenedMethod(service, method, methodName, fields)
+@private pagedFlattenedMethod(service, method, methodName, fields)
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
        resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
        requestTypeName = context.typeName(method.getInputType)
     {@iterableFlattenedMethodJavaDoc(method, methodName, resourceTypeName, fields)}
-    public final Iterable<{@resourceTypeName}> \
+    public final PageAccessor<{@resourceTypeName}> \
         {@methodName}({@paramList(fields)}) {
       {@context.typeName(method.getInputType)} request =
           {@requestTypeName}.newBuilder()
@@ -327,7 +328,7 @@
   @end
 @end
 
-@private iterableMethodWithRequestParam(service, method, methodName, inTypeName, outTypeName, accessModifier)
+@private pagedMethodWithRequestParam(service, method, methodName, inTypeName, outTypeName, accessModifier)
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
        resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType())
@@ -336,31 +337,32 @@
       .setMethodName(methodName) \
       .setReturnType(resourceTypeName) \
       .setSingleParam(context, method.getInputType, context.java.requestParam, context.java.requestParamDoc) \
-      .setIterableVariant(context.java.getTrue) \
+      .setPagedVariant(context.java.getTrue) \
       .setCallableVariant(context.java.getFalse) \
       .build)}
-    {@accessModifier} final Iterable<{@resourceTypeName}> {@methodName}({@inTypeName} request) {
-      return {@methodName}IterableCallable()
+    {@accessModifier} final PageAccessor<{@resourceTypeName}> {@methodName}({@inTypeName} request) {
+      return {@methodName}PagedCallable()
           .call(request);
     }
 
   @end
 @end
 
-@private methodReturningIterableCallable(service, method, methodName, inTypeName, outTypeName)
+@private methodReturningPagedCallable(service, method, methodName, inTypeName, outTypeName)
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
+       dummy = context.addImport("com.google.api.gax.core.PageAccessor"), \
        resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType())
     {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
       .setApiName(context.getApiWrapperName(method.getParent)) \
       .setMethodName(methodName) \
       .setReturnType(resourceTypeName) \
       .setSingleParam(context, method.getInputType, context.java.requestParam, context.java.requestParamDoc) \
-      .setIterableVariant(context.java.getTrue) \
+      .setPagedVariant(context.java.getTrue) \
       .setCallableVariant(context.java.getTrue) \
       .build)}
-    public final ApiCallable<{@inTypeName}, Iterable<{@resourceTypeName}>> {@methodName}IterableCallable() {
-      return {@methodName}IterableCallable;
+    public final ApiCallable<{@inTypeName}, PageAccessor<{@resourceTypeName}>> {@methodName}PagedCallable() {
+      return {@methodName}PagedCallable;
     }
 
   @end
@@ -389,7 +391,7 @@
       .setMethodName(context.upperCamelToLowerCamel(method.getSimpleName)) \
       .setReturnType(context.returnTypeOrEmpty(method.getOutputType)) \
       .setSingleParam(context, method.getInputType, context.java.requestParam, context.java.requestParamDoc) \
-      .setIterableVariant(context.java.getFalse) \
+      .setPagedVariant(context.java.getFalse) \
       .setCallableVariant(context.java.getFalse) \
       .build)}
   @let returnType = context.methodReturnTypeName(method.getOutputType), \
@@ -407,7 +409,7 @@
       .setMethodName(methodName) \
       .setReturnType(context.returnTypeOrEmpty(method.getOutputType)) \
       .setSingleParam(context, method.getInputType, context.java.requestParam, context.java.requestParamDoc) \
-      .setIterableVariant(context.java.getFalse) \
+      .setPagedVariant(context.java.getFalse) \
       .setCallableVariant(context.java.getTrue) \
       .build)}
   public final ApiCallable<{@inTypeName}, {@outTypeName}> {@methodName}Callable() {
@@ -436,7 +438,7 @@
                                .setMethodName(context.upperCamelToLowerCamel(firstFlattenedMethod.getSimpleName)) \
                                .setReturnType(context.returnTypeOrEmpty(firstFlattenedMethod.getOutputType)) \
                                .setParams(context, firstFlattenedMethodConfig.getFlattening().getFlatteningGroups().get(0)) \
-                               .setIterableVariant(context.java.getFalse) \
+                               .setPagedVariant(context.java.getFalse) \
                                .setCallableVariant(context.java.getFalse) \
                                .build))
       {@commentLine}
@@ -497,7 +499,7 @@
       .setMethodName(methodName) \
       .setReturnType(context.returnTypeOrEmpty(method.getOutputType)) \
       .setParams(context, fields) \
-      .setIterableVariant(context.java.getFalse) \
+      .setPagedVariant(context.java.getFalse) \
       .setCallableVariant(context.java.getFalse) \
       .build)}
 @end
@@ -508,7 +510,7 @@
       .setMethodName(methodName) \
       .setReturnType(resourceName) \
       .setParams(context, fields) \
-      .setIterableVariant(context.java.getTrue) \
+      .setPagedVariant(context.java.getTrue) \
       .setCallableVariant(context.java.getFalse) \
       .build)}
 @end
@@ -568,7 +570,7 @@
         {@context.typeName(param.getType)} {@param.getName} = {@context.zeroValue(param.getType)};
       @end
 
-      @if docConfig.isIterableVariant
+      @if docConfig.isPagedVariant
         for ({@docConfig.getReturnType} elements : {@methodCallSampleCode(docConfig, apiName)}) {
           // doThingsWith(elements);
         }
@@ -603,7 +605,7 @@
 @end
 
 @private methodCallNameIter(docConfig)
-  @if docConfig.isIterableVariant
+  @if docConfig.isPagedVariant
     {@docConfig.getMethodName}Iterable
   @else
     {@docConfig.getMethodName}

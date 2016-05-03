@@ -33,6 +33,7 @@
 
 package com.google.gcloud.pubsub.spi;
 
+import com.google.api.gax.core.PageAccessor;
 import com.google.api.gax.grpc.ApiCallable;
 import com.google.api.gax.protobuf.PathTemplate;
 import com.google.example.library.v1.Book;
@@ -144,22 +145,22 @@ public class LibraryServiceApi implements AutoCloseable {
   private final ApiCallable<CreateShelfRequest, Shelf> createShelfCallable;
   private final ApiCallable<GetShelfRequest, Shelf> getShelfCallable;
   private final ApiCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable;
-  private final ApiCallable<ListShelvesRequest, Iterable<Shelf>>
-      listShelvesIterableCallable;
+  private final ApiCallable<ListShelvesRequest, PageAccessor<Shelf>>
+      listShelvesPagedCallable;
   private final ApiCallable<DeleteShelfRequest, Empty> deleteShelfCallable;
   private final ApiCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable;
   private final ApiCallable<CreateBookRequest, Book> createBookCallable;
   private final ApiCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable;
   private final ApiCallable<GetBookRequest, Book> getBookCallable;
   private final ApiCallable<ListBooksRequest, ListBooksResponse> listBooksCallable;
-  private final ApiCallable<ListBooksRequest, Iterable<Book>>
-      listBooksIterableCallable;
+  private final ApiCallable<ListBooksRequest, PageAccessor<Book>>
+      listBooksPagedCallable;
   private final ApiCallable<DeleteBookRequest, Empty> deleteBookCallable;
   private final ApiCallable<UpdateBookRequest, Book> updateBookCallable;
   private final ApiCallable<MoveBookRequest, Book> moveBookCallable;
   private final ApiCallable<ListStringsRequest, ListStringsResponse> listStringsCallable;
-  private final ApiCallable<ListStringsRequest, Iterable<String>>
-      listStringsIterableCallable;
+  private final ApiCallable<ListStringsRequest, PageAccessor<String>>
+      listStringsPagedCallable;
 
   public final LibraryServiceSettings getSettings() {
     return settings;
@@ -267,8 +268,8 @@ public class LibraryServiceApi implements AutoCloseable {
     this.createShelfCallable = ApiCallable.create(settings.createShelfSettings(), this.channel, this.executor);
     this.getShelfCallable = ApiCallable.create(settings.getShelfSettings(), this.channel, this.executor);
     this.listShelvesCallable = ApiCallable.create(settings.listShelvesSettings(), this.channel, this.executor);
-    this.listShelvesIterableCallable =
-        ApiCallable.createIterable(settings.listShelvesSettings(), this.channel, this.executor);
+    this.listShelvesPagedCallable =
+        ApiCallable.createPagedVariant(settings.listShelvesSettings(), this.channel, this.executor);
     this.deleteShelfCallable = ApiCallable.create(settings.deleteShelfSettings(), this.channel, this.executor);
     this.mergeShelvesCallable = ApiCallable.create(settings.mergeShelvesSettings(), this.channel, this.executor);
     this.createBookCallable = ApiCallable.create(settings.createBookSettings(), this.channel, this.executor);
@@ -278,14 +279,14 @@ public class LibraryServiceApi implements AutoCloseable {
     }
     this.getBookCallable = ApiCallable.create(settings.getBookSettings(), this.channel, this.executor);
     this.listBooksCallable = ApiCallable.create(settings.listBooksSettings(), this.channel, this.executor);
-    this.listBooksIterableCallable =
-        ApiCallable.createIterable(settings.listBooksSettings(), this.channel, this.executor);
+    this.listBooksPagedCallable =
+        ApiCallable.createPagedVariant(settings.listBooksSettings(), this.channel, this.executor);
     this.deleteBookCallable = ApiCallable.create(settings.deleteBookSettings(), this.channel, this.executor);
     this.updateBookCallable = ApiCallable.create(settings.updateBookSettings(), this.channel, this.executor);
     this.moveBookCallable = ApiCallable.create(settings.moveBookSettings(), this.channel, this.executor);
     this.listStringsCallable = ApiCallable.create(settings.listStringsSettings(), this.channel, this.executor);
-    this.listStringsIterableCallable =
-        ApiCallable.createIterable(settings.listStringsSettings(), this.channel, this.executor);
+    this.listStringsPagedCallable =
+        ApiCallable.createPagedVariant(settings.listStringsSettings(), this.channel, this.executor);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -530,7 +531,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Iterable<Shelf> listShelves() {
+  public final PageAccessor<Shelf> listShelves() {
     ListShelvesRequest request =
         ListShelvesRequest.newBuilder()
 
@@ -558,8 +559,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  private final Iterable<Shelf> listShelves(ListShelvesRequest request) {
-    return listShelvesIterableCallable()
+  private final PageAccessor<Shelf> listShelves(ListShelvesRequest request) {
+    return listShelvesPagedCallable()
         .call(request);
   }
 
@@ -580,8 +581,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public final ApiCallable<ListShelvesRequest, Iterable<Shelf>> listShelvesIterableCallable() {
-    return listShelvesIterableCallable;
+  public final ApiCallable<ListShelvesRequest, PageAccessor<Shelf>> listShelvesPagedCallable() {
+    return listShelvesPagedCallable;
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
@@ -995,7 +996,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param filter To test python built-in wrapping.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Iterable<Book> listBooks(String name, String filter) {
+  public final PageAccessor<Book> listBooks(String name, String filter) {
     ListBooksRequest request =
         ListBooksRequest.newBuilder()
         .setName(name)
@@ -1024,8 +1025,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Iterable<Book> listBooks(ListBooksRequest request) {
-    return listBooksIterableCallable()
+  public final PageAccessor<Book> listBooks(ListBooksRequest request) {
+    return listBooksPagedCallable()
         .call(request);
   }
 
@@ -1046,8 +1047,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public final ApiCallable<ListBooksRequest, Iterable<Book>> listBooksIterableCallable() {
-    return listBooksIterableCallable;
+  public final ApiCallable<ListBooksRequest, PageAccessor<Book>> listBooksPagedCallable() {
+    return listBooksPagedCallable;
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
@@ -1341,7 +1342,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Iterable<String> listStrings() {
+  public final PageAccessor<String> listStrings() {
     ListStringsRequest request =
         ListStringsRequest.newBuilder()
 
@@ -1369,8 +1370,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  private final Iterable<String> listStrings(ListStringsRequest request) {
-    return listStringsIterableCallable()
+  private final PageAccessor<String> listStrings(ListStringsRequest request) {
+    return listStringsPagedCallable()
         .call(request);
   }
 
@@ -1391,8 +1392,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    */
-  public final ApiCallable<ListStringsRequest, Iterable<String>> listStringsIterableCallable() {
-    return listStringsIterableCallable;
+  public final ApiCallable<ListStringsRequest, PageAccessor<String>> listStringsPagedCallable() {
+    return listStringsPagedCallable;
   }
 
   // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
