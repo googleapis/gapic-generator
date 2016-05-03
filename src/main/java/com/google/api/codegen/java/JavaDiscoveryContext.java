@@ -77,6 +77,20 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
           .put("double", double.class)
           .build();
 
+  /**
+   * A map from {@link ApiaryConfig#stringFormat} label (or null) to corresponding default value.
+   */
+  private static final ImmutableMap<String, String> STRING_DEFAULT_MAP =
+      ImmutableMap.<String, String>builder()
+          .put("byte", "\"\";"
+              + "  // base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648")
+          .put("date", "\"1969-12-31\";"
+              + "  // \"YYYY-MM-DD\": see java.text.SimpleDateFormat")
+          .put("date-time", "\"" + new DateTime(0L).toStringRfc3339() + "\";"
+              + "  // \"YYYY-MM-DDThh:mm:ss.fffZ\" (UTC): "
+              + "see com.google.api.client.util.DateTime.toStringRfc3339()")
+          .build();
+
   private static final ImmutableMap<String, String> RENAMED_METHOD_MAP =
       ImmutableMap.<String, String>builder()
           .put("sql.instances.import", "sql.instances.sqladminImport")
@@ -109,6 +123,9 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
 
   private JavaContextCommon javaCommon;
 
+  /**
+   * Constructs the Java discovery context.
+   */
   public JavaDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
     super(service, apiaryConfig);
   }
@@ -124,6 +141,10 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
 
   // Snippet Helpers
   // ===============
+
+  public String getSampleVarName(String typeName) {
+    return upperCamelToLowerCamel(getSimpleName(typeName));
+  }
 
   @Override
   public String getMethodName(Method method) {
@@ -272,18 +293,15 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
   private String elementTypeName(Field field) {
     String fieldTypeName = field.getTypeUrl();
     Type items = this.getApiaryConfig().getType(fieldTypeName);
-    String elementTypeName;
     if (field.getKind() == Field.Kind.TYPE_MESSAGE) {
       Field elements = this.getField(items, DiscoveryImporter.ELEMENTS_FIELD_NAME);
       if (elements != null) {
-        elementTypeName = typeName(items, this.getField(items, "elements"));
+        return typeName(items, elements);
       } else {
-        elementTypeName = getTypeUrl(fieldTypeName);
+        return getTypeUrl(fieldTypeName);
       }
-    } else {
-      elementTypeName = basicTypeNameBoxed(field);
     }
-    return elementTypeName;
+    return basicTypeNameBoxed(field);
   }
 
   /**
@@ -338,23 +356,9 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
         if (typeName.equals("java.lang.String")) {
           String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
           if (stringFormat != null) {
-            switch (stringFormat) {
-              case "byte":
-                return "\"\"; "
-                    + "  // base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648 ";
-              case "date":
-                // TODO(tcoffee): does new DateTime(new Date(0L)).toStringRfc3339() work?
-                return "\"1969-12-31\";"
-                    + "  // \"YYYY-MM-DD\": "
-                    + "see java.text.SimpleDateFormat";
-              case "date-time":
-                return "\""
-                    + new DateTime(0L).toStringRfc3339()
-                    + "\";"
-                    + "  // \"YYYY-MM-DDThh:mm:ss.fffZ\" (UTC): "
-                    + "see com.google.api.client.util.DateTime.toStringRfc3339()";
-              default:
-                // fall through
+            String value = STRING_DEFAULT_MAP.get(stringFormat);
+            if (value != null) {
+              return value;
             }
           }
           return "\"\";";
@@ -369,35 +373,8 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
     return super.isResponseEmpty(method) || method.getResponseTypeUrl().equals("Empty");
   }
 
-  // Flaggers for Exceptional Inconsistencies
+  // Handlers for Exceptional Inconsistencies
   // ========================================
-
-  // used to handle inconsistency in list methods for Cloud Monitoring API
-  // remove if inconsistency is resolved in discovery docs
-  private boolean isCloudMonitoringListMethod(Method method) {
-    Api api = getApi();
-    return api.getName().equals("cloudmonitoring")
-        && api.getVersion().equals("v2beta2")
-        && isPageStreaming(method);
-  }
-
-  // used to handle inconsistency in log entries list method for Logging API
-  // remove if inconsistency is resolved
-  public boolean isLogEntriesListMethod(Method method) {
-    Api api = getApi();
-    return api.getName().equals("logging")
-        && api.getVersion().equals("v2beta1")
-        && method.getName().equals("logging.entries.list");
-  }
-
-  // used to handle inconsistency in users list method for SQLAdmin API
-  // remove if inconsistency is resolved
-  private boolean isSQLAdminUsersListMethod(Method method) {
-    Api api = getApi();
-    return api.getName().equals("sqladmin")
-        && api.getVersion().equals("v1beta4")
-        && method.getName().equals("sql.users.list");
-  }
 
   @Override
   public boolean hasRequestField(Method method) {
@@ -416,17 +393,6 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
     if (isCloudMonitoringListMethod(method)) {
       return getMost(getApiaryConfig().getMethodParams(method.getName()));
     }
-
     return super.getMethodParams(method);
-  }
-
-  @Override
-  public boolean isPageStreaming(Method method) {
-    // used to handle inconsistency in users list method for SQLAdmin API
-    // remove if inconsistency is resolved
-    if (isSQLAdminUsersListMethod(method)) {
-      return false;
-    }
-    return super.isPageStreaming(method);
   }
 }

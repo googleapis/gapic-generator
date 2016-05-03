@@ -1,0 +1,359 @@
+
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Dataflow API and check quota for your project at
+   https://console.developers.google.com/apis/api/dataflow_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the dataflow service object (version v1b3) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('dataflow', 'v1b3', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'create' method:
+# * The project which owns the job.
+projectId = ''
+
+job = {
+# TODO: Add desired entries of the 'job' dict
+}
+
+request = service.projects().jobs().create(projectId, job)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Dataflow API and check quota for your project at
+   https://console.developers.google.com/apis/api/dataflow_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the dataflow service object (version v1b3) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('dataflow', 'v1b3', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'get' method:
+# * The project which owns the job.
+projectId = ''
+# * Identifies a single job.
+jobId = ''
+
+request = service.projects().jobs().get(projectId, jobId)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Dataflow API and check quota for your project at
+   https://console.developers.google.com/apis/api/dataflow_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the dataflow service object (version v1b3) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('dataflow', 'v1b3', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'getMetrics' method:
+# * A project id.
+projectId = ''
+# * The job to get messages for.
+jobId = ''
+
+request = service.projects().jobs().getMetrics(projectId, jobId)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Dataflow API and check quota for your project at
+   https://console.developers.google.com/apis/api/dataflow_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the dataflow service object (version v1b3) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('dataflow', 'v1b3', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'list' method:
+# * The project which owns the jobs.
+projectId = ''
+
+jobs = service.projects().jobs()
+request = jobs.list(projectId)
+while request is not None:
+    response = request.execute()
+
+    for job in response['jobs']:
+        # TODO: Add code here to process each 'job' resource
+
+    request = jobs.list_next(request, response)
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Dataflow API and check quota for your project at
+   https://console.developers.google.com/apis/api/dataflow_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the dataflow service object (version v1b3) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('dataflow', 'v1b3', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'list' method:
+# * A project id.
+projectId = ''
+# * The job to get messages about.
+jobId = ''
+
+messages = service.projects().jobs().messages()
+request = messages.list(projectId, jobId)
+while request is not None:
+    response = request.execute()
+
+    for job_message in response['jobMessages']:
+        # TODO: Add code here to process each 'job_message' resource
+
+    request = messages.list_next(request, response)
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Dataflow API and check quota for your project at
+   https://console.developers.google.com/apis/api/dataflow_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the dataflow service object (version v1b3) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('dataflow', 'v1b3', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'update' method:
+# * The project which owns the job.
+projectId = ''
+# * Identifies a single job.
+jobId = ''
+
+job = {
+# TODO: Add desired entries of the 'job' dict
+}
+
+request = service.projects().jobs().update(projectId, jobId, job)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Dataflow API and check quota for your project at
+   https://console.developers.google.com/apis/api/dataflow_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the dataflow service object (version v1b3) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('dataflow', 'v1b3', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'lease' method:
+# * Identifies the project this worker belongs to.
+projectId = ''
+# * Identifies the workflow job this worker belongs to.
+jobId = ''
+
+lease_work_item_request = {
+# TODO: Add desired entries of the 'lease_work_item_request' dict
+}
+
+request = service.projects().jobs().workItems().lease(projectId, jobId, lease_work_item_request)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Dataflow API and check quota for your project at
+   https://console.developers.google.com/apis/api/dataflow_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the dataflow service object (version v1b3) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('dataflow', 'v1b3', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'reportStatus' method:
+# * The project which owns the WorkItem's job.
+projectId = ''
+# * The job which the WorkItem is part of.
+jobId = ''
+
+report_work_item_status_request = {
+# TODO: Add desired entries of the 'report_work_item_status_request' dict
+}
+
+request = service.projects().jobs().workItems().reportStatus(projectId, jobId, report_work_item_status_request)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Dataflow API and check quota for your project at
+   https://console.developers.google.com/apis/api/dataflow_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the dataflow service object (version v1b3) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('dataflow', 'v1b3', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'workerMessages' method:
+# * The project to send the WorkerMessages to.
+projectId = ''
+
+send_worker_messages_request = {
+# TODO: Add desired entries of the 'send_worker_messages_request' dict
+}
+
+request = service.projects().workerMessages(projectId, send_worker_messages_request)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))

@@ -38,25 +38,28 @@ abstract class PythonImport {
   public abstract ImportType type();
 
   /*
-   * Create a Python import with the given module, attribute and local names.
+   * Create a Python import of the given category, specifying (attribute), (module, attribute), or
+   * (module, attribute, local) names.
    */
-  public static PythonImport create(
-      String moduleName, String attributeName, String localName, ImportType type) {
+  public static PythonImport create(ImportType type, String... names) {
+    String moduleName = "";
+    String attributeName = "";
+    String localName = "";
+    switch (names.length) {
+      case 3:
+        localName = names[2];
+        // fall through
+      case 2:
+        moduleName = names[0];
+        attributeName = names[1];
+        break;
+      case 1:
+        attributeName = names[0];
+        break;
+      default:
+        // fall through
+    }
     return new AutoValue_PythonImport(moduleName, attributeName, localName, type);
-  }
-
-  /*
-   * Create a Python import with then given module and attribute names.
-   */
-  public static PythonImport create(String moduleName, String attributeName, ImportType type) {
-    return create(moduleName, attributeName, "", type);
-  }
-
-  /*
-   * Create a Python import with the given attribute name.
-   */
-  public static PythonImport create(String attributeName, ImportType type) {
-    return create("", attributeName, "", type);
   }
 
   public String importString() {
@@ -100,8 +103,8 @@ abstract class PythonImport {
     if (Strings.isNullOrEmpty(localName())) {
       disambiguation =
           PythonImport.create(
-              disambiguation.moduleName(), disambiguation.attributeName(),
-              disambiguation.shortName().replace('.', '_'), disambiguation.type());
+              disambiguation.type(), disambiguation.moduleName(),
+              disambiguation.attributeName(), disambiguation.shortName().replace('.', '_'));
 
       if (!disambiguation.shortName().equals(oldShortName)) {
         return disambiguation;
@@ -129,26 +132,26 @@ abstract class PythonImport {
     // Move a first package
     if (!found) {
       return PythonImport.create(
+          disambiguation.type(),
           disambiguation.moduleName(),
           disambiguation.attributeName(),
-          moduleNamePackages[moduleNamePackages.length - 1] + "_" + disambiguation.shortName(),
-          disambiguation.type());
+          moduleNamePackages[moduleNamePackages.length - 1] + "_" + disambiguation.shortName());
 
       // Move another package
     } else if (found && i >= 0) {
       return PythonImport.create(
+          disambiguation.type(),
           disambiguation.moduleName(),
           disambiguation.attributeName(),
-          moduleNamePackages[i] + "_" + disambiguation.shortName(),
-          disambiguation.type());
+          moduleNamePackages[i] + "_" + disambiguation.shortName());
 
       // Mangle
     } else {
       return PythonImport.create(
+          disambiguation.type(),
           disambiguation.moduleName(),
           disambiguation.attributeName(),
-          disambiguation.shortName() + "_",
-          disambiguation.type());
+          disambiguation.shortName() + "_");
     }
   }
 }

@@ -30,7 +30,7 @@ interface JavaSnippetSet<Element> {
   Doc generateFilename(Element element);
 
   /**
-   * Generates the body of the class for the service interface.
+   * Generates the body of the class for the element.
    */
   Doc generateBody(Element element);
 

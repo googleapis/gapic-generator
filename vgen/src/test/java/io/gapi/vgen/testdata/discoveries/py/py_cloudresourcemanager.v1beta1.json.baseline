@@ -1,0 +1,562 @@
+
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the cloudresourcemanager service object (version v1beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('cloudresourcemanager', 'v1beta1', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'get' method:
+# * The id of the Organization resource to fetch.
+organizationId = ''
+
+request = service.organizations().get(organizationId)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the cloudresourcemanager service object (version v1beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('cloudresourcemanager', 'v1beta1', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'getIamPolicy' method:
+# * REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `getIamPolicy` documentation.
+resource = ''
+
+get_iam_policy_request = {
+# TODO: Add desired entries of the 'get_iam_policy_request' dict
+}
+
+request = service.organizations().getIamPolicy(resource, get_iam_policy_request)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the cloudresourcemanager service object (version v1beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('cloudresourcemanager', 'v1beta1', credentials=credentials)
+
+
+
+organizations = service.organizations()
+request = organizations.list()
+while request is not None:
+    response = request.execute()
+
+    for organization in response['organizations']:
+        # TODO: Add code here to process each 'organization' resource
+
+    request = organizations.list_next(request, response)
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the cloudresourcemanager service object (version v1beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('cloudresourcemanager', 'v1beta1', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'setIamPolicy' method:
+# * REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `setIamPolicy` documentation.
+resource = ''
+
+set_iam_policy_request = {
+# TODO: Add desired entries of the 'set_iam_policy_request' dict
+}
+
+request = service.organizations().setIamPolicy(resource, set_iam_policy_request)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the cloudresourcemanager service object (version v1beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('cloudresourcemanager', 'v1beta1', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'testIamPermissions' method:
+# * REQUIRED: The resource for which the policy detail is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `testIamPermissions` documentation.
+resource = ''
+
+test_iam_permissions_request = {
+# TODO: Add desired entries of the 'test_iam_permissions_request' dict
+}
+
+request = service.organizations().testIamPermissions(resource, test_iam_permissions_request)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the cloudresourcemanager service object (version v1beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('cloudresourcemanager', 'v1beta1', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'update' method:
+# * An immutable id for the Organization that is assigned on creation. This should be omitted when creating a new Organization. This field is read-only.
+organizationId = ''
+
+organization = {
+# TODO: Add desired entries of the 'organization' dict
+}
+
+request = service.organizations().update(organizationId, organization)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the cloudresourcemanager service object (version v1beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('cloudresourcemanager', 'v1beta1', credentials=credentials)
+
+
+
+project = {
+# TODO: Add desired entries of the 'project' dict
+}
+
+request = service.projects().create(project)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the cloudresourcemanager service object (version v1beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('cloudresourcemanager', 'v1beta1', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'delete' method:
+# * The Project ID (for example, `foo-bar-123`). Required.
+projectId = ''
+
+request = service.projects().delete(projectId)
+request.execute()
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the cloudresourcemanager service object (version v1beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('cloudresourcemanager', 'v1beta1', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'get' method:
+# * The Project ID (for example, `my-project-123`). Required.
+projectId = ''
+
+request = service.projects().get(projectId)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the cloudresourcemanager service object (version v1beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('cloudresourcemanager', 'v1beta1', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'getIamPolicy' method:
+# * REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `getIamPolicy` documentation.
+resource = ''
+
+get_iam_policy_request = {
+# TODO: Add desired entries of the 'get_iam_policy_request' dict
+}
+
+request = service.projects().getIamPolicy(resource, get_iam_policy_request)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the cloudresourcemanager service object (version v1beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('cloudresourcemanager', 'v1beta1', credentials=credentials)
+
+
+
+projects = service.projects()
+request = projects.list()
+while request is not None:
+    response = request.execute()
+
+    for project in response['projects']:
+        # TODO: Add code here to process each 'project' resource
+
+    request = projects.list_next(request, response)
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the cloudresourcemanager service object (version v1beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('cloudresourcemanager', 'v1beta1', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'setIamPolicy' method:
+# * REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `setIamPolicy` documentation.
+resource = ''
+
+set_iam_policy_request = {
+# TODO: Add desired entries of the 'set_iam_policy_request' dict
+}
+
+request = service.projects().setIamPolicy(resource, set_iam_policy_request)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the cloudresourcemanager service object (version v1beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('cloudresourcemanager', 'v1beta1', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'testIamPermissions' method:
+# * REQUIRED: The resource for which the policy detail is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `testIamPermissions` documentation.
+resource = ''
+
+test_iam_permissions_request = {
+# TODO: Add desired entries of the 'test_iam_permissions_request' dict
+}
+
+request = service.projects().testIamPermissions(resource, test_iam_permissions_request)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the cloudresourcemanager service object (version v1beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('cloudresourcemanager', 'v1beta1', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'undelete' method:
+# * The project ID (for example, `foo-bar-123`). Required.
+projectId = ''
+
+undelete_project_request = {
+# TODO: Add desired entries of the 'undelete_project_request' dict
+}
+
+request = service.projects().undelete(projectId, undelete_project_request)
+request.execute()
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+   https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the cloudresourcemanager service object (version v1beta1) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('cloudresourcemanager', 'v1beta1', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'update' method:
+# * The project ID (for example, `my-project-123`). Required.
+projectId = ''
+
+project = {
+# TODO: Add desired entries of the 'project' dict
+}
+
+request = service.projects().update(projectId, project)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))

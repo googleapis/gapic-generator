@@ -36,6 +36,10 @@ public class LanguageUtil {
     }
   }
 
+  public static String getTODO() {
+    return "TODO:";
+  }
+
   public static String upperCamelToUpperUnderscore(String name) {
     return CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, name);
   }

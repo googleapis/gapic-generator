@@ -25,6 +25,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
+import io.gapi.vgen.InterfaceConfig;
+import io.gapi.vgen.py.PythonImport.ImportType;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,37 +50,32 @@ public class PythonImportHandler {
 
   public PythonImportHandler(Interface service, InterfaceConfig config) {
     // Add non-service-specific imports.
-    addImport(null, PythonImport.create("json", PythonImport.ImportType.STDLIB));
-    addImport(null, PythonImport.create("os", PythonImport.ImportType.STDLIB));
-    addImport(null, PythonImport.create("pkg_resources", PythonImport.ImportType.STDLIB));
-    addImport(null, PythonImport.create("platform", PythonImport.ImportType.STDLIB));
-    addImport(null, PythonImport.create("google.gax", PythonImport.ImportType.THIRD_PARTY));
+    addImportStandard("json");
+    addImportStandard("os");
+    addImportStandard("pkg_resources");
+    addImportStandard("platform");
+    addImportExternal("google.gax");
 
-    addImport(
-        null,
-        PythonImport.create("google.gax", "api_callable", PythonImport.ImportType.THIRD_PARTY));
-    addImport(
-        null, PythonImport.create("google.gax", "config", PythonImport.ImportType.THIRD_PARTY));
-    addImport(
-        null,
-        PythonImport.create("google.gax", "path_template", PythonImport.ImportType.THIRD_PARTY));
+    addImportExternal("google.gax", "api_callable");
+    addImportExternal("google.gax", "config");
+    addImportExternal("google.gax", "path_template");
 
     // Add method request-type imports.
     for (Method method : service.getMethods()) {
       addImport(
           method.getFile(),
           PythonImport.create(
+              ImportType.APP,
               method.getFile().getProto().getPackage(),
-              PythonProtoElements.getPbFileName(method.getInputMessage()),
-              PythonImport.ImportType.APP));
+              PythonProtoElements.getPbFileName(method.getInputMessage())));
       for (Field field : method.getInputType().getMessageType().getMessageFields()) {
         MessageType messageType = field.getType().getMessageType();
         addImport(
             messageType.getFile(),
             PythonImport.create(
+                ImportType.APP,
                 messageType.getFile().getProto().getPackage(),
-                PythonProtoElements.getPbFileName(messageType),
-                PythonImport.ImportType.APP));
+                PythonProtoElements.getPbFileName(messageType)));
       }
     }
   }
@@ -91,13 +89,16 @@ public class PythonImportHandler {
           addImport(
               messageType.getFile(),
               PythonImport.create(
+                  ImportType.APP,
                   messageType.getFile().getProto().getPackage(),
-                  PythonProtoElements.getPbFileName(messageType),
-                  PythonImport.ImportType.APP));
+                  PythonProtoElements.getPbFileName(messageType)));
         }
       }
     }
   }
+
+  // Independent import handler to support fragment generation from discovery sources
+  public PythonImportHandler() {}
 
   /**
    * Returns the path to a proto element. If fullyQualified is false, returns the fully qualified
@@ -164,6 +165,33 @@ public class PythonImportHandler {
       addImport(formerFile, disambiguatedOldImp);
       return addImport(file, disambiguatedNewImp);
     }
+  }
+
+  // Helper methods to support generating imports from snippets for discovery fragment generation.
+  // Some are written with overloads since snippet engine currently does not support varargs.
+
+  public PythonImport addImport(ImportType type, String... names) {
+    return addImport(null, PythonImport.create(type, names));
+  }
+
+  public String addImportStandard(String moduleName) {
+    return addImport(ImportType.STDLIB, moduleName).shortName();
+  }
+
+  public String addImportStandard(String moduleName, String attributeName) {
+    return addImport(ImportType.STDLIB, moduleName, attributeName).shortName();
+  }
+
+  public String addImportExternal(String moduleName) {
+    return addImport(ImportType.THIRD_PARTY, moduleName).shortName();
+  }
+
+  public String addImportExternal(String moduleName, String attributeName) {
+    return addImport(ImportType.THIRD_PARTY, moduleName, attributeName).shortName();
+  }
+
+  public String addImportLocal(String moduleName, String attributeName) {
+    return addImport(ImportType.APP, moduleName, attributeName).shortName();
   }
 
   /**

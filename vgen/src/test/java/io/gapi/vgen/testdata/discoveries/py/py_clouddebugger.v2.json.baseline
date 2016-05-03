@@ -1,0 +1,295 @@
+
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Debugger API and check quota for your project at
+   https://console.developers.google.com/apis/api/clouddebugger_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the clouddebugger service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('clouddebugger', 'v2', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'list' method:
+# * Identifies the debuggee.
+debuggeeId = ''
+
+request = service.controller().debuggees().breakpoints().list(debuggeeId)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Debugger API and check quota for your project at
+   https://console.developers.google.com/apis/api/clouddebugger_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the clouddebugger service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('clouddebugger', 'v2', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'update' method:
+# * Identifies the debuggee being debugged.
+debuggeeId = ''
+# * Breakpoint identifier, unique in the scope of the debuggee.
+id = ''
+
+update_active_breakpoint_request = {
+# TODO: Add desired entries of the 'update_active_breakpoint_request' dict
+}
+
+request = service.controller().debuggees().breakpoints().update(debuggeeId, id, update_active_breakpoint_request)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Debugger API and check quota for your project at
+   https://console.developers.google.com/apis/api/clouddebugger_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the clouddebugger service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('clouddebugger', 'v2', credentials=credentials)
+
+
+
+register_debuggee_request = {
+# TODO: Add desired entries of the 'register_debuggee_request' dict
+}
+
+request = service.controller().debuggees().register(register_debuggee_request)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Debugger API and check quota for your project at
+   https://console.developers.google.com/apis/api/clouddebugger_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the clouddebugger service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('clouddebugger', 'v2', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'delete' method:
+# * ID of the debuggee whose breakpoint to delete.
+debuggeeId = ''
+# * ID of the breakpoint to delete.
+breakpointId = ''
+
+request = service.debugger().debuggees().breakpoints().delete(debuggeeId, breakpointId)
+request.execute()
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Debugger API and check quota for your project at
+   https://console.developers.google.com/apis/api/clouddebugger_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the clouddebugger service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('clouddebugger', 'v2', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'get' method:
+# * ID of the debuggee whose breakpoint to get.
+debuggeeId = ''
+# * ID of the breakpoint to get.
+breakpointId = ''
+
+request = service.debugger().debuggees().breakpoints().get(debuggeeId, breakpointId)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Debugger API and check quota for your project at
+   https://console.developers.google.com/apis/api/clouddebugger_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the clouddebugger service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('clouddebugger', 'v2', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'list' method:
+# * ID of the debuggee whose breakpoints to list.
+debuggeeId = ''
+
+request = service.debugger().debuggees().breakpoints().list(debuggeeId)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Debugger API and check quota for your project at
+   https://console.developers.google.com/apis/api/clouddebugger_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the clouddebugger service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('clouddebugger', 'v2', credentials=credentials)
+
+
+# TODO: Change placeholders below to values for parameters to the 'set' method:
+# * ID of the debuggee where the breakpoint is to be set.
+debuggeeId = ''
+
+breakpoint = {
+# TODO: Add desired entries of the 'breakpoint' dict
+}
+
+request = service.debugger().debuggees().breakpoints().set(debuggeeId, breakpoint)
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))
+"""
+PRE-REQUISITES:
+---------------
+1. If not already done, enable the Google Cloud Debugger API and check quota for your project at
+   https://console.developers.google.com/apis/api/clouddebugger_component/quotas
+2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+"""
+
+from __future__ import print_function
+import json
+
+from apiclient import discovery
+from oauth2client.client import GoogleCredentials
+
+# Authentication is provided by gcloud tool when running locally
+# and by built-in service accounts when running on GAE, GCE or GKE.
+# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+credentials = GoogleCredentials.get_application_default()
+
+# Construct the clouddebugger service object (version v2) for interacting
+# with the API. You can browse other available API services and versions at
+# https://developers.google.com/api-client-library/python/apis/
+service = discovery.build('clouddebugger', 'v2', credentials=credentials)
+
+
+
+request = service.debugger().debuggees().list()
+response = request.execute()
+
+# TODO: Change code below to process the 'response' dict:
+print(json.dumps(response))

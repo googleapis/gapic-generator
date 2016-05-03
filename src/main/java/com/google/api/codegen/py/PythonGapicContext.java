@@ -49,8 +49,8 @@ public class PythonGapicContext extends GapicContext {
   private static final ImmutableMap<Type, String> DEFAULT_VALUE_MAP =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "False")
-          .put(Type.TYPE_DOUBLE, "0.0J")
-          .put(Type.TYPE_FLOAT, "0.0J")
+          .put(Type.TYPE_DOUBLE, "0.0")
+          .put(Type.TYPE_FLOAT, "0.0")
           .put(Type.TYPE_INT64, "0L")
           .put(Type.TYPE_UINT64, "0L")
           .put(Type.TYPE_SINT64, "0L")
