@@ -14,6 +14,7 @@
  */
 package io.gapi.vgen;
 
+import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.truth.Truth;
@@ -48,6 +49,22 @@ public class RubyCodeGeneratorTest extends CodeGeneratorTestBase {
               "library_gapic.yaml",
           }
       });
+  }
+
+  @Override
+  protected Object run() {
+    // Should generate one file for the class, and a list of files for the protos
+    GeneratedResult codeResult = generateForSnippet(0);
+    List<GeneratedResult> docsResult = generateForDocSnippet(0);
+    Truth.assertThat(codeResult).isNotNull();
+    Truth.assertThat(docsResult).isNotNull();
+
+    ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String, Doc>();
+    builder.put(codeResult.getFilename(), codeResult.getDoc());
+    for (GeneratedResult result : docsResult) {
+      builder.put(result.getFilename(), result.getDoc());
+    }
+    return builder.build();
   }
 
   // Tests

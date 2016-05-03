@@ -40,14 +40,17 @@ public class RubyLanguageProvider {
       RubyGapicLanguageProvider.class.getPackage().getName().replace('.', '/');
 
   public <Element> void output(
-      String root, String outputPath, Multimap<Element, GeneratedResult> elements)
+      String packageRoot, String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
     for (Map.Entry<Element, GeneratedResult> entry : elements.entries()) {
       Element element = entry.getKey();
       GeneratedResult generatedResult = entry.getValue();
+      String root;
       if (element instanceof Method) {
         root = ((Method) element).getParent().getFile().getFullName().replace('.', '/');
+      } else {
+        root = packageRoot;
       }
       files.put(root + "/" + generatedResult.getFilename(), generatedResult.getDoc());
     }

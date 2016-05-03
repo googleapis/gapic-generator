@@ -46,19 +46,9 @@
   require '{@context.getGrpcFilename(service)}'
 @end
 
-@private module(moduleNames, content)
-  @if moduleNames.hasNext
-    module {@moduleNames.next}
-      {@module(moduleNames, content)}
-    end
-  @else
-    {@ content}
-  @end
-@end
-
 @private serviceClass(service)
   @let body = serviceClassBody(service)
-    {@module(context.getModules().iterator, body) }
+    {@module(context.getModules(service.getParent).iterator, body) }
   @end
 @end
 

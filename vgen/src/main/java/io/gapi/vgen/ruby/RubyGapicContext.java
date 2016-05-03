@@ -21,6 +21,7 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.ProtoContainerElement;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
@@ -59,7 +60,11 @@ public class RubyGapicContext extends GapicContext {
    * Returns the Ruby filename which holds the gRPC service definition.
    */
   public String getGrpcFilename(Interface service) {
-    return service.getFile().getProto().getName().replace(".proto", "_services");
+    return getBasename(service.getFile()) + "_services";
+  }
+
+  public String getBasename(ProtoFile protoFile) {
+    return protoFile.getSimpleName().replace(".proto", "");
   }
 
   /**
@@ -67,7 +72,7 @@ public class RubyGapicContext extends GapicContext {
    */
   public List<String> defaultComments(ProtoElement element) {
     if (!element.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      return ImmutableList.<String>of("");
+      return ImmutableList.<String>of();
     }
     return convertToCommentedBlock(RDocCommentFixer.rdocify(
         DocumentationUtil.getScopedDescription(element)));
@@ -100,18 +105,30 @@ public class RubyGapicContext extends GapicContext {
   }
 
   /**
-   * Returns a YARD comment string for field, consisting of type information and proto comment.
+   * Returns a YARD comment string for the field as a parameter to a function.
    */
-  private String fieldComment(Field field) {
+  private String fieldParamComment(Field field) {
     String commentType = fieldTypeCardinalityComment(field);
     String comment = String.format(
         "@param %s [%s]", wrapIfKeywordOrBuiltIn(field.getSimpleName()), commentType);
     String paramComment = DocumentationUtil.getScopedDescription(field);
     if (!Strings.isNullOrEmpty(paramComment)) {
-      if (paramComment.charAt(paramComment.length() - 1) == '\n') {
-        paramComment = paramComment.substring(0, paramComment.length() - 1);
-      }
+      paramComment = RDocCommentFixer.rdocify(paramComment);
       comment += "\n  " + paramComment.replaceAll("(\\r?\\n)", "\n  ");
+    }
+    return comment + "\n";
+  }
+
+  /**
+   * Return a YARD comment string for the field, as the attribute of a message.
+   */
+  private String fieldAttributeComment(Field field) {
+    String comment = "@!attribute [rw] " + field.getSimpleName() + "\n"
+        + "  @return [" + fieldTypeCardinalityComment(field) + "]";
+    String fieldComment = DocumentationUtil.getScopedDescription(field);
+    if (!Strings.isNullOrEmpty(fieldComment)) {
+      fieldComment = RDocCommentFixer.rdocify(fieldComment);
+      comment += "\n    " + fieldComment.replaceAll("(\\r?\\n)", "\n    ");
     }
     return comment + "\n";
   }
@@ -154,7 +171,7 @@ public class RubyGapicContext extends GapicContext {
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
     for (Field field : this.messages().flattenedFields(msg.getInputType())) {
-      paramTypesBuilder.append(fieldComment(field));
+      paramTypesBuilder.append(fieldParamComment(field));
     }
     paramTypesBuilder.append("@param options [Google::Gax::CallOptions] \n" +
                              "  Overrides the default settings for this call, e.g, timeout,\n" +
@@ -166,9 +183,8 @@ public class RubyGapicContext extends GapicContext {
     // Generate comment contents
     StringBuilder contentBuilder = new StringBuilder();
     if (msg.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      String text = RDocCommentFixer.rdocify(DocumentationUtil.getScopedDescription(msg));
-      text = text.trim();
-      contentBuilder.append(text.replaceAll("\\s*\\n\\s*", "\n"));
+      contentBuilder.append(
+          RDocCommentFixer.rdocify(DocumentationUtil.getScopedDescription(msg)));
       if (!Strings.isNullOrEmpty(paramTypes)) {
         contentBuilder.append("\n\n");
       }
@@ -181,6 +197,40 @@ public class RubyGapicContext extends GapicContext {
     contentBuilder.append(
         "\n@raise [Google::Gax::GaxError] if the RPC is aborted.");
     return convertToCommentedBlock(contentBuilder.toString());
+  }
+
+  /**
+   * Return the list of messages within element which should be documented in Ruby.
+   */
+  public ImmutableList<MessageType> filterDocumentingMessages(ProtoContainerElement element) {
+    ImmutableList.Builder<MessageType> builder = ImmutableList.builder();
+    for (MessageType msg : element.getMessages()) {
+      // Doesn't have to document map entries in Ruby because Hash is used.
+      if (!msg.isMapEntry()) {
+        builder.add(msg);
+      }
+    }
+    return builder.build();
+  }
+
+  /**
+   * Return the doccomment for the message.
+   */
+  public List<String> methodDocComment(MessageType msg) {
+    StringBuilder attributesBuilder = new StringBuilder();
+    for (Field field : msg.getFields()) {
+      attributesBuilder.append(fieldAttributeComment(field));
+    }
+
+    String attributes = attributesBuilder.toString().trim();
+
+    List<String> content = defaultComments(msg);
+    if (!Strings.isNullOrEmpty(attributes)) {
+      return ImmutableList.<String>builder().addAll(content)
+          .addAll(convertToCommentedBlock(attributes))
+          .build();
+    }
+    return content;
   }
 
   /**
@@ -275,8 +325,16 @@ public class RubyGapicContext extends GapicContext {
     return builder.build();
   }
 
-  public Iterable<String> getModules() {
-    return Splitter.on("::").split(getApiConfig().getPackageName());
+  /**
+   * Returns the iterable of Ruby module names for the proto element.
+   */
+  public Iterable<String> getModules(ProtoElement element) {
+    String fullName = element.getFullName();
+    List<String> modules = new ArrayList<>();
+    for (String pkgName : Splitter.on(".").splitToList(fullName)) {
+      modules.add(lowerUnderscoreToUpperCamel(pkgName));
+    }
+    return modules;
   }
 
   // Constants
