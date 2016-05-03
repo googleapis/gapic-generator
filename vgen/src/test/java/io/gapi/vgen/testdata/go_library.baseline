@@ -50,13 +50,14 @@ import (
 	"io"
 	"time"
 
-	gax "github.com/googleapis/gax-go"
+	gax "github.com/googleapis/gax-golang"
 	"golang.org/x/net/context"
 	"google.golang.org/cloud"
 	"google.golang.org/cloud/internal/transport"
 	google_example_library_v1 "google.golang.org/cloud/library/proto/google/example/library/v1"
 	google_protobuf "google.golang.org/cloud/library/proto/google/protobuf"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 )
 
 const (
@@ -75,9 +76,25 @@ var (
 	bookPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}/books/{book}")
 )
 
+func idempotentRetryCodes() []gax.CallOption {
+	return []gax.CallOption{
+		gax.WithRetryCodes([]codes.Code{
+			codes.DeadlineExceeded,
+			codes.Unavailable,
+		}),
+	}
+}
+
+func nonIdempotentRetryCodes() []gax.CallOption {
+	return []gax.CallOption{
+		gax.WithRetryCodes([]codes.Code{
+		}),
+	}
+}
+
 func defaultRetryParams() []gax.CallOption {
 	return []gax.CallOption{
-		gax.WithTimeout(30000*time.Millisecond),
+		gax.WithTimeout(30*time.Second),
 		gax.WithDelayTimeoutSettings(100*time.Millisecond, 1000*time.Millisecond, 1.2),
 		gax.WithRPCTimeoutSettings(300*time.Millisecond, 3000*time.Millisecond, 1.3),
 	}
@@ -174,43 +191,45 @@ func (book Book) Path() (string, error) {
 
 // CreateShelf creates a shelf, and returns the new Shelf.
 func (client *Client) CreateShelf(ctx context.Context, req *google_example_library_v1.CreateShelfRequest, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
-	callOpts := append(defaultRetryParams(), client.CallOptions["CreateShelf"]...)
+	callOpts := append(nonIdempotentRetryCodes(), defaultRetryParams(), client.CallOptions["CreateShelf"]...)
 	callOpts = append(callOpts, opts...)
-	resp, err := gax.Invoke(ctx, req, client.createShelf, callOpts...)
+	var resp *google_example_library_v1.Shelf
+	err := gax.Invoke(ctx, func (c context.Context) error {
+		var err error
+		resp, err = client.client.CreateShelf(c, req)
+		return err
+	}, callOpts...)
 	if err != nil {
 		return nil, err
 	}
-	return resp.(*google_example_library_v1.Shelf), nil
+	return resp, nil
 }
 
-// createShelf is a gax.APICall that calls api.client.CreateShelf.
-func (client *Client) createShelf(ctx context.Context, req interface{}) (interface{}, error) {
-	return client.client.CreateShelf(ctx, req.(*google_example_library_v1.CreateShelfRequest))
-}
 
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // GetShelf gets a shelf.
 func (client *Client) GetShelf(ctx context.Context, req *google_example_library_v1.GetShelfRequest, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
-	callOpts := append(defaultRetryParams(), client.CallOptions["GetShelf"]...)
+	callOpts := append(idempotentRetryCodes(), defaultRetryParams(), client.CallOptions["GetShelf"]...)
 	callOpts = append(callOpts, opts...)
-	resp, err := gax.Invoke(ctx, req, client.getShelf, callOpts...)
+	var resp *google_example_library_v1.Shelf
+	err := gax.Invoke(ctx, func (c context.Context) error {
+		var err error
+		resp, err = client.client.GetShelf(c, req)
+		return err
+	}, callOpts...)
 	if err != nil {
 		return nil, err
 	}
-	return resp.(*google_example_library_v1.Shelf), nil
+	return resp, nil
 }
 
-// getShelf is a gax.APICall that calls api.client.GetShelf.
-func (client *Client) getShelf(ctx context.Context, req interface{}) (interface{}, error) {
-	return client.client.GetShelf(ctx, req.(*google_example_library_v1.GetShelfRequest))
-}
 
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // ListShelves lists shelves.
 func (client *Client) ListShelves(ctx context.Context, req *google_example_library_v1.ListShelvesRequest, opts ...gax.CallOption) (*ShelfIterator, error) {
-	callOpts := append(defaultRetryParams(), client.CallOptions["ListShelves"]...)
+	callOpts := append(idempotentRetryCodes(), defaultRetryParams(), client.CallOptions["ListShelves"]...)
 	callOpts = append(callOpts, opts...)
 	atLastPage := false
 	return &ShelfIterator{
@@ -218,11 +237,15 @@ func (client *Client) ListShelves(ctx context.Context, req *google_example_libra
 			if atLastPage {
 				return ShelfPage{}, io.EOF
 			}
-			result, err := gax.Invoke(ctx, req, client.listShelves, callOpts...)
+			var resp *google_example_library_v1.ListShelvesResponse
+			err := gax.Invoke(ctx, func (c context.Context) error {
+				var err error
+				resp, err = client.client.ListShelves(c, req)
+				return err
+			}, callOpts...)
 			if err != nil {
 				return ShelfPage{}, err
 			}
-			resp := result.(*google_example_library_v1.ListShelvesResponse)
 			if resp.NextPageToken == "" {
 				atLastPage = true
 			} else {
@@ -236,25 +259,21 @@ func (client *Client) ListShelves(ctx context.Context, req *google_example_libra
 	}, nil
 }
 
-// listShelves is a gax.APICall that calls api.client.ListShelves.
-func (client *Client) listShelves(ctx context.Context, req interface{}) (interface{}, error) {
-	return client.client.ListShelves(ctx, req.(*google_example_library_v1.ListShelvesRequest))
-}
 
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // DeleteShelf deletes a shelf.
 func (client *Client) DeleteShelf(ctx context.Context, req *google_example_library_v1.DeleteShelfRequest, opts ...gax.CallOption) error {
-	callOpts := append(defaultRetryParams(), client.CallOptions["DeleteShelf"]...)
+	callOpts := append(idempotentRetryCodes(), defaultRetryParams(), client.CallOptions["DeleteShelf"]...)
 	callOpts = append(callOpts, opts...)
-	_, err := gax.Invoke(ctx, req, client.deleteShelf, callOpts...)
+	err := gax.Invoke(ctx, func (c context.Context) error {
+		var err error
+		_, err = client.client.DeleteShelf(c, req)
+		return err
+	}, callOpts...)
 	return err
 }
 
-// deleteShelf is a gax.APICall that calls api.client.DeleteShelf.
-func (client *Client) deleteShelf(ctx context.Context, req interface{}) (interface{}, error) {
-	return client.client.DeleteShelf(ctx, req.(*google_example_library_v1.DeleteShelfRequest))
-}
 
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
@@ -262,79 +281,83 @@ func (client *Client) deleteShelf(ctx context.Context, req interface{}) (interfa
 // `other_shelf_name` to shelf `name`, and deletes
 // `other_shelf_name`. Returns the updated shelf.
 func (client *Client) MergeShelves(ctx context.Context, req *google_example_library_v1.MergeShelvesRequest, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
-	callOpts := append(defaultRetryParams(), client.CallOptions["MergeShelves"]...)
+	callOpts := append(nonIdempotentRetryCodes(), defaultRetryParams(), client.CallOptions["MergeShelves"]...)
 	callOpts = append(callOpts, opts...)
-	resp, err := gax.Invoke(ctx, req, client.mergeShelves, callOpts...)
+	var resp *google_example_library_v1.Shelf
+	err := gax.Invoke(ctx, func (c context.Context) error {
+		var err error
+		resp, err = client.client.MergeShelves(c, req)
+		return err
+	}, callOpts...)
 	if err != nil {
 		return nil, err
 	}
-	return resp.(*google_example_library_v1.Shelf), nil
+	return resp, nil
 }
 
-// mergeShelves is a gax.APICall that calls api.client.MergeShelves.
-func (client *Client) mergeShelves(ctx context.Context, req interface{}) (interface{}, error) {
-	return client.client.MergeShelves(ctx, req.(*google_example_library_v1.MergeShelvesRequest))
-}
 
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // CreateBook creates a book.
 func (client *Client) CreateBook(ctx context.Context, req *google_example_library_v1.CreateBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
-	callOpts := append(defaultRetryParams(), client.CallOptions["CreateBook"]...)
+	callOpts := append(nonIdempotentRetryCodes(), defaultRetryParams(), client.CallOptions["CreateBook"]...)
 	callOpts = append(callOpts, opts...)
-	resp, err := gax.Invoke(ctx, req, client.createBook, callOpts...)
+	var resp *google_example_library_v1.Book
+	err := gax.Invoke(ctx, func (c context.Context) error {
+		var err error
+		resp, err = client.client.CreateBook(c, req)
+		return err
+	}, callOpts...)
 	if err != nil {
 		return nil, err
 	}
-	return resp.(*google_example_library_v1.Book), nil
+	return resp, nil
 }
 
-// createBook is a gax.APICall that calls api.client.CreateBook.
-func (client *Client) createBook(ctx context.Context, req interface{}) (interface{}, error) {
-	return client.client.CreateBook(ctx, req.(*google_example_library_v1.CreateBookRequest))
-}
 
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // PublishSeries creates a series of books.
 func (client *Client) PublishSeries(ctx context.Context, req *google_example_library_v1.PublishSeriesRequest, opts ...gax.CallOption) (*google_example_library_v1.PublishSeriesResponse, error) {
-	callOpts := append(defaultRetryParams(), client.CallOptions["PublishSeries"]...)
+	callOpts := append(nonIdempotentRetryCodes(), defaultRetryParams(), client.CallOptions["PublishSeries"]...)
 	callOpts = append(callOpts, opts...)
-	resp, err := gax.Invoke(ctx, req, client.publishSeries, callOpts...)
+	var resp *google_example_library_v1.PublishSeriesResponse
+	err := gax.Invoke(ctx, func (c context.Context) error {
+		var err error
+		resp, err = client.client.PublishSeries(c, req)
+		return err
+	}, callOpts...)
 	if err != nil {
 		return nil, err
 	}
-	return resp.(*google_example_library_v1.PublishSeriesResponse), nil
+	return resp, nil
 }
 
-// publishSeries is a gax.APICall that calls api.client.PublishSeries.
-func (client *Client) publishSeries(ctx context.Context, req interface{}) (interface{}, error) {
-	return client.client.PublishSeries(ctx, req.(*google_example_library_v1.PublishSeriesRequest))
-}
 
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // GetBook gets a book.
 func (client *Client) GetBook(ctx context.Context, req *google_example_library_v1.GetBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
-	callOpts := append(defaultRetryParams(), client.CallOptions["GetBook"]...)
+	callOpts := append(idempotentRetryCodes(), defaultRetryParams(), client.CallOptions["GetBook"]...)
 	callOpts = append(callOpts, opts...)
-	resp, err := gax.Invoke(ctx, req, client.getBook, callOpts...)
+	var resp *google_example_library_v1.Book
+	err := gax.Invoke(ctx, func (c context.Context) error {
+		var err error
+		resp, err = client.client.GetBook(c, req)
+		return err
+	}, callOpts...)
 	if err != nil {
 		return nil, err
 	}
-	return resp.(*google_example_library_v1.Book), nil
+	return resp, nil
 }
 
-// getBook is a gax.APICall that calls api.client.GetBook.
-func (client *Client) getBook(ctx context.Context, req interface{}) (interface{}, error) {
-	return client.client.GetBook(ctx, req.(*google_example_library_v1.GetBookRequest))
-}
 
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // ListBooks lists books in a shelf.
 func (client *Client) ListBooks(ctx context.Context, req *google_example_library_v1.ListBooksRequest, opts ...gax.CallOption) (*BookIterator, error) {
-	callOpts := append(defaultRetryParams(), client.CallOptions["ListBooks"]...)
+	callOpts := append(idempotentRetryCodes(), defaultRetryParams(), client.CallOptions["ListBooks"]...)
 	callOpts = append(callOpts, opts...)
 	atLastPage := false
 	return &BookIterator{
@@ -342,11 +365,15 @@ func (client *Client) ListBooks(ctx context.Context, req *google_example_library
 			if atLastPage {
 				return BookPage{}, io.EOF
 			}
-			result, err := gax.Invoke(ctx, req, client.listBooks, callOpts...)
+			var resp *google_example_library_v1.ListBooksResponse
+			err := gax.Invoke(ctx, func (c context.Context) error {
+				var err error
+				resp, err = client.client.ListBooks(c, req)
+				return err
+			}, callOpts...)
 			if err != nil {
 				return BookPage{}, err
 			}
-			resp := result.(*google_example_library_v1.ListBooksResponse)
 			if resp.NextPageToken == "" {
 				atLastPage = true
 			} else {
@@ -360,61 +387,59 @@ func (client *Client) ListBooks(ctx context.Context, req *google_example_library
 	}, nil
 }
 
-// listBooks is a gax.APICall that calls api.client.ListBooks.
-func (client *Client) listBooks(ctx context.Context, req interface{}) (interface{}, error) {
-	return client.client.ListBooks(ctx, req.(*google_example_library_v1.ListBooksRequest))
-}
 
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // DeleteBook deletes a book.
 func (client *Client) DeleteBook(ctx context.Context, req *google_example_library_v1.DeleteBookRequest, opts ...gax.CallOption) error {
-	callOpts := append(defaultRetryParams(), client.CallOptions["DeleteBook"]...)
+	callOpts := append(idempotentRetryCodes(), defaultRetryParams(), client.CallOptions["DeleteBook"]...)
 	callOpts = append(callOpts, opts...)
-	_, err := gax.Invoke(ctx, req, client.deleteBook, callOpts...)
+	err := gax.Invoke(ctx, func (c context.Context) error {
+		var err error
+		_, err = client.client.DeleteBook(c, req)
+		return err
+	}, callOpts...)
 	return err
 }
 
-// deleteBook is a gax.APICall that calls api.client.DeleteBook.
-func (client *Client) deleteBook(ctx context.Context, req interface{}) (interface{}, error) {
-	return client.client.DeleteBook(ctx, req.(*google_example_library_v1.DeleteBookRequest))
-}
 
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // UpdateBook updates a book.
 func (client *Client) UpdateBook(ctx context.Context, req *google_example_library_v1.UpdateBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
-	callOpts := append(defaultRetryParams(), client.CallOptions["UpdateBook"]...)
+	callOpts := append(idempotentRetryCodes(), defaultRetryParams(), client.CallOptions["UpdateBook"]...)
 	callOpts = append(callOpts, opts...)
-	resp, err := gax.Invoke(ctx, req, client.updateBook, callOpts...)
+	var resp *google_example_library_v1.Book
+	err := gax.Invoke(ctx, func (c context.Context) error {
+		var err error
+		resp, err = client.client.UpdateBook(c, req)
+		return err
+	}, callOpts...)
 	if err != nil {
 		return nil, err
 	}
-	return resp.(*google_example_library_v1.Book), nil
+	return resp, nil
 }
 
-// updateBook is a gax.APICall that calls api.client.UpdateBook.
-func (client *Client) updateBook(ctx context.Context, req interface{}) (interface{}, error) {
-	return client.client.UpdateBook(ctx, req.(*google_example_library_v1.UpdateBookRequest))
-}
 
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // MoveBook moves a book to another shelf, and returns the new book.
 func (client *Client) MoveBook(ctx context.Context, req *google_example_library_v1.MoveBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
-	callOpts := append(defaultRetryParams(), client.CallOptions["MoveBook"]...)
+	callOpts := append(nonIdempotentRetryCodes(), defaultRetryParams(), client.CallOptions["MoveBook"]...)
 	callOpts = append(callOpts, opts...)
-	resp, err := gax.Invoke(ctx, req, client.moveBook, callOpts...)
+	var resp *google_example_library_v1.Book
+	err := gax.Invoke(ctx, func (c context.Context) error {
+		var err error
+		resp, err = client.client.MoveBook(c, req)
+		return err
+	}, callOpts...)
 	if err != nil {
 		return nil, err
 	}
-	return resp.(*google_example_library_v1.Book), nil
+	return resp, nil
 }
 
-// moveBook is a gax.APICall that calls api.client.MoveBook.
-func (client *Client) moveBook(ctx context.Context, req interface{}) (interface{}, error) {
-	return client.client.MoveBook(ctx, req.(*google_example_library_v1.MoveBookRequest))
-}
 
 // Iterators.
 //

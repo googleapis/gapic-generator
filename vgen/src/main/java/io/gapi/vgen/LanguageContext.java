@@ -54,6 +54,10 @@ public class LanguageContext {
     return LanguageUtil.upperCamelToLowerUnderscore(name);
   }
 
+  public String upperUnderscoreToUpperCamel(String name) {
+    return LanguageUtil.upperUnderscoreToUpperCamel(name);
+  }
+
   public String lowerUnderscoreToUpperUnderscore(String name) {
     return LanguageUtil.lowerUnderscoreToUpperUnderscore(name);
   }
