@@ -78,6 +78,10 @@ public class CodegenContext {
     return LanguageUtil.lowerCamelToUpperCamel(name);
   }
 
+  public String lowerCamelToLowerUnderscore(String name) {
+    return LanguageUtil.lowerCamelToLowerUnderscore(name);
+  }
+
   /*
    * This method is necessary to call m.entrySet() from snippets,
    * due to method resolution complexities.

@@ -1,0 +1,342 @@
+
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudresourcemanager_v1beta1'
+
+service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to values for parameters to the 'get_organization' method:
+# The id of the Organization resource to fetch.
+organization_id = ''
+
+
+# Perform the call
+response = service.get_organization(organizationId)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudresourcemanager_v1beta1'
+
+service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to values for parameters to the 'get_organization_iam_policy' method:
+# REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `getIamPolicy` documentation.
+resource = ''
+get_iam_policy_request_object = Google::Apis::CloudresourcemanagerV1beta1::GetIamPolicyRequest.new
+
+
+# Perform the call
+response = service.get_organization_iam_policy(resource, get_iam_policy_request_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudresourcemanager_v1beta1'
+
+service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+
+# Perform the call
+result_list = service.fetch_all(items: :organizations) { |token|
+  service.list_organizations(, page_token: token)
+}
+result_list.each { |element|
+  # doThingsWith(element)
+}
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudresourcemanager_v1beta1'
+
+service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to values for parameters to the 'set_organization_iam_policy' method:
+# REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `setIamPolicy` documentation.
+resource = ''
+set_iam_policy_request_object = Google::Apis::CloudresourcemanagerV1beta1::SetIamPolicyRequest.new
+
+
+# Perform the call
+response = service.set_organization_iam_policy(resource, set_iam_policy_request_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudresourcemanager_v1beta1'
+
+service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to values for parameters to the 'test_organization_iam_permissions' method:
+# REQUIRED: The resource for which the policy detail is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `testIamPermissions` documentation.
+resource = ''
+test_iam_permissions_request_object = Google::Apis::CloudresourcemanagerV1beta1::TestIamPermissionsRequest.new
+
+
+# Perform the call
+response = service.test_organization_iam_permissions(resource, test_iam_permissions_request_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudresourcemanager_v1beta1'
+
+service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to values for parameters to the 'update_organization' method:
+# An immutable id for the Organization that is assigned on creation. This should be omitted when creating a new Organization. This field is read-only.
+organization_id = ''
+organization_object = Google::Apis::CloudresourcemanagerV1beta1::Organization.new
+
+
+# Perform the call
+response = service.update_organization(organizationId, organization_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudresourcemanager_v1beta1'
+
+service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+project_object = Google::Apis::CloudresourcemanagerV1beta1::Project.new
+
+
+# Perform the call
+response = service.create_project(project_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudresourcemanager_v1beta1'
+
+service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to values for parameters to the 'delete_project' method:
+# The Project ID (for example, `foo-bar-123`). Required.
+project_id = ''
+
+
+# Perform the call
+response = service.delete_project(projectId)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudresourcemanager_v1beta1'
+
+service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to values for parameters to the 'get_project' method:
+# The Project ID (for example, `my-project-123`). Required.
+project_id = ''
+
+
+# Perform the call
+response = service.get_project(projectId)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudresourcemanager_v1beta1'
+
+service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to values for parameters to the 'get_project_iam_policy' method:
+# REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `getIamPolicy` documentation.
+resource = ''
+get_iam_policy_request_object = Google::Apis::CloudresourcemanagerV1beta1::GetIamPolicyRequest.new
+
+
+# Perform the call
+response = service.get_project_iam_policy(resource, get_iam_policy_request_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudresourcemanager_v1beta1'
+
+service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+
+# Perform the call
+result_list = service.fetch_all(items: :projects) { |token|
+  service.list_projects(, page_token: token)
+}
+result_list.each { |element|
+  # doThingsWith(element)
+}
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudresourcemanager_v1beta1'
+
+service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to values for parameters to the 'set_project_iam_policy' method:
+# REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `setIamPolicy` documentation.
+resource = ''
+set_iam_policy_request_object = Google::Apis::CloudresourcemanagerV1beta1::SetIamPolicyRequest.new
+
+
+# Perform the call
+response = service.set_project_iam_policy(resource, set_iam_policy_request_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudresourcemanager_v1beta1'
+
+service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to values for parameters to the 'test_project_iam_permissions' method:
+# REQUIRED: The resource for which the policy detail is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `testIamPermissions` documentation.
+resource = ''
+test_iam_permissions_request_object = Google::Apis::CloudresourcemanagerV1beta1::TestIamPermissionsRequest.new
+
+
+# Perform the call
+response = service.test_project_iam_permissions(resource, test_iam_permissions_request_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudresourcemanager_v1beta1'
+
+service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to values for parameters to the 'undelete_project' method:
+# The project ID (for example, `foo-bar-123`). Required.
+project_id = ''
+undelete_project_request_object = Google::Apis::CloudresourcemanagerV1beta1::UndeleteProjectRequest.new
+
+
+# Perform the call
+response = service.undelete_project(projectId, undelete_project_request_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudresourcemanager_v1beta1'
+
+service = Google::Apis::CloudresourcemanagerV1beta1::CloudResourceManagerService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to values for parameters to the 'update_project' method:
+# The project ID (for example, `my-project-123`). Required.
+project_id = ''
+project_object = Google::Apis::CloudresourcemanagerV1beta1::Project.new
+
+
+# Perform the call
+response = service.update_project(projectId, project_object)
