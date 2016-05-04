@@ -674,9 +674,9 @@ namespace Google.Example.Library.V1
         /// <param name="channel">The <see cref="Channel"/> for remote operations. Must not be null.</param>
         /// <param name="settings">Optional <see cref="LibraryServiceSettings"/>.</param>
         /// <returns>The created <see cref="LibraryServiceClient"/>.</returns>
-        public static DatastoreClient Create(Channel channel, LibraryServiceSettings settings = null)
+        public static LibraryServiceClient Create(Channel channel, LibraryServiceSettings settings = null)
         {
-            Preconditions.CheckNotNull(channel, nameof(channel));
+            GaxPreconditions.CheckNotNull(channel, nameof(channel));
             LibraryService.LibraryServiceClient grpcClient = new LibraryService.LibraryServiceClient(channel);
             return new LibraryServiceClientImpl(grpcClient, settings);
         }
