@@ -21,8 +21,8 @@ import (
 func main() {
   // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  // client, err := google.DefaultClient(ctx, {@context.getApi.getName}.CloudPlatformScope)
-  client, err := google.DefaultClient(ctx)
+  # Every API except autoscaler has the string as API.CloudPlatformScope, find out why
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
     log.Fatal(err)
   }
