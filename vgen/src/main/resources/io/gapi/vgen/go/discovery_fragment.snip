@@ -21,7 +21,7 @@ import (
 func main() {
   // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  # Every API except autoscaler has the string as API.CloudPlatformScope, find out why
+  # TODO(pongad): Every API except autoscaler has the string as API.CloudPlatformScope, find out why
   client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
     log.Fatal(err)
@@ -90,25 +90,28 @@ func main() {
 
 @private initialize(method)
   @if context.getMethodParams(method)
-    // TODO: Change placeholders below to values for parameters to the '{@context.getMethodName(method)}' method:
+    // TODO: Change placeholders below to appropriate parameters values for the '{@context.getMethodName(method)}' method:
 
   @end
-  @join param : context.getFlatMethodParams(method)
-    @let signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
-        paramField = context.getField(signatureType, param), \
-        paramValue = context.typeDefaultValue(signatureType, paramField), \
-        paramDescription = context.getApiaryConfig.getDescription(signatureType.getName, param)
-      @if paramDescription
-        // {@paramDescription}
+  var (
+    @join param : context.getFlatMethodParams(method)
+      @let signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
+          paramField = context.getField(signatureType, param), \
+          paramValue = context.typeDefaultValue(signatureType, paramField), \
+          paramDescription = context.getApiaryConfig.getDescription(signatureType.getName, param)
+        @if paramDescription
+          // {@paramDescription}
+        @end
+
+        {@unclashVar(param)} = {@paramValue}
+
       @end
-
-      {@unclashVar(param)} := {@paramValue}
     @end
-  @end
-  @if context.hasRequestField(method)
+    @if context.hasRequestField(method)
 
-    requestBody := &{@context.getApi.getName}.{@context.getRequestField(method).getTypeUrl}{}
-  @end
+      requestBody = &{@context.getApi.getName}.{@context.getRequestField(method).getTypeUrl}{}
+    @end
+  )
 @end
 
 @private callArg(method)

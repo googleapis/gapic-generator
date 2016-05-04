@@ -23,7 +23,7 @@ import com.google.protobuf.Type;
 import io.gapi.vgen.ApiaryConfig;
 import io.gapi.vgen.DiscoveryContext;
 
-public class GoDiscoveryContext extends DiscoveryContext {
+public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
   public GoDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
     super(service, apiaryConfig);
   }
@@ -55,7 +55,6 @@ public class GoDiscoveryContext extends DiscoveryContext {
         case "byte":
           return "\"\" // base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648";
         case "date":
-          // TODO(tcoffee): does new DateTime(new Date(0L)).toStringRfc3339() work?
           return "\"2006-01-02\" // YYYY-MM-DD";
         case "date-time":
           return "\"2006-01-02T15:04:05Z07:00\" // YYYY-MM-DDThh:mm:ss see time.RFC3339";

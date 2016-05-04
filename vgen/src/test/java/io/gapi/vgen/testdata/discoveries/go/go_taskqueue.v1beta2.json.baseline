@@ -22,11 +22,15 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'get' method:
-  // The project under which the queue lies.
-  project := ""
-  // The id of the taskqueue to get the properties of.
-  taskqueue_ := ""
+  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  var (
+    // The project under which the queue lies.
+    project = ""
+
+    // The id of the taskqueue to get the properties of.
+    taskqueue_ = ""
+
+  )
 
   callResult, err := service.Taskqueues.Get(project, taskqueue_).Context(ctx).Do()
   if err != nil {
@@ -58,13 +62,18 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'delete' method:
-  // The project under which the queue lies.
-  project := ""
-  // The taskqueue to delete a task from.
-  taskqueue_ := ""
-  // The id of the task to delete.
-  task := ""
+  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  var (
+    // The project under which the queue lies.
+    project = ""
+
+    // The taskqueue to delete a task from.
+    taskqueue_ = ""
+
+    // The id of the task to delete.
+    task = ""
+
+  )
 
   err = service.Tasks.Delete(project, taskqueue_, task).Context(ctx).Do()
   if err != nil {
@@ -94,13 +103,18 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'get' method:
-  // The project under which the queue lies.
-  project := ""
-  // The taskqueue in which the task belongs.
-  taskqueue_ := ""
-  // The task to get properties of.
-  task := ""
+  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  var (
+    // The project under which the queue lies.
+    project = ""
+
+    // The taskqueue in which the task belongs.
+    taskqueue_ = ""
+
+    // The task to get properties of.
+    task = ""
+
+  )
 
   callResult, err := service.Tasks.Get(project, taskqueue_, task).Context(ctx).Do()
   if err != nil {
@@ -132,12 +146,17 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'insert' method:
-  // The project under which the queue lies
-  project := ""
-  // The taskqueue to insert the task into
-  taskqueue_ := ""
-                  requestBody := &taskqueue.Task{}
+  // TODO: Change placeholders below to appropriate parameters values for the 'insert' method:
+  var (
+    // The project under which the queue lies
+    project = ""
+
+    // The taskqueue to insert the task into
+    taskqueue_ = ""
+
+
+    requestBody = &taskqueue.Task{}
+  )
 
   callResult, err := service.Tasks.Insert(project, taskqueue_, requestBody).Context(ctx).Do()
   if err != nil {
@@ -169,15 +188,21 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'lease' method:
-  // The project under which the queue lies.
-  project := ""
-  // The taskqueue to lease a task from.
-  taskqueue_ := ""
-  // The number of tasks to lease.
-  numTasks := int64(0)
-  // The lease in seconds.
-  leaseSecs := int64(0)
+  // TODO: Change placeholders below to appropriate parameters values for the 'lease' method:
+  var (
+    // The project under which the queue lies.
+    project = ""
+
+    // The taskqueue to lease a task from.
+    taskqueue_ = ""
+
+    // The number of tasks to lease.
+    numTasks = int64(0)
+
+    // The lease in seconds.
+    leaseSecs = int64(0)
+
+  )
 
   callResult, err := service.Tasks.Lease(project, taskqueue_, numTasks, leaseSecs).Context(ctx).Do()
   if err != nil {
@@ -209,11 +234,15 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'list' method:
-  // The project under which the queue lies.
-  project := ""
-  // The id of the taskqueue to list tasks from.
-  taskqueue_ := ""
+  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  var (
+    // The project under which the queue lies.
+    project = ""
+
+    // The id of the taskqueue to list tasks from.
+    taskqueue_ = ""
+
+  )
 
   callResult, err := service.Tasks.List(project, taskqueue_).Context(ctx).Do()
   if err != nil {
@@ -245,16 +274,23 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'patch' method:
-  // The project under which the queue lies.
-  project := ""
+  // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
+  var (
+    // The project under which the queue lies.
+    project = ""
 
-  taskqueue_ := ""
 
-  task := ""
-  // The new lease in seconds.
-  newLeaseSeconds := int64(0)
-                             requestBody := &taskqueue.Task{}
+    taskqueue_ = ""
+
+
+    task = ""
+
+    // The new lease in seconds.
+    newLeaseSeconds = int64(0)
+
+
+    requestBody = &taskqueue.Task{}
+  )
 
   callResult, err := service.Tasks.Patch(project, taskqueue_, task, newLeaseSeconds, requestBody).Context(ctx).Do()
   if err != nil {
@@ -286,16 +322,23 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'update' method:
-  // The project under which the queue lies.
-  project := ""
+  // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
+  var (
+    // The project under which the queue lies.
+    project = ""
 
-  taskqueue_ := ""
 
-  task := ""
-  // The new lease in seconds.
-  newLeaseSeconds := int64(0)
-                             requestBody := &taskqueue.Task{}
+    taskqueue_ = ""
+
+
+    task = ""
+
+    // The new lease in seconds.
+    newLeaseSeconds = int64(0)
+
+
+    requestBody = &taskqueue.Task{}
+  )
 
   callResult, err := service.Tasks.Update(project, taskqueue_, task, newLeaseSeconds, requestBody).Context(ctx).Do()
   if err != nil {

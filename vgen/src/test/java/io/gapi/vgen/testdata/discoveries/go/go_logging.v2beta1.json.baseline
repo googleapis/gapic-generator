@@ -22,9 +22,11 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'list' method:
+  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  var (
 
-  requestBody := &logging.ListLogEntriesRequest{}
+    requestBody = &logging.ListLogEntriesRequest{}
+  )
 
   callResult, err := service.Entries.List(requestBody).Context(ctx).Do()
   if err != nil {
@@ -56,9 +58,11 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'write' method:
+  // TODO: Change placeholders below to appropriate parameters values for the 'write' method:
+  var (
 
-  requestBody := &logging.WriteLogEntriesRequest{}
+    requestBody = &logging.WriteLogEntriesRequest{}
+  )
 
   callResult, err := service.Entries.Write(requestBody).Context(ctx).Do()
   if err != nil {
@@ -90,7 +94,8 @@ func main() {
     log.Fatal(err)
   }
 
-
+  var (
+  )
 
   fn := func(page *logging.ListMonitoredResourceDescriptorsResponse) error {
     // doThingsWith(page)
@@ -128,9 +133,12 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'delete' method:
-  // Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
-  logName := ""
+  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  var (
+    // Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
+    logName = ""
+
+  )
 
   callResult, err := service.Projects.Logs.Delete(logName).Context(ctx).Do()
   if err != nil {
@@ -162,10 +170,14 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'create' method:
-  // The resource name of the project in which to create the metric. Example: `"projects/my-project-id"`. The new metric must be provided in the request.
-  projectName := ""
-                   requestBody := &logging.LogMetric{}
+  // TODO: Change placeholders below to appropriate parameters values for the 'create' method:
+  var (
+    // The resource name of the project in which to create the metric. Example: `"projects/my-project-id"`. The new metric must be provided in the request.
+    projectName = ""
+
+
+    requestBody = &logging.LogMetric{}
+  )
 
   callResult, err := service.Projects.Metrics.Create(projectName, requestBody).Context(ctx).Do()
   if err != nil {
@@ -197,9 +209,12 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'delete' method:
-  // The resource name of the metric to delete. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-  metricName := ""
+  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  var (
+    // The resource name of the metric to delete. Example: `"projects/my-project-id/metrics/my-metric-id"`.
+    metricName = ""
+
+  )
 
   callResult, err := service.Projects.Metrics.Delete(metricName).Context(ctx).Do()
   if err != nil {
@@ -231,9 +246,12 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'get' method:
-  // The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-  metricName := ""
+  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  var (
+    // The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
+    metricName = ""
+
+  )
 
   callResult, err := service.Projects.Metrics.Get(metricName).Context(ctx).Do()
   if err != nil {
@@ -265,9 +283,12 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'list' method:
-  // Required. The resource name of the project containing the metrics. Example: `"projects/my-project-id"`.
-  projectName := ""
+  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  var (
+    // Required. The resource name of the project containing the metrics. Example: `"projects/my-project-id"`.
+    projectName = ""
+
+  )
 
   fn := func(page *logging.ListLogMetricsResponse) error {
     // doThingsWith(page)
@@ -305,10 +326,14 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'update' method:
-  // The resource name of the metric to update. Example: `"projects/my-project-id/metrics/my-metric-id"`. The updated metric must be provided in the request and have the same identifier that is specified in `metricName`. If the metric does not exist, it is created.
-  metricName := ""
-                  requestBody := &logging.LogMetric{}
+  // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
+  var (
+    // The resource name of the metric to update. Example: `"projects/my-project-id/metrics/my-metric-id"`. The updated metric must be provided in the request and have the same identifier that is specified in `metricName`. If the metric does not exist, it is created.
+    metricName = ""
+
+
+    requestBody = &logging.LogMetric{}
+  )
 
   callResult, err := service.Projects.Metrics.Update(metricName, requestBody).Context(ctx).Do()
   if err != nil {
@@ -340,10 +365,14 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'create' method:
-  // The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`. The new sink must be provided in the request.
-  projectName := ""
-                   requestBody := &logging.LogSink{}
+  // TODO: Change placeholders below to appropriate parameters values for the 'create' method:
+  var (
+    // The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`. The new sink must be provided in the request.
+    projectName = ""
+
+
+    requestBody = &logging.LogSink{}
+  )
 
   callResult, err := service.Projects.Sinks.Create(projectName, requestBody).Context(ctx).Do()
   if err != nil {
@@ -375,9 +404,12 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'delete' method:
-  // The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-  sinkName := ""
+  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  var (
+    // The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
+    sinkName = ""
+
+  )
 
   callResult, err := service.Projects.Sinks.Delete(sinkName).Context(ctx).Do()
   if err != nil {
@@ -409,9 +441,12 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'get' method:
-  // The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-  sinkName := ""
+  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  var (
+    // The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
+    sinkName = ""
+
+  )
 
   callResult, err := service.Projects.Sinks.Get(sinkName).Context(ctx).Do()
   if err != nil {
@@ -443,9 +478,12 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'list' method:
-  // Required. The resource name of the project containing the sinks. Example: `"projects/my-logging-project"`, `"projects/01234567890"`.
-  projectName := ""
+  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  var (
+    // Required. The resource name of the project containing the sinks. Example: `"projects/my-logging-project"`, `"projects/01234567890"`.
+    projectName = ""
+
+  )
 
   fn := func(page *logging.ListSinksResponse) error {
     // doThingsWith(page)
@@ -483,10 +521,14 @@ func main() {
     log.Fatal(err)
   }
 
-  // TODO: Change placeholders below to values for parameters to the 'update' method:
-  // The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The updated sink must be provided in the request and have the same name that is specified in `sinkName`. If the sink does not exist, it is created.
-  sinkName := ""
-                requestBody := &logging.LogSink{}
+  // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
+  var (
+    // The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The updated sink must be provided in the request and have the same name that is specified in `sinkName`. If the sink does not exist, it is created.
+    sinkName = ""
+
+
+    requestBody = &logging.LogSink{}
+  )
 
   callResult, err := service.Projects.Sinks.Update(sinkName, requestBody).Context(ctx).Do()
   if err != nil {
