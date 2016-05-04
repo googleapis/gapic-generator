@@ -24,6 +24,7 @@ import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -65,7 +66,12 @@ public class PhpLanguageProvider {
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
     Doc body = snippets.generateBody(element);
-    return GeneratedResult.create(body, outputFilename);
+    // TODO: Get imports from PHP context.
+    Iterable<String> imports = new ArrayList<>();
+    Doc result = snippets.generateClass(element, body, imports);
+
+    // Generate the result.
+    return GeneratedResult.create(result, outputFilename);
   }
 
   public <Element> GeneratedResult generate(
