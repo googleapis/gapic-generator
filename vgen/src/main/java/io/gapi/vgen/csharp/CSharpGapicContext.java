@@ -171,11 +171,13 @@ public class CSharpGapicContext extends GapicContext {
     public static RetrySettingInfo create(
         String rawName, String name,
         long delayMs, double delayMultiplier, long delayMaxMs,
-        long timeoutMs, double timeoutMultiplier, long timeoutMaxMs) {
+        long timeoutMs, double timeoutMultiplier, long timeoutMaxMs,
+        long totalTimeoutMs) {
       return new AutoValue_CSharpGapicContext_RetrySettingInfo(
           rawName, name,
           delayMs, delayMultiplier, delayMaxMs,
-          timeoutMs, timeoutMultiplier, timeoutMaxMs);
+          timeoutMs, timeoutMultiplier, timeoutMaxMs,
+          totalTimeoutMs);
     }
     public abstract String rawName();
     public abstract String name();
@@ -185,6 +187,7 @@ public class CSharpGapicContext extends GapicContext {
     public abstract long timeoutMs();
     public abstract double timeoutMultiplier();
     public abstract long timeoutMaxMs();
+    public abstract long totalTimeoutMs();
   }
 
   @AutoValue
@@ -231,7 +234,8 @@ public class CSharpGapicContext extends GapicContext {
                 retrySettings.getMaxRetryDelay().getMillis(),
                 retrySettings.getInitialRpcTimeout().getMillis(),
                 retrySettings.getRpcTimeoutMultiplier(),
-                retrySettings.getMaxRpcTimeout().getMillis());
+                retrySettings.getMaxRpcTimeout().getMillis(),
+                retrySettings.getTotalTimeout().getMillis());
           }
         })
         .toList();
