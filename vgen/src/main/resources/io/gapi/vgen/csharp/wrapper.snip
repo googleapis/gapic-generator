@@ -93,7 +93,7 @@
         {
             GaxPreconditions.CheckNotNull(existing, nameof(existing));
             @join method : methods
-                {@method.name}Retry = existing.{@method.name}Retry?.Clone();
+                {@method.name}Settings = existing.{@method.name}Settings?.Clone();
             @end
         }
 
@@ -160,7 +160,7 @@
         @end
         @join method : methods
             /// <summary>
-            /// <see cref="RetrySettings"/> for asynchronous and synchronous calls to
+            /// <see cref="CallSettings"/> for asynchronous and synchronous calls to
             /// <see cref="{@name}Client.{@method.name}"/> and <see cref="{@name}Client.{@method.name}Async"/>.
             /// </summary>
             /// <remarks>
@@ -184,12 +184,17 @@
                 /// <item><description>No status codes</description></item>
             @end
             /// </list>
+            /// Default RPC expiration is {@method.retrySetting.totalTimeoutMs} milliseconds.
             /// </remarks>
-            public RetrySettings {@method.name}Retry { get; set; } = new RetrySettings
+            public CallSettings {@method.name}Settings { get; set; } = new CallSettings
             {
-                RetryBackoff = Get{@method.retrySetting.name}RetryBackoff(),
-                TimeoutBackoff = Get{@method.retrySetting.name}TimeoutBackoff(),
-                RetryFilter = {@method.retryCodes.name}RetryFilter,
+                RetrySettings = new RetrySettings
+                {
+                    RetryBackoff = Get{@method.retrySetting.name}RetryBackoff(),
+                    TimeoutBackoff = Get{@method.retrySetting.name}TimeoutBackoff(),
+                    RetryFilter = {@method.retryCodes.name}RetryFilter,
+                },
+                Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds({@method.retrySetting.totalTimeoutMs})),
             };
 
         @end
@@ -244,6 +249,8 @@
     /// </summary>
     public abstract partial class {@name}Client
     {
+        private static readonly ChannelPool s_channelPool = new ChannelPool();
+
         @let serviceInfo = context.getServiceInfo(service)
             /// <summary>
             /// The default endpoint for the {@name} service, which is a host of \
@@ -301,38 +308,56 @@
         // Con: overloads!
 
         /// <summary>
-        /// Asynchronously creates a <see cref="{@name}Client"/>, applying defaults for all unspecified settings.
+        /// Asynchronously creates a <see cref="{@name}Client"/>, applying defaults for all unspecified settings,
+        /// and creating a channel connecting to the given endpoint with application default credentials where
+        /// necessary.
         /// </summary>
         /// <param name="endpoint">Optional <see cref="ServiceEndpoint"/>.</param>
         /// <param name="settings">Optional <see cref="{@name}Settings"/>.</param>
-        /// <param name="credentials">Optional <see cref="ChannelCredentials"/>.</param>
         /// <returns>The task representing the created <see cref="{@name}Client"/>.</returns>
-        public static async Task<{@name}Client> CreateAsync(
-            ServiceEndpoint endpoint = null,
-            {@name}Settings settings = null,
-            ChannelCredentials credentials = null)
+        public static async Task<{@name}Client> CreateAsync(ServiceEndpoint endpoint = null, {@name}Settings settings = null)
         {
-            Channel channel = await ClientHelper.CreateChannelAsync(endpoint ?? DefaultEndpoint, credentials).ConfigureAwait(false);
+            Channel channel = await s_channelPool.GetChannelAsync(endpoint ?? DefaultEndpoint).ConfigureAwait(false);
+            return Create(channel, settings);
+        }
+
+        /// <summary>
+        /// Synchronously creates a <see cref="{@name}Client"/>, applying defaults for all unspecified settings,
+        /// and creating a channel connecting to the given endpoint with application default credentials where
+        /// necessary.
+        /// </summary>
+        /// <param name="endpoint">Optional <see cref="ServiceEndpoint"/>.</param>
+        /// <param name="settings">Optional <see cref="{@name}Settings"/>.</param>
+        /// <returns>The created <see cref="{@name}Client"/>.</returns>
+        public static {@name}Client Create(ServiceEndpoint endpoint = null, {@name}Settings settings = null)
+        {
+            Channel channel = s_channelPool.GetChannel(endpoint ?? DefaultEndpoint);
+            return Create(channel, settings);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="{@name}Client"/> which uses the specified channel for remote operations.
+        /// </summary>
+        /// <param name="channel">The <see cref="Channel"/> for remote operations. Must not be null.</param>
+        /// <param name="settings">Optional <see cref="{@name}Settings"/>.</param>
+        /// <returns>The created <see cref="{@name}Client"/>.</returns>
+        public static DatastoreClient Create(Channel channel, {@name}Settings settings = null)
+        {
+            Preconditions.CheckNotNull(channel, nameof(channel));
             {@name}.{@name}Client grpcClient = new {@name}.{@name}Client(channel);
             return new {@name}ClientImpl(grpcClient, settings);
         }
 
         /// <summary>
-        /// Synchronously creates a <see cref="{@name}Client"/>, applying defaults for all unspecified settings.
+        /// Shuts down any channels automatically created by <see cref="Create(ServiceEndpoint, {@name}Settings)"/>
+        /// and <see cref="CreateAsync(ServiceEndpoint, {@name}Settings)"/>. Channels which weren't automatically
+        /// created are not affected.
         /// </summary>
-        /// <param name="endpoint">Optional <see cref="ServiceEndpoint"/>.</param>
-        /// <param name="settings">Optional <see cref="{@name}Settings"/>.</param>
-        /// <param name="credentials">Optional <see cref="ChannelCredentials"/>.</param>
-        /// <returns>The created <see cref="{@name}Client"/>.</returns>
-        public static {@name}Client Create(
-            ServiceEndpoint endpoint = null,
-            {@name}Settings settings = null,
-            ChannelCredentials credentials = null)
-        {
-            Channel channel = ClientHelper.CreateChannel(endpoint ?? DefaultEndpoint, credentials);
-            {@name}.{@name}Client grpcClient = new {@name}.{@name}Client(channel);
-            return new {@name}ClientImpl(grpcClient, settings);
-        }
+        /// <remarks>After calling this method, further calls to <see cref="Create(ServiceEndpoint, {@name}Settings)"/>
+        /// and <see cref="CreateAsync(ServiceEndpoint, {@name}Settings)"/> will create new channels, which could
+        /// in turn be shut down by another call to this method.</remarks>
+        /// <returns>A task representing the asynchronous shutdown operation.</returns>
+        public static Task ShutdownDefaultChannelsAsync() => s_channelPool.ShutdownChannelsAsync();
 
         /// <summary>
         /// The underlying GRPC {@name} client.
@@ -402,12 +427,10 @@
         {
             this.GrpcClient = grpcClient;
             {@name}Settings effectiveSettings = settings ?? {@name}Settings.GetDefault();
-            IClock effectiveClock = effectiveSettings.Clock ?? SystemClock.Instance;
             _clientHelper = new ClientHelper(effectiveSettings);
             @join method : methods
-                _call{@method.name} = _clientHelper.BuildApiCall<{@method.requestTypeName}, {@method.responseTypeName}>(\
-                        GrpcClient.{@method.name}Async, GrpcClient.{@method.name})
-                    .WithRetry(effectiveSettings.{@method.name}Retry, effectiveClock, null);
+                _call{@method.name} = _clientHelper.BuildApiCall<{@method.requestTypeName}, {@method.responseTypeName}>(
+                    GrpcClient.{@method.name}Async, GrpcClient.{@method.name}, effectiveSettings.{@method.name}Settings);
             @end
         }
 
@@ -425,6 +448,7 @@
                             callSettings,
                             {@createRequest(method, flat)},
                             _call{@method.name});
+
                 @else
                     {@asyncMethodDeclaration(method, flat, "override", TRUE)} => _call{@method.name}.Async(
                             {@createRequest(method, flat)},
@@ -433,8 +457,8 @@
                     {@syncMethodDeclaration(method, flat, "override")} => _call{@method.name}.Sync(
                             {@createRequest(method, flat)},
                             callSettings);
-                @end
 
+                @end
             @end
         @end
     }
