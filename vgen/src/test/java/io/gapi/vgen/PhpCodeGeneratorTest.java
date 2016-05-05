@@ -24,7 +24,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Ruby code generator baseline tests.
+ * PHP code generator baseline tests.
  */
 @RunWith(Parameterized.class)
 public class PhpCodeGeneratorTest extends CodeGeneratorTestBase {

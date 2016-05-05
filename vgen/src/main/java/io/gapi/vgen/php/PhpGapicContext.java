@@ -16,7 +16,6 @@ package io.gapi.vgen.php;
 
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.collect.ImmutableSet;
 
@@ -76,19 +75,6 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
 
   public String getServiceName(Interface service) {
     return service.getFullName();
-  }
-
-  /**
-   * Gets the full name of the message or enum type in Java.
-   */
-  public String getTypeName(ProtoElement elem) {
-    // Construct the full name in Java
-    String name = getPhpPackage(elem.getFile());
-    // TODO maybe extra logic from Java needs to be here too
-    String shortName = elem.getFullName().substring(elem.getFile().getFullName().length() + 1);
-    name = name + "\\" + shortName;
-
-    return phpCommon.getMinimallyQualifiedName(name, shortName);
   }
 
   /**
