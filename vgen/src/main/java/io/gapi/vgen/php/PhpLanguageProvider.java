@@ -24,8 +24,8 @@ import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,7 +55,7 @@ public class PhpLanguageProvider {
   public <Element> GeneratedResult generate(
       Element element,
       SnippetDescriptor snippetDescriptor,
-      PhpDiscoveryContext context,
+      PhpContext context,
       String defaultPackagePrefix) {
     PhpSnippetSet<Element> snippets =
         SnippetSet.createSnippetInterface(
@@ -65,17 +65,19 @@ public class PhpLanguageProvider {
             ImmutableMap.<String, Object>of("context", context));
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
-    Doc body = snippets.generateBody(element);
-    // TODO: Get imports from PHP context.
-    Iterable<String> imports = new ArrayList<>();
-    Doc result = snippets.generateClass(element, body, imports);
+    PhpContextCommon phpContextCommon = new PhpContextCommon();
+    context.resetState(snippets, phpContextCommon);
 
-    // Generate the result.
+    Doc body = snippets.generateBody(element);
+
+    List<String> cleanedImports = phpContextCommon.getImports();
+
+    Doc result = snippets.generateClass(element, body, cleanedImports);
     return GeneratedResult.create(result, outputFilename);
   }
 
   public <Element> GeneratedResult generate(
-      Element element, SnippetDescriptor snippetDescriptor, PhpDiscoveryContext context) {
+      Element element, SnippetDescriptor snippetDescriptor, PhpContext context) {
     return generate(element, snippetDescriptor, context, null);
   }
 }
