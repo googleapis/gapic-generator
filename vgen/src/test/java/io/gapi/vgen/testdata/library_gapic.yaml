@@ -31,9 +31,9 @@ interfaces:
     total_timeout_millis: 30000
   collections:
   - name_pattern: shelves/{shelf}
-    method_base_name: shelf
+    entity_name: shelf
   - name_pattern: shelves/{shelf}/books/{book}
-    method_base_name: book
+    entity_name: book
   methods:
   - name: CreateShelf
     flattening:
@@ -62,6 +62,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     request_object_method: true
+    field_pattern: { 'name':'shelf' }
   - name: ListShelves
     flattening:
       groups:
@@ -85,6 +86,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     request_object_method: false
+    field_pattern: { 'name':'shelf' }
   - name: MergeShelves
     flattening:
       groups:
@@ -97,6 +99,7 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     request_object_method: true
+    field_pattern: { 'name':'shelf', 'other_shelf_name':'shelf' }
   - name: CreateBook
     flattening:
       groups:
@@ -109,6 +112,7 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     request_object_method: true
+    field_pattern: { 'name':'shelf' }
   - name: PublishSeries
     flattening:
       groups:
@@ -145,6 +149,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     request_object_method: false
+    field_pattern: { 'name':'book' }
   - name: ListBooks
     flattening:
       groups:
@@ -162,6 +167,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     request_object_method: true
+    field_pattern: { 'name':'shelf' }
   - name: DeleteBook
     flattening:
       groups:
@@ -171,6 +177,7 @@ interfaces:
     retry_params_name: default
     # leaving commented out to test the default
     #request_object_method: false
+    field_pattern: { 'name':'book' }
   - name: UpdateBook
     flattening:
       groups:
@@ -188,6 +195,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     request_object_method: true
+    field_pattern: { 'name':'book' }
   - name: MoveBook
     flattening:
       groups:
@@ -200,6 +208,7 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     request_object_method: true
+    field_pattern: { 'name':'book', 'other_shelf_name':'shelf' }
   - name: ListStrings
     flattening:
       groups:

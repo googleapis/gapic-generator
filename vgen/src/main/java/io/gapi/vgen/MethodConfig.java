@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -43,6 +44,7 @@ public class MethodConfig {
   private final Iterable<Field> optionalFields;
   private final BundlingConfig bundling;
   private final boolean hasRequestObjectMethod;
+  private final Map<String, String> fieldPattern;
 
   /**
    * Creates an instance of MethodConfig based on MethodConfigProto, linking it up with the provided
@@ -142,6 +144,8 @@ public class MethodConfig {
               }
             });
 
+    Map<String, String> fieldPattern = methodConfig.getFieldPattern();
+
     if (error) {
       return null;
     } else {
@@ -153,7 +157,8 @@ public class MethodConfig {
           bundling,
           hasRequestObjectMethod,
           requiredFields,
-          optionalFields);
+          optionalFields,
+          fieldPattern);
     }
   }
 
@@ -165,7 +170,8 @@ public class MethodConfig {
       BundlingConfig bundling,
       boolean hasRequestObjectMethod,
       Iterable<Field> requiredFields,
-      Iterable<Field> optionalFields) {
+      Iterable<Field> optionalFields,
+      Map<String, String> fieldPattern) {
     this.pageStreaming = pageStreaming;
     this.flattening = flattening;
     this.retryCodesConfigName = retryCodesConfigName;
@@ -174,6 +180,7 @@ public class MethodConfig {
     this.hasRequestObjectMethod = hasRequestObjectMethod;
     this.requiredFields = requiredFields;
     this.optionalFields = optionalFields;
+    this.fieldPattern = fieldPattern;
   }
 
   /**
@@ -251,5 +258,12 @@ public class MethodConfig {
    */
   public Iterable<Field> getOptionalFields() {
     return optionalFields;
+  }
+
+  /**
+   * Returns a map of fields to method_base_name elements.
+   */
+  public Map<String, String> getFieldPattern() {
+    return fieldPattern;
   }
 }

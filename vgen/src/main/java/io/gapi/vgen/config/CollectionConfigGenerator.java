@@ -31,7 +31,7 @@ import java.util.Map;
 public class CollectionConfigGenerator {
 
   private static final String CONFIG_KEY_NAME_PATTERN = "name_pattern";
-  private static final String CONFIG_KEY_METHOD_BASE_NAME = "method_base_name";
+  private static final String CONFIG_KEY_ENTITY_NAME = "entity_name";
 
   public List<Object> generate(Interface service) {
     List<Object> output = new LinkedList<Object>();
@@ -40,13 +40,13 @@ public class CollectionConfigGenerator {
     for (FieldSegment segment : segments) {
       Map<String, Object> collectionMap = new LinkedHashMap<String, Object>();
       collectionMap.put(CONFIG_KEY_NAME_PATTERN, Resources.templatize(segment));
-      collectionMap.put(CONFIG_KEY_METHOD_BASE_NAME, getMethodBaseName(segment));
+      collectionMap.put(CONFIG_KEY_ENTITY_NAME, getEntityName(segment));
       output.add(collectionMap);
     }
     return output;
   }
 
-  private String getMethodBaseName(FieldSegment segment) {
+  private String getEntityName(FieldSegment segment) {
     // TODO(shinfan): Consider finding a better way to determine the name if possible.
     List<String> params = Lists.newArrayList(Resources.getParamsForResourceNameWildcards(segment));
     return params.get(params.size() - 1);

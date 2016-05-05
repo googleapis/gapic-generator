@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 public class CollectionConfig {
   private final String namePattern;
   private final PathTemplate nameTemplate;
-  private final String methodBaseName;
+  private final String entityName;
 
   /**
    * Creates an instance of CollectionConfig based on CollectionConfigProto. On errors, null will be
@@ -45,14 +45,14 @@ public class CollectionConfig {
       diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, e.getMessage()));
       return null;
     }
-    String methodBaseName = collectionConfigProto.getMethodBaseName();
-    return new CollectionConfig(namePattern, nameTemplate, methodBaseName);
+    String entityName = collectionConfigProto.getEntityName();
+    return new CollectionConfig(namePattern, nameTemplate, entityName);
   }
 
-  private CollectionConfig(String namePattern, PathTemplate nameTemplate, String methodBaseName) {
+  private CollectionConfig(String namePattern, PathTemplate nameTemplate, String entityName) {
     this.namePattern = namePattern;
     this.nameTemplate = nameTemplate;
-    this.methodBaseName = methodBaseName;
+    this.entityName = entityName;
   }
 
   /**
@@ -72,7 +72,7 @@ public class CollectionConfig {
   /**
    * Returns the name used as a basis for generating methods.
    */
-  public String getMethodBaseName() {
-    return methodBaseName;
+  public String getEntityName() {
+    return entityName;
   }
 }

@@ -138,7 +138,7 @@
 @end
 
 @private pathTemplateVarName(collectionConfig)
-    {@context.lowerUnderscoreToLowerCamel(collectionConfig.getMethodBaseName)}PathTemplate
+    {@context.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName)}PathTemplate
 @end
 
 @private createResourceDocParams(collectionConfig)
@@ -154,9 +154,9 @@
 
     // Path templates.
     @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-        @let pathTypeName = context.lowerUnderscoreToUpperCamel(collectionConfig.getMethodBaseName), \
-             humanReadableName = collectionConfig.getMethodBaseName.replaceAll("_", " "), \
-             methodReceiver = context.lowerUnderscoreToLowerCamel(collectionConfig.getMethodBaseName)
+        @let pathTypeName = context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName), \
+             humanReadableName = collectionConfig.getEntityName.replaceAll("_", " "), \
+             methodReceiver = context.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName)
 
             // {@pathTypeName} represents a {@humanReadableName} resource.
             type {@pathTypeName} struct {

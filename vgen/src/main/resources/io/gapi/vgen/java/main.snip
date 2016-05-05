@@ -70,7 +70,7 @@
 @end
 
 @private pathTemplateConstantName(collectionConfig)
-  {@context.lowerUnderscoreToUpperUnderscore(collectionConfig.getMethodBaseName)}_PATH_TEMPLATE
+  {@context.lowerUnderscoreToUpperUnderscore(collectionConfig.getEntityName)}_PATH_TEMPLATE
 @end
 
 @private resourceFunctions(service)
@@ -86,7 +86,7 @@
 @private formatResourceFunctions(collectionConfig)
   /**
    * Formats a string containing the fully-qualified path to represent
-   * a {@collectionConfig.getMethodBaseName} resource.
+   * a {@collectionConfig.getEntityName} resource.
    *
   {@javaDocManualEdit()}
    */
@@ -119,7 +119,7 @@
     @let fieldPath = context.upperCamelToLowerCamel(resourceName(collectionConfig))
       /**
        * Parses the {@subField} from the given fully-qualified path which
-       * represents a {@context.lowerUnderscoreToLowerCamel(collectionConfig.getMethodBaseName)} resource.
+       * represents a {@context.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName)} resource.
        *
       {@javaDocManualEdit()}
        */
@@ -134,7 +134,7 @@
 @end
 
 @private resourceName(collectionConfig)
-  {@context.lowerUnderscoreToUpperCamel(collectionConfig.getMethodBaseName)}Name
+  {@context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName)}Name
 @end
 
 @private members(service)
@@ -249,7 +249,8 @@
          methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
          isPageStreaming = methodConfig.isPageStreaming, \
          isFlattening = methodConfig.isFlattening, \
-         requestObjectMethodAccessStr = requestObjectMethodAccess(methodConfig)
+         requestObjectMethodAccessStr = requestObjectMethodAccess(methodConfig), \
+         fieldPattern = methodConfig.getFieldPattern()
       // ----- {@methodName} -----
 
       # TODO (garrettjones) put some kind of limit on number of flattened parameters, and
@@ -258,7 +259,7 @@
         @if {@isFlattening}
           @join flatteningGroup: \
               methodConfig.getFlattening().getFlatteningGroups()
-            {@pagedFlattenedMethod(service, method, methodName, flatteningGroup)}
+            {@pagedFlattenedMethod(service, method, methodName, flatteningGroup, fieldPattern)}
           @end
           {@BREAK}
         @end
@@ -268,7 +269,7 @@
         @if {@isFlattening}
           @join flatteningGroup : \
               methodConfig.getFlattening().getFlatteningGroups()
-            {@flattenedMethod(method, methodName, flatteningGroup)}
+            {@flattenedMethod(service, method, methodName, flatteningGroup, fieldPattern)}
           @end
           {@BREAK}
         @end
@@ -310,17 +311,25 @@
 
 @end
 
-@private pagedFlattenedMethod(service, method, methodName, fields)
+@private pagedFlattenedMethod(service, method, methodName, fields, fieldPattern)
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
        resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
        requestTypeName = context.typeName(method.getInputType)
-    {@iterableFlattenedMethodJavaDoc(method, methodName, resourceTypeName, fields)}
+    {@iterableFlattenedMethodJavaDoc(method, methodName, resourceTypeName, fields, fieldPattern)}
     public final PageAccessor<{@resourceTypeName}> \
-        {@methodName}({@paramList(fields)}) {
+        {@methodName}({@paramListFormatted(fields, fieldPattern)}) {
+      @join field : fields
+        @if fieldPattern.containsKey(field.getSimpleName)
+          @let entity_name = fieldPattern.get(field.getSimpleName), \
+              collectionConfig = context.getCollectionConfig(service, entity_name)
+            {@pathTemplateCheck(formattedParamName(field), collectionConfig)}
+          @end
+        @end
+      @end
       {@context.typeName(method.getInputType)} request =
           {@requestTypeName}.newBuilder()
-          {@builderSetCalls(fields)}
+          {@builderSetCallsFormatted(fields, fieldPattern)}
           .build();
       return {@methodName}(request);
     }
@@ -368,17 +377,24 @@
   @end
 @end
 
-@private flattenedMethod(method, methodName, fields)
-  {@flattenedMethodJavaDoc(method, methodName, fields)}
+@private flattenedMethod(service, method, methodName, fields, fieldPattern)
+  {@flattenedMethodJavaDoc(method, methodName, fields, fieldPattern)}
   @let returnType = context.methodReturnTypeName(method.getOutputType), \
        returnStatement = context.methodReturnStatement(method.getOutputType), \
        requestTypeName = context.typeName(method.getInputType)
-    public final {@returnType} {@methodName}({@paramList(fields)}) {
+    public final {@returnType} {@methodName}({@paramListFormatted(fields, fieldPattern)}) {
+      @join field : fields
+        @if fieldPattern.containsKey(field.getSimpleName)
+          @let entity_name = fieldPattern.get(field.getSimpleName), \
+              collectionConfig = context.getCollectionConfig(service, entity_name)
+            {@pathTemplateCheck(formattedParamName(field), collectionConfig)}
+          @end
+        @end
+      @end
       {@context.typeName(method.getInputType)} request =
           {@requestTypeName}.newBuilder()
-          {@builderSetCalls(fields)}
+          {@builderSetCallsFormatted(fields, fieldPattern)}
           .build();
-
       {@returnStatement}{@methodName}(request);
     }
 
@@ -493,23 +509,23 @@
   Service Description: {@getDoc(protoElement)}
 @end
 
-@private flattenedMethodJavaDoc(method, methodName, fields)
+@private flattenedMethodJavaDoc(method, methodName, fields, fieldPattern)
   {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
       .setApiName(context.getApiWrapperName(method.getParent)) \
       .setMethodName(methodName) \
       .setReturnType(context.returnTypeOrEmpty(method.getOutputType)) \
-      .setParams(context, fields) \
+      .setParams(context, fields, fieldPattern) \
       .setPagedVariant(context.java.getFalse) \
       .setCallableVariant(context.java.getFalse) \
       .build)}
 @end
 
-@private iterableFlattenedMethodJavaDoc(method, methodName, resourceName, fields)
+@private iterableFlattenedMethodJavaDoc(method, methodName, resourceName, fields, fieldPattern)
   {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
       .setApiName(context.getApiWrapperName(method.getParent)) \
       .setMethodName(methodName) \
       .setReturnType(resourceName) \
-      .setParams(context, fields) \
+      .setParams(context, fields, fieldPattern) \
       .setPagedVariant(context.java.getTrue) \
       .setCallableVariant(context.java.getFalse) \
       .build)}
@@ -554,10 +570,40 @@
   @end
 @end
 
+@private paramListFormatted(fields, fieldPattern)
+  @join field : fields on ", "
+    @if fieldPattern.containsKey(field.getSimpleName)
+      {@context.typeName(field.getType)} {@formattedParamName(field)}
+    @else
+      @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
+        {@context.typeName(field.getType)} {@paramName}
+      @end
+    @end
+  @end
+@end
+
+@private formattedParamName(field)
+  @let paramName = context.lowerUnderscoreToUpperCamel(field.getSimpleName)
+    formatted{@paramName}
+  @end
+@end
+
 @private builderSetCalls(fields)
   @join field : fields
     @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
       .{@setCallName(field)}({@paramName})
+    @end
+  @end
+@end
+
+@private builderSetCallsFormatted(fields, fieldPattern)
+  @join field : fields
+    @if fieldPattern.containsKey(field.getSimpleName)
+      .{@setCallName(field)}({@formattedParamName(field)})
+    @else
+      @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
+        .{@setCallName(field)}({@paramName})
+      @end
     @end
   @end
 @end
@@ -615,4 +661,8 @@
   @join param : params on ", "
     {@param.getName}
   @end
+@end
+
+@snippet pathTemplateCheck(paramName, collectionConfig)
+  {@pathTemplateConstantName(collectionConfig)}.validate({@paramName});
 @end

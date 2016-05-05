@@ -280,7 +280,7 @@
 @end
 
 @private pathTemplateName(collectionConfig)
-    _{@context.lowerUnderscoreToUpperUnderscore(collectionConfig.getMethodBaseName)}_PATH_TEMPLATE
+    _{@context.lowerUnderscoreToUpperUnderscore(collectionConfig.getEntityName)}_PATH_TEMPLATE
 @end
 
 @private pathTemplateSection(service)
@@ -299,8 +299,8 @@
 
 @private createResourceFunction(collectionConfig)
     {@"@classmethod"}
-    def {@collectionConfig.getMethodBaseName}_path(cls, {@createResourceFunctionParams(collectionConfig)}):
-        """Returns a fully-qualified {@collectionConfig.getMethodBaseName} resource name string."""
+    def {@collectionConfig.getEntityName}_path(cls, {@createResourceFunctionParams(collectionConfig)}):
+        """Returns a fully-qualified {@collectionConfig.getEntityName} resource name string."""
         return cls.{@pathTemplateName(collectionConfig)}.render({
             {@createRenderDictionary(collectionConfig)}
         })

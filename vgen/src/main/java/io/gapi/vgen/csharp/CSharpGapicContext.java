@@ -530,8 +530,8 @@ public class CSharpGapicContext extends GapicContext {
               varArgUseList.append(var + "Id, ");
             }
             return PathTemplateInfo.create(
-                CSharpContextCommon.s_underscoresToPascalCase(collection.getMethodBaseName()),
-                CSharpContextCommon.s_underscoresToCamelCase(collection.getMethodBaseName()),
+                CSharpContextCommon.s_underscoresToPascalCase(collection.getEntityName()),
+                CSharpContextCommon.s_underscoresToCamelCase(collection.getEntityName()),
                 collection.getNamePattern(),
                 vars,
                 varArgDeclList.substring(0, varArgDeclList.length() - 2),

@@ -20,9 +20,9 @@ option java_package = "io.gapi.vgen";
 //     - name: google.example.library.v1.LibraryService
 //       collections:
 //       - name_pattern: shelves/{shelf}
-//         method_base_name: shelf
+//         entity_name: shelf
 //       - name_pattern: shelves/{shelf}/books/{book}
-//         method_base_name: book
+//         entity_name: book
 //         ...
 //       retry_codes_def:
 //       - name: idempotent
@@ -135,7 +135,7 @@ message CollectionConfigProto {
   string name_pattern = 1;
 
   // Name to be used as a basis for generated methods.
-  string method_base_name = 2;
+  string entity_name = 2;
 }
 
 // `MethodConfigProto` describes the generator configuration for a method.
@@ -167,7 +167,7 @@ message MethodConfigProto {
   // Fields that are always required for a request to be valid.
   repeated string required_fields = 8;
 
-  // Maps the field name of the request type to method_base_name of CollectionConfigProto.
+  // Maps the field name of the request type to entity_name of CollectionConfigProto.
   // It is used to specify the string pattern that the field must follow.
   map<string, string> field_pattern = 9;
 }
