@@ -107,7 +107,7 @@
 @end
 
 @private pathTemplateConstantName(collectionConfig)
-    {@context.lowerUnderscoreToLowerCamel(collectionConfig.getMethodBaseName)}NameTemplate
+    {@context.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName)}NameTemplate
 @end
 
 @private members(service)
@@ -180,7 +180,7 @@
 @private formatResourceFunction(collectionConfig)
     /**
      * Formats a string containing the fully-qualified path to represent
-     * a {@collectionConfig.getMethodBaseName} resource.
+     * a {@collectionConfig.getEntityName} resource.
      */
     public static function {@formatResourceFunctionName(collectionConfig)}(\
           {@formatResourceFunctionParams(collectionConfig)})
@@ -212,7 +212,7 @@
         @let fieldPath = context.upperCamelToLowerCamel(resourceName(collectionConfig))
             /**
              * Parses the {@subField} from the given fully-qualified path which
-             * represents a {@context.lowerUnderscoreToLowerCamel(collectionConfig.getMethodBaseName)} resource.
+             * represents a {@context.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName)} resource.
              */
             public static function \
                     parse{@context.lowerUnderscoreToUpperCamel(subField)}From{@resourceName(collectionConfig)}(\
@@ -226,7 +226,7 @@
 @end
 
 @private resourceName(collectionConfig)
-    {@context.lowerUnderscoreToUpperCamel(collectionConfig.getMethodBaseName)}Name
+    {@context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName)}Name
 @end
 
 @private constructor(service)
