@@ -1,6 +1,8 @@
 // Build Script
 // ============
 
+import groovy.io.FileType
+
 buildscript {
   repositories {
     mavenLocal()
@@ -291,4 +293,20 @@ project(':vgen') {
       args = clargs.split(',').toList()
     }
   }
+
+  task verifyLicense << {
+    def licenseText = new File(System.getProperty('user.dir'), 'license-header-javadoc.txt').text
+    def srcFiles = []
+    sourceSets
+        .collectMany{it.allJava.getSrcDirs()}
+        .each{it.eachFileRecurse(FileType.FILES, {srcFiles << it})}
+    srcFiles = srcFiles
+        .findAll{!it.path.contains("/generated/") && it.path.endsWith(".java")}
+        .findAll{!it.text.startsWith(licenseText)}
+    if (srcFiles.asList().size() > 0) {
+      srcFiles.each({println 'missing license: ' + it})
+      throw new IllegalStateException("Above files do not have licenses")
+    }
+  }
+  test.dependsOn verifyLicense
 }
