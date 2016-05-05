@@ -52,8 +52,6 @@ import (
 
 	gax "github.com/googleapis/gax-golang"
 	"golang.org/x/net/context"
-	"google.golang.org/cloud"
-	"google.golang.org/cloud/internal/transport"
 	google_example_library_v1 "google.golang.org/cloud/library/proto/google/example/library/v1"
 	google_protobuf "google.golang.org/cloud/library/proto/google/protobuf"
 	"google.golang.org/grpc"
@@ -61,148 +59,151 @@ import (
 )
 
 const (
-	prodAddr = "library-example.googleapis.com:443"
+    prodAddr = "library-example.googleapis.com:443"
 )
 
 var (
-	allScopes = []string {
-		"https://www.googleapis.com/auth/library",
-		"https://www.googleapis.com/auth/cloud-platform",
-	}
+    allScopes = []string {
+        "https://www.googleapis.com/auth/library",
+        "https://www.googleapis.com/auth/cloud-platform",
+    }
 )
 
 var (
-	shelfPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}")
-	bookPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}/books/{book}")
+    shelfPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}")
+    bookPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}/books/{book}")
 )
 
 func idempotentRetryCodes() []gax.CallOption {
-	return []gax.CallOption{
-		gax.WithRetryCodes([]codes.Code{
-			codes.DeadlineExceeded,
-			codes.Unavailable,
-		}),
-	}
+    return []gax.CallOption{
+        gax.WithRetryCodes([]codes.Code{
+            codes.DeadlineExceeded,
+            codes.Unavailable,
+        }),
+    }
 }
 
 func nonIdempotentRetryCodes() []gax.CallOption {
-	return []gax.CallOption{
-		gax.WithRetryCodes([]codes.Code{
-		}),
-	}
+    return []gax.CallOption{
+        gax.WithRetryCodes([]codes.Code{
+        }),
+    }
 }
 
 func defaultRetryParams() []gax.CallOption {
-	return []gax.CallOption{
-		gax.WithTimeout(30*time.Second),
-		gax.WithDelayTimeoutSettings(100*time.Millisecond, 1000*time.Millisecond, 1.2),
-		gax.WithRPCTimeoutSettings(300*time.Millisecond, 3000*time.Millisecond, 1.3),
-	}
+    return []gax.CallOption{
+        gax.WithTimeout(30*time.Second),
+        gax.WithDelayTimeoutSettings(100*time.Millisecond, 1000*time.Millisecond, 1.2),
+        gax.WithRPCTimeoutSettings(300*time.Millisecond, 3000*time.Millisecond, 1.3),
+    }
 }
 
 // Client is a client for interacting with LibraryService.
 type Client struct {
-	// The connection to the service.
-	conn *grpc.ClientConn
+    // The connection to the service.
+    conn *grpc.ClientConn
 
-	// The gRPC API client.
-	client google_example_library_v1.LibraryServiceClient
+    // The gRPC API client.
+    client google_example_library_v1.LibraryServiceClient
 
-	// The map from the method name to the default call options for the method of this service.
-	CallOptions map[string][]gax.CallOption
+    // The map from the method name to the default call options for the method of this service.
+    callOptions map[string][]gax.CallOption
 }
 
 // NewClient creates a new API service client.
-func NewClient(ctx context.Context, opts ...cloud.ClientOption) (*Client, error) {
-	o := []cloud.ClientOption {
-		cloud.WithEndpoint(prodAddr),
-		cloud.WithScopes(allScopes...),
-	}
-	o = append(o, opts...)
-	conn, err := transport.DialGRPC(ctx, o...)
-	if err != nil {
-		return nil, err
-	}
-	return &Client {
-		conn: conn,
-		client: google_example_library_v1.NewLibraryServiceClient(conn),
-		CallOptions: map[string][]gax.CallOption{},
-	}, nil
+func NewClient(ctx context.Context, opts ...gax.ClientOption) (*Client, error) {
+    o := []gax.ClientOption {
+        gax.WithEndpoint(prodAddr),
+        gax.WithScopes(allScopes...),
+    }
+    o = append(o, opts...)
+    conn, err := gax.DialGRPC(ctx, o...)
+    if err != nil {
+        return nil, err
+    }
+    return &Client {
+        conn: conn,
+        client: google_example_library_v1.NewLibraryServiceClient(conn),
+        callOptions: map[string][]gax.CallOption{},
+    }, nil
 }
 
 // Close closes the connection to the API service. The user should invoke this when
 // the client is no longer required.
 func (client *Client) Close() error {
-	return client.conn.Close()
+    return client.conn.Close()
 }
 
 // Path templates.
 
 // Shelf represents a shelf resource.
 type Shelf struct {
-	Shelf string
+    Shelf string
 }
 
 // NewShelfFromPath creates a Shelf from a shelf path in the form of "shelves/{shelf}".
 func NewShelfFromPath(path string) (Shelf, error) {
-	binding, err := shelfPathTemplate.Match(path)
-	if err != nil {
-		return Shelf{}, err
-	}
-	return Shelf{
-		Shelf: binding["shelf"],
-	}, nil
+    binding, err := shelfPathTemplate.Match(path)
+    if err != nil {
+        return Shelf{}, err
+    }
+    return Shelf{
+        Shelf: binding["shelf"],
+    }, nil
 }
 
 // Path returns the path for the shelf resource.
 func (shelf Shelf) Path() (string, error) {
-	return shelfPathTemplate.Instantiate(map[string]string{
-		"shelf": shelf.Shelf,
-	})
+    return shelfPathTemplate.Instantiate(map[string]string{
+        "shelf": shelf.Shelf,
+    })
 }
 
 // Book represents a book resource.
 type Book struct {
-	Shelf string
-	Book string
+    Shelf string
+    Book string
 }
 
 // NewBookFromPath creates a Book from a book path in the form of "shelves/{shelf}/books/{book}".
 func NewBookFromPath(path string) (Book, error) {
-	binding, err := bookPathTemplate.Match(path)
-	if err != nil {
-		return Book{}, err
-	}
-	return Book{
-		Shelf: binding["shelf"],
-		Book: binding["book"],
-	}, nil
+    binding, err := bookPathTemplate.Match(path)
+    if err != nil {
+        return Book{}, err
+    }
+    return Book{
+        Shelf: binding["shelf"],
+        Book: binding["book"],
+    }, nil
 }
 
 // Path returns the path for the book resource.
 func (book Book) Path() (string, error) {
-	return bookPathTemplate.Instantiate(map[string]string{
-		"shelf": book.Shelf,
-		"book": book.Book,
-	})
+    return bookPathTemplate.Instantiate(map[string]string{
+        "shelf": book.Shelf,
+        "book": book.Book,
+    })
 }
 
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // CreateShelf creates a shelf, and returns the new Shelf.
 func (client *Client) CreateShelf(ctx context.Context, req *google_example_library_v1.CreateShelfRequest, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
-	callOpts := append(nonIdempotentRetryCodes(), defaultRetryParams(), client.CallOptions["CreateShelf"]...)
-	callOpts = append(callOpts, opts...)
-	var resp *google_example_library_v1.Shelf
-	err := gax.Invoke(ctx, func (c context.Context) error {
-		var err error
-		resp, err = client.client.CreateShelf(c, req)
-		return err
-	}, callOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
+    var callOpts []gax.CallOptions
+    callOpts = append(callOpts, nonIdempotentRetryCodes())
+    callOpts = append(callOpts, defaultRetryParams())
+    callOpts = append(callOpts, client.callOptions["CreateShelf"])
+    callOpts = append(callOpts, opts...)
+    var resp *google_example_library_v1.Shelf
+    err := gax.Invoke(ctx, func (c context.Context) error {
+        var err error
+        resp, err = client.client.CreateShelf(c, req)
+        return err
+    }, callOpts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
 }
 
 
@@ -210,18 +211,21 @@ func (client *Client) CreateShelf(ctx context.Context, req *google_example_libra
 
 // GetShelf gets a shelf.
 func (client *Client) GetShelf(ctx context.Context, req *google_example_library_v1.GetShelfRequest, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
-	callOpts := append(idempotentRetryCodes(), defaultRetryParams(), client.CallOptions["GetShelf"]...)
-	callOpts = append(callOpts, opts...)
-	var resp *google_example_library_v1.Shelf
-	err := gax.Invoke(ctx, func (c context.Context) error {
-		var err error
-		resp, err = client.client.GetShelf(c, req)
-		return err
-	}, callOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
+    var callOpts []gax.CallOptions
+    callOpts = append(callOpts, idempotentRetryCodes())
+    callOpts = append(callOpts, defaultRetryParams())
+    callOpts = append(callOpts, client.callOptions["GetShelf"])
+    callOpts = append(callOpts, opts...)
+    var resp *google_example_library_v1.Shelf
+    err := gax.Invoke(ctx, func (c context.Context) error {
+        var err error
+        resp, err = client.client.GetShelf(c, req)
+        return err
+    }, callOpts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
 }
 
 
@@ -229,34 +233,37 @@ func (client *Client) GetShelf(ctx context.Context, req *google_example_library_
 
 // ListShelves lists shelves.
 func (client *Client) ListShelves(ctx context.Context, req *google_example_library_v1.ListShelvesRequest, opts ...gax.CallOption) (*ShelfIterator, error) {
-	callOpts := append(idempotentRetryCodes(), defaultRetryParams(), client.CallOptions["ListShelves"]...)
-	callOpts = append(callOpts, opts...)
-	atLastPage := false
-	return &ShelfIterator{
-		apiCall: func() (ShelfPage, error) {
-			if atLastPage {
-				return ShelfPage{}, io.EOF
-			}
-			var resp *google_example_library_v1.ListShelvesResponse
-			err := gax.Invoke(ctx, func (c context.Context) error {
-				var err error
-				resp, err = client.client.ListShelves(c, req)
-				return err
-			}, callOpts...)
-			if err != nil {
-				return ShelfPage{}, err
-			}
-			if resp.NextPageToken == "" {
-				atLastPage = true
-			} else {
-				req.PageToken = resp.NextPageToken
-			}
-			return ShelfPage{
-				Items: resp.Shelves,
-				NextPageToken: resp.NextPageToken,
-			}, nil
-		},
-	}, nil
+    var callOpts []gax.CallOptions
+    callOpts = append(callOpts, idempotentRetryCodes())
+    callOpts = append(callOpts, defaultRetryParams())
+    callOpts = append(callOpts, client.callOptions["ListShelves"])
+    callOpts = append(callOpts, opts...)
+    atLastPage := false
+    return &ShelfIterator{
+        apiCall: func() (ShelfPage, error) {
+            if atLastPage {
+                return ShelfPage{}, io.EOF
+            }
+            var resp *google_example_library_v1.ListShelvesResponse
+            err := gax.Invoke(ctx, func (c context.Context) error {
+                var err error
+                resp, err = client.client.ListShelves(c, req)
+                return err
+            }, callOpts...)
+            if err != nil {
+                return ShelfPage{}, err
+            }
+            if resp.NextPageToken == "" {
+                atLastPage = true
+            } else {
+                req.PageToken = resp.NextPageToken
+            }
+            return ShelfPage{
+                Items: resp.Shelves,
+                NextPageToken: resp.NextPageToken,
+            }, nil
+        },
+    }, nil
 }
 
 
@@ -264,14 +271,17 @@ func (client *Client) ListShelves(ctx context.Context, req *google_example_libra
 
 // DeleteShelf deletes a shelf.
 func (client *Client) DeleteShelf(ctx context.Context, req *google_example_library_v1.DeleteShelfRequest, opts ...gax.CallOption) error {
-	callOpts := append(idempotentRetryCodes(), defaultRetryParams(), client.CallOptions["DeleteShelf"]...)
-	callOpts = append(callOpts, opts...)
-	err := gax.Invoke(ctx, func (c context.Context) error {
-		var err error
-		_, err = client.client.DeleteShelf(c, req)
-		return err
-	}, callOpts...)
-	return err
+    var callOpts []gax.CallOptions
+    callOpts = append(callOpts, idempotentRetryCodes())
+    callOpts = append(callOpts, defaultRetryParams())
+    callOpts = append(callOpts, client.callOptions["DeleteShelf"])
+    callOpts = append(callOpts, opts...)
+    err := gax.Invoke(ctx, func (c context.Context) error {
+        var err error
+        _, err = client.client.DeleteShelf(c, req)
+        return err
+    }, callOpts...)
+    return err
 }
 
 
@@ -281,18 +291,21 @@ func (client *Client) DeleteShelf(ctx context.Context, req *google_example_libra
 // `other_shelf_name` to shelf `name`, and deletes
 // `other_shelf_name`. Returns the updated shelf.
 func (client *Client) MergeShelves(ctx context.Context, req *google_example_library_v1.MergeShelvesRequest, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
-	callOpts := append(nonIdempotentRetryCodes(), defaultRetryParams(), client.CallOptions["MergeShelves"]...)
-	callOpts = append(callOpts, opts...)
-	var resp *google_example_library_v1.Shelf
-	err := gax.Invoke(ctx, func (c context.Context) error {
-		var err error
-		resp, err = client.client.MergeShelves(c, req)
-		return err
-	}, callOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
+    var callOpts []gax.CallOptions
+    callOpts = append(callOpts, nonIdempotentRetryCodes())
+    callOpts = append(callOpts, defaultRetryParams())
+    callOpts = append(callOpts, client.callOptions["MergeShelves"])
+    callOpts = append(callOpts, opts...)
+    var resp *google_example_library_v1.Shelf
+    err := gax.Invoke(ctx, func (c context.Context) error {
+        var err error
+        resp, err = client.client.MergeShelves(c, req)
+        return err
+    }, callOpts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
 }
 
 
@@ -300,18 +313,21 @@ func (client *Client) MergeShelves(ctx context.Context, req *google_example_libr
 
 // CreateBook creates a book.
 func (client *Client) CreateBook(ctx context.Context, req *google_example_library_v1.CreateBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
-	callOpts := append(nonIdempotentRetryCodes(), defaultRetryParams(), client.CallOptions["CreateBook"]...)
-	callOpts = append(callOpts, opts...)
-	var resp *google_example_library_v1.Book
-	err := gax.Invoke(ctx, func (c context.Context) error {
-		var err error
-		resp, err = client.client.CreateBook(c, req)
-		return err
-	}, callOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
+    var callOpts []gax.CallOptions
+    callOpts = append(callOpts, nonIdempotentRetryCodes())
+    callOpts = append(callOpts, defaultRetryParams())
+    callOpts = append(callOpts, client.callOptions["CreateBook"])
+    callOpts = append(callOpts, opts...)
+    var resp *google_example_library_v1.Book
+    err := gax.Invoke(ctx, func (c context.Context) error {
+        var err error
+        resp, err = client.client.CreateBook(c, req)
+        return err
+    }, callOpts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
 }
 
 
@@ -319,18 +335,21 @@ func (client *Client) CreateBook(ctx context.Context, req *google_example_librar
 
 // PublishSeries creates a series of books.
 func (client *Client) PublishSeries(ctx context.Context, req *google_example_library_v1.PublishSeriesRequest, opts ...gax.CallOption) (*google_example_library_v1.PublishSeriesResponse, error) {
-	callOpts := append(nonIdempotentRetryCodes(), defaultRetryParams(), client.CallOptions["PublishSeries"]...)
-	callOpts = append(callOpts, opts...)
-	var resp *google_example_library_v1.PublishSeriesResponse
-	err := gax.Invoke(ctx, func (c context.Context) error {
-		var err error
-		resp, err = client.client.PublishSeries(c, req)
-		return err
-	}, callOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
+    var callOpts []gax.CallOptions
+    callOpts = append(callOpts, nonIdempotentRetryCodes())
+    callOpts = append(callOpts, defaultRetryParams())
+    callOpts = append(callOpts, client.callOptions["PublishSeries"])
+    callOpts = append(callOpts, opts...)
+    var resp *google_example_library_v1.PublishSeriesResponse
+    err := gax.Invoke(ctx, func (c context.Context) error {
+        var err error
+        resp, err = client.client.PublishSeries(c, req)
+        return err
+    }, callOpts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
 }
 
 
@@ -338,18 +357,21 @@ func (client *Client) PublishSeries(ctx context.Context, req *google_example_lib
 
 // GetBook gets a book.
 func (client *Client) GetBook(ctx context.Context, req *google_example_library_v1.GetBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
-	callOpts := append(idempotentRetryCodes(), defaultRetryParams(), client.CallOptions["GetBook"]...)
-	callOpts = append(callOpts, opts...)
-	var resp *google_example_library_v1.Book
-	err := gax.Invoke(ctx, func (c context.Context) error {
-		var err error
-		resp, err = client.client.GetBook(c, req)
-		return err
-	}, callOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
+    var callOpts []gax.CallOptions
+    callOpts = append(callOpts, idempotentRetryCodes())
+    callOpts = append(callOpts, defaultRetryParams())
+    callOpts = append(callOpts, client.callOptions["GetBook"])
+    callOpts = append(callOpts, opts...)
+    var resp *google_example_library_v1.Book
+    err := gax.Invoke(ctx, func (c context.Context) error {
+        var err error
+        resp, err = client.client.GetBook(c, req)
+        return err
+    }, callOpts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
 }
 
 
@@ -357,34 +379,37 @@ func (client *Client) GetBook(ctx context.Context, req *google_example_library_v
 
 // ListBooks lists books in a shelf.
 func (client *Client) ListBooks(ctx context.Context, req *google_example_library_v1.ListBooksRequest, opts ...gax.CallOption) (*BookIterator, error) {
-	callOpts := append(idempotentRetryCodes(), defaultRetryParams(), client.CallOptions["ListBooks"]...)
-	callOpts = append(callOpts, opts...)
-	atLastPage := false
-	return &BookIterator{
-		apiCall: func() (BookPage, error) {
-			if atLastPage {
-				return BookPage{}, io.EOF
-			}
-			var resp *google_example_library_v1.ListBooksResponse
-			err := gax.Invoke(ctx, func (c context.Context) error {
-				var err error
-				resp, err = client.client.ListBooks(c, req)
-				return err
-			}, callOpts...)
-			if err != nil {
-				return BookPage{}, err
-			}
-			if resp.NextPageToken == "" {
-				atLastPage = true
-			} else {
-				req.PageToken = resp.NextPageToken
-			}
-			return BookPage{
-				Items: resp.Books,
-				NextPageToken: resp.NextPageToken,
-			}, nil
-		},
-	}, nil
+    var callOpts []gax.CallOptions
+    callOpts = append(callOpts, idempotentRetryCodes())
+    callOpts = append(callOpts, defaultRetryParams())
+    callOpts = append(callOpts, client.callOptions["ListBooks"])
+    callOpts = append(callOpts, opts...)
+    atLastPage := false
+    return &BookIterator{
+        apiCall: func() (BookPage, error) {
+            if atLastPage {
+                return BookPage{}, io.EOF
+            }
+            var resp *google_example_library_v1.ListBooksResponse
+            err := gax.Invoke(ctx, func (c context.Context) error {
+                var err error
+                resp, err = client.client.ListBooks(c, req)
+                return err
+            }, callOpts...)
+            if err != nil {
+                return BookPage{}, err
+            }
+            if resp.NextPageToken == "" {
+                atLastPage = true
+            } else {
+                req.PageToken = resp.NextPageToken
+            }
+            return BookPage{
+                Items: resp.Books,
+                NextPageToken: resp.NextPageToken,
+            }, nil
+        },
+    }, nil
 }
 
 
@@ -392,14 +417,17 @@ func (client *Client) ListBooks(ctx context.Context, req *google_example_library
 
 // DeleteBook deletes a book.
 func (client *Client) DeleteBook(ctx context.Context, req *google_example_library_v1.DeleteBookRequest, opts ...gax.CallOption) error {
-	callOpts := append(idempotentRetryCodes(), defaultRetryParams(), client.CallOptions["DeleteBook"]...)
-	callOpts = append(callOpts, opts...)
-	err := gax.Invoke(ctx, func (c context.Context) error {
-		var err error
-		_, err = client.client.DeleteBook(c, req)
-		return err
-	}, callOpts...)
-	return err
+    var callOpts []gax.CallOptions
+    callOpts = append(callOpts, idempotentRetryCodes())
+    callOpts = append(callOpts, defaultRetryParams())
+    callOpts = append(callOpts, client.callOptions["DeleteBook"])
+    callOpts = append(callOpts, opts...)
+    err := gax.Invoke(ctx, func (c context.Context) error {
+        var err error
+        _, err = client.client.DeleteBook(c, req)
+        return err
+    }, callOpts...)
+    return err
 }
 
 
@@ -407,18 +435,21 @@ func (client *Client) DeleteBook(ctx context.Context, req *google_example_librar
 
 // UpdateBook updates a book.
 func (client *Client) UpdateBook(ctx context.Context, req *google_example_library_v1.UpdateBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
-	callOpts := append(idempotentRetryCodes(), defaultRetryParams(), client.CallOptions["UpdateBook"]...)
-	callOpts = append(callOpts, opts...)
-	var resp *google_example_library_v1.Book
-	err := gax.Invoke(ctx, func (c context.Context) error {
-		var err error
-		resp, err = client.client.UpdateBook(c, req)
-		return err
-	}, callOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
+    var callOpts []gax.CallOptions
+    callOpts = append(callOpts, idempotentRetryCodes())
+    callOpts = append(callOpts, defaultRetryParams())
+    callOpts = append(callOpts, client.callOptions["UpdateBook"])
+    callOpts = append(callOpts, opts...)
+    var resp *google_example_library_v1.Book
+    err := gax.Invoke(ctx, func (c context.Context) error {
+        var err error
+        resp, err = client.client.UpdateBook(c, req)
+        return err
+    }, callOpts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
 }
 
 
@@ -426,18 +457,21 @@ func (client *Client) UpdateBook(ctx context.Context, req *google_example_librar
 
 // MoveBook moves a book to another shelf, and returns the new book.
 func (client *Client) MoveBook(ctx context.Context, req *google_example_library_v1.MoveBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
-	callOpts := append(nonIdempotentRetryCodes(), defaultRetryParams(), client.CallOptions["MoveBook"]...)
-	callOpts = append(callOpts, opts...)
-	var resp *google_example_library_v1.Book
-	err := gax.Invoke(ctx, func (c context.Context) error {
-		var err error
-		resp, err = client.client.MoveBook(c, req)
-		return err
-	}, callOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
+    var callOpts []gax.CallOptions
+    callOpts = append(callOpts, nonIdempotentRetryCodes())
+    callOpts = append(callOpts, defaultRetryParams())
+    callOpts = append(callOpts, client.callOptions["MoveBook"])
+    callOpts = append(callOpts, opts...)
+    var resp *google_example_library_v1.Book
+    err := gax.Invoke(ctx, func (c context.Context) error {
+        var err error
+        resp, err = client.client.MoveBook(c, req)
+        return err
+    }, callOpts...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
 }
 
 
@@ -445,34 +479,37 @@ func (client *Client) MoveBook(ctx context.Context, req *google_example_library_
 
 // ListStrings lists a primitive resource. To test go page streaming.
 func (client *Client) ListStrings(ctx context.Context, req *google_example_library_v1.ListStringsRequest, opts ...gax.CallOption) (*StringIterator, error) {
-	callOpts := append(idempotentRetryCodes(), defaultRetryParams(), client.CallOptions["ListStrings"]...)
-	callOpts = append(callOpts, opts...)
-	atLastPage := false
-	return &StringIterator{
-		apiCall: func() (StringPage, error) {
-			if atLastPage {
-				return StringPage{}, io.EOF
-			}
-			var resp *google_example_library_v1.ListStringsResponse
-			err := gax.Invoke(ctx, func (c context.Context) error {
-				var err error
-				resp, err = client.client.ListStrings(c, req)
-				return err
-			}, callOpts...)
-			if err != nil {
-				return StringPage{}, err
-			}
-			if resp.NextPageToken == "" {
-				atLastPage = true
-			} else {
-				req.PageToken = resp.NextPageToken
-			}
-			return StringPage{
-				Items: resp.Strings,
-				NextPageToken: resp.NextPageToken,
-			}, nil
-		},
-	}, nil
+    var callOpts []gax.CallOptions
+    callOpts = append(callOpts, idempotentRetryCodes())
+    callOpts = append(callOpts, defaultRetryParams())
+    callOpts = append(callOpts, client.callOptions["ListStrings"])
+    callOpts = append(callOpts, opts...)
+    atLastPage := false
+    return &StringIterator{
+        apiCall: func() (StringPage, error) {
+            if atLastPage {
+                return StringPage{}, io.EOF
+            }
+            var resp *google_example_library_v1.ListStringsResponse
+            err := gax.Invoke(ctx, func (c context.Context) error {
+                var err error
+                resp, err = client.client.ListStrings(c, req)
+                return err
+            }, callOpts...)
+            if err != nil {
+                return StringPage{}, err
+            }
+            if resp.NextPageToken == "" {
+                atLastPage = true
+            } else {
+                req.PageToken = resp.NextPageToken
+            }
+            return StringPage{
+                Items: resp.Strings,
+                NextPageToken: resp.NextPageToken,
+            }, nil
+        },
+    }, nil
 }
 
 
@@ -482,130 +519,130 @@ func (client *Client) ListStrings(ctx context.Context, req *google_example_libra
 // ShelfPage represents a page in a stream of ShelfIterator.
 // This will be updated through ShelfIterator.Advance.
 type ShelfPage struct {
-	// The elements in the current page.
-	Items []*google_example_library_v1.Shelf
+    // The elements in the current page.
+    Items []*google_example_library_v1.Shelf
 
-	// The token to get the next page response. This can be used to resume the iteration.
-	NextPageToken string
+    // The token to get the next page response. This can be used to resume the iteration.
+    NextPageToken string
 }
 
 // ShelfIterator manages a stream of *google_example_library_v1.Shelf.
 type ShelfIterator struct {
-	// The current page data.
-	Page         ShelfPage
-	currentIndex int
-	apiCall      func() (ShelfPage, error)
+    // The current page data.
+    Page         ShelfPage
+    currentIndex int
+    apiCall      func() (ShelfPage, error)
 }
 
 // Advance moves to the next page and updates its internal data.
 // This returns io.EOF if no more pages exist.
 func (iterator *ShelfIterator) Advance() error {
-	page, err := iterator.apiCall()
-	if err == nil {
-		iterator.Page = page
-	}
-	return err
+    page, err := iterator.apiCall()
+    if err == nil {
+        iterator.Page = page
+    }
+    return err
 }
 
 // Next returns the next element in the stream. This returns io.EOF at the end of
 // the stream.
 func (iterator *ShelfIterator) Next() (*google_example_library_v1.Shelf, error) {
-	for iterator.currentIndex >= len(iterator.Page.Items) {
-		err := iterator.Advance()
-		if err != nil {
-			return nil, err
-		}
-		iterator.currentIndex = 0
-	}
-	result := iterator.Page.Items[iterator.currentIndex]
-	iterator.currentIndex++
-	return result, nil
+    for iterator.currentIndex >= len(iterator.Page.Items) {
+        err := iterator.Advance()
+        if err != nil {
+            return nil, err
+        }
+        iterator.currentIndex = 0
+    }
+    result := iterator.Page.Items[iterator.currentIndex]
+    iterator.currentIndex++
+    return result, nil
 }
 
 // BookPage represents a page in a stream of BookIterator.
 // This will be updated through BookIterator.Advance.
 type BookPage struct {
-	// The elements in the current page.
-	Items []*google_example_library_v1.Book
+    // The elements in the current page.
+    Items []*google_example_library_v1.Book
 
-	// The token to get the next page response. This can be used to resume the iteration.
-	NextPageToken string
+    // The token to get the next page response. This can be used to resume the iteration.
+    NextPageToken string
 }
 
 // BookIterator manages a stream of *google_example_library_v1.Book.
 type BookIterator struct {
-	// The current page data.
-	Page         BookPage
-	currentIndex int
-	apiCall      func() (BookPage, error)
+    // The current page data.
+    Page         BookPage
+    currentIndex int
+    apiCall      func() (BookPage, error)
 }
 
 // Advance moves to the next page and updates its internal data.
 // This returns io.EOF if no more pages exist.
 func (iterator *BookIterator) Advance() error {
-	page, err := iterator.apiCall()
-	if err == nil {
-		iterator.Page = page
-	}
-	return err
+    page, err := iterator.apiCall()
+    if err == nil {
+        iterator.Page = page
+    }
+    return err
 }
 
 // Next returns the next element in the stream. This returns io.EOF at the end of
 // the stream.
 func (iterator *BookIterator) Next() (*google_example_library_v1.Book, error) {
-	for iterator.currentIndex >= len(iterator.Page.Items) {
-		err := iterator.Advance()
-		if err != nil {
-			return nil, err
-		}
-		iterator.currentIndex = 0
-	}
-	result := iterator.Page.Items[iterator.currentIndex]
-	iterator.currentIndex++
-	return result, nil
+    for iterator.currentIndex >= len(iterator.Page.Items) {
+        err := iterator.Advance()
+        if err != nil {
+            return nil, err
+        }
+        iterator.currentIndex = 0
+    }
+    result := iterator.Page.Items[iterator.currentIndex]
+    iterator.currentIndex++
+    return result, nil
 }
 
 // StringPage represents a page in a stream of StringIterator.
 // This will be updated through StringIterator.Advance.
 type StringPage struct {
-	// The elements in the current page.
-	Items []string
+    // The elements in the current page.
+    Items []string
 
-	// The token to get the next page response. This can be used to resume the iteration.
-	NextPageToken string
+    // The token to get the next page response. This can be used to resume the iteration.
+    NextPageToken string
 }
 
 // StringIterator manages a stream of string.
 type StringIterator struct {
-	// The current page data.
-	Page         StringPage
-	currentIndex int
-	apiCall      func() (StringPage, error)
+    // The current page data.
+    Page         StringPage
+    currentIndex int
+    apiCall      func() (StringPage, error)
 }
 
 // Advance moves to the next page and updates its internal data.
 // This returns io.EOF if no more pages exist.
 func (iterator *StringIterator) Advance() error {
-	page, err := iterator.apiCall()
-	if err == nil {
-		iterator.Page = page
-	}
-	return err
+    page, err := iterator.apiCall()
+    if err == nil {
+        iterator.Page = page
+    }
+    return err
 }
 
 // Next returns the next element in the stream. This returns io.EOF at the end of
 // the stream.
 func (iterator *StringIterator) Next() (string, error) {
-	for iterator.currentIndex >= len(iterator.Page.Items) {
-		err := iterator.Advance()
-		if err != nil {
-			return nil, err
-		}
-		iterator.currentIndex = 0
-	}
-	result := iterator.Page.Items[iterator.currentIndex]
-	iterator.currentIndex++
-	return result, nil
+    for iterator.currentIndex >= len(iterator.Page.Items) {
+        err := iterator.Advance()
+        if err != nil {
+            return nil, err
+        }
+        iterator.currentIndex = 0
+    }
+    result := iterator.Page.Items[iterator.currentIndex]
+    iterator.currentIndex++
+    return result, nil
 }
 ============== file: doc.go ==============
 // Copyright 2016 Google Inc. All Rights Reserved.

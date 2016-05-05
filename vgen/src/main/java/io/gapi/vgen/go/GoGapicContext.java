@@ -365,8 +365,6 @@ public class GoGapicContext extends GapicContext {
     imports.add(GoImport.create("golang.org/x/net/context"));
     imports.add(GoImport.create("google.golang.org/grpc"));
     imports.add(GoImport.create("google.golang.org/grpc/codes"));
-    imports.add(GoImport.create("google.golang.org/cloud"));
-    imports.add(GoImport.create("google.golang.org/cloud/internal/transport"));
     imports.add(GoImport.create(GAX_PACKAGE_BASE, "gax"));
 
     if (!getApiConfig().getInterfaceConfig(service).getRetrySettingsDefinition().isEmpty()) {

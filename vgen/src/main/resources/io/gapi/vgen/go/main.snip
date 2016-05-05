@@ -52,14 +52,14 @@
 
     // Client is a client for interacting with {@service.getSimpleName}.
     type Client struct {
-    	// The connection to the service.
-    	conn *grpc.ClientConn
+        // The connection to the service.
+        conn *grpc.ClientConn
 
-    	// The gRPC API client.
-    	client {@context.getServiceClientName(service)}
+        // The gRPC API client.
+        client {@context.getServiceClientName(service)}
 
-    	// The map from the method name to the default call options for the method of this service.
-    	CallOptions map[string][]gax.CallOption
+        // The map from the method name to the default call options for the method of this service.
+        callOptions map[string][]gax.CallOption
     }
 
     {@constructor(service)}
@@ -71,69 +71,69 @@
 
 @private globals(service)
     const (
-    	prodAddr = "{@context.getServiceConfig.getServiceAddress(service)}:{@context.getServiceConfig.getServicePort()}"
+        prodAddr = "{@context.getServiceConfig.getServiceAddress(service)}:{@context.getServiceConfig.getServicePort()}"
     )
 
     var (
-    	allScopes = []string {
-    		@join scope : context.getServiceConfig.getAuthScopes(service)
-    			"{@scope}",
-    		@end
-    	}
+        allScopes = []string {
+            @join scope : context.getServiceConfig.getAuthScopes(service)
+                "{@scope}",
+            @end
+        }
     )
 
     var (
-    	@join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-    	{@pathTemplateVarName(collectionConfig)} = gax.MustCompilePathTemplate("{@collectionConfig.getNamePattern}")
-    	@end
+        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+        {@pathTemplateVarName(collectionConfig)} = gax.MustCompilePathTemplate("{@collectionConfig.getNamePattern}")
+        @end
     )
     @join retryCodesDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetryCodesDefinition)
 
     func {@context.lowerUnderscoreToLowerCamel(retryCodesDef.getKey)}RetryCodes() []gax.CallOption {
-    	return []gax.CallOption{
-    		gax.WithRetryCodes([]codes.Code{
-    			@join code : retryCodesDef.getValue
-    			codes.{@context.upperUnderscoreToUpperCamel(code.toString())},
-    			@end
-    		}),
-    	}
+        return []gax.CallOption{
+            gax.WithRetryCodes([]codes.Code{
+                @join code : retryCodesDef.getValue
+                codes.{@context.upperUnderscoreToUpperCamel(code.toString())},
+                @end
+            }),
+        }
     }
     @end
     @join retryDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetrySettingsDefinition)
 
     func {@context.lowerUnderscoreToLowerCamel(retryDef.getKey)}RetryParams() []gax.CallOption {
-    	return []gax.CallOption{
-    		gax.WithTimeout(30*time.Second),
-    		gax.WithDelayTimeoutSettings({@retryDef.getValue.getInitialRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getRetryDelayMultiplier}),
-    		gax.WithRPCTimeoutSettings({@retryDef.getValue.getInitialRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getRpcTimeoutMultiplier}),
-    	}
+        return []gax.CallOption{
+            gax.WithTimeout(30*time.Second),
+            gax.WithDelayTimeoutSettings({@retryDef.getValue.getInitialRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getRetryDelayMultiplier}),
+            gax.WithRPCTimeoutSettings({@retryDef.getValue.getInitialRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getRpcTimeoutMultiplier}),
+        }
     }
     @end
 @end
 
 @private constructor(service)
     // NewClient creates a new API service client.
-    func NewClient(ctx context.Context, opts ...cloud.ClientOption) (*Client, error) {
-    	o := []cloud.ClientOption {
-    		cloud.WithEndpoint(prodAddr),
-    		cloud.WithScopes(allScopes...),
-    	}
-    	o = append(o, opts...)
-    	conn, err := transport.DialGRPC(ctx, o...)
-    	if err != nil {
-    		return nil, err
-    	}
-    	return &Client {
-    		conn: conn,
-    		client: {@context.getServiceClientConstructorName(service)}(conn),
-    		CallOptions: map[string][]gax.CallOption{},
-    	}, nil
+    func NewClient(ctx context.Context, opts ...gax.ClientOption) (*Client, error) {
+        o := []gax.ClientOption {
+            gax.WithEndpoint(prodAddr),
+            gax.WithScopes(allScopes...),
+        }
+        o = append(o, opts...)
+        conn, err := gax.DialGRPC(ctx, o...)
+        if err != nil {
+            return nil, err
+        }
+        return &Client {
+            conn: conn,
+            client: {@context.getServiceClientConstructorName(service)}(conn),
+            callOptions: map[string][]gax.CallOption{},
+        }, nil
     }
 
     // Close closes the connection to the API service. The user should invoke this when
     // the client is no longer required.
     func (client *Client) Close() error {
-    	return client.conn.Close()
+        return client.conn.Close()
     }
 @end
 
@@ -160,34 +160,42 @@
 
             // {@pathTypeName} represents a {@humanReadableName} resource.
             type {@pathTypeName} struct {
-            	@join param : collectionConfig.getNameTemplate.vars()
-            	{@context.lowerUnderscoreToUpperCamel(param)} string
-            	@end
+                @join param : collectionConfig.getNameTemplate.vars()
+                {@context.lowerUnderscoreToUpperCamel(param)} string
+                @end
             }
 
             // New{@pathTypeName}FromPath creates a {@pathTypeName} from a {@humanReadableName} path in the form of "{@collectionConfig.getNamePattern}".
             func New{@pathTypeName}FromPath(path string) ({@pathTypeName}, error) {
-            	binding, err := {@pathTemplateVarName(collectionConfig)}.Match(path)
-            	if err != nil {
-            		return {@pathTypeName}{}, err
-            	}
-            	return {@pathTypeName}{
-            		@join param : collectionConfig.getNameTemplate.vars()
-            		{@context.lowerUnderscoreToUpperCamel(param)}: binding["{@param}"],
-            		@end
-            	}, nil
+                binding, err := {@pathTemplateVarName(collectionConfig)}.Match(path)
+                if err != nil {
+                    return {@pathTypeName}{}, err
+                }
+                return {@pathTypeName}{
+                    @join param : collectionConfig.getNameTemplate.vars()
+                    {@context.lowerUnderscoreToUpperCamel(param)}: binding["{@param}"],
+                    @end
+                }, nil
             }
 
             // Path returns the path for the {@humanReadableName} resource.
             func ({@methodReceiver} {@pathTypeName}) Path() (string, error) {
-            	return {@pathTemplateVarName(collectionConfig)}.Instantiate(map[string]string{
-            		@join param : collectionConfig.getNameTemplate.vars()
-            		"{@param}": {@methodReceiver}.{@context.lowerUnderscoreToUpperCamel(param)},
-            		@end
-            	})
+                return {@pathTemplateVarName(collectionConfig)}.Instantiate(map[string]string{
+                    @join param : collectionConfig.getNameTemplate.vars()
+                    "{@param}": {@methodReceiver}.{@context.lowerUnderscoreToUpperCamel(param)},
+                    @end
+                })
             }
         @end
     @end
+@end
+
+@private callOptions(retryCodesMethodName, retryParamsMethodName, methodName)
+    var callOpts []gax.CallOptions
+    callOpts = append(callOpts, {@retryCodesMethodName}RetryCodes())
+    callOpts = append(callOpts, {@retryParamsMethodName}RetryParams())
+    callOpts = append(callOpts, client.callOptions["{@methodName}"])
+    callOpts = append(callOpts, opts...)
 @end
 
 @private methods(service)
@@ -197,7 +205,7 @@
              outTypeName = context.typeName(method.getOutputType), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              retryParamsMethodName = context.lowerUnderscoreToLowerCamel(methodConfig.getRetrySettingsConfigName), \
-	     retryCodesMethodName = context.lowerUnderscoreToLowerCamel(methodConfig.getRetryCodesConfigName), \
+         retryCodesMethodName = context.lowerUnderscoreToLowerCamel(methodConfig.getRetryCodesConfigName), \
              isPageStreaming = methodConfig.isPageStreaming
             @if {@isPageStreaming}
                 @let pageStreaming = methodConfig.getPageStreaming(), \
@@ -210,34 +218,33 @@
 
                     {@methodComment(method, methodName)}
                     func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) (*{@iteratorTypeName}, error) {
-                    	callOpts := append({@retryCodesMethodName}RetryCodes(), {@retryParamsMethodName}RetryParams(), client.CallOptions["{@methodName}"]...)
-                    	callOpts = append(callOpts, opts...)
-                    	atLastPage := false
-                    	return &{@iteratorTypeName}{
-                    		apiCall: func() ({@iteratorPageTypeName}, error) {
-                    			if atLastPage {
-                    				return {@iteratorPageTypeName}{}, io.EOF
-                    			}
-                    			var resp {@outTypeName}
-                    			err := gax.Invoke(ctx, func (c context.Context) error {
-                    				var err error
-                    				resp, err = client.client.{@methodName}(c, req)
-                    				return err
-                    			}, callOpts...)
-                    			if err != nil {
-                    				return {@iteratorPageTypeName}{}, err
-                    			}
-                    			if resp.{@responseTokenFieldName} == {@tokenZeroValue} {
-                    				atLastPage = true
-                    			} else {
-                    				req.{@requestTokenFieldName} = resp.{@responseTokenFieldName}
-                    			}
-                    			return {@iteratorPageTypeName}{
-                    				Items: resp.{@resourceFieldName},
-                    				NextPageToken: resp.{@responseTokenFieldName},
-                    			}, nil
-                    		},
-                    	}, nil
+                        {@callOptions(retryCodesMethodName, retryParamsMethodName, methodName)}
+                        atLastPage := false
+                        return &{@iteratorTypeName}{
+                            apiCall: func() ({@iteratorPageTypeName}, error) {
+                                if atLastPage {
+                                    return {@iteratorPageTypeName}{}, io.EOF
+                                }
+                                var resp {@outTypeName}
+                                err := gax.Invoke(ctx, func (c context.Context) error {
+                                    var err error
+                                    resp, err = client.client.{@methodName}(c, req)
+                                    return err
+                                }, callOpts...)
+                                if err != nil {
+                                    return {@iteratorPageTypeName}{}, err
+                                }
+                                if resp.{@responseTokenFieldName} == {@tokenZeroValue} {
+                                    atLastPage = true
+                                } else {
+                                    req.{@requestTokenFieldName} = resp.{@responseTokenFieldName}
+                                }
+                                return {@iteratorPageTypeName}{
+                                    Items: resp.{@resourceFieldName},
+                                    NextPageToken: resp.{@responseTokenFieldName},
+                                }, nil
+                            },
+                        }, nil
                     }
 
                 @end
@@ -246,29 +253,27 @@
                 {@methodComment(method, methodName)}
                 @if {@context.isEmpty(method.getOutputType)}
                     func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) error {
-                    	callOpts := append({@retryCodesMethodName}RetryCodes(), {@retryParamsMethodName}RetryParams(), client.CallOptions["{@methodName}"]...)
-                    	callOpts = append(callOpts, opts...)
-                    	err := gax.Invoke(ctx, func (c context.Context) error {
-                    		var err error
-                    		_, err = client.client.{@methodName}(c, req)
-                    		return err
-                    	}, callOpts...)
-                    	return err
+                        {@callOptions(retryCodesMethodName, retryParamsMethodName, methodName)}
+                        err := gax.Invoke(ctx, func (c context.Context) error {
+                            var err error
+                            _, err = client.client.{@methodName}(c, req)
+                            return err
+                        }, callOpts...)
+                        return err
                     }
                 @else
                     func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) ({@outTypeName}, error) {
-                    	callOpts := append({@retryCodesMethodName}RetryCodes(), {@retryParamsMethodName}RetryParams(), client.CallOptions["{@methodName}"]...)
-                    	callOpts = append(callOpts, opts...)
-                    	var resp {@outTypeName}
-                    	err := gax.Invoke(ctx, func (c context.Context) error {
-                    		var err error
-                    		resp, err = client.client.{@methodName}(c, req)
-                    		return err
-                    	}, callOpts...)
-                    	if err != nil {
-                    		return nil, err
-                    	}
-                    	return resp, nil
+                        {@callOptions(retryCodesMethodName, retryParamsMethodName, methodName)}
+                        var resp {@outTypeName}
+                        err := gax.Invoke(ctx, func (c context.Context) error {
+                            var err error
+                            resp, err = client.client.{@methodName}(c, req)
+                            return err
+                        }, callOpts...)
+                        if err != nil {
+                            return nil, err
+                        }
+                        return resp, nil
                     }
                 @end
 
@@ -297,44 +302,44 @@
             // {@iteratorPageTypeName} represents a page in a stream of {@iteratorTypeName}.
             // This will be updated through {@iteratorTypeName}.Advance.
             type {@iteratorPageTypeName} struct {
-            	// The elements in the current page.
-            	Items []{@resourceFieldType}
+                // The elements in the current page.
+                Items []{@resourceFieldType}
 
-            	// The token to get the next page response. This can be used to resume the iteration.
-            	NextPageToken {@tokenType}
+                // The token to get the next page response. This can be used to resume the iteration.
+                NextPageToken {@tokenType}
             }
 
             // {@iteratorTypeName} manages a stream of {@resourceFieldType}.
             type {@iteratorTypeName} struct {
-            	// The current page data.
-            	Page         {@iteratorPageTypeName}
-            	currentIndex int
-            	apiCall      func() ({@iteratorPageTypeName}, error)
+                // The current page data.
+                Page         {@iteratorPageTypeName}
+                currentIndex int
+                apiCall      func() ({@iteratorPageTypeName}, error)
             }
 
             // Advance moves to the next page and updates its internal data.
             // This returns io.EOF if no more pages exist.
             func (iterator *{@iteratorTypeName}) Advance() error {
-            	page, err := iterator.apiCall()
-            	if err == nil {
-            		iterator.Page = page
-            	}
-            	return err
+                page, err := iterator.apiCall()
+                if err == nil {
+                    iterator.Page = page
+                }
+                return err
             }
 
             // Next returns the next element in the stream. This returns io.EOF at the end of
             // the stream.
             func (iterator *{@iteratorTypeName}) Next() ({@resourceFieldType}, error) {
-            	for iterator.currentIndex >= len(iterator.Page.Items) {
-            		err := iterator.Advance()
-            		if err != nil {
-            			return nil, err
-            		}
-            		iterator.currentIndex = 0
-            	}
-            	result := iterator.Page.Items[iterator.currentIndex]
-            	iterator.currentIndex++
-            	return result, nil
+                for iterator.currentIndex >= len(iterator.Page.Items) {
+                    err := iterator.Advance()
+                    if err != nil {
+                        return nil, err
+                    }
+                    iterator.currentIndex = 0
+                }
+                result := iterator.Page.Items[iterator.currentIndex]
+                iterator.currentIndex++
+                return result, nil
             }
         @end
     @end
