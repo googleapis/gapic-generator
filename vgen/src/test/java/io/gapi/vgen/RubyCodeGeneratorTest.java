@@ -54,13 +54,15 @@ public class RubyCodeGeneratorTest extends CodeGeneratorTestBase {
   @Override
   protected Object run() {
     // Should generate one file for the class, and a list of files for the protos
-    GeneratedResult codeResult = generateForSnippet(0);
-    List<GeneratedResult> docsResult = generateForDocSnippet(0);
+    List<GeneratedResult> codeResult = generateForTemplate(0, 0);
+    List<GeneratedResult> docsResult = generateForTemplate(1, 0);
     Truth.assertThat(codeResult).isNotNull();
     Truth.assertThat(docsResult).isNotNull();
 
     ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String, Doc>();
-    builder.put(codeResult.getFilename(), codeResult.getDoc());
+    for (GeneratedResult result : codeResult) {
+      builder.put(result.getFilename(), result.getDoc());
+    }
     for (GeneratedResult result : docsResult) {
       builder.put(result.getFilename(), result.getDoc());
     }

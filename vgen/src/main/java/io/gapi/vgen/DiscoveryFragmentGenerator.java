@@ -48,12 +48,15 @@ public class DiscoveryFragmentGenerator {
 
     ApiaryConfig apiaryConfig = discovery.getConfig();
 
+    // TODO: Support multiple templates; don't hard-code the zero-index here.
+    Preconditions.checkArgument(configProto.getTemplatesCount() == 1);
     DiscoveryLanguageProvider languageProvider =
-        GeneratorBuilderUtil.createLanguageProvider(
-            configProto.getLanguageProvider(),
+        GeneratorBuilderUtil.createClass(
+            configProto.getTemplates(0).getLanguageProvider(),
             DiscoveryLanguageProvider.class,
             new Class<?>[] {Service.class, ApiaryConfig.class},
             new Object[] {discovery.getService(), apiaryConfig},
+            "discovery language provider",
             new GeneratorBuilderUtil.ErrorReporter() {
               @Override
               public void error(String message, Object... args) {

@@ -14,62 +14,25 @@
  */
 package io.gapi.vgen;
 
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.stages.Merged;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 
 import java.io.IOException;
-import java.util.Map;
-
-import javax.annotation.Nullable;
 
 /**
  * Fragment generator.
  */
 public class FragmentGenerator {
 
-  private final GapicLanguageProvider provider;
+  private final GapicLanguageProvider<Method> provider;
 
-  public FragmentGenerator(GapicLanguageProvider provider) {
+  public FragmentGenerator(GapicLanguageProvider<Method> provider) {
     this.provider = Preconditions.checkNotNull(provider);
   }
 
-  public static FragmentGenerator create(GapicLanguageProvider provider) {
+  public static FragmentGenerator create(GapicLanguageProvider<Method> provider) {
     return new FragmentGenerator(provider);
-  }
-
-  /**
-   * Generates fragments for the model. Returns a map from each method to a fragment for the method.
-   * Returns null if generation failed.
-   */
-  @Nullable
-  public Map<Method, GeneratedResult> generateFragments(SnippetDescriptor snippetDescriptor) {
-    // Establish required stage for generation.
-    provider.getModel().establishStage(Merged.KEY);
-    if (provider.getModel().getErrorCount() > 0) {
-      return null;
-    }
-
-    // Run the generator for each method of each service.
-    ImmutableMap.Builder<Method, GeneratedResult> generated = ImmutableMap.builder();
-    for (Interface iface : provider.getModel().getSymbolTable().getInterfaces()) {
-      if (!iface.isReachable()) {
-        continue;
-      }
-      for (Method method : iface.getMethods()) {
-        GeneratedResult result = provider.generateFragments(method, snippetDescriptor);
-        generated.put(method, result);
-      }
-    }
-
-    // Return result.
-    if (provider.getModel().getErrorCount() > 0) {
-      return null;
-    }
-    return generated.build();
   }
 
   /**

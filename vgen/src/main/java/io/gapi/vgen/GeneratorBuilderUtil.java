@@ -15,7 +15,9 @@
 package io.gapi.vgen;
 
 import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.common.base.Preconditions;
@@ -36,12 +38,24 @@ public final class GeneratorBuilderUtil {
     void error(String message, Object... args);
   }
 
-  public static GapicLanguageProvider createLanguageProvider(ConfigProto configProto, final Model model) {
+  /**
+   * Constructs a language provider from a configuration; the configuration cannot contain
+   * parameterized type information, so we must suppress the type safety warning here.
+   */
+  @SuppressWarnings("unchecked")
+  public static GapicLanguageProvider<ProtoElement> createLanguageProvider(
+      ConfigProto configProto,
+      TemplateProto template,
+      final Model model,
+      InputElementView<ProtoElement> view) {
     Preconditions.checkNotNull(model);
     Preconditions.checkNotNull(configProto);
 
     model.establishStage(Merged.KEY);
     if (model.getErrorCount() > 0) {
+      for (Diag diag : model.getDiags()) {
+        System.err.println(diag.toString());
+      }
       return null;
     }
 
@@ -50,11 +64,12 @@ public final class GeneratorBuilderUtil {
       return null;
     }
 
-    return GeneratorBuilderUtil.createLanguageProvider(
-        configProto.getLanguageProvider(),
+    return GeneratorBuilderUtil.createClass(
+        template.getLanguageProvider(),
         GapicLanguageProvider.class,
-        new Class<?>[] {Model.class, ApiConfig.class},
-        new Object[] {model, apiConfig},
+        new Class<?>[] {Model.class, ApiConfig.class, InputElementView.class},
+        new Object[] {model, apiConfig, view},
+        "language provider",
         new GeneratorBuilderUtil.ErrorReporter() {
           @Override
           public void error(String message, Object... args) {
@@ -62,37 +77,61 @@ public final class GeneratorBuilderUtil {
           }
         });
   }
+  
+  /**
+   * Constructs an InputElementView from a configuration; the configuration cannot contain
+   * parameterized type information, so we must suppress the type safety warning here.
+   */
+  @SuppressWarnings("unchecked")
+  public static InputElementView<ProtoElement> createView(
+      TemplateProto template, final DiagCollector diagCollector) {
+    return GeneratorBuilderUtil.createClass(
+        template.getInputElementView(),
+        InputElementView.class,
+        new Class<?>[] {},
+        new Object[] {},
+        "input element view",
+        new GeneratorBuilderUtil.ErrorReporter() {
+          @Override
+          public void error(String message, Object... args) {
+            diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
+          }
+        });
+  }
 
-  public static <LP> LP createLanguageProvider(
-      String languageProviderName,
+  public static <LP> LP createClass(
+      String className,
       Class<LP> coerceType,
       Class<?>[] ctorParam,
       Object[] ctorArg,
+      String classDescription,
       ErrorReporter errorReporter) {
-    Class<?> providerType;
+    Class<?> classType;
     try {
-      providerType = Class.forName(languageProviderName);
+      classType = Class.forName(className);
     } catch (ClassNotFoundException e) {
       errorReporter.error(
-          "Cannot resolve provider class '%s'. Is it in the class path?", languageProviderName);
+          "Cannot resolve %s class '%s'. Is it in the class path?", classDescription, className);
       return null;
     }
-    if (!coerceType.isAssignableFrom(providerType)) {
+    if (!coerceType.isAssignableFrom(classType)) {
       errorReporter.error(
-          "the provider class '%s' does not extend the expected class '%s'",
-          providerType.getName(),
+          "the %s class '%s' does not extend the expected class '%s'",
+          classDescription,
+          classType.getName(),
           coerceType.getName());
       return null;
     }
     Constructor<?> ctor;
     try {
-      ctor = providerType.getConstructor(ctorParam);
+      ctor = classType.getConstructor(ctorParam);
     } catch (NoSuchMethodException | SecurityException e) {
       StringBuilder error =
           new StringBuilder(
               String.format(
-                  "the provider class '%s' does not have the expected constructor with parameters:",
-                  providerType.getName()));
+                  "the %s class '%s' does not have the expected constructor with parameters:",
+                  classDescription,
+                  classType.getName()));
       for (Class c : ctorParam) {
         error.append(" ");
         error.append(c.getName());

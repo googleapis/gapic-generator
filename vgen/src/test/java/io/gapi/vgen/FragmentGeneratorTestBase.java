@@ -15,7 +15,7 @@
 package io.gapi.vgen;
 
 import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.ProtoElement;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -34,12 +34,11 @@ public abstract class FragmentGeneratorTestBase extends GeneratorTestBase {
 
   @Override
   protected Object run() {
-    GapicLanguageProvider languageProvider =
-        GeneratorBuilderUtil.createLanguageProvider(config, model);
-    String snippetInputName = config.getFragmentFilesList().get(0);
+    TemplateProto template = config.getTemplates(0);
+    CodeGenerator generator = CodeGenerator.create(config, template, model);
+    String snippetInputName = template.getSnippetFiles(0);
     SnippetDescriptor resourceDescriptor = new SnippetDescriptor(snippetInputName);
-    Map<Method, GeneratedResult> result =
-        FragmentGenerator.create(languageProvider).generateFragments(resourceDescriptor);
+    Map<ProtoElement, GeneratedResult> result = generator.generate(resourceDescriptor);
     if (result == null) {
       // Report diagnosis to baseline file.
       for (Diag diag : model.getDiags()) {

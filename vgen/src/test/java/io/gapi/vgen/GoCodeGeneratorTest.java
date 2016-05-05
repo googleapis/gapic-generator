@@ -14,6 +14,7 @@
  */
 package io.gapi.vgen;
 
+import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.truth.Truth;
@@ -54,13 +55,19 @@ public class GoCodeGeneratorTest extends CodeGeneratorTestBase {
   protected Object run() {
     // GoLanguageGenerator should generate two files -- one for the class, and
     // the other for "doc.go" which holds package doc.
-    GeneratedResult codeResult = generateForSnippet(0);
-    GeneratedResult docResult = generateForSnippet(1);
+    List<GeneratedResult> codeResult = generateForTemplate(0, 0);
+    List<GeneratedResult> docsResult = generateForTemplate(0, 1);
     Truth.assertThat(codeResult).isNotNull();
-    Truth.assertThat(docResult).isNotNull();
-    return ImmutableMap.of(
-        codeResult.getFilename(), codeResult.getDoc(),
-        docResult.getFilename(), docResult.getDoc());
+    Truth.assertThat(docsResult).isNotNull();
+
+    ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String, Doc>();
+    for (GeneratedResult result : codeResult) {
+      builder.put(result.getFilename(), result.getDoc());
+    }
+    for (GeneratedResult result : docsResult) {
+      builder.put(result.getFilename(), result.getDoc());
+    }
+    return builder.build();
   }
 
   // Tests

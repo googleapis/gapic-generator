@@ -14,15 +14,14 @@
  */
 package io.gapi.vgen.go;
 
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoFile;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.collect.Multimap;
 
 import io.gapi.vgen.ApiConfig;
 import io.gapi.vgen.GapicLanguageProvider;
 import io.gapi.vgen.GeneratedResult;
+import io.gapi.vgen.InputElementView;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
@@ -30,14 +29,18 @@ import java.io.IOException;
 /**
  * The LanguageProvider which runs Gapic code generation for Go.
  */
-public class GoGapicLanguageProvider implements GapicLanguageProvider {
+public class GoGapicLanguageProvider<InputElementT extends ProtoElement>
+    implements GapicLanguageProvider<InputElementT> {
 
   private final GoGapicContext context;
   private final GoLanguageProvider provider;
+  private InputElementView<InputElementT> view;
 
-  public GoGapicLanguageProvider(Model model, ApiConfig apiConfig) {
+  public GoGapicLanguageProvider(
+      Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
     this.context = new GoGapicContext(model, apiConfig);
     this.provider = new GoLanguageProvider();
+    this.view = view;
   }
 
   @Override
@@ -52,17 +55,12 @@ public class GoGapicLanguageProvider implements GapicLanguageProvider {
   }
 
   @Override
-  public GeneratedResult generateCode(Interface service, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(service, snippetDescriptor, context);
+  public GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor) {
+    return provider.generate(element, snippetDescriptor, context);
   }
 
   @Override
-  public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(method, snippetDescriptor, context);
-  }
-
-  @Override
-  public GeneratedResult generateDoc(ProtoFile file, SnippetDescriptor descriptor) {
-    return null;
-  }
+  public InputElementView<InputElementT> getView() {
+    return view;
+    }
 }

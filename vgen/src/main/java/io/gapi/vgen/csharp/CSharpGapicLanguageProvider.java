@@ -17,7 +17,7 @@ package io.gapi.vgen.csharp;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoFile;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.collect.Multimap;
@@ -25,6 +25,7 @@ import com.google.common.collect.Multimap;
 import io.gapi.vgen.ApiConfig;
 import io.gapi.vgen.GapicLanguageProvider;
 import io.gapi.vgen.GeneratedResult;
+import io.gapi.vgen.InputElementView;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
@@ -34,14 +35,19 @@ import java.util.Map;
 /**
  * The LanguageProvider which runs Gapic code generation for C#.
  */
-public class CSharpGapicLanguageProvider implements GapicLanguageProvider {
+public class CSharpGapicLanguageProvider<InputElementT extends ProtoElement>
+    implements GapicLanguageProvider<InputElementT> {
 
   private final CSharpGapicContext context;
   private final CSharpLanguageProvider provider;
+  private final CSharpProtoElementView<InputElementT> view;
 
-  public CSharpGapicLanguageProvider(Model model, ApiConfig apiConfig) {
+  public CSharpGapicLanguageProvider(
+      Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
     this.context = new CSharpGapicContext(model, apiConfig);
     this.provider = new CSharpLanguageProvider();
+    // This cast will fail if the view specified in the configuration file is of the wrong type
+    this.view = (CSharpProtoElementView<InputElementT>) view;
   }
 
   @Override
@@ -69,19 +75,14 @@ public class CSharpGapicLanguageProvider implements GapicLanguageProvider {
   }
 
   @Override
-  public GeneratedResult generateCode(Interface service, SnippetDescriptor snippetDescriptor) {
+  public GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor) {
+    CSharpProtoElementView<InputElementT> view = getView();
     return provider.generate(
-        service, snippetDescriptor, context, context.getNamespace(service.getFile()));
+        element, snippetDescriptor, context, context.getNamespace(view.getNamespaceFile(element)));
   }
 
   @Override
-  public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(
-        method, snippetDescriptor, context, context.getNamespace(method.getParent().getFile()));
-  }
-
-  @Override
-  public GeneratedResult generateDoc(ProtoFile file, SnippetDescriptor descriptor) {
-    return null;
+  public CSharpProtoElementView<InputElementT> getView() {
+    return view;
   }
 }

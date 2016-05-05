@@ -22,7 +22,7 @@ import com.google.api.tools.framework.aspects.system.SystemConfigAspect;
 import com.google.api.tools.framework.aspects.versioning.VersionConfigAspect;
 import com.google.api.tools.framework.aspects.visibility.VisibilityConfigAspect;
 import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.processors.linter.Linter;
 import com.google.api.tools.framework.processors.merger.Merger;
@@ -103,37 +103,24 @@ public class CodeGeneratorApi extends ToolDriverBase {
       return;
     }
 
-    CodeGenerator generator = CodeGenerator.create(configProto, model);
-    if (generator == null) {
-      return;
+    for (TemplateProto template : configProto.getTemplatesList()) {
+      CodeGenerator generator = CodeGenerator.create(configProto, template, model);
+      if (generator == null) {
+        return;
+      }
+      Multimap<ProtoElement, GeneratedResult> docs = ArrayListMultimap.create();
+      for (String snippetInputName : template.getSnippetFilesList()) {
+        SnippetDescriptor snippetDescriptor = new SnippetDescriptor(snippetInputName);
+        Map<ProtoElement, GeneratedResult> code = generator.generate(snippetDescriptor);
+        if (code == null) {
+          continue;
+        }
+        for (Map.Entry<ProtoElement, GeneratedResult> entry : code.entrySet()) {
+          docs.put(entry.getKey(), entry.getValue());
+        }
+      }
+      generator.output(options.get(OUTPUT_FILE), docs);
     }
-
-    Multimap<Interface, GeneratedResult> docs = ArrayListMultimap.create();
-    for (String snippetInputName : configProto.getSnippetFilesList()) {
-      SnippetDescriptor snippetDescriptor = new SnippetDescriptor(snippetInputName);
-      Map<Interface, GeneratedResult> code = generator.generate(snippetDescriptor);
-      if (code == null) {
-        continue;
-      }
-      for (Map.Entry<Interface, GeneratedResult> entry : code.entrySet()) {
-        docs.put(entry.getKey(), entry.getValue());
-      }
-    }
-    generator.output(options.get(OUTPUT_FILE), docs);
-
-    // Generate doc snippets.
-    Multimap<String, GeneratedResult> docDocs = ArrayListMultimap.create();
-    for (String snippetInputName : configProto.getDocSnippetFilesList()) {
-      SnippetDescriptor snippetDescriptor = new SnippetDescriptor(snippetInputName);
-      Map<String, GeneratedResult> code = generator.generateDocs(snippetDescriptor);
-      if (code == null) {
-        continue;
-      }
-      for (Map.Entry<String, GeneratedResult> entry : code.entrySet()) {
-        docDocs.put(entry.getKey(), entry.getValue());
-      }
-    }
-    generator.output(options.get(OUTPUT_FILE), docDocs);
   }
 
   private ConfigProto loadConfigFromFiles(List<String> configFileNames) {
