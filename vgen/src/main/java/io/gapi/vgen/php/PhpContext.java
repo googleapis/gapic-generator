@@ -14,26 +14,9 @@
  */
 package io.gapi.vgen.php;
 
-import com.google.api.Service;
-
-import io.gapi.vgen.ApiaryConfig;
-import io.gapi.vgen.DiscoveryContext;
-
 /**
- * A subclass of DiscoveryContext which is specialized for PHP language.
+ * A PhpContext provides functionality specific to a context in PHP.
  */
-public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext {
-
-  /**
-   * Constructs the PHP discovery context.
-   */
-  public PhpDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
-    super(service, apiaryConfig);
-  }
-
-  @Override
-  public void resetState(PhpSnippetSet<?> phpSnippetSet, PhpContextCommon phpCommon) {
-    // TODO implement when necessary
-  }
-
+public interface PhpContext {
+  void resetState(PhpSnippetSet<?> phpSnippetSet, PhpContextCommon phpCommon);
 }
