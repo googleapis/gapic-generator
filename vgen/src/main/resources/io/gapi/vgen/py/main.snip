@@ -239,14 +239,14 @@
             client_config = pkg_resources.resource_string(
                 __name__, '{@jsonBaseName}_client_config.json')
             {@constructDefaults(service)}
-            google_apis_agent = '{}/{};{};gax/{};python/{}'.format(
+            goog_api_client = '{}/{} {} gax/{} python/{}'.format(
                 app_name,
                 app_version,
                 self._CODE_GEN_NAME_VERSION,
                 self._GAX_VERSION,
                 platform.python_version()
             )
-            self._headers = [('x-google-apis-agent', google_apis_agent)]
+            self._headers = [('x-goog-api-client', goog_api_client)]
             self.stub = config.create_stub(
                 {@stubModule}.beta_create_{@stubService}_stub,
                 service_path,

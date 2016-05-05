@@ -185,14 +185,14 @@ class LibraryServiceApi(object):
             bundle_descriptors=self._BUNDLE_DESCRIPTORS,
             page_descriptors=self._PAGE_DESCRIPTORS
         )
-        google_apis_agent = '{}/{};{};gax/{};python/{}'.format(
+        goog_api_client = '{}/{} {} gax/{} python/{}'.format(
             app_name,
             app_version,
             self._CODE_GEN_NAME_VERSION,
             self._GAX_VERSION,
             platform.python_version()
         )
-        self._headers = [('x-google-apis-agent', google_apis_agent)]
+        self._headers = [('x-goog-api-client', goog_api_client)]
         self.stub = config.create_stub(
             library_pb2.beta_create_LibraryService_stub,
             service_path,
