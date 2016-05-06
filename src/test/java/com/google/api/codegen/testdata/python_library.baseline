@@ -136,8 +136,7 @@ class LibraryServiceApi(object):
             channel=None,
             ssl_creds=None,
             scopes=None,
-            retrying_override=None,
-            bundling_override=None,
+            client_config=None,
             timeout=_DEFAULT_TIMEOUT,
             app_name='gax',
             app_version=_GAX_VERSION):
@@ -150,18 +149,13 @@ class LibraryServiceApi(object):
             object through which to make calls.
           ssl_creds (:class:`grpc.beta.implementations.ClientCredentials`):
             A `ClientCredentials` for use with an SSL-enabled channel.
-          retrying_override (dict[string, :class:`google.gax.RetryOptions`]): A
-            dictionary that overrides default retrying settings.
-            ``retrying_override`` maps method names (e.g., ``'list_foo'``) to
-            custom RetryOptions objects, or to None. A value of None indicates
-            that the method in question should not retry.
-          bundling_override (dict[string, :class:`google.gax.BundleOptions`]): A
-            dictionary that overrides default bundling settings.
-            ``bundling_override`` maps bundling method names (e.g.,
-            'publish_foo') to custom BundleOptions objects, or to None. It is
-            invalid to have a key for a method that is not bundling-enabled. A
-            value of None indicates that the method in question should not
-            bundle.
+          client_config (dict):
+            The default client config for methods. When specified, the value is
+            passed to :method:`google.gax.construct_settings` to build the
+            actual call settings, so it has to have the same structure of
+            the data. See :method:`google.gax.construct_settings` for the
+            structure of the data.
+            Use the default config if not specified.
           timeout (int): The default timeout, in seconds, for calls made
             through this client
           app_name (string): The codename of the calling service.
@@ -172,15 +166,14 @@ class LibraryServiceApi(object):
         """
         if scopes is None:
             scopes = self._ALL_SCOPES
-        bundling_override = bundling_override or {}
-        retrying_override = retrying_override or {}
-        client_config = pkg_resources.resource_string(
-            __name__, 'library_service_client_config.json')
+        if not client_config:
+            client_config = json.loads(pkg_resources.resource_string(
+                __name__, 'library_service_client_config.json'))
         self._defaults = api_callable.construct_settings(
             'google.example.library.v1.LibraryService',
-            json.loads(client_config),
-            bundling_override,
-            retrying_override,
+            client_config,
+            {},
+            {},
             config.STATUS_CODE_NAMES,
             timeout,
             bundle_descriptors=self._BUNDLE_DESCRIPTORS,
