@@ -7,7 +7,7 @@ import (
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
-  "google.golang.org/api/appengine/v1beta4"
+  "google.golang.org/api/appengine/v1beta5"
 )
 
 func main() {
@@ -44,391 +44,7 @@ import (
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
-  "google.golang.org/api/appengine/v1beta4"
-)
-
-func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
-  ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
-  if err != nil {
-    log.Fatal(err)
-  }
-  service, err := appengine.New(client)
-  if err != nil {
-    log.Fatal(err)
-  }
-
-  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
-  var (
-    // Part of `name`. Name of the resource requested. For example: "apps/myapp/modules/default".
-    appsId = ""
-
-    // Part of `name`. See documentation of `appsId`.
-    modulesId = ""
-
-  )
-
-  callResult, err := service.Apps.Modules.Delete(appsId, modulesId).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
-  }
-  // doThingsWith(callResult)
-  _ = callResult
-}
-package main
-
-import (
-  "log"
-
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/appengine/v1beta4"
-)
-
-func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
-  ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
-  if err != nil {
-    log.Fatal(err)
-  }
-  service, err := appengine.New(client)
-  if err != nil {
-    log.Fatal(err)
-  }
-
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
-  var (
-    // Part of `name`. Name of the resource requested. For example: "apps/myapp/modules/default".
-    appsId = ""
-
-    // Part of `name`. See documentation of `appsId`.
-    modulesId = ""
-
-  )
-
-  callResult, err := service.Apps.Modules.Get(appsId, modulesId).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
-  }
-  // doThingsWith(callResult)
-  _ = callResult
-}
-package main
-
-import (
-  "log"
-
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/appengine/v1beta4"
-)
-
-func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
-  ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
-  if err != nil {
-    log.Fatal(err)
-  }
-  service, err := appengine.New(client)
-  if err != nil {
-    log.Fatal(err)
-  }
-
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
-  var (
-    // Part of `name`. Name of the resource requested. For example: "apps/myapp".
-    appsId = ""
-
-  )
-
-  fn := func(page *appengine.ListModulesResponse) error {
-    // doThingsWith(page)
-    for i, element := range page.Modules {
-      // doThingsWith(element)
-      _, _ = i, element
-    }
-    return nil
-  }
-  err = service.Apps.Modules.List(appsId).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
-  }
-}
-package main
-
-import (
-  "log"
-
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/appengine/v1beta4"
-)
-
-func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
-  ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
-  if err != nil {
-    log.Fatal(err)
-  }
-  service, err := appengine.New(client)
-  if err != nil {
-    log.Fatal(err)
-  }
-
-  // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
-  var (
-    // Part of `name`. Name of the resource to update. For example: "apps/myapp/modules/default".
-    appsId = ""
-
-    // Part of `name`. See documentation of `appsId`.
-    modulesId = ""
-
-
-    requestBody = &appengine.Module{}
-  )
-
-  callResult, err := service.Apps.Modules.Patch(appsId, modulesId, requestBody).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
-  }
-  // doThingsWith(callResult)
-  _ = callResult
-}
-package main
-
-import (
-  "log"
-
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/appengine/v1beta4"
-)
-
-func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
-  ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
-  if err != nil {
-    log.Fatal(err)
-  }
-  service, err := appengine.New(client)
-  if err != nil {
-    log.Fatal(err)
-  }
-
-  // TODO: Change placeholders below to appropriate parameters values for the 'create' method:
-  var (
-    // Part of `name`. Name of the resource to update. For example: "apps/myapp/modules/default".
-    appsId = ""
-
-    // Part of `name`. See documentation of `appsId`.
-    modulesId = ""
-
-
-    requestBody = &appengine.Version{}
-  )
-
-  callResult, err := service.Apps.Modules.Versions.Create(appsId, modulesId, requestBody).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
-  }
-  // doThingsWith(callResult)
-  _ = callResult
-}
-package main
-
-import (
-  "log"
-
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/appengine/v1beta4"
-)
-
-func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
-  ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
-  if err != nil {
-    log.Fatal(err)
-  }
-  service, err := appengine.New(client)
-  if err != nil {
-    log.Fatal(err)
-  }
-
-  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
-  var (
-    // Part of `name`. Name of the resource requested. For example: "apps/myapp/modules/default/versions/v1".
-    appsId = ""
-
-    // Part of `name`. See documentation of `appsId`.
-    modulesId = ""
-
-    // Part of `name`. See documentation of `appsId`.
-    versionsId = ""
-
-  )
-
-  callResult, err := service.Apps.Modules.Versions.Delete(appsId, modulesId, versionsId).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
-  }
-  // doThingsWith(callResult)
-  _ = callResult
-}
-package main
-
-import (
-  "log"
-
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/appengine/v1beta4"
-)
-
-func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
-  ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
-  if err != nil {
-    log.Fatal(err)
-  }
-  service, err := appengine.New(client)
-  if err != nil {
-    log.Fatal(err)
-  }
-
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
-  var (
-    // Part of `name`. Name of the resource requested. For example: "apps/myapp/modules/default/versions/v1".
-    appsId = ""
-
-    // Part of `name`. See documentation of `appsId`.
-    modulesId = ""
-
-    // Part of `name`. See documentation of `appsId`.
-    versionsId = ""
-
-  )
-
-  callResult, err := service.Apps.Modules.Versions.Get(appsId, modulesId, versionsId).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
-  }
-  // doThingsWith(callResult)
-  _ = callResult
-}
-package main
-
-import (
-  "log"
-
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/appengine/v1beta4"
-)
-
-func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
-  ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
-  if err != nil {
-    log.Fatal(err)
-  }
-  service, err := appengine.New(client)
-  if err != nil {
-    log.Fatal(err)
-  }
-
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
-  var (
-    // Part of `name`. Name of the resource requested. For example: "apps/myapp/modules/default".
-    appsId = ""
-
-    // Part of `name`. See documentation of `appsId`.
-    modulesId = ""
-
-  )
-
-  fn := func(page *appengine.ListVersionsResponse) error {
-    // doThingsWith(page)
-    for i, element := range page.Versions {
-      // doThingsWith(element)
-      _, _ = i, element
-    }
-    return nil
-  }
-  err = service.Apps.Modules.Versions.List(appsId, modulesId).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
-  }
-}
-package main
-
-import (
-  "log"
-
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/appengine/v1beta4"
-)
-
-func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
-  ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
-  if err != nil {
-    log.Fatal(err)
-  }
-  service, err := appengine.New(client)
-  if err != nil {
-    log.Fatal(err)
-  }
-
-  // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
-  var (
-    // Part of `name`. Name of the resource to update. For example: "apps/myapp/modules/default/versions/1".
-    appsId = ""
-
-    // Part of `name`. See documentation of `appsId`.
-    modulesId = ""
-
-    // Part of `name`. See documentation of `appsId`.
-    versionsId = ""
-
-
-    requestBody = &appengine.Version{}
-  )
-
-  callResult, err := service.Apps.Modules.Versions.Patch(appsId, modulesId, versionsId, requestBody).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
-  }
-  // doThingsWith(callResult)
-  _ = callResult
-}
-package main
-
-import (
-  "log"
-
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/appengine/v1beta4"
+  "google.golang.org/api/appengine/v1beta5"
 )
 
 func main() {
@@ -468,7 +84,7 @@ import (
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
-  "google.golang.org/api/appengine/v1beta4"
+  "google.golang.org/api/appengine/v1beta5"
 )
 
 func main() {
@@ -502,4 +118,437 @@ func main() {
   if err != nil {
     log.Fatal(err)
   }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/appengine/v1beta5"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := appengine.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  var (
+    // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
+    appsId = ""
+
+    // Part of `name`. See documentation of `appsId`.
+    servicesId = ""
+
+  )
+
+  callResult, err := service.Apps.Services.Delete(appsId, servicesId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/appengine/v1beta5"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := appengine.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  var (
+    // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
+    appsId = ""
+
+    // Part of `name`. See documentation of `appsId`.
+    servicesId = ""
+
+  )
+
+  callResult, err := service.Apps.Services.Get(appsId, servicesId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/appengine/v1beta5"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := appengine.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  var (
+    // Part of `name`. Name of the resource requested. For example: "apps/myapp".
+    appsId = ""
+
+  )
+
+  fn := func(page *appengine.ListServicesResponse) error {
+    // doThingsWith(page)
+    for i, element := range page.Services {
+      // doThingsWith(element)
+      _, _ = i, element
+    }
+    return nil
+  }
+  err = service.Apps.Services.List(appsId).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/appengine/v1beta5"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := appengine.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
+  var (
+    // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
+    appsId = ""
+
+    // Part of `name`. See documentation of `appsId`.
+    servicesId = ""
+
+
+    requestBody = &appengine.Service{}
+  )
+
+  callResult, err := service.Apps.Services.Patch(appsId, servicesId, requestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/appengine/v1beta5"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := appengine.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'create' method:
+  var (
+    // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
+    appsId = ""
+
+    // Part of `name`. See documentation of `appsId`.
+    servicesId = ""
+
+
+    requestBody = &appengine.Version{}
+  )
+
+  callResult, err := service.Apps.Services.Versions.Create(appsId, servicesId, requestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/appengine/v1beta5"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := appengine.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  var (
+    // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default/versions/v1".
+    appsId = ""
+
+    // Part of `name`. See documentation of `appsId`.
+    servicesId = ""
+
+    // Part of `name`. See documentation of `appsId`.
+    versionsId = ""
+
+  )
+
+  callResult, err := service.Apps.Services.Versions.Delete(appsId, servicesId, versionsId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/appengine/v1beta5"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := appengine.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  var (
+    // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default/versions/v1".
+    appsId = ""
+
+    // Part of `name`. See documentation of `appsId`.
+    servicesId = ""
+
+    // Part of `name`. See documentation of `appsId`.
+    versionsId = ""
+
+  )
+
+  callResult, err := service.Apps.Services.Versions.Get(appsId, servicesId, versionsId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/appengine/v1beta5"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := appengine.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  var (
+    // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default/versions/v1".
+    appsId = ""
+
+    // Part of `name`. See documentation of `appsId`.
+    servicesId = ""
+
+    // Part of `name`. See documentation of `appsId`.
+    versionsId = ""
+
+  )
+
+  fn := func(page *appengine.ListInstancesResponse) error {
+    // doThingsWith(page)
+    for i, element := range page.Instances {
+      // doThingsWith(element)
+      _, _ = i, element
+    }
+    return nil
+  }
+  err = service.Apps.Services.Versions.Instances.List(appsId, servicesId, versionsId).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/appengine/v1beta5"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := appengine.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  var (
+    // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
+    appsId = ""
+
+    // Part of `name`. See documentation of `appsId`.
+    servicesId = ""
+
+  )
+
+  fn := func(page *appengine.ListVersionsResponse) error {
+    // doThingsWith(page)
+    for i, element := range page.Versions {
+      // doThingsWith(element)
+      _, _ = i, element
+    }
+    return nil
+  }
+  err = service.Apps.Services.Versions.List(appsId, servicesId).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/appengine/v1beta5"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := appengine.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
+  var (
+    // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default/versions/1".
+    appsId = ""
+
+    // Part of `name`. See documentation of `appsId`.
+    servicesId = ""
+
+    // Part of `name`. See documentation of `appsId`.
+    versionsId = ""
+
+
+    requestBody = &appengine.Version{}
+  )
+
+  callResult, err := service.Apps.Services.Versions.Patch(appsId, servicesId, versionsId, requestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
 }

@@ -7,7 +7,7 @@
  * 2. To install the client library on Maven or Gradle, check installation instructions at
  *    https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta4/java
+ *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
  * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
  */
@@ -61,551 +61,7 @@ public class AppengineExample {
  * 2. To install the client library on Maven or Gradle, check installation instructions at
  *    https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta4/java
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.appengine.Appengine;
-import com.google.api.services.appengine.model.Operation;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-
-public class AppengineExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by gcloud tool when running locally
-    // and by built-in service accounts when running on GAE, GCE or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-    // TODO: Change placeholders below to values for parameters to the 'delete' method:
-    // * Part of `name`. Name of the resource requested. For example: "apps/myapp/modules/default".
-    String appsId = "";
-    // * Part of `name`. See documentation of `appsId`.
-    String modulesId = "";
-
-    Appengine.Apps.Modules.Delete request = appengineService.apps().modules().delete(appsId, modulesId);
-    Operation response = request.execute();
-  }
-}
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
- *    https://console.developers.google.com/apis/api/appengine_component/quotas
- * 2. To install the client library on Maven or Gradle, check installation instructions at
- *    https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta4/java
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.appengine.Appengine;
-import com.google.api.services.appengine.model.Module;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-
-public class AppengineExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by gcloud tool when running locally
-    // and by built-in service accounts when running on GAE, GCE or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-    // TODO: Change placeholders below to values for parameters to the 'get' method:
-    // * Part of `name`. Name of the resource requested. For example: "apps/myapp/modules/default".
-    String appsId = "";
-    // * Part of `name`. See documentation of `appsId`.
-    String modulesId = "";
-
-    Appengine.Apps.Modules.Get request = appengineService.apps().modules().get(appsId, modulesId);
-    Module response = request.execute();
-  }
-}
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
- *    https://console.developers.google.com/apis/api/appengine_component/quotas
- * 2. To install the client library on Maven or Gradle, check installation instructions at
- *    https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta4/java
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.appengine.Appengine;
-import com.google.api.services.appengine.model.ListModulesResponse;
-import com.google.api.services.appengine.model.Module;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-
-public class AppengineExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by gcloud tool when running locally
-    // and by built-in service accounts when running on GAE, GCE or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-    // TODO: Change placeholders below to values for parameters to the 'list' method:
-    // * Part of `name`. Name of the resource requested. For example: "apps/myapp".
-    String appsId = "";
-
-    Appengine.Apps.Modules.List request = appengineService.apps().modules().list(appsId);
-    ListModulesResponse response;
-    do {
-      response = request.execute();
-      if (response.getModules() == null)
-        continue;
-
-      for (Module module : response.getModules()) {
-        // TODO: Add code here to process the 'module' resource
-      }
-
-      request.setPageToken(response.getNextPageToken());
-    } while (response.getNextPageToken() != null);
-  }
-}
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
- *    https://console.developers.google.com/apis/api/appengine_component/quotas
- * 2. To install the client library on Maven or Gradle, check installation instructions at
- *    https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta4/java
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.appengine.Appengine;
-import com.google.api.services.appengine.model.Module;
-import com.google.api.services.appengine.model.Operation;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-
-public class AppengineExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by gcloud tool when running locally
-    // and by built-in service accounts when running on GAE, GCE or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-    // TODO: Change placeholders below to values for parameters to the 'patch' method:
-    // * Part of `name`. Name of the resource to update. For example: "apps/myapp/modules/default".
-    String appsId = "";
-    // * Part of `name`. See documentation of `appsId`.
-    String modulesId = "";
-
-    Module content = new Module();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
-
-    Appengine.Apps.Modules.Patch request = appengineService.apps().modules().patch(appsId, modulesId, content);
-    Operation response = request.execute();
-  }
-}
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
- *    https://console.developers.google.com/apis/api/appengine_component/quotas
- * 2. To install the client library on Maven or Gradle, check installation instructions at
- *    https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta4/java
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.appengine.Appengine;
-import com.google.api.services.appengine.model.Operation;
-import com.google.api.services.appengine.model.Version;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-
-public class AppengineExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by gcloud tool when running locally
-    // and by built-in service accounts when running on GAE, GCE or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-    // TODO: Change placeholders below to values for parameters to the 'create' method:
-    // * Part of `name`. Name of the resource to update. For example: "apps/myapp/modules/default".
-    String appsId = "";
-    // * Part of `name`. See documentation of `appsId`.
-    String modulesId = "";
-
-    Version content = new Version();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
-
-    Appengine.Apps.Modules.Versions.Create request = appengineService.apps().modules().versions().create(appsId, modulesId, content);
-    Operation response = request.execute();
-  }
-}
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
- *    https://console.developers.google.com/apis/api/appengine_component/quotas
- * 2. To install the client library on Maven or Gradle, check installation instructions at
- *    https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta4/java
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.appengine.Appengine;
-import com.google.api.services.appengine.model.Operation;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-
-public class AppengineExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by gcloud tool when running locally
-    // and by built-in service accounts when running on GAE, GCE or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-    // TODO: Change placeholders below to values for parameters to the 'delete' method:
-    // * Part of `name`. Name of the resource requested. For example: "apps/myapp/modules/default/versions/v1".
-    String appsId = "";
-    // * Part of `name`. See documentation of `appsId`.
-    String modulesId = "";
-    // * Part of `name`. See documentation of `appsId`.
-    String versionsId = "";
-
-    Appengine.Apps.Modules.Versions.Delete request = appengineService.apps().modules().versions().delete(appsId, modulesId, versionsId);
-    Operation response = request.execute();
-  }
-}
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
- *    https://console.developers.google.com/apis/api/appengine_component/quotas
- * 2. To install the client library on Maven or Gradle, check installation instructions at
- *    https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta4/java
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.appengine.Appengine;
-import com.google.api.services.appengine.model.Version;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-
-public class AppengineExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by gcloud tool when running locally
-    // and by built-in service accounts when running on GAE, GCE or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-    // TODO: Change placeholders below to values for parameters to the 'get' method:
-    // * Part of `name`. Name of the resource requested. For example: "apps/myapp/modules/default/versions/v1".
-    String appsId = "";
-    // * Part of `name`. See documentation of `appsId`.
-    String modulesId = "";
-    // * Part of `name`. See documentation of `appsId`.
-    String versionsId = "";
-
-    Appengine.Apps.Modules.Versions.Get request = appengineService.apps().modules().versions().get(appsId, modulesId, versionsId);
-    Version response = request.execute();
-  }
-}
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
- *    https://console.developers.google.com/apis/api/appengine_component/quotas
- * 2. To install the client library on Maven or Gradle, check installation instructions at
- *    https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta4/java
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.appengine.Appengine;
-import com.google.api.services.appengine.model.ListVersionsResponse;
-import com.google.api.services.appengine.model.Version;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-
-public class AppengineExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by gcloud tool when running locally
-    // and by built-in service accounts when running on GAE, GCE or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-    // TODO: Change placeholders below to values for parameters to the 'list' method:
-    // * Part of `name`. Name of the resource requested. For example: "apps/myapp/modules/default".
-    String appsId = "";
-    // * Part of `name`. See documentation of `appsId`.
-    String modulesId = "";
-
-    Appengine.Apps.Modules.Versions.List request = appengineService.apps().modules().versions().list(appsId, modulesId);
-    ListVersionsResponse response;
-    do {
-      response = request.execute();
-      if (response.getVersions() == null)
-        continue;
-
-      for (Version version : response.getVersions()) {
-        // TODO: Add code here to process the 'version' resource
-      }
-
-      request.setPageToken(response.getNextPageToken());
-    } while (response.getNextPageToken() != null);
-  }
-}
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
- *    https://console.developers.google.com/apis/api/appengine_component/quotas
- * 2. To install the client library on Maven or Gradle, check installation instructions at
- *    https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta4/java
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.appengine.Appengine;
-import com.google.api.services.appengine.model.Operation;
-import com.google.api.services.appengine.model.Version;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.Collections;
-
-
-
-public class AppengineExample {
-  public static void main(String[] args) throws IOException, GeneralSecurityException {
-    // Authentication is provided by gcloud tool when running locally
-    // and by built-in service accounts when running on GAE, GCE or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
-    if (credential.createScopedRequired()) {
-      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
-    }
-
-    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
-      .setApplicationName("Google Cloud Platform Sample")
-      .build();
-
-    // TODO: Change placeholders below to values for parameters to the 'patch' method:
-    // * Part of `name`. Name of the resource to update. For example: "apps/myapp/modules/default/versions/1".
-    String appsId = "";
-    // * Part of `name`. See documentation of `appsId`.
-    String modulesId = "";
-    // * Part of `name`. See documentation of `appsId`.
-    String versionsId = "";
-
-    Version content = new Version();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
-
-    Appengine.Apps.Modules.Versions.Patch request = appengineService.apps().modules().versions().patch(appsId, modulesId, versionsId, content);
-    Operation response = request.execute();
-  }
-}
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
- *    https://console.developers.google.com/apis/api/appengine_component/quotas
- * 2. To install the client library on Maven or Gradle, check installation instructions at
- *    https://github.com/google/google-api-java-client.
- *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta4/java
+ *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
  * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
  */
@@ -661,7 +117,7 @@ public class AppengineExample {
  * 2. To install the client library on Maven or Gradle, check installation instructions at
  *    https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
- *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta4/java
+ *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
  * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
  */
@@ -717,5 +173,619 @@ public class AppengineExample {
 
       request.setPageToken(response.getNextPageToken());
     } while (response.getNextPageToken() != null);
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/appengine_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.appengine.Appengine;
+import com.google.api.services.appengine.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class AppengineExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'delete' method:
+    // * Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
+    String appsId = "";
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "";
+
+    Appengine.Apps.Services.Delete request = appengineService.apps().services().delete(appsId, servicesId);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/appengine_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.appengine.Appengine;
+import com.google.api.services.appengine.model.Service;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class AppengineExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+    // * Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
+    String appsId = "";
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "";
+
+    Appengine.Apps.Services.Get request = appengineService.apps().services().get(appsId, servicesId);
+    Service response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/appengine_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.appengine.Appengine;
+import com.google.api.services.appengine.model.ListServicesResponse;
+import com.google.api.services.appengine.model.Service;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class AppengineExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+    // * Part of `name`. Name of the resource requested. For example: "apps/myapp".
+    String appsId = "";
+
+    Appengine.Apps.Services.List request = appengineService.apps().services().list(appsId);
+    ListServicesResponse response;
+    do {
+      response = request.execute();
+      if (response.getServices() == null)
+        continue;
+
+      for (Service service : response.getServices()) {
+        // TODO: Add code here to process the 'service' resource
+      }
+
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/appengine_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.appengine.Appengine;
+import com.google.api.services.appengine.model.Operation;
+import com.google.api.services.appengine.model.Service;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class AppengineExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'patch' method:
+    // * Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
+    String appsId = "";
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "";
+
+    Service content = new Service();
+    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
+
+    Appengine.Apps.Services.Patch request = appengineService.apps().services().patch(appsId, servicesId, content);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/appengine_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.appengine.Appengine;
+import com.google.api.services.appengine.model.Operation;
+import com.google.api.services.appengine.model.Version;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class AppengineExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'create' method:
+    // * Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
+    String appsId = "";
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "";
+
+    Version content = new Version();
+    // TODO: Add code here to assign values to desired fields of the 'content' object
+
+    Appengine.Apps.Services.Versions.Create request = appengineService.apps().services().versions().create(appsId, servicesId, content);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/appengine_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.appengine.Appengine;
+import com.google.api.services.appengine.model.Operation;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class AppengineExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'delete' method:
+    // * Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default/versions/v1".
+    String appsId = "";
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "";
+    // * Part of `name`. See documentation of `appsId`.
+    String versionsId = "";
+
+    Appengine.Apps.Services.Versions.Delete request = appengineService.apps().services().versions().delete(appsId, servicesId, versionsId);
+    Operation response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/appengine_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.appengine.Appengine;
+import com.google.api.services.appengine.model.Version;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class AppengineExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'get' method:
+    // * Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default/versions/v1".
+    String appsId = "";
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "";
+    // * Part of `name`. See documentation of `appsId`.
+    String versionsId = "";
+
+    Appengine.Apps.Services.Versions.Get request = appengineService.apps().services().versions().get(appsId, servicesId, versionsId);
+    Version response = request.execute();
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/appengine_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.appengine.Appengine;
+import com.google.api.services.appengine.model.Instance;
+import com.google.api.services.appengine.model.ListInstancesResponse;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class AppengineExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+    // * Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default/versions/v1".
+    String appsId = "";
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "";
+    // * Part of `name`. See documentation of `appsId`.
+    String versionsId = "";
+
+    Appengine.Apps.Services.Versions.Instances.List request = appengineService.apps().services().versions().instances().list(appsId, servicesId, versionsId);
+    ListInstancesResponse response;
+    do {
+      response = request.execute();
+      if (response.getInstances() == null)
+        continue;
+
+      for (Instance instance : response.getInstances()) {
+        // TODO: Add code here to process the 'instance' resource
+      }
+
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/appengine_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.appengine.Appengine;
+import com.google.api.services.appengine.model.ListVersionsResponse;
+import com.google.api.services.appengine.model.Version;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class AppengineExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'list' method:
+    // * Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
+    String appsId = "";
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "";
+
+    Appengine.Apps.Services.Versions.List request = appengineService.apps().services().versions().list(appsId, servicesId);
+    ListVersionsResponse response;
+    do {
+      response = request.execute();
+      if (response.getVersions() == null)
+        continue;
+
+      for (Version version : response.getVersions()) {
+        // TODO: Add code here to process the 'version' resource
+      }
+
+      request.setPageToken(response.getNextPageToken());
+    } while (response.getNextPageToken() != null);
+  }
+}
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/appengine_component/quotas
+ * 2. To install the client library on Maven or Gradle, check installation instructions at
+ *    https://github.com/google/google-api-java-client.
+ *    On other build systems, you can add the jar files to your project from
+ *    https://developers.google.com/resources/api-libraries/download/appengine/v1beta5/java
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.appengine.Appengine;
+import com.google.api.services.appengine.model.Operation;
+import com.google.api.services.appengine.model.Version;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+public class AppengineExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Authentication is provided by gcloud tool when running locally
+    // and by built-in service accounts when running on GAE, GCE or GKE.
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+
+    // The createScopedRequired method returns true when running on GAE or a local developer
+    // machine. In that case, the desired scopes must be passed in manually. When the code is
+    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
+    // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
+
+    HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+    Appengine appengineService = new Appengine.Builder(httpTransport, jsonFactory, credential)
+      .setApplicationName("Google Cloud Platform Sample")
+      .build();
+
+    // TODO: Change placeholders below to values for parameters to the 'patch' method:
+    // * Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default/versions/1".
+    String appsId = "";
+    // * Part of `name`. See documentation of `appsId`.
+    String servicesId = "";
+    // * Part of `name`. See documentation of `appsId`.
+    String versionsId = "";
+
+    Version content = new Version();
+    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
+
+    Appengine.Apps.Services.Versions.Patch request = appengineService.apps().services().versions().patch(appsId, servicesId, versionsId, content);
+    Operation response = request.execute();
   }
 }
