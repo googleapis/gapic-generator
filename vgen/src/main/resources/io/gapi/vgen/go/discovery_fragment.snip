@@ -1,0 +1,141 @@
+@snippet generateFilename(method)
+  {@method.getName}.frag.go
+@end
+
+# Not used for discovery
+@snippet generateBody(method)
+@end
+
+@snippet generateClass(method, body)
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/{@context.getApi.getName}/{@context.getApi.getVersion}"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  # TODO(pongad): Every API except autoscaler has the string as API.CloudPlatformScope, find out why
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := {@context.getApi.getName}.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  {@initialize(method)}
+
+  @if context.isPageStreaming(method)
+    {@iterableCall(method)}
+  @else
+    {@compactCall(method)}
+  @end
+}
+@end
+
+@private compactCall(method)
+  @if context.isResponseEmpty(method)
+    err = {@methodPath(method)}({@callArg(method)}).Context(ctx).Do()
+    if err != nil {
+      log.Fatal(err)
+    }
+  @else
+    callResult, err := {@methodPath(method)}({@callArg(method)}).Context(ctx).Do()
+    if err != nil {
+      log.Fatal(err)
+    }
+    // doThingsWith(callResult)
+    _ = callResult
+  @end
+@end
+
+@private iterableCall(method)
+  @let responseType = method.getResponseTypeUrl, \
+      responseTypeRef = context.getApiaryConfig.getType(responseType), \
+      resourceField = context.getFirstRepeatedField(responseTypeRef), \
+      resources = context.getResourcesName(resourceField)
+    fn := func(page *{@context.getApi.getName}.{@responseType}) error {
+      // doThingsWith(page)
+      for i, element := range page.{@resources} {
+        // doThingsWith(element)
+        _, _ = i, element
+      }
+      return nil
+    }
+  @end
+
+  err = {@methodPath(method)}({@callArg(method)}).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+@end
+
+@private methodPath(method)
+  service.{@resourcePath(method)}.{@context.lowerCamelToUpperCamel(context.getMethodName(method))}
+@end
+
+@private resourcePath(method)
+  @join r : context.getApiaryConfig.getResources(method.getName) on "."
+    {@context.lowerCamelToUpperCamel(r)}
+  @end
+@end
+
+@private initialize(method)
+  @if context.getMethodParams(method)
+    // TODO: Change placeholders below to appropriate parameters values for the '{@context.getMethodName(method)}' method:
+
+  @end
+  var (
+    @join param : context.getFlatMethodParams(method)
+      @let signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
+          paramField = context.getField(signatureType, param), \
+          paramValue = context.typeDefaultValue(signatureType, paramField), \
+          paramDescription = context.getApiaryConfig.getDescription(signatureType.getName, param)
+        @if paramDescription
+          // {@paramDescription}
+        @end
+
+        {@unclashVar(param)} = {@paramValue}
+
+      @end
+    @end
+    @if context.hasRequestField(method)
+
+      requestBody = &{@context.getApi.getName}.{@context.getRequestField(method).getTypeUrl}{}
+    @end
+  )
+@end
+
+@private callArg(method)
+  @if context.hasRequestField(method)
+    @if context.getFlatMethodParams(method)
+      {@callArgNoBody(method)}, requestBody
+    @else
+      requestBody
+    @end
+  @else
+    {@callArgNoBody(method)}
+  @end
+@end
+
+@private callArgNoBody(method)
+  @join param : context.getFlatMethodParams(method) on ", "
+    {@unclashVar(param)}
+  @end
+@end
+
+@private unclashVar(var)
+  @if context.getApi.getName.equals(var)
+    {@var}_
+  @else
+    {@var}
+  @end
+@end

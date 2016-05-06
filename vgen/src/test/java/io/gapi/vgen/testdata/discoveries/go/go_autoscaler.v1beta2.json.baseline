@@ -1,0 +1,438 @@
+
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/autoscaler/v1beta2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := autoscaler.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  var (
+    // Project ID of Autoscaler resource.
+    project = ""
+
+    // Zone name of Autoscaler resource.
+    zone = ""
+
+    // Name of the Autoscaler resource.
+    autoscaler_ = ""
+
+  )
+
+  callResult, err := service.Autoscalers.Delete(project, zone, autoscaler_).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/autoscaler/v1beta2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := autoscaler.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  var (
+    // Project ID of Autoscaler resource.
+    project = ""
+
+    // Zone name of Autoscaler resource.
+    zone = ""
+
+    // Name of the Autoscaler resource.
+    autoscaler_ = ""
+
+  )
+
+  callResult, err := service.Autoscalers.Get(project, zone, autoscaler_).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/autoscaler/v1beta2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := autoscaler.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'insert' method:
+  var (
+    // Project ID of Autoscaler resource.
+    project = ""
+
+    // Zone name of Autoscaler resource.
+    zone = ""
+
+
+    requestBody = &autoscaler.Autoscaler{}
+  )
+
+  callResult, err := service.Autoscalers.Insert(project, zone, requestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/autoscaler/v1beta2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := autoscaler.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  var (
+    // Project ID of Autoscaler resource.
+    project = ""
+
+    // Zone name of Autoscaler resource.
+    zone = ""
+
+  )
+
+  fn := func(page *autoscaler.AutoscalerListResponse) error {
+    // doThingsWith(page)
+    for i, element := range page.Items {
+      // doThingsWith(element)
+      _, _ = i, element
+    }
+    return nil
+  }
+  err = service.Autoscalers.List(project, zone).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/autoscaler/v1beta2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := autoscaler.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
+  var (
+    // Project ID of Autoscaler resource.
+    project = ""
+
+    // Zone name of Autoscaler resource.
+    zone = ""
+
+    // Name of the Autoscaler resource.
+    autoscaler_ = ""
+
+
+    requestBody = &autoscaler.Autoscaler{}
+  )
+
+  callResult, err := service.Autoscalers.Patch(project, zone, autoscaler_, requestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/autoscaler/v1beta2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := autoscaler.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
+  var (
+    // Project ID of Autoscaler resource.
+    project = ""
+
+    // Zone name of Autoscaler resource.
+    zone = ""
+
+    // Name of the Autoscaler resource.
+    autoscaler_ = ""
+
+
+    requestBody = &autoscaler.Autoscaler{}
+  )
+
+  callResult, err := service.Autoscalers.Update(project, zone, autoscaler_, requestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/autoscaler/v1beta2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := autoscaler.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  var (
+
+    project = ""
+
+
+    zone = ""
+
+
+    operation = ""
+
+  )
+
+  err = service.ZoneOperations.Delete(project, zone, operation).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/autoscaler/v1beta2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := autoscaler.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  var (
+
+    project = ""
+
+
+    zone = ""
+
+
+    operation = ""
+
+  )
+
+  callResult, err := service.ZoneOperations.Get(project, zone, operation).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/autoscaler/v1beta2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := autoscaler.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  var (
+
+    project = ""
+
+
+    zone = ""
+
+  )
+
+  fn := func(page *autoscaler.OperationList) error {
+    // doThingsWith(page)
+    for i, element := range page.Items {
+      // doThingsWith(element)
+      _, _ = i, element
+    }
+    return nil
+  }
+  err = service.ZoneOperations.List(project, zone).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/autoscaler/v1beta2"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := autoscaler.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  var (
+
+    project = ""
+
+  )
+
+  fn := func(page *autoscaler.ZoneList) error {
+    // doThingsWith(page)
+    for i, element := range page.Items {
+      // doThingsWith(element)
+      _, _ = i, element
+    }
+    return nil
+  }
+  err = service.Zones.List(project).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}

@@ -1,0 +1,327 @@
+
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/prediction/v1.6"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := prediction.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'predict' method:
+  var (
+    // The project associated with the model.
+    project = ""
+
+    // The name of a hosted model.
+    hostedModelName = ""
+
+
+    requestBody = &prediction.Input{}
+  )
+
+  callResult, err := service.Hostedmodels.Predict(project, hostedModelName, requestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/prediction/v1.6"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := prediction.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'analyze' method:
+  var (
+    // The project associated with the model.
+    project = ""
+
+    // The unique name for the predictive model.
+    id = ""
+
+  )
+
+  callResult, err := service.Trainedmodels.Analyze(project, id).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/prediction/v1.6"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := prediction.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  var (
+    // The project associated with the model.
+    project = ""
+
+    // The unique name for the predictive model.
+    id = ""
+
+  )
+
+  err = service.Trainedmodels.Delete(project, id).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/prediction/v1.6"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := prediction.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  var (
+    // The project associated with the model.
+    project = ""
+
+    // The unique name for the predictive model.
+    id = ""
+
+  )
+
+  callResult, err := service.Trainedmodels.Get(project, id).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/prediction/v1.6"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := prediction.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'insert' method:
+  var (
+    // The project associated with the model.
+    project = ""
+
+
+    requestBody = &prediction.Insert{}
+  )
+
+  callResult, err := service.Trainedmodels.Insert(project, requestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/prediction/v1.6"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := prediction.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  var (
+    // The project associated with the model.
+    project = ""
+
+  )
+
+  fn := func(page *prediction.List) error {
+    // doThingsWith(page)
+    for i, element := range page.Items {
+      // doThingsWith(element)
+      _, _ = i, element
+    }
+    return nil
+  }
+  err = service.Trainedmodels.List(project).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/prediction/v1.6"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := prediction.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'predict' method:
+  var (
+    // The project associated with the model.
+    project = ""
+
+    // The unique name for the predictive model.
+    id = ""
+
+
+    requestBody = &prediction.Input{}
+  )
+
+  callResult, err := service.Trainedmodels.Predict(project, id, requestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/prediction/v1.6"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := prediction.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
+  var (
+    // The project associated with the model.
+    project = ""
+
+    // The unique name for the predictive model.
+    id = ""
+
+
+    requestBody = &prediction.Update{}
+  )
+
+  callResult, err := service.Trainedmodels.Update(project, id, requestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}

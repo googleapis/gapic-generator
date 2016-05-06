@@ -1,0 +1,454 @@
+
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  var (
+  )
+
+  callResult, err := service.V1.GetGoogleServiceAccount().Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  var (
+    // The ID of the Google Developers Console project that the Google service account is associated with. Required.
+    projectId = ""
+
+  )
+
+  callResult, err := service.GoogleServiceAccounts.Get(projectId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'create' method:
+  var (
+
+    requestBody = &storagetransfer.TransferJob{}
+  )
+
+  callResult, err := service.TransferJobs.Create(requestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  var (
+    // The job to get. Required.
+    jobName = ""
+
+  )
+
+  callResult, err := service.TransferJobs.Get(jobName).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  var (
+  )
+
+  fn := func(page *storagetransfer.ListTransferJobsResponse) error {
+    // doThingsWith(page)
+    for i, element := range page.TransferJobs {
+      // doThingsWith(element)
+      _, _ = i, element
+    }
+    return nil
+  }
+  err = service.TransferJobs.List().Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
+  var (
+    // The name of job to update. Required.
+    jobName = ""
+
+
+    requestBody = &storagetransfer.UpdateTransferJobRequest{}
+  )
+
+  callResult, err := service.TransferJobs.Patch(jobName, requestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'cancel' method:
+  var (
+    // The name of the operation resource to be cancelled.
+    name = ""
+
+  )
+
+  callResult, err := service.TransferOperations.Cancel(name).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  var (
+    // The name of the operation resource to be deleted.
+    name = ""
+
+  )
+
+  callResult, err := service.TransferOperations.Delete(name).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  var (
+    // The name of the operation resource.
+    name = ""
+
+  )
+
+  callResult, err := service.TransferOperations.Get(name).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  var (
+    // The value `transferOperations`.
+    name = ""
+
+  )
+
+  fn := func(page *storagetransfer.ListOperationsResponse) error {
+    // doThingsWith(page)
+    for i, element := range page.Operations {
+      // doThingsWith(element)
+      _, _ = i, element
+    }
+    return nil
+  }
+  err = service.TransferOperations.List(name).Pages(ctx, fn)
+  if err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'pause' method:
+  var (
+    // The name of the transfer operation. Required.
+    name = ""
+
+
+    requestBody = &storagetransfer.PauseTransferOperationRequest{}
+  )
+
+  callResult, err := service.TransferOperations.Pause(name, requestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+import (
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storagetransfer/v1"
+)
+
+func main() {
+  // Use oauth2.NoContext if there isn't a good context to pass in.
+  ctx := context.Background()
+  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    log.Fatal(err)
+  }
+  service, err := storagetransfer.New(client)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to appropriate parameters values for the 'resume' method:
+  var (
+    // The name of the transfer operation. Required.
+    name = ""
+
+
+    requestBody = &storagetransfer.ResumeTransferOperationRequest{}
+  )
+
+  callResult, err := service.TransferOperations.Resume(name, requestBody).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}

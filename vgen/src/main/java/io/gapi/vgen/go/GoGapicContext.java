@@ -45,7 +45,7 @@ import java.util.TreeSet;
 /**
  * A GapicContext specialized for Go.
  */
-public class GoGapicContext extends GapicContext {
+public class GoGapicContext extends GapicContext implements GoContext {
 
   /**
    * A map from primitive types in proto to Java counterparts.

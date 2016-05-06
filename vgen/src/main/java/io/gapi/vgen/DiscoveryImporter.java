@@ -404,11 +404,7 @@ public class DiscoveryImporter {
     if (response == null) {
       return EMPTY_TYPE_NAME;
     }
-    String responseTypeUrl = response.get("$ref").asText();
-    if (responseTypeUrl.equals("Empty")) {
-      return EMPTY_TYPE_NAME;
-    }
-    return responseTypeUrl;
+    return response.get("$ref").asText();
   }
 
   /**
