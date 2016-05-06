@@ -1,0 +1,106 @@
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud Trace API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/cloudtrace_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+function CloudtraceExample
+{
+  // Create a new client
+  $client = new Google_Client();
+  $client->setApplicationName('Client Sample Application');
+  $client->useApplicationDefaultCredentials();
+  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+  // Create a new Cloudtrace service
+  $service = new Google_Service_Cloudtrace($client);
+
+  // ID of the Cloud project where the trace data is stored.
+  $projectId = '';
+
+  $response = $service->projects->patchTracesProjects($projectId);
+}
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud Trace API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/cloudtrace_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+function CloudtraceExample
+{
+  // Create a new client
+  $client = new Google_Client();
+  $client->setApplicationName('Client Sample Application');
+  $client->useApplicationDefaultCredentials();
+  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+  // Create a new Cloudtrace service
+  $service = new Google_Service_Cloudtrace($client);
+
+  // ID of the Cloud project where the trace data is stored.
+  $projectId = '';
+  // ID of the trace to return.
+  $traceId = '';
+
+  $response = $service->projects->traces->getTraces($projectId, $traceId);
+}
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud Trace API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/cloudtrace_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+function CloudtraceExample
+{
+  // Create a new client
+  $client = new Google_Client();
+  $client->setApplicationName('Client Sample Application');
+  $client->useApplicationDefaultCredentials();
+  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+  // Create a new Cloudtrace service
+  $service = new Google_Service_Cloudtrace($client);
+
+  // ID of the Cloud project where the trace data is stored.
+  $projectId = '';
+
+  $response = $service->projects->traces->listTraces($projectId);
+
+  foreach ($response['traces'] as $traces) {
+    // TODO: Add code here to process traces.
+  }
+}
+
