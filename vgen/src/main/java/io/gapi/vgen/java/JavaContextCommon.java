@@ -15,6 +15,7 @@
 package io.gapi.vgen.java;
 
 import com.google.api.tools.framework.model.Field;
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Splitter;
@@ -26,12 +27,15 @@ import com.google.common.collect.Maps;
 import com.google.common.escape.Escaper;
 import com.google.common.escape.Escapers;
 
+import io.gapi.vgen.CollectionConfig;
 import io.gapi.vgen.LanguageUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 /**
  * A class that provides helper methods for snippet files generating Java code to get data and
@@ -157,6 +161,14 @@ public class JavaContextCommon {
     public abstract String getName();
 
     public abstract String getDescription();
+
+    @Nullable
+    public abstract CollectionConfig getFormattingConfig();
+
+    // This function is necessary for use in snippets
+    public boolean hasFormattingConfig() {
+      return getFormattingConfig() != null;
+    }
   }
 
   // This member function is necessary to provide access to snippets for
@@ -168,7 +180,12 @@ public class JavaContextCommon {
   // This function is necessary to provide a static entry point for the same-named
   // member function.
   public static Variable s_newVariable(TypeRef type, String name, String description) {
-    return new AutoValue_JavaContextCommon_Variable(type, name, description);
+    return s_newVariable(type, name, description, null);
+  }
+
+  public static Variable s_newVariable(
+      TypeRef type, String name, String description, CollectionConfig formattingConfig) {
+    return new AutoValue_JavaContextCommon_Variable(type, name, description, formattingConfig);
   }
 
   @AutoValue
@@ -207,8 +224,9 @@ public class JavaContextCommon {
         return setParams(params.build());
       }
 
-      public Builder setParams(
+      public Builder setParamsWithFormatting(
           JavaGapicContext languageProvider,
+          Interface service,
           ImmutableList<Field> fields,
           ImmutableMap<String, String> fieldNamePatterns) {
         ImmutableList.Builder<Variable> params = ImmutableList.<Variable>builder();
@@ -218,7 +236,9 @@ public class JavaContextCommon {
                 s_newVariable(
                     field.getType(),
                     "formatted" + LanguageUtil.lowerUnderscoreToUpperCamel(field.getSimpleName()),
-                    languageProvider.getDescription(field)));
+                    languageProvider.getDescription(field),
+                    languageProvider.getCollectionConfig(
+                        service, fieldNamePatterns.get(field.getSimpleName()))));
           } else {
             params.add(
                 s_newVariable(
