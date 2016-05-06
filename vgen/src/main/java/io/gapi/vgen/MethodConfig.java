@@ -20,11 +20,11 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -44,7 +44,7 @@ public class MethodConfig {
   private final Iterable<Field> optionalFields;
   private final BundlingConfig bundling;
   private final boolean hasRequestObjectMethod;
-  private final Map<String, String> fieldPattern;
+  private final ImmutableMap<String, String> fieldNamePatterns;
 
   /**
    * Creates an instance of MethodConfig based on MethodConfigProto, linking it up with the provided
@@ -144,7 +144,8 @@ public class MethodConfig {
               }
             });
 
-    Map<String, String> fieldPattern = methodConfig.getFieldPattern();
+    ImmutableMap<String, String> fieldNamePatterns =
+        ImmutableMap.copyOf(methodConfig.getFieldNamePatterns());
 
     if (error) {
       return null;
@@ -158,7 +159,7 @@ public class MethodConfig {
           hasRequestObjectMethod,
           requiredFields,
           optionalFields,
-          fieldPattern);
+          fieldNamePatterns);
     }
   }
 
@@ -171,7 +172,7 @@ public class MethodConfig {
       boolean hasRequestObjectMethod,
       Iterable<Field> requiredFields,
       Iterable<Field> optionalFields,
-      Map<String, String> fieldPattern) {
+      ImmutableMap<String, String> fieldNamePatterns) {
     this.pageStreaming = pageStreaming;
     this.flattening = flattening;
     this.retryCodesConfigName = retryCodesConfigName;
@@ -180,7 +181,7 @@ public class MethodConfig {
     this.hasRequestObjectMethod = hasRequestObjectMethod;
     this.requiredFields = requiredFields;
     this.optionalFields = optionalFields;
-    this.fieldPattern = fieldPattern;
+    this.fieldNamePatterns = fieldNamePatterns;
   }
 
   /**
@@ -261,9 +262,9 @@ public class MethodConfig {
   }
 
   /**
-   * Returns a map of fields to method_base_name elements.
+   * Returns a map of fields to entity_name elements.
    */
-  public Map<String, String> getFieldPattern() {
-    return fieldPattern;
+  public ImmutableMap<String, String> getFieldNamePatterns() {
+    return fieldNamePatterns;
   }
 }

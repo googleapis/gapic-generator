@@ -336,12 +336,12 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
     throw new RuntimeException("No flattened methods available.");
   }
 
-  public CollectionConfig getCollectionConfig(Interface service, String entity_name) {
+  public CollectionConfig getCollectionConfig(Interface service, String entityName) {
     CollectionConfig result =
-        getApiConfig().getInterfaceConfig(service).getCollectionConfig(entity_name);
+        getApiConfig().getInterfaceConfig(service).getCollectionConfig(entityName);
     if (result == null) {
       throw new IllegalStateException(
-          "A collection config was not present for entity name " + entity_name);
+          "A collection config was not present for entity name " + entityName);
     }
     return result;
   }

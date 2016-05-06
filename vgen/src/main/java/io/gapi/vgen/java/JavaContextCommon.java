@@ -210,10 +210,10 @@ public class JavaContextCommon {
       public Builder setParams(
           JavaGapicContext languageProvider,
           ImmutableList<Field> fields,
-          Map<String, String> fieldPattern) {
+          ImmutableMap<String, String> fieldNamePatterns) {
         ImmutableList.Builder<Variable> params = ImmutableList.<Variable>builder();
         for (Field field : fields) {
-          if (fieldPattern.containsKey(field.getSimpleName())) {
+          if (fieldNamePatterns.containsKey(field.getSimpleName())) {
             params.add(
                 s_newVariable(
                     field.getType(),
