@@ -30,6 +30,7 @@ import com.google.common.io.Files;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import io.gapi.vgen.ApiConfig;
+import io.gapi.vgen.CollectionConfig;
 import io.gapi.vgen.GapicContext;
 import io.gapi.vgen.MethodConfig;
 
@@ -333,5 +334,15 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
       }
     }
     throw new RuntimeException("No flattened methods available.");
+  }
+
+  public CollectionConfig getCollectionConfig(Interface service, String entityName) {
+    CollectionConfig result =
+        getApiConfig().getInterfaceConfig(service).getCollectionConfig(entityName);
+    if (result == null) {
+      throw new IllegalStateException(
+          "A collection config was not present for entity name " + entityName);
+    }
+    return result;
   }
 }

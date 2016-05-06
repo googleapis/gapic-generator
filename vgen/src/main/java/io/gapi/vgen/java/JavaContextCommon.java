@@ -207,6 +207,29 @@ public class JavaContextCommon {
         return setParams(params.build());
       }
 
+      public Builder setParams(
+          JavaGapicContext languageProvider,
+          ImmutableList<Field> fields,
+          ImmutableMap<String, String> fieldNamePatterns) {
+        ImmutableList.Builder<Variable> params = ImmutableList.<Variable>builder();
+        for (Field field : fields) {
+          if (fieldNamePatterns.containsKey(field.getSimpleName())) {
+            params.add(
+                s_newVariable(
+                    field.getType(),
+                    "formatted" + LanguageUtil.lowerUnderscoreToUpperCamel(field.getSimpleName()),
+                    languageProvider.getDescription(field)));
+          } else {
+            params.add(
+                s_newVariable(
+                    field.getType(),
+                    LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName()),
+                    languageProvider.getDescription(field)));
+          }
+        }
+        return setParams(params.build());
+      }
+
       public Builder setSingleParam(
           JavaGapicContext languageProvider, TypeRef requestType, String name, String doc) {
         return setParams(ImmutableList.of(s_newVariable(requestType, name, doc)));

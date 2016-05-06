@@ -20,6 +20,7 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
@@ -43,6 +44,7 @@ public class MethodConfig {
   private final Iterable<Field> optionalFields;
   private final BundlingConfig bundling;
   private final boolean hasRequestObjectMethod;
+  private final ImmutableMap<String, String> fieldNamePatterns;
 
   /**
    * Creates an instance of MethodConfig based on MethodConfigProto, linking it up with the provided
@@ -142,6 +144,9 @@ public class MethodConfig {
               }
             });
 
+    ImmutableMap<String, String> fieldNamePatterns =
+        ImmutableMap.copyOf(methodConfig.getFieldNamePatterns());
+
     if (error) {
       return null;
     } else {
@@ -153,7 +158,8 @@ public class MethodConfig {
           bundling,
           hasRequestObjectMethod,
           requiredFields,
-          optionalFields);
+          optionalFields,
+          fieldNamePatterns);
     }
   }
 
@@ -165,7 +171,8 @@ public class MethodConfig {
       BundlingConfig bundling,
       boolean hasRequestObjectMethod,
       Iterable<Field> requiredFields,
-      Iterable<Field> optionalFields) {
+      Iterable<Field> optionalFields,
+      ImmutableMap<String, String> fieldNamePatterns) {
     this.pageStreaming = pageStreaming;
     this.flattening = flattening;
     this.retryCodesConfigName = retryCodesConfigName;
@@ -174,6 +181,7 @@ public class MethodConfig {
     this.hasRequestObjectMethod = hasRequestObjectMethod;
     this.requiredFields = requiredFields;
     this.optionalFields = optionalFields;
+    this.fieldNamePatterns = fieldNamePatterns;
   }
 
   /**
@@ -251,5 +259,12 @@ public class MethodConfig {
    */
   public Iterable<Field> getOptionalFields() {
     return optionalFields;
+  }
+
+  /**
+   * Returns a map of fields to entity_name elements.
+   */
+  public ImmutableMap<String, String> getFieldNamePatterns() {
+    return fieldNamePatterns;
   }
 }

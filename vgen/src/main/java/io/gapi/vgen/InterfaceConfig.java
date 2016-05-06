@@ -20,7 +20,6 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -29,9 +28,8 @@ import org.joda.time.Duration;
 
 import io.grpc.Status;
 
+import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -40,8 +38,8 @@ import javax.annotation.Nullable;
  * configuration for methods and resource names.
  */
 public class InterfaceConfig {
-  private final ImmutableList<CollectionConfig> collectionConfigs;
-  private final Map<String, MethodConfig> methodConfigMap;
+  private final ImmutableMap<String, CollectionConfig> collectionConfigs;
+  private final ImmutableMap<String, MethodConfig> methodConfigMap;
   private final ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition;
   private final ImmutableMap<String, RetrySettings> retrySettingsDefinition;
 
@@ -53,7 +51,7 @@ public class InterfaceConfig {
   @Nullable
   public static InterfaceConfig createInterfaceConfig(
       DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto, Interface iface) {
-    ImmutableList<CollectionConfig> collectionConfigs =
+    ImmutableMap<String, CollectionConfig> collectionConfigs =
         createCollectionConfigs(diagCollector, interfaceConfigProto);
 
     ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition =
@@ -61,7 +59,7 @@ public class InterfaceConfig {
     ImmutableMap<String, RetrySettings> retrySettingsDefinition =
         createRetrySettingsDefinition(diagCollector, interfaceConfigProto);
 
-    Map<String, MethodConfig> methodConfigMap = null;
+    ImmutableMap<String, MethodConfig> methodConfigMap = null;
     if (retryCodesDefinition != null && retrySettingsDefinition != null) {
       methodConfigMap =
           createMethodConfigMap(
@@ -80,9 +78,10 @@ public class InterfaceConfig {
     }
   }
 
-  private static ImmutableList<CollectionConfig> createCollectionConfigs(
+  private static ImmutableMap<String, CollectionConfig> createCollectionConfigs(
       DiagCollector diagCollector, InterfaceConfigProto interfaceConfigProto) {
-    ImmutableList.Builder<CollectionConfig> collectionConfigsBuilder = ImmutableList.builder();
+    ImmutableMap.Builder<String, CollectionConfig> collectionConfigsBuilder =
+        ImmutableMap.builder();
 
     for (CollectionConfigProto collectionConfigProto : interfaceConfigProto.getCollectionsList()) {
       CollectionConfig collectionConfig =
@@ -90,7 +89,7 @@ public class InterfaceConfig {
       if (collectionConfig == null) {
         continue;
       }
-      collectionConfigsBuilder.add(collectionConfig);
+      collectionConfigsBuilder.put(collectionConfig.getEntityName(), collectionConfig);
     }
 
     if (diagCollector.getErrorCount() > 0) {
@@ -158,13 +157,13 @@ public class InterfaceConfig {
     return builder.build();
   }
 
-  private static Map<String, MethodConfig> createMethodConfigMap(
+  private static ImmutableMap<String, MethodConfig> createMethodConfigMap(
       DiagCollector diagCollector,
       InterfaceConfigProto interfaceConfigProto,
       Interface iface,
       ImmutableSet<String> retryCodesConfigNames,
       ImmutableSet<String> retryParamsConfigNames) {
-    Map<String, MethodConfig> methodConfigMap = new HashMap<>();
+    ImmutableMap.Builder<String, MethodConfig> methodConfigMapBuilder = ImmutableMap.builder();
 
     for (MethodConfigProto methodConfigProto : interfaceConfigProto.getMethodsList()) {
       Method method = iface.lookupMethod(methodConfigProto.getName());
@@ -184,19 +183,19 @@ public class InterfaceConfig {
       if (methodConfig == null) {
         continue;
       }
-      methodConfigMap.put(methodConfigProto.getName(), methodConfig);
+      methodConfigMapBuilder.put(methodConfigProto.getName(), methodConfig);
     }
 
     if (diagCollector.getErrorCount() > 0) {
       return null;
     } else {
-      return methodConfigMap;
+      return methodConfigMapBuilder.build();
     }
   }
 
   private InterfaceConfig(
-      ImmutableList<CollectionConfig> collectionConfigs,
-      Map<String, MethodConfig> methodConfigMap,
+      ImmutableMap<String, CollectionConfig> collectionConfigs,
+      ImmutableMap<String, MethodConfig> methodConfigMap,
       ImmutableMap<String, ImmutableSet<Status.Code>> retryCodesDefinition,
       ImmutableMap<String, RetrySettings> retryParamsDefinition) {
     this.collectionConfigs = collectionConfigs;
@@ -205,11 +204,15 @@ public class InterfaceConfig {
     this.retrySettingsDefinition = retryParamsDefinition;
   }
 
+  public CollectionConfig getCollectionConfig(String entityName) {
+    return collectionConfigs.get(entityName);
+  }
+
   /**
    * Returns the list of CollectionConfigs.
    */
-  public ImmutableList<CollectionConfig> getCollectionConfigs() {
-    return collectionConfigs;
+  public Collection<CollectionConfig> getCollectionConfigs() {
+    return collectionConfigs.values();
   }
 
   /**
