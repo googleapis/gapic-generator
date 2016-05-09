@@ -147,6 +147,12 @@
     @end
 @end
 
+@private pathParams(params)
+    @join param : params on ", "
+        {@context.lowerUnderscoreToLowerCamel(param)} string
+    @end
+@end
+
 # PathTemplates are currently methods of the service. They don't have to be, but
 # this would be good to shorten the method names, and normally the users of these
 # methods would have the service instance already.
@@ -158,31 +164,11 @@
              humanReadableName = collectionConfig.getEntityName.replaceAll("_", " "), \
              methodReceiver = context.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName)
 
-            // {@pathTypeName} represents a {@humanReadableName} resource.
-            type {@pathTypeName} struct {
-                @join param : collectionConfig.getNameTemplate.vars()
-                {@context.lowerUnderscoreToUpperCamel(param)} string
-                @end
-            }
-
-            // New{@pathTypeName}FromPath creates a {@pathTypeName} from a {@humanReadableName} path in the form of "{@collectionConfig.getNamePattern}".
-            func New{@pathTypeName}FromPath(path string) ({@pathTypeName}, error) {
-                binding, err := {@pathTemplateVarName(collectionConfig)}.Match(path)
-                if err != nil {
-                    return {@pathTypeName}{}, err
-                }
-                return {@pathTypeName}{
-                    @join param : collectionConfig.getNameTemplate.vars()
-                    {@context.lowerUnderscoreToUpperCamel(param)}: binding["{@param}"],
-                    @end
-                }, nil
-            }
-
-            // Path returns the path for the {@humanReadableName} resource.
-            func ({@methodReceiver} {@pathTypeName}) Path() (string, error) {
+            // {@pathTypeName}Path returns the path for the {@humanReadableName} resource.
+            func {@pathTypeName}Path({@pathParams(collectionConfig.getNameTemplate.vars())}) (string, error) {
                 return {@pathTemplateVarName(collectionConfig)}.Instantiate(map[string]string{
                     @join param : collectionConfig.getNameTemplate.vars()
-                    "{@param}": {@methodReceiver}.{@context.lowerUnderscoreToUpperCamel(param)},
+                    "{@param}": {@context.lowerUnderscoreToLowerCamel(param)},
                     @end
                 })
             }
