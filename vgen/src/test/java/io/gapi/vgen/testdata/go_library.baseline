@@ -136,52 +136,18 @@ func (client *Client) Close() error {
 
 // Path templates.
 
-// Shelf represents a shelf resource.
-type Shelf struct {
-    Shelf string
-}
-
-// NewShelfFromPath creates a Shelf from a shelf path in the form of "shelves/{shelf}".
-func NewShelfFromPath(path string) (Shelf, error) {
-    binding, err := shelfPathTemplate.Match(path)
-    if err != nil {
-        return Shelf{}, err
-    }
-    return Shelf{
-        Shelf: binding["shelf"],
-    }, nil
-}
-
-// Path returns the path for the shelf resource.
-func (shelf Shelf) Path() (string, error) {
+// ShelfPath returns the path for the shelf resource.
+func ShelfPath(shelf string) (string, error) {
     return shelfPathTemplate.Instantiate(map[string]string{
-        "shelf": shelf.Shelf,
+        "shelf": shelf,
     })
 }
 
-// Book represents a book resource.
-type Book struct {
-    Shelf string
-    Book string
-}
-
-// NewBookFromPath creates a Book from a book path in the form of "shelves/{shelf}/books/{book}".
-func NewBookFromPath(path string) (Book, error) {
-    binding, err := bookPathTemplate.Match(path)
-    if err != nil {
-        return Book{}, err
-    }
-    return Book{
-        Shelf: binding["shelf"],
-        Book: binding["book"],
-    }, nil
-}
-
-// Path returns the path for the book resource.
-func (book Book) Path() (string, error) {
+// BookPath returns the path for the book resource.
+func BookPath(shelf string, book string) (string, error) {
     return bookPathTemplate.Instantiate(map[string]string{
-        "shelf": book.Shelf,
-        "book": book.Book,
+        "shelf": shelf,
+        "book": book,
     })
 }
 
