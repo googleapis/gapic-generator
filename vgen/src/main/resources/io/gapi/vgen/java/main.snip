@@ -316,7 +316,7 @@
        pageStreaming = methodConfig.getPageStreaming(), \
        resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
        requestTypeName = context.typeName(method.getInputType)
-    {@iterableFlattenedMethodJavaDoc(method, methodName, resourceTypeName, fields, fieldNamePatterns)}
+    {@iterableFlattenedMethodJavaDoc(service, method, methodName, resourceTypeName, fields, fieldNamePatterns)}
     public final PageAccessor<{@resourceTypeName}> \
         {@methodName}({@paramListFormatted(fields, fieldNamePatterns)}) {
       @join field : fields
@@ -378,7 +378,7 @@
 @end
 
 @private flattenedMethod(service, method, methodName, fields, fieldNamePatterns)
-  {@flattenedMethodJavaDoc(method, methodName, fields, fieldNamePatterns)}
+  {@flattenedMethodJavaDoc(service, method, methodName, fields, fieldNamePatterns)}
   @let returnType = context.methodReturnTypeName(method.getOutputType), \
        returnStatement = context.methodReturnStatement(method.getOutputType), \
        requestTypeName = context.typeName(method.getInputType)
@@ -509,23 +509,23 @@
   Service Description: {@getDoc(protoElement)}
 @end
 
-@private flattenedMethodJavaDoc(method, methodName, fields, fieldNamePatterns)
+@private flattenedMethodJavaDoc(service, method, methodName, fields, fieldNamePatterns)
   {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
       .setApiName(context.getApiWrapperName(method.getParent)) \
       .setMethodName(methodName) \
       .setReturnType(context.returnTypeOrEmpty(method.getOutputType)) \
-      .setParams(context, fields, fieldNamePatterns) \
+      .setParamsWithFormatting(context, service, fields, fieldNamePatterns) \
       .setPagedVariant(context.java.getFalse) \
       .setCallableVariant(context.java.getFalse) \
       .build)}
 @end
 
-@private iterableFlattenedMethodJavaDoc(method, methodName, resourceName, fields, fieldNamePatterns)
+@private iterableFlattenedMethodJavaDoc(service, method, methodName, resourceName, fields, fieldNamePatterns)
   {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
       .setApiName(context.getApiWrapperName(method.getParent)) \
       .setMethodName(methodName) \
       .setReturnType(resourceName) \
-      .setParams(context, fields, fieldNamePatterns) \
+      .setParamsWithFormatting(context, service, fields, fieldNamePatterns) \
       .setPagedVariant(context.java.getTrue) \
       .setCallableVariant(context.java.getFalse) \
       .build)}
@@ -613,7 +613,7 @@
       apiName = context.upperCamelToLowerCamel(ApiName)
     try ({@ApiName} {@apiName} = {@ApiName}.createWithDefaults()) {
       @join param : docConfig.getParams
-        {@context.typeName(param.getType)} {@param.getName} = {@context.zeroValue(param.getType)};
+        {@context.typeName(param.getType)} {@param.getName} = {@initValue(param, ApiName)};
       @end
       @if docConfig.isPagedVariant
         for ({@docConfig.getReturnType} elements : {@methodCallSampleCode(docConfig, apiName)}) {
@@ -623,6 +623,20 @@
         {@callResultSampleCode(docConfig.getReturnType)}{@methodCallSampleCode(docConfig, apiName)};
       @end
     }
+  @end
+@end
+
+@private initValue(param, ApiName)
+  @if param.hasFormattingConfig() {
+    {@ApiName}.{@formatResourceFunctionName(param.getFormattingConfig())}({@formatResourceFunctionArgs(param.getFormattingConfig())})
+  @else
+    {@context.zeroValue(param.getType)}
+  @end
+@end
+
+@private formatResourceFunctionArgs(collectionConfig)
+  @join param : collectionConfig.getNameTemplate.vars() on ", "
+    "[{@context.lowerUnderscoreToUpperUnderscore(param)}]"
   @end
 @end
 

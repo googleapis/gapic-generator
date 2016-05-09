@@ -381,7 +381,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   String formattedName = "";
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   Shelf callResult = libraryServiceApi.getShelf(formattedName);
    * }
    * </code></pre>
@@ -407,7 +407,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   String formattedName = "";
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   SomeMessage message = SomeMessage.newBuilder().build();
    *   Shelf callResult = libraryServiceApi.getShelf(formattedName, message);
    * }
@@ -437,7 +437,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   String formattedName = "";
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   SomeMessage message = SomeMessage.newBuilder().build();
    *   com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
    *   Shelf callResult = libraryServiceApi.getShelf(formattedName, message, stringBuilder);
@@ -601,7 +601,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   String formattedName = "";
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   libraryServiceApi.deleteShelf(formattedName);
    * }
    * </code></pre>
@@ -670,8 +670,8 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   String formattedName = "";
-   *   String formattedOtherShelfName = "";
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   Shelf callResult = libraryServiceApi.mergeShelves(formattedName, formattedOtherShelfName);
    * }
    * </code></pre>
@@ -745,7 +745,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   String formattedName = "";
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   Book book = Book.newBuilder().build();
    *   Book callResult = libraryServiceApi.createBook(formattedName, book);
    * }
@@ -890,7 +890,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   String formattedName = "";
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   Book callResult = libraryServiceApi.getBook(formattedName);
    * }
    * </code></pre>
@@ -957,7 +957,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   String formattedName = "";
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   String filter = "";
    *   for (Book elements : libraryServiceApi.listBooks(formattedName, filter)) {
    *     // doThingsWith(elements);
@@ -1053,7 +1053,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   String formattedName = "";
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   libraryServiceApi.deleteBook(formattedName);
    * }
    * </code></pre>
@@ -1120,7 +1120,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   String formattedName = "";
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   Book book = Book.newBuilder().build();
    *   Book callResult = libraryServiceApi.updateBook(formattedName, book);
    * }
@@ -1150,7 +1150,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   String formattedName = "";
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   Book book = Book.newBuilder().build();
    *   FieldMask updateMask = FieldMask.newBuilder().build();
    *   com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
@@ -1229,8 +1229,8 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   String formattedName = "";
-   *   String formattedOtherShelfName = "";
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   Book callResult = libraryServiceApi.moveBook(formattedName, formattedOtherShelfName);
    * }
    * </code></pre>
