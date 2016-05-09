@@ -357,10 +357,13 @@ public class GoGapicContext extends GapicContext implements GoContext {
     TreeSet<GoImport> coreImports = new TreeSet<>();
     TreeSet<GoImport> imports = new TreeSet<>();
 
+    coreImports.add(GoImport.create("fmt"));
+
     // Add non-service-specific imports.
     imports.add(GoImport.create("golang.org/x/net/context"));
     imports.add(GoImport.create("google.golang.org/grpc"));
     imports.add(GoImport.create("google.golang.org/grpc/codes"));
+    imports.add(GoImport.create("google.golang.org/grpc/metadata"));
     imports.add(GoImport.create(GAX_PACKAGE_BASE, "gax"));
 
     if (!getApiConfig().getInterfaceConfig(service).getRetrySettingsDefinition().isEmpty()) {
