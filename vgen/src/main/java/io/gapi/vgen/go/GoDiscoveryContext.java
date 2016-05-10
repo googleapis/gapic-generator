@@ -16,6 +16,7 @@ package io.gapi.vgen.go;
 
 import com.google.api.Service;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableTable;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
@@ -129,5 +130,22 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
       }
     }
     return hasPageToken && hasNextPageToken;
+  }
+
+  private static final ImmutableTable<String, String, String> API_VERSION_RENAME =
+      ImmutableTable.<String, String, String>builder()
+          .put("clouduseraccounts", "beta", "v0.beta")
+          .build();
+
+  /**
+   * We need this because in some cases there is a mismatch between discovery doc and import path
+   * version numbers. API_VERSION_RENAME is a table of API name and versions as found in discovery
+   * doc to the renamed versions as found in the import path.
+   *
+   * TODO(pongad): Find a more sustainable solution to this.
+   */
+  public String getApiVersion() {
+    String rename = API_VERSION_RENAME.get(getApi().getName(), getApi().getVersion());
+    return rename == null ? getApi().getVersion() : rename;
   }
 }

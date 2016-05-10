@@ -77,7 +77,7 @@ public final class GeneratorBuilderUtil {
           }
         });
   }
-  
+
   /**
    * Constructs an InputElementView from a configuration; the configuration cannot contain
    * parameterized type information, so we must suppress the type safety warning here.
