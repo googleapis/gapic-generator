@@ -1,0 +1,67 @@
+@snippet generateFilename(service)
+    {@context.upperCamelToLowerUnderscore(service.getSimpleName)}/client_test.go
+@end
+
+@snippet generateClass(service, body)
+    package {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
+
+    {@importSection(service)}
+
+    {@body}
+@end
+
+@private importSection(service)
+    import (
+    @join import : context.getTestImports(service)
+    {@import}
+    @end
+    )
+@end
+
+@snippet generateBody(service)
+    func ExampleNewClient() {
+        ctx := context.Background()
+        opts := []gax.ClientOption{ /* Optional client parameters. */ }
+        client, err := NewClient(ctx, opts...)
+        _, _ = client, err
+    }
+    @join method : service.getMethods
+        @let methodName = method.getSimpleName, \
+             inTypeName = context.messageTypeName(method.getInputType), \
+             outTypeName = context.typeName(method.getOutputType), \
+             methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+             isPageStreaming = methodConfig.isPageStreaming
+
+            func ExampleClient_{@method.getSimpleName}() {
+                ctx := context.Background()
+                client, _ := NewClient(ctx)
+
+                req := &{@inTypeName}{ /* Data... */ }
+                opts := []gax.CallOption{ /* Optional call parameters. */ }
+                @if {@context.isEmpty(method.getOutputType)}
+                    _ = client.{@method.getSimpleName}(ctx, req, opts...)
+                @else
+                    @if {@isPageStreaming}
+                        @let pageStreaming = methodConfig.getPageStreaming(), \
+                             resourceFieldTypeName = context.getResourceTypeName(pageStreaming.getResourcesField())
+                            iter, _ := client.{@method.getSimpleName}(ctx, req, opts...)
+                            var resp {@resourceFieldTypeName}
+                            for {
+                                var err error
+                                resp, err = iter.Next()
+                                if err != nil {
+                                    break
+                                }
+                            }
+                            _ = resp
+                        @end
+                    @else
+                        var resp {@outTypeName}
+                        resp, _ = client.{@method.getSimpleName}(ctx, req, opts...)
+                        _ = resp
+                    @end
+                @end
+        }
+        @end
+    @end
+@end
