@@ -145,8 +145,8 @@ public class DiscoveryFragmentGeneratorApi {
     for (String configFileName : configFileNames) {
       File file = findDataFile(configFileName);
       if (file == null) {
-        error("Cannot find configuration file '%s'.", configFileName);
-        continue;
+        throw new IllegalArgumentException(
+            String.format("Cannot find configuration file '%s'.", configFileName));
       }
       files.add(file);
     }
