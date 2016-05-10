@@ -340,7 +340,10 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   CreateShelfRequest request = CreateShelfRequest.newBuilder().build();
+   *   Shelf shelf = Shelf.newBuilder().build();
+   *   CreateShelfRequest request = CreateShelfRequest.newBuilder()
+   *     .setShelf(shelf)
+   *     .build();
    *   Shelf callResult = libraryServiceApi.createShelf(request);
    * }
    * </code></pre>
@@ -361,7 +364,10 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   CreateShelfRequest request = CreateShelfRequest.newBuilder().build();
+   *   Shelf shelf = Shelf.newBuilder().build();
+   *   CreateShelfRequest request = CreateShelfRequest.newBuilder()
+   *     .setShelf(shelf)
+   *     .build();
    *   Shelf callResult = libraryServiceApi.createShelfCallable().call(request);
    * }
    * </code></pre>
@@ -471,7 +477,10 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   GetShelfRequest request = GetShelfRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   GetShelfRequest request = GetShelfRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
    *   Shelf callResult = libraryServiceApi.getShelf(request);
    * }
    * </code></pre>
@@ -492,7 +501,10 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   GetShelfRequest request = GetShelfRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   GetShelfRequest request = GetShelfRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
    *   Shelf callResult = libraryServiceApi.getShelfCallable().call(request);
    * }
    * </code></pre>
@@ -627,7 +639,10 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   DeleteShelfRequest request = DeleteShelfRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
    *   libraryServiceApi.deleteShelf(request);
    * }
    * </code></pre>
@@ -648,7 +663,10 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   DeleteShelfRequest request = DeleteShelfRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
    *   libraryServiceApi.deleteShelfCallable().call(request);
    * }
    * </code></pre>
@@ -702,7 +720,12 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   MergeShelvesRequest request = MergeShelvesRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   MergeShelvesRequest request = MergeShelvesRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setOtherShelfName(formattedOtherShelfName)
+   *     .build();
    *   Shelf callResult = libraryServiceApi.mergeShelves(request);
    * }
    * </code></pre>
@@ -725,7 +748,12 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   MergeShelvesRequest request = MergeShelvesRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   MergeShelvesRequest request = MergeShelvesRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setOtherShelfName(formattedOtherShelfName)
+   *     .build();
    *   Shelf callResult = libraryServiceApi.mergeShelvesCallable().call(request);
    * }
    * </code></pre>
@@ -775,7 +803,12 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   CreateBookRequest request = CreateBookRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   Book book = Book.newBuilder().build();
+   *   CreateBookRequest request = CreateBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setBook(book)
+   *     .build();
    *   Book callResult = libraryServiceApi.createBook(request);
    * }
    * </code></pre>
@@ -796,7 +829,12 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   CreateBookRequest request = CreateBookRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   Book book = Book.newBuilder().build();
+   *   CreateBookRequest request = CreateBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setBook(book)
+   *     .build();
    *   Book callResult = libraryServiceApi.createBookCallable().call(request);
    * }
    * </code></pre>
@@ -849,7 +887,12 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder().build();
+   *   Shelf shelf = Shelf.newBuilder().build();
+   *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+   *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+   *     .setShelf(shelf)
+   *     .addAllBooks(books)
+   *     .build();
    *   PublishSeriesResponse callResult = libraryServiceApi.publishSeries(request);
    * }
    * </code></pre>
@@ -870,7 +913,12 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder().build();
+   *   Shelf shelf = Shelf.newBuilder().build();
+   *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+   *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+   *     .setShelf(shelf)
+   *     .addAllBooks(books)
+   *     .build();
    *   PublishSeriesResponse callResult = libraryServiceApi.publishSeriesCallable().call(request);
    * }
    * </code></pre>
@@ -916,7 +964,10 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   GetBookRequest request = GetBookRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   GetBookRequest request = GetBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
    *   Book callResult = libraryServiceApi.getBook(request);
    * }
    * </code></pre>
@@ -937,7 +988,10 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   GetBookRequest request = GetBookRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   GetBookRequest request = GetBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
    *   Book callResult = libraryServiceApi.getBookCallable().call(request);
    * }
    * </code></pre>
@@ -989,7 +1043,10 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   ListBooksRequest request = ListBooksRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   ListBooksRequest request = ListBooksRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
    *   for (Book elements : libraryServiceApi.listBooks(request)) {
    *     // doThingsWith(elements);
    *   }
@@ -1013,7 +1070,10 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   ListBooksRequest request = ListBooksRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   ListBooksRequest request = ListBooksRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
    *   for (Book elements : libraryServiceApi.listBooksIterableCallable().call(request)) {
    *     // doThingsWith(elements);
    *   }
@@ -1033,7 +1093,10 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   ListBooksRequest request = ListBooksRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   ListBooksRequest request = ListBooksRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
    *   ListBooksResponse callResult = libraryServiceApi.listBooksCallable().call(request);
    * }
    * </code></pre>
@@ -1079,7 +1142,10 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   DeleteBookRequest request = DeleteBookRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
    *   libraryServiceApi.deleteBook(request);
    * }
    * </code></pre>
@@ -1100,7 +1166,10 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   DeleteBookRequest request = DeleteBookRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
    *   libraryServiceApi.deleteBookCallable().call(request);
    * }
    * </code></pre>
@@ -1188,7 +1257,12 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   UpdateBookRequest request = UpdateBookRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   Book book = Book.newBuilder().build();
+   *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setBook(book)
+   *     .build();
    *   Book callResult = libraryServiceApi.updateBook(request);
    * }
    * </code></pre>
@@ -1209,7 +1283,12 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   UpdateBookRequest request = UpdateBookRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   Book book = Book.newBuilder().build();
+   *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setBook(book)
+   *     .build();
    *   Book callResult = libraryServiceApi.updateBookCallable().call(request);
    * }
    * </code></pre>
@@ -1259,7 +1338,12 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   MoveBookRequest request = MoveBookRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   MoveBookRequest request = MoveBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setOtherShelfName(formattedOtherShelfName)
+   *     .build();
    *   Book callResult = libraryServiceApi.moveBook(request);
    * }
    * </code></pre>
@@ -1280,7 +1364,12 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   MoveBookRequest request = MoveBookRequest.newBuilder().build();
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   MoveBookRequest request = MoveBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setOtherShelfName(formattedOtherShelfName)
+   *     .build();
    *   Book callResult = libraryServiceApi.moveBookCallable().call(request);
    * }
    * </code></pre>

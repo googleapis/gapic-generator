@@ -250,7 +250,8 @@
          isPageStreaming = methodConfig.isPageStreaming, \
          isFlattening = methodConfig.isFlattening, \
          requestObjectMethodAccessStr = requestObjectMethodAccess(methodConfig), \
-         fieldNamePatterns = methodConfig.getFieldNamePatterns()
+         fieldNamePatterns = methodConfig.getFieldNamePatterns(), \
+         requiredFields = methodConfig.getRequiredFields()
       // ----- {@methodName} -----
 
       # TODO (garrettjones) put some kind of limit on number of flattened parameters, and
@@ -263,8 +264,8 @@
           @end
           {@BREAK}
         @end
-        {@pagedMethodWithRequestParam(service, method, methodName, inTypeName, outTypeName, requestObjectMethodAccessStr)}
-        {@methodReturningPagedCallable(service, method, methodName, inTypeName, outTypeName)}
+        {@pagedMethodWithRequestParam(service, method, methodName, inTypeName, outTypeName, requestObjectMethodAccessStr, requiredFields, fieldNamePatterns)}
+        {@methodReturningPagedCallable(service, method, methodName, inTypeName, outTypeName, requiredFields, fieldNamePatterns)}
       @else
         @if {@isFlattening}
           @join flatteningGroup : \
@@ -273,9 +274,9 @@
           @end
           {@BREAK}
         @end
-        {@methodWithRequestParam(method, methodName, inTypeName, outTypeName, requestObjectMethodAccessStr)}
+        {@methodWithRequestParam(service, method, methodName, inTypeName, outTypeName, requestObjectMethodAccessStr, requiredFields, fieldNamePatterns)}
       @end
-      {@methodReturningCallable(method, callableConstant, methodName, inTypeName, outTypeName)}
+      {@methodReturningCallable(service, method, callableConstant, methodName, inTypeName, outTypeName, requiredFields, fieldNamePatterns)}
     @end
   @end
 @end
@@ -337,7 +338,7 @@
   @end
 @end
 
-@private pagedMethodWithRequestParam(service, method, methodName, inTypeName, outTypeName, accessModifier)
+@private pagedMethodWithRequestParam(service, method, methodName, inTypeName, outTypeName, accessModifier, requiredFields, fieldNamePatterns)
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
        resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType())
@@ -346,6 +347,7 @@
       .setMethodName(methodName) \
       .setReturnType(resourceTypeName) \
       .setSingleParam(context, method.getInputType, context.java.requestParam, context.java.requestParamDoc) \
+      .setRequiredParamsWithFormatting(context, service, requiredFields, fieldNamePatterns) \
       .setPagedVariant(context.java.getTrue) \
       .setCallableVariant(context.java.getFalse) \
       .build)}
@@ -357,7 +359,7 @@
   @end
 @end
 
-@private methodReturningPagedCallable(service, method, methodName, inTypeName, outTypeName)
+@private methodReturningPagedCallable(service, method, methodName, inTypeName, outTypeName, requiredFields, fieldNamePatterns)
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
        dummy = context.addImport("com.google.api.gax.core.PageAccessor"), \
@@ -367,6 +369,7 @@
       .setMethodName(methodName) \
       .setReturnType(resourceTypeName) \
       .setSingleParam(context, method.getInputType, context.java.requestParam, context.java.requestParamDoc) \
+      .setRequiredParamsWithFormatting(context, service, requiredFields, fieldNamePatterns) \
       .setPagedVariant(context.java.getTrue) \
       .setCallableVariant(context.java.getTrue) \
       .build)}
@@ -401,12 +404,13 @@
   @end
 @end
 
-@private methodWithRequestParam(method, methodName, inTypeName, outTypeName, accessModifier)
+@private methodWithRequestParam(service, method, methodName, inTypeName, outTypeName, accessModifier, requiredFields, fieldNamePatterns)
   {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
       .setApiName(context.getApiWrapperName(method.getParent)) \
       .setMethodName(context.upperCamelToLowerCamel(method.getSimpleName)) \
       .setReturnType(context.returnTypeOrEmpty(method.getOutputType)) \
       .setSingleParam(context, method.getInputType, context.java.requestParam, context.java.requestParamDoc) \
+      .setRequiredParamsWithFormatting(context, service, requiredFields, fieldNamePatterns) \
       .setPagedVariant(context.java.getFalse) \
       .setCallableVariant(context.java.getFalse) \
       .build)}
@@ -419,12 +423,13 @@
   @end
 @end
 
-@private methodReturningCallable(method, callableConstant, methodName, inTypeName, outTypeName)
+@private methodReturningCallable(service, method, callableConstant, methodName, inTypeName, outTypeName, requiredFields, fieldNamePatterns)
   {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
       .setApiName(context.getApiWrapperName(method.getParent)) \
       .setMethodName(methodName) \
       .setReturnType(context.returnTypeOrEmpty(method.getOutputType)) \
       .setSingleParam(context, method.getInputType, context.java.requestParam, context.java.requestParamDoc) \
+      .setRequiredParamsWithFormatting(context, service, requiredFields, fieldNamePatterns) \
       .setPagedVariant(context.java.getFalse) \
       .setCallableVariant(context.java.getTrue) \
       .build)}
@@ -440,7 +445,9 @@
        settingsVariable = context.upperCamelToLowerCamel(settingsClassName(service)), \
        # TODO: support the case where the API has no flattened methods.
        firstFlattenedMethod = context.getFirstFlattenedMethod(service), \
-       firstFlattenedMethodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(firstFlattenedMethod)
+       firstFlattenedMethodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(firstFlattenedMethod), \
+       fields = firstFlattenedMethodConfig.getFlattening().getFlatteningGroups().get(0), \
+       fieldNamePatterns = firstFlattenedMethodConfig.getFieldNamePatterns()
     /**
     {@javaDocLinesFromStr(serviceDocString(service))}
      *
@@ -453,7 +460,8 @@
                                .setApiName(context.getApiWrapperName(service)) \
                                .setMethodName(context.upperCamelToLowerCamel(firstFlattenedMethod.getSimpleName)) \
                                .setReturnType(context.returnTypeOrEmpty(firstFlattenedMethod.getOutputType)) \
-                               .setParams(context, firstFlattenedMethodConfig.getFlattening().getFlatteningGroups().get(0)) \
+                               .setParamsWithFormatting(context, service, fields, fieldNamePatterns) \
+                               .setRequiredParamsEmpty() \
                                .setPagedVariant(context.java.getFalse) \
                                .setCallableVariant(context.java.getFalse) \
                                .build))
@@ -515,6 +523,7 @@
       .setMethodName(methodName) \
       .setReturnType(context.returnTypeOrEmpty(method.getOutputType)) \
       .setParamsWithFormatting(context, service, fields, fieldNamePatterns) \
+      .setRequiredParamsEmpty() \
       .setPagedVariant(context.java.getFalse) \
       .setCallableVariant(context.java.getFalse) \
       .build)}
@@ -526,6 +535,7 @@
       .setMethodName(methodName) \
       .setReturnType(resourceName) \
       .setParamsWithFormatting(context, service, fields, fieldNamePatterns) \
+      .setRequiredParamsEmpty() \
       .setPagedVariant(context.java.getTrue) \
       .setCallableVariant(context.java.getFalse) \
       .build)}
@@ -613,7 +623,7 @@
       apiName = context.upperCamelToLowerCamel(ApiName)
     try ({@ApiName} {@apiName} = {@ApiName}.createWithDefaults()) {
       @join param : docConfig.getParams
-        {@context.typeName(param.getType)} {@param.getName} = {@initValue(param, ApiName)};
+        {@initLine(param, docConfig)};
       @end
       @if docConfig.isPagedVariant
         for ({@docConfig.getReturnType} elements : {@methodCallSampleCode(docConfig, apiName)}) {
@@ -626,11 +636,55 @@
   @end
 @end
 
+@private initLine(param, docConfig)
+  @let paramType = param.getType()
+    @if paramType.isMessage()
+      @if docConfig.getRequiredParams.isEmpty
+        {@initLineSimple(param, docConfig)}
+      @else
+        {@initLineMessage(param, docConfig)}
+      @end
+    @else
+      {@initLineSimple(param, docConfig)}
+    @end
+  @end
+@end
+
+@private initLineMessage(param, docConfig)
+  @join requiredParam : docConfig.getRequiredParams()
+    {@initLineSimple(requiredParam, docConfig)};
+  @end
+
+  {@context.typeName(param.getType)} {@param.getName} = {@context.typeName(param.getType)}.newBuilder()
+  @join requiredParam : docConfig.getRequiredParams
+    {@EMPTY}  .{@setCallNameFromParam(requiredParam)}({@requiredParam.getName})
+  @end
+  {@EMPTY}  .build()
+@end
+
+@private initLineSimple(param, docConfig)
+  {@context.typeName(param.getType)} {@param.getName} = {@initValue(param, docConfig.getApiName)}
+@end
+
 @private initValue(param, ApiName)
-  @if param.hasFormattingConfig() {
+  @if param.hasFormattingConfig()
     {@ApiName}.{@formatResourceFunctionName(param.getFormattingConfig())}({@formatResourceFunctionArgs(param.getFormattingConfig())})
   @else
     {@context.zeroValue(param.getType)}
+  @end
+@end
+
+@snippet setCallNameFromParam(param)
+  @let paramNameInCamel = context.lowerCamelToUpperCamel(param.getUnformattedName)
+    @if param.getType.isMap
+      putAll{@paramNameInCamel}
+    @else
+      @if param.getType.isRepeated
+        addAll{@paramNameInCamel}
+      @else
+        set{@paramNameInCamel}
+      @end
+    @end
   @end
 @end
 
