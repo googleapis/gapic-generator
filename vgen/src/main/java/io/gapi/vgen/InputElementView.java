@@ -16,31 +16,11 @@ package io.gapi.vgen;
 
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
-import com.google.common.collect.Multimap;
-
-import java.io.IOException;
 
 /**
- * A GapicLanguageProvider performs code or fragment generation using on a proto-based Model for a
- * particular language.
+ * An implementation of InputElementProvider is a strategy object, encapsulating a strategy for
+ * retrieving a ProtoElement from a model.
  */
-public interface GapicLanguageProvider<InputElementT extends ProtoElement> {
-
-  Model getModel();
-
-  /**
-   * Gets the view of the model.
-   */
-  public InputElementView<InputElementT> getView();
-
-  /**
-   * Runs code generation.
-   */
-  GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor);
-
-  /**
-   * Outputs the given elements to the given output path.
-   */
-  <Element> void output(String outputPath, Multimap<Element, GeneratedResult> elements)
-      throws IOException;
+public interface InputElementView<InputElementT extends ProtoElement> {
+  public Iterable<InputElementT> getElementIterable(Model model);
 }

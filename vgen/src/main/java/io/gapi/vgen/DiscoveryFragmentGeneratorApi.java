@@ -19,6 +19,7 @@ import com.google.api.tools.framework.model.testing.SimpleDiag;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ArrayListMultimap;
@@ -101,7 +102,10 @@ public class DiscoveryFragmentGeneratorApi {
     }
 
     Multimap<Method, GeneratedResult> docs = ArrayListMultimap.create();
-    for (String snippetInputName : configProto.getFragmentFilesList()) {
+    
+    // TODO: Support multiple templates; don't hard-code the zero-index here.
+    Preconditions.checkArgument(configProto.getTemplatesCount() == 1);
+    for (String snippetInputName : configProto.getTemplates(0).getSnippetFilesList()) {
       SnippetDescriptor snippetDescriptor = new SnippetDescriptor(snippetInputName);
       Map<Method, GeneratedResult> code = generator.generateFragments(snippetDescriptor);
       if (code == null) {

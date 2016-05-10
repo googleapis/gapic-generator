@@ -14,16 +14,15 @@
  */
 package io.gapi.vgen.ruby;
 
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoFile;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Multimap;
 
 import io.gapi.vgen.ApiConfig;
-import io.gapi.vgen.GeneratedResult;
 import io.gapi.vgen.GapicLanguageProvider;
+import io.gapi.vgen.GeneratedResult;
+import io.gapi.vgen.InputElementView;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
@@ -32,14 +31,18 @@ import java.util.ArrayList;
 /**
  * The LanguageProvider which runs Gapic code generation for Ruby.
  */
-public class RubyGapicLanguageProvider implements GapicLanguageProvider {
+public class RubyGapicLanguageProvider<InputElementT extends ProtoElement>
+    implements GapicLanguageProvider<InputElementT> {
 
   private final RubyGapicContext context;
   private final RubyLanguageProvider provider;
+  private InputElementView<InputElementT> view;
 
-  public RubyGapicLanguageProvider(Model model, ApiConfig apiConfig) {
+  public RubyGapicLanguageProvider(
+      Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
     this.context = new RubyGapicContext(model, apiConfig);
     this.provider = new RubyLanguageProvider();
+    this.view = view;
   }
 
   @Override
@@ -64,17 +67,12 @@ public class RubyGapicLanguageProvider implements GapicLanguageProvider {
   }
 
   @Override
-  public GeneratedResult generateDoc(ProtoFile file, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(file, snippetDescriptor, context);
+  public GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor) {
+    return provider.generate(element, snippetDescriptor, context);
   }
 
   @Override
-  public GeneratedResult generateCode(Interface service, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(service, snippetDescriptor, context);
-  }
-
-  @Override
-  public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(method, snippetDescriptor, context);
+  public InputElementView<InputElementT> getView() {
+    return view;
   }
 }

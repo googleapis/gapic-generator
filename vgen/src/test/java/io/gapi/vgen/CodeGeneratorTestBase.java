@@ -15,6 +15,7 @@
 package io.gapi.vgen;
 
 import com.google.api.tools.framework.model.Diag;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.truth.Truth;
 
 import org.junit.runner.RunWith;
@@ -31,55 +32,53 @@ import java.util.TreeMap;
 @RunWith(Parameterized.class)
 public abstract class CodeGeneratorTestBase extends GeneratorTestBase {
 
-  public CodeGeneratorTestBase(String name, String[] gapicConfigFileNames, String snippetName) {
-    super(name, gapicConfigFileNames, snippetName);
+  public CodeGeneratorTestBase(
+      String name,
+      String[] gapicConfigFileNames,
+      String gapicLanguageProviderName,
+      String viewName,
+      String snippetName) {
+    super(name, gapicConfigFileNames, gapicLanguageProviderName, viewName, snippetName);
   }
 
   public CodeGeneratorTestBase(String name, String[] gapicConfigFileNames) {
     super(name, gapicConfigFileNames);
   }
 
-  protected GeneratedResult generateForSnippet(int index) {
-    Map<?, GeneratedResult> result = generateForSnippet(config.getSnippetFilesList(), index, false);
-    Truth.assertThat(result.size()).isEqualTo(1);
-    return result.values().iterator().next();
-  }
+  // TODO: specify indices through strings, not ints
+  protected List<GeneratedResult> generateForTemplate(int templateIndex, int snippetIndex) {
+    List<TemplateProto> templates = config.getTemplatesList();
 
-  protected List<GeneratedResult> generateForDocSnippet(int index) {
-    TreeMap<String, GeneratedResult> result =
-        new TreeMap(
-            (Map<String, GeneratedResult>)
-                generateForSnippet(config.getDocSnippetFilesList(), index, true));
-    return new ArrayList(result.values());
-  }
-
-  private Map<?, GeneratedResult> generateForSnippet(
-      List<String> snippetInputNames, int index, boolean doc) {
-    if (index >= snippetInputNames.size()) {
+    if (templateIndex >= templates.size()) {
       return null;
     }
-    String snippetInputName = snippetInputNames.get(index);
-    SnippetDescriptor resourceDescriptor = new SnippetDescriptor(snippetInputName);
-    Map<?, GeneratedResult> result = null;
-    if (doc) {
-      result = CodeGenerator.create(config, model).generateDocs(resourceDescriptor);
-    } else {
-      result = CodeGenerator.create(config, model).generate(resourceDescriptor);
+    TemplateProto template = templates.get(templateIndex);
+
+    if (snippetIndex >= template.getSnippetFilesCount()) {
+      return null;
     }
-    if (result == null) {
+    String snippetInputName = template.getSnippetFiles(snippetIndex);
+    SnippetDescriptor resourceDescriptor = new SnippetDescriptor(snippetInputName);
+
+    Map<ProtoElement, GeneratedResult> output =
+        CodeGenerator.create(config, template, model).generate(resourceDescriptor);
+    if (output == null) {
       // Report diagnosis to baseline file.
       for (Diag diag : model.getDiags()) {
         testOutput().println(diag.toString());
       }
-      return null;
     }
-    return result;
+
+    Map<ProtoElement, GeneratedResult> result = new TreeMap<>(new ProtoElementComparator());
+    result.putAll(output);
+
+    return new ArrayList<GeneratedResult>(result.values());
   }
 
   @Override
   protected Object run() {
-    GeneratedResult result = generateForSnippet(0);
+    List<GeneratedResult> result = generateForTemplate(0, 0);
     Truth.assertThat(result).isNotNull();
-    return result.getDoc();
+    return result.get(0).getDoc();
   }
 }

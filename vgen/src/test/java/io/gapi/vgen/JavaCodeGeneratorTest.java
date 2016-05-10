@@ -29,8 +29,13 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class JavaCodeGeneratorTest extends CodeGeneratorTestBase {
 
-  public JavaCodeGeneratorTest(String name, String[] gapicConfigFileNames, String snippetName) {
-    super(name, gapicConfigFileNames, snippetName);
+  public JavaCodeGeneratorTest(
+      String name,
+      String[] gapicConfigFileNames,
+      String providerName,
+      String viewName,
+      String snippetName) {
+    super(name, gapicConfigFileNames, providerName, viewName, snippetName);
     getTestDataLocator().addTestDataSource(io.gapi.vgen.java.JavaGapicContext.class, "");
   }
 
@@ -42,10 +47,18 @@ public class JavaCodeGeneratorTest extends CodeGeneratorTestBase {
   public static List<Object[]> testedConfigs() {
     return ImmutableList.of(
         new Object[] {
-          "java_main", new String[] {"java_gapic.yaml", "library_gapic.yaml"}, "main.snip"
+          "java_main",
+          new String[] {"java_gapic.yaml", "library_gapic.yaml"},
+          "io.gapi.vgen.java.JavaGapicLanguageProvider",
+          "io.gapi.vgen.InterfaceView",
+          "main.snip"
         },
         new Object[] {
-          "java_settings", new String[] {"java_gapic.yaml", "library_gapic.yaml"}, "settings.snip"
+          "java_settings",
+          new String[] {"java_gapic.yaml", "library_gapic.yaml"},
+          "io.gapi.vgen.java.JavaGapicLanguageProvider",
+          "io.gapi.vgen.InterfaceView",
+          "settings.snip"
         });
   }
 

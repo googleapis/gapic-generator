@@ -31,7 +31,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -47,21 +46,27 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
   private final String name;
   private final String discoveryDocFileName;
   private final String[] gapicConfigFileNames;
+  private final String gapicLanguageProviderName;
   private final String snippetName;
   protected ConfigProto config;
   protected DiscoveryImporter discoveryImporter;
 
   public DiscoveryGeneratorTestBase(
-      String name, String discoveryDocFileName, String[] gapicConfigFileNames, String snippetName) {
+      String name,
+      String discoveryDocFileName,
+      String[] gapicConfigFileNames,
+      String gapicLanguageProviderName,
+      String snippetName) {
     this.name = name;
     this.discoveryDocFileName = discoveryDocFileName;
     this.gapicConfigFileNames = gapicConfigFileNames;
+    this.gapicLanguageProviderName = gapicLanguageProviderName;
     this.snippetName = snippetName;
   }
 
   public DiscoveryGeneratorTestBase(
       String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
-    this(name, discoveryDocFileName, gapicConfigFileNames, null);
+    this(name, discoveryDocFileName, gapicConfigFileNames, null, null);
   }
 
   protected void setupDiscovery() {
@@ -138,10 +143,15 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
       return null;
     }
 
-    if (snippetName != null) {
+    // TODO: this has exactly the same pattern as GeneratorTestBase; opportunity to refactor
+    if (gapicLanguageProviderName != null && snippetName != null) {
       // Filtering can be made more sophisticated later if required
-      configProto =
-          configProto.toBuilder().clearSnippetFiles().addSnippetFiles(snippetName).build();
+      TemplateProto template =
+          TemplateProto.newBuilder()
+              .setLanguageProvider(gapicLanguageProviderName)
+              .addSnippetFiles(snippetName)
+              .build();
+      configProto = configProto.toBuilder().clearTemplates().addTemplates(template).build();
     }
 
     return configProto;

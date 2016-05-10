@@ -29,8 +29,13 @@ import java.util.List;
 @RunWith(Parameterized.class)
 public class CSharpCodeGeneratorTest extends CodeGeneratorTestBase {
 
-  public CSharpCodeGeneratorTest(String name, String[] gapicConfigFileNames, String snippetName) {
-    super(name, gapicConfigFileNames, snippetName);
+  public CSharpCodeGeneratorTest(
+      String name,
+      String[] gapicConfigFileNames,
+      String providerName,
+      String viewName,
+      String snippetName) {
+    super(name, gapicConfigFileNames, providerName, viewName, snippetName);
     getTestDataLocator().addTestDataSource(io.gapi.vgen.csharp.CSharpGapicContext.class, "");
   }
 
@@ -46,7 +51,11 @@ public class CSharpCodeGeneratorTest extends CodeGeneratorTestBase {
     // append to list values.)
     return ImmutableList.of(
         new Object[] {
-          "csharp_wrapper", new String[] {"library_gapic.yaml", "csharp_gapic.yaml"}, "wrapper.snip"
+          "csharp_wrapper",
+          new String[] {"library_gapic.yaml", "csharp_gapic.yaml"},
+          "io.gapi.vgen.csharp.CSharpGapicLanguageProvider",
+          "io.gapi.vgen.csharp.CSharpInterfaceView",
+          "wrapper.snip"
         });
   }
 

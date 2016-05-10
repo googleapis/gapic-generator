@@ -14,24 +14,15 @@
  */
 package io.gapi.vgen;
 
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.MessageType;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoFile;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
-import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -40,14 +31,16 @@ import javax.annotation.Nullable;
  */
 public class CodeGenerator {
 
-  private final GapicLanguageProvider provider;
+  private final GapicLanguageProvider<ProtoElement> provider;
 
-  public CodeGenerator(GapicLanguageProvider provider) {
+  public CodeGenerator(GapicLanguageProvider<ProtoElement> provider) {
     this.provider = Preconditions.checkNotNull(provider);
   }
 
-  public static CodeGenerator create(ConfigProto configProto, Model model) {
-    return new CodeGenerator(GeneratorBuilderUtil.createLanguageProvider(configProto, model));
+  public static CodeGenerator create(ConfigProto configProto, TemplateProto template, Model model) {
+    InputElementView<ProtoElement> view = GeneratorBuilderUtil.createView(template, model);
+    return new CodeGenerator(
+        GeneratorBuilderUtil.createLanguageProvider(configProto, template, model, view));
   }
 
   /**
@@ -55,7 +48,9 @@ public class CodeGenerator {
    * Returns null if generation failed.
    */
   @Nullable
-  public Map<Interface, GeneratedResult> generate(SnippetDescriptor snippetDescriptor) {
+  public Map<ProtoElement, GeneratedResult> generate(SnippetDescriptor snippetDescriptor) {
+    Iterable<ProtoElement> elements = provider.getView().getElementIterable(provider.getModel());
+
     // Establish required stage for generation.
     provider.getModel().establishStage(Merged.KEY);
     if (provider.getModel().getErrorCount() > 0) {
@@ -63,13 +58,13 @@ public class CodeGenerator {
     }
 
     // Run the generator for each service.
-    ImmutableMap.Builder<Interface, GeneratedResult> generated = ImmutableMap.builder();
-    for (Interface iface : provider.getModel().getSymbolTable().getInterfaces()) {
-      if (!iface.isReachable()) {
+    ImmutableMap.Builder<ProtoElement, GeneratedResult> generated = ImmutableMap.builder();
+    for (ProtoElement element : elements) {
+      if (!element.isReachable()) {
         continue;
       }
-      GeneratedResult result = provider.generateCode(iface, snippetDescriptor);
-      generated.put(iface, result);
+      GeneratedResult result = provider.generate(element, snippetDescriptor);
+      generated.put(element, result);
     }
 
     // Return result.
@@ -79,43 +74,9 @@ public class CodeGenerator {
     return generated.build();
   }
 
-  @Nullable
-  public Map<String, GeneratedResult> generateDocs(SnippetDescriptor snippetDescriptor) {
-    Set<ProtoFile> files = new HashSet<ProtoFile>();
-    for (Interface iface : provider.getModel().getSymbolTable().getInterfaces()) {
-      for (Method method : iface.getMethods()) {
-        for (Field field : method.getInputType().getMessageType().getFields()) {
-          files.addAll(protoFiles(field));
-        }
-      }
-    }
-    Map<String, GeneratedResult> generated = new HashMap();
-    for (ProtoFile file : files) {
-      GeneratedResult result = provider.generateDoc(file, snippetDescriptor);
-      generated.put(result.getFilename(), result);
-    }
-    if (provider.getModel().getErrorCount() > 0) {
-      return null;
-    }
-    return generated;
-  }
-
-  private Set<ProtoFile> protoFiles(Field field) {
-    Set<ProtoFile> fields = new HashSet<ProtoFile>();
-    if (field.getType().getKind() != Type.TYPE_MESSAGE) {
-      return fields;
-    }
-    MessageType messageType = field.getType().getMessageType();
-    fields.add(messageType.getFile());
-    for (Field f : messageType.getNonCyclicFields()) {
-      fields.addAll(protoFiles(f));
-    }
-    return fields;
-  }
-
   /**
    * Delegates creating code to language provider. Takes the result list from
-   * {@link GapicLanguageProvider#outputCode(String, List)} and stores it in a language-specific
+   * {@link GapicLanguageProvider#output(String, Multimap)} and stores it in a language-specific
    * way.
    */
   public <Element> void output(String outputFile, Multimap<Element, GeneratedResult> results)

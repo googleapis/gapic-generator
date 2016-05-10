@@ -35,7 +35,7 @@ public abstract class DiscoveryFragmentGeneratorTestBase extends DiscoveryGenera
 
   @Override
   protected Object run() {
-    String snippetInputName = config.getFragmentFilesList().get(0);
+    String snippetInputName = config.getTemplates(0).getSnippetFiles(0);
     SnippetDescriptor resourceDescriptor = new SnippetDescriptor(snippetInputName);
     Map<Method, GeneratedResult> result =
         DiscoveryFragmentGenerator.create(config, discoveryImporter)

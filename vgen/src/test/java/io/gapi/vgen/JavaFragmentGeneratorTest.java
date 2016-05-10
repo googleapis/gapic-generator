@@ -43,7 +43,7 @@ public class JavaFragmentGeneratorTest extends FragmentGeneratorTestBase {
         new Object[] {
           "java_fragments",
           new String[] {
-            "io/gapi/vgen/java/java_gapic.yaml", "library_gapic.yaml",
+            "io/gapi/vgen/java/java_gapic_fragment.yaml", "library_gapic.yaml",
           }
         });
   }

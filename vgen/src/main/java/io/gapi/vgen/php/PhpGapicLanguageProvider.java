@@ -14,15 +14,14 @@
  */
 package io.gapi.vgen.php;
 
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoFile;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.collect.Multimap;
 
 import io.gapi.vgen.ApiConfig;
 import io.gapi.vgen.GapicLanguageProvider;
 import io.gapi.vgen.GeneratedResult;
+import io.gapi.vgen.InputElementView;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
@@ -30,14 +29,18 @@ import java.io.IOException;
 /**
  * The LanguageProvider which runs Gapic code generation for PHP.
  */
-public class PhpGapicLanguageProvider implements GapicLanguageProvider {
+public class PhpGapicLanguageProvider<InputElementT extends ProtoElement>
+    implements GapicLanguageProvider<InputElementT> {
 
   private final PhpGapicContext context;
   private final PhpLanguageProvider provider;
+  private InputElementView<InputElementT> view;
 
-  public PhpGapicLanguageProvider(Model model, ApiConfig apiConfig) {
+  public PhpGapicLanguageProvider(
+      Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
     this.context = new PhpGapicContext(model, apiConfig);
     this.provider = new PhpLanguageProvider();
+    this.view = view;
   }
 
   @Override
@@ -53,17 +56,12 @@ public class PhpGapicLanguageProvider implements GapicLanguageProvider {
   }
 
   @Override
-  public GeneratedResult generateDoc(ProtoFile file, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(file, snippetDescriptor, context);
+  public GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor) {
+    return provider.generate(element, snippetDescriptor, context);
   }
 
   @Override
-  public GeneratedResult generateCode(Interface service, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(service, snippetDescriptor, context);
-  }
-
-  @Override
-  public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(method, snippetDescriptor, context);
+  public InputElementView<InputElementT> getView() {
+    return view;
   }
 }

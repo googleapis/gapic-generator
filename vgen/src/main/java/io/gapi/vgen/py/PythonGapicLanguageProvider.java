@@ -14,19 +14,17 @@
  */
 package io.gapi.vgen.py;
 
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoFile;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolUtil;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 
 import io.gapi.vgen.ApiConfig;
 import io.gapi.vgen.GapicLanguageProvider;
 import io.gapi.vgen.GeneratedResult;
+import io.gapi.vgen.InputElementView;
 import io.gapi.vgen.SnippetDescriptor;
 
 import java.io.IOException;
@@ -36,14 +34,20 @@ import java.util.Map;
 /**
  * The LanguageProvider which runs Gapic code generation for Python.
  */
-public class PythonGapicLanguageProvider implements GapicLanguageProvider {
+public class PythonGapicLanguageProvider<InputElementT extends ProtoElement>
+    implements GapicLanguageProvider<InputElementT> {
 
   private final PythonGapicContext context;
   private final PythonLanguageProvider provider;
+  private final PythonInputElementView<InputElementT> view;
 
-  public PythonGapicLanguageProvider(Model model, ApiConfig apiConfig) {
+  @SuppressWarnings("unchecked")
+  public PythonGapicLanguageProvider(
+      Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
     this.context = new PythonGapicContext(model, apiConfig);
     this.provider = new PythonLanguageProvider();
+    // This cast will fail if the view specified in the configuration file is of the wrong type
+    this.view = (PythonInputElementView<InputElementT>) view;
   }
 
   @Override
@@ -71,44 +75,18 @@ public class PythonGapicLanguageProvider implements GapicLanguageProvider {
   }
 
   @Override
-  public GeneratedResult generateDoc(ProtoFile file, SnippetDescriptor snippetDescriptor) {
-    ImmutableMap<String, Object> globalMap = ImmutableMap.of("file", (Object) file);
+  public GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor) {
     return provider.generate(
-        file, snippetDescriptor, context, new PythonImportHandler(file), globalMap, "");
+        element,
+        snippetDescriptor,
+        context,
+        view.getImportHandler(element, context),
+        view.getGlobalMap(element),
+        view.getPathPrefix(context));
   }
 
   @Override
-  public GeneratedResult generateCode(Interface service, SnippetDescriptor snippetDescriptor) {
-    ImmutableMap<String, Object> globalMap =
-        ImmutableMap.of("pyproto", (Object) new PythonProtoElements());
-    return provider.generate(
-        service,
-        snippetDescriptor,
-        context,
-        new PythonImportHandler(service, context.getApiConfig().getInterfaceConfig(service)),
-        globalMap,
-        packagePathPrefix());
-  }
-
-  @Override
-  public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor) {
-    ImmutableMap<String, Object> globalMap =
-        ImmutableMap.of("pyproto", (Object) new PythonProtoElements());
-    return provider.generate(
-        method,
-        snippetDescriptor,
-        context,
-        new PythonImportHandler(method.getParent().getFile()),
-        globalMap,
-        packagePathPrefix());
-  }
-
-  private String packagePathPrefix() {
-    String packageName = context.getApiConfig().getPackageName();
-    if (Strings.isNullOrEmpty(packageName)) {
-      return "";
-    } else {
-      return packageName.replace('.', '/') + "/";
-    }
+  public InputElementView<InputElementT> getView() {
+    return view;
   }
 }
