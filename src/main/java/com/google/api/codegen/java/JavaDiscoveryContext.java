@@ -109,9 +109,6 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
 
   private JavaContextCommon javaCommon;
 
-  /**
-   * Constructs an instance.
-   */
   public JavaDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
     super(service, apiaryConfig);
   }

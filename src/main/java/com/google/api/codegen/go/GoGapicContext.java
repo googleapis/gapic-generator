@@ -100,9 +100,6 @@ public class GoGapicContext extends GapicContext implements GoContext {
 
   private final GoContextCommon goCommon;
 
-  /**
-   * Constructs an instance.
-   */
   public GoGapicContext(Model model, ApiConfig apiConfig) {
     super(model, apiConfig);
     this.goCommon = new GoContextCommon();

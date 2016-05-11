@@ -23,9 +23,6 @@ import com.google.api.codegen.DiscoveryContext;
  */
 public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext {
 
-  /**
-   * Constructs the PHP discovery context.
-   */
   public PhpDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
     super(service, apiaryConfig);
   }

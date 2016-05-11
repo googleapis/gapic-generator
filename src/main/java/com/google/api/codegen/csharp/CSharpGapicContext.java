@@ -88,9 +88,6 @@ public class CSharpGapicContext extends GapicContext {
 
   private CSharpContextCommon csharpCommon;
 
-  /**
-   * Constructs an instance.
-   */
   public CSharpGapicContext(Model model, ApiConfig config) {
     super(model, config);
   }

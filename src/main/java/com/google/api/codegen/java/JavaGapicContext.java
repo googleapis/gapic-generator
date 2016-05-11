@@ -92,9 +92,6 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
   private JavaContextCommon javaCommon;
   private JavaSnippetSet<?> javaSnippetSet;
 
-  /**
-   * Constructs an instance.
-   */
   public JavaGapicContext(Model model, ApiConfig apiConfig) {
     super(model, apiConfig);
   }
