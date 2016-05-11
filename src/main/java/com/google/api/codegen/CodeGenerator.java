@@ -31,16 +31,16 @@ import javax.annotation.Nullable;
  */
 public class CodeGenerator {
 
-  private final GapicLanguageProvider<ProtoElement> provider;
+  private final GapicProvider<ProtoElement> provider;
 
-  public CodeGenerator(GapicLanguageProvider<ProtoElement> provider) {
+  public CodeGenerator(GapicProvider<ProtoElement> provider) {
     this.provider = Preconditions.checkNotNull(provider);
   }
 
   public static CodeGenerator create(ConfigProto configProto, TemplateProto template, Model model) {
     InputElementView<ProtoElement> view = GeneratorBuilderUtil.createView(template, model);
     return new CodeGenerator(
-        GeneratorBuilderUtil.createLanguageProvider(configProto, template, model, view));
+        GeneratorBuilderUtil.createCodegenProvider(configProto, template, model, view));
   }
 
   /**
@@ -75,8 +75,8 @@ public class CodeGenerator {
   }
 
   /**
-   * Delegates creating code to language provider. Takes the result list from
-   * {@link GapicLanguageProvider#output(String, Multimap)} and stores it in a language-specific
+   * Delegates creating code to codegen provider. Takes the result list from
+   * {@link GapicProvider#output(String, Multimap)} and stores it in a language-specific
    * way.
    */
   public <Element> void output(String outputFile, Multimap<Element, GeneratedResult> results)

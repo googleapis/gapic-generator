@@ -49,14 +49,14 @@ public class JavaCodeGeneratorTest extends CodeGeneratorTestBase {
         new Object[] {
           "java_main",
           new String[] {"java_gapic.yaml", "library_gapic.yaml"},
-          "com.google.api.codegen.java.JavaGapicLanguageProvider",
+          "com.google.api.codegen.java.JavaGapicProvider",
           "com.google.api.codegen.InterfaceView",
           "main.snip"
         },
         new Object[] {
           "java_settings",
           new String[] {"java_gapic.yaml", "library_gapic.yaml"},
-          "com.google.api.codegen.java.JavaGapicLanguageProvider",
+          "com.google.api.codegen.java.JavaGapicProvider",
           "com.google.api.codegen.InterfaceView",
           "settings.snip"
         });

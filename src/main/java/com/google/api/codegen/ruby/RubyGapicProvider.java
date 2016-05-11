@@ -12,33 +12,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.java;
+package com.google.api.codegen.ruby;
 
 import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.GapicLanguageProvider;
+import com.google.api.codegen.GapicProvider;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.InputElementView;
 import com.google.api.codegen.SnippetDescriptor;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Multimap;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
- * The LanguageProvider which runs Gapic code generation for Java.
+ * The GapicProvider which runs Gapic code generation for Ruby.
  */
-public class JavaGapicLanguageProvider<InputElementT extends ProtoElement>
-    implements GapicLanguageProvider<InputElementT> {
+public class RubyGapicProvider<InputElementT extends ProtoElement>
+    implements GapicProvider<InputElementT> {
 
-  private final JavaGapicContext context;
-  private final JavaLanguageProvider provider;
+  private final RubyGapicContext context;
+  private final RubyProvider provider;
   private InputElementView<InputElementT> view;
 
-  public JavaGapicLanguageProvider(
+  public RubyGapicProvider(
       Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
-    this.context = new JavaGapicContext(model, apiConfig);
-    this.provider = new JavaLanguageProvider();
+    this.context = new RubyGapicContext(model, apiConfig);
+    this.provider = new RubyProvider();
     this.view = view;
   }
 
@@ -47,20 +49,29 @@ public class JavaGapicLanguageProvider<InputElementT extends ProtoElement>
     return context.getModel();
   }
 
-  @Override
-  public <Element> void output(String outputPath, Multimap<Element, GeneratedResult> elements)
-      throws IOException {
-    String root = context.getApiConfig().getPackageName().replace('.', '/');
-    provider.output(root, outputPath, elements);
+  String getPackageRoot() {
+    ArrayList<String> dirs = new ArrayList<>();
+    for (String moduleName : context.getApiConfig().getPackageName().split("::")) {
+      dirs.add(moduleName.toLowerCase());
+    }
+    return Joiner.on("/").join(dirs);
   }
 
   @Override
-  public InputElementView<InputElementT> getView() {
-    return view;
+  public <Element> void output(
+      String outputPath, Multimap<Element, GeneratedResult> elements)
+      throws IOException {
+    String packageRoot = getPackageRoot();
+    provider.output("lib/" + packageRoot, outputPath, elements);
   }
 
   @Override
   public GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor) {
     return provider.generate(element, snippetDescriptor, context);
+  }
+
+  @Override
+  public InputElementView<InputElementT> getView() {
+    return view;
   }
 }

@@ -53,7 +53,7 @@ public class CSharpCodeGeneratorTest extends CodeGeneratorTestBase {
         new Object[] {
           "csharp_wrapper",
           new String[] {"library_gapic.yaml", "csharp_gapic.yaml"},
-          "com.google.api.codegen.csharp.CSharpGapicLanguageProvider",
+          "com.google.api.codegen.csharp.CSharpGapicProvider",
           "com.google.api.codegen.csharp.CSharpInterfaceView",
           "wrapper.snip"
         });

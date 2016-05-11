@@ -16,7 +16,7 @@ package com.google.api.codegen.java;
 
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.DiscoveryLanguageProvider;
+import com.google.api.codegen.DiscoveryProvider;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetDescriptor;
 import com.google.common.collect.Multimap;
@@ -26,15 +26,15 @@ import com.google.protobuf.Method;
 import java.io.IOException;
 
 /**
- * A DiscoveryLanguageProvider for generating Java fragments.
+ * A DiscoveryProvider for generating Java fragments.
  */
-public class JavaDiscoveryLanguageProvider implements DiscoveryLanguageProvider {
+public class JavaDiscoveryProvider implements DiscoveryProvider {
   private final JavaDiscoveryContext context;
-  private final JavaLanguageProvider provider;
+  private final JavaProvider provider;
 
-  public JavaDiscoveryLanguageProvider(Service service, ApiaryConfig apiaryConfig) {
+  public JavaDiscoveryProvider(Service service, ApiaryConfig apiaryConfig) {
     this.context = new JavaDiscoveryContext(service, apiaryConfig);
-    this.provider = new JavaLanguageProvider();
+    this.provider = new JavaProvider();
   }
 
   @Override

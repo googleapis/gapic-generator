@@ -16,7 +16,7 @@ package com.google.api.codegen.php;
 
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.DiscoveryLanguageProvider;
+import com.google.api.codegen.DiscoveryProvider;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetDescriptor;
 import com.google.common.collect.Multimap;
@@ -26,15 +26,15 @@ import com.google.protobuf.Method;
 import java.io.IOException;
 
 /**
- * Language provider for PHP discovery doc codegen.
+ * DiscoveryProvider for PHP discovery doc codegen.
  */
-public class PhpDiscoveryLanguageProvider implements DiscoveryLanguageProvider {
+public class PhpDiscoveryProvider implements DiscoveryProvider {
   private final PhpDiscoveryContext context;
-  private final PhpLanguageProvider provider;
+  private final PhpProvider provider;
 
-  public PhpDiscoveryLanguageProvider(Service service, ApiaryConfig apiaryConfig) {
+  public PhpDiscoveryProvider(Service service, ApiaryConfig apiaryConfig) {
     this.context = new PhpDiscoveryContext(service, apiaryConfig);
-    this.provider = new PhpLanguageProvider();
+    this.provider = new PhpProvider();
   }
 
   @Override

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.csharp;
+package com.google.api.codegen.py;
 
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetDescriptor;
@@ -20,45 +20,46 @@ import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 
-import java.util.TreeSet;
+import java.util.List;
 
 /**
- * A CSharpLanguageProvider provides general CSharp code generation logic.
+ * A PythonProvider provides general Python code generation logic.
  */
-public class CSharpLanguageProvider {
+public class PythonProvider {
 
   /**
    * The path to the root of snippet resources.
    */
-  private static final String SNIPPET_RESOURCE_ROOT =
-      CSharpContextCommon.class.getPackage().getName().replace('.', '/');
+  static final String SNIPPET_RESOURCE_ROOT =
+      PythonContextCommon.class.getPackage().getName().replace('.', '/');
 
   @SuppressWarnings("unchecked")
   public <Element> GeneratedResult generate(
       Element element,
       SnippetDescriptor snippetDescriptor,
-      CSharpGapicContext context,
-      String serviceNamespace) {
-    CSharpSnippetSet<Element> snippets =
+      PythonGapicContext context,
+      PythonImportHandler importHandler,
+      ImmutableMap<String, Object> globalMap,
+      String pathPrefix) {
+    globalMap =
+        ImmutableMap.<String, Object>builder()
+            .putAll(globalMap)
+            .put("context", context)
+            .put("importHandler", importHandler)
+            .build();
+
+    PythonSnippetSet<Element> snippets =
         SnippetSet.createSnippetInterface(
-            CSharpSnippetSet.class,
+            PythonSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
             snippetDescriptor.getSnippetInputName(),
-            ImmutableMap.<String, Object>of("context", context));
+            globalMap);
 
-    String outputFilename = snippets.generateFilename(element).prettyPrint();
-
-    CSharpContextCommon csharpCommon = new CSharpContextCommon(serviceNamespace);
-    context.resetState(csharpCommon);
-
-    // Generate the body, which will collect the imports.
-    // Note that generateBody populates imports.
-    Doc body = snippets.generateBody(element);
-
-    TreeSet<String> imports = csharpCommon.getImports();
-
+    Doc filenameDoc = snippets.generateFilename(element);
+    String outputFilename = filenameDoc.prettyPrint();
+    List<String> importList = importHandler.calculateImports();
     // Generate result.
-    Doc result = snippets.generateClass(element, body, imports);
-    return GeneratedResult.create(result, outputFilename);
+    Doc result = snippets.generateClass(element, importList);
+    return GeneratedResult.create(result, pathPrefix + outputFilename);
   }
 }

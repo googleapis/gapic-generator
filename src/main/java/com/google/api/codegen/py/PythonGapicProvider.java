@@ -15,7 +15,7 @@
 package com.google.api.codegen.py;
 
 import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.GapicLanguageProvider;
+import com.google.api.codegen.GapicProvider;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.InputElementView;
 import com.google.api.codegen.SnippetDescriptor;
@@ -31,20 +31,20 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * The LanguageProvider which runs Gapic code generation for Python.
+ * The GapicProvider which runs Gapic code generation for Python.
  */
-public class PythonGapicLanguageProvider<InputElementT extends ProtoElement>
-    implements GapicLanguageProvider<InputElementT> {
+public class PythonGapicProvider<InputElementT extends ProtoElement>
+    implements GapicProvider<InputElementT> {
 
   private final PythonGapicContext context;
-  private final PythonLanguageProvider provider;
+  private final PythonProvider provider;
   private final PythonInputElementView<InputElementT> view;
 
   @SuppressWarnings("unchecked")
-  public PythonGapicLanguageProvider(
+  public PythonGapicProvider(
       Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
     this.context = new PythonGapicContext(model, apiConfig);
-    this.provider = new PythonLanguageProvider();
+    this.provider = new PythonProvider();
     // This cast will fail if the view specified in the configuration file is of the wrong type
     this.view = (PythonInputElementView<InputElementT>) view;
   }

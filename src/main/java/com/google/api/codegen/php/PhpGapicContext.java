@@ -28,6 +28,9 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
 
   private PhpContextCommon phpCommon;
 
+  /**
+   * Constructs an instance.
+   */
   public PhpGapicContext(Model model, ApiConfig apiConfig) {
     super(model, apiConfig);
   }

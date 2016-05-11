@@ -15,7 +15,7 @@
 package com.google.api.codegen.csharp;
 
 import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.GapicLanguageProvider;
+import com.google.api.codegen.GapicProvider;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.InputElementView;
 import com.google.api.codegen.SnippetDescriptor;
@@ -32,19 +32,19 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * The LanguageProvider which runs Gapic code generation for C#.
+ * The GapicProvider which runs Gapic code generation for C#.
  */
-public class CSharpGapicLanguageProvider<InputElementT extends ProtoElement>
-    implements GapicLanguageProvider<InputElementT> {
+public class CSharpGapicProvider<InputElementT extends ProtoElement>
+    implements GapicProvider<InputElementT> {
 
   private final CSharpGapicContext context;
-  private final CSharpLanguageProvider provider;
+  private final CSharpProvider provider;
   private final CSharpProtoElementView<InputElementT> view;
 
-  public CSharpGapicLanguageProvider(
+  public CSharpGapicProvider(
       Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
     this.context = new CSharpGapicContext(model, apiConfig);
-    this.provider = new CSharpLanguageProvider();
+    this.provider = new CSharpProvider();
     // This cast will fail if the view specified in the configuration file is of the wrong type
     this.view = (CSharpProtoElementView<InputElementT>) view;
   }

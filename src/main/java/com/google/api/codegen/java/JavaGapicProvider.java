@@ -12,10 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.php;
+package com.google.api.codegen.java;
 
 import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.GapicLanguageProvider;
+import com.google.api.codegen.GapicProvider;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.InputElementView;
 import com.google.api.codegen.SnippetDescriptor;
@@ -26,19 +26,19 @@ import com.google.common.collect.Multimap;
 import java.io.IOException;
 
 /**
- * The LanguageProvider which runs Gapic code generation for PHP.
+ * The GapicProvider which runs Gapic code generation for Java.
  */
-public class PhpGapicLanguageProvider<InputElementT extends ProtoElement>
-    implements GapicLanguageProvider<InputElementT> {
+public class JavaGapicProvider<InputElementT extends ProtoElement>
+    implements GapicProvider<InputElementT> {
 
-  private final PhpGapicContext context;
-  private final PhpLanguageProvider provider;
+  private final JavaGapicContext context;
+  private final JavaProvider provider;
   private InputElementView<InputElementT> view;
 
-  public PhpGapicLanguageProvider(
+  public JavaGapicProvider(
       Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
-    this.context = new PhpGapicContext(model, apiConfig);
-    this.provider = new PhpLanguageProvider();
+    this.context = new JavaGapicContext(model, apiConfig);
+    this.provider = new JavaProvider();
     this.view = view;
   }
 
@@ -48,19 +48,19 @@ public class PhpGapicLanguageProvider<InputElementT extends ProtoElement>
   }
 
   @Override
-  public <Element> void output(
-      String outputPath, Multimap<Element, GeneratedResult> elements)
+  public <Element> void output(String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
-    provider.output("", outputPath, elements);
-  }
-
-  @Override
-  public GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(element, snippetDescriptor, context);
+    String root = context.getApiConfig().getPackageName().replace('.', '/');
+    provider.output(root, outputPath, elements);
   }
 
   @Override
   public InputElementView<InputElementT> getView() {
     return view;
+  }
+
+  @Override
+  public GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor) {
+    return provider.generate(element, snippetDescriptor, context);
   }
 }

@@ -25,19 +25,19 @@ import java.io.IOException;
  */
 public class FragmentGenerator {
 
-  private final GapicLanguageProvider<Method> provider;
+  private final GapicProvider<Method> provider;
 
-  public FragmentGenerator(GapicLanguageProvider<Method> provider) {
+  public FragmentGenerator(GapicProvider<Method> provider) {
     this.provider = Preconditions.checkNotNull(provider);
   }
 
-  public static FragmentGenerator create(GapicLanguageProvider<Method> provider) {
+  public static FragmentGenerator create(GapicProvider<Method> provider) {
     return new FragmentGenerator(provider);
   }
 
   /**
-   * Delegates creating fragments to language provider. Takes the result map from
-   * {@link GapicLanguageProvider#output} and stores it in a language-specific way.
+   * Delegates creating fragments to the codegen provider. Takes the result map from
+   * {@link GapicProvider#output} and stores it in a language-specific way.
    */
   public void outputFragments(String outputFile, Multimap<Method, GeneratedResult> methods)
       throws IOException {

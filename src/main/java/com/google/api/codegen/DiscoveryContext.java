@@ -16,7 +16,6 @@ package com.google.api.codegen;
 
 import com.google.api.Service;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Api;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
@@ -35,7 +34,7 @@ public abstract class DiscoveryContext extends LanguageContext {
   private final ApiaryConfig apiaryConfig;
 
   /**
-   * Constructs the abstract instance of the language provider.
+   * Constructs an abstract instance.
    */
   protected DiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
     this.service = Preconditions.checkNotNull(service);

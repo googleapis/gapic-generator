@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.php;
+package com.google.api.codegen.go;
 
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetDescriptor;
@@ -24,59 +24,43 @@ import com.google.common.collect.Multimap;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
- * A PhpLanguageProvider provides general PHP code generation logic that is agnostic to the use
- * case (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
- * PHP context class (PhpGapicContext vs PhpDiscoveryContext).
+ * A GoProvider provides general Go code generation logic.
  */
-public class PhpLanguageProvider {
+public class GoProvider {
 
   /**
    * The path to the root of snippet resources.
    */
   private static final String SNIPPET_RESOURCE_ROOT =
-      PhpLanguageProvider.class.getPackage().getName().replace('.', '/');
+      GoContextCommon.class.getPackage().getName().replace('.', '/');
 
-  public <Element> void output(
-      String root, String outputPath, Multimap<Element, GeneratedResult> elements)
+  public <Element> void output(String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
     for (GeneratedResult generatedResult : elements.values()) {
-      files.put(root + "/" + generatedResult.getFilename(), generatedResult.getDoc());
+      files.put(generatedResult.getFilename(), generatedResult.getDoc());
     }
     ToolUtil.writeFiles(files, outputPath);
   }
 
   @SuppressWarnings("unchecked")
   public <Element> GeneratedResult generate(
-      Element element,
-      SnippetDescriptor snippetDescriptor,
-      PhpContext context,
-      String defaultPackagePrefix) {
-    PhpSnippetSet<Element> snippets =
+      Element element, SnippetDescriptor snippetDescriptor, GoContext context) {
+    GoSnippetSet<Element> snippets =
         SnippetSet.createSnippetInterface(
-            PhpSnippetSet.class,
+            GoSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
             snippetDescriptor.getSnippetInputName(),
             ImmutableMap.<String, Object>of("context", context));
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
-    PhpContextCommon phpContextCommon = new PhpContextCommon();
-    context.resetState(snippets, phpContextCommon);
 
     Doc body = snippets.generateBody(element);
 
-    List<String> cleanedImports = phpContextCommon.getImports();
-
-    Doc result = snippets.generateClass(element, body, cleanedImports);
+    Doc result = snippets.generateClass(element, body);
     return GeneratedResult.create(result, outputFilename);
-  }
-
-  public <Element> GeneratedResult generate(
-      Element element, SnippetDescriptor snippetDescriptor, PhpContext context) {
-    return generate(element, snippetDescriptor, context, null);
   }
 }

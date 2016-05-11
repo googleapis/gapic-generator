@@ -14,33 +14,21 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoElement;
+import com.google.api.Service;
 import com.google.common.collect.Multimap;
+import com.google.protobuf.Method;
 
 import java.io.IOException;
 
 /**
- * A GapicLanguageProvider performs code or fragment generation using on a proto-based Model for a
- * particular language.
+ * A DiscoveryProvider performs fragment generation using discovery-based input.
  */
-public interface GapicLanguageProvider<InputElementT extends ProtoElement> {
+public interface DiscoveryProvider {
 
-  Model getModel();
+  public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor);
 
-  /**
-   * Gets the view of the model.
-   */
-  public InputElementView<InputElementT> getView();
-
-  /**
-   * Runs code generation.
-   */
-  GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor);
-
-  /**
-   * Outputs the given elements to the given output path.
-   */
-  <Element> void output(String outputPath, Multimap<Element, GeneratedResult> elements)
+  public void output(String outputPath, Multimap<Method, GeneratedResult> methods)
       throws IOException;
+
+  public Service getService();
 }

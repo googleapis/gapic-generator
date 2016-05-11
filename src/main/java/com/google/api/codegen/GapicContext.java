@@ -32,7 +32,7 @@ public class GapicContext extends LanguageContext {
   private final ServiceConfig serviceConfig;
 
   /**
-   * Constructs the abstract instance of the language provider.
+   * Constructs the abstract instance.
    */
   protected GapicContext(Model model, ApiConfig apiConfig) {
     this.model = Preconditions.checkNotNull(model);

@@ -41,7 +41,7 @@ public abstract class GeneratorTestBase extends ConfigBaselineTestCase {
 
   private final String name;
   private final String[] gapicConfigFileNames;
-  private final String gapicLanguageProviderName;
+  private final String gapicProviderName;
   private final String snippetName;
   private String viewName;
   protected ConfigProto config;
@@ -49,12 +49,12 @@ public abstract class GeneratorTestBase extends ConfigBaselineTestCase {
   public GeneratorTestBase(
       String name,
       String[] gapicConfigFileNames,
-      String gapicLanguageProviderName,
+      String gapicProviderName,
       String viewName,
       String snippetName) {
     this.name = name;
     this.gapicConfigFileNames = gapicConfigFileNames;
-    this.gapicLanguageProviderName = gapicLanguageProviderName;
+    this.gapicProviderName = gapicProviderName;
     this.viewName = viewName;
     this.snippetName = snippetName;
   }
@@ -115,11 +115,11 @@ public abstract class GeneratorTestBase extends ConfigBaselineTestCase {
     ConfigProto configProto =
         (ConfigProto) MultiYamlReader.read(model, inputNames, inputs, supportedConfigTypes);
 
-    if (gapicLanguageProviderName != null && snippetName != null && viewName != null) {
+    if (gapicProviderName != null && snippetName != null && viewName != null) {
       // Filtering can be made more sophisticated later if required
       TemplateProto template =
           TemplateProto.newBuilder()
-              .setLanguageProvider(gapicLanguageProviderName)
+              .setCodegenProvider(gapicProviderName)
               .setInputElementView(viewName)
               .addSnippetFiles(snippetName)
               .build();

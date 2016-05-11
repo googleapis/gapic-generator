@@ -12,14 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.go;
+package com.google.api.codegen.nodejs;
 
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetDescriptor;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.api.tools.framework.tools.ToolUtil;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 
@@ -28,40 +27,48 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * A GoLanguageProvider provides general Go code generation logic.
+ * A NodeJSProvider provides general NodeJS code generation logic that is agnostic to the use
+ * case (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
+ * subclass of NodeJSContext.
  */
-public class GoLanguageProvider {
+public class NodeJSProvider {
 
   /**
    * The path to the root of snippet resources.
    */
   private static final String SNIPPET_RESOURCE_ROOT =
-      GoContextCommon.class.getPackage().getName().replace('.', '/');
+      NodeJSProvider.class.getPackage().getName().replace('.', '/');
 
-  public <Element> void output(String outputPath, Multimap<Element, GeneratedResult> elements)
+  public <Element> void output(
+      String root, String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
     for (GeneratedResult generatedResult : elements.values()) {
-      files.put(generatedResult.getFilename(), generatedResult.getDoc());
+      files.put(root + "/" + generatedResult.getFilename(), generatedResult.getDoc());
     }
     ToolUtil.writeFiles(files, outputPath);
   }
 
   @SuppressWarnings("unchecked")
   public <Element> GeneratedResult generate(
-      Element element, SnippetDescriptor snippetDescriptor, GoContext context) {
-    GoSnippetSet<Element> snippets =
+      Element element,
+      SnippetDescriptor snippetDescriptor,
+      NodeJSDiscoveryContext context,
+      String defaultPackagePrefix) {
+    NodeJSSnippetSet<Element> snippets =
         SnippetSet.createSnippetInterface(
-            GoSnippetSet.class,
+            NodeJSSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
             snippetDescriptor.getSnippetInputName(),
             ImmutableMap.<String, Object>of("context", context));
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
-
     Doc body = snippets.generateBody(element);
+    return GeneratedResult.create(body, outputFilename);
+  }
 
-    Doc result = snippets.generateClass(element, body);
-    return GeneratedResult.create(result, outputFilename);
+  public <Element> GeneratedResult generate(
+      Element element, SnippetDescriptor snippetDescriptor, NodeJSDiscoveryContext context) {
+    return generate(element, snippetDescriptor, context, null);
   }
 }

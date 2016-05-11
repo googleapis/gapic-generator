@@ -35,9 +35,9 @@ import javax.annotation.Nullable;
  */
 public class DiscoveryFragmentGenerator {
 
-  private final DiscoveryLanguageProvider provider;
+  private final DiscoveryProvider provider;
 
-  public DiscoveryFragmentGenerator(DiscoveryLanguageProvider provider) {
+  public DiscoveryFragmentGenerator(DiscoveryProvider provider) {
     this.provider = Preconditions.checkNotNull(provider);
   }
 
@@ -50,24 +50,24 @@ public class DiscoveryFragmentGenerator {
 
     // TODO: Support multiple templates; don't hard-code the zero-index here.
     Preconditions.checkArgument(configProto.getTemplatesCount() == 1);
-    DiscoveryLanguageProvider languageProvider =
+    DiscoveryProvider provider =
         GeneratorBuilderUtil.createClass(
-            configProto.getTemplates(0).getLanguageProvider(),
-            DiscoveryLanguageProvider.class,
+            configProto.getTemplates(0).getCodegenProvider(),
+            DiscoveryProvider.class,
             new Class<?>[] {Service.class, ApiaryConfig.class},
             new Object[] {discovery.getService(), apiaryConfig},
-            "discovery language provider",
+            "discovery codegen provider",
             new GeneratorBuilderUtil.ErrorReporter() {
               @Override
               public void error(String message, Object... args) {
                 System.err.printf(message, args);
               }
             });
-    if (languageProvider == null) {
+    if (provider == null) {
       return null;
     }
 
-    return new DiscoveryFragmentGenerator(languageProvider);
+    return new DiscoveryFragmentGenerator(provider);
   }
 
   /**
@@ -89,7 +89,7 @@ public class DiscoveryFragmentGenerator {
   }
 
   /**
-   * Delegates creating fragments to language provider. Takes the result map from
+   * Delegates creating fragments to the codegen provider. Takes the result map from
    * {@link DiscoveryContext#output} and stores it in a language-specific way.
    */
   public void outputFragments(String outputFile, Multimap<Method, GeneratedResult> methods)

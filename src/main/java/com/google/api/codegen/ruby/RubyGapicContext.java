@@ -48,6 +48,9 @@ import javax.annotation.Nullable;
  */
 public class RubyGapicContext extends GapicContext {
 
+  /**
+   * Constructs an instance.
+   */
   public RubyGapicContext(Model model, ApiConfig apiConfig) {
     super(model, apiConfig);
   }

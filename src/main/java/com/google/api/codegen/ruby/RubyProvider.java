@@ -28,15 +28,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * A RubyLanguageProvider provides general Ruby code generation logic.
+ * A RubyProvider provides general Ruby code generation logic.
  */
-public class RubyLanguageProvider {
+public class RubyProvider {
 
   /**
    * The path to the root of snippet resources.
    */
   static final String SNIPPET_RESOURCE_ROOT =
-      RubyGapicLanguageProvider.class.getPackage().getName().replace('.', '/');
+      RubyGapicProvider.class.getPackage().getName().replace('.', '/');
 
   public <Element> void output(
       String packageRoot, String outputPath, Multimap<Element, GeneratedResult> elements)

@@ -28,7 +28,7 @@ import com.google.protobuf.Type;
  */
 public class NodeJSDiscoveryContext extends DiscoveryContext {
   /**
-   * Constructs the NodeJS language provider.
+   * Constructs an instance.
    */
   public NodeJSDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
     super(service, apiaryConfig);

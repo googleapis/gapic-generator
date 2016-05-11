@@ -12,35 +12,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.ruby;
+package com.google.api.codegen.go;
 
 import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.GapicLanguageProvider;
+import com.google.api.codegen.GapicProvider;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.InputElementView;
 import com.google.api.codegen.SnippetDescriptor;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
-import com.google.common.base.Joiner;
 import com.google.common.collect.Multimap;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
- * The LanguageProvider which runs Gapic code generation for Ruby.
+ * The GapicProvider which runs Gapic code generation for Go.
  */
-public class RubyGapicLanguageProvider<InputElementT extends ProtoElement>
-    implements GapicLanguageProvider<InputElementT> {
+public class GoGapicProvider<InputElementT extends ProtoElement>
+    implements GapicProvider<InputElementT> {
 
-  private final RubyGapicContext context;
-  private final RubyLanguageProvider provider;
+  private final GoGapicContext context;
+  private final GoProvider provider;
   private InputElementView<InputElementT> view;
 
-  public RubyGapicLanguageProvider(
+  public GoGapicProvider(
       Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
-    this.context = new RubyGapicContext(model, apiConfig);
-    this.provider = new RubyLanguageProvider();
+    this.context = new GoGapicContext(model, apiConfig);
+    this.provider = new GoProvider();
     this.view = view;
   }
 
@@ -49,20 +47,10 @@ public class RubyGapicLanguageProvider<InputElementT extends ProtoElement>
     return context.getModel();
   }
 
-  String getPackageRoot() {
-    ArrayList<String> dirs = new ArrayList<>();
-    for (String moduleName : context.getApiConfig().getPackageName().split("::")) {
-      dirs.add(moduleName.toLowerCase());
-    }
-    return Joiner.on("/").join(dirs);
-  }
-
   @Override
-  public <Element> void output(
-      String outputPath, Multimap<Element, GeneratedResult> elements)
+  public <Element> void output(String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
-    String packageRoot = getPackageRoot();
-    provider.output("lib/" + packageRoot, outputPath, elements);
+    provider.output(outputPath, elements);
   }
 
   @Override
@@ -73,5 +61,5 @@ public class RubyGapicLanguageProvider<InputElementT extends ProtoElement>
   @Override
   public InputElementView<InputElementT> getView() {
     return view;
-  }
+    }
 }

@@ -27,8 +27,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Base class for creating code generators, by dynamic class loading of a
- * {@link LanguageProviderBase}.
+ * Utility class for creating code generators, by dynamic class loading of a
+ * codegen provider.
  */
 public final class GeneratorBuilderUtil {
 
@@ -39,11 +39,11 @@ public final class GeneratorBuilderUtil {
   }
 
   /**
-   * Constructs a language provider from a configuration; the configuration cannot contain
+   * Constructs a codegen provider from a configuration; the configuration cannot contain
    * parameterized type information, so we must suppress the type safety warning here.
    */
   @SuppressWarnings("unchecked")
-  public static GapicLanguageProvider<ProtoElement> createLanguageProvider(
+  public static GapicProvider<ProtoElement> createCodegenProvider(
       ConfigProto configProto,
       TemplateProto template,
       final Model model,
@@ -65,11 +65,11 @@ public final class GeneratorBuilderUtil {
     }
 
     return GeneratorBuilderUtil.createClass(
-        template.getLanguageProvider(),
-        GapicLanguageProvider.class,
+        template.getCodegenProvider(),
+        GapicProvider.class,
         new Class<?>[] {Model.class, ApiConfig.class, InputElementView.class},
         new Object[] {model, apiConfig, view},
-        "language provider",
+        "codegen provider",
         new GeneratorBuilderUtil.ErrorReporter() {
           @Override
           public void error(String message, Object... args) {

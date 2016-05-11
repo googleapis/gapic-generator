@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.nodejs;
+package com.google.api.codegen.php;
 
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetDescriptor;
@@ -24,20 +24,21 @@ import com.google.common.collect.Multimap;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * A NodeJSLanguageProvider provides general NodeJS code generation logic that is agnostic to the use
+ * A PhpProvider provides general PHP code generation logic that is agnostic to the use
  * case (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
- * subclass of NodeJSContext.
+ * PHP context class (PhpGapicContext vs PhpDiscoveryContext).
  */
-public class NodeJSLanguageProvider {
+public class PhpProvider {
 
   /**
    * The path to the root of snippet resources.
    */
   private static final String SNIPPET_RESOURCE_ROOT =
-      NodeJSLanguageProvider.class.getPackage().getName().replace('.', '/');
+      PhpProvider.class.getPackage().getName().replace('.', '/');
 
   public <Element> void output(
       String root, String outputPath, Multimap<Element, GeneratedResult> elements)
@@ -53,22 +54,29 @@ public class NodeJSLanguageProvider {
   public <Element> GeneratedResult generate(
       Element element,
       SnippetDescriptor snippetDescriptor,
-      NodeJSDiscoveryContext context,
+      PhpContext context,
       String defaultPackagePrefix) {
-    NodeJSSnippetSet<Element> snippets =
+    PhpSnippetSet<Element> snippets =
         SnippetSet.createSnippetInterface(
-            NodeJSSnippetSet.class,
+            PhpSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
             snippetDescriptor.getSnippetInputName(),
             ImmutableMap.<String, Object>of("context", context));
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
+    PhpContextCommon phpContextCommon = new PhpContextCommon();
+    context.resetState(snippets, phpContextCommon);
+
     Doc body = snippets.generateBody(element);
-    return GeneratedResult.create(body, outputFilename);
+
+    List<String> cleanedImports = phpContextCommon.getImports();
+
+    Doc result = snippets.generateClass(element, body, cleanedImports);
+    return GeneratedResult.create(result, outputFilename);
   }
 
   public <Element> GeneratedResult generate(
-      Element element, SnippetDescriptor snippetDescriptor, NodeJSDiscoveryContext context) {
+      Element element, SnippetDescriptor snippetDescriptor, PhpContext context) {
     return generate(element, snippetDescriptor, context, null);
   }
 }

@@ -48,7 +48,7 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
   private final String name;
   private final String discoveryDocFileName;
   private final String[] gapicConfigFileNames;
-  private final String gapicLanguageProviderName;
+  private final String gapicProviderName;
   private final String snippetName;
   protected ConfigProto config;
   protected DiscoveryImporter discoveryImporter;
@@ -57,12 +57,12 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
       String name,
       String discoveryDocFileName,
       String[] gapicConfigFileNames,
-      String gapicLanguageProviderName,
+      String gapicProviderName,
       String snippetName) {
     this.name = name;
     this.discoveryDocFileName = discoveryDocFileName;
     this.gapicConfigFileNames = gapicConfigFileNames;
-    this.gapicLanguageProviderName = gapicLanguageProviderName;
+    this.gapicProviderName = gapicProviderName;
     this.snippetName = snippetName;
   }
 
@@ -146,11 +146,11 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
     }
 
     // TODO: this has exactly the same pattern as GeneratorTestBase; opportunity to refactor
-    if (gapicLanguageProviderName != null && snippetName != null) {
+    if (gapicProviderName != null && snippetName != null) {
       // Filtering can be made more sophisticated later if required
       TemplateProto template =
           TemplateProto.newBuilder()
-              .setLanguageProvider(gapicLanguageProviderName)
+              .setCodegenProvider(gapicProviderName)
               .addSnippetFiles(snippetName)
               .build();
       configProto = configProto.toBuilder().clearTemplates().addTemplates(template).build();

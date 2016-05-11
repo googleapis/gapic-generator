@@ -12,10 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.go;
+package com.google.api.codegen.php;
 
 import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.GapicLanguageProvider;
+import com.google.api.codegen.GapicProvider;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.InputElementView;
 import com.google.api.codegen.SnippetDescriptor;
@@ -26,19 +26,19 @@ import com.google.common.collect.Multimap;
 import java.io.IOException;
 
 /**
- * The LanguageProvider which runs Gapic code generation for Go.
+ * The GapicProvider which runs Gapic code generation for PHP.
  */
-public class GoGapicLanguageProvider<InputElementT extends ProtoElement>
-    implements GapicLanguageProvider<InputElementT> {
+public class PhpGapicProvider<InputElementT extends ProtoElement>
+    implements GapicProvider<InputElementT> {
 
-  private final GoGapicContext context;
-  private final GoLanguageProvider provider;
+  private final PhpGapicContext context;
+  private final PhpProvider provider;
   private InputElementView<InputElementT> view;
 
-  public GoGapicLanguageProvider(
+  public PhpGapicProvider(
       Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
-    this.context = new GoGapicContext(model, apiConfig);
-    this.provider = new GoLanguageProvider();
+    this.context = new PhpGapicContext(model, apiConfig);
+    this.provider = new PhpProvider();
     this.view = view;
   }
 
@@ -48,9 +48,10 @@ public class GoGapicLanguageProvider<InputElementT extends ProtoElement>
   }
 
   @Override
-  public <Element> void output(String outputPath, Multimap<Element, GeneratedResult> elements)
+  public <Element> void output(
+      String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
-    provider.output(outputPath, elements);
+    provider.output("", outputPath, elements);
   }
 
   @Override
@@ -61,5 +62,5 @@ public class GoGapicLanguageProvider<InputElementT extends ProtoElement>
   @Override
   public InputElementView<InputElementT> getView() {
     return view;
-    }
+  }
 }

@@ -14,10 +14,10 @@ option java_package = "com.google.api.codegen";
 //
 //     type: com.google.api.codegen.ConfigProto
 //     templates:
-//     - language_provider: com.google.api.codegen.java.JavaLanguageProvider
+//     - codegen_provider: com.google.api.codegen.java.JavaProvider
 //       input_element_view: com.google.api.codegen.InterfaceView
 //       snippet_files: main.snip
-//     - language_provider: com.google.api.codegen.java.JavaFragmentsLanguageProvider
+//     - codegen_provider: com.google.api.codegen.java.JavaFragmentsProvider
 //       input_element_view: com.google.api.codegen.MethodView
 //       snippet_files: fragment.snip
 //     interfaces:
@@ -86,19 +86,19 @@ message ConfigProto {
 }
 
 message TemplateProto {
-  // The fully qualified name of the Java class of the language
+  // The fully qualified name of the Java class of the codegen
   // provider. Must be provided.
-  string language_provider = 1;
+  string codegen_provider = 1;
 
   // The fully qualified name of the Java class of the input element
   // view. The given class must view elements of the type expected by
-  // `language_provider`. Must be provided.
+  // `codegen_provider`. Must be provided.
   string input_element_view = 3;
 
   // The snippet template files used for generation. Each file is used
   // to produce one output file. If the snippet file name is simple
   // (does not contain a `/`), it is looked up as a resource relative
-  // to the package of the language provider class. If it contains a
+  // to the package of the codegen provider class. If it contains a
   // `/`, it is looked up in the file system. Defaults to a singleton
   // list with the entry `main.snip`.
   repeated string snippet_files = 2;

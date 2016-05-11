@@ -39,10 +39,10 @@ public abstract class CodeGeneratorTestBase extends GeneratorTestBase {
   public CodeGeneratorTestBase(
       String name,
       String[] gapicConfigFileNames,
-      String gapicLanguageProviderName,
+      String gapicProviderName,
       String viewName,
       String snippetName) {
-    super(name, gapicConfigFileNames, gapicLanguageProviderName, viewName, snippetName);
+    super(name, gapicConfigFileNames, gapicProviderName, viewName, snippetName);
   }
 
   public CodeGeneratorTestBase(String name, String[] gapicConfigFileNames) {

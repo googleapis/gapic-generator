@@ -28,11 +28,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A JavaLanguageProvider provides general Java code generation logic that is agnostic to the use
+ * A JavaProvider provides general Java code generation logic that is agnostic to the use
  * case (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
  * subclass of JavaContext.
  */
-public class JavaLanguageProvider {
+public class JavaProvider {
 
   /**
    * The path to the root of snippet resources.

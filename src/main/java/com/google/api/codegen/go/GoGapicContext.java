@@ -101,7 +101,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
   private final GoContextCommon goCommon;
 
   /**
-   * Constructs the Go language provider.
+   * Constructs an instance.
    */
   public GoGapicContext(Model model, ApiConfig apiConfig) {
     super(model, apiConfig);

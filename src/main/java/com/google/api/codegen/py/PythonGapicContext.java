@@ -68,7 +68,7 @@ public class PythonGapicContext extends GapicContext {
   private PythonContextCommon pythonCommon;
 
   /**
-   * Constructs the Python language provider.
+   * Constructs an instance.
    */
   public PythonGapicContext(Model model, ApiConfig apiConfig) {
     super(model, apiConfig);
