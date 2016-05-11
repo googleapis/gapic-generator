@@ -1,0 +1,296 @@
+syntax = "proto3";
+
+package com.google.api.codegen;
+
+option java_multiple_files = true;
+option java_outer_classname = "ConfigProtoDesc";
+option java_package = "com.google.api.codegen";
+
+// `ConfigProto` specifies the configuration of code generation for
+// GAPIC. The user provides it via a YAML file; this message here
+// represents the schema for this file.
+//
+// Example of a YAML configuration:
+//
+//     type: com.google.api.codegen.ConfigProto
+//     templates:
+//     - language_provider: com.google.api.codegen.java.JavaLanguageProvider
+//       input_element_view: com.google.api.codegen.InterfaceView
+//       snippet_files: main.snip
+//     - language_provider: com.google.api.codegen.java.JavaFragmentsLanguageProvider
+//       input_element_view: com.google.api.codegen.MethodView
+//       snippet_files: fragment.snip
+//     interfaces:
+//     - name: google.example.library.v1.LibraryService
+//       collections:
+//       - name_pattern: shelves/{shelf}
+//         entity_name: shelf
+//       - name_pattern: shelves/{shelf}/books/{book}
+//         entity_name: book
+//         ...
+//       retry_codes_def:
+//       - name: idempotent
+//         retry_codes:
+//         ...
+//       - name: non_idempotent
+//         retry_codes:
+//       retry_params_def:
+//       - name: default
+//         ...
+//       methods:
+//       - name: PublishBooks
+//         request_object_method: true
+//         flattening:
+//           groups:
+//           - parameters:
+//             - name
+//           - parameters:
+//             - name
+//             - version
+//         page_streaming:
+//           request:
+//             token_field: page_token
+//           response:
+//             token_field: next_page_token
+//             resources_field: books
+//         bundling:
+//           thresholds:
+//             element_count_threshold: 5
+//             request_byte_threshold: 16384
+//           bundle_descriptor:
+//             bundled_field: pictures
+//             request_discriminator_fields:
+//             - album
+//             - labels
+//             subresponse_field: pic_id
+//         retry_codes_name: idempotent
+//         retry_params_name: default
+//       - name: GetBook
+//       ...
+//     ...
+message ConfigProto {
+  repeated TemplateProto templates = 3;
+
+  // The settings of generated code in a specific language.
+  map<string, LanguageSettingsProto> language_settings = 4;
+
+  // The language of the generated code.
+  string language = 5;
+
+  // A list of API interface configurations.
+  repeated InterfaceConfigProto interfaces = 10;
+
+  // Whether or not we should generate code samples.
+  // This flag should go away as the feature matures.
+  bool generate_samples = 15;
+}
+
+message TemplateProto {
+  // The fully qualified name of the Java class of the language
+  // provider. Must be provided.
+  string language_provider = 1;
+
+  // The fully qualified name of the Java class of the input element
+  // view. The given class must view elements of the type expected by
+  // `language_provider`. Must be provided.
+  string input_element_view = 3;
+
+  // The snippet template files used for generation. Each file is used
+  // to produce one output file. If the snippet file name is simple
+  // (does not contain a `/`), it is looked up as a resource relative
+  // to the package of the language provider class. If it contains a
+  // `/`, it is looked up in the file system. Defaults to a singleton
+  // list with the entry `main.snip`.
+  repeated string snippet_files = 2;
+}
+
+message LanguageSettingsProto {
+  // Package name used for the language.
+  string package_name = 1;
+}
+
+message InterfaceConfigProto {
+  // The fully qualified name of the API interface.
+  string name = 1;
+
+  // A list of resource collection configurations.
+  repeated CollectionConfigProto collections = 10;
+
+  // A list of method configurations.
+  repeated MethodConfigProto methods = 20;
+
+  // Definition for retryable codes
+  repeated RetryCodesDefinitionProto retry_codes_def = 30;
+
+  // Definition for retry/backoff parameters
+  repeated RetryParamsDefinitionProto retry_params_def = 31;
+}
+
+message CollectionConfigProto {
+  // A pattern to describe the names of the resources of this
+  // collection, using the platform's conventions for URI patterns. A
+  // generator may use this to generate methods to compose and
+  // decompose such names. The pattern should use named placeholders
+  // as in `shelves/{shelf}/books/{book}`; those will be taken as
+  // hints for the parameter names of the generated methods.  If
+  // empty, no name methods are generated.
+  string name_pattern = 1;
+
+  // Name to be used as a basis for generated methods.
+  string entity_name = 2;
+}
+
+// `MethodConfigProto` describes the generator configuration for a method.
+message MethodConfigProto {
+  // The fully qualified name of the method.
+  string name = 1;
+
+  // Specifies the configuration for parameter flattening.
+  FlatteningConfigProto flattening = 2;
+
+  // Specifies the configuration for paging.
+  PageStreamingConfigProto page_streaming = 3;
+
+  // Specifies the configuration for retryable codes.
+  // The name must be defined in InterfaceConfigProto::retry_codes_def.
+  string retry_codes_name = 4;
+
+  // Specifies the configuration for retry/backoff parameters.
+  // The name must be defined in InterfaceConfigProto::retry_params_def.
+  string retry_params_name = 5;
+
+  // Specifies the configuration for bundling.
+  BundlingConfigProto bundling = 6;
+
+  // Turns on or off the generation of a method whose sole parameter is
+  // a request object. Not all languages will generate this method.
+  bool request_object_method = 7;
+
+  // Fields that are always required for a request to be valid.
+  repeated string required_fields = 8;
+
+  // Maps the field name of the request type to entity_name of CollectionConfigProto.
+  // It is used to specify the string pattern that the field must follow.
+  map<string, string> field_name_patterns = 9;
+}
+
+// `FlatteningConfigProto` describes the parameter groups for which a
+// generator should produce method overloads which allow a client to
+// directly pass request message fields as method parameters.  This
+// information may or may not be used, depending on the target
+// language.
+message FlatteningConfigProto {
+  // Specifies a list of flattening groups.
+  repeated FlatteningGroupProto groups = 1;
+}
+
+// `FlatteningGroupProto` represents a list of parameters to be flattened.
+message FlatteningGroupProto {
+  // The list of parameters to include in this flattening group. Each
+  // parameter must be a field of the request message.
+  repeated string parameters = 1;
+}
+
+// `PageStreamingConfigProto` describes information for generating a method which
+// transforms a paging list rpc into a stream of resources.
+message PageStreamingConfigProto {
+  // Specifies request information of the list method.
+  PageStreamingRequestProto request = 1;
+
+  // Specifies response information of the list method.
+  PageStreamingResponseProto response = 2;
+}
+
+// `PageStreamingRequestProto` defines which fields match the paging pattern in
+// the request.
+message PageStreamingRequestProto {
+  // The name of the field in the request containing the page token.
+  string token_field = 1;
+}
+
+// `PageStreamingResponseProto` defines which fields match the paging pattern in
+// the response.
+message PageStreamingResponseProto {
+  // The name of the field in the response containing the next page
+  // token.
+  string token_field = 1;
+
+  // The name of the field in the response containing the list of
+  // resources belonging to the page.
+  string resources_field = 2;
+}
+
+// `RetryConfigDefinitionProto` specifies, by name,
+// GRPC codes that a method should consider retryable.
+message RetryCodesDefinitionProto {
+  string name = 1;
+  repeated string retry_codes = 2;
+}
+
+// `RetryParamsDefinitionProto` specifies, by name,
+// the backoff behavior of a method when retrying.
+message RetryParamsDefinitionProto {
+  string name = 1;
+
+  uint64 initial_retry_delay_millis = 2;
+  double retry_delay_multiplier = 3;
+  uint64 max_retry_delay_millis = 4;
+
+  uint64 initial_rpc_timeout_millis = 5;
+  double rpc_timeout_multiplier = 6;
+  uint64 max_rpc_timeout_millis = 7;
+
+  uint64 total_timeout_millis = 8;
+}
+
+// `BundlingConfigProto` defines the bundling configuration for an API method.
+message BundlingConfigProto {
+  // The thresholds which trigger a bundled request to be sent.
+  BundlingSettingsProto thresholds = 1;
+
+  // The request and response fields used in bundling.
+  BundlingDescriptorProto bundle_descriptor = 2;
+}
+
+// `BundlingSettingsProto` specifies a set of bundling thresholds, each of
+// which acts as a trigger to send a bundle of messages as a request. At least
+// one threshold must be positive nonzero.
+message BundlingSettingsProto {
+  // The number of elements of a field collected into a bundle which, if
+  // exceeded, causes the bundle to be sent.
+  uint32 element_count_threshold = 1;
+
+  // The aggregated size of the bundled field which, if exceeded, causes the
+  // bundle to be sent. This size is computed by aggregating the sizes of the
+  // request field to be bundled, not of the entire request message.
+  uint64 request_byte_threshold = 2;
+
+  // The duration, in milliseconds, after which a bundle should be sent,
+  // starting from the addition of the first message to that bundle.
+  uint64 delay_threshold_millis = 3;
+
+  // The maximum number of elements collected in a bundle that could be accepted by server.
+  uint32 element_count_limit = 4;
+
+  // The maximum size of the request that could be accepted by server.
+  uint32 request_byte_limit = 5;
+}
+
+// `BundlingDescriptorProto` specifies the fields of the request message to be
+// used for bundling, and, optionally, the fields of the response message to be
+// used for demultiplexing.
+message BundlingDescriptorProto {
+  // The repeated field in the request message to be aggregated by bundling.
+  string bundled_field = 1;
+
+  // A list of the fields in the request message. Two requests will be bundled
+  // together only if the values of every field specified in
+  // `request_discriminator_fields` is equal between the two requests.
+  repeated string discriminator_fields = 2;
+
+  // Optional. When present, indicates the field in the response message to be
+  // used to demultiplex the response into multiple response messages, in
+  // correspondence with the multiple request messages originally bundled
+  // together.
+  string subresponse_field = 3;
+}
