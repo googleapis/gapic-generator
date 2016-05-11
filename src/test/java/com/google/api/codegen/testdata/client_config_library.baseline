@@ -1,0 +1,88 @@
+{
+  "interfaces": {
+    "google.example.library.v1.LibraryService": {
+      "retry_codes": {
+        retry_codes_def: {
+          "idempotent": [
+            "DEADLINE_EXCEEDED",
+            "UNAVAILABLE"
+          ],
+          "non_idempotent": []
+        }
+      },
+      "retry_params": {
+        "default": {
+          "initial_retry_delay_millis": 100,
+          "retry_delay_multiplier": 1.2,
+          "max_retry_delay_millis": 1000,
+          "initial_rpc_timeout_millis": 300,
+          "rpc_timeout_multiplier": 1.3,
+          "max_rpc_timeout_millis": 3000,
+          "total_timeout_millis": 30000
+        }
+      },
+      "methods": {
+        "create_shelf": {
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "get_shelf": {
+          "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        },
+        "list_shelves": {
+          "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        },
+        "delete_shelf": {
+          "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        },
+        "merge_shelves": {
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "create_book": {
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "publish_series": {
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default",
+          "bundling": {
+            "element_count_threshold": 6,
+            "element_count_limit": 7,
+            "request_byte_threshold": 100000,
+            "request_byte_limit": 150000,
+            "delay_threshold_millis": 500
+          }
+        },
+        "get_book": {
+          "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        },
+        "list_books": {
+          "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        },
+        "delete_book": {
+          "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        },
+        "update_book": {
+          "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        },
+        "move_book": {
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "list_strings": {
+          "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        }
+      }
+    }
+  }
+}
+

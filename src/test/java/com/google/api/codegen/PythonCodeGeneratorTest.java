@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.GeneratedResult;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -47,24 +46,30 @@ public class PythonCodeGeneratorTest {
     public static List<Object[]> testedConfigs() {
       return ImmutableList.of(
           new Object[] {
-            "python", new String[] {"com/google/api/codegen/py/python_gapic.yaml", "library_gapic.yaml"}
+            "python",
+            new String[] {"com/google/api/codegen/py/python_gapic.yaml", "library_gapic.yaml"}
           });
     }
 
     @Override
     protected Object run() {
-      // Should generate one file for the class, and a list of files for the protos
+      // Should generate one file for the class, a list of files for the protos, and a client
+      // config.
       List<GeneratedResult> codeResult = generateForTemplate(0, 0);
       List<GeneratedResult> docsResult = generateForTemplate(1, 0);
-
+      List<GeneratedResult> configResult = generateForTemplate(2, 0);
       Truth.assertThat(codeResult).isNotNull();
       Truth.assertThat(docsResult).isNotNull();
+      Truth.assertThat(configResult).isNotNull();
 
       ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String, Doc>();
       for (GeneratedResult result : codeResult) {
         builder.put(result.getFilename(), result.getDoc());
       }
       for (GeneratedResult result : docsResult) {
+        builder.put(result.getFilename(), result.getDoc());
+      }
+      for (GeneratedResult result : configResult) {
         builder.put(result.getFilename(), result.getDoc());
       }
       return builder.build();
@@ -95,7 +100,9 @@ public class PythonCodeGeneratorTest {
       return ImmutableList.of(
           new Object[] {
             "python",
-            new String[] {"com/google/api/codegen/py/python_gapic.yaml", "no_path_templates_gapic.yaml"}
+            new String[] {
+              "com/google/api/codegen/py/python_gapic.yaml", "no_path_templates_gapic.yaml"
+            }
           });
     }
 
@@ -103,14 +110,19 @@ public class PythonCodeGeneratorTest {
     protected Object run() {
       List<GeneratedResult> codeResult = generateForTemplate(0, 0);
       List<GeneratedResult> docsResult = generateForTemplate(1, 0);
+      List<GeneratedResult> configResult = generateForTemplate(2, 0);
       Truth.assertThat(codeResult).isNotNull();
       Truth.assertThat(docsResult).isNotNull();
+      Truth.assertThat(configResult).isNotNull();
 
       ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String, Doc>();
       for (GeneratedResult result : codeResult) {
         builder.put(result.getFilename(), result.getDoc());
       }
       for (GeneratedResult result : docsResult) {
+        builder.put(result.getFilename(), result.getDoc());
+      }
+      for (GeneratedResult result : configResult) {
         builder.put(result.getFilename(), result.getDoc());
       }
       return builder.build();
