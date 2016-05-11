@@ -3,7 +3,119 @@
 @end
 
 @snippet generateClass(method, body, imports)
+  @let api = context.getApi, \
+       apiName = api.getName, \
+       serviceTitle = context.getService.getTitle
+    <?php
+    /*
+     * PRE-REQUISITES:
+     * ---------------
+     * 1. If not already done, enable the {@serviceTitle} and check quota for your project at
+     *    https://console.developers.google.com/apis/api/{@apiName}_component/quotas
+     * 2. To install the client library on Composer, check installation instructions at
+     *    https://github.com/google/google-api-php-client.
+     * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+     *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+     */
+
+    // composer autoloading
+    require_once __DIR__ . '/vendor/autoload.php';
+
+    @join import : imports
+      use {@import};
+    @end
+
+    {@body}
+
+  @end
 @end
 
 @snippet generateBody(method)
+  @let apiName = context.getSimpleApiName, \
+       serviceName = context.getServiceClassName, \
+       params = context.getFlatMethodParams(method)
+    // Create a new client
+    $client = new Google_Client();
+    $client->setApplicationName('Client Sample Application');
+    $client->useApplicationDefaultCredentials();
+    $client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+    // Create a new {@apiName} service
+    $service = new {@serviceName}($client);
+    @if params
+
+      {@initialization(method, params)}
+    @end
+
+    @if context.isPageStreaming(method)
+      {@iterableCall(method, params)}
+    @else
+      {@compactCall(method, params)}
+    @end
+  @end
+@end
+
+@private initialization(method, params)
+  @let methodName = context.getMethodName(method), \
+       apiaryConfig = context.getApiaryConfig, \
+       signatureType = apiaryConfig.getType(method.getRequestTypeUrl)
+    @join param : params
+      @let paramField = context.getField(signatureType, param), \
+           paramValue = context.typeDefaultValue(signatureType, paramField), \
+           paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
+        {@description(paramDescription)}
+        ${@param} = {@paramValue};
+      @end
+    @end
+  @end
+@end
+
+@private iterableCall(method, params)
+  @let methodName = context.getMethodName(method), \
+       resourcesPath = context.getApiaryConfig.getResources(method.getName)
+    $response = $service->{@methodPath(resourcesPath)}->{@methodName}({@arguments(params)});
+
+    @let responseTypeRef = context.getApiaryConfig.getType(method.getResponseTypeUrl), \
+         resourceField = context.getFirstRepeatedField(responseTypeRef), \
+         resourceName = resourceField.getName
+      @if context.isMapField(responseTypeRef, resourceField.getName)
+        @let entrySet = context.getApiaryConfig.getType(resourceField.getTypeUrl), \
+             keyName = context.getField(entrySet, "key").getName, \
+             valueName = context.getField(entrySet, "value").getName
+          foreach ($response['{@resourceName}']  as ${@keyName} => ${@valueName}) {
+            // TODO: Add code here to process ${@keyName} => ${@valueName}
+          }
+        @end
+      @else
+        foreach ($response['{@resourceName}'] as $element) {
+          // TODO: Add code here to process the elements.
+        }
+      @end
+    @end
+  @end
+@end
+
+@private compactCall(method, params)
+  @let methodName = context.getMethodName(method), \
+       resourcesPath = context.getApiaryConfig.getResources(method.getName)
+    $response = $service->{@methodPath(resourcesPath)}->{@methodName}({@arguments(params)});
+  @end
+@end
+
+@private arguments(params)
+  @join argument : params on ", "
+    ${@argument}
+  @end
+@end
+
+@private methodPath(resourcePath)
+  @join r : resourcePath on "->"
+    {@r}
+  @end
+@end
+
+@snippet description(description)
+  @if description
+    // {@description}
+  @end
 @end

@@ -17,7 +17,6 @@ package com.google.api.codegen;
 import com.google.common.collect.ImmutableList;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -26,7 +25,6 @@ import org.junit.runners.Parameterized.Parameters;
 import java.io.File;
 import java.util.List;
 
-@Ignore // TODO(shinfan): Enable this test after the PHP snippet generator is ready.
 /**
  * PHP discovery doc fragment generator baseline tests.
  */
@@ -66,7 +64,6 @@ public class PhpDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGenerato
 
   // Tests
   // =====
-
   @Test
   public void fragments() throws Exception {
     test();
