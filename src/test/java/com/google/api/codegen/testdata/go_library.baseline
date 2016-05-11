@@ -49,12 +49,12 @@ package library_service
 import (
 	"fmt"
 	"io"
+	"runtime"
 	"time"
 
 	gax "github.com/googleapis/gax-golang"
 	"golang.org/x/net/context"
 	google_example_library_v1 "google.golang.org/cloud/library/proto/google/example/library/v1"
-	google_protobuf "google.golang.org/cloud/library/proto/google/protobuf"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
@@ -72,26 +72,26 @@ var (
 func defaultClientSettings() gax.ClientSettings {
     return gax.ClientSettings{
         AppName: "gax",
-        AppVersion: gax.Version(),
+        AppVersion: gax.Version,
         Endpoint: "library-example.googleapis.com:443",
         Scopes: []string{
             "https://www.googleapis.com/auth/library",
             "https://www.googleapis.com/auth/cloud-platform",
         },
-        CallSettings: map[string][]gax.CallOption{
-            "CreateShelf": append([]gax.CallOption{withNonIdempotentRetryCodes())}, defaultRetryOptions()...),
-            "GetShelf": append([]gax.CallOption{withIdempotentRetryCodes())}, defaultRetryOptions()...),
-            "ListShelves": append([]gax.CallOption{withIdempotentRetryCodes())}, defaultRetryOptions()...),
-            "DeleteShelf": append([]gax.CallOption{withIdempotentRetryCodes())}, defaultRetryOptions()...),
-            "MergeShelves": append([]gax.CallOption{withNonIdempotentRetryCodes())}, defaultRetryOptions()...),
-            "CreateBook": append([]gax.CallOption{withNonIdempotentRetryCodes())}, defaultRetryOptions()...),
-            "PublishSeries": append([]gax.CallOption{withNonIdempotentRetryCodes())}, defaultRetryOptions()...),
-            "GetBook": append([]gax.CallOption{withIdempotentRetryCodes())}, defaultRetryOptions()...),
-            "ListBooks": append([]gax.CallOption{withIdempotentRetryCodes())}, defaultRetryOptions()...),
-            "DeleteBook": append([]gax.CallOption{withIdempotentRetryCodes())}, defaultRetryOptions()...),
-            "UpdateBook": append([]gax.CallOption{withIdempotentRetryCodes())}, defaultRetryOptions()...),
-            "MoveBook": append([]gax.CallOption{withNonIdempotentRetryCodes())}, defaultRetryOptions()...),
-            "ListStrings": append([]gax.CallOption{withIdempotentRetryCodes())}, defaultRetryOptions()...),
+        CallOptions: map[string][]gax.CallOption{
+            "CreateShelf": append([]gax.CallOption{withNonIdempotentRetryCodes()}, defaultRetryOptions()...),
+            "GetShelf": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
+            "ListShelves": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
+            "DeleteShelf": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
+            "MergeShelves": append([]gax.CallOption{withNonIdempotentRetryCodes()}, defaultRetryOptions()...),
+            "CreateBook": append([]gax.CallOption{withNonIdempotentRetryCodes()}, defaultRetryOptions()...),
+            "PublishSeries": append([]gax.CallOption{withNonIdempotentRetryCodes()}, defaultRetryOptions()...),
+            "GetBook": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
+            "ListBooks": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
+            "DeleteBook": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
+            "UpdateBook": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
+            "MoveBook": append([]gax.CallOption{withNonIdempotentRetryCodes()}, defaultRetryOptions()...),
+            "ListStrings": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
         },
     }
 }
@@ -129,7 +129,7 @@ type Client struct {
     callOptions map[string][]gax.CallOption
 
     // The metadata to be sent with each request.
-    metadata map[string]string
+    metadata map[string][]string
 }
 
 // NewClient creates a new API service client.
@@ -145,9 +145,9 @@ func NewClient(ctx context.Context, opts ...gax.ClientOption) (*Client, error) {
     return &Client {
         conn: conn,
         client: google_example_library_v1.NewLibraryServiceClient(conn),
-        callOptions: s.CallSettings,
-        metadata: map[string]string{
-            "x-goog-api-client": fmt.Sprintf("%s/%s %s gax/%s go/%s", s.AppName, s.AppVersion, gapicNameVersion, gax.Version, runtime.Version)
+        callOptions: s.CallOptions,
+        metadata: map[string][]string{
+            "x-goog-api-client": []string{fmt.Sprintf("%s/%s %s gax/%s go/%s", s.AppName, s.AppVersion, gapicNameVersion, gax.Version, runtime.Version())},
         },
     }, nil
 }
@@ -180,8 +180,8 @@ func BookPath(shelf string, book string) (string, error) {
 // CreateShelf creates a shelf, and returns the new Shelf.
 func (client *Client) CreateShelf(ctx context.Context, req *google_example_library_v1.CreateShelfRequest, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
     ctx = metadata.NewContext(ctx, client.metadata)
-    var callOpts []gax.CallOptions
-    callOpts = append(callOpts, client.callOptions["CreateShelf"])
+    var callOpts []gax.CallOption
+    callOpts = append(callOpts, client.callOptions["CreateShelf"]...)
     callOpts = append(callOpts, opts...)
     var resp *google_example_library_v1.Shelf
     err := gax.Invoke(ctx, func (c context.Context) error {
@@ -201,8 +201,8 @@ func (client *Client) CreateShelf(ctx context.Context, req *google_example_libra
 // GetShelf gets a shelf.
 func (client *Client) GetShelf(ctx context.Context, req *google_example_library_v1.GetShelfRequest, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
     ctx = metadata.NewContext(ctx, client.metadata)
-    var callOpts []gax.CallOptions
-    callOpts = append(callOpts, client.callOptions["GetShelf"])
+    var callOpts []gax.CallOption
+    callOpts = append(callOpts, client.callOptions["GetShelf"]...)
     callOpts = append(callOpts, opts...)
     var resp *google_example_library_v1.Shelf
     err := gax.Invoke(ctx, func (c context.Context) error {
@@ -222,8 +222,8 @@ func (client *Client) GetShelf(ctx context.Context, req *google_example_library_
 // ListShelves lists shelves.
 func (client *Client) ListShelves(ctx context.Context, req *google_example_library_v1.ListShelvesRequest, opts ...gax.CallOption) (*ShelfIterator, error) {
     ctx = metadata.NewContext(ctx, client.metadata)
-    var callOpts []gax.CallOptions
-    callOpts = append(callOpts, client.callOptions["ListShelves"])
+    var callOpts []gax.CallOption
+    callOpts = append(callOpts, client.callOptions["ListShelves"]...)
     callOpts = append(callOpts, opts...)
     atLastPage := false
     return &ShelfIterator{
@@ -259,8 +259,8 @@ func (client *Client) ListShelves(ctx context.Context, req *google_example_libra
 // DeleteShelf deletes a shelf.
 func (client *Client) DeleteShelf(ctx context.Context, req *google_example_library_v1.DeleteShelfRequest, opts ...gax.CallOption) error {
     ctx = metadata.NewContext(ctx, client.metadata)
-    var callOpts []gax.CallOptions
-    callOpts = append(callOpts, client.callOptions["DeleteShelf"])
+    var callOpts []gax.CallOption
+    callOpts = append(callOpts, client.callOptions["DeleteShelf"]...)
     callOpts = append(callOpts, opts...)
     err := gax.Invoke(ctx, func (c context.Context) error {
         var err error
@@ -278,8 +278,8 @@ func (client *Client) DeleteShelf(ctx context.Context, req *google_example_libra
 // `other_shelf_name`. Returns the updated shelf.
 func (client *Client) MergeShelves(ctx context.Context, req *google_example_library_v1.MergeShelvesRequest, opts ...gax.CallOption) (*google_example_library_v1.Shelf, error) {
     ctx = metadata.NewContext(ctx, client.metadata)
-    var callOpts []gax.CallOptions
-    callOpts = append(callOpts, client.callOptions["MergeShelves"])
+    var callOpts []gax.CallOption
+    callOpts = append(callOpts, client.callOptions["MergeShelves"]...)
     callOpts = append(callOpts, opts...)
     var resp *google_example_library_v1.Shelf
     err := gax.Invoke(ctx, func (c context.Context) error {
@@ -299,8 +299,8 @@ func (client *Client) MergeShelves(ctx context.Context, req *google_example_libr
 // CreateBook creates a book.
 func (client *Client) CreateBook(ctx context.Context, req *google_example_library_v1.CreateBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
     ctx = metadata.NewContext(ctx, client.metadata)
-    var callOpts []gax.CallOptions
-    callOpts = append(callOpts, client.callOptions["CreateBook"])
+    var callOpts []gax.CallOption
+    callOpts = append(callOpts, client.callOptions["CreateBook"]...)
     callOpts = append(callOpts, opts...)
     var resp *google_example_library_v1.Book
     err := gax.Invoke(ctx, func (c context.Context) error {
@@ -320,8 +320,8 @@ func (client *Client) CreateBook(ctx context.Context, req *google_example_librar
 // PublishSeries creates a series of books.
 func (client *Client) PublishSeries(ctx context.Context, req *google_example_library_v1.PublishSeriesRequest, opts ...gax.CallOption) (*google_example_library_v1.PublishSeriesResponse, error) {
     ctx = metadata.NewContext(ctx, client.metadata)
-    var callOpts []gax.CallOptions
-    callOpts = append(callOpts, client.callOptions["PublishSeries"])
+    var callOpts []gax.CallOption
+    callOpts = append(callOpts, client.callOptions["PublishSeries"]...)
     callOpts = append(callOpts, opts...)
     var resp *google_example_library_v1.PublishSeriesResponse
     err := gax.Invoke(ctx, func (c context.Context) error {
@@ -341,8 +341,8 @@ func (client *Client) PublishSeries(ctx context.Context, req *google_example_lib
 // GetBook gets a book.
 func (client *Client) GetBook(ctx context.Context, req *google_example_library_v1.GetBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
     ctx = metadata.NewContext(ctx, client.metadata)
-    var callOpts []gax.CallOptions
-    callOpts = append(callOpts, client.callOptions["GetBook"])
+    var callOpts []gax.CallOption
+    callOpts = append(callOpts, client.callOptions["GetBook"]...)
     callOpts = append(callOpts, opts...)
     var resp *google_example_library_v1.Book
     err := gax.Invoke(ctx, func (c context.Context) error {
@@ -362,8 +362,8 @@ func (client *Client) GetBook(ctx context.Context, req *google_example_library_v
 // ListBooks lists books in a shelf.
 func (client *Client) ListBooks(ctx context.Context, req *google_example_library_v1.ListBooksRequest, opts ...gax.CallOption) (*BookIterator, error) {
     ctx = metadata.NewContext(ctx, client.metadata)
-    var callOpts []gax.CallOptions
-    callOpts = append(callOpts, client.callOptions["ListBooks"])
+    var callOpts []gax.CallOption
+    callOpts = append(callOpts, client.callOptions["ListBooks"]...)
     callOpts = append(callOpts, opts...)
     atLastPage := false
     return &BookIterator{
@@ -399,8 +399,8 @@ func (client *Client) ListBooks(ctx context.Context, req *google_example_library
 // DeleteBook deletes a book.
 func (client *Client) DeleteBook(ctx context.Context, req *google_example_library_v1.DeleteBookRequest, opts ...gax.CallOption) error {
     ctx = metadata.NewContext(ctx, client.metadata)
-    var callOpts []gax.CallOptions
-    callOpts = append(callOpts, client.callOptions["DeleteBook"])
+    var callOpts []gax.CallOption
+    callOpts = append(callOpts, client.callOptions["DeleteBook"]...)
     callOpts = append(callOpts, opts...)
     err := gax.Invoke(ctx, func (c context.Context) error {
         var err error
@@ -416,8 +416,8 @@ func (client *Client) DeleteBook(ctx context.Context, req *google_example_librar
 // UpdateBook updates a book.
 func (client *Client) UpdateBook(ctx context.Context, req *google_example_library_v1.UpdateBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
     ctx = metadata.NewContext(ctx, client.metadata)
-    var callOpts []gax.CallOptions
-    callOpts = append(callOpts, client.callOptions["UpdateBook"])
+    var callOpts []gax.CallOption
+    callOpts = append(callOpts, client.callOptions["UpdateBook"]...)
     callOpts = append(callOpts, opts...)
     var resp *google_example_library_v1.Book
     err := gax.Invoke(ctx, func (c context.Context) error {
@@ -437,8 +437,8 @@ func (client *Client) UpdateBook(ctx context.Context, req *google_example_librar
 // MoveBook moves a book to another shelf, and returns the new book.
 func (client *Client) MoveBook(ctx context.Context, req *google_example_library_v1.MoveBookRequest, opts ...gax.CallOption) (*google_example_library_v1.Book, error) {
     ctx = metadata.NewContext(ctx, client.metadata)
-    var callOpts []gax.CallOptions
-    callOpts = append(callOpts, client.callOptions["MoveBook"])
+    var callOpts []gax.CallOption
+    callOpts = append(callOpts, client.callOptions["MoveBook"]...)
     callOpts = append(callOpts, opts...)
     var resp *google_example_library_v1.Book
     err := gax.Invoke(ctx, func (c context.Context) error {
@@ -458,8 +458,8 @@ func (client *Client) MoveBook(ctx context.Context, req *google_example_library_
 // ListStrings lists a primitive resource. To test go page streaming.
 func (client *Client) ListStrings(ctx context.Context, req *google_example_library_v1.ListStringsRequest, opts ...gax.CallOption) (*StringIterator, error) {
     ctx = metadata.NewContext(ctx, client.metadata)
-    var callOpts []gax.CallOptions
-    callOpts = append(callOpts, client.callOptions["ListStrings"])
+    var callOpts []gax.CallOption
+    callOpts = append(callOpts, client.callOptions["ListStrings"]...)
     callOpts = append(callOpts, opts...)
     atLastPage := false
     return &StringIterator{

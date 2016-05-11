@@ -358,6 +358,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
     TreeSet<GoImport> imports = new TreeSet<>();
 
     coreImports.add(GoImport.create("fmt"));
+    coreImports.add(GoImport.create("runtime"));
 
     // Add non-service-specific imports.
     imports.add(GoImport.create("golang.org/x/net/context"));
@@ -377,7 +378,9 @@ public class GoGapicContext extends GapicContext implements GoContext {
       MethodConfig methodConfig =
           getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
       imports.add(createMessageImport(inputMessage));
-      imports.add(createMessageImport(outputMessage));
+      if (!isEmpty(method.getOutputType())) {
+        imports.add(createMessageImport(outputMessage));
+      }
       if (methodConfig.isPageStreaming()) {
         TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
         if (resourceType.isMessage()) {
