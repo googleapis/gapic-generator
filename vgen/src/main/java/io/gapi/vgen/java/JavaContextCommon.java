@@ -221,37 +221,36 @@ public class JavaContextCommon {
 
       public abstract Builder setParams(ImmutableList<Variable> params);
 
-      public Builder setParams(JavaGapicContext languageProvider, Iterable<Field> fields) {
-        return setParams(fieldsToParams(languageProvider, fields));
+      public Builder setParams(JavaGapicContext context, Iterable<Field> fields) {
+        return setParams(fieldsToParams(context, fields));
       }
 
       public Builder setParamsWithFormatting(
-          JavaGapicContext languageProvider,
+          JavaGapicContext context,
           Interface service,
           Iterable<Field> fields,
           ImmutableMap<String, String> fieldNamePatterns) {
-        return setParams(
-            fieldsToParamsWithFormatting(languageProvider, service, fields, fieldNamePatterns));
+        return setParams(fieldsToParamsWithFormatting(context, service, fields, fieldNamePatterns));
       }
 
       public Builder setSingleParam(
-          JavaGapicContext languageProvider, TypeRef requestType, String name, String doc) {
+          JavaGapicContext context, TypeRef requestType, String name, String doc) {
         return setParams(ImmutableList.of(s_newVariable(requestType, name, doc)));
       }
 
       public abstract Builder setRequiredParams(ImmutableList<Variable> params);
 
-      public Builder setRequiredParams(JavaGapicContext languageProvider, Iterable<Field> fields) {
-        return setRequiredParams(fieldsToParams(languageProvider, fields));
+      public Builder setRequiredParams(JavaGapicContext context, Iterable<Field> fields) {
+        return setRequiredParams(fieldsToParams(context, fields));
       }
 
       public Builder setRequiredParamsWithFormatting(
-          JavaGapicContext languageProvider,
+          JavaGapicContext context,
           Interface service,
           Iterable<Field> fields,
           ImmutableMap<String, String> fieldNamePatterns) {
         return setRequiredParams(
-            fieldsToParamsWithFormatting(languageProvider, service, fields, fieldNamePatterns));
+            fieldsToParamsWithFormatting(context, service, fields, fieldNamePatterns));
       }
 
       public Builder setRequiredParamsEmpty() {
@@ -265,20 +264,20 @@ public class JavaContextCommon {
       public abstract JavaDocConfig build();
 
       private static ImmutableList<Variable> fieldsToParams(
-          JavaGapicContext languageProvider, Iterable<Field> fields) {
+          JavaGapicContext context, Iterable<Field> fields) {
         ImmutableList.Builder<Variable> params = ImmutableList.<Variable>builder();
         for (Field field : fields) {
           params.add(
               s_newVariable(
                   field.getType(),
                   LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName()),
-                  languageProvider.getDescription(field)));
+                  context.getDescription(field)));
         }
         return params.build();
       }
 
       private static ImmutableList<Variable> fieldsToParamsWithFormatting(
-          JavaGapicContext languageProvider,
+          JavaGapicContext context,
           Interface service,
           Iterable<Field> fields,
           ImmutableMap<String, String> fieldNamePatterns) {
@@ -289,16 +288,16 @@ public class JavaContextCommon {
                 s_newVariable(
                     field.getType(),
                     LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName()),
-                    languageProvider.getDescription(field),
+                    context.getDescription(field),
                     "formatted" + LanguageUtil.lowerUnderscoreToUpperCamel(field.getSimpleName()),
-                    languageProvider.getCollectionConfig(
+                    context.getCollectionConfig(
                         service, fieldNamePatterns.get(field.getSimpleName()))));
           } else {
             params.add(
                 s_newVariable(
                     field.getType(),
                     LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName()),
-                    languageProvider.getDescription(field)));
+                    context.getDescription(field)));
           }
         }
         return params.build();
