@@ -15,23 +15,90 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 
-function DnsExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-  // Create a new Dns service
-  $service = new Google_Service_Dns($client);
+// Create a new Dns service
+$service = new Google_Service_Dns($client);
 
-  // Identifies the project addressed by this request.
-  $project = '';
-  // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  $managedZone = '';
+// Identifies the project addressed by this request.
+$project = '';
+// Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+$managedZone = '';
 
-  $response = $service->changes->createChanges($project, $managedZone);
+$response = $service->changes->createChanges($project, $managedZone);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/dns_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new Dns service
+$service = new Google_Service_Dns($client);
+
+// Identifies the project addressed by this request.
+$project = '';
+// Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+$managedZone = '';
+// The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
+$changeId = '';
+
+$response = $service->changes->getChanges($project, $managedZone, $changeId);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/dns_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new Dns service
+$service = new Google_Service_Dns($client);
+
+// Identifies the project addressed by this request.
+$project = '';
+// Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+$managedZone = '';
+
+$response = $service->changes->listChanges($project, $managedZone);
+
+foreach ($response['changes'] as $element) {
+  // TODO: Add code here to process the elements.
 }
 
 <?php
@@ -50,25 +117,116 @@ function DnsExample
 require_once __DIR__ . '/vendor/autoload.php';
 
 
-function DnsExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-  // Create a new Dns service
-  $service = new Google_Service_Dns($client);
+// Create a new Dns service
+$service = new Google_Service_Dns($client);
 
-  // Identifies the project addressed by this request.
-  $project = '';
-  // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  $managedZone = '';
-  // The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
-  $changeId = '';
+// Identifies the project addressed by this request.
+$project = '';
 
-  $response = $service->changes->getChanges($project, $managedZone, $changeId);
+$response = $service->managedZones->createManagedZones($project);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/dns_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new Dns service
+$service = new Google_Service_Dns($client);
+
+// Identifies the project addressed by this request.
+$project = '';
+// Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+$managedZone = '';
+
+$response = $service->managedZones->deleteManagedZones($project, $managedZone);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/dns_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new Dns service
+$service = new Google_Service_Dns($client);
+
+// Identifies the project addressed by this request.
+$project = '';
+// Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+$managedZone = '';
+
+$response = $service->managedZones->getManagedZones($project, $managedZone);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/dns_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new Dns service
+$service = new Google_Service_Dns($client);
+
+// Identifies the project addressed by this request.
+$project = '';
+
+$response = $service->managedZones->listManagedZones($project);
+
+foreach ($response['managedZones'] as $element) {
+  // TODO: Add code here to process the elements.
 }
 
 <?php
@@ -87,28 +245,19 @@ function DnsExample
 require_once __DIR__ . '/vendor/autoload.php';
 
 
-function DnsExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-  // Create a new Dns service
-  $service = new Google_Service_Dns($client);
+// Create a new Dns service
+$service = new Google_Service_Dns($client);
 
-  // Identifies the project addressed by this request.
-  $project = '';
-  // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  $managedZone = '';
+// Identifies the project addressed by this request.
+$project = '';
 
-  $response = $service->changes->listChanges($project, $managedZone);
-
-  foreach ($response['changes'] as $changes) {
-    // TODO: Add code here to process changes.
-  }
-}
+$response = $service->projects->getProjects($project);
 
 <?php
 /*
@@ -126,199 +275,23 @@ function DnsExample
 require_once __DIR__ . '/vendor/autoload.php';
 
 
-function DnsExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-  // Create a new Dns service
-  $service = new Google_Service_Dns($client);
+// Create a new Dns service
+$service = new Google_Service_Dns($client);
 
-  // Identifies the project addressed by this request.
-  $project = '';
+// Identifies the project addressed by this request.
+$project = '';
+// Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+$managedZone = '';
 
-  $response = $service->managedZones->createManagedZones($project);
-}
+$response = $service->resourceRecordSets->listResourceRecordSets($project, $managedZone);
 
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
- *    https://console.developers.google.com/apis/api/dns_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function DnsExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new Dns service
-  $service = new Google_Service_Dns($client);
-
-  // Identifies the project addressed by this request.
-  $project = '';
-  // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  $managedZone = '';
-
-  $response = $service->managedZones->deleteManagedZones($project, $managedZone);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
- *    https://console.developers.google.com/apis/api/dns_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function DnsExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new Dns service
-  $service = new Google_Service_Dns($client);
-
-  // Identifies the project addressed by this request.
-  $project = '';
-  // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  $managedZone = '';
-
-  $response = $service->managedZones->getManagedZones($project, $managedZone);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
- *    https://console.developers.google.com/apis/api/dns_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function DnsExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new Dns service
-  $service = new Google_Service_Dns($client);
-
-  // Identifies the project addressed by this request.
-  $project = '';
-
-  $response = $service->managedZones->listManagedZones($project);
-
-  foreach ($response['managedZones'] as $managedZones) {
-    // TODO: Add code here to process managedZones.
-  }
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
- *    https://console.developers.google.com/apis/api/dns_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function DnsExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new Dns service
-  $service = new Google_Service_Dns($client);
-
-  // Identifies the project addressed by this request.
-  $project = '';
-
-  $response = $service->projects->getProjects($project);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
- *    https://console.developers.google.com/apis/api/dns_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function DnsExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new Dns service
-  $service = new Google_Service_Dns($client);
-
-  // Identifies the project addressed by this request.
-  $project = '';
-  // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-  $managedZone = '';
-
-  $response = $service->resourceRecordSets->listResourceRecordSets($project, $managedZone);
-
-  foreach ($response['rrsets'] as $rrsets) {
-    // TODO: Add code here to process rrsets.
-  }
+foreach ($response['rrsets'] as $element) {
+  // TODO: Add code here to process the elements.
 }
 

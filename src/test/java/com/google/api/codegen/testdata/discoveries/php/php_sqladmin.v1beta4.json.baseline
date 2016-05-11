@@ -15,25 +15,92 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
 
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-  // The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
-  $id = 0;
+// Project ID of the project that contains the instance.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
+// The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
+$id = 0;
 
-  $response = $service->backupRuns->deleteBackupRuns($project, $instance, $id);
+$response = $service->backupRuns->deleteBackupRuns($project, $instance, $id);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
+// The ID of this Backup Run.
+$id = 0;
+
+$response = $service->backupRuns->getBackupRuns($project, $instance, $id);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
+
+$response = $service->backupRuns->listBackupRuns($project, $instance);
+
+foreach ($response['items'] as $element) {
+  // TODO: Add code here to process the elements.
 }
 
 <?php
@@ -52,25 +119,471 @@ function SQLAdminExample
 require_once __DIR__ . '/vendor/autoload.php';
 
 
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
 
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-  // The ID of this Backup Run.
-  $id = 0;
+// Project ID of the project that contains the instance.
+$project = '';
+// Database instance ID. This does not include the project ID.
+$instance = '';
+// Name of the database to be deleted in the instance.
+$database = '';
 
-  $response = $service->backupRuns->getBackupRuns($project, $instance, $id);
+$response = $service->databases->deleteDatabases($project, $instance, $database);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Database instance ID. This does not include the project ID.
+$instance = '';
+// Name of the database in the instance.
+$database = '';
+
+$response = $service->databases->getDatabases($project, $instance, $database);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Database instance ID. This does not include the project ID.
+$instance = '';
+
+$response = $service->databases->insertDatabases($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project for which to list Cloud SQL instances.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
+
+$response = $service->databases->listDatabases($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Database instance ID. This does not include the project ID.
+$instance = '';
+// Name of the database to be updated in the instance.
+$database = '';
+
+$response = $service->databases->patchDatabases($project, $instance, $database);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Database instance ID. This does not include the project ID.
+$instance = '';
+// Name of the database to be updated in the instance.
+$database = '';
+
+$response = $service->databases->updateDatabases($project, $instance, $database);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+$response = $service->flags->listFlags();
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the source as well as the clone Cloud SQL instance.
+$project = '';
+// The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
+$instance = '';
+
+$response = $service->instances->cloneInstances($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance to be deleted.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
+
+$response = $service->instances->deleteInstances($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance to be exported.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
+
+$response = $service->instances->exportInstances($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// ID of the project that contains the read replica.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
+
+$response = $service->instances->failoverInstances($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Database instance ID. This does not include the project ID.
+$instance = '';
+
+$response = $service->instances->getInstances($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
+
+$response = $service->instances->importInstances($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project to which the newly created Cloud SQL instances should belong.
+$project = '';
+
+$response = $service->instances->insertInstances($project);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project for which to list Cloud SQL instances.
+$project = '';
+
+$response = $service->instances->listInstances($project);
+
+foreach ($response['items'] as $element) {
+  // TODO: Add code here to process the elements.
 }
 
 <?php
@@ -89,27 +602,312 @@ function SQLAdminExample
 require_once __DIR__ . '/vendor/autoload.php';
 
 
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
 
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
+// Project ID of the project that contains the instance.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
 
-  $response = $service->backupRuns->listBackupRuns($project, $instance);
+$response = $service->instances->patchInstances($project, $instance);
 
-  foreach ($response['items'] as $items) {
-    // TODO: Add code here to process items.
-  }
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// ID of the project that contains the read replica.
+$project = '';
+// Cloud SQL read replica instance name.
+$instance = '';
+
+$response = $service->instances->promoteReplicaInstances($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
+
+$response = $service->instances->resetSslConfigInstances($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance to be restarted.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
+
+$response = $service->instances->restartInstances($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
+
+$response = $service->instances->restoreBackupInstances($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// ID of the project that contains the read replica.
+$project = '';
+// Cloud SQL read replica instance name.
+$instance = '';
+
+$response = $service->instances->startReplicaInstances($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// ID of the project that contains the read replica.
+$project = '';
+// Cloud SQL read replica instance name.
+$instance = '';
+
+$response = $service->instances->stopReplicaInstances($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
+
+$response = $service->instances->updateInstances($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Instance operation ID.
+$operation = '';
+
+$response = $service->operations->getOperations($project, $operation);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
+
+$response = $service->operations->listOperations($project, $instance);
+
+foreach ($response['items'] as $element) {
+  // TODO: Add code here to process the elements.
 }
 
 <?php
@@ -128,25 +926,286 @@ function SQLAdminExample
 require_once __DIR__ . '/vendor/autoload.php';
 
 
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
 
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Database instance ID. This does not include the project ID.
-  $instance = '';
-  // Name of the database to be deleted in the instance.
-  $database = '';
+// Project ID of the Cloud SQL project.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
 
-  $response = $service->databases->deleteDatabases($project, $instance, $database);
+$response = $service->sslCerts->createEphemeralSslCerts($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance to be deleted.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
+// Sha1 FingerPrint.
+$sha1Fingerprint = '';
+
+$response = $service->sslCerts->deleteSslCerts($project, $instance, $sha1Fingerprint);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
+// Sha1 FingerPrint.
+$sha1Fingerprint = '';
+
+$response = $service->sslCerts->getSslCerts($project, $instance, $sha1Fingerprint);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project to which the newly created Cloud SQL instances should belong.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
+
+$response = $service->sslCerts->insertSslCerts($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project for which to list Cloud SQL instances.
+$project = '';
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '';
+
+$response = $service->sslCerts->listSslCerts($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project for which to list tiers.
+$project = '';
+
+$response = $service->tiers->listTiers($project);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Database instance ID. This does not include the project ID.
+$instance = '';
+// Host of the user in the instance.
+$host = '';
+// Name of the user in the instance.
+$name = '';
+
+$response = $service->users->deleteUsers($project, $instance, $host, $name);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Database instance ID. This does not include the project ID.
+$instance = '';
+
+$response = $service->users->insertUsers($project, $instance);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Database instance ID. This does not include the project ID.
+$instance = '';
+
+$response = $service->users->listUsers($project, $instance);
+
+foreach ($response['items'] as $element) {
+  // TODO: Add code here to process the elements.
 }
 
 <?php
@@ -165,1196 +1224,23 @@ function SQLAdminExample
 require_once __DIR__ . '/vendor/autoload.php';
 
 
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Database instance ID. This does not include the project ID.
-  $instance = '';
-  // Name of the database in the instance.
-  $database = '';
-
-  $response = $service->databases->getDatabases($project, $instance, $database);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Database instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->databases->insertDatabases($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project for which to list Cloud SQL instances.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->databases->listDatabases($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Database instance ID. This does not include the project ID.
-  $instance = '';
-  // Name of the database to be updated in the instance.
-  $database = '';
-
-  $response = $service->databases->patchDatabases($project, $instance, $database);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Database instance ID. This does not include the project ID.
-  $instance = '';
-  // Name of the database to be updated in the instance.
-  $database = '';
-
-  $response = $service->databases->updateDatabases($project, $instance, $database);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  $response = $service->flags->listFlags();
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the source as well as the clone Cloud SQL instance.
-  $project = '';
-  // The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
-  $instance = '';
-
-  $response = $service->instances->cloneInstances($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance to be deleted.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->instances->deleteInstances($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance to be exported.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->instances->exportInstances($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // ID of the project that contains the read replica.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->instances->failoverInstances($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Database instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->instances->getInstances($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->instances->importInstances($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project to which the newly created Cloud SQL instances should belong.
-  $project = '';
-
-  $response = $service->instances->insertInstances($project);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project for which to list Cloud SQL instances.
-  $project = '';
-
-  $response = $service->instances->listInstances($project);
-
-  foreach ($response['items'] as $items) {
-    // TODO: Add code here to process items.
-  }
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->instances->patchInstances($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // ID of the project that contains the read replica.
-  $project = '';
-  // Cloud SQL read replica instance name.
-  $instance = '';
-
-  $response = $service->instances->promoteReplicaInstances($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->instances->resetSslConfigInstances($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance to be restarted.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->instances->restartInstances($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->instances->restoreBackupInstances($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // ID of the project that contains the read replica.
-  $project = '';
-  // Cloud SQL read replica instance name.
-  $instance = '';
-
-  $response = $service->instances->startReplicaInstances($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // ID of the project that contains the read replica.
-  $project = '';
-  // Cloud SQL read replica instance name.
-  $instance = '';
-
-  $response = $service->instances->stopReplicaInstances($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->instances->updateInstances($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Instance operation ID.
-  $operation = '';
-
-  $response = $service->operations->getOperations($project, $operation);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->operations->listOperations($project, $instance);
-
-  foreach ($response['items'] as $items) {
-    // TODO: Add code here to process items.
-  }
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the Cloud SQL project.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->sslCerts->createEphemeralSslCerts($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance to be deleted.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-  // Sha1 FingerPrint.
-  $sha1Fingerprint = '';
-
-  $response = $service->sslCerts->deleteSslCerts($project, $instance, $sha1Fingerprint);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-  // Sha1 FingerPrint.
-  $sha1Fingerprint = '';
-
-  $response = $service->sslCerts->getSslCerts($project, $instance, $sha1Fingerprint);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project to which the newly created Cloud SQL instances should belong.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->sslCerts->insertSslCerts($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project for which to list Cloud SQL instances.
-  $project = '';
-  // Cloud SQL instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->sslCerts->listSslCerts($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project for which to list tiers.
-  $project = '';
-
-  $response = $service->tiers->listTiers($project);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Database instance ID. This does not include the project ID.
-  $instance = '';
-  // Host of the user in the instance.
-  $host = '';
-  // Name of the user in the instance.
-  $name = '';
-
-  $response = $service->users->deleteUsers($project, $instance, $host, $name);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Database instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->users->insertUsers($project, $instance);
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Database instance ID. This does not include the project ID.
-  $instance = '';
-
-  $response = $service->users->listUsers($project, $instance);
-
-  foreach ($response['items'] as $items) {
-    // TODO: Add code here to process items.
-  }
-}
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
- *    https://console.developers.google.com/apis/api/sqladmin_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-function SQLAdminExample
-{
-  // Create a new client
-  $client = new Google_Client();
-  $client->setApplicationName('Client Sample Application');
-  $client->useApplicationDefaultCredentials();
-  $client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-  // Create a new SQLAdmin service
-  $service = new Google_Service_SQLAdmin($client);
-
-  // Project ID of the project that contains the instance.
-  $project = '';
-  // Database instance ID. This does not include the project ID.
-  $instance = '';
-  // Host of the user in the instance.
-  $host = '';
-  // Name of the user in the instance.
-  $name = '';
-
-  $response = $service->users->updateUsers($project, $instance, $host, $name);
-}
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new SQLAdmin service
+$service = new Google_Service_SQLAdmin($client);
+
+// Project ID of the project that contains the instance.
+$project = '';
+// Database instance ID. This does not include the project ID.
+$instance = '';
+// Host of the user in the instance.
+$host = '';
+// Name of the user in the instance.
+$name = '';
+
+$response = $service->users->updateUsers($project, $instance, $host, $name);
 
