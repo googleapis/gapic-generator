@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Some static utility methods.
  *
- * Many of these methods are copied from LanguageContext. This is due to the fact that the snippet
+ * Many of these methods are copied from CodegenContext. This is due to the fact that the snippet
  * rendering engine cannot reference static methods. At the same time, instance methods are awkward
  * to use in Java code. Consequently, utility methods that are useful in both circumstances are
  * written twice.

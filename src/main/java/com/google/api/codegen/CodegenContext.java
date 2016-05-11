@@ -19,13 +19,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A LanguageContext or a derived class of it provides helper methods for snippet files to get data
+ * A CodegenContext or a derived class of it provides helper methods for snippet files to get data
  * and perform data transformations that are difficult or messy to do in the snippets themselves. At
  * this level, functions are provided that are not specific to any language or use case. The
- * LanguageContext hierarchy specializes first by use case (e.g. Gapic vs Discovery), and
+ * CodegenContext hierarchy specializes first by use case (e.g. Gapic vs Discovery), and
  * secondarily by language.
  */
-public class LanguageContext {
+public class CodegenContext {
 
   // Note the below methods are instance-based, even if they don't depend on instance state,
   // so they can be accessed by templates.

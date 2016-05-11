@@ -26,9 +26,9 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 /**
- * A LanguageContext that provides helpers specific to the Discovery use case.
+ * A CodegenContext that provides helpers specific to the Discovery use case.
  */
-public abstract class DiscoveryContext extends LanguageContext {
+public abstract class DiscoveryContext extends CodegenContext {
 
   private final Service service;
   private final ApiaryConfig apiaryConfig;
