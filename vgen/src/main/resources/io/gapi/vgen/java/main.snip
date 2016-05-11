@@ -675,17 +675,7 @@
 @end
 
 @snippet setCallNameFromParam(param)
-  @let paramNameInCamel = context.lowerCamelToUpperCamel(param.getUnformattedName)
-    @if param.getType.isMap
-      putAll{@paramNameInCamel}
-    @else
-      @if param.getType.isRepeated
-        addAll{@paramNameInCamel}
-      @else
-        set{@paramNameInCamel}
-      @end
-    @end
-  @end
+  {@setCallName(param.getType, context.lowerCamelToUpperCamel(param.getUnformattedName))}
 @end
 
 @private formatResourceFunctionArgs(collectionConfig)
