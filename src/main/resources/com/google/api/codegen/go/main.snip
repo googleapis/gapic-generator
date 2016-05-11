@@ -62,7 +62,7 @@
         callOptions map[string][]gax.CallOption
 
         // The metadata to be sent with each request.
-        metadata map[string]string
+        metadata map[string][]string
     }
 
     {@constructor(service)}
@@ -86,20 +86,20 @@
     func defaultClientSettings() gax.ClientSettings {
         return gax.ClientSettings{
             AppName: "gax",
-            AppVersion: gax.Version(),
+            AppVersion: gax.Version,
             Endpoint: "{@context.getServiceConfig.getServiceAddress(service)}:{@context.getServiceConfig.getServicePort()}",
             Scopes: []string{
                 @join scope : context.getServiceConfig.getAuthScopes(service)
                     "{@scope}",
                 @end
             },
-            CallSettings: map[string][]gax.CallOption{
+            CallOptions: map[string][]gax.CallOption{
                 @join method : service.getMethods
                     @let methodName = method.getSimpleName, \
                          methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
                          retryParamsMethodName = context.lowerUnderscoreToLowerCamel(methodConfig.getRetrySettingsConfigName), \
                          retryCodesMethodName = context.lowerUnderscoreToUpperCamel(methodConfig.getRetryCodesConfigName)
-                        "{@methodName}": append([]gax.CallOption{with{@retryCodesMethodName}RetryCodes())}, {@retryParamsMethodName}RetryOptions()...),
+                        "{@methodName}": append([]gax.CallOption{with{@retryCodesMethodName}RetryCodes()}, {@retryParamsMethodName}RetryOptions()...),
                     @end
                 @end
             },
@@ -142,9 +142,9 @@
         return &Client {
             conn: conn,
             client: {@context.getServiceClientConstructorName(service)}(conn),
-            callOptions: s.CallSettings,
-            metadata: map[string]string{
-                "x-goog-api-client": fmt.Sprintf("%s/%s %s gax/%s go/%s", s.AppName, s.AppVersion, gapicNameVersion, gax.Version, runtime.Version)
+            callOptions: s.CallOptions,
+            metadata: map[string][]string{
+                "x-goog-api-client": []string{fmt.Sprintf("%s/%s %s gax/%s go/%s", s.AppName, s.AppVersion, gapicNameVersion, gax.Version, runtime.Version())},
             },
         }, nil
     }
@@ -196,8 +196,8 @@
 @end
 
 @private callOptions(methodName)
-    var callOpts []gax.CallOptions
-    callOpts = append(callOpts, client.callOptions["{@methodName}"])
+    var callOpts []gax.CallOption
+    callOpts = append(callOpts, client.callOptions["{@methodName}"]...)
     callOpts = append(callOpts, opts...)
 @end
 
