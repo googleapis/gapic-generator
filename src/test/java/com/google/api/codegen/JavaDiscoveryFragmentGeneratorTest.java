@@ -51,7 +51,7 @@ public class JavaDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGenerat
           new Object[] {
             "java_" + fileName,
             "discoveries/" + fileName,
-            new String[] {"com/google/api/codegen/java/java_discovery_gapic.yaml"}
+            new String[] {"com/google/api/codegen/java/java_discovery.yaml"}
           });
     }
     return builder.build();

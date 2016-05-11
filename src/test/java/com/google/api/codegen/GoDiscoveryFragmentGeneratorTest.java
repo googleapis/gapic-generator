@@ -50,7 +50,7 @@ public class GoDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGenerator
           new Object[] {
             "go_" + fileName,
             "discoveries/" + fileName,
-            new String[] {"com/google/api/codegen/go/go_discovery_gapic.yaml"}
+            new String[] {"com/google/api/codegen/go/go_discovery.yaml"}
           });
     }
     return builder.build();

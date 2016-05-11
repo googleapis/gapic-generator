@@ -51,7 +51,7 @@ public class NodeJSDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGener
           new Object[] {
             "nodejs_" + fileName,
             "discoveries/" + fileName,
-            new String[] {"com/google/api/codegen/nodejs/nodejs_discovery_gapic.yaml"}
+            new String[] {"com/google/api/codegen/nodejs/nodejs_discovery.yaml"}
           });
     }
     return builder.build();

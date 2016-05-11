@@ -53,7 +53,7 @@ public class PhpDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGenerato
           new Object[] {
             "php_" + fileName,
             "discoveries/" + fileName,
-            new String[] {"com/google/api/codegen/php/php_discovery_gapic.yaml"}
+            new String[] {"com/google/api/codegen/php/php_discovery.yaml"}
           });
     }
     return builder.build();
