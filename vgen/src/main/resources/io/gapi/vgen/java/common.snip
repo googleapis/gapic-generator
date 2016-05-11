@@ -98,15 +98,17 @@
 @end
 
 @snippet setCallName(field)
-  @let paramNameInCamel = context.lowerUnderscoreToUpperCamel(field.getSimpleName)
-    @if field.getType.isMap
-      putAll{@paramNameInCamel}
+  {@setCallName(field.getType, context.lowerUnderscoreToUpperCamel(field.getSimpleName))}
+@end
+
+@snippet setCallName(type, name)
+  @if type.isMap
+    putAll{@name}
+  @else
+    @if type.isRepeated
+      addAll{@name}
     @else
-      @if field.isRepeated
-        addAll{@paramNameInCamel}
-      @else
-        set{@paramNameInCamel}
-      @end
+      set{@name}
     @end
   @end
 @end

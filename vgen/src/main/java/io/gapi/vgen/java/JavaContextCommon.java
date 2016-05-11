@@ -158,9 +158,11 @@ public class JavaContextCommon {
   abstract static class Variable {
     public abstract TypeRef getType();
 
-    public abstract String getName();
+    public abstract String getUnformattedName();
 
     public abstract String getDescription();
+
+    public abstract String getName();
 
     @Nullable
     public abstract CollectionConfig getFormattingConfig();
@@ -180,12 +182,17 @@ public class JavaContextCommon {
   // This function is necessary to provide a static entry point for the same-named
   // member function.
   public static Variable s_newVariable(TypeRef type, String name, String description) {
-    return s_newVariable(type, name, description, null);
+    return s_newVariable(type, name, description, name, null);
   }
 
   public static Variable s_newVariable(
-      TypeRef type, String name, String description, CollectionConfig formattingConfig) {
-    return new AutoValue_JavaContextCommon_Variable(type, name, description, formattingConfig);
+      TypeRef type,
+      String unformattedName,
+      String description,
+      String name,
+      CollectionConfig formattingConfig) {
+    return new AutoValue_JavaContextCommon_Variable(
+        type, unformattedName, description, name, formattingConfig);
   }
 
   @AutoValue
@@ -197,6 +204,8 @@ public class JavaContextCommon {
     public abstract String getReturnType();
 
     public abstract ImmutableList<Variable> getParams();
+
+    public abstract ImmutableList<Variable> getRequiredParams();
 
     public abstract boolean isPagedVariant();
 
@@ -212,47 +221,40 @@ public class JavaContextCommon {
 
       public abstract Builder setParams(ImmutableList<Variable> params);
 
-      public Builder setParams(JavaGapicContext languageProvider, ImmutableList<Field> fields) {
-        ImmutableList.Builder<Variable> params = ImmutableList.<Variable>builder();
-        for (Field field : fields) {
-          params.add(
-              s_newVariable(
-                  field.getType(),
-                  LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName()),
-                  languageProvider.getDescription(field)));
-        }
-        return setParams(params.build());
+      public Builder setParams(JavaGapicContext context, Iterable<Field> fields) {
+        return setParams(fieldsToParams(context, fields));
       }
 
       public Builder setParamsWithFormatting(
-          JavaGapicContext languageProvider,
+          JavaGapicContext context,
           Interface service,
-          ImmutableList<Field> fields,
+          Iterable<Field> fields,
           ImmutableMap<String, String> fieldNamePatterns) {
-        ImmutableList.Builder<Variable> params = ImmutableList.<Variable>builder();
-        for (Field field : fields) {
-          if (fieldNamePatterns.containsKey(field.getSimpleName())) {
-            params.add(
-                s_newVariable(
-                    field.getType(),
-                    "formatted" + LanguageUtil.lowerUnderscoreToUpperCamel(field.getSimpleName()),
-                    languageProvider.getDescription(field),
-                    languageProvider.getCollectionConfig(
-                        service, fieldNamePatterns.get(field.getSimpleName()))));
-          } else {
-            params.add(
-                s_newVariable(
-                    field.getType(),
-                    LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName()),
-                    languageProvider.getDescription(field)));
-          }
-        }
-        return setParams(params.build());
+        return setParams(fieldsToParamsWithFormatting(context, service, fields, fieldNamePatterns));
       }
 
       public Builder setSingleParam(
-          JavaGapicContext languageProvider, TypeRef requestType, String name, String doc) {
+          JavaGapicContext context, TypeRef requestType, String name, String doc) {
         return setParams(ImmutableList.of(s_newVariable(requestType, name, doc)));
+      }
+
+      public abstract Builder setRequiredParams(ImmutableList<Variable> params);
+
+      public Builder setRequiredParams(JavaGapicContext context, Iterable<Field> fields) {
+        return setRequiredParams(fieldsToParams(context, fields));
+      }
+
+      public Builder setRequiredParamsWithFormatting(
+          JavaGapicContext context,
+          Interface service,
+          Iterable<Field> fields,
+          ImmutableMap<String, String> fieldNamePatterns) {
+        return setRequiredParams(
+            fieldsToParamsWithFormatting(context, service, fields, fieldNamePatterns));
+      }
+
+      public Builder setRequiredParamsEmpty() {
+        return setRequiredParams(ImmutableList.<Variable>of());
       }
 
       public abstract Builder setPagedVariant(boolean paged);
@@ -260,6 +262,46 @@ public class JavaContextCommon {
       public abstract Builder setCallableVariant(boolean callable);
 
       public abstract JavaDocConfig build();
+
+      private static ImmutableList<Variable> fieldsToParams(
+          JavaGapicContext context, Iterable<Field> fields) {
+        ImmutableList.Builder<Variable> params = ImmutableList.<Variable>builder();
+        for (Field field : fields) {
+          params.add(
+              s_newVariable(
+                  field.getType(),
+                  LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName()),
+                  context.getDescription(field)));
+        }
+        return params.build();
+      }
+
+      private static ImmutableList<Variable> fieldsToParamsWithFormatting(
+          JavaGapicContext context,
+          Interface service,
+          Iterable<Field> fields,
+          ImmutableMap<String, String> fieldNamePatterns) {
+        ImmutableList.Builder<Variable> params = ImmutableList.<Variable>builder();
+        for (Field field : fields) {
+          if (fieldNamePatterns.containsKey(field.getSimpleName())) {
+            params.add(
+                s_newVariable(
+                    field.getType(),
+                    LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName()),
+                    context.getDescription(field),
+                    "formatted" + LanguageUtil.lowerUnderscoreToUpperCamel(field.getSimpleName()),
+                    context.getCollectionConfig(
+                        service, fieldNamePatterns.get(field.getSimpleName()))));
+          } else {
+            params.add(
+                s_newVariable(
+                    field.getType(),
+                    LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName()),
+                    context.getDescription(field)));
+          }
+        }
+        return params.build();
+      }
     }
   }
 
