@@ -39,14 +39,14 @@ public class CSharpGapicProvider<InputElementT extends ProtoElement>
 
   private final CSharpGapicContext context;
   private final CSharpProvider provider;
-  private final CSharpProtoElementView<InputElementT> view;
+  private final InputElementView<InputElementT> view;
 
   public CSharpGapicProvider(
       Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
     this.context = new CSharpGapicContext(model, apiConfig);
     this.provider = new CSharpProvider();
     // This cast will fail if the view specified in the configuration file is of the wrong type
-    this.view = (CSharpProtoElementView<InputElementT>) view;
+    this.view = view;
   }
 
   @Override
@@ -75,13 +75,13 @@ public class CSharpGapicProvider<InputElementT extends ProtoElement>
 
   @Override
   public GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor) {
-    CSharpProtoElementView<InputElementT> view = getView();
+    InputElementView<InputElementT> view = getView();
     return provider.generate(
-        element, snippetDescriptor, context, context.getNamespace(view.getNamespaceFile(element)));
+        element, snippetDescriptor, context, context.getNamespace(element.getFile()));
   }
 
   @Override
-  public CSharpProtoElementView<InputElementT> getView() {
+  public InputElementView<InputElementT> getView() {
     return view;
   }
 }

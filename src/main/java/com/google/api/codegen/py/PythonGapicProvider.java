@@ -64,7 +64,7 @@ public class PythonGapicProvider<InputElementT extends ProtoElement>
       GeneratedResult generatedResult = entry.getValue();
       String root;
       if (element instanceof Method) {
-        root = ((Method) element).getParent().getFile().getFullName().replace('.', '/');
+        root = ((Method) element).getFile().getFullName().replace('.', '/');
       } else {
         root = packageRoot;
       }
