@@ -18,13 +18,38 @@ import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
+import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 /**
  * A GapicContext specialized for PHP.
  */
 public class PhpGapicContext extends GapicContext implements PhpContext {
+  /**
+   * A map from primitive types in proto to PHP counterparts.
+   */
+  private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
+      ImmutableMap.<Type, String>builder()
+          .put(Type.TYPE_BOOL, "boolean")
+          .put(Type.TYPE_DOUBLE, "float")
+          .put(Type.TYPE_FLOAT, "float")
+          .put(Type.TYPE_INT64, "integer")
+          .put(Type.TYPE_UINT64, "integer")
+          .put(Type.TYPE_SINT64, "integer")
+          .put(Type.TYPE_FIXED64, "integer")
+          .put(Type.TYPE_SFIXED64, "integer")
+          .put(Type.TYPE_INT32, "integer")
+          .put(Type.TYPE_UINT32, "integer")
+          .put(Type.TYPE_SINT32, "integer")
+          .put(Type.TYPE_FIXED32, "integer")
+          .put(Type.TYPE_SFIXED32, "integer")
+          .put(Type.TYPE_STRING, "string")
+          .put(Type.TYPE_BYTES, "com\\google\\protobuf\\ByteString")
+          .build();
 
   private PhpContextCommon phpCommon;
 
@@ -47,6 +72,11 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
     return service.getFile().getProto().getName().replace(".proto", "_services");
   }
 
+  public String getGrpcClientName(Interface service) {
+    String fullyQualifiedClientName = service.getFullName().replaceAll("\\.", "\\\\") + "Client";
+    return getTypeName(fullyQualifiedClientName);
+  }
+
   public String getTypeName(String typeName) {
     int lastBackslashIndex = typeName.lastIndexOf('\\');
     if (lastBackslashIndex < 0) {
@@ -67,6 +97,53 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
     return "";
   }
 
+  /**
+   * Returns the PHP representation of a reference to a type.
+   */
+  public String typeName(TypeRef type) {
+    if (type.isMap() || type.isRepeated()) {
+      return "array";
+    } else {
+      return basicTypeName(type);
+    }
+  }
+
+  /**
+   * Returns the PHP representation of a type, without cardinality. If the type is a
+   * primitive, basicTypeName returns it in unboxed form.
+   */
+  public String basicTypeName(TypeRef type) {
+    String result = PRIMITIVE_TYPE_MAP.get(type.getKind());
+    if (result != null) {
+      if (result.contains("\\")) {
+        // Fully qualified type name, use regular type name resolver. Can skip boxing logic
+        // because those types are already boxed.
+        return getTypeName(result);
+      }
+      return result;
+    }
+    switch (type.getKind()) {
+      case TYPE_MESSAGE:
+        return getTypeName(type.getMessageType());
+      case TYPE_ENUM:
+        return getTypeName(type.getEnumType());
+      default:
+        throw new IllegalArgumentException("unknown type kind: " + type.getKind());
+    }
+  }
+
+  /**
+   * Gets the full name of the message or enum type in PHP.
+   */
+  public String getTypeName(ProtoElement elem) {
+    // Construct the fully-qualified PHP class name
+    int qualifiedPrefixLength = elem.getFile().getFullName().length() + 1;
+    String shortName = elem.getFullName().substring(qualifiedPrefixLength);
+    String name = getPhpPackage(elem.getFile()) + "\\" + shortName;
+
+    return phpCommon.getMinimallyQualifiedName(name, shortName);
+  }
+
   public String getServiceTitle(Interface service) {
     // TODO get the title from the service yaml file
     return "";
@@ -80,7 +157,7 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
    * Gets the PHP package for the given proto file.
    */
   public String getPhpPackage(ProtoFile file) {
-    return file.getProto().getPackage().replaceAll("\\.", "\\");
+    return file.getProto().getPackage().replaceAll("\\.", "\\\\");
   }
 
   // Constants
