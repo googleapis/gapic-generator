@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.php;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
@@ -52,4 +53,18 @@ public class PhpContextCommon {
     return cleanedImports;
   }
 
+  public Iterable<String> getDocLines(String text) {
+    return getDocLinesWithPrefix(text, "");
+  }
+
+  public Iterable<String> getDocLinesWithPrefix(String text, String firstLinePrefix) {
+    // TODO: convert markdown to phpDoc
+    List<String> result = new ArrayList<>();
+    String linePrefix = firstLinePrefix;
+    for (String line : Splitter.on(String.format("%n")).split(text)) {
+      result.add(" * " + linePrefix + line);
+      linePrefix = "";
+    }
+    return result;
+  }
 }

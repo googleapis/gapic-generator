@@ -1,3 +1,5 @@
+@extends "../common.snip"
+
 @snippet generateFilename(service)
     {@context.getApiWrapperName(service)}.php
 @end
@@ -41,7 +43,17 @@
 @snippet generateBody(service)
     {@alwaysImport()}
 
-    // TODO generate service doc
+    /**
+    {@docLinesFromStr(serviceDocString(service))}
+     *
+     * This class provides the ability to make remote calls to the backing service through method
+     * calls that map to API methods.
+     *
+     * Many parameters require resource names to be formatted in a particular way. To assist
+     * with these names, this class includes a format method for each type of name, and additionally
+     * a parse method to extract the individual identifiers contained within names that are
+     * returned.
+     */
     class {@context.getApiWrapperName(service)}
     {
         {@constants(service)}
@@ -68,6 +80,10 @@
     {@context.addImport("Google\GAX\GrpcBootstrap")}
     {@context.addImport("Google\GAX\GrpcConstants")}
     {@context.addImport("Google\GAX\PathTemplate")}
+@end
+
+@private serviceDocString(protoElement)
+  Service Description: {@context.getDescription(protoElement)}
 @end
 
 @private constants(service)
@@ -247,7 +263,7 @@
          *           Default: a credentials object returned from
          *           Grpc\ChannelCredentials::createSsl()
          *     @@type array $scopes A string array of scopes to use when acquiring credentials.
-         *                         Default the scopes for {@context.getServiceTitle(service)}.
+         *                         Default the scopes for the {@context.getServiceConfig.getTitle(service)}.
          *     @@type array $retryingOverride
          *           An associative array of string => RetryOptions, where the keys
          *           are method names (e.g. 'createFoo'), that overrides default retrying
@@ -337,7 +353,7 @@
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              requiredFields = methodConfig.getRequiredFields(), \
              optionalFields = methodConfig.getOptionalFields()
-            {@methodDoc(method)}
+            {@methodDoc(service, method)}
             public function {@methodName}({@apiMethodParams(requiredFields)}{@commonParams(requiredFields)})
             {
                 {@requestObjectCreation(inTypeName, requiredFields, optionalFields)}
@@ -372,10 +388,6 @@
     @end
 @end
 
-@private methodDoc(method)
-    // TODO generate method doc
-@end
-
 @private requestObjectCreation(inTypeName, requiredFields, optionalFields)
     $request = new {@inTypeName}();
     @join field : requiredFields
@@ -400,6 +412,61 @@
             @end
         @end
      @end
+@end
+
+@private methodDoc(service, method)
+    @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+         requiredFields = methodConfig.getRequiredFields()
+        /**
+        {@docLinesFromStr(context.getDescription(method))}
+        # TODO generate samples
+         *
+        @join param : requiredFields
+            @join commentLine : context.php.getDocLinesWithPrefix(context.getDescription(param), paramDocLinePrefix(param))
+                {@commentLine}
+            @end
+        @end
+         * @@param array $optionalArgs {
+         *     Optional. There are no optional parameters for createTopic yet;
+         *               this $optionalArgs parameter reserves a spot for future ones.
+         * }
+         * @@param array $callSettings {
+         *    Optional.
+         *    @@type \Google\GAX\RetrySettings $retrySettings
+         *          Retry settings to use for this call. If present, then
+         *          $timeout is ignored.
+         *    @@type integer $timeoutMillis
+         *          Timeout to use for this call. Only used if $retrySettings
+         *          is not set.
+         * }
+        {@docReturnLine(service, method)}
+         * @@throws Google\GAX\ApiException if the remote call fails
+         */
+    @end
+@end
+
+@snippet docLinesFromStr(str)
+    @join commentLine : context.php.getDocLines(str)
+        {@commentLine}
+    @end
+@end
+
+@private paramDocLinePrefix(param)
+    @@param {@context.typeName(param.getType)} ${@context.lowerUnderscoreToLowerCamel(param.getSimpleName)} {@""}
+@end
+
+@private docReturnLine(service, method)
+    @let qualifiedOutTypeName = context.fullyQualifiedName(method.getOutputType), \
+         methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+         isPageStreaming = methodConfig.isPageStreaming
+        @if not(context.messages.isEmptyType(method.getOutputType))
+            @if isPageStreaming
+                {@""} * @@return Google\GAX\PageAccessor
+            @else
+                {@""} * @@return {@qualifiedOutTypeName}
+            @end
+        @end
+    @end
 @end
 
 @private cleanupSection()

@@ -16,6 +16,7 @@ package com.google.api.codegen.php;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
+import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
@@ -60,6 +61,10 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
   @Override
   public void resetState(PhpSnippetSet<?> phpSnippetSet, PhpContextCommon phpCommon) {
     this.phpCommon = phpCommon;
+  }
+
+  public PhpContextCommon php() {
+    return phpCommon;
   }
 
   // Snippet Helpers
@@ -132,6 +137,10 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
     }
   }
 
+  public String fullyQualifiedName(TypeRef type) {
+    return type.getMessageType().getFullName().replaceAll("\\.", "\\\\");
+  }
+
   /**
    * Gets the full name of the message or enum type in PHP.
    */
@@ -144,11 +153,6 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
     return phpCommon.getMinimallyQualifiedName(name, shortName);
   }
 
-  public String getServiceTitle(Interface service) {
-    // TODO get the title from the service yaml file
-    return "";
-  }
-
   public String getServiceName(Interface service) {
     return service.getFullName();
   }
@@ -158,6 +162,10 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
    */
   public String getPhpPackage(ProtoFile file) {
     return file.getProto().getPackage().replaceAll("\\.", "\\\\");
+  }
+
+  public String getDescription(ProtoElement element) {
+    return DocumentationUtil.getDescription(element);
   }
 
   // Constants

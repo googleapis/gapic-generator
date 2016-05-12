@@ -29,6 +29,7 @@ use Google\GAX\GrpcBootstrap;
 use Google\GAX\GrpcConstants;
 use Google\GAX\PageStreamingDescriptor;
 use Google\GAX\PathTemplate;
+use google\example\library\v1\Book;
 use google\example\library\v1\CreateBookRequest;
 use google\example\library\v1\CreateShelfRequest;
 use google\example\library\v1\DeleteBookRequest;
@@ -42,11 +43,32 @@ use google\example\library\v1\ListStringsRequest;
 use google\example\library\v1\MergeShelvesRequest;
 use google\example\library\v1\MoveBookRequest;
 use google\example\library\v1\PublishSeriesRequest;
+use google\example\library\v1\Shelf;
 use google\example\library\v1\UpdateBookRequest;
 
 
 
-// TODO generate service doc
+/**
+ * Service Description: This API represents a simple digital library.  It lets you manage Shelf
+ * resources and Book resources in the library. It defines the following
+ * resource model:
+ *
+ * - The API has a collection of [Shelf][google.example.library.v1.Shelf]
+ *   resources, named ``shelves/*``
+ *
+ * - Each Shelf has a collection of [Book][google.example.library.v1.Book]
+ *   resources, named `shelves/*/books/*`
+ *
+ * Check out [cloud docs!](/library/example/link).
+ *
+ * This class provides the ability to make remote calls to the backing service through method
+ * calls that map to API methods.
+ *
+ * Many parameters require resource names to be formatted in a particular way. To assist
+ * with these names, this class includes a format method for each type of name, and additionally
+ * a parse method to extract the individual identifiers contained within names that are
+ * returned.
+ */
 class LibraryServiceApi
 {
     /**
@@ -183,7 +205,7 @@ class LibraryServiceApi
      *           Default: a credentials object returned from
      *           Grpc\ChannelCredentials::createSsl()
      *     @type array $scopes A string array of scopes to use when acquiring credentials.
-     *                         Default the scopes for .
+     *                         Default the scopes for the Google Example Library API.
      *     @type array $retryingOverride
      *           An associative array of string => RetryOptions, where the keys
      *           are method names (e.g. 'createFoo'), that overrides default retrying
@@ -272,7 +294,26 @@ class LibraryServiceApi
     }
 
 
-    // TODO generate method doc
+    /**
+     * Creates a shelf, and returns the new Shelf.
+     *
+     * @param Shelf $shelf The shelf to create.
+     * @param array $optionalArgs {
+     *     Optional. There are no optional parameters for createTopic yet;
+     *               this $optionalArgs parameter reserves a spot for future ones.
+     * }
+     * @param array $callSettings {
+     *    Optional.
+     *    @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeout is ignored.
+     *    @type integer $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     * @return google\example\library\v1\Shelf
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
     public function createShelf($shelf, $optionalArgs = [], $callSettings = [])
     {
         $request = new CreateShelfRequest();
@@ -288,7 +329,26 @@ class LibraryServiceApi
             ['call_credentials_callback' => $this->createCredentialsCallback()]);
     }
 
-    // TODO generate method doc
+    /**
+     * Gets a shelf.
+     *
+     * @param string $name The name of the shelf to retrieve.
+     * @param array $optionalArgs {
+     *     Optional. There are no optional parameters for createTopic yet;
+     *               this $optionalArgs parameter reserves a spot for future ones.
+     * }
+     * @param array $callSettings {
+     *    Optional.
+     *    @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeout is ignored.
+     *    @type integer $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     * @return google\example\library\v1\Shelf
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
     public function getShelf($name, $optionalArgs = [], $callSettings = [])
     {
         $request = new GetShelfRequest();
@@ -304,7 +364,25 @@ class LibraryServiceApi
             ['call_credentials_callback' => $this->createCredentialsCallback()]);
     }
 
-    // TODO generate method doc
+    /**
+     * Lists shelves.
+     *
+     * @param array $optionalArgs {
+     *     Optional. There are no optional parameters for createTopic yet;
+     *               this $optionalArgs parameter reserves a spot for future ones.
+     * }
+     * @param array $callSettings {
+     *    Optional.
+     *    @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeout is ignored.
+     *    @type integer $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     * @return Google\GAX\PageAccessor
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
     public function listShelves($optionalArgs = [], $callSettings = [])
     {
         $request = new ListShelvesRequest();
@@ -319,7 +397,26 @@ class LibraryServiceApi
             ['call_credentials_callback' => $this->createCredentialsCallback()]);
     }
 
-    // TODO generate method doc
+    /**
+     * Deletes a shelf.
+     *
+     * @param string $name The name of the shelf to delete.
+     * @param array $optionalArgs {
+     *     Optional. There are no optional parameters for createTopic yet;
+     *               this $optionalArgs parameter reserves a spot for future ones.
+     * }
+     * @param array $callSettings {
+     *    Optional.
+     *    @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeout is ignored.
+     *    @type integer $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
     public function deleteShelf($name, $optionalArgs = [], $callSettings = [])
     {
         $request = new DeleteShelfRequest();
@@ -335,7 +432,29 @@ class LibraryServiceApi
             ['call_credentials_callback' => $this->createCredentialsCallback()]);
     }
 
-    // TODO generate method doc
+    /**
+     * Merges two shelves by adding all books from the shelf named
+     * `other_shelf_name` to shelf `name`, and deletes
+     * `other_shelf_name`. Returns the updated shelf.
+     *
+     * @param string $name The name of the shelf we're adding books to.
+     * @param string $otherShelfName The name of the shelf we're removing books from and deleting.
+     * @param array $optionalArgs {
+     *     Optional. There are no optional parameters for createTopic yet;
+     *               this $optionalArgs parameter reserves a spot for future ones.
+     * }
+     * @param array $callSettings {
+     *    Optional.
+     *    @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeout is ignored.
+     *    @type integer $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     * @return google\example\library\v1\Shelf
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
     public function mergeShelves($name, $otherShelfName, $optionalArgs = [], $callSettings = [])
     {
         $request = new MergeShelvesRequest();
@@ -352,7 +471,27 @@ class LibraryServiceApi
             ['call_credentials_callback' => $this->createCredentialsCallback()]);
     }
 
-    // TODO generate method doc
+    /**
+     * Creates a book.
+     *
+     * @param string $name The name of the shelf in which the book is created.
+     * @param Book $book The book to create.
+     * @param array $optionalArgs {
+     *     Optional. There are no optional parameters for createTopic yet;
+     *               this $optionalArgs parameter reserves a spot for future ones.
+     * }
+     * @param array $callSettings {
+     *    Optional.
+     *    @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeout is ignored.
+     *    @type integer $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     * @return google\example\library\v1\Book
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
     public function createBook($name, $book, $optionalArgs = [], $callSettings = [])
     {
         $request = new CreateBookRequest();
@@ -369,7 +508,27 @@ class LibraryServiceApi
             ['call_credentials_callback' => $this->createCredentialsCallback()]);
     }
 
-    // TODO generate method doc
+    /**
+     * Creates a series of books.
+     *
+     * @param Shelf $shelf The shelf in which the series is created.
+     * @param array $books The books to publish in the series.
+     * @param array $optionalArgs {
+     *     Optional. There are no optional parameters for createTopic yet;
+     *               this $optionalArgs parameter reserves a spot for future ones.
+     * }
+     * @param array $callSettings {
+     *    Optional.
+     *    @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeout is ignored.
+     *    @type integer $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     * @return google\example\library\v1\PublishSeriesResponse
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
     public function publishSeries($shelf, $books, $optionalArgs = [], $callSettings = [])
     {
         $request = new PublishSeriesRequest();
@@ -388,7 +547,26 @@ class LibraryServiceApi
             ['call_credentials_callback' => $this->createCredentialsCallback()]);
     }
 
-    // TODO generate method doc
+    /**
+     * Gets a book.
+     *
+     * @param string $name The name of the book to retrieve.
+     * @param array $optionalArgs {
+     *     Optional. There are no optional parameters for createTopic yet;
+     *               this $optionalArgs parameter reserves a spot for future ones.
+     * }
+     * @param array $callSettings {
+     *    Optional.
+     *    @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeout is ignored.
+     *    @type integer $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     * @return google\example\library\v1\Book
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
     public function getBook($name, $optionalArgs = [], $callSettings = [])
     {
         $request = new GetBookRequest();
@@ -404,7 +582,26 @@ class LibraryServiceApi
             ['call_credentials_callback' => $this->createCredentialsCallback()]);
     }
 
-    // TODO generate method doc
+    /**
+     * Lists books in a shelf.
+     *
+     * @param string $name The name of the shelf whose books we'd like to list.
+     * @param array $optionalArgs {
+     *     Optional. There are no optional parameters for createTopic yet;
+     *               this $optionalArgs parameter reserves a spot for future ones.
+     * }
+     * @param array $callSettings {
+     *    Optional.
+     *    @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeout is ignored.
+     *    @type integer $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     * @return Google\GAX\PageAccessor
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
     public function listBooks($name, $optionalArgs = [], $callSettings = [])
     {
         $request = new ListBooksRequest();
@@ -420,7 +617,26 @@ class LibraryServiceApi
             ['call_credentials_callback' => $this->createCredentialsCallback()]);
     }
 
-    // TODO generate method doc
+    /**
+     * Deletes a book.
+     *
+     * @param string $name The name of the book to delete.
+     * @param array $optionalArgs {
+     *     Optional. There are no optional parameters for createTopic yet;
+     *               this $optionalArgs parameter reserves a spot for future ones.
+     * }
+     * @param array $callSettings {
+     *    Optional.
+     *    @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeout is ignored.
+     *    @type integer $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
     public function deleteBook($name, $optionalArgs = [], $callSettings = [])
     {
         $request = new DeleteBookRequest();
@@ -436,7 +652,27 @@ class LibraryServiceApi
             ['call_credentials_callback' => $this->createCredentialsCallback()]);
     }
 
-    // TODO generate method doc
+    /**
+     * Updates a book.
+     *
+     * @param string $name The name of the book to update.
+     * @param Book $book The book to update with.
+     * @param array $optionalArgs {
+     *     Optional. There are no optional parameters for createTopic yet;
+     *               this $optionalArgs parameter reserves a spot for future ones.
+     * }
+     * @param array $callSettings {
+     *    Optional.
+     *    @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeout is ignored.
+     *    @type integer $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     * @return google\example\library\v1\Book
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
     public function updateBook($name, $book, $optionalArgs = [], $callSettings = [])
     {
         $request = new UpdateBookRequest();
@@ -453,7 +689,27 @@ class LibraryServiceApi
             ['call_credentials_callback' => $this->createCredentialsCallback()]);
     }
 
-    // TODO generate method doc
+    /**
+     * Moves a book to another shelf, and returns the new book.
+     *
+     * @param string $name The name of the book to move.
+     * @param string $otherShelfName The name of the destination shelf.
+     * @param array $optionalArgs {
+     *     Optional. There are no optional parameters for createTopic yet;
+     *               this $optionalArgs parameter reserves a spot for future ones.
+     * }
+     * @param array $callSettings {
+     *    Optional.
+     *    @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeout is ignored.
+     *    @type integer $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     * @return google\example\library\v1\Book
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
     public function moveBook($name, $otherShelfName, $optionalArgs = [], $callSettings = [])
     {
         $request = new MoveBookRequest();
@@ -470,7 +726,25 @@ class LibraryServiceApi
             ['call_credentials_callback' => $this->createCredentialsCallback()]);
     }
 
-    // TODO generate method doc
+    /**
+     * Lists a primitive resource. To test go page streaming.
+     *
+     * @param array $optionalArgs {
+     *     Optional. There are no optional parameters for createTopic yet;
+     *               this $optionalArgs parameter reserves a spot for future ones.
+     * }
+     * @param array $callSettings {
+     *    Optional.
+     *    @type \Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeout is ignored.
+     *    @type integer $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     * @return Google\GAX\PageAccessor
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
     public function listStrings($optionalArgs = [], $callSettings = [])
     {
         $request = new ListStringsRequest();

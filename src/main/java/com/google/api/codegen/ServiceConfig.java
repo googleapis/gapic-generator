@@ -42,6 +42,10 @@ public class ServiceConfig {
     return 443;
   }
 
+  public String getTitle(Interface service) {
+    return service.getModel().getServiceConfig().getTitle();
+  }
+
   /**
    * Return a list of scopes for authentication.
    */
