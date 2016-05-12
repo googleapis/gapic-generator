@@ -41,7 +41,7 @@
 @snippet generateBody(service)
     {@alwaysImport()}
 
-    // TODO service doc
+    // TODO generate service doc
     class {@context.getApiWrapperName(service)}
     {
         {@constants(service)}
@@ -59,18 +59,15 @@
         {@cleanupSection()}
     }
 
-    {@context.getApiWrapperName(service)}::initClass();
-
 @end
 
 @private alwaysImport() fill
-    {@context.addImport("\Google\GAX\AgentHeaderDescriptor")}
-    {@context.addImport("\Google\GAX\ApiCallable")}
-    {@context.addImport("\Google\GAX\CallSettings")}
-    {@context.addImport("\Google\GAX\GrpcBootstrap")}
-    {@context.addImport("\Google\GAX\GrpcConstants")}
-    {@context.addImport("\Google\GAX\PathTemplate")}
-    {@context.addImport("\RuntimeException")}
+    {@context.addImport("Google\GAX\AgentHeaderDescriptor")}
+    {@context.addImport("Google\GAX\ApiCallable")}
+    {@context.addImport("Google\GAX\CallSettings")}
+    {@context.addImport("Google\GAX\GrpcBootstrap")}
+    {@context.addImport("Google\GAX\GrpcConstants")}
+    {@context.addImport("Google\GAX\PathTemplate")}
 @end
 
 @private constants(service)
@@ -95,9 +92,7 @@
 @end
 
 @private statics(service)
-    private static $grpcBootstrap;
     {@pathTemplateConstants(service)}
-    private static $pageStreamingDescriptors;
 @end
 
 @private pathTemplateConstants(service)
@@ -106,11 +101,16 @@
     @end
 @end
 
+@private pathTemplateFunctionName(collectionConfig)
+    get{@context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName)}NameTemplate
+@end
+
 @private pathTemplateConstantName(collectionConfig)
     {@context.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName)}NameTemplate
 @end
 
 @private members(service)
+    private $grpcBootstrap;
     private $stub;
     private $scopes;
     private $defaultCallSettings;
@@ -118,52 +118,36 @@
 @end
 
 @private staticFunctions(service)
-    {@initClassFunction(service)}
-
     {@resourceFunctions(service)}
+
+    {@pageStreamingDescriptorFunction(service)}
 @end
 
-@private initClassFunction(service)
-    /**
-     * This should not be called outside of the implementation file.
-     */
-    static function initClass()
-    {
-        if (!empty(self::$grpcBootstrap)) {
-            throw new RuntimeException("PublisherApi::initClass called more than once");
-        }
-
-        self::$grpcBootstrap = GrpcBootstrap::defaultInstance();
-
-        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-            self::${@pathTemplateConstantName(collectionConfig)} = new PathTemplate("{@collectionConfig.getNamePattern}");
-        @end
-
-        {@pageStreamingVariables(service)}
-    }
-@end
-
-@private pageStreamingVariables(service)
+@private pageStreamingDescriptorFunction(service)
     @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service)
-        @join method : context.messages.filterPageStreamingMethods(interfaceConfig, service.getMethods)
-            @let dummy = context.addImport("\Google\GAX\PageStreamingDescriptor"), \
-                 methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
-                 pageStreaming = interfaceConfig.getMethodConfig(method).getPageStreaming()
-            ${@methodName}PageStreamingDescriptor =
-                    new PageStreamingDescriptor([
-                        'requestPageTokenField' => '{@pageStreaming.getRequestTokenField.getSimpleName}',
-                        'responsePageTokenField' => '{@pageStreaming.getResponseTokenField.getSimpleName}',
-                        'resourceField' => '{@pageStreaming.getResourcesField.getSimpleName}']);
-            @end
-        @end
-
-        self::$pageStreamingDescriptors = [
-            @join method : context.messages.filterPageStreamingMethods(interfaceConfig, service.getMethods) on {@","}.add(BREAK)
-                @let methodName = context.upperCamelToLowerCamel(method.getSimpleName)
-                    '{@methodName}' => ${@methodName}PageStreamingDescriptor
+        private static function getPageStreamingDescriptors()
+        {
+            @join method : context.messages.filterPageStreamingMethods(interfaceConfig, service.getMethods)
+                @let dummy = context.addImport("Google\GAX\PageStreamingDescriptor"), \
+                     methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
+                     pageStreaming = interfaceConfig.getMethodConfig(method).getPageStreaming()
+                ${@methodName}PageStreamingDescriptor =
+                        new PageStreamingDescriptor([
+                            'requestPageTokenField' => '{@pageStreaming.getRequestTokenField.getSimpleName}',
+                            'responsePageTokenField' => '{@pageStreaming.getResponseTokenField.getSimpleName}',
+                            'resourceField' => '{@pageStreaming.getResourcesField.getSimpleName}']);
                 @end
             @end
-        ];
+
+            $pageStreamingDescriptors = [
+                @join method : context.messages.filterPageStreamingMethods(interfaceConfig, service.getMethods) on {@","}.add(BREAK)
+                    @let methodName = context.upperCamelToLowerCamel(method.getSimpleName)
+                        '{@methodName}' => ${@methodName}PageStreamingDescriptor
+                    @end
+                @end
+            ];
+            return $pageStreamingDescriptors;
+        }
     @end
 @end
 
@@ -175,6 +159,10 @@
     @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
         {@parseResourceFunction(collectionConfig)}
     @end
+
+    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+        {@pathTemplateFunction(collectionConfig)}
+    @end
 @end
 
 @private formatResourceFunction(collectionConfig)
@@ -185,7 +173,7 @@
     public static function {@formatResourceFunctionName(collectionConfig)}(\
           {@formatResourceFunctionParams(collectionConfig)})
     {
-        return self::${@pathTemplateConstantName(collectionConfig)}->render([
+        return self::{@pathTemplateFunctionName(collectionConfig)}()->render([
             {@pathTemplateArgs(collectionConfig)}]);
     }
 
@@ -218,7 +206,7 @@
                     parse{@context.lowerUnderscoreToUpperCamel(subField)}From{@resourceName(collectionConfig)}(\
                     ${@fieldPath})
             {
-                return self::${@pathTemplateConstantName(collectionConfig)}->match(${@fieldPath})['{@subField}'];
+                return self::{@pathTemplateFunctionName(collectionConfig)}()->match(${@fieldPath})['{@subField}'];
             }
 
         @end
@@ -229,9 +217,21 @@
     {@context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName)}Name
 @end
 
+@private pathTemplateFunction(collectionConfig)
+    private static function {@pathTemplateFunctionName(collectionConfig)}()
+    {
+        if (self::${@pathTemplateConstantName(collectionConfig)} == null) {
+            self::${@pathTemplateConstantName(collectionConfig)} = new PathTemplate("{@collectionConfig.getNamePattern}");
+        }
+        return self::${@pathTemplateConstantName(collectionConfig)};
+    }
+
+@end
+
 @private constructor(service)
     @let className = context.getApiWrapperName(service), \
-         jsonBaseName = {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
+         jsonBaseName = {@context.upperCamelToLowerUnderscore(service.getSimpleName)}, \
+         grpcClientName = context.getGrpcClientName(service)
         // TODO(garrettjones): add channel (when supported in gRPC)
         /**
          * Constructor.
@@ -242,10 +242,10 @@
          *     @@type string $serviceAddress The domain name of the API remote host.
          *                                  Default '{@context.getServiceConfig.getServiceAddress(service)}'.
          *     @@type mixed $port The port on which to connect to the remote host. Default {@context.getServiceConfig.getServicePort()}.
-         *     @@type \Grpc\ChannelCredentials $sslCreds
+         *     @@type Grpc\ChannelCredentials $sslCreds
          *           A `ChannelCredentials` for use with an SSL-enabled channel.
          *           Default: a credentials object returned from
-         *           \Grpc\ChannelCredentials::createSsl()
+         *           Grpc\ChannelCredentials::createSsl()
          *     @@type array $scopes A string array of scopes to use when acquiring credentials.
          *                         Default the scopes for {@context.getServiceTitle(service)}.
          *     @@type array $retryingOverride
@@ -290,12 +290,13 @@
 
             $defaultDescriptors = ['headerDescriptor' => $headerDescriptor];
             $this->descriptors = [
-                'default' => $defaultDescriptors
+                @join method : service.getMethods on ",".add(BREAK)
+                    '{@context.upperCamelToLowerCamel(method.getSimpleName)}' => $defaultDescriptors
+                @end
             ];
-            foreach (self::$pageStreamingDescriptors as $method => $pageStreamingDescriptor) {
-                $descriptors = $defaultDescriptors;
-                $descriptors['pageStreamingDescriptor'] = $pageStreamingDescriptor;
-                $this->descriptors[$method] = $descriptors;
+            $pageStreamingDescriptors = self::getPageStreamingDescriptors();
+            foreach ($pageStreamingDescriptors as $method => $pageStreamingDescriptor) {
+                $this->descriptors[$method]['pageStreamingDescriptor'] = $pageStreamingDescriptor;
             }
 
             // TODO load the client config in a more package-friendly way
@@ -311,13 +312,14 @@
             $this->scopes = $options['scopes'];
 
             $generatedCreateStub = function($hostname, $opts) {
-                return new {@service.getSimpleName}Client($hostname, $opts);
+                return new {@context.getGrpcClientName(service)}($hostname, $opts);
             };
             $createStubOptions = [];
             if (!empty($options['sslCreds'])) {
                 $createStubOptions['sslCreds'] = $options['sslCreds'];
             }
-            $this->stub = self::$grpcBootstrap->createStub(
+            $this->grpcBootstrap = GrpcBootstrap::defaultInstance();
+            $this->stub = $this->grpcBootstrap->createStub(
                 $generatedCreateStub,
                 $options['serviceAddress'],
                 $options['port'],
@@ -328,9 +330,76 @@
 @end
 
 @private apiMethods(service)
-    // API methods here
+    @join method : service.getMethods
+        @let callableConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
+             methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
+             inTypeName = context.typeName(method.getInputType), \
+             methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+             requiredFields = methodConfig.getRequiredFields(), \
+             optionalFields = methodConfig.getOptionalFields()
+            {@methodDoc(method)}
+            public function {@methodName}({@apiMethodParams(requiredFields)}{@commonParams(requiredFields)})
+            {
+                {@requestObjectCreation(inTypeName, requiredFields, optionalFields)}
 
-    // TODO
+                $mergedSettings = $this->defaultCallSettings['{@methodName}']->merge(
+                    new CallSettings($callSettings));
+                $callable = ApiCallable::createApiCall(
+                    $this->stub, '{@method.getSimpleName}', $mergedSettings, $this->descriptors['{@methodName}']);
+                return $callable(
+                    $request,
+                    [],
+                    ['call_credentials_callback' => $this->createCredentialsCallback()]);
+            }
+
+        @end
+    @end
+@end
+
+@private apiMethodParams(requiredFields)
+    @join field : requiredFields on ", "
+        @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
+            ${@paramName}
+        @end
+    @end
+@end
+
+@private commonParams(requiredFields)
+    @if requiredFields
+        , $optionalArgs = [], $callSettings = []
+    @else
+        $optionalArgs = [], $callSettings = []
+    @end
+@end
+
+@private methodDoc(method)
+    // TODO generate method doc
+@end
+
+@private requestObjectCreation(inTypeName, requiredFields, optionalFields)
+    $request = new {@inTypeName}();
+    @join field : requiredFields
+        {@setCall(field)}
+    @end
+    # TODO optionalFields
+@end
+
+@private setCall(field)
+    @let paramUpperCamel = context.lowerUnderscoreToUpperCamel(field.getSimpleName), \
+         paramLowerCamel = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
+        @if field.getType.isMap
+            // TODO verify this is correct
+            putAll{@paramNameInCamel}
+        @else
+            @if field.isRepeated
+                foreach (${@paramLowerCamel} as $elem) {
+                    $request->add{@paramUpperCamel}($elem);
+                }
+            @else
+                $request->set{@paramUpperCamel}(${@paramLowerCamel});
+            @end
+        @end
+     @end
 @end
 
 @private cleanupSection()
@@ -345,6 +414,6 @@
 
     private function createCredentialsCallback()
     {
-        return self::$grpcBootstrap->createCallCredentialsCallback($this->scopes);
+        return $this->grpcBootstrap->createCallCredentialsCallback($this->scopes);
     }
 @end
