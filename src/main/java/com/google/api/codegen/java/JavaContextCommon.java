@@ -202,6 +202,12 @@ public class JavaContextCommon {
 
     public abstract String getReturnType();
 
+    public String getGenericAwareReturnType() {
+      String returnType = getReturnType();
+      if (returnType == null || returnType.isEmpty()) return "Void";
+      else return returnType;
+    }
+
     public abstract ImmutableList<Variable> getParams();
 
     public abstract ImmutableList<Variable> getRequiredParams();
@@ -209,6 +215,13 @@ public class JavaContextCommon {
     public abstract boolean isPagedVariant();
 
     public abstract boolean isCallableVariant();
+
+    @Nullable
+    public abstract Field getResourcesFieldForUnpagedListCallable();
+
+    public boolean isUnpagedListCallableVariant() {
+      return getResourcesFieldForUnpagedListCallable() != null;
+    }
 
     @AutoValue.Builder
     abstract static class Builder {
@@ -259,6 +272,8 @@ public class JavaContextCommon {
       public abstract Builder setPagedVariant(boolean paged);
 
       public abstract Builder setCallableVariant(boolean callable);
+
+      public abstract Builder setResourcesFieldForUnpagedListCallable(Field field);
 
       public abstract JavaDocConfig build();
 
