@@ -204,8 +204,12 @@ public class JavaContextCommon {
 
     public String getGenericAwareReturnType() {
       String returnType = getReturnType();
-      if (returnType == null || returnType.isEmpty()) return "Void";
-      else return returnType;
+      if (returnType == null || returnType.isEmpty()) {
+        return "Void";
+      }
+      else {
+        return returnType;
+      }
     }
 
     public abstract ImmutableList<Variable> getParams();
