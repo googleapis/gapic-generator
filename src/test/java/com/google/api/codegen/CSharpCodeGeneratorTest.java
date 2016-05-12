@@ -36,7 +36,8 @@ public class CSharpCodeGeneratorTest extends CodeGeneratorTestBase {
       String viewName,
       String snippetName) {
     super(name, gapicConfigFileNames, providerName, viewName, snippetName);
-    getTestDataLocator().addTestDataSource(com.google.api.codegen.csharp.CSharpGapicContext.class, "");
+    getTestDataLocator()
+        .addTestDataSource(com.google.api.codegen.csharp.CSharpGapicContext.class, "");
   }
 
   /**
@@ -54,7 +55,7 @@ public class CSharpCodeGeneratorTest extends CodeGeneratorTestBase {
           "csharp_wrapper",
           new String[] {"library_gapic.yaml", "csharp_gapic.yaml"},
           "com.google.api.codegen.csharp.CSharpGapicProvider",
-          "com.google.api.codegen.csharp.CSharpInterfaceView",
+          "com.google.api.codegen.InterfaceView",
           "wrapper.snip"
         });
   }

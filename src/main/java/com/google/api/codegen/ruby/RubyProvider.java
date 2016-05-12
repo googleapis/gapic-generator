@@ -20,8 +20,8 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.api.tools.framework.tools.ToolUtil;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Multimap;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -47,7 +47,7 @@ public class RubyProvider {
       GeneratedResult generatedResult = entry.getValue();
       String root;
       if (element instanceof Method) {
-        root = ((Method) element).getParent().getFile().getFullName().replace('.', '/');
+        root = ((Method) element).getFile().getFullName().replace('.', '/');
       } else {
         root = packageRoot;
       }
@@ -58,12 +58,9 @@ public class RubyProvider {
 
   @SuppressWarnings("unchecked")
   public <Element> GeneratedResult generate(
-      Element element,
-      SnippetDescriptor snippetDescriptor,
-      RubyGapicContext context) {
-    ImmutableMap<String, Object> globalMap = ImmutableMap.<String, Object>builder()
-        .put("context", context)
-        .build();
+      Element element, SnippetDescriptor snippetDescriptor, RubyGapicContext context) {
+    ImmutableMap<String, Object> globalMap =
+        ImmutableMap.<String, Object>builder().put("context", context).build();
     RubySnippetSet<Element> snippets =
         SnippetSet.createSnippetInterface(
             RubySnippetSet.class,
