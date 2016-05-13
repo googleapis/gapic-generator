@@ -391,17 +391,19 @@
 @private requestObjectCreation(inTypeName, requiredFields, optionalFields)
     $request = new {@inTypeName}();
     @join field : requiredFields
-        {@setCall(field)}
+        {@setRequiredFieldCall(field)}
     @end
-    # TODO optionalFields
+    @join field : optionalFields
+        {@setOptionalFieldCall(field)}
+    @end
 @end
 
-@private setCall(field)
+@private setRequiredFieldCall(field)
     @let paramUpperCamel = context.lowerUnderscoreToUpperCamel(field.getSimpleName), \
          paramLowerCamel = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
         @if field.getType.isMap
-            // TODO verify this is correct
-            putAll{@paramNameInCamel}
+            // TODO make this work
+            putAll...
         @else
             @if field.isRepeated
                 foreach (${@paramLowerCamel} as $elem) {
@@ -411,6 +413,26 @@
                 $request->set{@paramUpperCamel}(${@paramLowerCamel});
             @end
         @end
+     @end
+@end
+
+@private setOptionalFieldCall(field)
+    @let paramUpperCamel = context.lowerUnderscoreToUpperCamel(field.getSimpleName), \
+         paramLowerCamel = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
+        if (isset($optionalArgs['{@paramLowerCamel}'])) {
+            @if field.getType.isMap
+                // TODO make this work
+                putAll...
+            @else
+                @if field.isRepeated
+                    foreach ($optionalArgs['{@paramLowerCamel}'] as $elem) {
+                        $request->add{@paramUpperCamel}($elem);
+                    }
+                @else
+                    $request->set{@paramUpperCamel}($optionalArgs['{@paramLowerCamel}']);
+                @end
+            @end
+        }
      @end
 @end
 
@@ -431,7 +453,9 @@
          *          Timeout to use for this call. Only used if $retrySettings
          *          is not set.
          * }
+         *
         {@docReturnLine(service, method)}
+         *
          * @@throws Google\GAX\ApiException if the remote call fails
          */
     @end

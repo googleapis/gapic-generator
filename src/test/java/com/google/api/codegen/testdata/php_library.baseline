@@ -314,7 +314,9 @@ class LibraryServiceApi
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
+     *
      * @return google\example\library\v1\Shelf
+     *
      * @throws Google\GAX\ApiException if the remote call fails
      */
     public function createShelf($shelf, $optionalArgs = [], $callSettings = [])
@@ -350,13 +352,21 @@ class LibraryServiceApi
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
+     *
      * @return google\example\library\v1\Shelf
+     *
      * @throws Google\GAX\ApiException if the remote call fails
      */
     public function getShelf($name, $optionalArgs = [], $callSettings = [])
     {
         $request = new GetShelfRequest();
         $request->setName($name);
+        if (isset($optionalArgs['message'])) {
+            $request->setMessage($optionalArgs['message']);
+        }
+        if (isset($optionalArgs['stringBuilder'])) {
+            $request->setStringBuilder($optionalArgs['stringBuilder']);
+        }
 
         $mergedSettings = $this->defaultCallSettings['getShelf']->merge(
             new CallSettings($callSettings));
@@ -385,7 +395,9 @@ class LibraryServiceApi
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
+     *
      * @return Google\GAX\PageAccessor
+     *
      * @throws Google\GAX\ApiException if the remote call fails
      */
     public function listShelves($optionalArgs = [], $callSettings = [])
@@ -419,7 +431,9 @@ class LibraryServiceApi
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
+     *
 
+     *
      * @throws Google\GAX\ApiException if the remote call fails
      */
     public function deleteShelf($name, $optionalArgs = [], $callSettings = [])
@@ -457,7 +471,9 @@ class LibraryServiceApi
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
+     *
      * @return google\example\library\v1\Shelf
+     *
      * @throws Google\GAX\ApiException if the remote call fails
      */
     public function mergeShelves($name, $otherShelfName, $optionalArgs = [], $callSettings = [])
@@ -494,7 +510,9 @@ class LibraryServiceApi
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
+     *
      * @return google\example\library\v1\Book
+     *
      * @throws Google\GAX\ApiException if the remote call fails
      */
     public function createBook($name, $book, $optionalArgs = [], $callSettings = [])
@@ -531,7 +549,9 @@ class LibraryServiceApi
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
+     *
      * @return google\example\library\v1\PublishSeriesResponse
+     *
      * @throws Google\GAX\ApiException if the remote call fails
      */
     public function publishSeries($shelf, $books, $optionalArgs = [], $callSettings = [])
@@ -540,6 +560,9 @@ class LibraryServiceApi
         $request->setShelf($shelf);
         foreach ($books as $elem) {
             $request->addBooks($elem);
+        }
+        if (isset($optionalArgs['edition'])) {
+            $request->setEdition($optionalArgs['edition']);
         }
 
         $mergedSettings = $this->defaultCallSettings['publishSeries']->merge(
@@ -569,7 +592,9 @@ class LibraryServiceApi
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
+     *
      * @return google\example\library\v1\Book
+     *
      * @throws Google\GAX\ApiException if the remote call fails
      */
     public function getBook($name, $optionalArgs = [], $callSettings = [])
@@ -604,13 +629,18 @@ class LibraryServiceApi
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
+     *
      * @return Google\GAX\PageAccessor
+     *
      * @throws Google\GAX\ApiException if the remote call fails
      */
     public function listBooks($name, $optionalArgs = [], $callSettings = [])
     {
         $request = new ListBooksRequest();
         $request->setName($name);
+        if (isset($optionalArgs['filter'])) {
+            $request->setFilter($optionalArgs['filter']);
+        }
 
         $mergedSettings = $this->defaultCallSettings['listBooks']->merge(
             new CallSettings($callSettings));
@@ -639,7 +669,9 @@ class LibraryServiceApi
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
+     *
 
+     *
      * @throws Google\GAX\ApiException if the remote call fails
      */
     public function deleteBook($name, $optionalArgs = [], $callSettings = [])
@@ -676,7 +708,9 @@ class LibraryServiceApi
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
+     *
      * @return google\example\library\v1\Book
+     *
      * @throws Google\GAX\ApiException if the remote call fails
      */
     public function updateBook($name, $book, $optionalArgs = [], $callSettings = [])
@@ -684,6 +718,12 @@ class LibraryServiceApi
         $request = new UpdateBookRequest();
         $request->setName($name);
         $request->setBook($book);
+        if (isset($optionalArgs['updateMask'])) {
+            $request->setUpdateMask($optionalArgs['updateMask']);
+        }
+        if (isset($optionalArgs['physicalMask'])) {
+            $request->setPhysicalMask($optionalArgs['physicalMask']);
+        }
 
         $mergedSettings = $this->defaultCallSettings['updateBook']->merge(
             new CallSettings($callSettings));
@@ -713,7 +753,9 @@ class LibraryServiceApi
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
+     *
      * @return google\example\library\v1\Book
+     *
      * @throws Google\GAX\ApiException if the remote call fails
      */
     public function moveBook($name, $otherShelfName, $optionalArgs = [], $callSettings = [])
@@ -749,12 +791,17 @@ class LibraryServiceApi
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
+     *
      * @return Google\GAX\PageAccessor
+     *
      * @throws Google\GAX\ApiException if the remote call fails
      */
     public function listStrings($optionalArgs = [], $callSettings = [])
     {
         $request = new ListStringsRequest();
+        if (isset($optionalArgs['name'])) {
+            $request->setName($optionalArgs['name']);
+        }
 
         $mergedSettings = $this->defaultCallSettings['listStrings']->merge(
             new CallSettings($callSettings));
