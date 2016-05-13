@@ -154,42 +154,46 @@
     @end
 @end
 
+@private constructSettings(prefix, config, service, ifaceConfig)
+    @if or(context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods), \
+           context.messages.filterBundlingMethods(ifaceConfig, service.getMethods))
+        {@prefix}api_callable.construct_settings(
+            '{@service.getFullName}',
+            {@config},
+            {},
+            {},
+            config.STATUS_CODE_NAMES,
+            timeout,
+            @if context.messages.filterBundlingMethods(ifaceConfig, service.getMethods)
+                @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
+                    bundle_descriptors=self._BUNDLE_DESCRIPTORS,
+                @else
+                    bundle_descriptors=self._BUNDLE_DESCRIPTORS)
+                @end
+            @end
+            @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
+                page_descriptors=self._PAGE_DESCRIPTORS)
+            @end
+    @else
+        {@prefix}api_callable.construct_settings(
+            '{@service.getFullName}',
+            {@config},
+            {},
+            {},
+            config.STATUS_CODE_NAMES,
+            timeout)
+    @end
+@end
+
 @private constructDefaults(service)
     @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
          jsonBaseName = {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
-        if not client_config:
-            client_config = json.loads(pkg_resources.resource_string(
-                __name__, '{@jsonBaseName}_client_config.json'))
-        @if or(context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods), \
-               context.messages.filterBundlingMethods(ifaceConfig, service.getMethods))
-            self._defaults = api_callable.construct_settings(
-                '{@service.getFullName}',
-                client_config,
-                {},
-                {},
-                config.STATUS_CODE_NAMES,
-                timeout,
-                @if context.messages.filterBundlingMethods(ifaceConfig, service.getMethods)
-                    @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
-                        bundle_descriptors=self._BUNDLE_DESCRIPTORS,
-                    @else
-                        bundle_descriptors=self._BUNDLE_DESCRIPTORS
-                    @end
-                @end
-                @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
-                    page_descriptors=self._PAGE_DESCRIPTORS
-                @end
+        default_client_config = json.loads(pkg_resources.resource_string(
+            __name__, '{@jsonBaseName}_client_config.json'))
+        {@constructSettings("self._defaults = ", "default_client_config", service, ifaceConfig)}
+        if client_config:
+            {@constructSettings("self._defaults.update(", "client_config", service, ifaceConfig)}
             )
-        @else
-            self._defaults = api_callable.construct_settings(
-                '{@service.getFullName}',
-                client_config,
-                {},
-                {},
-                config.STATUS_CODE_NAMES,
-                timeout
-            )
-        @end
     @end
 @end
 
@@ -223,7 +227,8 @@
                 actual call settings, so it has to have the same structure of
                 the data. See :method:`google.gax.construct_settings` for the
                 structure of the data.
-                Use the default config if not specified.
+                client_config can specify a subset of the methods. If a method
+                config is not specified, it falls back to the default config.
               timeout (int): The default timeout, in seconds, for calls made
                 through this client
               app_name (string): The codename of the calling service.

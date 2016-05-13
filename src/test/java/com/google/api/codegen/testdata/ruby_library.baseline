@@ -133,7 +133,8 @@ module Google
           #   passed to Google::Gax#construct_settings to build the actual call
           #   settings, so it has to have the same structure of the data. See
           #   Google::Gax#construct_settings for the structure of the data.
-          #   Use the default config if not specified.
+          #   client_config can specify a subset of the methods. If a method
+          #   config is not specified, it falls back to the default config.
           # @param timeout [Numeric]
           #   The default timeout, in seconds, for calls made through this client.
           # @param app_name [String]
@@ -150,22 +151,31 @@ module Google
             timeout: DEFAULT_TIMEOUT,
             app_name: 'gax',
             app_version: Google::Gax::VERSION)
-            unless client_config
-              client_config_file = Pathname.new(__dir__).join(
-                'library_service_client_config.json')
-              client_config_file.open do |f|
-                client_config = JSON.parse(f.read)
-              end
+            client_config_file = Pathname.new(__dir__).join(
+              'library_service_client_config.json')
+            client_config_file.open do |f|
+              @defaults = Google::Gax.construct_settings(
+                'google.example.library.v1.LibraryService',
+                JSON.parse(f.read),
+                {},
+                {},
+                Google::Gax::Grpc::STATUS_CODE_NAMES,
+                timeout,
+                bundle_descriptors: BUNDLE_DESCRIPTORS,
+                page_descriptors: PAGE_DESCRIPTORS)
             end
-            @defaults = Google::Gax.construct_settings(
-              'google.example.library.v1.LibraryService',
-              client_config,
-              {},
-              {},
-              Google::Gax::Grpc::STATUS_CODE_NAMES,
-              timeout,
-              bundle_descriptors: BUNDLE_DESCRIPTORS,
-              page_descriptors: PAGE_DESCRIPTORS)
+            if client_config
+              @defaults.update(Google::Gax.construct_settings(
+                'google.example.library.v1.LibraryService',
+                client_config,
+                {},
+                {},
+                Google::Gax::Grpc::STATUS_CODE_NAMES,
+                timeout,
+                bundle_descriptors: BUNDLE_DESCRIPTORS,
+                page_descriptors: PAGE_DESCRIPTORS)
+              )
+            end
             google_api_client = "#{app_name}/#{app_version} " \
               "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze
             @headers = { :'x-goog-api-client' => google_api_client }

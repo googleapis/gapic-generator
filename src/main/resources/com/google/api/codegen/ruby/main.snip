@@ -129,44 +129,49 @@
   @end
 @end
 
+@private constructSettings(prefix, config, service, ifaceConfig)
+  @if or(context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods), \
+         context.messages.filterBundlingMethods(ifaceConfig, service.getMethods))
+    {@prefix}Google::Gax.construct_settings(
+      '{@service.getFullName}',
+      {@config},
+      {},
+      {},
+      Google::Gax::Grpc::STATUS_CODE_NAMES,
+      timeout,
+      @if context.messages.filterBundlingMethods(ifaceConfig, service.getMethods)
+        @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
+          bundle_descriptors: BUNDLE_DESCRIPTORS,
+        @else
+          bundle_descriptors: BUNDLE_DESCRIPTORS)
+        @end
+      @end
+      @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
+        page_descriptors: PAGE_DESCRIPTORS)
+      @end
+  @else
+    {@prefix}Google::Gax.construct_settings(
+      '{@service.getFullName}',
+      {@config},
+      {},
+      {},
+      Google::Gax::Grpc::STATUS_CODE_NAMES,
+      timeout)
+  @end
+@end
+
 @private constructDefaults(service)
   @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
        jsonBaseName = {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
-    unless client_config
-      client_config_file = Pathname.new(__dir__).join(
-        '{@jsonBaseName}_client_config.json')
-      client_config_file.open do |f|
-        client_config = JSON.parse(f.read)
-      end
+    client_config_file = Pathname.new(__dir__).join(
+      '{@jsonBaseName}_client_config.json')
+    client_config_file.open do |f|
+      {@constructSettings("@defaults = ", "JSON.parse(f.read)", service, ifaceConfig)}
     end
-    @if or(context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods), \
-           context.messages.filterBundlingMethods(ifaceConfig, service.getMethods))
-      @@defaults = Google::Gax.construct_settings(
-        '{@service.getFullName}',
-        client_config,
-        {},
-        {},
-        Google::Gax::Grpc::STATUS_CODE_NAMES,
-        timeout,
-        @if context.messages.filterBundlingMethods(ifaceConfig, service.getMethods)
-          @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
-            bundle_descriptors: BUNDLE_DESCRIPTORS,
-          @else
-            bundle_descriptors: BUNDLE_DESCRIPTORS)
-          @end
-        @end
-        @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
-          page_descriptors: PAGE_DESCRIPTORS)
-        @end
-    @else
-      @@defaults = Google::Gax.construct_settings(
-        '{@service.getFullName}',
-        client_config,
-        {},
-        {},
-        config.STATUS_CODE_NAMES,
-        timeout)
-    @end
+    if client_config
+      {@constructSettings("@defaults.update(", "client_config", service, ifaceConfig)}
+      )
+    end
   @end
 @end
 
@@ -185,7 +190,8 @@
     @#   passed to Google::Gax#construct_settings to build the actual call
     @#   settings, so it has to have the same structure of the data. See
     @#   Google::Gax#construct_settings for the structure of the data.
-    @#   Use the default config if not specified.
+    @#   client_config can specify a subset of the methods. If a method
+    @#   config is not specified, it falls back to the default config.
     @# @@param timeout [Numeric]
     @#   The default timeout, in seconds, for calls made through this client.
     @# @@param app_name [String]

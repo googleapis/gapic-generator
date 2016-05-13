@@ -81,7 +81,8 @@ class NoTemplatesServiceApi(object):
             actual call settings, so it has to have the same structure of
             the data. See :method:`google.gax.construct_settings` for the
             structure of the data.
-            Use the default config if not specified.
+            client_config can specify a subset of the methods. If a method
+            config is not specified, it falls back to the default config.
           timeout (int): The default timeout, in seconds, for calls made
             through this client
           app_name (string): The codename of the calling service.
@@ -92,17 +93,24 @@ class NoTemplatesServiceApi(object):
         """
         if scopes is None:
             scopes = self._ALL_SCOPES
-        if not client_config:
-            client_config = json.loads(pkg_resources.resource_string(
-                __name__, 'no_templates_service_client_config.json'))
+        default_client_config = json.loads(pkg_resources.resource_string(
+            __name__, 'no_templates_service_client_config.json'))
         self._defaults = api_callable.construct_settings(
             'google.example.v1.NoTemplatesService',
-            client_config,
+            default_client_config,
             {},
             {},
             config.STATUS_CODE_NAMES,
-            timeout
-        )
+            timeout)
+        if client_config:
+            self._defaults.update(api_callable.construct_settings(
+                'google.example.v1.NoTemplatesService',
+                client_config,
+                {},
+                {},
+                config.STATUS_CODE_NAMES,
+                timeout)
+            )
         goog_api_client = '{}/{} {} gax/{} python/{}'.format(
             app_name,
             app_version,
