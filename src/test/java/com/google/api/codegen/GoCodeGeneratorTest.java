@@ -57,12 +57,17 @@ public class GoCodeGeneratorTest extends CodeGeneratorTestBase {
     // GoLanguageGenerator should generate two files -- one for the class, and
     // the other for "doc.go" which holds package doc.
     List<GeneratedResult> codeResult = generateForTemplate(0, 0);
-    List<GeneratedResult> docsResult = generateForTemplate(0, 1);
+    List<GeneratedResult> exampleResult = generateForTemplate(0, 1);
+    List<GeneratedResult> docsResult = generateForTemplate(0, 2);
     Truth.assertThat(codeResult).isNotNull();
+    Truth.assertThat(exampleResult).isNotNull();
     Truth.assertThat(docsResult).isNotNull();
 
     ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String, Doc>();
     for (GeneratedResult result : codeResult) {
+      builder.put(result.getFilename(), result.getDoc());
+    }
+    for (GeneratedResult result : exampleResult) {
       builder.put(result.getFilename(), result.getDoc());
     }
     for (GeneratedResult result : docsResult) {

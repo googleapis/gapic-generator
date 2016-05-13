@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -141,7 +142,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
   /**
    * Returns the Go type name for the specified TypeRef.
    */
-  public String typeName(TypeRef type) throws RuntimeException {
+  public String typeName(TypeRef type) {
     if (type.isMap()) {
       String keyName = typeName(type.getMapKeyField().getType());
       String valueName = typeName(type.getMapValueField().getType());
@@ -154,13 +155,24 @@ public class GoGapicContext extends GapicContext implements GoContext {
       } else if (type.isPrimitive()) {
         name = PRIMITIVE_TYPE_MAP.get(type.getKind());
       } else {
-        throw new RuntimeException("Unknown type: " + type.toString());
+        throw new IllegalArgumentException("Unknown type: " + type.toString());
       }
       if (type.isRepeated()) {
         return "[]" + name;
       }
       return name;
     }
+  }
+
+  /**
+   * Returns the (dereferenced) Go type name for the specificed message TypeRef.
+   */
+  public String messageTypeName(TypeRef type) {
+      if (!type.isMessage()) {
+        throw new IllegalArgumentException("Expected message type, got: " + type.toString());
+      }
+      MessageType messageType = type.getMessageType();
+      return localPackageName(messageType) + "." + messageType.getProto().getName();
   }
 
   /**
@@ -345,31 +357,27 @@ public class GoGapicContext extends GapicContext implements GoContext {
     return GoImport.create(getApiConfig().getPackageName() + "/proto/" + pkgName, localName);
   }
 
-  /**
-   * Calculates the set of imports and returns a sorted set of Go import output strings. This
-   * imitates the same order which gofmt does, which means: - core imports (Go standard libraries)
-   * in alphabetical order - a blank line (so an empty string) - other imports, alphabetical order
-   *
-   * Each of the lines (except for the blank line) starts with a tab character '\t' for the
-   * indentation within the 'import' section in Go file.
-   */
-  public Iterable<String> getImports(Interface service) {
-    TreeSet<GoImport> coreImports = new TreeSet<>();
-    TreeSet<GoImport> imports = new TreeSet<>();
+  private Set<GoImport> getStandardImports(Interface service) {
+    TreeSet<GoImport> standardImports = new TreeSet<>();
 
-    coreImports.add(GoImport.create("fmt"));
-    coreImports.add(GoImport.create("runtime"));
-
-    // Add non-service-specific imports.
-    imports.add(GoImport.create("golang.org/x/net/context"));
-    imports.add(GoImport.create("google.golang.org/grpc"));
-    imports.add(GoImport.create("google.golang.org/grpc/codes"));
-    imports.add(GoImport.create("google.golang.org/grpc/metadata"));
-    imports.add(GoImport.create(GAX_PACKAGE_BASE, "gax"));
+    standardImports.add(GoImport.create("fmt"));
+    standardImports.add(GoImport.create("runtime"));
 
     if (!getApiConfig().getInterfaceConfig(service).getRetrySettingsDefinition().isEmpty()) {
-      coreImports.add(GoImport.create("time"));
+      standardImports.add(GoImport.create("time"));
     }
+    for (Method method : service.getMethods()) {
+      MethodConfig methodConfig =
+          getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+      if (methodConfig.isPageStreaming()) {
+        standardImports.add(GoImport.create("io"));
+      }
+    }
+    return standardImports;
+  }
+
+  private TreeSet<GoImport> getMessageImports(Interface service) {
+    TreeSet<GoImport> messageImports = new TreeSet<>();
 
     // Add method request-type imports
     for (Method method : service.getMethods()) {
@@ -377,29 +385,71 @@ public class GoGapicContext extends GapicContext implements GoContext {
       MessageType outputMessage = method.getOutputMessage();
       MethodConfig methodConfig =
           getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
-      imports.add(createMessageImport(inputMessage));
+      messageImports.add(createMessageImport(inputMessage));
       if (!isEmpty(method.getOutputType())) {
-        imports.add(createMessageImport(outputMessage));
+        messageImports.add(createMessageImport(outputMessage));
       }
       if (methodConfig.isPageStreaming()) {
         TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
         if (resourceType.isMessage()) {
-          imports.add(createMessageImport(resourceType.getMessageType()));
+          messageImports.add(createMessageImport(resourceType.getMessageType()));
         }
-        coreImports.add(GoImport.create("io"));
       }
     }
 
-    List<String> result = new ArrayList<>();
-    for (GoImport goImport : coreImports) {
-      result.add("\t" + goImport.importString());
+    return messageImports;
+  }
+
+  private List<String> formatImports(Set<GoImport> standard, Set<GoImport> thirdParty) {
+    List<String> result = new ArrayList<String>();
+    if (standard != null) {
+      for (GoImport goImport : standard) {
+        result.add("    " + goImport.importString());
+      }
+      result.add("");
     }
-    // An empty string to bring the blank line between core imports and others.
-    result.add("");
-    for (GoImport goImport : imports) {
-      result.add("\t" + goImport.importString());
+    if (thirdParty != null) {
+      for (GoImport goImport : thirdParty) {
+        result.add("    " + goImport.importString());
+      }
     }
     return result;
+  }
+
+  /**
+   * Calculates the set of imports and returns a sorted set of Go import output strings. This
+   * imitates the same order which gofmt does, which means: - standard imports (Go standard libraries)
+   * in alphabetical order - a blank line (so an empty string) - other imports, alphabetical order
+   *
+   * Each of the lines (except for the blank line) starts with a tab character '\t' for the
+   * indentation within the 'import' section in Go file.
+   */
+  public Iterable<String> getImports(Interface service) {
+    TreeSet<GoImport> thirdParty = new TreeSet<>();
+
+    // Add non-service-specific imports.
+    thirdParty.add(GoImport.create("golang.org/x/net/context"));
+    thirdParty.add(GoImport.create("google.golang.org/grpc"));
+    thirdParty.add(GoImport.create("google.golang.org/grpc/codes"));
+    thirdParty.add(GoImport.create("google.golang.org/grpc/metadata"));
+    thirdParty.add(GoImport.create(GAX_PACKAGE_BASE, "gax"));
+
+    thirdParty.addAll(getMessageImports(service));
+    Set<GoImport> standard = getStandardImports(service);
+    return formatImports(standard, thirdParty);
+  }
+
+  /**
+   * Same as getImports, but scoped to the client_test.go file.
+   */
+  public Iterable<String> getTestImports(Interface service) {
+    TreeSet<GoImport> thirdParty = new TreeSet<>();
+
+    thirdParty.add(GoImport.create("golang.org/x/net/context"));
+    thirdParty.add(GoImport.create(GAX_PACKAGE_BASE, "gax"));
+    thirdParty.addAll(getMessageImports(service));
+
+    return formatImports(null, thirdParty);
   }
 
   /**
