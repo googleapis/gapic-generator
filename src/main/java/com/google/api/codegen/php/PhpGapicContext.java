@@ -77,6 +77,9 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
     return service.getFile().getProto().getName().replace(".proto", "_services");
   }
 
+  /**
+   * Returns the name of the gRPC client class.
+   */
   public String getGrpcClientName(Interface service) {
     String fullyQualifiedClientName = service.getFullName().replaceAll("\\.", "\\\\") + "Client";
     return getTypeName(fullyQualifiedClientName);
