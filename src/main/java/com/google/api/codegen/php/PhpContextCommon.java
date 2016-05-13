@@ -58,12 +58,17 @@ public class PhpContextCommon {
   }
 
   public Iterable<String> getDocLinesWithPrefix(String text, String firstLinePrefix) {
+    return getDocLinesWithPrefixes(text, firstLinePrefix, "");
+  }
+
+  public Iterable<String> getDocLinesWithPrefixes(String text, String firstLinePrefix, String remainderPrefix) {
     // TODO: convert markdown to phpDoc
     List<String> result = new ArrayList<>();
-    String linePrefix = firstLinePrefix;
+    boolean onFirstLine = true;
     for (String line : Splitter.on(String.format("%n")).split(text)) {
+      String linePrefix = onFirstLine ? firstLinePrefix : remainderPrefix;
+      onFirstLine = false;
       result.add(" * " + linePrefix + line);
-      linePrefix = "";
     }
     return result;
   }

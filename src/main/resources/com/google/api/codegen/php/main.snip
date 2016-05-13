@@ -415,24 +415,16 @@
 @end
 
 @private methodDoc(service, method)
-    @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-         requiredFields = methodConfig.getRequiredFields()
+    @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method)
         /**
         {@docLinesFromStr(context.getDescription(method))}
         # TODO generate samples
          *
-        @join param : requiredFields
-            @join commentLine : context.php.getDocLinesWithPrefix(context.getDescription(param), paramDocLinePrefix(param))
-                {@commentLine}
-            @end
-        @end
-         * @@param array $optionalArgs {
-         *     Optional. There are no optional parameters for createTopic yet;
-         *               this $optionalArgs parameter reserves a spot for future ones.
-         * }
+        {@requiredArgsDoc(service, method)}
+        {@optionalArgsDoc(service, method)}
          * @@param array $callSettings {
          *    Optional.
-         *    @@type \Google\GAX\RetrySettings $retrySettings
+         *    @@type Google\GAX\RetrySettings $retrySettings
          *          Retry settings to use for this call. If present, then
          *          $timeout is ignored.
          *    @@type integer $timeoutMillis
@@ -451,8 +443,43 @@
     @end
 @end
 
-@private paramDocLinePrefix(param)
+@private requiredArgsDoc(service, method)
+    @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method)
+        @join param : methodConfig.getRequiredFields()
+            @join commentLine : context.php.getDocLinesWithPrefix(context.getDescription(param), requiredParamDocLinePrefix(param))
+                {@commentLine}
+            @end
+        @end
+    @end
+@end
+
+@private requiredParamDocLinePrefix(param)
     @@param {@context.typeName(param.getType)} ${@context.lowerUnderscoreToLowerCamel(param.getSimpleName)} {@""}
+@end
+
+@private optionalArgsDoc(service, method)
+    @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+         optionalFields = methodConfig.getOptionalFields()
+        @if optionalFields
+            {@""} * @@param array $optionalArgs {
+             *     Optional.
+            @join param : optionalFields
+                @join commentLine : context.php.getDocLinesWithPrefixes(context.getDescription(param), optionalParamDocLinePrefix(param), "          ")
+                    {@commentLine}
+                @end
+            @end
+             * }
+        @else
+            {@""} * @@param array $optionalArgs {
+             *     Optional. There are no optional parameters for this method yet;
+             *               this $optionalArgs parameter reserves a spot for future ones.
+             * }
+        @end
+    @end
+@end
+
+@private optionalParamDocLinePrefix(param)
+    {@""}    @@type {@context.typeName(param.getType)} ${@context.lowerUnderscoreToLowerCamel(param.getSimpleName)} {@""}
 @end
 
 @private docReturnLine(service, method)

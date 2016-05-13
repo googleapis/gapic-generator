@@ -44,7 +44,10 @@ use google\example\library\v1\MergeShelvesRequest;
 use google\example\library\v1\MoveBookRequest;
 use google\example\library\v1\PublishSeriesRequest;
 use google\example\library\v1\Shelf;
+use google\example\library\v1\SomeMessage;
+use google\example\library\v1\StringBuilder;
 use google\example\library\v1\UpdateBookRequest;
+use google\protobuf\FieldMask;
 
 
 
@@ -299,12 +302,12 @@ class LibraryServiceApi
      *
      * @param Shelf $shelf The shelf to create.
      * @param array $optionalArgs {
-     *     Optional. There are no optional parameters for createTopic yet;
+     *     Optional. There are no optional parameters for this method yet;
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
      *    Optional.
-     *    @type \Google\GAX\RetrySettings $retrySettings
+     *    @type Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeout is ignored.
      *    @type integer $timeoutMillis
@@ -334,12 +337,13 @@ class LibraryServiceApi
      *
      * @param string $name The name of the shelf to retrieve.
      * @param array $optionalArgs {
-     *     Optional. There are no optional parameters for createTopic yet;
-     *               this $optionalArgs parameter reserves a spot for future ones.
+     *     Optional.
+     *     @type SomeMessage $message Field to verify that message-type query parameter gets flattened.
+     *     @type StringBuilder $stringBuilder
      * }
      * @param array $callSettings {
      *    Optional.
-     *    @type \Google\GAX\RetrySettings $retrySettings
+     *    @type Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeout is ignored.
      *    @type integer $timeoutMillis
@@ -367,13 +371,14 @@ class LibraryServiceApi
     /**
      * Lists shelves.
      *
+
      * @param array $optionalArgs {
-     *     Optional. There are no optional parameters for createTopic yet;
+     *     Optional. There are no optional parameters for this method yet;
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
      *    Optional.
-     *    @type \Google\GAX\RetrySettings $retrySettings
+     *    @type Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeout is ignored.
      *    @type integer $timeoutMillis
@@ -402,12 +407,12 @@ class LibraryServiceApi
      *
      * @param string $name The name of the shelf to delete.
      * @param array $optionalArgs {
-     *     Optional. There are no optional parameters for createTopic yet;
+     *     Optional. There are no optional parameters for this method yet;
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
      *    Optional.
-     *    @type \Google\GAX\RetrySettings $retrySettings
+     *    @type Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeout is ignored.
      *    @type integer $timeoutMillis
@@ -440,12 +445,12 @@ class LibraryServiceApi
      * @param string $name The name of the shelf we're adding books to.
      * @param string $otherShelfName The name of the shelf we're removing books from and deleting.
      * @param array $optionalArgs {
-     *     Optional. There are no optional parameters for createTopic yet;
+     *     Optional. There are no optional parameters for this method yet;
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
      *    Optional.
-     *    @type \Google\GAX\RetrySettings $retrySettings
+     *    @type Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeout is ignored.
      *    @type integer $timeoutMillis
@@ -477,12 +482,12 @@ class LibraryServiceApi
      * @param string $name The name of the shelf in which the book is created.
      * @param Book $book The book to create.
      * @param array $optionalArgs {
-     *     Optional. There are no optional parameters for createTopic yet;
+     *     Optional. There are no optional parameters for this method yet;
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
      *    Optional.
-     *    @type \Google\GAX\RetrySettings $retrySettings
+     *    @type Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeout is ignored.
      *    @type integer $timeoutMillis
@@ -514,12 +519,12 @@ class LibraryServiceApi
      * @param Shelf $shelf The shelf in which the series is created.
      * @param array $books The books to publish in the series.
      * @param array $optionalArgs {
-     *     Optional. There are no optional parameters for createTopic yet;
-     *               this $optionalArgs parameter reserves a spot for future ones.
+     *     Optional.
+     *     @type integer $edition The edition of the series
      * }
      * @param array $callSettings {
      *    Optional.
-     *    @type \Google\GAX\RetrySettings $retrySettings
+     *    @type Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeout is ignored.
      *    @type integer $timeoutMillis
@@ -552,12 +557,12 @@ class LibraryServiceApi
      *
      * @param string $name The name of the book to retrieve.
      * @param array $optionalArgs {
-     *     Optional. There are no optional parameters for createTopic yet;
+     *     Optional. There are no optional parameters for this method yet;
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
      *    Optional.
-     *    @type \Google\GAX\RetrySettings $retrySettings
+     *    @type Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeout is ignored.
      *    @type integer $timeoutMillis
@@ -587,12 +592,12 @@ class LibraryServiceApi
      *
      * @param string $name The name of the shelf whose books we'd like to list.
      * @param array $optionalArgs {
-     *     Optional. There are no optional parameters for createTopic yet;
-     *               this $optionalArgs parameter reserves a spot for future ones.
+     *     Optional.
+     *     @type string $filter To test python built-in wrapping.
      * }
      * @param array $callSettings {
      *    Optional.
-     *    @type \Google\GAX\RetrySettings $retrySettings
+     *    @type Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeout is ignored.
      *    @type integer $timeoutMillis
@@ -622,12 +627,12 @@ class LibraryServiceApi
      *
      * @param string $name The name of the book to delete.
      * @param array $optionalArgs {
-     *     Optional. There are no optional parameters for createTopic yet;
+     *     Optional. There are no optional parameters for this method yet;
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
      *    Optional.
-     *    @type \Google\GAX\RetrySettings $retrySettings
+     *    @type Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeout is ignored.
      *    @type integer $timeoutMillis
@@ -658,12 +663,13 @@ class LibraryServiceApi
      * @param string $name The name of the book to update.
      * @param Book $book The book to update with.
      * @param array $optionalArgs {
-     *     Optional. There are no optional parameters for createTopic yet;
-     *               this $optionalArgs parameter reserves a spot for future ones.
+     *     Optional.
+     *     @type FieldMask $updateMask A field mask to apply, rendered as an HTTP parameter.
+     *     @type google\example\library\v1\FieldMask $physicalMask To test Python import clash resolution.
      * }
      * @param array $callSettings {
      *    Optional.
-     *    @type \Google\GAX\RetrySettings $retrySettings
+     *    @type Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeout is ignored.
      *    @type integer $timeoutMillis
@@ -695,12 +701,12 @@ class LibraryServiceApi
      * @param string $name The name of the book to move.
      * @param string $otherShelfName The name of the destination shelf.
      * @param array $optionalArgs {
-     *     Optional. There are no optional parameters for createTopic yet;
+     *     Optional. There are no optional parameters for this method yet;
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
      *    Optional.
-     *    @type \Google\GAX\RetrySettings $retrySettings
+     *    @type Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeout is ignored.
      *    @type integer $timeoutMillis
@@ -729,13 +735,14 @@ class LibraryServiceApi
     /**
      * Lists a primitive resource. To test go page streaming.
      *
+
      * @param array $optionalArgs {
-     *     Optional. There are no optional parameters for createTopic yet;
-     *               this $optionalArgs parameter reserves a spot for future ones.
+     *     Optional.
+     *     @type string $name
      * }
      * @param array $callSettings {
      *    Optional.
-     *    @type \Google\GAX\RetrySettings $retrySettings
+     *    @type Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
      *          $timeout is ignored.
      *    @type integer $timeoutMillis
