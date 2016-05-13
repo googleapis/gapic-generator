@@ -157,11 +157,9 @@ public class JavaContextCommon {
   abstract static class Variable {
     public abstract TypeRef getType();
 
-    public abstract String getUnformattedName();
+    public abstract String getName();
 
     public abstract String getDescription();
-
-    public abstract String getName();
 
     @Nullable
     public abstract CollectionConfig getFormattingConfig();
@@ -181,17 +179,12 @@ public class JavaContextCommon {
   // This function is necessary to provide a static entry point for the same-named
   // member function.
   public static Variable s_newVariable(TypeRef type, String name, String description) {
-    return s_newVariable(type, name, description, name, null);
+    return s_newVariable(type, name, description, null);
   }
 
   public static Variable s_newVariable(
-      TypeRef type,
-      String unformattedName,
-      String description,
-      String name,
-      CollectionConfig formattingConfig) {
-    return new AutoValue_JavaContextCommon_Variable(
-        type, unformattedName, description, name, formattingConfig);
+      TypeRef type, String name, String description, CollectionConfig formattingConfig) {
+    return new AutoValue_JavaContextCommon_Variable(type, name, description, formattingConfig);
   }
 
   @AutoValue
@@ -307,7 +300,6 @@ public class JavaContextCommon {
                     field.getType(),
                     LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName()),
                     context.getDescription(field),
-                    "formatted" + LanguageUtil.lowerUnderscoreToUpperCamel(field.getSimpleName()),
                     context.getCollectionConfig(
                         service, fieldNamePatterns.get(field.getSimpleName()))));
           } else {

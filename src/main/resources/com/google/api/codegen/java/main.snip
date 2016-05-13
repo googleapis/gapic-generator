@@ -319,18 +319,18 @@
        requestTypeName = context.typeName(method.getInputType)
     {@iterableFlattenedMethodJavaDoc(service, method, methodName, resourceTypeName, fields, fieldNamePatterns)}
     public final PageAccessor<{@resourceTypeName}> \
-        {@methodName}({@paramListFormatted(fields, fieldNamePatterns)}) {
+        {@methodName}({@paramList(fields)}) {
       @join field : fields
         @if fieldNamePatterns.containsKey(field.getSimpleName)
           @let entityName = fieldNamePatterns.get(field.getSimpleName), \
               collectionConfig = context.getCollectionConfig(service, entityName)
-            {@pathTemplateCheck(formattedParamName(field), collectionConfig)}
+            {@pathTemplateCheck(paramName(field), collectionConfig)}
           @end
         @end
       @end
       {@context.typeName(method.getInputType)} request =
           {@requestTypeName}.newBuilder()
-          {@builderSetCallsFormatted(fields, fieldNamePatterns)}
+          {@builderSetCalls(fields)}
           .build();
       return {@methodName}(request);
     }
@@ -407,18 +407,18 @@
   @let returnType = context.methodReturnTypeName(method.getOutputType), \
        returnStatement = context.methodReturnStatement(method.getOutputType), \
        requestTypeName = context.typeName(method.getInputType)
-    public final {@returnType} {@methodName}({@paramListFormatted(fields, fieldNamePatterns)}) {
+    public final {@returnType} {@methodName}({@paramList(fields)}) {
       @join field : fields
         @if fieldNamePatterns.containsKey(field.getSimpleName)
           @let entityName = fieldNamePatterns.get(field.getSimpleName), \
               collectionConfig = context.getCollectionConfig(service, entityName)
-            {@pathTemplateCheck(formattedParamName(field), collectionConfig)}
+            {@pathTemplateCheck(paramName(field), collectionConfig)}
           @end
         @end
       @end
       {@context.typeName(method.getInputType)} request =
           {@requestTypeName}.newBuilder()
-          {@builderSetCallsFormatted(fields, fieldNamePatterns)}
+          {@builderSetCalls(fields)}
           .build();
       {@returnStatement}{@methodName}(request);
     }
@@ -603,40 +603,14 @@
   @end
 @end
 
-@private paramListFormatted(fields, fieldNamePatterns)
-  @join field : fields on ", "
-    @if fieldNamePatterns.containsKey(field.getSimpleName)
-      {@context.typeName(field.getType)} {@formattedParamName(field)}
-    @else
-      @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
-        {@context.typeName(field.getType)} {@paramName}
-      @end
-    @end
-  @end
-@end
-
-@private formattedParamName(field)
-  @let paramName = context.lowerUnderscoreToUpperCamel(field.getSimpleName)
-    formatted{@paramName}
-  @end
+@private paramName(field)
+  {@context.lowerUnderscoreToLowerCamel(field.getSimpleName)}
 @end
 
 @private builderSetCalls(fields)
   @join field : fields
     @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
       .{@setCallName(field)}({@paramName})
-    @end
-  @end
-@end
-
-@private builderSetCallsFormatted(fields, fieldNamePatterns)
-  @join field : fields
-    @if fieldNamePatterns.containsKey(field.getSimpleName)
-      .{@setCallName(field)}({@formattedParamName(field)})
-    @else
-      @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
-        .{@setCallName(field)}({@paramName})
-      @end
     @end
   @end
 @end
@@ -717,13 +691,21 @@
 
   {@context.typeName(param.getType)} {@param.getName} = {@context.typeName(param.getType)}.newBuilder()
   @join requiredParam : docConfig.getRequiredParams
-    {@EMPTY}  .{@setCallNameFromParam(requiredParam)}({@requiredParam.getName})
+    {@EMPTY}  .{@setCallNameFromParam(requiredParam)}({@paramNameFormatted(requiredParam)})
   @end
   {@EMPTY}  .build()
 @end
 
 @private initLineSimple(param, docConfig)
-  {@context.typeName(param.getType)} {@param.getName} = {@initValue(param, docConfig.getApiName)}
+  {@context.typeName(param.getType)} {@paramNameFormatted(param)} = {@initValue(param, docConfig.getApiName)}
+@end
+
+@private paramNameFormatted(param)
+  @if param.hasFormattingConfig
+    formatted{@context.lowerCamelToUpperCamel(param.getName)}
+  @else
+    {@param.getName}
+  @end
 @end
 
 @private initValue(param, ApiName)
@@ -735,7 +717,7 @@
 @end
 
 @snippet setCallNameFromParam(param)
-  {@setCallName(param.getType, context.lowerCamelToUpperCamel(param.getUnformattedName))}
+  {@setCallName(param.getType, context.lowerCamelToUpperCamel(param.getName))}
 @end
 
 @private formatResourceFunctionArgs(collectionConfig)
@@ -785,7 +767,7 @@
 
 @private argList(params)
   @join param : params on ", "
-    {@param.getName}
+    {@paramNameFormatted(param)}
   @end
 @end
 

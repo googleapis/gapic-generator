@@ -402,14 +402,14 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
-   * @param formattedName The name of the shelf to retrieve.
+   * @param name The name of the shelf to retrieve.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Shelf getShelf(String formattedName) {
-    SHELF_PATH_TEMPLATE.validate(formattedName);
+  public final Shelf getShelf(String name) {
+    SHELF_PATH_TEMPLATE.validate(name);
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
-        .setName(formattedName)
+        .setName(name)
         .build();
     return getShelf(request);
   }
@@ -430,16 +430,16 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
-   * @param formattedName The name of the shelf to retrieve.
+   * @param name The name of the shelf to retrieve.
    * @param message Field to verify that message-type query parameter gets flattened.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Shelf getShelf(String formattedName, SomeMessage message) {
-    SHELF_PATH_TEMPLATE.validate(formattedName);
+  public final Shelf getShelf(String name, SomeMessage message) {
+    SHELF_PATH_TEMPLATE.validate(name);
 
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
-        .setName(formattedName)
+        .setName(name)
         .setMessage(message)
         .build();
     return getShelf(request);
@@ -462,18 +462,18 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
-   * @param formattedName The name of the shelf to retrieve.
+   * @param name The name of the shelf to retrieve.
    * @param message Field to verify that message-type query parameter gets flattened.
    * @param stringBuilder
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Shelf getShelf(String formattedName, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
-    SHELF_PATH_TEMPLATE.validate(formattedName);
+  public final Shelf getShelf(String name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
+    SHELF_PATH_TEMPLATE.validate(name);
 
 
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
-        .setName(formattedName)
+        .setName(name)
         .setMessage(message)
         .setStringBuilder(stringBuilder)
         .build();
@@ -652,14 +652,14 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
-   * @param formattedName The name of the shelf to delete.
+   * @param name The name of the shelf to delete.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final void deleteShelf(String formattedName) {
-    SHELF_PATH_TEMPLATE.validate(formattedName);
+  public final void deleteShelf(String name) {
+    SHELF_PATH_TEMPLATE.validate(name);
     DeleteShelfRequest request =
         DeleteShelfRequest.newBuilder()
-        .setName(formattedName)
+        .setName(name)
         .build();
     deleteShelf(request);
   }
@@ -733,17 +733,17 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
-   * @param formattedName The name of the shelf we're adding books to.
-   * @param formattedOtherShelfName The name of the shelf we're removing books from and deleting.
+   * @param name The name of the shelf we're adding books to.
+   * @param otherShelfName The name of the shelf we're removing books from and deleting.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Shelf mergeShelves(String formattedName, String formattedOtherShelfName) {
-    SHELF_PATH_TEMPLATE.validate(formattedName);
-    SHELF_PATH_TEMPLATE.validate(formattedOtherShelfName);
+  public final Shelf mergeShelves(String name, String otherShelfName) {
+    SHELF_PATH_TEMPLATE.validate(name);
+    SHELF_PATH_TEMPLATE.validate(otherShelfName);
     MergeShelvesRequest request =
         MergeShelvesRequest.newBuilder()
-        .setName(formattedName)
-        .setOtherShelfName(formattedOtherShelfName)
+        .setName(name)
+        .setOtherShelfName(otherShelfName)
         .build();
     return mergeShelves(request);
   }
@@ -823,16 +823,16 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
-   * @param formattedName The name of the shelf in which the book is created.
+   * @param name The name of the shelf in which the book is created.
    * @param book The book to create.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Book createBook(String formattedName, Book book) {
-    SHELF_PATH_TEMPLATE.validate(formattedName);
+  public final Book createBook(String name, Book book) {
+    SHELF_PATH_TEMPLATE.validate(name);
 
     CreateBookRequest request =
         CreateBookRequest.newBuilder()
-        .setName(formattedName)
+        .setName(name)
         .setBook(book)
         .build();
     return createBook(request);
@@ -997,14 +997,14 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
-   * @param formattedName The name of the book to retrieve.
+   * @param name The name of the book to retrieve.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Book getBook(String formattedName) {
-    BOOK_PATH_TEMPLATE.validate(formattedName);
+  public final Book getBook(String name) {
+    BOOK_PATH_TEMPLATE.validate(name);
     GetBookRequest request =
         GetBookRequest.newBuilder()
-        .setName(formattedName)
+        .setName(name)
         .build();
     return getBook(request);
   }
@@ -1078,16 +1078,16 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
-   * @param formattedName The name of the shelf whose books we'd like to list.
+   * @param name The name of the shelf whose books we'd like to list.
    * @param filter To test python built-in wrapping.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final PageAccessor<Book> listBooks(String formattedName, String filter) {
-    SHELF_PATH_TEMPLATE.validate(formattedName);
+  public final PageAccessor<Book> listBooks(String name, String filter) {
+    SHELF_PATH_TEMPLATE.validate(name);
 
     ListBooksRequest request =
         ListBooksRequest.newBuilder()
-        .setName(formattedName)
+        .setName(name)
         .setFilter(filter)
         .build();
     return listBooks(request);
@@ -1197,14 +1197,14 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
-   * @param formattedName The name of the book to delete.
+   * @param name The name of the book to delete.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final void deleteBook(String formattedName) {
-    BOOK_PATH_TEMPLATE.validate(formattedName);
+  public final void deleteBook(String name) {
+    BOOK_PATH_TEMPLATE.validate(name);
     DeleteBookRequest request =
         DeleteBookRequest.newBuilder()
-        .setName(formattedName)
+        .setName(name)
         .build();
     deleteBook(request);
   }
@@ -1276,16 +1276,16 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
-   * @param formattedName The name of the book to update.
+   * @param name The name of the book to update.
    * @param book The book to update with.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Book updateBook(String formattedName, Book book) {
-    BOOK_PATH_TEMPLATE.validate(formattedName);
+  public final Book updateBook(String name, Book book) {
+    BOOK_PATH_TEMPLATE.validate(name);
 
     UpdateBookRequest request =
         UpdateBookRequest.newBuilder()
-        .setName(formattedName)
+        .setName(name)
         .setBook(book)
         .build();
     return updateBook(request);
@@ -1309,20 +1309,20 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
-   * @param formattedName The name of the book to update.
+   * @param name The name of the book to update.
    * @param book The book to update with.
    * @param updateMask A field mask to apply, rendered as an HTTP parameter.
    * @param physicalMask To test Python import clash resolution.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Book updateBook(String formattedName, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
-    BOOK_PATH_TEMPLATE.validate(formattedName);
+  public final Book updateBook(String name, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
+    BOOK_PATH_TEMPLATE.validate(name);
 
 
 
     UpdateBookRequest request =
         UpdateBookRequest.newBuilder()
-        .setName(formattedName)
+        .setName(name)
         .setBook(book)
         .setUpdateMask(updateMask)
         .setPhysicalMask(physicalMask)
@@ -1401,17 +1401,17 @@ public class LibraryServiceApi implements AutoCloseable {
    * <!-- manual edit -->
    * <!-- end manual edit -->
    *
-   * @param formattedName The name of the book to move.
-   * @param formattedOtherShelfName The name of the destination shelf.
+   * @param name The name of the book to move.
+   * @param otherShelfName The name of the destination shelf.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public final Book moveBook(String formattedName, String formattedOtherShelfName) {
-    BOOK_PATH_TEMPLATE.validate(formattedName);
-    SHELF_PATH_TEMPLATE.validate(formattedOtherShelfName);
+  public final Book moveBook(String name, String otherShelfName) {
+    BOOK_PATH_TEMPLATE.validate(name);
+    SHELF_PATH_TEMPLATE.validate(otherShelfName);
     MoveBookRequest request =
         MoveBookRequest.newBuilder()
-        .setName(formattedName)
-        .setOtherShelfName(formattedOtherShelfName)
+        .setName(name)
+        .setOtherShelfName(otherShelfName)
         .build();
     return moveBook(request);
   }
