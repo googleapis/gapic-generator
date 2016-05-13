@@ -29,9 +29,9 @@ import java.net.URL;
 /**
  * A DiscoveryContext specialized for Ruby.
  */
-public class RubyDiscoveryContext extends DiscoveryContext {
+public class RubyDiscoveryContext extends DiscoveryContext implements RubyContext {
 
-  private static final RubyNameProvider nameProvider = new RubyNameProvider();
+  private static final RubyApiaryNameMap apiaryNameMap = new RubyApiaryNameMap();
 
   public RubyDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
     super(service, apiaryConfig);
@@ -80,7 +80,7 @@ public class RubyDiscoveryContext extends DiscoveryContext {
 
   public String getRequestTypeName(Method method) {
     String type = getRequestField(method).getTypeUrl();
-    String name = getNameFromProvider(type);
+    String name = getNameFromMap(type);
     if (name == null) {
       throw new IllegalArgumentException(
           String.format(
@@ -90,7 +90,7 @@ public class RubyDiscoveryContext extends DiscoveryContext {
   }
 
   public String getParamName(Method method, String param) {
-    String rename = getNameFromProvider(method.getName() + "/" + param);
+    String rename = getNameFromMap(method.getName() + "/" + param);
     if (rename == null) {
       throw new IllegalArgumentException(
           String.format(
@@ -104,7 +104,7 @@ public class RubyDiscoveryContext extends DiscoveryContext {
   }
 
   public String getMethodName(Method method) {
-    String name = getNameFromProvider(method.getName());
+    String name = getNameFromMap(method.getName());
     if (name == null) {
       throw new IllegalArgumentException(
           String.format(
@@ -116,8 +116,8 @@ public class RubyDiscoveryContext extends DiscoveryContext {
     return name;
   }
 
-  private String getNameFromProvider(String resourceName) {
-    return nameProvider.getName(getApi().getName(), getApi().getVersion(), resourceName);
+  private String getNameFromMap(String resourceName) {
+    return apiaryNameMap.getName(getApi().getName(), getApi().getVersion(), resourceName);
   }
 
   public String getApiVersion() {

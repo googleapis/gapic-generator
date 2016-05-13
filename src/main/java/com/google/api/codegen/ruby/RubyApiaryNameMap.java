@@ -26,28 +26,27 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class RubyNameProvider {
+public class RubyApiaryNameMap {
 
   private final ImmutableMap<ResourceId, String> NAME_MAP;
 
-  String getName(String apiName, String apiVersion, String resourceName) {
-    ResourceId id = ResourceId.create(apiName, apiVersion, resourceName);
-    return NAME_MAP.get(id);
-  }
-
-  {
+  public RubyApiaryNameMap() {
     try {
       NAME_MAP = getNameMap();
     } catch (IOException ex) {
-      System.out.println(ex);
       throw new IllegalStateException(ex);
     }
+  }
+
+  public String getName(String apiName, String apiVersion, String resourceName) {
+    ResourceId id = ResourceId.create(apiName, apiVersion, resourceName);
+    return NAME_MAP.get(id);
   }
 
   private static ImmutableMap<ResourceId, String> getNameMap() throws IOException {
     String data =
         Resources.toString(
-            Resources.getResource(RubyNameProvider.class, "apiary_names.yaml"),
+            Resources.getResource(RubyApiaryNameMap.class, "apiary_names.yaml"),
             StandardCharsets.UTF_8);
     Map<String, String> nameData = (Map<String, String>) (new Yaml().load(data));
     ImmutableMap.Builder<ResourceId, String> builder = ImmutableMap.<ResourceId, String>builder();
@@ -77,7 +76,7 @@ class RubyNameProvider {
     abstract String getResourceName();
 
     private static ResourceId create(String apiName, String apiVersion, String resourceName) {
-      return new AutoValue_RubyNameProvider_ResourceId(apiName, apiVersion, resourceName);
+      return new AutoValue_RubyApiaryNameMap_ResourceId(apiName, apiVersion, resourceName);
     }
   }
 }

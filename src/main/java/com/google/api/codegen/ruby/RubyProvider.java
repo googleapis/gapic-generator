@@ -57,8 +57,8 @@ public class RubyProvider {
   }
 
   @SuppressWarnings("unchecked")
-  public <Element, ContextT> GeneratedResult generate(
-      Element element, SnippetDescriptor snippetDescriptor, ContextT context) {
+  public <Element> GeneratedResult generate(
+      Element element, SnippetDescriptor snippetDescriptor, RubyContext context) {
     ImmutableMap<String, Object> globalMap =
         ImmutableMap.<String, Object>builder().put("context", context).build();
     RubySnippetSet<Element> snippets =
