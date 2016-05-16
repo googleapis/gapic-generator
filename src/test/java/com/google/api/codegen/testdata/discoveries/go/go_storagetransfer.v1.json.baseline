@@ -12,8 +12,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -21,23 +19,25 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storagetransfer.New(client)
+  client, err := storagetransfer.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
   var (
   )
 
-  callResult, err := service.V1.GetGoogleServiceAccount().Context(ctx).Do()
+  callResult, err := client.V1.GetGoogleServiceAccount().Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -55,8 +55,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -64,27 +62,29 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storagetransfer.New(client)
+  client, err := storagetransfer.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
   var (
     // The ID of the Google Developers Console project that the Google service account is associated with. Required.
     projectId = ""
 
   )
 
-  callResult, err := service.GoogleServiceAccounts.Get(projectId).Context(ctx).Do()
+  callResult, err := client.GoogleServiceAccounts.Get(projectId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -102,8 +102,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -111,26 +109,28 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storagetransfer.New(client)
+  client, err := storagetransfer.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'create' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
   var (
 
     requestBody = &storagetransfer.TransferJob{}
   )
 
-  callResult, err := service.TransferJobs.Create(requestBody).Context(ctx).Do()
+  callResult, err := client.TransferJobs.Create(requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -148,8 +148,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -157,27 +155,29 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storagetransfer.New(client)
+  client, err := storagetransfer.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
   var (
     // The job to get. Required.
     jobName = ""
 
   )
 
-  callResult, err := service.TransferJobs.Get(jobName).Context(ctx).Do()
+  callResult, err := client.TransferJobs.Get(jobName).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -195,8 +195,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -204,15 +202,16 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storagetransfer.New(client)
+  client, err := storagetransfer.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
   var (
@@ -226,9 +225,9 @@ func main() {
     }
     return nil
   }
-  err = service.TransferJobs.List().Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.TransferJobs.List().Pages(ctx, fn); err != nil {
+    // TODO: Handle error.
+    _ = err
   }
 }
 package main
@@ -244,8 +243,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -253,18 +250,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storagetransfer.New(client)
+  client, err := storagetransfer.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
   var (
     // The name of job to update. Required.
     jobName = ""
@@ -273,9 +271,10 @@ func main() {
     requestBody = &storagetransfer.UpdateTransferJobRequest{}
   )
 
-  callResult, err := service.TransferJobs.Patch(jobName, requestBody).Context(ctx).Do()
+  callResult, err := client.TransferJobs.Patch(jobName, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -293,8 +292,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -302,27 +299,29 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storagetransfer.New(client)
+  client, err := storagetransfer.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'cancel' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'cancel' method:
   var (
     // The name of the operation resource to be cancelled.
     name = ""
 
   )
 
-  callResult, err := service.TransferOperations.Cancel(name).Context(ctx).Do()
+  callResult, err := client.TransferOperations.Cancel(name).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -340,8 +339,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -349,27 +346,29 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storagetransfer.New(client)
+  client, err := storagetransfer.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
   var (
     // The name of the operation resource to be deleted.
     name = ""
 
   )
 
-  callResult, err := service.TransferOperations.Delete(name).Context(ctx).Do()
+  callResult, err := client.TransferOperations.Delete(name).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -387,8 +386,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -396,27 +393,29 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storagetransfer.New(client)
+  client, err := storagetransfer.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
   var (
     // The name of the operation resource.
     name = ""
 
   )
 
-  callResult, err := service.TransferOperations.Get(name).Context(ctx).Do()
+  callResult, err := client.TransferOperations.Get(name).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -434,8 +433,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -443,18 +440,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storagetransfer.New(client)
+  client, err := storagetransfer.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // The value `transferOperations`.
     name = ""
@@ -469,9 +467,9 @@ func main() {
     }
     return nil
   }
-  err = service.TransferOperations.List(name).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.TransferOperations.List(name).Pages(ctx, fn); err != nil {
+    // TODO: Handle error.
+    _ = err
   }
 }
 package main
@@ -487,8 +485,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -496,18 +492,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storagetransfer.New(client)
+  client, err := storagetransfer.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'pause' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'pause' method:
   var (
     // The name of the transfer operation. Required.
     name = ""
@@ -516,9 +513,10 @@ func main() {
     requestBody = &storagetransfer.PauseTransferOperationRequest{}
   )
 
-  callResult, err := service.TransferOperations.Pause(name, requestBody).Context(ctx).Do()
+  callResult, err := client.TransferOperations.Pause(name, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -536,8 +534,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -545,18 +541,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storagetransfer.New(client)
+  client, err := storagetransfer.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'resume' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'resume' method:
   var (
     // The name of the transfer operation. Required.
     name = ""
@@ -565,9 +562,10 @@ func main() {
     requestBody = &storagetransfer.ResumeTransferOperationRequest{}
   )
 
-  callResult, err := service.TransferOperations.Resume(name, requestBody).Context(ctx).Do()
+  callResult, err := client.TransferOperations.Resume(name, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult

@@ -12,8 +12,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -21,18 +19,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudmonitoring.New(client)
+  client, err := cloudmonitoring.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'create' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
   var (
     // The project id. The value can be the numeric project ID or string-based project name.
     project = ""
@@ -41,9 +40,10 @@ func main() {
     requestBody = &cloudmonitoring.MetricDescriptor{}
   )
 
-  callResult, err := service.MetricDescriptors.Create(project, requestBody).Context(ctx).Do()
+  callResult, err := client.MetricDescriptors.Create(project, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -61,8 +61,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -70,18 +68,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudmonitoring.New(client)
+  client, err := cloudmonitoring.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
   var (
     // The project ID to which the metric belongs.
     project = ""
@@ -91,9 +90,10 @@ func main() {
 
   )
 
-  callResult, err := service.MetricDescriptors.Delete(project, metric).Context(ctx).Do()
+  callResult, err := client.MetricDescriptors.Delete(project, metric).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -111,8 +111,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -120,18 +118,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudmonitoring.New(client)
+  client, err := cloudmonitoring.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // The project id. The value can be the numeric project ID or string-based project name.
     project = ""
@@ -140,9 +139,10 @@ func main() {
     requestBody = &cloudmonitoring.ListMetricDescriptorsRequest{}
   )
 
-  callResult, err := service.MetricDescriptors.List(project, requestBody).Context(ctx).Do()
+  callResult, err := client.MetricDescriptors.List(project, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -160,8 +160,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -169,18 +167,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudmonitoring.New(client)
+  client, err := cloudmonitoring.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // The project ID to which this time series belongs. The value can be the numeric project ID or string-based project name.
     project = ""
@@ -195,9 +194,10 @@ func main() {
     requestBody = &cloudmonitoring.ListTimeseriesRequest{}
   )
 
-  callResult, err := service.Timeseries.List(project, metric, youngest, requestBody).Context(ctx).Do()
+  callResult, err := client.Timeseries.List(project, metric, youngest, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -215,8 +215,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -224,18 +222,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudmonitoring.New(client)
+  client, err := cloudmonitoring.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'write' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'write' method:
   var (
     // The project ID. The value can be the numeric project ID or string-based project name.
     project = ""
@@ -244,9 +243,10 @@ func main() {
     requestBody = &cloudmonitoring.WriteTimeseriesRequest{}
   )
 
-  callResult, err := service.Timeseries.Write(project, requestBody).Context(ctx).Do()
+  callResult, err := client.Timeseries.Write(project, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -264,8 +264,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -273,18 +271,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudmonitoring.New(client)
+  client, err := cloudmonitoring.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // The project ID to which this time series belongs. The value can be the numeric project ID or string-based project name.
     project = ""
@@ -299,9 +298,10 @@ func main() {
     requestBody = &cloudmonitoring.ListTimeseriesDescriptorsRequest{}
   )
 
-  callResult, err := service.TimeseriesDescriptors.List(project, metric, youngest, requestBody).Context(ctx).Do()
+  callResult, err := client.TimeseriesDescriptors.List(project, metric, youngest, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult

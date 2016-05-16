@@ -12,8 +12,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -21,18 +19,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -45,9 +44,10 @@ func main() {
 
   )
 
-  callResult, err := service.BackupRuns.Delete(project, instance, id).Context(ctx).Do()
+  callResult, err := client.BackupRuns.Delete(project, instance, id).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -65,8 +65,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -74,18 +72,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -98,9 +97,10 @@ func main() {
 
   )
 
-  callResult, err := service.BackupRuns.Get(project, instance, id).Context(ctx).Do()
+  callResult, err := client.BackupRuns.Get(project, instance, id).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -118,8 +118,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -127,18 +125,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -156,9 +155,9 @@ func main() {
     }
     return nil
   }
-  err = service.BackupRuns.List(project, instance).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.BackupRuns.List(project, instance).Pages(ctx, fn); err != nil {
+    // TODO: Handle error.
+    _ = err
   }
 }
 package main
@@ -174,8 +173,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -183,18 +180,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -207,9 +205,10 @@ func main() {
 
   )
 
-  callResult, err := service.Databases.Delete(project, instance, database).Context(ctx).Do()
+  callResult, err := client.Databases.Delete(project, instance, database).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -227,8 +226,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -236,18 +233,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -260,9 +258,10 @@ func main() {
 
   )
 
-  callResult, err := service.Databases.Get(project, instance, database).Context(ctx).Do()
+  callResult, err := client.Databases.Get(project, instance, database).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -280,8 +279,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -289,18 +286,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'insert' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -312,9 +310,10 @@ func main() {
     requestBody = &sqladmin.Database{}
   )
 
-  callResult, err := service.Databases.Insert(project, instance, requestBody).Context(ctx).Do()
+  callResult, err := client.Databases.Insert(project, instance, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -332,8 +331,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -341,18 +338,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // Project ID of the project for which to list Cloud SQL instances.
     project = ""
@@ -362,9 +360,10 @@ func main() {
 
   )
 
-  callResult, err := service.Databases.List(project, instance).Context(ctx).Do()
+  callResult, err := client.Databases.List(project, instance).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -382,8 +381,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -391,18 +388,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -417,9 +415,10 @@ func main() {
     requestBody = &sqladmin.Database{}
   )
 
-  callResult, err := service.Databases.Patch(project, instance, database, requestBody).Context(ctx).Do()
+  callResult, err := client.Databases.Patch(project, instance, database, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -437,8 +436,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -446,18 +443,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -472,9 +470,10 @@ func main() {
     requestBody = &sqladmin.Database{}
   )
 
-  callResult, err := service.Databases.Update(project, instance, database, requestBody).Context(ctx).Do()
+  callResult, err := client.Databases.Update(project, instance, database, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -492,8 +491,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -501,23 +498,25 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
   var (
   )
 
-  callResult, err := service.Flags.List().Context(ctx).Do()
+  callResult, err := client.Flags.List().Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -535,8 +534,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -544,18 +541,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'clone' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'clone' method:
   var (
     // Project ID of the source as well as the clone Cloud SQL instance.
     project = ""
@@ -567,9 +565,10 @@ func main() {
     requestBody = &sqladmin.InstancesCloneRequest{}
   )
 
-  callResult, err := service.Instances.Clone(project, instance, requestBody).Context(ctx).Do()
+  callResult, err := client.Instances.Clone(project, instance, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -587,8 +586,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -596,18 +593,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
   var (
     // Project ID of the project that contains the instance to be deleted.
     project = ""
@@ -617,9 +615,10 @@ func main() {
 
   )
 
-  callResult, err := service.Instances.Delete(project, instance).Context(ctx).Do()
+  callResult, err := client.Instances.Delete(project, instance).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -637,8 +636,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -646,18 +643,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'export' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'export' method:
   var (
     // Project ID of the project that contains the instance to be exported.
     project = ""
@@ -669,9 +667,10 @@ func main() {
     requestBody = &sqladmin.InstancesExportRequest{}
   )
 
-  callResult, err := service.Instances.Export(project, instance, requestBody).Context(ctx).Do()
+  callResult, err := client.Instances.Export(project, instance, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -689,8 +688,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -698,18 +695,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'failover' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'failover' method:
   var (
     // ID of the project that contains the read replica.
     project = ""
@@ -721,9 +719,10 @@ func main() {
     requestBody = &sqladmin.InstancesFailoverRequest{}
   )
 
-  callResult, err := service.Instances.Failover(project, instance, requestBody).Context(ctx).Do()
+  callResult, err := client.Instances.Failover(project, instance, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -741,8 +740,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -750,18 +747,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -771,9 +769,10 @@ func main() {
 
   )
 
-  callResult, err := service.Instances.Get(project, instance).Context(ctx).Do()
+  callResult, err := client.Instances.Get(project, instance).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -791,8 +790,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -800,18 +797,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'import' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'import' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -823,9 +821,10 @@ func main() {
     requestBody = &sqladmin.InstancesImportRequest{}
   )
 
-  callResult, err := service.Instances.Import(project, instance, requestBody).Context(ctx).Do()
+  callResult, err := client.Instances.Import(project, instance, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -843,8 +842,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -852,18 +849,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'insert' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
   var (
     // Project ID of the project to which the newly created Cloud SQL instances should belong.
     project = ""
@@ -872,9 +870,10 @@ func main() {
     requestBody = &sqladmin.DatabaseInstance{}
   )
 
-  callResult, err := service.Instances.Insert(project, requestBody).Context(ctx).Do()
+  callResult, err := client.Instances.Insert(project, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -892,8 +891,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -901,18 +898,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // Project ID of the project for which to list Cloud SQL instances.
     project = ""
@@ -927,9 +925,9 @@ func main() {
     }
     return nil
   }
-  err = service.Instances.List(project).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Instances.List(project).Pages(ctx, fn); err != nil {
+    // TODO: Handle error.
+    _ = err
   }
 }
 package main
@@ -945,8 +943,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -954,18 +950,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -977,9 +974,10 @@ func main() {
     requestBody = &sqladmin.DatabaseInstance{}
   )
 
-  callResult, err := service.Instances.Patch(project, instance, requestBody).Context(ctx).Do()
+  callResult, err := client.Instances.Patch(project, instance, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -997,8 +995,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1006,18 +1002,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'promoteReplica' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'promoteReplica' method:
   var (
     // ID of the project that contains the read replica.
     project = ""
@@ -1027,9 +1024,10 @@ func main() {
 
   )
 
-  callResult, err := service.Instances.PromoteReplica(project, instance).Context(ctx).Do()
+  callResult, err := client.Instances.PromoteReplica(project, instance).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1047,8 +1045,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1056,18 +1052,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'resetSslConfig' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'resetSslConfig' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -1077,9 +1074,10 @@ func main() {
 
   )
 
-  callResult, err := service.Instances.ResetSslConfig(project, instance).Context(ctx).Do()
+  callResult, err := client.Instances.ResetSslConfig(project, instance).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1097,8 +1095,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1106,18 +1102,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'restart' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'restart' method:
   var (
     // Project ID of the project that contains the instance to be restarted.
     project = ""
@@ -1127,9 +1124,10 @@ func main() {
 
   )
 
-  callResult, err := service.Instances.Restart(project, instance).Context(ctx).Do()
+  callResult, err := client.Instances.Restart(project, instance).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1147,8 +1145,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1156,18 +1152,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'restoreBackup' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'restoreBackup' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -1179,9 +1176,10 @@ func main() {
     requestBody = &sqladmin.InstancesRestoreBackupRequest{}
   )
 
-  callResult, err := service.Instances.RestoreBackup(project, instance, requestBody).Context(ctx).Do()
+  callResult, err := client.Instances.RestoreBackup(project, instance, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1199,8 +1197,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1208,18 +1204,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'startReplica' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'startReplica' method:
   var (
     // ID of the project that contains the read replica.
     project = ""
@@ -1229,9 +1226,10 @@ func main() {
 
   )
 
-  callResult, err := service.Instances.StartReplica(project, instance).Context(ctx).Do()
+  callResult, err := client.Instances.StartReplica(project, instance).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1249,8 +1247,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1258,18 +1254,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'stopReplica' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'stopReplica' method:
   var (
     // ID of the project that contains the read replica.
     project = ""
@@ -1279,9 +1276,10 @@ func main() {
 
   )
 
-  callResult, err := service.Instances.StopReplica(project, instance).Context(ctx).Do()
+  callResult, err := client.Instances.StopReplica(project, instance).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1299,8 +1297,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1308,18 +1304,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -1331,9 +1328,10 @@ func main() {
     requestBody = &sqladmin.DatabaseInstance{}
   )
 
-  callResult, err := service.Instances.Update(project, instance, requestBody).Context(ctx).Do()
+  callResult, err := client.Instances.Update(project, instance, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1351,8 +1349,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1360,18 +1356,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -1381,9 +1378,10 @@ func main() {
 
   )
 
-  callResult, err := service.Operations.Get(project, operation).Context(ctx).Do()
+  callResult, err := client.Operations.Get(project, operation).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1401,8 +1399,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1410,18 +1406,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -1439,9 +1436,9 @@ func main() {
     }
     return nil
   }
-  err = service.Operations.List(project, instance).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Operations.List(project, instance).Pages(ctx, fn); err != nil {
+    // TODO: Handle error.
+    _ = err
   }
 }
 package main
@@ -1457,8 +1454,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1466,18 +1461,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'createEphemeral' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'createEphemeral' method:
   var (
     // Project ID of the Cloud SQL project.
     project = ""
@@ -1489,9 +1485,10 @@ func main() {
     requestBody = &sqladmin.SslCertsCreateEphemeralRequest{}
   )
 
-  callResult, err := service.SslCerts.CreateEphemeral(project, instance, requestBody).Context(ctx).Do()
+  callResult, err := client.SslCerts.CreateEphemeral(project, instance, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1509,8 +1506,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1518,18 +1513,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
   var (
     // Project ID of the project that contains the instance to be deleted.
     project = ""
@@ -1542,9 +1538,10 @@ func main() {
 
   )
 
-  callResult, err := service.SslCerts.Delete(project, instance, sha1Fingerprint).Context(ctx).Do()
+  callResult, err := client.SslCerts.Delete(project, instance, sha1Fingerprint).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1562,8 +1559,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1571,18 +1566,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -1595,9 +1591,10 @@ func main() {
 
   )
 
-  callResult, err := service.SslCerts.Get(project, instance, sha1Fingerprint).Context(ctx).Do()
+  callResult, err := client.SslCerts.Get(project, instance, sha1Fingerprint).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1615,8 +1612,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1624,18 +1619,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'insert' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
   var (
     // Project ID of the project to which the newly created Cloud SQL instances should belong.
     project = ""
@@ -1647,9 +1643,10 @@ func main() {
     requestBody = &sqladmin.SslCertsInsertRequest{}
   )
 
-  callResult, err := service.SslCerts.Insert(project, instance, requestBody).Context(ctx).Do()
+  callResult, err := client.SslCerts.Insert(project, instance, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1667,8 +1664,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1676,18 +1671,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // Project ID of the project for which to list Cloud SQL instances.
     project = ""
@@ -1697,9 +1693,10 @@ func main() {
 
   )
 
-  callResult, err := service.SslCerts.List(project, instance).Context(ctx).Do()
+  callResult, err := client.SslCerts.List(project, instance).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1717,8 +1714,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1726,27 +1721,29 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // Project ID of the project for which to list tiers.
     project = ""
 
   )
 
-  callResult, err := service.Tiers.List(project).Context(ctx).Do()
+  callResult, err := client.Tiers.List(project).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1764,8 +1761,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1773,18 +1768,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -1800,9 +1796,10 @@ func main() {
 
   )
 
-  callResult, err := service.Users.Delete(project, instance, host, name).Context(ctx).Do()
+  callResult, err := client.Users.Delete(project, instance, host, name).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1820,8 +1817,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1829,18 +1824,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'insert' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -1852,9 +1848,10 @@ func main() {
     requestBody = &sqladmin.User{}
   )
 
-  callResult, err := service.Users.Insert(project, instance, requestBody).Context(ctx).Do()
+  callResult, err := client.Users.Insert(project, instance, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1872,8 +1869,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1881,18 +1876,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -1902,9 +1898,10 @@ func main() {
 
   )
 
-  callResult, err := service.Users.List(project, instance).Context(ctx).Do()
+  callResult, err := client.Users.List(project, instance).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1922,8 +1919,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1931,18 +1926,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := sqladmin.New(client)
+  client, err := sqladmin.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
   var (
     // Project ID of the project that contains the instance.
     project = ""
@@ -1960,9 +1956,10 @@ func main() {
     requestBody = &sqladmin.User{}
   )
 
-  callResult, err := service.Users.Update(project, instance, host, name, requestBody).Context(ctx).Do()
+  callResult, err := client.Users.Update(project, instance, host, name, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult

@@ -12,8 +12,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -21,18 +19,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
   var (
     // Name of a bucket.
     bucket = ""
@@ -42,9 +41,9 @@ func main() {
 
   )
 
-  err = service.BucketAccessControls.Delete(bucket, entity).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
+  if err = client.BucketAccessControls.Delete(bucket, entity).Context(ctx).Do(); err != nil {
+    // TODO: Handle error.
+    _ = err
   }
 }
 package main
@@ -60,8 +59,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -69,18 +66,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
   var (
     // Name of a bucket.
     bucket = ""
@@ -90,9 +88,10 @@ func main() {
 
   )
 
-  callResult, err := service.BucketAccessControls.Get(bucket, entity).Context(ctx).Do()
+  callResult, err := client.BucketAccessControls.Get(bucket, entity).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -110,8 +109,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -119,18 +116,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'insert' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
   var (
     // Name of a bucket.
     bucket = ""
@@ -139,9 +137,10 @@ func main() {
     requestBody = &storage.BucketAccessControl{}
   )
 
-  callResult, err := service.BucketAccessControls.Insert(bucket, requestBody).Context(ctx).Do()
+  callResult, err := client.BucketAccessControls.Insert(bucket, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -159,8 +158,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -168,27 +165,29 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // Name of a bucket.
     bucket = ""
 
   )
 
-  callResult, err := service.BucketAccessControls.List(bucket).Context(ctx).Do()
+  callResult, err := client.BucketAccessControls.List(bucket).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -206,8 +205,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -215,70 +212,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
-  }
-
-  // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
-  var (
-    // Name of a bucket.
-    bucket = ""
-
-    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
-    entity = ""
-
-
-    requestBody = &storage.BucketAccessControl{}
-  )
-
-  callResult, err := service.BucketAccessControls.Patch(bucket, entity, requestBody).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
-  }
-  // doThingsWith(callResult)
-  _ = callResult
-}
-package main
-
-// PRE-REQUISITES:
-// ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/storage/v1'
-//    'go get golang.org/x/oauth2/google'
-
-import (
-  "log"
-
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/storage/v1"
-)
-
-func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
-  ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
-  if err != nil {
-    log.Fatal(err)
-  }
-  service, err := storage.New(client)
-  if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
   var (
     // Name of a bucket.
     bucket = ""
@@ -290,9 +236,10 @@ func main() {
     requestBody = &storage.BucketAccessControl{}
   )
 
-  callResult, err := service.BucketAccessControls.Update(bucket, entity, requestBody).Context(ctx).Do()
+  callResult, err := client.BucketAccessControls.Patch(bucket, entity, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -310,8 +257,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -319,72 +264,34 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
   var (
     // Name of a bucket.
     bucket = ""
 
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+    entity = ""
+
+
+    requestBody = &storage.BucketAccessControl{}
   )
 
-  err = service.Buckets.Delete(bucket).Context(ctx).Do()
+  callResult, err := client.BucketAccessControls.Update(bucket, entity, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
-  }
-}
-package main
-
-// PRE-REQUISITES:
-// ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/storage/v1'
-//    'go get golang.org/x/oauth2/google'
-
-import (
-  "log"
-
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/storage/v1"
-)
-
-func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
-  ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
-  if err != nil {
-    log.Fatal(err)
-  }
-  service, err := storage.New(client)
-  if err != nil {
-    log.Fatal(err)
-  }
-
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
-  var (
-    // Name of a bucket.
-    bucket = ""
-
-  )
-
-  callResult, err := service.Buckets.Get(bucket).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -402,8 +309,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -411,18 +316,110 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'insert' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+  var (
+    // Name of a bucket.
+    bucket = ""
+
+  )
+
+  if err = client.Buckets.Delete(bucket).Context(ctx).Do(); err != nil {
+    // TODO: Handle error.
+    _ = err
+  }
+}
+package main
+
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud Storage JSON API and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 3. To install the client library and Application Default Credentials library, run:
+//    'go get google.golang.org/api/storage/v1'
+//    'go get golang.org/x/oauth2/google'
+
+import (
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storage/v1"
+)
+
+func main() {
+  ctx := context.Background()
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    // TODO: Handle error.
+    _ = err
+  }
+  client, err := storage.New(httpClient)
+  if err != nil {
+    // TODO: Handle error.
+    _ = err
+  }
+
+  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+  var (
+    // Name of a bucket.
+    bucket = ""
+
+  )
+
+  callResult, err := client.Buckets.Get(bucket).Context(ctx).Do()
+  if err != nil {
+    // TODO: Handle error.
+    _ = err
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud Storage JSON API and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 3. To install the client library and Application Default Credentials library, run:
+//    'go get google.golang.org/api/storage/v1'
+//    'go get golang.org/x/oauth2/google'
+
+import (
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storage/v1"
+)
+
+func main() {
+  ctx := context.Background()
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    // TODO: Handle error.
+    _ = err
+  }
+  client, err := storage.New(httpClient)
+  if err != nil {
+    // TODO: Handle error.
+    _ = err
+  }
+
+  // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
   var (
     // A valid API project identifier.
     project = ""
@@ -431,9 +428,10 @@ func main() {
     requestBody = &storage.Bucket{}
   )
 
-  callResult, err := service.Buckets.Insert(project, requestBody).Context(ctx).Do()
+  callResult, err := client.Buckets.Insert(project, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -451,8 +449,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -460,18 +456,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // A valid API project identifier.
     project = ""
@@ -486,9 +483,9 @@ func main() {
     }
     return nil
   }
-  err = service.Buckets.List(project).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Buckets.List(project).Pages(ctx, fn); err != nil {
+    // TODO: Handle error.
+    _ = err
   }
 }
 package main
@@ -504,8 +501,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -513,18 +508,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
   var (
     // Name of a bucket.
     bucket = ""
@@ -533,9 +529,10 @@ func main() {
     requestBody = &storage.Bucket{}
   )
 
-  callResult, err := service.Buckets.Patch(bucket, requestBody).Context(ctx).Do()
+  callResult, err := client.Buckets.Patch(bucket, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -553,8 +550,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -562,18 +557,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
   var (
     // Name of a bucket.
     bucket = ""
@@ -582,9 +578,10 @@ func main() {
     requestBody = &storage.Bucket{}
   )
 
-  callResult, err := service.Buckets.Update(bucket, requestBody).Context(ctx).Do()
+  callResult, err := client.Buckets.Update(bucket, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -602,8 +599,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -611,26 +606,27 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'stop' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'stop' method:
   var (
 
     requestBody = &storage.Channel{}
   )
 
-  err = service.Channels.Stop(requestBody).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Channels.Stop(requestBody).Context(ctx).Do(); err != nil {
+    // TODO: Handle error.
+    _ = err
   }
 }
 package main
@@ -646,8 +642,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -655,18 +649,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
   var (
     // Name of a bucket.
     bucket = ""
@@ -676,9 +671,9 @@ func main() {
 
   )
 
-  err = service.DefaultObjectAccessControls.Delete(bucket, entity).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
+  if err = client.DefaultObjectAccessControls.Delete(bucket, entity).Context(ctx).Do(); err != nil {
+    // TODO: Handle error.
+    _ = err
   }
 }
 package main
@@ -694,8 +689,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -703,18 +696,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
   var (
     // Name of a bucket.
     bucket = ""
@@ -724,9 +718,10 @@ func main() {
 
   )
 
-  callResult, err := service.DefaultObjectAccessControls.Get(bucket, entity).Context(ctx).Do()
+  callResult, err := client.DefaultObjectAccessControls.Get(bucket, entity).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -744,8 +739,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -753,18 +746,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'insert' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
   var (
     // Name of a bucket.
     bucket = ""
@@ -773,9 +767,10 @@ func main() {
     requestBody = &storage.ObjectAccessControl{}
   )
 
-  callResult, err := service.DefaultObjectAccessControls.Insert(bucket, requestBody).Context(ctx).Do()
+  callResult, err := client.DefaultObjectAccessControls.Insert(bucket, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -793,8 +788,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -802,27 +795,29 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // Name of a bucket.
     bucket = ""
 
   )
 
-  callResult, err := service.DefaultObjectAccessControls.List(bucket).Context(ctx).Do()
+  callResult, err := client.DefaultObjectAccessControls.List(bucket).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -840,8 +835,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -849,70 +842,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
-  }
-
-  // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
-  var (
-    // Name of a bucket.
-    bucket = ""
-
-    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
-    entity = ""
-
-
-    requestBody = &storage.ObjectAccessControl{}
-  )
-
-  callResult, err := service.DefaultObjectAccessControls.Patch(bucket, entity, requestBody).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
-  }
-  // doThingsWith(callResult)
-  _ = callResult
-}
-package main
-
-// PRE-REQUISITES:
-// ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/storage/v1'
-//    'go get golang.org/x/oauth2/google'
-
-import (
-  "log"
-
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/storage/v1"
-)
-
-func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
-  ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
-  if err != nil {
-    log.Fatal(err)
-  }
-  service, err := storage.New(client)
-  if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
   var (
     // Name of a bucket.
     bucket = ""
@@ -924,9 +866,10 @@ func main() {
     requestBody = &storage.ObjectAccessControl{}
   )
 
-  callResult, err := service.DefaultObjectAccessControls.Update(bucket, entity, requestBody).Context(ctx).Do()
+  callResult, err := client.DefaultObjectAccessControls.Patch(bucket, entity, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -944,8 +887,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -953,18 +894,71 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+  var (
+    // Name of a bucket.
+    bucket = ""
+
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+    entity = ""
+
+
+    requestBody = &storage.ObjectAccessControl{}
+  )
+
+  callResult, err := client.DefaultObjectAccessControls.Update(bucket, entity, requestBody).Context(ctx).Do()
+  if err != nil {
+    // TODO: Handle error.
+    _ = err
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud Storage JSON API and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 3. To install the client library and Application Default Credentials library, run:
+//    'go get google.golang.org/api/storage/v1'
+//    'go get golang.org/x/oauth2/google'
+
+import (
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storage/v1"
+)
+
+func main() {
+  ctx := context.Background()
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    // TODO: Handle error.
+    _ = err
+  }
+  client, err := storage.New(httpClient)
+  if err != nil {
+    // TODO: Handle error.
+    _ = err
+  }
+
+  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
   var (
     // Name of a bucket.
     bucket = ""
@@ -977,9 +971,9 @@ func main() {
 
   )
 
-  err = service.ObjectAccessControls.Delete(bucket, object, entity).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
+  if err = client.ObjectAccessControls.Delete(bucket, object, entity).Context(ctx).Do(); err != nil {
+    // TODO: Handle error.
+    _ = err
   }
 }
 package main
@@ -995,8 +989,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1004,18 +996,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
   var (
     // Name of a bucket.
     bucket = ""
@@ -1028,9 +1021,10 @@ func main() {
 
   )
 
-  callResult, err := service.ObjectAccessControls.Get(bucket, object, entity).Context(ctx).Do()
+  callResult, err := client.ObjectAccessControls.Get(bucket, object, entity).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1048,8 +1042,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1057,18 +1049,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'insert' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
   var (
     // Name of a bucket.
     bucket = ""
@@ -1080,9 +1073,10 @@ func main() {
     requestBody = &storage.ObjectAccessControl{}
   )
 
-  callResult, err := service.ObjectAccessControls.Insert(bucket, object, requestBody).Context(ctx).Do()
+  callResult, err := client.ObjectAccessControls.Insert(bucket, object, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1100,8 +1094,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1109,18 +1101,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // Name of a bucket.
     bucket = ""
@@ -1130,9 +1123,10 @@ func main() {
 
   )
 
-  callResult, err := service.ObjectAccessControls.List(bucket, object).Context(ctx).Do()
+  callResult, err := client.ObjectAccessControls.List(bucket, object).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1150,8 +1144,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1159,73 +1151,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
-  }
-
-  // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
-  var (
-    // Name of a bucket.
-    bucket = ""
-
-    // Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
-    object = ""
-
-    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
-    entity = ""
-
-
-    requestBody = &storage.ObjectAccessControl{}
-  )
-
-  callResult, err := service.ObjectAccessControls.Patch(bucket, object, entity, requestBody).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
-  }
-  // doThingsWith(callResult)
-  _ = callResult
-}
-package main
-
-// PRE-REQUISITES:
-// ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/storage/v1'
-//    'go get golang.org/x/oauth2/google'
-
-import (
-  "log"
-
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/storage/v1"
-)
-
-func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
-  ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
-  if err != nil {
-    log.Fatal(err)
-  }
-  service, err := storage.New(client)
-  if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
   var (
     // Name of a bucket.
     bucket = ""
@@ -1240,9 +1178,10 @@ func main() {
     requestBody = &storage.ObjectAccessControl{}
   )
 
-  callResult, err := service.ObjectAccessControls.Update(bucket, object, entity, requestBody).Context(ctx).Do()
+  callResult, err := client.ObjectAccessControls.Patch(bucket, object, entity, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1260,8 +1199,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1269,18 +1206,74 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'compose' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+  var (
+    // Name of a bucket.
+    bucket = ""
+
+    // Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+    object = ""
+
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+    entity = ""
+
+
+    requestBody = &storage.ObjectAccessControl{}
+  )
+
+  callResult, err := client.ObjectAccessControls.Update(bucket, object, entity, requestBody).Context(ctx).Do()
+  if err != nil {
+    // TODO: Handle error.
+    _ = err
+  }
+  // doThingsWith(callResult)
+  _ = callResult
+}
+package main
+
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud Storage JSON API and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 3. To install the client library and Application Default Credentials library, run:
+//    'go get google.golang.org/api/storage/v1'
+//    'go get golang.org/x/oauth2/google'
+
+import (
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storage/v1"
+)
+
+func main() {
+  ctx := context.Background()
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  if err != nil {
+    // TODO: Handle error.
+    _ = err
+  }
+  client, err := storage.New(httpClient)
+  if err != nil {
+    // TODO: Handle error.
+    _ = err
+  }
+
+  // TODO: Change placeholders below to appropriate parameter values for the 'compose' method:
   var (
     // Name of the bucket in which to store the new object.
     destinationBucket = ""
@@ -1292,9 +1285,10 @@ func main() {
     requestBody = &storage.ComposeRequest{}
   )
 
-  callResult, err := service.Objects.Compose(destinationBucket, destinationObject, requestBody).Context(ctx).Do()
+  callResult, err := client.Objects.Compose(destinationBucket, destinationObject, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1312,8 +1306,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1321,18 +1313,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'copy' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'copy' method:
   var (
     // Name of the bucket in which to find the source object.
     sourceBucket = ""
@@ -1350,9 +1343,10 @@ func main() {
     requestBody = &storage.Object{}
   )
 
-  callResult, err := service.Objects.Copy(sourceBucket, sourceObject, destinationBucket, destinationObject, requestBody).Context(ctx).Do()
+  callResult, err := client.Objects.Copy(sourceBucket, sourceObject, destinationBucket, destinationObject, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1370,8 +1364,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1379,18 +1371,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
   var (
     // Name of the bucket in which the object resides.
     bucket = ""
@@ -1400,9 +1393,9 @@ func main() {
 
   )
 
-  err = service.Objects.Delete(bucket, object).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Objects.Delete(bucket, object).Context(ctx).Do(); err != nil {
+    // TODO: Handle error.
+    _ = err
   }
 }
 package main
@@ -1418,8 +1411,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1427,18 +1418,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
   var (
     // Name of the bucket in which the object resides.
     bucket = ""
@@ -1448,9 +1440,10 @@ func main() {
 
   )
 
-  callResult, err := service.Objects.Get(bucket, object).Context(ctx).Do()
+  callResult, err := client.Objects.Get(bucket, object).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1468,8 +1461,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1477,18 +1468,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'insert' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
   var (
     // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket value, if any.
     bucket = ""
@@ -1497,9 +1489,10 @@ func main() {
     requestBody = &storage.Object{}
   )
 
-  callResult, err := service.Objects.Insert(bucket, requestBody).Context(ctx).Do()
+  callResult, err := client.Objects.Insert(bucket, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1517,8 +1510,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1526,18 +1517,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // Name of the bucket in which to look for objects.
     bucket = ""
@@ -1552,9 +1544,9 @@ func main() {
     }
     return nil
   }
-  err = service.Objects.List(bucket).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Objects.List(bucket).Pages(ctx, fn); err != nil {
+    // TODO: Handle error.
+    _ = err
   }
 }
 package main
@@ -1570,8 +1562,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1579,18 +1569,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
   var (
     // Name of the bucket in which the object resides.
     bucket = ""
@@ -1602,9 +1593,10 @@ func main() {
     requestBody = &storage.Object{}
   )
 
-  callResult, err := service.Objects.Patch(bucket, object, requestBody).Context(ctx).Do()
+  callResult, err := client.Objects.Patch(bucket, object, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1622,8 +1614,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1631,18 +1621,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'rewrite' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'rewrite' method:
   var (
     // Name of the bucket in which to find the source object.
     sourceBucket = ""
@@ -1660,9 +1651,10 @@ func main() {
     requestBody = &storage.Object{}
   )
 
-  callResult, err := service.Objects.Rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, requestBody).Context(ctx).Do()
+  callResult, err := client.Objects.Rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1680,8 +1672,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1689,18 +1679,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
   var (
     // Name of the bucket in which the object resides.
     bucket = ""
@@ -1712,9 +1703,10 @@ func main() {
     requestBody = &storage.Object{}
   )
 
-  callResult, err := service.Objects.Update(bucket, object, requestBody).Context(ctx).Do()
+  callResult, err := client.Objects.Update(bucket, object, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1732,8 +1724,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1741,18 +1731,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := storage.New(client)
+  client, err := storage.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'watchAll' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'watchAll' method:
   var (
     // Name of the bucket in which to look for objects.
     bucket = ""
@@ -1761,9 +1752,10 @@ func main() {
     requestBody = &storage.Channel{}
   )
 
-  callResult, err := service.Objects.WatchAll(bucket, requestBody).Context(ctx).Do()
+  callResult, err := client.Objects.WatchAll(bucket, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult

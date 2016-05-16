@@ -12,8 +12,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -21,27 +19,29 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := translate.New(client)
+  client, err := translate.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // The text to detect
     q = []string{}
 
   )
 
-  callResult, err := service.Detections.List(q).Context(ctx).Do()
+  callResult, err := client.Detections.List(q).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -59,8 +59,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -68,23 +66,25 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := translate.New(client)
+  client, err := translate.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
   var (
   )
 
-  callResult, err := service.Languages.List().Context(ctx).Do()
+  callResult, err := client.Languages.List().Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -102,8 +102,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -111,18 +109,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := translate.New(client)
+  client, err := translate.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // The text to translate
     q = []string{}
@@ -132,9 +131,10 @@ func main() {
 
   )
 
-  callResult, err := service.Translations.List(q, target).Context(ctx).Do()
+  callResult, err := client.Translations.List(q, target).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult

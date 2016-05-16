@@ -12,8 +12,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -21,18 +19,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := dataflow.New(client)
+  client, err := dataflow.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'create' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
   var (
     // The project which owns the job.
     projectId = ""
@@ -41,9 +40,10 @@ func main() {
     requestBody = &dataflow.Job{}
   )
 
-  callResult, err := service.Projects.Jobs.Create(projectId, requestBody).Context(ctx).Do()
+  callResult, err := client.Projects.Jobs.Create(projectId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -61,8 +61,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -70,18 +68,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := dataflow.New(client)
+  client, err := dataflow.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
   var (
     // The project which owns the job.
     projectId = ""
@@ -91,9 +90,10 @@ func main() {
 
   )
 
-  callResult, err := service.Projects.Jobs.Get(projectId, jobId).Context(ctx).Do()
+  callResult, err := client.Projects.Jobs.Get(projectId, jobId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -111,8 +111,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -120,18 +118,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := dataflow.New(client)
+  client, err := dataflow.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'getMetrics' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'getMetrics' method:
   var (
     // A project id.
     projectId = ""
@@ -141,9 +140,10 @@ func main() {
 
   )
 
-  callResult, err := service.Projects.Jobs.GetMetrics(projectId, jobId).Context(ctx).Do()
+  callResult, err := client.Projects.Jobs.GetMetrics(projectId, jobId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -161,8 +161,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -170,18 +168,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := dataflow.New(client)
+  client, err := dataflow.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // The project which owns the jobs.
     projectId = ""
@@ -196,9 +195,9 @@ func main() {
     }
     return nil
   }
-  err = service.Projects.Jobs.List(projectId).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Projects.Jobs.List(projectId).Pages(ctx, fn); err != nil {
+    // TODO: Handle error.
+    _ = err
   }
 }
 package main
@@ -214,8 +213,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -223,18 +220,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := dataflow.New(client)
+  client, err := dataflow.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // A project id.
     projectId = ""
@@ -252,9 +250,9 @@ func main() {
     }
     return nil
   }
-  err = service.Projects.Jobs.Messages.List(projectId, jobId).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Projects.Jobs.Messages.List(projectId, jobId).Pages(ctx, fn); err != nil {
+    // TODO: Handle error.
+    _ = err
   }
 }
 package main
@@ -270,8 +268,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -279,18 +275,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := dataflow.New(client)
+  client, err := dataflow.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
   var (
     // The project which owns the job.
     projectId = ""
@@ -302,9 +299,10 @@ func main() {
     requestBody = &dataflow.Job{}
   )
 
-  callResult, err := service.Projects.Jobs.Update(projectId, jobId, requestBody).Context(ctx).Do()
+  callResult, err := client.Projects.Jobs.Update(projectId, jobId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -322,8 +320,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -331,18 +327,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := dataflow.New(client)
+  client, err := dataflow.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'lease' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'lease' method:
   var (
     // Identifies the project this worker belongs to.
     projectId = ""
@@ -354,9 +351,10 @@ func main() {
     requestBody = &dataflow.LeaseWorkItemRequest{}
   )
 
-  callResult, err := service.Projects.Jobs.WorkItems.Lease(projectId, jobId, requestBody).Context(ctx).Do()
+  callResult, err := client.Projects.Jobs.WorkItems.Lease(projectId, jobId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -374,8 +372,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -383,18 +379,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := dataflow.New(client)
+  client, err := dataflow.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'reportStatus' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'reportStatus' method:
   var (
     // The project which owns the WorkItem's job.
     projectId = ""
@@ -406,9 +403,10 @@ func main() {
     requestBody = &dataflow.ReportWorkItemStatusRequest{}
   )
 
-  callResult, err := service.Projects.Jobs.WorkItems.ReportStatus(projectId, jobId, requestBody).Context(ctx).Do()
+  callResult, err := client.Projects.Jobs.WorkItems.ReportStatus(projectId, jobId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -426,8 +424,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -435,18 +431,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := dataflow.New(client)
+  client, err := dataflow.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'workerMessages' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'workerMessages' method:
   var (
     // The project to send the WorkerMessages to.
     projectId = ""
@@ -455,9 +452,10 @@ func main() {
     requestBody = &dataflow.SendWorkerMessagesRequest{}
   )
 
-  callResult, err := service.Projects.WorkerMessages(projectId, requestBody).Context(ctx).Do()
+  callResult, err := client.Projects.WorkerMessages(projectId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult

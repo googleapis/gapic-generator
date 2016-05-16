@@ -12,8 +12,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -21,18 +19,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudtrace.New(client)
+  client, err := cloudtrace.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'patchTraces' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'patchTraces' method:
   var (
     // ID of the Cloud project where the trace data is stored.
     projectId = ""
@@ -41,9 +40,10 @@ func main() {
     requestBody = &cloudtrace.Traces{}
   )
 
-  callResult, err := service.Projects.PatchTraces(projectId, requestBody).Context(ctx).Do()
+  callResult, err := client.Projects.PatchTraces(projectId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -61,8 +61,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -70,18 +68,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudtrace.New(client)
+  client, err := cloudtrace.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
   var (
     // ID of the Cloud project where the trace data is stored.
     projectId = ""
@@ -91,9 +90,10 @@ func main() {
 
   )
 
-  callResult, err := service.Projects.Traces.Get(projectId, traceId).Context(ctx).Do()
+  callResult, err := client.Projects.Traces.Get(projectId, traceId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -111,8 +111,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -120,18 +118,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudtrace.New(client)
+  client, err := cloudtrace.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
   var (
     // ID of the Cloud project where the trace data is stored.
     projectId = ""
@@ -146,8 +145,8 @@ func main() {
     }
     return nil
   }
-  err = service.Projects.Traces.List(projectId).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Projects.Traces.List(projectId).Pages(ctx, fn); err != nil {
+    // TODO: Handle error.
+    _ = err
   }
 }

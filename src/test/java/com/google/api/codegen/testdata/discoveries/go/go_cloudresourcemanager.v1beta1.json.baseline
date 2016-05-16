@@ -12,8 +12,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -21,27 +19,29 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudresourcemanager.New(client)
+  client, err := cloudresourcemanager.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
   var (
     // The id of the Organization resource to fetch.
     organizationId = ""
 
   )
 
-  callResult, err := service.Organizations.Get(organizationId).Context(ctx).Do()
+  callResult, err := client.Organizations.Get(organizationId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -59,8 +59,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -68,18 +66,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudresourcemanager.New(client)
+  client, err := cloudresourcemanager.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'getIamPolicy' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'getIamPolicy' method:
   var (
     // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `getIamPolicy` documentation.
     resource = ""
@@ -88,9 +87,10 @@ func main() {
     requestBody = &cloudresourcemanager.GetIamPolicyRequest{}
   )
 
-  callResult, err := service.Organizations.GetIamPolicy(resource, requestBody).Context(ctx).Do()
+  callResult, err := client.Organizations.GetIamPolicy(resource, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -108,8 +108,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -117,15 +115,16 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudresourcemanager.New(client)
+  client, err := cloudresourcemanager.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
   var (
@@ -139,9 +138,9 @@ func main() {
     }
     return nil
   }
-  err = service.Organizations.List().Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Organizations.List().Pages(ctx, fn); err != nil {
+    // TODO: Handle error.
+    _ = err
   }
 }
 package main
@@ -157,8 +156,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -166,18 +163,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudresourcemanager.New(client)
+  client, err := cloudresourcemanager.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'setIamPolicy' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'setIamPolicy' method:
   var (
     // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `setIamPolicy` documentation.
     resource = ""
@@ -186,9 +184,10 @@ func main() {
     requestBody = &cloudresourcemanager.SetIamPolicyRequest{}
   )
 
-  callResult, err := service.Organizations.SetIamPolicy(resource, requestBody).Context(ctx).Do()
+  callResult, err := client.Organizations.SetIamPolicy(resource, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -206,8 +205,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -215,18 +212,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudresourcemanager.New(client)
+  client, err := cloudresourcemanager.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'testIamPermissions' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'testIamPermissions' method:
   var (
     // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `testIamPermissions` documentation.
     resource = ""
@@ -235,9 +233,10 @@ func main() {
     requestBody = &cloudresourcemanager.TestIamPermissionsRequest{}
   )
 
-  callResult, err := service.Organizations.TestIamPermissions(resource, requestBody).Context(ctx).Do()
+  callResult, err := client.Organizations.TestIamPermissions(resource, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -255,8 +254,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -264,18 +261,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudresourcemanager.New(client)
+  client, err := cloudresourcemanager.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
   var (
     // An immutable id for the Organization that is assigned on creation. This should be omitted when creating a new Organization. This field is read-only.
     organizationId = ""
@@ -284,9 +282,10 @@ func main() {
     requestBody = &cloudresourcemanager.Organization{}
   )
 
-  callResult, err := service.Organizations.Update(organizationId, requestBody).Context(ctx).Do()
+  callResult, err := client.Organizations.Update(organizationId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -304,8 +303,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -313,26 +310,28 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudresourcemanager.New(client)
+  client, err := cloudresourcemanager.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'create' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
   var (
 
     requestBody = &cloudresourcemanager.Project{}
   )
 
-  callResult, err := service.Projects.Create(requestBody).Context(ctx).Do()
+  callResult, err := client.Projects.Create(requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -350,8 +349,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -359,27 +356,29 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudresourcemanager.New(client)
+  client, err := cloudresourcemanager.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
   var (
     // The Project ID (for example, `foo-bar-123`). Required.
     projectId = ""
 
   )
 
-  callResult, err := service.Projects.Delete(projectId).Context(ctx).Do()
+  callResult, err := client.Projects.Delete(projectId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -397,8 +396,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -406,27 +403,29 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudresourcemanager.New(client)
+  client, err := cloudresourcemanager.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
   var (
     // The Project ID (for example, `my-project-123`). Required.
     projectId = ""
 
   )
 
-  callResult, err := service.Projects.Get(projectId).Context(ctx).Do()
+  callResult, err := client.Projects.Get(projectId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -444,8 +443,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -453,18 +450,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudresourcemanager.New(client)
+  client, err := cloudresourcemanager.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'getIamPolicy' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'getIamPolicy' method:
   var (
     // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `getIamPolicy` documentation.
     resource = ""
@@ -473,9 +471,10 @@ func main() {
     requestBody = &cloudresourcemanager.GetIamPolicyRequest{}
   )
 
-  callResult, err := service.Projects.GetIamPolicy(resource, requestBody).Context(ctx).Do()
+  callResult, err := client.Projects.GetIamPolicy(resource, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -493,8 +492,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -502,15 +499,16 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudresourcemanager.New(client)
+  client, err := cloudresourcemanager.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
   var (
@@ -524,9 +522,9 @@ func main() {
     }
     return nil
   }
-  err = service.Projects.List().Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Projects.List().Pages(ctx, fn); err != nil {
+    // TODO: Handle error.
+    _ = err
   }
 }
 package main
@@ -542,8 +540,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -551,18 +547,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudresourcemanager.New(client)
+  client, err := cloudresourcemanager.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'setIamPolicy' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'setIamPolicy' method:
   var (
     // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `setIamPolicy` documentation.
     resource = ""
@@ -571,9 +568,10 @@ func main() {
     requestBody = &cloudresourcemanager.SetIamPolicyRequest{}
   )
 
-  callResult, err := service.Projects.SetIamPolicy(resource, requestBody).Context(ctx).Do()
+  callResult, err := client.Projects.SetIamPolicy(resource, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -591,8 +589,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -600,18 +596,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudresourcemanager.New(client)
+  client, err := cloudresourcemanager.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'testIamPermissions' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'testIamPermissions' method:
   var (
     // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `testIamPermissions` documentation.
     resource = ""
@@ -620,9 +617,10 @@ func main() {
     requestBody = &cloudresourcemanager.TestIamPermissionsRequest{}
   )
 
-  callResult, err := service.Projects.TestIamPermissions(resource, requestBody).Context(ctx).Do()
+  callResult, err := client.Projects.TestIamPermissions(resource, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -640,8 +638,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -649,18 +645,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudresourcemanager.New(client)
+  client, err := cloudresourcemanager.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'undelete' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'undelete' method:
   var (
     // The project ID (for example, `foo-bar-123`). Required.
     projectId = ""
@@ -669,9 +666,10 @@ func main() {
     requestBody = &cloudresourcemanager.UndeleteProjectRequest{}
   )
 
-  callResult, err := service.Projects.Undelete(projectId, requestBody).Context(ctx).Do()
+  callResult, err := client.Projects.Undelete(projectId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -689,8 +687,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -698,18 +694,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := cloudresourcemanager.New(client)
+  client, err := cloudresourcemanager.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
   var (
     // The project ID (for example, `my-project-123`). Required.
     projectId = ""
@@ -718,9 +715,10 @@ func main() {
     requestBody = &cloudresourcemanager.Project{}
   )
 
-  callResult, err := service.Projects.Update(projectId, requestBody).Context(ctx).Do()
+  callResult, err := client.Projects.Update(projectId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult

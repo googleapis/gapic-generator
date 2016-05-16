@@ -12,8 +12,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -21,18 +19,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := datastore.New(client)
+  client, err := datastore.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'allocateIds' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'allocateIds' method:
   var (
     // Identifies the dataset.
     datasetId = ""
@@ -41,9 +40,10 @@ func main() {
     requestBody = &datastore.AllocateIdsRequest{}
   )
 
-  callResult, err := service.Datasets.AllocateIds(datasetId, requestBody).Context(ctx).Do()
+  callResult, err := client.Datasets.AllocateIds(datasetId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -61,8 +61,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -70,18 +68,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := datastore.New(client)
+  client, err := datastore.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'beginTransaction' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'beginTransaction' method:
   var (
     // Identifies the dataset.
     datasetId = ""
@@ -90,9 +89,10 @@ func main() {
     requestBody = &datastore.BeginTransactionRequest{}
   )
 
-  callResult, err := service.Datasets.BeginTransaction(datasetId, requestBody).Context(ctx).Do()
+  callResult, err := client.Datasets.BeginTransaction(datasetId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -110,8 +110,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -119,18 +117,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := datastore.New(client)
+  client, err := datastore.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'commit' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'commit' method:
   var (
     // Identifies the dataset.
     datasetId = ""
@@ -139,9 +138,10 @@ func main() {
     requestBody = &datastore.CommitRequest{}
   )
 
-  callResult, err := service.Datasets.Commit(datasetId, requestBody).Context(ctx).Do()
+  callResult, err := client.Datasets.Commit(datasetId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -159,8 +159,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -168,18 +166,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := datastore.New(client)
+  client, err := datastore.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'lookup' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'lookup' method:
   var (
     // Identifies the dataset.
     datasetId = ""
@@ -188,9 +187,10 @@ func main() {
     requestBody = &datastore.LookupRequest{}
   )
 
-  callResult, err := service.Datasets.Lookup(datasetId, requestBody).Context(ctx).Do()
+  callResult, err := client.Datasets.Lookup(datasetId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -208,8 +208,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -217,18 +215,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := datastore.New(client)
+  client, err := datastore.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'rollback' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'rollback' method:
   var (
     // Identifies the dataset.
     datasetId = ""
@@ -237,9 +236,10 @@ func main() {
     requestBody = &datastore.RollbackRequest{}
   )
 
-  callResult, err := service.Datasets.Rollback(datasetId, requestBody).Context(ctx).Do()
+  callResult, err := client.Datasets.Rollback(datasetId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -257,8 +257,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -266,18 +264,19 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
-  service, err := datastore.New(client)
+  client, err := datastore.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'runQuery' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'runQuery' method:
   var (
     // Identifies the dataset.
     datasetId = ""
@@ -286,9 +285,10 @@ func main() {
     requestBody = &datastore.RunQueryRequest{}
   )
 
-  callResult, err := service.Datasets.RunQuery(datasetId, requestBody).Context(ctx).Do()
+  callResult, err := client.Datasets.RunQuery(datasetId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult
