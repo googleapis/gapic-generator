@@ -665,11 +665,12 @@ public class CSharpGapicContext extends GapicContext {
     if (isPageStreaming) {
       String[] pageToken = {
           "/// <param name=\"pageToken\">The token returned from the previous request.",
-          "/// <c>Null</c> or an empty string retrieves the first page.</param>",
+          "/// A value of <c>null</c> or an empty string retrieves the first page.</param>",
       };
       String[] pageSize = {
-          "/// <param name=\"pageSize\">The size of page to request, the response will not be larger",
-          "/// than this, but may be smaller. <c>Null</c> or 0 uses a server-defined page size.</param>",
+          "/// <param name=\"pageSize\">The size of page to request.",
+          "/// The response will not be larger than this, but may be smaller.",
+          "/// A value of <c>null</c> or 0 uses a server-defined page size.</param>",
       };
       parameters = FluentIterable.from(parameters)
           .append(Arrays.asList(pageToken)).append(Arrays.asList(pageSize))
