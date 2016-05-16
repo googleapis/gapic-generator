@@ -50,6 +50,7 @@ import autovalue.shaded.com.google.common.common.collect.Iterables;
 
 import io.grpc.Status;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -243,15 +244,21 @@ public class CSharpGapicContext extends GapicContext {
   @AutoValue
   public static abstract class ParamInfo {
     public static ParamInfo create(
-        String name, String typeName, String propertyName, boolean isRepeated) {
-      return new AutoValue_CSharpGapicContext_ParamInfo(name, typeName, propertyName, isRepeated);
+        String name, String typeName, String defaultValue,
+        String propertyName, String propertyTransform, boolean isRepeated) {
+      return new AutoValue_CSharpGapicContext_ParamInfo(
+          name, typeName, defaultValue, propertyName, propertyTransform, isRepeated);
     }
 
     public abstract String name();
 
     public abstract String typeName();
 
+    public abstract String defaultValue();
+
     public abstract String propertyName();
+
+    public abstract String propertyTransform();
 
     public abstract boolean isRepeated();
   }
@@ -313,28 +320,40 @@ public class CSharpGapicContext extends GapicContext {
     public abstract Iterable<String> xmlDocSync();
   }
 
-  private FlatInfo createFlatInfo(Method method, List<Field> flat) {
+  private FlatInfo createFlatInfo(Method method, List<Field> flat, PageStreamingConfig page) {
     List<ParamInfo> params = FluentIterable.from(flat)
         .transform(new Function<Field, ParamInfo>() {
           @Override public ParamInfo apply(Field field) {
             return ParamInfo.create(
                 CSharpContextCommon.s_underscoresToCamelCase(field.getSimpleName()),
                 typeName(field.getType()),
+                "",
                 CSharpContextCommon.s_underscoresToPascalCase(field.getSimpleName()),
+                "",
                 field.getType().isRepeated());
           }
         })
         .toList();
+    if (page != null) {
+      ParamInfo pageToken = ParamInfo.create(
+          "pageToken", "string", " = null",
+          "PageToken", " ?? \"\"", false);
+      ParamInfo pageSize = ParamInfo.create(
+          "pageSize", "int?", " = null",
+          "PageSize", " ?? 0", false);
+      params = FluentIterable.from(params).append(pageToken, pageSize).toList();
+    }
     return FlatInfo.create(
         params,
-        makeMethodXmlDoc(method, flat, true),
-        makeMethodXmlDoc(method, flat, false));
+        makeMethodXmlDoc(method, flat, true, page != null),
+        makeMethodXmlDoc(method, flat, false, page != null));
   }
 
   @AutoValue
   public static abstract class MethodInfo {
     public static MethodInfo create(
         String name,
+        String grpcName,
         String asyncReturnTypeName,
         String syncReturnTypeName,
         boolean isPageStreaming,
@@ -347,6 +366,7 @@ public class CSharpGapicContext extends GapicContext {
         RetrySettingInfo retryParams) {
       return new AutoValue_CSharpGapicContext_MethodInfo(
           name,
+          grpcName,
           asyncReturnTypeName,
           syncReturnTypeName,
           isPageStreaming,
@@ -360,6 +380,8 @@ public class CSharpGapicContext extends GapicContext {
     }
 
     public abstract String name();
+
+    public abstract String grpcName();
 
     public abstract String asyncReturnTypeName();
 
@@ -389,22 +411,26 @@ public class CSharpGapicContext extends GapicContext {
       MethodConfig methodConfig,
       RetryDefInfo retryDef,
       RetrySettingInfo retrySetting) {
-    PageStreamingConfig pageStreamingConfig = methodConfig.getPageStreaming();
+    final PageStreamingConfig pageStreamingConfig = methodConfig.getPageStreaming();
     FlatteningConfig flattening = methodConfig.getFlattening();
     TypeRef returnType = method.getOutputType();
     boolean returnTypeEmpty = messages().isEmptyType(returnType);
+    String methodName;
     String asyncReturnTypeName;
     String syncReturnTypeName;
     if (returnTypeEmpty) {
+      methodName = method.getSimpleName();
       asyncReturnTypeName = "Task";
       syncReturnTypeName = "void";
     } else {
       if (pageStreamingConfig != null) {
+        methodName = method.getSimpleName() + "PageStream";
         TypeRef resourceType = pageStreamingConfig.getResourcesField().getType();
         String elementTypeName = basicTypeName(resourceType);
-        asyncReturnTypeName = "IAsyncEnumerable<" + elementTypeName + ">";
-        syncReturnTypeName = "IEnumerable<" + elementTypeName + ">";
+        asyncReturnTypeName = "IPagedAsyncEnumerable<" + typeName(returnType) + ", " + elementTypeName + ">";
+        syncReturnTypeName = "IPagedEnumerable<" + typeName(returnType) + ", " + elementTypeName + ">";
       } else {
+        methodName = method.getSimpleName();
         asyncReturnTypeName = "Task<" + typeName(returnType) + ">";
         syncReturnTypeName = typeName(returnType);
       }
@@ -413,11 +439,12 @@ public class CSharpGapicContext extends GapicContext {
         FluentIterable.from(flattening.getFlatteningGroups())
             .transform(new Function<List<Field>, FlatInfo>() {
               @Override public FlatInfo apply(List<Field> flat) {
-                return createFlatInfo(method, flat);
+                return createFlatInfo(method, flat, pageStreamingConfig);
               }
             }) :
         Collections.<FlatInfo>emptyList();
     return MethodInfo.create(
+        methodName,
         method.getSimpleName(),
         asyncReturnTypeName,
         syncReturnTypeName,
@@ -464,6 +491,8 @@ public class CSharpGapicContext extends GapicContext {
     if (pageStreamingConfig == null) {
       return null;
     }
+    // IEnumerable required in IPageResponse<T> partial of page-streaming protobuf entities
+    addImport("System.Collections");
     return PageStreamerInfo.create(
         basicTypeName(pageStreamingConfig.getResourcesField().getType()),
         typeName(method.getInputType()),
@@ -473,7 +502,7 @@ public class CSharpGapicContext extends GapicContext {
         CSharpContextCommon.s_underscoresToPascalCase(pageStreamingConfig.getRequestTokenField().getSimpleName()),
         CSharpContextCommon.s_underscoresToPascalCase(pageStreamingConfig.getResponseTokenField().getSimpleName()),
         CSharpContextCommon.s_underscoresToPascalCase(pageStreamingConfig.getResourcesField().getSimpleName()),
-        "\"\""); // TODO(chrisbacon): Support non-string page-tokens
+        "\"\"");
   }
 
   public List<PageStreamerInfo> getPageStreamerInfos(Interface service) {
@@ -611,7 +640,7 @@ public class CSharpGapicContext extends GapicContext {
         .toList();
   }
 
-  private List<String> makeMethodXmlDoc(Method method, List<Field> params, boolean isAsync) {
+  private List<String> makeMethodXmlDoc(Method method, List<Field> params, boolean isAsync, boolean isPageStreaming) {
     Iterable<String> parameters = FluentIterable.from(params)
         .transformAndConcat(new Function<Field, Iterable<String>>() {
           @Override public Iterable<String> apply(Field param) {
@@ -633,6 +662,20 @@ public class CSharpGapicContext extends GapicContext {
             }
           }
         });
+    if (isPageStreaming) {
+      String[] pageToken = {
+          "/// <param name=\"pageToken\">The token returned from the previous request.",
+          "/// A value of <c>null</c> or an empty string retrieves the first page.</param>",
+      };
+      String[] pageSize = {
+          "/// <param name=\"pageSize\">The size of page to request.",
+          "/// The response will not be larger than this, but may be smaller.",
+          "/// A value of <c>null</c> or 0 uses a server-defined page size.</param>",
+      };
+      parameters = FluentIterable.from(parameters)
+          .append(Arrays.asList(pageToken)).append(Arrays.asList(pageSize))
+          .toList();
+    }
     return ImmutableList.<String>builder()
         .add("/// <summary>")
         .addAll(docLines(method, "/// "))
