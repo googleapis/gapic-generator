@@ -22,14 +22,16 @@ func main() {
   ctx := context.Background()
   httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    _ = err // Handle error.
+    // TODO: Handle error.
+    _ = err
   }
   client, err := vision.New(httpClient)
   if err != nil {
-    _ = err // Handle error.
+    // TODO: Handle error.
+    _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameters values for the 'annotate' method:
+  // TODO: Change placeholders below to appropriate parameter values for the 'annotate' method:
   var (
 
     requestBody = &vision.BatchAnnotateImagesRequest{}
@@ -37,7 +39,8 @@ func main() {
 
   callResult, err := client.Images.Annotate(requestBody).Context(ctx).Do()
   if err != nil {
-    _ = err // Handle error.
+    // TODO: Handle error.
+    _ = err
   }
   // doThingsWith(callResult)
   _ = callResult

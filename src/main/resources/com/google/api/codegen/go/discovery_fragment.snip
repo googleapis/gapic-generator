@@ -31,11 +31,13 @@ func main() {
   # TODO(pongad): Every API except autoscaler has the string as API.CloudPlatformScope, find out why
   httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    _ = err // Handle error.
+    // TODO: Handle error.
+    _ = err
   }
   client, err := {@context.getApi.getName}.New(httpClient)
   if err != nil {
-    _ = err // Handle error.
+    // TODO: Handle error.
+    _ = err
   }
 
   {@initialize(method)}
@@ -51,12 +53,14 @@ func main() {
 @private compactCall(method)
   @if context.isResponseEmpty(method)
     if err = {@methodPath(method)}({@callArg(method)}).Context(ctx).Do(); err != nil {
-      _ = err // Handle error.
+      // TODO: Handle error.
+      _ = err
     }
   @else
     callResult, err := {@methodPath(method)}({@callArg(method)}).Context(ctx).Do()
     if err != nil {
-      _ = err // Handle error.
+      // TODO: Handle error.
+      _ = err
     }
     // doThingsWith(callResult)
     _ = callResult
@@ -79,7 +83,8 @@ func main() {
   @end
 
   if err = {@methodPath(method)}({@callArg(method)}).Pages(ctx, fn); err != nil {
-    _ = err // Handle error.
+    // TODO: Handle error.
+    _ = err
   }
 @end
 
@@ -95,7 +100,7 @@ func main() {
 
 @private initialize(method)
   @if context.getMethodParams(method)
-    // TODO: Change placeholders below to appropriate parameters values for the '{@context.getMethodName(method)}' method:
+    // TODO: Change placeholders below to appropriate parameter values for the '{@context.getMethodName(method)}' method:
 
   @end
   var (
