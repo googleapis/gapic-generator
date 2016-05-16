@@ -12,8 +12,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -21,15 +19,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := appengine.New(client)
+  client, err := appengine.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
@@ -39,9 +36,9 @@ func main() {
 
   )
 
-  callResult, err := service.Apps.Get(appsId).Context(ctx).Do()
+  callResult, err := client.Apps.Get(appsId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -59,8 +56,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -68,15 +63,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := appengine.New(client)
+  client, err := appengine.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
@@ -89,9 +83,9 @@ func main() {
 
   )
 
-  callResult, err := service.Apps.Operations.Get(appsId, operationsId).Context(ctx).Do()
+  callResult, err := client.Apps.Operations.Get(appsId, operationsId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -109,8 +103,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -118,15 +110,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := appengine.New(client)
+  client, err := appengine.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
@@ -144,9 +135,8 @@ func main() {
     }
     return nil
   }
-  err = service.Apps.Operations.List(appsId).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Apps.Operations.List(appsId).Pages(ctx, fn); err != nil {
+    _ = err // Handle error.
   }
 }
 package main
@@ -162,8 +152,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -171,15 +159,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := appengine.New(client)
+  client, err := appengine.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
@@ -192,9 +179,9 @@ func main() {
 
   )
 
-  callResult, err := service.Apps.Services.Delete(appsId, servicesId).Context(ctx).Do()
+  callResult, err := client.Apps.Services.Delete(appsId, servicesId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -212,8 +199,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -221,15 +206,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := appengine.New(client)
+  client, err := appengine.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
@@ -242,9 +226,9 @@ func main() {
 
   )
 
-  callResult, err := service.Apps.Services.Get(appsId, servicesId).Context(ctx).Do()
+  callResult, err := client.Apps.Services.Get(appsId, servicesId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -262,8 +246,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -271,15 +253,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := appengine.New(client)
+  client, err := appengine.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
@@ -297,9 +278,8 @@ func main() {
     }
     return nil
   }
-  err = service.Apps.Services.List(appsId).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Apps.Services.List(appsId).Pages(ctx, fn); err != nil {
+    _ = err // Handle error.
   }
 }
 package main
@@ -315,8 +295,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -324,15 +302,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := appengine.New(client)
+  client, err := appengine.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
@@ -347,9 +324,9 @@ func main() {
     requestBody = &appengine.Service{}
   )
 
-  callResult, err := service.Apps.Services.Patch(appsId, servicesId, requestBody).Context(ctx).Do()
+  callResult, err := client.Apps.Services.Patch(appsId, servicesId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -367,8 +344,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -376,15 +351,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := appengine.New(client)
+  client, err := appengine.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'create' method:
@@ -399,9 +373,9 @@ func main() {
     requestBody = &appengine.Version{}
   )
 
-  callResult, err := service.Apps.Services.Versions.Create(appsId, servicesId, requestBody).Context(ctx).Do()
+  callResult, err := client.Apps.Services.Versions.Create(appsId, servicesId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -419,8 +393,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -428,15 +400,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := appengine.New(client)
+  client, err := appengine.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
@@ -452,9 +423,9 @@ func main() {
 
   )
 
-  callResult, err := service.Apps.Services.Versions.Delete(appsId, servicesId, versionsId).Context(ctx).Do()
+  callResult, err := client.Apps.Services.Versions.Delete(appsId, servicesId, versionsId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -472,8 +443,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -481,15 +450,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := appengine.New(client)
+  client, err := appengine.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
@@ -505,9 +473,9 @@ func main() {
 
   )
 
-  callResult, err := service.Apps.Services.Versions.Get(appsId, servicesId, versionsId).Context(ctx).Do()
+  callResult, err := client.Apps.Services.Versions.Get(appsId, servicesId, versionsId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -525,8 +493,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -534,15 +500,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := appengine.New(client)
+  client, err := appengine.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
@@ -566,9 +531,8 @@ func main() {
     }
     return nil
   }
-  err = service.Apps.Services.Versions.Instances.List(appsId, servicesId, versionsId).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Apps.Services.Versions.Instances.List(appsId, servicesId, versionsId).Pages(ctx, fn); err != nil {
+    _ = err // Handle error.
   }
 }
 package main
@@ -584,8 +548,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -593,15 +555,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := appengine.New(client)
+  client, err := appengine.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
@@ -622,9 +583,8 @@ func main() {
     }
     return nil
   }
-  err = service.Apps.Services.Versions.List(appsId, servicesId).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Apps.Services.Versions.List(appsId, servicesId).Pages(ctx, fn); err != nil {
+    _ = err // Handle error.
   }
 }
 package main
@@ -640,8 +600,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -649,15 +607,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := appengine.New(client)
+  client, err := appengine.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
@@ -675,9 +632,9 @@ func main() {
     requestBody = &appengine.Version{}
   )
 
-  callResult, err := service.Apps.Services.Versions.Patch(appsId, servicesId, versionsId, requestBody).Context(ctx).Do()
+  callResult, err := client.Apps.Services.Versions.Patch(appsId, servicesId, versionsId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult

@@ -12,8 +12,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -21,15 +19,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := prediction.New(client)
+  client, err := prediction.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'predict' method:
@@ -44,9 +41,9 @@ func main() {
     requestBody = &prediction.Input{}
   )
 
-  callResult, err := service.Hostedmodels.Predict(project, hostedModelName, requestBody).Context(ctx).Do()
+  callResult, err := client.Hostedmodels.Predict(project, hostedModelName, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -64,8 +61,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -73,15 +68,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := prediction.New(client)
+  client, err := prediction.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'analyze' method:
@@ -94,9 +88,9 @@ func main() {
 
   )
 
-  callResult, err := service.Trainedmodels.Analyze(project, id).Context(ctx).Do()
+  callResult, err := client.Trainedmodels.Analyze(project, id).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -114,8 +108,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -123,15 +115,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := prediction.New(client)
+  client, err := prediction.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
@@ -144,9 +135,8 @@ func main() {
 
   )
 
-  err = service.Trainedmodels.Delete(project, id).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Trainedmodels.Delete(project, id).Context(ctx).Do(); err != nil {
+    _ = err // Handle error.
   }
 }
 package main
@@ -162,8 +152,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -171,15 +159,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := prediction.New(client)
+  client, err := prediction.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
@@ -192,9 +179,9 @@ func main() {
 
   )
 
-  callResult, err := service.Trainedmodels.Get(project, id).Context(ctx).Do()
+  callResult, err := client.Trainedmodels.Get(project, id).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -212,8 +199,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -221,15 +206,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := prediction.New(client)
+  client, err := prediction.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'insert' method:
@@ -241,9 +225,9 @@ func main() {
     requestBody = &prediction.Insert{}
   )
 
-  callResult, err := service.Trainedmodels.Insert(project, requestBody).Context(ctx).Do()
+  callResult, err := client.Trainedmodels.Insert(project, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -261,8 +245,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -270,15 +252,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := prediction.New(client)
+  client, err := prediction.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
@@ -296,9 +277,8 @@ func main() {
     }
     return nil
   }
-  err = service.Trainedmodels.List(project).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Trainedmodels.List(project).Pages(ctx, fn); err != nil {
+    _ = err // Handle error.
   }
 }
 package main
@@ -314,8 +294,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -323,15 +301,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := prediction.New(client)
+  client, err := prediction.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'predict' method:
@@ -346,9 +323,9 @@ func main() {
     requestBody = &prediction.Input{}
   )
 
-  callResult, err := service.Trainedmodels.Predict(project, id, requestBody).Context(ctx).Do()
+  callResult, err := client.Trainedmodels.Predict(project, id, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -366,8 +343,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -375,15 +350,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := prediction.New(client)
+  client, err := prediction.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
@@ -398,9 +372,9 @@ func main() {
     requestBody = &prediction.Update{}
   )
 
-  callResult, err := service.Trainedmodels.Update(project, id, requestBody).Context(ctx).Do()
+  callResult, err := client.Trainedmodels.Update(project, id, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult

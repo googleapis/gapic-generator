@@ -12,8 +12,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -21,15 +19,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := taskqueue.New(client)
+  client, err := taskqueue.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
@@ -42,9 +39,9 @@ func main() {
 
   )
 
-  callResult, err := service.Taskqueues.Get(project, taskqueue_).Context(ctx).Do()
+  callResult, err := client.Taskqueues.Get(project, taskqueue_).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -62,8 +59,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -71,15 +66,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := taskqueue.New(client)
+  client, err := taskqueue.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
@@ -95,9 +89,8 @@ func main() {
 
   )
 
-  err = service.Tasks.Delete(project, taskqueue_, task).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Tasks.Delete(project, taskqueue_, task).Context(ctx).Do(); err != nil {
+    _ = err // Handle error.
   }
 }
 package main
@@ -113,8 +106,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -122,15 +113,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := taskqueue.New(client)
+  client, err := taskqueue.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
@@ -146,9 +136,9 @@ func main() {
 
   )
 
-  callResult, err := service.Tasks.Get(project, taskqueue_, task).Context(ctx).Do()
+  callResult, err := client.Tasks.Get(project, taskqueue_, task).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -166,8 +156,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -175,15 +163,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := taskqueue.New(client)
+  client, err := taskqueue.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'insert' method:
@@ -198,9 +185,9 @@ func main() {
     requestBody = &taskqueue.Task{}
   )
 
-  callResult, err := service.Tasks.Insert(project, taskqueue_, requestBody).Context(ctx).Do()
+  callResult, err := client.Tasks.Insert(project, taskqueue_, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -218,8 +205,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -227,15 +212,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := taskqueue.New(client)
+  client, err := taskqueue.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'lease' method:
@@ -254,9 +238,9 @@ func main() {
 
   )
 
-  callResult, err := service.Tasks.Lease(project, taskqueue_, numTasks, leaseSecs).Context(ctx).Do()
+  callResult, err := client.Tasks.Lease(project, taskqueue_, numTasks, leaseSecs).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -274,8 +258,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -283,15 +265,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := taskqueue.New(client)
+  client, err := taskqueue.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
@@ -304,9 +285,9 @@ func main() {
 
   )
 
-  callResult, err := service.Tasks.List(project, taskqueue_).Context(ctx).Do()
+  callResult, err := client.Tasks.List(project, taskqueue_).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -324,8 +305,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -333,15 +312,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := taskqueue.New(client)
+  client, err := taskqueue.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
@@ -362,9 +340,9 @@ func main() {
     requestBody = &taskqueue.Task{}
   )
 
-  callResult, err := service.Tasks.Patch(project, taskqueue_, task, newLeaseSeconds, requestBody).Context(ctx).Do()
+  callResult, err := client.Tasks.Patch(project, taskqueue_, task, newLeaseSeconds, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -382,8 +360,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -391,15 +367,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := taskqueue.New(client)
+  client, err := taskqueue.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
@@ -420,9 +395,9 @@ func main() {
     requestBody = &taskqueue.Task{}
   )
 
-  callResult, err := service.Tasks.Update(project, taskqueue_, task, newLeaseSeconds, requestBody).Context(ctx).Do()
+  callResult, err := client.Tasks.Update(project, taskqueue_, task, newLeaseSeconds, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult

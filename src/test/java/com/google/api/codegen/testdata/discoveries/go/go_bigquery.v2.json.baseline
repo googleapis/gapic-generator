@@ -12,8 +12,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -21,15 +19,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
@@ -42,9 +39,8 @@ func main() {
 
   )
 
-  err = service.Datasets.Delete(projectId, datasetId).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Datasets.Delete(projectId, datasetId).Context(ctx).Do(); err != nil {
+    _ = err // Handle error.
   }
 }
 package main
@@ -60,8 +56,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -69,15 +63,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
@@ -90,9 +83,9 @@ func main() {
 
   )
 
-  callResult, err := service.Datasets.Get(projectId, datasetId).Context(ctx).Do()
+  callResult, err := client.Datasets.Get(projectId, datasetId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -110,8 +103,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -119,15 +110,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'insert' method:
@@ -139,9 +129,9 @@ func main() {
     requestBody = &bigquery.Dataset{}
   )
 
-  callResult, err := service.Datasets.Insert(projectId, requestBody).Context(ctx).Do()
+  callResult, err := client.Datasets.Insert(projectId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -159,8 +149,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -168,15 +156,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
@@ -194,9 +181,8 @@ func main() {
     }
     return nil
   }
-  err = service.Datasets.List(projectId).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Datasets.List(projectId).Pages(ctx, fn); err != nil {
+    _ = err // Handle error.
   }
 }
 package main
@@ -212,8 +198,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -221,15 +205,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
@@ -244,9 +227,9 @@ func main() {
     requestBody = &bigquery.Dataset{}
   )
 
-  callResult, err := service.Datasets.Patch(projectId, datasetId, requestBody).Context(ctx).Do()
+  callResult, err := client.Datasets.Patch(projectId, datasetId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -264,8 +247,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -273,15 +254,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
@@ -296,9 +276,9 @@ func main() {
     requestBody = &bigquery.Dataset{}
   )
 
-  callResult, err := service.Datasets.Update(projectId, datasetId, requestBody).Context(ctx).Do()
+  callResult, err := client.Datasets.Update(projectId, datasetId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -316,8 +296,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -325,15 +303,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'cancel' method:
@@ -346,9 +323,9 @@ func main() {
 
   )
 
-  callResult, err := service.Jobs.Cancel(projectId, jobId).Context(ctx).Do()
+  callResult, err := client.Jobs.Cancel(projectId, jobId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -366,8 +343,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -375,15 +350,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
@@ -396,9 +370,9 @@ func main() {
 
   )
 
-  callResult, err := service.Jobs.Get(projectId, jobId).Context(ctx).Do()
+  callResult, err := client.Jobs.Get(projectId, jobId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -416,8 +390,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -425,15 +397,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'getQueryResults' method:
@@ -446,9 +417,9 @@ func main() {
 
   )
 
-  callResult, err := service.Jobs.GetQueryResults(projectId, jobId).Context(ctx).Do()
+  callResult, err := client.Jobs.GetQueryResults(projectId, jobId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -466,8 +437,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -475,15 +444,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'insert' method:
@@ -495,9 +463,9 @@ func main() {
     requestBody = &bigquery.Job{}
   )
 
-  callResult, err := service.Jobs.Insert(projectId, requestBody).Context(ctx).Do()
+  callResult, err := client.Jobs.Insert(projectId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -515,8 +483,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -524,15 +490,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
@@ -550,9 +515,8 @@ func main() {
     }
     return nil
   }
-  err = service.Jobs.List(projectId).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Jobs.List(projectId).Pages(ctx, fn); err != nil {
+    _ = err // Handle error.
   }
 }
 package main
@@ -568,8 +532,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -577,15 +539,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'query' method:
@@ -597,9 +558,9 @@ func main() {
     requestBody = &bigquery.QueryRequest{}
   )
 
-  callResult, err := service.Jobs.Query(projectId, requestBody).Context(ctx).Do()
+  callResult, err := client.Jobs.Query(projectId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -617,8 +578,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -626,15 +585,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   var (
@@ -648,9 +606,8 @@ func main() {
     }
     return nil
   }
-  err = service.Projects.List().Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Projects.List().Pages(ctx, fn); err != nil {
+    _ = err // Handle error.
   }
 }
 package main
@@ -666,8 +623,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -675,15 +630,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'insertAll' method:
@@ -701,9 +655,9 @@ func main() {
     requestBody = &bigquery.TableDataInsertAllRequest{}
   )
 
-  callResult, err := service.Tabledata.InsertAll(projectId, datasetId, tableId, requestBody).Context(ctx).Do()
+  callResult, err := client.Tabledata.InsertAll(projectId, datasetId, tableId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -721,8 +675,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -730,15 +682,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
@@ -754,9 +705,9 @@ func main() {
 
   )
 
-  callResult, err := service.Tabledata.List(projectId, datasetId, tableId).Context(ctx).Do()
+  callResult, err := client.Tabledata.List(projectId, datasetId, tableId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -774,8 +725,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -783,15 +732,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'delete' method:
@@ -807,9 +755,8 @@ func main() {
 
   )
 
-  err = service.Tables.Delete(projectId, datasetId, tableId).Context(ctx).Do()
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Tables.Delete(projectId, datasetId, tableId).Context(ctx).Do(); err != nil {
+    _ = err // Handle error.
   }
 }
 package main
@@ -825,8 +772,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -834,15 +779,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'get' method:
@@ -858,9 +802,9 @@ func main() {
 
   )
 
-  callResult, err := service.Tables.Get(projectId, datasetId, tableId).Context(ctx).Do()
+  callResult, err := client.Tables.Get(projectId, datasetId, tableId).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -878,8 +822,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -887,15 +829,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'insert' method:
@@ -910,9 +851,9 @@ func main() {
     requestBody = &bigquery.Table{}
   )
 
-  callResult, err := service.Tables.Insert(projectId, datasetId, requestBody).Context(ctx).Do()
+  callResult, err := client.Tables.Insert(projectId, datasetId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -930,8 +871,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -939,15 +878,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'list' method:
@@ -968,9 +906,8 @@ func main() {
     }
     return nil
   }
-  err = service.Tables.List(projectId, datasetId).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = client.Tables.List(projectId, datasetId).Pages(ctx, fn); err != nil {
+    _ = err // Handle error.
   }
 }
 package main
@@ -986,8 +923,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -995,15 +930,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'patch' method:
@@ -1021,9 +955,9 @@ func main() {
     requestBody = &bigquery.Table{}
   )
 
-  callResult, err := service.Tables.Patch(projectId, datasetId, tableId, requestBody).Context(ctx).Do()
+  callResult, err := client.Tables.Patch(projectId, datasetId, tableId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult
@@ -1041,8 +975,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -1050,15 +982,14 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := bigquery.New(client)
+  client, err := bigquery.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   // TODO: Change placeholders below to appropriate parameters values for the 'update' method:
@@ -1076,9 +1007,9 @@ func main() {
     requestBody = &bigquery.Table{}
   )
 
-  callResult, err := service.Tables.Update(projectId, datasetId, tableId, requestBody).Context(ctx).Do()
+  callResult, err := client.Tables.Update(projectId, datasetId, tableId, requestBody).Context(ctx).Do()
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
   // doThingsWith(callResult)
   _ = callResult

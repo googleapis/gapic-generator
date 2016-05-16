@@ -20,8 +20,6 @@ package main
 //    'go get golang.org/x/oauth2/google'
 
 import (
-  "log"
-
   "golang.org/x/net/context"
   "golang.org/x/oauth2/google"
 
@@ -29,16 +27,15 @@ import (
 )
 
 func main() {
-  // Use oauth2.NoContext if there isn't a good context to pass in.
   ctx := context.Background()
   # TODO(pongad): Every API except autoscaler has the string as API.CloudPlatformScope, find out why
-  client, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
-  service, err := {@context.getApi.getName}.New(client)
+  client, err := {@context.getApi.getName}.New(httpClient)
   if err != nil {
-    log.Fatal(err)
+    _ = err // Handle error.
   }
 
   {@initialize(method)}
@@ -53,14 +50,13 @@ func main() {
 
 @private compactCall(method)
   @if context.isResponseEmpty(method)
-    err = {@methodPath(method)}({@callArg(method)}).Context(ctx).Do()
-    if err != nil {
-      log.Fatal(err)
+    if err = {@methodPath(method)}({@callArg(method)}).Context(ctx).Do(); err != nil {
+      _ = err // Handle error.
     }
   @else
     callResult, err := {@methodPath(method)}({@callArg(method)}).Context(ctx).Do()
     if err != nil {
-      log.Fatal(err)
+      _ = err // Handle error.
     }
     // doThingsWith(callResult)
     _ = callResult
@@ -82,14 +78,13 @@ func main() {
     }
   @end
 
-  err = {@methodPath(method)}({@callArg(method)}).Pages(ctx, fn)
-  if err != nil {
-    log.Fatal(err)
+  if err = {@methodPath(method)}({@callArg(method)}).Pages(ctx, fn); err != nil {
+    _ = err // Handle error.
   }
 @end
 
 @private methodPath(method)
-  service.{@resourcePath(method)}.{@context.lowerCamelToUpperCamel(context.getMethodName(method))}
+  client.{@resourcePath(method)}.{@context.lowerCamelToUpperCamel(context.getMethodName(method))}
 @end
 
 @private resourcePath(method)
