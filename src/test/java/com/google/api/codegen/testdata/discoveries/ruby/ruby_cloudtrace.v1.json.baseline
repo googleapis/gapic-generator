@@ -21,7 +21,7 @@ traces_object = Google::Apis::CloudtraceV1::Traces.new
 
 
 # Perform the call
-response = service.patch_project_traces(projectId, traces_object)
+response = service.patch_project_traces(project_id, traces_object)
 # PRE-REQUISITES:
 # ---------------
 # 1. If not already done, enable the Google Cloud Trace API and check the quota for your project at
@@ -46,7 +46,7 @@ trace_id = ''
 
 
 # Perform the call
-response = service.get_project_trace(projectId, traceId)
+response = service.get_project_trace(project_id, trace_id)
 # PRE-REQUISITES:
 # ---------------
 # 1. If not already done, enable the Google Cloud Trace API and check the quota for your project at
@@ -69,7 +69,7 @@ project_id = ''
 
 # Perform the call
 result_list = service.fetch_all(items: :traces) { |token|
-  service.list_project_traces(projectId, page_token: token)
+  service.list_project_traces(project_id, page_token: token)
 }
 result_list.each { |element|
   # doThingsWith(element)

@@ -24,7 +24,7 @@ change_object = Google::Apis::DnsV1::Change.new
 
 
 # Perform the call
-response = service.create_change(project, managedZone, change_object)
+response = service.create_change(project, managed_zone, change_object)
 # PRE-REQUISITES:
 # ---------------
 # 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
@@ -52,7 +52,7 @@ change_id = ''
 
 
 # Perform the call
-response = service.get_change(project, managedZone, changeId)
+response = service.get_change(project, managed_zone, change_id)
 # PRE-REQUISITES:
 # ---------------
 # 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
@@ -78,7 +78,7 @@ managed_zone = ''
 
 # Perform the call
 result_list = service.fetch_all(items: :changes) { |token|
-  service.list_changes(project, managedZone, page_token: token)
+  service.list_changes(project, managed_zone, page_token: token)
 }
 result_list.each { |element|
   # doThingsWith(element)
@@ -130,7 +130,7 @@ managed_zone = ''
 
 
 # Perform the call
-service.delete_managed_zone(project, managedZone)
+service.delete_managed_zone(project, managed_zone)
 # PRE-REQUISITES:
 # ---------------
 # 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
@@ -155,7 +155,7 @@ managed_zone = ''
 
 
 # Perform the call
-response = service.get_managed_zone(project, managedZone)
+response = service.get_managed_zone(project, managed_zone)
 # PRE-REQUISITES:
 # ---------------
 # 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
@@ -230,7 +230,7 @@ managed_zone = ''
 
 # Perform the call
 result_list = service.fetch_all(items: :rrsets) { |token|
-  service.list_resource_record_sets(project, managedZone, page_token: token)
+  service.list_resource_record_sets(project, managed_zone, page_token: token)
 }
 result_list.each { |element|
   # doThingsWith(element)

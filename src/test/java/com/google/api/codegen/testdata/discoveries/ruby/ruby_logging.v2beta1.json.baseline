@@ -89,7 +89,7 @@ log_name = ''
 
 
 # Perform the call
-response = service.delete_log(logName)
+response = service.delete_log(log_name)
 # PRE-REQUISITES:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
@@ -112,7 +112,7 @@ log_metric_object = Google::Apis::LoggingV2beta1::LogMetric.new
 
 
 # Perform the call
-response = service.create_project_metric(projectName, log_metric_object)
+response = service.create_project_metric(project_name, log_metric_object)
 # PRE-REQUISITES:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
@@ -134,7 +134,7 @@ metric_name = ''
 
 
 # Perform the call
-response = service.delete_project_metric(metricName)
+response = service.delete_project_metric(metric_name)
 # PRE-REQUISITES:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
@@ -156,7 +156,7 @@ metric_name = ''
 
 
 # Perform the call
-response = service.get_project_metric(metricName)
+response = service.get_project_metric(metric_name)
 # PRE-REQUISITES:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
@@ -179,7 +179,7 @@ project_name = ''
 
 # Perform the call
 result_list = service.fetch_all(items: :metrics) { |token|
-  service.list_project_metrics(projectName, page_token: token)
+  service.list_project_metrics(project_name, page_token: token)
 }
 result_list.each { |element|
   # doThingsWith(element)
@@ -206,7 +206,7 @@ log_metric_object = Google::Apis::LoggingV2beta1::LogMetric.new
 
 
 # Perform the call
-response = service.update_project_metric(metricName, log_metric_object)
+response = service.update_project_metric(metric_name, log_metric_object)
 # PRE-REQUISITES:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
@@ -229,7 +229,7 @@ log_sink_object = Google::Apis::LoggingV2beta1::LogSink.new
 
 
 # Perform the call
-response = service.create_project_sink(projectName, log_sink_object)
+response = service.create_project_sink(project_name, log_sink_object)
 # PRE-REQUISITES:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
@@ -251,7 +251,7 @@ sink_name = ''
 
 
 # Perform the call
-response = service.delete_project_sink(sinkName)
+response = service.delete_project_sink(sink_name)
 # PRE-REQUISITES:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
@@ -273,7 +273,7 @@ sink_name = ''
 
 
 # Perform the call
-response = service.get_project_sink(sinkName)
+response = service.get_project_sink(sink_name)
 # PRE-REQUISITES:
 # ---------------
 # 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
@@ -296,7 +296,7 @@ project_name = ''
 
 # Perform the call
 result_list = service.fetch_all(items: :sinks) { |token|
-  service.list_project_sinks(projectName, page_token: token)
+  service.list_project_sinks(project_name, page_token: token)
 }
 result_list.each { |element|
   # doThingsWith(element)
@@ -323,4 +323,4 @@ log_sink_object = Google::Apis::LoggingV2beta1::LogSink.new
 
 
 # Perform the call
-response = service.update_project_sink(sinkName, log_sink_object)
+response = service.update_project_sink(sink_name, log_sink_object)
