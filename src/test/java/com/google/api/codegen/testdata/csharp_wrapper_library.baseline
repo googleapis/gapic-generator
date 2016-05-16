@@ -18,6 +18,7 @@ using Google.Api.Gax;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
@@ -876,9 +877,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists shelves.
         /// </summary>
+        /// <param name="pageToken">The token returned from the previous request.
+        /// <c>Null</c> or an empty string retrieves the first page.</param>
+        /// <param name="pageSize">The size of page to request, the response will not be larger
+        /// than this, but may be smaller. <c>Null</c> or 0 uses a server-defined page size.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
-        public virtual IAsyncEnumerable<Shelf> ListShelvesAsync(
+        /// <returns>An asynchronous sequence of pages of Shelf items.</returns>
+        public virtual IPagedAsyncEnumerable<ListShelvesResponse, Shelf> ListShelvesPageStreamAsync(
+            string pageToken = null,
+            int? pageSize = null,
             CallSettings callSettings = null)
         {
             throw new NotImplementedException();
@@ -887,9 +894,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists shelves.
         /// </summary>
+        /// <param name="pageToken">The token returned from the previous request.
+        /// <c>Null</c> or an empty string retrieves the first page.</param>
+        /// <param name="pageSize">The size of page to request, the response will not be larger
+        /// than this, but may be smaller. <c>Null</c> or 0 uses a server-defined page size.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
-        public virtual IEnumerable<Shelf> ListShelves(
+        /// <returns>A sequence of pages of Shelf items.</returns>
+        public virtual IPagedEnumerable<ListShelvesResponse, Shelf> ListShelvesPageStream(
+            string pageToken = null,
+            int? pageSize = null,
             CallSettings callSettings = null)
         {
             throw new NotImplementedException();
@@ -1124,11 +1137,17 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">The name of the shelf whose books we'd like to list.</param>
         /// <param name="filter">To test python built-in wrapping.</param>
+        /// <param name="pageToken">The token returned from the previous request.
+        /// <c>Null</c> or an empty string retrieves the first page.</param>
+        /// <param name="pageSize">The size of page to request, the response will not be larger
+        /// than this, but may be smaller. <c>Null</c> or 0 uses a server-defined page size.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
-        public virtual IAsyncEnumerable<Book> ListBooksAsync(
+        /// <returns>An asynchronous sequence of pages of Book items.</returns>
+        public virtual IPagedAsyncEnumerable<ListBooksResponse, Book> ListBooksPageStreamAsync(
             string name,
             string filter,
+            string pageToken = null,
+            int? pageSize = null,
             CallSettings callSettings = null)
         {
             throw new NotImplementedException();
@@ -1139,11 +1158,17 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">The name of the shelf whose books we'd like to list.</param>
         /// <param name="filter">To test python built-in wrapping.</param>
+        /// <param name="pageToken">The token returned from the previous request.
+        /// <c>Null</c> or an empty string retrieves the first page.</param>
+        /// <param name="pageSize">The size of page to request, the response will not be larger
+        /// than this, but may be smaller. <c>Null</c> or 0 uses a server-defined page size.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
-        public virtual IEnumerable<Book> ListBooks(
+        /// <returns>A sequence of pages of Book items.</returns>
+        public virtual IPagedEnumerable<ListBooksResponse, Book> ListBooksPageStream(
             string name,
             string filter,
+            string pageToken = null,
+            int? pageSize = null,
             CallSettings callSettings = null)
         {
             throw new NotImplementedException();
@@ -1339,9 +1364,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists a primitive resource. To test go page streaming.
         /// </summary>
+        /// <param name="pageToken">The token returned from the previous request.
+        /// <c>Null</c> or an empty string retrieves the first page.</param>
+        /// <param name="pageSize">The size of page to request, the response will not be larger
+        /// than this, but may be smaller. <c>Null</c> or 0 uses a server-defined page size.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
-        public virtual IAsyncEnumerable<string> ListStringsAsync(
+        /// <returns>An asynchronous sequence of pages of string items.</returns>
+        public virtual IPagedAsyncEnumerable<ListStringsResponse, string> ListStringsPageStreamAsync(
+            string pageToken = null,
+            int? pageSize = null,
             CallSettings callSettings = null)
         {
             throw new NotImplementedException();
@@ -1350,9 +1381,15 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists a primitive resource. To test go page streaming.
         /// </summary>
+        /// <param name="pageToken">The token returned from the previous request.
+        /// <c>Null</c> or an empty string retrieves the first page.</param>
+        /// <param name="pageSize">The size of page to request, the response will not be larger
+        /// than this, but may be smaller. <c>Null</c> or 0 uses a server-defined page size.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
-        public virtual IEnumerable<string> ListStrings(
+        /// <returns>A sequence of pages of string items.</returns>
+        public virtual IPagedEnumerable<ListStringsResponse, string> ListStringsPageStream(
+            string pageToken = null,
+            int? pageSize = null,
             CallSettings callSettings = null)
         {
             throw new NotImplementedException();
@@ -1362,39 +1399,6 @@ namespace Google.Example.Library.V1
 
     public sealed partial class LibraryServiceClientImpl : LibraryServiceClient
     {
-        private static readonly PageStreamer<Shelf, ListShelvesRequest, ListShelvesResponse, string> s_listShelvesPageStreamer =
-            new PageStreamer<Shelf, ListShelvesRequest, ListShelvesResponse, string>(
-                (request, token) => {
-                    request.PageToken = token;
-                    return request;
-                },
-                response => response.NextPageToken,
-                response => response.Shelves,
-                "" // An empty page-token
-            );
-
-        private static readonly PageStreamer<Book, ListBooksRequest, ListBooksResponse, string> s_listBooksPageStreamer =
-            new PageStreamer<Book, ListBooksRequest, ListBooksResponse, string>(
-                (request, token) => {
-                    request.PageToken = token;
-                    return request;
-                },
-                response => response.NextPageToken,
-                response => response.Books,
-                "" // An empty page-token
-            );
-
-        private static readonly PageStreamer<string, ListStringsRequest, ListStringsResponse, string> s_listStringsPageStreamer =
-            new PageStreamer<string, ListStringsRequest, ListStringsResponse, string>(
-                (request, token) => {
-                    request.PageToken = token;
-                    return request;
-                },
-                response => response.NextPageToken,
-                response => response.Strings,
-                "" // An empty page-token
-            );
-
         private readonly ClientHelper _clientHelper;
         private readonly ApiCall<CreateShelfRequest, Shelf> _callCreateShelf;
         private readonly ApiCall<GetShelfRequest, Shelf> _callGetShelf;
@@ -1586,28 +1590,44 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists shelves.
         /// </summary>
+        /// <param name="pageToken">The token returned from the previous request.
+        /// <c>Null</c> or an empty string retrieves the first page.</param>
+        /// <param name="pageSize">The size of page to request, the response will not be larger
+        /// than this, but may be smaller. <c>Null</c> or 0 uses a server-defined page size.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
-        public override IAsyncEnumerable<Shelf> ListShelvesAsync(
-            CallSettings callSettings = null) => s_listShelvesPageStreamer.FetchAsync(
-                callSettings,
+        /// <returns>An asynchronous sequence of pages of Shelf items.</returns>
+        public override IPagedAsyncEnumerable<ListShelvesResponse, Shelf> ListShelvesPageStreamAsync(
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null) => new PagedAsyncEnumerable<ListShelvesRequest, ListShelvesResponse, Shelf>(
+                _callListShelves,
                 new ListShelvesRequest
                 {
+                    PageToken = pageToken ?? "",
+                    PageSize = pageSize ?? 0,
                 },
-                _callListShelves);
+                callSettings);
 
         /// <summary>
         /// Lists shelves.
         /// </summary>
+        /// <param name="pageToken">The token returned from the previous request.
+        /// <c>Null</c> or an empty string retrieves the first page.</param>
+        /// <param name="pageSize">The size of page to request, the response will not be larger
+        /// than this, but may be smaller. <c>Null</c> or 0 uses a server-defined page size.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
-        public override IEnumerable<Shelf> ListShelves(
-            CallSettings callSettings = null) => s_listShelvesPageStreamer.Fetch(
-                callSettings,
+        /// <returns>A sequence of pages of Shelf items.</returns>
+        public override IPagedEnumerable<ListShelvesResponse, Shelf> ListShelvesPageStream(
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null) => new PagedEnumerable<ListShelvesRequest, ListShelvesResponse, Shelf>(
+                _callListShelves,
                 new ListShelvesRequest
                 {
+                    PageToken = pageToken ?? "",
+                    PageSize = pageSize ?? 0,
                 },
-                _callListShelves);
+                callSettings);
 
         /// <summary>
         /// Deletes a shelf.
@@ -1792,38 +1812,54 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">The name of the shelf whose books we'd like to list.</param>
         /// <param name="filter">To test python built-in wrapping.</param>
+        /// <param name="pageToken">The token returned from the previous request.
+        /// <c>Null</c> or an empty string retrieves the first page.</param>
+        /// <param name="pageSize">The size of page to request, the response will not be larger
+        /// than this, but may be smaller. <c>Null</c> or 0 uses a server-defined page size.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
-        public override IAsyncEnumerable<Book> ListBooksAsync(
+        /// <returns>An asynchronous sequence of pages of Book items.</returns>
+        public override IPagedAsyncEnumerable<ListBooksResponse, Book> ListBooksPageStreamAsync(
             string name,
             string filter,
-            CallSettings callSettings = null) => s_listBooksPageStreamer.FetchAsync(
-                callSettings,
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null) => new PagedAsyncEnumerable<ListBooksRequest, ListBooksResponse, Book>(
+                _callListBooks,
                 new ListBooksRequest
                 {
                     Name = name,
                     Filter = filter,
+                    PageToken = pageToken ?? "",
+                    PageSize = pageSize ?? 0,
                 },
-                _callListBooks);
+                callSettings);
 
         /// <summary>
         /// Lists books in a shelf.
         /// </summary>
         /// <param name="name">The name of the shelf whose books we'd like to list.</param>
         /// <param name="filter">To test python built-in wrapping.</param>
+        /// <param name="pageToken">The token returned from the previous request.
+        /// <c>Null</c> or an empty string retrieves the first page.</param>
+        /// <param name="pageSize">The size of page to request, the response will not be larger
+        /// than this, but may be smaller. <c>Null</c> or 0 uses a server-defined page size.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
-        public override IEnumerable<Book> ListBooks(
+        /// <returns>A sequence of pages of Book items.</returns>
+        public override IPagedEnumerable<ListBooksResponse, Book> ListBooksPageStream(
             string name,
             string filter,
-            CallSettings callSettings = null) => s_listBooksPageStreamer.Fetch(
-                callSettings,
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null) => new PagedEnumerable<ListBooksRequest, ListBooksResponse, Book>(
+                _callListBooks,
                 new ListBooksRequest
                 {
                     Name = name,
                     Filter = filter,
+                    PageToken = pageToken ?? "",
+                    PageSize = pageSize ?? 0,
                 },
-                _callListBooks);
+                callSettings);
 
         /// <summary>
         /// Deletes a book.
@@ -1978,28 +2014,68 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// Lists a primitive resource. To test go page streaming.
         /// </summary>
+        /// <param name="pageToken">The token returned from the previous request.
+        /// <c>Null</c> or an empty string retrieves the first page.</param>
+        /// <param name="pageSize">The size of page to request, the response will not be larger
+        /// than this, but may be smaller. <c>Null</c> or 0 uses a server-defined page size.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>A Task containing the RPC response.</returns>
-        public override IAsyncEnumerable<string> ListStringsAsync(
-            CallSettings callSettings = null) => s_listStringsPageStreamer.FetchAsync(
-                callSettings,
+        /// <returns>An asynchronous sequence of pages of string items.</returns>
+        public override IPagedAsyncEnumerable<ListStringsResponse, string> ListStringsPageStreamAsync(
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null) => new PagedAsyncEnumerable<ListStringsRequest, ListStringsResponse, string>(
+                _callListStrings,
                 new ListStringsRequest
                 {
+                    PageToken = pageToken ?? "",
+                    PageSize = pageSize ?? 0,
                 },
-                _callListStrings);
+                callSettings);
 
         /// <summary>
         /// Lists a primitive resource. To test go page streaming.
         /// </summary>
+        /// <param name="pageToken">The token returned from the previous request.
+        /// <c>Null</c> or an empty string retrieves the first page.</param>
+        /// <param name="pageSize">The size of page to request, the response will not be larger
+        /// than this, but may be smaller. <c>Null</c> or 0 uses a server-defined page size.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
-        /// <returns>The RPC response.</returns>
-        public override IEnumerable<string> ListStrings(
-            CallSettings callSettings = null) => s_listStringsPageStreamer.Fetch(
-                callSettings,
+        /// <returns>A sequence of pages of string items.</returns>
+        public override IPagedEnumerable<ListStringsResponse, string> ListStringsPageStream(
+            string pageToken = null,
+            int? pageSize = null,
+            CallSettings callSettings = null) => new PagedEnumerable<ListStringsRequest, ListStringsResponse, string>(
+                _callListStrings,
                 new ListStringsRequest
                 {
+                    PageToken = pageToken ?? "",
+                    PageSize = pageSize ?? 0,
                 },
-                _callListStrings);
+                callSettings);
 
     }
+
+    // Partial classes to enable page-streaming
+
+    public partial class ListShelvesRequest : IPageRequest { }
+    public partial class ListShelvesResponse : IPageResponse<Shelf>
+    {
+        public IEnumerator<Shelf> GetEnumerator() => Shelves.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
+
+    public partial class ListBooksRequest : IPageRequest { }
+    public partial class ListBooksResponse : IPageResponse<Book>
+    {
+        public IEnumerator<Book> GetEnumerator() => Books.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
+
+    public partial class ListStringsRequest : IPageRequest { }
+    public partial class ListStringsResponse : IPageResponse<string>
+    {
+        public IEnumerator<string> GetEnumerator() => Strings.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    }
+
 }
