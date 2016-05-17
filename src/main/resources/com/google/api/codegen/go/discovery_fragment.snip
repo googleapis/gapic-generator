@@ -1,3 +1,5 @@
+@extends "../common.snip"
+
 @snippet generateFilename(method)
   {@method.getName}.frag.go
 @end
@@ -51,8 +53,10 @@ func main() {
 @end
 
 @private scopeArg(method)
-  @join scope : context.getAuthScopes(method) on ""
-    , {@context.getApi.getName}.{@scope}Scope
+  @let scopeList = context.getAuthScopes(method)
+    @if not(scopeList.isEmpty)
+    , {@context.getApi.getName}.{@scopeList.get(0)}Scope
+    @end
   @end
 @end
 

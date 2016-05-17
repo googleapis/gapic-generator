@@ -14,11 +14,11 @@
  */
 package com.google.api.codegen.go;
 
-import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryContext;
-import com.google.common.collect.ImmutableMap;
+import com.google.api.Service;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
@@ -150,10 +150,10 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
   }
 
   /*
-   * Returns an empty or singleton list of auth scope for the method. If the method has no scope,
-   * returns an empty list, otherwise returns the first scope. We return an empty list instead of
-   * null to denote absence of scope since snippet cannot handle null values. The scope, if exists,
-   * is stripped to its last path-element and converted to camel case, eg
+   * Returns an empty or singleton list of auth scopes for the method. If the method has no scope,
+   * returns an empty list; otherwise returns the first scope. We return an empty list instead of
+   * null to denote absence of scope since the snippet cannot handle null values. If the scope
+   * exists, it is stripped to its last path-element and converted to camel case, eg
    * "https://www.googleapis.com/auth/cloud-platform" becomes "CloudPlatform".
    */
   public ImmutableList<String> getAuthScopes(Method method) {
