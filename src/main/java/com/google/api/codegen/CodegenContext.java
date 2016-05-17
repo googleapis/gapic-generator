@@ -42,6 +42,10 @@ public class CodegenContext {
     return list.get(list.size() - 1);
   }
 
+  public String getTODO() {
+    return LanguageUtil.getTODO();
+  }
+
   public String upperCamelToUpperUnderscore(String name) {
     return LanguageUtil.upperCamelToUpperUnderscore(name);
   }

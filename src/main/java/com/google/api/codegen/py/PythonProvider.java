@@ -37,7 +37,7 @@ public class PythonProvider {
   public <Element> GeneratedResult generate(
       Element element,
       SnippetDescriptor snippetDescriptor,
-      PythonGapicContext context,
+      Object context,
       PythonImportHandler importHandler,
       ImmutableMap<String, Object> globalMap,
       String pathPrefix) {
@@ -57,9 +57,10 @@ public class PythonProvider {
 
     Doc filenameDoc = snippets.generateFilename(element);
     String outputFilename = filenameDoc.prettyPrint();
+    Doc body = snippets.generateBody(element);
     List<String> importList = importHandler.calculateImports();
     // Generate result.
-    Doc result = snippets.generateClass(element, importList);
+    Doc result = snippets.generateModule(element, body, importList);
     return GeneratedResult.create(result, pathPrefix + outputFilename);
   }
 }

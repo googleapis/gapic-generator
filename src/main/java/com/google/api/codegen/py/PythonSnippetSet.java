@@ -24,10 +24,15 @@ interface PythonSnippetSet<Element> {
   /**
    * Generates the result filename for the generated document
    */
-  Doc generateFilename(Element iface);
+  Doc generateFilename(Element element);
 
   /**
-   * Generates the result class, and a set of accumulated types to be imported.
+   * Generates a body of the module for the element where imports may be generated.
    */
-  Doc generateClass(Element iface, Iterable<String> imports);
+  Doc generateBody(Element element);
+
+  /**
+   * Generates the result module with a set of accumulated imports.
+   */
+  Doc generateModule(Element element, Doc body, Iterable<String> imports);
 }

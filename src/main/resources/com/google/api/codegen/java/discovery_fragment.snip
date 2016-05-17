@@ -36,8 +36,8 @@
        params = apiaryConfig.getMethodParams(method.getName)
     public class {@ApiName}Example {
       public static void main(String[] args) throws IOException, GeneralSecurityException {
-        // Authentication is provided by gcloud tool when running locally
-        // and by built-in service accounts when running on GAE, GCE or GKE.
+        // Authentication is provided by the 'gcloud' tool when running locally
+        // and by built-in service accounts when running on GAE, GCE, or GKE.
         GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
         // The createScopedRequired method returns true when running on GAE or a local developer
@@ -66,11 +66,12 @@
   @end
 @end
 
-@snippet iterableCall(method)
+# TODO(tcoffee): check if resource field is always first repeated field of response type
+@private iterableCall(method)
   @let responseType = context.getTypeUrl(method.getResponseTypeUrl), \
        responseTypeRef = context.getApiaryConfig.getType(responseType), \
        resourceField = context.getFirstRepeatedField(responseTypeRef), \
-       resources = context.getResourcesName(resourceField), \
+       resources = context.lowerCamelToUpperCamel(resourceField.getName), \
        resourceType = context.elementTypeName(responseTypeRef, resourceField)
     {@responseType} response;
     do {
@@ -81,12 +82,12 @@
       # TODO(tcoffee): add sample processing code to show visible results
       @if context.isMapField(responseTypeRef, resourceField.getName)
         for ({@resourceType} item : response.get{@resources}().entrySet()) {
-          // TODO: Add code here to process the 'item' entry
+          // {@TODO()} Add code here to process each 'item' entry
         }
       @else
-        @let resourceName = context.upperCamelToLowerCamel(context.getSimpleName(resourceType))
+        @let resourceName = context.getSampleVarName(resourceType)
           for ({@resourceType} {@resourceName} : response.get{@resources}()) {
-            // TODO: Add code here to process the '{@resourceName}' resource
+            // {@TODO()} Add code here to process each '{@resourceName}' resource
           }
         @end
       @end
@@ -102,18 +103,19 @@
   @end
 @end
 
-# TODO(tcoffee): add additional commented code for individual fields of request objects?
-@snippet compactCall(method)
+@private compactCall(method)
   @if context.isResponseEmpty(method)
     request.execute();
   @else
     @let responseType = context.getTypeUrl(method.getResponseTypeUrl)
       {@responseType} response = request.execute();
+
+      // {@TODO()} Add code here to process the 'response' object
     @end
   @end
 @end
 
-@snippet request(method)
+@private request(method)
   @let methodName = context.getMethodName(method), \
        clientRequestType = context.getClientRequestType(method), \
        resourcesPath = context.getApiaryConfig.getResources(method.getName)
@@ -126,7 +128,7 @@
 @end
 
 # TODO(tcoffee): configure snippet grouping to handle long argument lists
-@snippet arguments(method)
+@private arguments(method)
   @if context.hasRequestField(method)
     @let requestType = context.getTypeUrl(context.getRequestField(method)), \
          params = context.getFlatMethodParams(method)
@@ -142,14 +144,14 @@
 @end
 
 # TODO(tcoffee): generate appropriately typed default values for params
-@snippet initialize(method, params)
+@private initialize(method, params)
   @let methodName = context.getMethodName(method), \
        apiaryConfig = context.getApiaryConfig, \
        signatureType = apiaryConfig.getType(method.getRequestTypeUrl), \
        params = context.getFlatMethodParams(method)
     @if params
 
-      // TODO: Change placeholders below to values for parameters to the '{@methodName}' method:
+      // {@TODO()} Change placeholders below to values for parameters to the '{@methodName}' method:
 
     @end
     @join param : params
@@ -164,39 +166,40 @@
   @end
 @end
 
-@snippet initializeRequest(method)
+# TODO(tcoffee): add additional commented code for individual fields of request objects?
+@private initializeRequest(method)
   @let requestType = context.getTypeUrl(context.getRequestField(method))
     {@requestType} {@requestName()} = new {@requestType}();
     @if context.isPatch(method)
-      // TODO: Add code here to assign values to desired fields of the '{@requestName()}' object to be changed
+      // {@TODO()} Add code here to assign values to desired fields of the '{@requestName()}' object to be changed
 
 
     @else
-      // TODO: Add code here to assign values to desired fields of the '{@requestName()}' object
+      // {@TODO()} Add code here to assign values to desired fields of the '{@requestName()}' object
 
 
     @end
   @end
 @end
 
-@snippet serviceName()
+@private serviceName()
   @let apiName = context.getApi.getName
     {@apiName}Service
   @end
 @end
 
 # name "content" used for request body as in API Explorer to avoid collisions
-@snippet requestName()
+@private requestName()
   content
 @end
 
-@snippet item(description)
+@private item(description)
   @if description
     // * {@description}
   @end
 @end
 
-@snippet typePath(types)
+@private typePath(types)
   @join type : types on "."
     @let Type = context.lowerCamelToUpperCamel(type)
       {@Type}
@@ -204,16 +207,20 @@
   @end
 @end
 
-@snippet elementPath(elements)
+@private elementPath(elements)
   @join element : elements on "."
     {@element}()
   @end
 @end
 
-@snippet argumentList(arguments)
+@private argumentList(arguments)
   @join argument : arguments on ", "
     {@argument}
   @end
+@end
+
+@private TODO()
+  {@context.getTODO()}
 @end
 
 @private alwaysImport() fill

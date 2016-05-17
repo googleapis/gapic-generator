@@ -1,0 +1,187 @@
+@snippet generateFilename(method)
+    {@method.getName}.frag.py
+@end
+
+@snippet generateModule(method, body, imports)
+    @let api = context.getApi, \
+         apiName = api.getName, \
+         apiVersion = api.getVersion, \
+         serviceTitle = context.getService.getTitle
+        """
+        PRE-REQUISITES:
+        ---------------
+        1. If not already done, enable the {@serviceTitle} and check quota for your project at
+           https://console.developers.google.com/apis/api/{@apiName}_component/quotas 
+        2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
+        3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from 
+           https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+        """
+    
+        @join import : imports
+            {@import}
+        @end
+        
+        @# Authentication is provided by the 'gcloud' tool when running locally
+        @# and by built-in service accounts when running on GAE, GCE, or GKE.
+        @# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+        credentials = GoogleCredentials.get_application_default()
+        
+        @# Construct the {@apiName} service object (version {@apiVersion}) for interacting 
+        @# with the API. You can browse other available API services and versions at
+        @# https://developers.google.com/api-client-library/python/apis/
+        {@serviceName()} = discovery.build('{@apiName}', '{@apiVersion}', credentials=credentials)
+        {@body}
+    @end
+@end
+
+@snippet generateBody(method)
+    {@alwaysImport()}
+    @let params = context.getApiaryConfig.getMethodParams(method.getName)
+        {@initialize(method, params)}
+    
+        @if context.hasRequestField(method)
+            {@initializeRequest(method)}
+        @end
+        @if context.isPageStreaming(method)
+            {@iterableCall(method)}
+        @else
+            {@compactCall(method)}
+        @end
+    @end
+@end
+
+# TODO(tcoffee): check if resource field is always first repeated field of response type
+@private iterableCall(method)
+    @let methodName = context.getMethodName(method), \
+         resourcesPath = context.getApiaryConfig.getResources(method.getName), \
+         resourcesObject = context.getLast(resourcesPath), \
+         responseType = method.getResponseTypeUrl, \
+         responseTypeRef = context.getApiaryConfig.getType(responseType), \
+         resourceField = context.getFirstRepeatedField(responseTypeRef), \
+         resources = resourceField.getName, \
+         resourceName = context.elementTypeName(responseTypeRef, resourceField)
+        {@resourcesObject} = {@serviceName()}.{@elementPath(resourcesPath)}
+        request = {@resourcesObject}.{@methodName}({@arguments(method)})
+        while request is not None:
+            response = request.execute()
+            
+            # TODO(tcoffee): add sample processing code to show visible results
+            @if context.isMapField(responseTypeRef, resourceField.getName)
+                for {@resourceName} in response['{@resources}'].items():
+                    @# {@TODO()} Add code here to process each ({@resourceName}) entry
+            @else
+                for {@resourceName} in response['{@resources}']:
+                    @# {@TODO()} Add code here to process each '{@resourceName}' resource
+            @end
+        
+            # used to handle inconsistency in log entries list method for Logging API
+            # remove exceptional case if inconsistency is resolved
+            @if context.isLogEntriesListMethod(method)
+                {@requestName(method)}.pageToken = response.nextPageToken
+            @else
+                request = {@resourcesObject}.{@methodName}_next(request, response)
+            @end
+    @end
+@end
+
+@private compactCall(method)
+    @let methodName = context.getMethodName(method), \
+         resourcesPath = context.getApiaryConfig.getResources(method.getName)
+        request = {@serviceName()}.{@elementPath(resourcesPath)}.{@methodName}({@arguments(method)})
+        @if context.isResponseEmpty(method)
+            request.execute()
+        @else
+            response = request.execute()
+            
+            @# {@TODO()} Change code below to process the 'response' dict:
+            @let json = importHandler.addImportStandard("json"), \
+                 _ = importHandler.addImportStandard("__future__", "print_function")
+                print({@json}.dumps(response))
+            @end
+        @end
+    @end
+@end
+
+# TODO(tcoffee): configure snippet grouping to handle long argument lists
+@private arguments(method)
+    @if context.hasRequestField(method)
+        @let params = context.getFlatMethodParams(method)
+            @if params
+                {@argumentList(params)}, {@requestName(method)}
+            @else
+                {@requestName(method)}
+            @end
+        @end
+    @else
+        {@argumentList(context.getMethodParams(method))}
+    @end
+@end
+
+# TODO(tcoffee): generate appropriately typed default values for params
+@private initialize(method, params)
+    @let methodName = context.getMethodName(method), \
+         apiaryConfig = context.getApiaryConfig, \
+         signatureType = apiaryConfig.getType(method.getRequestTypeUrl), \
+         params = context.getFlatMethodParams(method)
+        @if params
+      
+            @# {@TODO()} Change placeholders below to values for parameters to the '{@methodName}' method:
+            
+        @end
+        @join param : params
+            @let paramField = context.getField(signatureType, param), \
+                 paramValue = context.typeDefaultValue(signatureType, paramField), \
+                 paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
+                {@item(paramDescription)}
+                {@param} = {@paramValue}
+            @end
+        @end
+    @end
+@end
+
+# TODO(tcoffee): add additional commented code for individual fields of request objects?
+@private initializeRequest(method)
+    {@requestName(method)} = {
+    @if context.isPatch(method)
+        @# {@TODO()} Add desired entries of the '{@requestName(method)}' dict to be changed
+    @else
+        @# {@TODO()} Add desired entries of the '{@requestName(method)}' dict
+    @end
+    }
+    
+@end
+
+@private serviceName()
+    service
+@end
+
+@private requestName(method)
+    {@context.getSampleVarName(context.getRequestField(method).getTypeUrl)}
+@end
+
+@private item(description)
+    @if description
+        @# * {@description}
+    @end
+@end
+
+@private elementPath(elements)
+    @join element : elements on "."
+        {@element}()
+    @end
+@end
+
+@private argumentList(arguments)
+    @join argument : arguments on ", "
+        {@argument}
+    @end
+@end
+
+@private TODO()
+    {@context.getTODO()}
+@end
+
+@private alwaysImport() fill
+  {@context.silent(importHandler.addImportLocal("apiclient", "discovery"))}
+  {@context.silent(importHandler.addImportLocal("oauth2client.client", "GoogleCredentials"))}
+@end
