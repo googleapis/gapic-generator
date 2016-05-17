@@ -18,6 +18,7 @@ import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableTable;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
@@ -146,5 +147,29 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
   public String getApiVersion() {
     String rename = API_VERSION_RENAME.get(getApi().getName(), getApi().getVersion());
     return rename == null ? getApi().getVersion() : rename;
+  }
+
+  /*
+   * Returns an empty or singleton list of auth scope for the method. If the method has no scope,
+   * returns an empty list, otherwise returns the first scope. We return an empty list instead of
+   * null to denote absence of scope since snippet cannot handle null values. The scope, if exists,
+   * is stripped to its last path-element and converted to camel case, eg
+   * "https://www.googleapis.com/auth/cloud-platform" becomes "CloudPlatform".
+   */
+  public ImmutableList<String> getAuthScopes(Method method) {
+    if (!getApiaryConfig().getAuthScopes().containsKey(method.getName())) {
+      return ImmutableList.<String>of();
+    }
+    String scope = getApiaryConfig().getAuthScopes().get(method.getName()).get(0);
+    int slash = scope.lastIndexOf('/');
+    if (slash < 0) {
+      throw new IllegalArgumentException(
+          String.format("malformed scope, cannot find slash: %s", scope));
+    }
+    scope = scope.substring(slash + 1);
+    scope = scope.replace('.', '_');
+    scope = scope.replace('-', '_');
+    scope = lowerUnderscoreToUpperCamel(scope);
+    return ImmutableList.<String>of(scope);
   }
 }

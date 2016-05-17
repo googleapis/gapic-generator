@@ -29,7 +29,7 @@ import (
 func main() {
   ctx := context.Background()
   # TODO(pongad): Every API except autoscaler has the string as API.CloudPlatformScope, find out why
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx{@scopeArg(method)})
   if err != nil {
     // TODO: Handle error.
     _ = err
@@ -48,6 +48,12 @@ func main() {
     {@compactCall(method)}
   @end
 }
+@end
+
+@private scopeArg(method)
+  @join scope : context.getAuthScopes(method) on ""
+    , {@context.getApi.getName}.{@scope}Scope
+  @end
 @end
 
 @private compactCall(method)

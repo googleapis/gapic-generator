@@ -84,6 +84,11 @@ public class ApiaryConfig {
   private final Map<String, Type> types = new HashMap<>();
 
   /*
+   * Maps method name to set of auth scope URLs, eg https://www.googleapis.com/auth/cloud-platform.
+   */
+  private final ListMultimap<String, String> authScopes = ArrayListMultimap.<String, String>create();
+
+  /*
    * Maps (type, field name) to field.
    */
   private final Table<Type, String, Field> fields = HashBasedTable.<Type, String, Field>create();
@@ -179,5 +184,12 @@ public class ApiaryConfig {
    */
   public Field getField(Type type, String fieldName) {
     return fields.get(type, fieldName);
+  }
+
+  /*
+   * @return set of auth scopes
+   */
+  public ListMultimap<String, String> getAuthScopes() {
+    return authScopes;
   }
 }
