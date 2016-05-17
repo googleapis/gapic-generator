@@ -38,7 +38,7 @@ abstract class PythonImport {
   public abstract ImportType type();
 
   /*
-   * Create a Python import of the given category, specifying (attribute), (module, attribute), or
+   * Create a Python import of the given type, specifying (attribute), (module, attribute), or
    * (module, attribute, local) names.
    */
   public static PythonImport create(ImportType type, String... names) {

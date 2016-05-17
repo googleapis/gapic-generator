@@ -244,7 +244,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
   }
 
   /**
-   * Returns the Java representation of the type of a field of a type.
+   * Returns the Java representation of a type's field's type.
    */
   public String typeName(Type type, Field field) {
     String fieldName = field.getName();
@@ -270,7 +270,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
   }
 
   /**
-   * Returns the Java representation of the type of an element of a repeated field of a type.
+   * Returns the Java representation of a type's repeated field's element's type.
    */
   public String elementTypeName(Type type, Field field) {
     String fieldName = field.getName();
@@ -288,7 +288,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
   }
 
   /**
-   * Returns the Java representation of the type of an element of an array field.
+   * Returns the Java representation of an array field's element's type.
    */
   private String elementTypeName(Field field) {
     String fieldTypeName = field.getTypeUrl();
@@ -305,14 +305,14 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
   }
 
   /**
-   * Returns the Java representation of the type of a basic-typed field, in boxed form.
+   * Returns the Java representation of a basic-typed field's type, in boxed form.
    */
   public String basicTypeNameBoxed(Field field) {
     return javaCommon.boxedTypeName(basicTypeName(field));
   }
 
   /**
-   * Returns the Java representation of the type of a basic-typed field. If the type is a Java
+   * Returns the Java representation of a basic-typed field's type. If the type is a Java
    * primitive, basicTypeName returns it in unboxed form.
    */
   public String basicTypeName(Field field) {
@@ -329,7 +329,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
   }
 
   /**
-   * Generates placeholder assignment (to end of line) for field of type based on field kind and,
+   * Generates placeholder assignment (to end of line) for a type's field based on field kind and,
    * for explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.
    */
   public String typeDefaultValue(Type type, Field field) {
