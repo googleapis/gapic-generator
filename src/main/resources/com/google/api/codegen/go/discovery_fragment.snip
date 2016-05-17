@@ -1,3 +1,5 @@
+@extends "../common.snip"
+
 @snippet generateFilename(method)
   {@method.getName}.frag.go
 @end
@@ -29,7 +31,7 @@ import (
 func main() {
   ctx := context.Background()
   # TODO(pongad): Every API except autoscaler has the string as API.CloudPlatformScope, find out why
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  httpClient, err := google.DefaultClient(ctx{@scopeArg(method)})
   if err != nil {
     // TODO: Handle error.
     _ = err
@@ -48,6 +50,14 @@ func main() {
     {@compactCall(method)}
   @end
 }
+@end
+
+@private scopeArg(method)
+  @let scopeList = context.getAuthScopes(method)
+    @if not(scopeList.isEmpty)
+    , {@context.getApi.getName}.{@scopeList.get(0)}Scope
+    @end
+  @end
 @end
 
 @private compactCall(method)

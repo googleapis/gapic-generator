@@ -392,8 +392,12 @@ public class DiscoveryImporter {
     builder.setRequestTypeUrl(synthetic);
 
     if (root.get("supportsMediaUpload") != null && root.get("supportsMediaUpload").asBoolean()) {
-     config.getMediaUpload().add(methodName);
-   }
+      config.getMediaUpload().add(methodName);
+    }
+
+    for (JsonNode scope : elements(root.get("scopes"))) {
+      config.getAuthScopes().put(methodName, scope.asText());
+    }
 
     // TODO: add google.api.http
     return builder.build();
