@@ -25,8 +25,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import io.gapi.vgen.InterfaceConfig;
-import io.gapi.vgen.py.PythonImport.ImportType;
+import com.google.api.codegen.InterfaceConfig;
+import com.google.api.codegen.py.PythonImport.ImportType;
 
 import java.util.ArrayList;
 import java.util.Collections;

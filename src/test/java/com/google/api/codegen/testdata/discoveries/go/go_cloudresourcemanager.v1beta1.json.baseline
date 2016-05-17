@@ -369,13 +369,10 @@ func main() {
     projectId = ""
   )
 
-  callResult, err := client.Projects.Delete(projectId).Context(ctx).Do()
-  if err != nil {
+  if err = client.Projects.Delete(projectId).Context(ctx).Do(); err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
 }
 package main
 
@@ -655,13 +652,10 @@ func main() {
     requestBody = &cloudresourcemanager.UndeleteProjectRequest{}
   )
 
-  callResult, err := client.Projects.Undelete(projectId, requestBody).Context(ctx).Do()
-  if err != nil {
+  if err = client.Projects.Undelete(projectId, requestBody).Context(ctx).Do(); err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
 }
 package main
 

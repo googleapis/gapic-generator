@@ -71,7 +71,7 @@ func main() {
   @let responseType = method.getResponseTypeUrl, \
       responseTypeRef = context.getApiaryConfig.getType(responseType), \
       resourceField = context.getFirstRepeatedField(responseTypeRef), \
-      resources = context.getResourcesName(resourceField)
+      resources = context.lowerCamelToUpperCamel(resourceField.getName)
     fn := func(page *{@context.getApi.getName}.{@responseType}) error {
       // doThingsWith(page)
       for i, element := range page.{@resources} {

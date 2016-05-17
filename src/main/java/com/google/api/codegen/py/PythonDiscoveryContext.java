@@ -21,9 +21,9 @@ import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
 
-import io.gapi.vgen.ApiaryConfig;
-import io.gapi.vgen.DiscoveryContext;
-import io.gapi.vgen.DiscoveryImporter;
+import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.DiscoveryContext;
+import com.google.api.codegen.DiscoveryImporter;
 
 import java.util.List;
 
