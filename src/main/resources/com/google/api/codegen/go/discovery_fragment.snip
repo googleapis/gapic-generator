@@ -104,7 +104,7 @@ func main() {
 
   @end
   var (
-    @join param : context.getFlatMethodParams(method)
+    @join param : context.getFlatMethodParams(method) on BREAK.add(BREAK)
       @let signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
           paramField = context.getField(signatureType, param), \
           paramValue = context.typeDefaultValue(signatureType, paramField), \
@@ -114,7 +114,6 @@ func main() {
         @end
 
         {@unclashVar(param)} = {@paramValue}
-
       @end
     @end
     @if context.hasRequestField(method)
