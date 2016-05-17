@@ -1,0 +1,552 @@
+
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'delete_dataset' method:
+# Project ID of the dataset being deleted
+project_id = ''
+
+# Dataset ID of dataset being deleted
+dataset_id = ''
+
+
+# Perform the call
+service.delete_dataset(project_id, dataset_id)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'get_dataset' method:
+# Project ID of the requested dataset
+project_id = ''
+
+# Dataset ID of the requested dataset
+dataset_id = ''
+
+
+# Perform the call
+response = service.get_dataset(project_id, dataset_id)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'insert_dataset' method:
+# Project ID of the new dataset
+project_id = ''
+dataset_object = Google::Apis::BigqueryV2::Dataset.new
+
+
+# Perform the call
+response = service.insert_dataset(project_id, dataset_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'list_datasets' method:
+# Project ID of the datasets to be listed
+project_id = ''
+
+
+# Perform the call
+result_list = service.fetch_all(items: :datasets) { |token|
+  service.list_datasets(project_id, page_token: token)
+}
+result_list.each { |element|
+  # doThingsWith(element)
+}
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'patch_dataset' method:
+# Project ID of the dataset being updated
+project_id = ''
+
+# Dataset ID of the dataset being updated
+dataset_id = ''
+dataset_object = Google::Apis::BigqueryV2::Dataset.new
+
+
+# Perform the call
+response = service.patch_dataset(project_id, dataset_id, dataset_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'update_dataset' method:
+# Project ID of the dataset being updated
+project_id = ''
+
+# Dataset ID of the dataset being updated
+dataset_id = ''
+dataset_object = Google::Apis::BigqueryV2::Dataset.new
+
+
+# Perform the call
+response = service.update_dataset(project_id, dataset_id, dataset_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'cancel_job' method:
+# [Required] Project ID of the job to cancel
+project_id = ''
+
+# [Required] Job ID of the job to cancel
+job_id = ''
+
+
+# Perform the call
+response = service.cancel_job(project_id, job_id)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'get_job' method:
+# [Required] Project ID of the requested job
+project_id = ''
+
+# [Required] Job ID of the requested job
+job_id = ''
+
+
+# Perform the call
+response = service.get_job(project_id, job_id)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'get_job_query_results' method:
+# [Required] Project ID of the query job
+project_id = ''
+
+# [Required] Job ID of the query job
+job_id = ''
+
+
+# Perform the call
+response = service.get_job_query_results(project_id, job_id)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'insert_job' method:
+# Project ID of the project that will be billed for the job
+project_id = ''
+job_object = Google::Apis::BigqueryV2::Job.new
+
+
+# Perform the call
+response = service.insert_job(project_id, job_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'list_jobs' method:
+# Project ID of the jobs to list
+project_id = ''
+
+
+# Perform the call
+result_list = service.fetch_all(items: :jobs) { |token|
+  service.list_jobs(project_id, page_token: token)
+}
+result_list.each { |element|
+  # doThingsWith(element)
+}
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'query_job' method:
+# Project ID of the project billed for the query
+project_id = ''
+query_request_object = Google::Apis::BigqueryV2::QueryRequest.new
+
+
+# Perform the call
+response = service.query_job(project_id, query_request_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+
+# Perform the call
+result_list = service.fetch_all(items: :projects) { |token|
+  service.list_projects(, page_token: token)
+}
+result_list.each { |element|
+  # doThingsWith(element)
+}
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'insert_all_table_data' method:
+# Project ID of the destination table.
+project_id = ''
+
+# Dataset ID of the destination table.
+dataset_id = ''
+
+# Table ID of the destination table.
+table_id = ''
+insert_all_table_data_request_object = Google::Apis::BigqueryV2::InsertAllTableDataRequest.new
+
+
+# Perform the call
+response = service.insert_all_table_data(project_id, dataset_id, table_id, insert_all_table_data_request_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'list_table_data' method:
+# Project ID of the table to read
+project_id = ''
+
+# Dataset ID of the table to read
+dataset_id = ''
+
+# Table ID of the table to read
+table_id = ''
+
+
+# Perform the call
+response = service.list_table_data(project_id, dataset_id, table_id)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'delete_table' method:
+# Project ID of the table to delete
+project_id = ''
+
+# Dataset ID of the table to delete
+dataset_id = ''
+
+# Table ID of the table to delete
+table_id = ''
+
+
+# Perform the call
+service.delete_table(project_id, dataset_id, table_id)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'get_table' method:
+# Project ID of the requested table
+project_id = ''
+
+# Dataset ID of the requested table
+dataset_id = ''
+
+# Table ID of the requested table
+table_id = ''
+
+
+# Perform the call
+response = service.get_table(project_id, dataset_id, table_id)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'insert_table' method:
+# Project ID of the new table
+project_id = ''
+
+# Dataset ID of the new table
+dataset_id = ''
+table_object = Google::Apis::BigqueryV2::Table.new
+
+
+# Perform the call
+response = service.insert_table(project_id, dataset_id, table_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'list_tables' method:
+# Project ID of the tables to list
+project_id = ''
+
+# Dataset ID of the tables to list
+dataset_id = ''
+
+
+# Perform the call
+result_list = service.fetch_all(items: :tables) { |token|
+  service.list_tables(project_id, dataset_id, page_token: token)
+}
+result_list.each { |element|
+  # doThingsWith(element)
+}
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'patch_table' method:
+# Project ID of the table to update
+project_id = ''
+
+# Dataset ID of the table to update
+dataset_id = ''
+
+# Table ID of the table to update
+table_id = ''
+table_object = Google::Apis::BigqueryV2::Table.new
+
+
+# Perform the call
+response = service.patch_table(project_id, dataset_id, table_id, table_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the BigQuery API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/bigquery_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/bigquery_v2'
+
+service = Google::Apis::BigqueryV2::BigqueryService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'update_table' method:
+# Project ID of the table to update
+project_id = ''
+
+# Dataset ID of the table to update
+dataset_id = ''
+
+# Table ID of the table to update
+table_id = ''
+table_object = Google::Apis::BigqueryV2::Table.new
+
+
+# Perform the call
+response = service.update_table(project_id, dataset_id, table_id, table_object)
