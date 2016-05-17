@@ -27,16 +27,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * RubyApiaryNameMap maps discovery names (found in discovery doc) to user-friendly names (found in
- * Ruby client libraries). Ruby client library repository has a YAML file "api_names_out.yaml" that
- * contains this mapping. RubyApiaryNameMap parses the file and provides convenient accessors.
+ * RubyApiaryNameMap maps discovery names (found in the discovery docs) to user-friendly names
+ * (found in theRuby client libraries). Ruby client library repository has a YAML file
+ * "api_names_out.yaml" that contains this mapping. RubyApiaryNameMap parses the file and provides
+ * convenient accessors.
  */
 public class RubyApiaryNameMap {
 
   private final ImmutableMap<ResourceId, String> NAME_MAP;
 
   /**
-   * Constructs RubyApiaryNameMap. It converts IOException into a RuntimeException so that it is
+   * Constructs RubyApiaryNameMap. It converts IOException into RuntimeException so that it is
    * convenient to statically create an instance.
    */
   public RubyApiaryNameMap() {
