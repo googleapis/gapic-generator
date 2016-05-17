@@ -967,12 +967,7 @@ instance = ''
 
 
 # Perform the call
-result_list = service.fetch_all(items: :items) { |token|
-  service.list_users(project, instance, page_token: token)
-}
-result_list.each { |element|
-  # doThingsWith(element)
-}
+response = service.list_users(project, instance)
 # PRE-REQUISITES:
 # ---------------
 # 1. If not already done, enable the Cloud SQL Administration API and check the quota for your project at
