@@ -47,7 +47,7 @@
     @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service), \
             codes = context.entrySet(interfaceConfig.getRetryCodesDefinition)
         @if codes
-            retry_codes_def: {
+            "retry_codes_def": {
               @join retryDef : codes on ",".add(BREAK)
                   @if retryDef.getValue
                       "{@retryDef.getKey}": [
@@ -88,7 +88,7 @@
                 isBundling = methodConfig.isBundling, \
                 retryCodesName = methodConfig.getRetryCodesConfigName, \
                 retryParamsName = methodConfig.getRetrySettingsConfigName
-            "{@context.upperCamelToLowerUnderscore(method.getSimpleName)}": {
+            "{@method.getSimpleName}": {
               @if and(retryCodesName, retryParamsName)
                   "retry_codes_name": "{@retryCodesName}",
                   @if isBundling
