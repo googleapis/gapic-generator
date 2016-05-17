@@ -26,10 +26,19 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * RubyApiaryNameMap maps discovery names (found in discovery doc) to user-friendly names (found in
+ * Ruby client libraries). Ruby client library repository has a YAML file "api_names_out.yaml" that
+ * contains this mapping. RubyApiaryNameMap parses the file and provides convenient accessors.
+ */
 public class RubyApiaryNameMap {
 
   private final ImmutableMap<ResourceId, String> NAME_MAP;
 
+  /**
+   * Constructs RubyApiaryNameMap. It converts IOException into a RuntimeException so that it is
+   * convenient to statically create an instance.
+   */
   public RubyApiaryNameMap() {
     try {
       NAME_MAP = getNameMap();
@@ -38,6 +47,10 @@ public class RubyApiaryNameMap {
     }
   }
 
+  /**
+   * Returns the user-friendly name from the discovery-doc name, or null if the mapping does not
+   * exist.
+   */
   public String getName(String apiName, String apiVersion, String resourceName) {
     ResourceId id = ResourceId.create(apiName, apiVersion, resourceName);
     return NAME_MAP.get(id);
@@ -56,6 +69,10 @@ public class RubyApiaryNameMap {
     return builder.build();
   }
 
+  // keyPattern matches texts like
+  //   /adexchangebuyer:v1.4/adexchangebuyer.marketplaceprivateauction.updateproposal
+  // capturing API name, version, and method name, in this case "adexchangebuyer", "v1.4", and
+  // "adexchangebuyer.marketplaceprivateauction.updateproposal" respectively.
   private static final Pattern keyPattern = Pattern.compile("^/(.*?):(.*?)[/?](.*)$");
 
   private static ResourceId parseKey(String key) {

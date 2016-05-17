@@ -78,6 +78,12 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
     return "nil";
   }
 
+  /**
+   * Returns Ruby user-friendly name for the request type of method. Eg,
+   *   analytics.v3's AnalyticsDataimportDeleteUploadDataRequest
+   * becomes
+   *   delete_upload_data_request
+   */
   public String getRequestTypeName(Method method) {
     String type = getRequestField(method).getTypeUrl();
     String name = getNameFromMap(type);
@@ -89,6 +95,12 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
     return name;
   }
 
+  /**
+   * Returns Ruby user-friendly name for the given param. Eg,
+   *   storage.v1's Bucket/cors/cors_configuration/method
+   * becomes
+   *   http_method
+   */
   public String getParamName(Method method, String param) {
     String rename = getNameFromMap(method.getName() + "/" + param);
     if (rename == null) {
@@ -103,6 +115,12 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
     return rename;
   }
 
+  /**
+   * Returns Ruby user-friendly name for the given method. Eg,
+   *   analytics.v3's analytics.management.accountSummaries.list
+   * becomes
+   *   list_account_summaries
+   */
   public String getMethodName(Method method) {
     String name = getNameFromMap(method.getName());
     if (name == null) {
@@ -124,6 +142,9 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
     return getApi().getVersion().replace('.', '_');
   }
 
+  // Services in Discovery Doc are named in all lowercase. For multi-word names, it is not
+  // generally possible for us to capitalize properly. We store the properly capitalized names here
+  // so we can generate samples properly.
   private static final ImmutableMap<String, String> SERVICE_RENAME =
       ImmutableMap.<String, String>builder()
           .put("cloudmonitoring", "CloudMonitoring")
