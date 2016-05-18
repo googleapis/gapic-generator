@@ -76,13 +76,10 @@ class NoTemplatesServiceApi(object):
           ssl_creds (:class:`grpc.beta.implementations.ClientCredentials`):
             A `ClientCredentials` for use with an SSL-enabled channel.
           client_config (dict):
-            The default client config for methods. When specified, the value is
-            passed to :method:`google.gax.construct_settings` to build the
-            actual call settings, so it has to have the same structure of
-            the data. See :method:`google.gax.construct_settings` for the
-            structure of the data.
-            client_config can specify a subset of the methods. If a method
-            config is not specified, it falls back to the default config.
+            A dictionary for call settings for each method. See
+            :method:`google.gax.construct_settings` for the structure of
+            this data. Falls back to the default config if not specified
+            or the specified config is missing data points.
           timeout (int): The default timeout, in seconds, for calls made
             through this client
           app_name (string): The codename of the calling service.
@@ -93,24 +90,16 @@ class NoTemplatesServiceApi(object):
         """
         if scopes is None:
             scopes = self._ALL_SCOPES
+        if client_config is None:
+            client_config = {}
         default_client_config = json.loads(pkg_resources.resource_string(
             __name__, 'no_templates_service_client_config.json'))
         self._defaults = api_callable.construct_settings(
             'google.example.v1.NoTemplatesService',
             default_client_config,
-            {},
-            {},
+            client_config,
             config.STATUS_CODE_NAMES,
             timeout)
-        if client_config:
-            self._defaults.update(api_callable.construct_settings(
-                'google.example.v1.NoTemplatesService',
-                client_config,
-                {},
-                {},
-                config.STATUS_CODE_NAMES,
-                timeout)
-            )
         goog_api_client = '{}/{} {} gax/{} python/{}'.format(
             app_name,
             app_version,
