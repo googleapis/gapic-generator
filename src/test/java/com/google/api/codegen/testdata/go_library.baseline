@@ -48,8 +48,8 @@
 package library_service
 
 import (
+    "errors"
     "fmt"
-    "io"
     "runtime"
     "time"
 
@@ -66,6 +66,9 @@ const (
 )
 
 var (
+    // Done is returned by iterators on successful completion.
+    Done = errors.New("iterator done")
+
     shelfPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}")
     bookPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}/books/{book}")
 )
@@ -112,7 +115,7 @@ func withNonIdempotentRetryCodes() gax.CallOption {
 
 func defaultRetryOptions() []gax.CallOption {
     return []gax.CallOption{
-        gax.WithTimeout(30*time.Second),
+        gax.WithTimeout(30000*time.Millisecond),
         gax.WithDelayTimeoutSettings(100*time.Millisecond, 1000*time.Millisecond, 1.2),
         gax.WithRPCTimeoutSettings(300*time.Millisecond, 3000*time.Millisecond, 1.3),
     }
@@ -226,32 +229,31 @@ func (client *Client) ListShelves(ctx context.Context, req *google_example_libra
     var callOpts []gax.CallOption
     callOpts = append(callOpts, client.callOptions["ListShelves"]...)
     callOpts = append(callOpts, opts...)
-    atLastPage := false
-    return &ShelfIterator{
-        apiCall: func() (ShelfPage, error) {
-            if atLastPage {
-                return ShelfPage{}, io.EOF
-            }
-            var resp *google_example_library_v1.ListShelvesResponse
-            err := gax.Invoke(ctx, func (c context.Context) error {
-                var err error
-                resp, err = client.client.ListShelves(c, req)
-                return err
-            }, callOpts...)
-            if err != nil {
-                return ShelfPage{}, err
-            }
-            if resp.NextPageToken == "" {
-                atLastPage = true
-            } else {
-                req.PageToken = resp.NextPageToken
-            }
-            return ShelfPage{
-                Items: resp.Shelves,
-                NextPageToken: resp.NextPageToken,
-            }, nil
-        },
-    }, nil
+
+    iterator := &ShelfIterator{}
+    iterator.apiCall = func() error {
+        if iterator.atLastPage {
+            return Done
+        }
+        var resp *google_example_library_v1.ListShelvesResponse
+        err := gax.Invoke(ctx, func (c context.Context) error {
+            var err error
+            req.PageToken = iterator.nextPageToken
+            resp, err = client.client.ListShelves(c, req)
+            return err
+        }, callOpts...)
+        if err != nil {
+            return err
+        }
+        if resp.NextPageToken == "" {
+            iterator.atLastPage = true
+        } else {
+            iterator.nextPageToken = resp.NextPageToken
+        }
+        iterator.items = resp.Shelves
+        return nil
+    }
+    return iterator, nil
 }
 
 
@@ -366,32 +368,31 @@ func (client *Client) ListBooks(ctx context.Context, req *google_example_library
     var callOpts []gax.CallOption
     callOpts = append(callOpts, client.callOptions["ListBooks"]...)
     callOpts = append(callOpts, opts...)
-    atLastPage := false
-    return &BookIterator{
-        apiCall: func() (BookPage, error) {
-            if atLastPage {
-                return BookPage{}, io.EOF
-            }
-            var resp *google_example_library_v1.ListBooksResponse
-            err := gax.Invoke(ctx, func (c context.Context) error {
-                var err error
-                resp, err = client.client.ListBooks(c, req)
-                return err
-            }, callOpts...)
-            if err != nil {
-                return BookPage{}, err
-            }
-            if resp.NextPageToken == "" {
-                atLastPage = true
-            } else {
-                req.PageToken = resp.NextPageToken
-            }
-            return BookPage{
-                Items: resp.Books,
-                NextPageToken: resp.NextPageToken,
-            }, nil
-        },
-    }, nil
+
+    iterator := &BookIterator{}
+    iterator.apiCall = func() error {
+        if iterator.atLastPage {
+            return Done
+        }
+        var resp *google_example_library_v1.ListBooksResponse
+        err := gax.Invoke(ctx, func (c context.Context) error {
+            var err error
+            req.PageToken = iterator.nextPageToken
+            resp, err = client.client.ListBooks(c, req)
+            return err
+        }, callOpts...)
+        if err != nil {
+            return err
+        }
+        if resp.NextPageToken == "" {
+            iterator.atLastPage = true
+        } else {
+            iterator.nextPageToken = resp.NextPageToken
+        }
+        iterator.items = resp.Books
+        return nil
+    }
+    return iterator, nil
 }
 
 
@@ -462,165 +463,179 @@ func (client *Client) ListStrings(ctx context.Context, req *google_example_libra
     var callOpts []gax.CallOption
     callOpts = append(callOpts, client.callOptions["ListStrings"]...)
     callOpts = append(callOpts, opts...)
-    atLastPage := false
-    return &StringIterator{
-        apiCall: func() (StringPage, error) {
-            if atLastPage {
-                return StringPage{}, io.EOF
-            }
-            var resp *google_example_library_v1.ListStringsResponse
-            err := gax.Invoke(ctx, func (c context.Context) error {
-                var err error
-                resp, err = client.client.ListStrings(c, req)
-                return err
-            }, callOpts...)
-            if err != nil {
-                return StringPage{}, err
-            }
-            if resp.NextPageToken == "" {
-                atLastPage = true
-            } else {
-                req.PageToken = resp.NextPageToken
-            }
-            return StringPage{
-                Items: resp.Strings,
-                NextPageToken: resp.NextPageToken,
-            }, nil
-        },
-    }, nil
+
+    iterator := &StringIterator{}
+    iterator.apiCall = func() error {
+        if iterator.atLastPage {
+            return Done
+        }
+        var resp *google_example_library_v1.ListStringsResponse
+        err := gax.Invoke(ctx, func (c context.Context) error {
+            var err error
+            req.PageToken = iterator.nextPageToken
+            resp, err = client.client.ListStrings(c, req)
+            return err
+        }, callOpts...)
+        if err != nil {
+            return err
+        }
+        if resp.NextPageToken == "" {
+            iterator.atLastPage = true
+        } else {
+            iterator.nextPageToken = resp.NextPageToken
+        }
+        iterator.items = resp.Strings
+        return nil
+    }
+    return iterator, nil
 }
 
 
 // Iterators.
 //
 
-// ShelfPage represents a page in a stream of ShelfIterator.
-// This will be updated through ShelfIterator.Advance.
-type ShelfPage struct {
-    // The elements in the current page.
-    Items []*google_example_library_v1.Shelf
-
-    // The token to get the next page response. This can be used to resume the iteration.
-    NextPageToken string
-}
-
 // ShelfIterator manages a stream of *google_example_library_v1.Shelf.
 type ShelfIterator struct {
     // The current page data.
-    Page         ShelfPage
-    currentIndex int
-    apiCall      func() (ShelfPage, error)
+    items         []*google_example_library_v1.Shelf
+    atLastPage    bool
+    currentIndex  int
+    nextPageToken string
+    apiCall       func() error
 }
 
-// Advance moves to the next page and updates its internal data.
-// This returns io.EOF if no more pages exist.
-func (iterator *ShelfIterator) Advance() error {
-    page, err := iterator.apiCall()
-    if err == nil {
-        iterator.Page = page
+// NextPage moves to the next page and updates its internal data.
+// It returns Done if no more pages exist.
+func (iterator *ShelfIterator) NextPage() ([]*google_example_library_v1.Shelf, error) {
+    err := iterator.apiCall()
+    if err != nil {
+        return nil, err
     }
-    return err
+    return iterator.items, err
 }
 
-// Next returns the next element in the stream. This returns io.EOF at the end of
-// the stream.
+// Next returns the next element in the stream. It returns Done at
+// the end of the stream.
 func (iterator *ShelfIterator) Next() (*google_example_library_v1.Shelf, error) {
-    for iterator.currentIndex >= len(iterator.Page.Items) {
-        err := iterator.Advance()
+    for iterator.currentIndex >= len(iterator.items) {
+        _, err := iterator.NextPage()
         if err != nil {
             return nil, err
         }
         iterator.currentIndex = 0
     }
-    result := iterator.Page.Items[iterator.currentIndex]
+    result := iterator.items[iterator.currentIndex]
     iterator.currentIndex++
     return result, nil
 }
 
-// BookPage represents a page in a stream of BookIterator.
-// This will be updated through BookIterator.Advance.
-type BookPage struct {
-    // The elements in the current page.
-    Items []*google_example_library_v1.Book
+// SetPageToken sets the next page token to be retrieved. Note, it
+// does not retrieve the next page, or modify the cached page. If
+// Next is called, there is no guarantee that the result returned
+// will be from the next page until NextPage is called.
+func (iterator *ShelfIterator) SetPageToken(token string) {
+    iterator.nextPageToken = token
+}
 
-    // The token to get the next page response. This can be used to resume the iteration.
-    NextPageToken string
+// NextPageToken returns the next page token.
+func (iterator *ShelfIterator) NextPageToken() string {
+    return iterator.nextPageToken
 }
 
 // BookIterator manages a stream of *google_example_library_v1.Book.
 type BookIterator struct {
     // The current page data.
-    Page         BookPage
-    currentIndex int
-    apiCall      func() (BookPage, error)
+    items         []*google_example_library_v1.Book
+    atLastPage    bool
+    currentIndex  int
+    nextPageToken string
+    apiCall       func() error
 }
 
-// Advance moves to the next page and updates its internal data.
-// This returns io.EOF if no more pages exist.
-func (iterator *BookIterator) Advance() error {
-    page, err := iterator.apiCall()
-    if err == nil {
-        iterator.Page = page
+// NextPage moves to the next page and updates its internal data.
+// It returns Done if no more pages exist.
+func (iterator *BookIterator) NextPage() ([]*google_example_library_v1.Book, error) {
+    err := iterator.apiCall()
+    if err != nil {
+        return nil, err
     }
-    return err
+    return iterator.items, err
 }
 
-// Next returns the next element in the stream. This returns io.EOF at the end of
-// the stream.
+// Next returns the next element in the stream. It returns Done at
+// the end of the stream.
 func (iterator *BookIterator) Next() (*google_example_library_v1.Book, error) {
-    for iterator.currentIndex >= len(iterator.Page.Items) {
-        err := iterator.Advance()
+    for iterator.currentIndex >= len(iterator.items) {
+        _, err := iterator.NextPage()
         if err != nil {
             return nil, err
         }
         iterator.currentIndex = 0
     }
-    result := iterator.Page.Items[iterator.currentIndex]
+    result := iterator.items[iterator.currentIndex]
     iterator.currentIndex++
     return result, nil
 }
 
-// StringPage represents a page in a stream of StringIterator.
-// This will be updated through StringIterator.Advance.
-type StringPage struct {
-    // The elements in the current page.
-    Items []string
+// SetPageToken sets the next page token to be retrieved. Note, it
+// does not retrieve the next page, or modify the cached page. If
+// Next is called, there is no guarantee that the result returned
+// will be from the next page until NextPage is called.
+func (iterator *BookIterator) SetPageToken(token string) {
+    iterator.nextPageToken = token
+}
 
-    // The token to get the next page response. This can be used to resume the iteration.
-    NextPageToken string
+// NextPageToken returns the next page token.
+func (iterator *BookIterator) NextPageToken() string {
+    return iterator.nextPageToken
 }
 
 // StringIterator manages a stream of string.
 type StringIterator struct {
     // The current page data.
-    Page         StringPage
-    currentIndex int
-    apiCall      func() (StringPage, error)
+    items         []string
+    atLastPage    bool
+    currentIndex  int
+    nextPageToken string
+    apiCall       func() error
 }
 
-// Advance moves to the next page and updates its internal data.
-// This returns io.EOF if no more pages exist.
-func (iterator *StringIterator) Advance() error {
-    page, err := iterator.apiCall()
-    if err == nil {
-        iterator.Page = page
+// NextPage moves to the next page and updates its internal data.
+// It returns Done if no more pages exist.
+func (iterator *StringIterator) NextPage() ([]string, error) {
+    err := iterator.apiCall()
+    if err != nil {
+        return nil, err
     }
-    return err
+    return iterator.items, err
 }
 
-// Next returns the next element in the stream. This returns io.EOF at the end of
-// the stream.
+// Next returns the next element in the stream. It returns Done at
+// the end of the stream.
 func (iterator *StringIterator) Next() (string, error) {
-    for iterator.currentIndex >= len(iterator.Page.Items) {
-        err := iterator.Advance()
+    for iterator.currentIndex >= len(iterator.items) {
+        _, err := iterator.NextPage()
         if err != nil {
             return nil, err
         }
         iterator.currentIndex = 0
     }
-    result := iterator.Page.Items[iterator.currentIndex]
+    result := iterator.items[iterator.currentIndex]
     iterator.currentIndex++
     return result, nil
+}
+
+// SetPageToken sets the next page token to be retrieved. Note, it
+// does not retrieve the next page, or modify the cached page. If
+// Next is called, there is no guarantee that the result returned
+// will be from the next page until NextPage is called.
+func (iterator *StringIterator) SetPageToken(token string) {
+    iterator.nextPageToken = token
+}
+
+// NextPageToken returns the next page token.
+func (iterator *StringIterator) NextPageToken() string {
+    return iterator.nextPageToken
 }
 ============== file: library_service/client_test.go ==============
 package library_service

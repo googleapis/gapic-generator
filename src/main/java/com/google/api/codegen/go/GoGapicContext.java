@@ -239,13 +239,6 @@ public class GoGapicContext extends GapicContext implements GoContext {
   }
 
   /**
-   * Returns the Go type name for the page struct in the page-streaming iterator.
-   */
-  public String getIteratorPageTypeName(PageStreamingConfig config) {
-    return getSimpleResourcesTypeName(config) + "Page";
-  }
-
-  /**
    * Returns the Go type name for the page-streaming iterator implementation of the method.
    */
   public String getIteratorTypeName(PageStreamingConfig config) {
@@ -366,12 +359,8 @@ public class GoGapicContext extends GapicContext implements GoContext {
     if (!getApiConfig().getInterfaceConfig(service).getRetrySettingsDefinition().isEmpty()) {
       standardImports.add(GoImport.create("time"));
     }
-    for (Method method : service.getMethods()) {
-      MethodConfig methodConfig =
-          getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
-      if (methodConfig.isPageStreaming()) {
-        standardImports.add(GoImport.create("io"));
-      }
+    if (hasPageStreamingMethod(service)) {
+      standardImports.add(GoImport.create("errors"));
     }
     return standardImports;
   }
@@ -457,5 +446,19 @@ public class GoGapicContext extends GapicContext implements GoContext {
    */
   public boolean isEmpty(TypeRef type) {
     return type.isMessage() && type.getMessageType().getFullName().equals("google.protobuf.Empty");
+  }
+
+  /**
+   * Returns true if the service has a page streaming method.
+   */
+  public boolean hasPageStreamingMethod(Interface service) {
+    for (Method method : service.getMethods()) {
+      MethodConfig methodConfig =
+          getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+      if (methodConfig.isPageStreaming()) {
+        return true;
+      }
+    }
+    return false;
   }
 }
