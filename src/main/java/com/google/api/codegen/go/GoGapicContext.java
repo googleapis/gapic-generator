@@ -118,6 +118,12 @@ public class GoGapicContext extends GapicContext implements GoContext {
     return fullPackageName.substring(lastSlash + 1);
   }
 
+  public String getReducedServiceName(Interface service) {
+    String name = service.getSimpleName().replaceAll("V[0-9]+$", "");
+    name = name.replaceAll("Service$", "");
+    return name;
+  }
+
   /**
    * Returns the type name of the gRPC-generated service client.
    */
