@@ -111,6 +111,12 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
   }
 
   @Override
+  /**
+   * Most languages ignore return type "Empty". However, Go cannot since the client library will
+   * return an empty struct, and we have to assign it to something. Consequently, the only time the
+   * response is truly "empty" for Go is when DiscoveryImporter says EMPTY_TYPE_NAME, which
+   * signifies complete absence of return value.
+   */
   public boolean isResponseEmpty(Method method) {
     return method.getResponseTypeUrl().equals(DiscoveryImporter.EMPTY_TYPE_NAME);
   }
