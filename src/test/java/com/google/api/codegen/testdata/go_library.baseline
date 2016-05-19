@@ -162,18 +162,26 @@ func (client *Client) Close() error {
 // Path templates.
 
 // ShelfPath returns the path for the shelf resource.
-func ShelfPath(shelf string) (string, error) {
-    return shelfPathTemplate.Instantiate(map[string]string{
+func ShelfPath(shelf string) string {
+    path, err := shelfPathTemplate.Instantiate(map[string]string{
         "shelf": shelf,
     })
+    if err != nil {
+        panic(err)
+    }
+    return path
 }
 
 // BookPath returns the path for the book resource.
-func BookPath(shelf string, book string) (string, error) {
-    return bookPathTemplate.Instantiate(map[string]string{
+func BookPath(shelf string, book string) string {
+    path, err := bookPathTemplate.Instantiate(map[string]string{
         "shelf": shelf,
         "book": book,
     })
+    if err != nil {
+        panic(err)
+    }
+    return path
 }
 
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
