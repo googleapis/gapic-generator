@@ -16,6 +16,7 @@ package com.google.api.codegen.go;
 
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryContext;
+import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.Service;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -107,6 +108,17 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
     }
     throw new IllegalArgumentException(
         String.format("cannot find suitable type for %s %s", type.getName(), field.getName()));
+  }
+
+  @Override
+  /**
+   * Most languages ignore return type "Empty". However, Go cannot since the client library will
+   * return an empty struct, and we have to assign it to something. Consequently, the only time the
+   * response is truly "empty" for Go is when DiscoveryImporter says EMPTY_TYPE_NAME, which
+   * signifies complete absence of return value.
+   */
+  public boolean isResponseEmpty(Method method) {
+    return method.getResponseTypeUrl().equals(DiscoveryImporter.EMPTY_TYPE_NAME);
   }
 
   @Override

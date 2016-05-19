@@ -39,10 +39,13 @@ func main() {
     requestBody = &cloudtrace.Traces{}
   )
 
-  if err = client.Projects.PatchTraces(projectId, requestBody).Context(ctx).Do(); err != nil {
+  response, err := client.Projects.PatchTraces(projectId, requestBody).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
     _ = err
   }
+  // doThingsWith(response)
+  _ = response
 }
 package main
 
@@ -85,13 +88,13 @@ func main() {
     traceId = ""
   )
 
-  callResult, err := client.Projects.Traces.Get(projectId, traceId).Context(ctx).Do()
+  response, err := client.Projects.Traces.Get(projectId, traceId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // doThingsWith(response)
+  _ = response
 }
 package main
 
