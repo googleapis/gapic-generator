@@ -17,6 +17,7 @@ package com.google.api.codegen.java;
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryProvider;
+import com.google.api.codegen.CodeGeneratorUtil;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetDescriptor;
 import com.google.common.collect.Multimap;
@@ -44,7 +45,8 @@ public class JavaDiscoveryProvider implements DiscoveryProvider {
   @Override
   public void output(String outputPath, Multimap<Method, GeneratedResult> methods)
       throws IOException {
-    provider.output(context.outputRoot(), outputPath, methods);
+    String fullOutputPath = outputPath + "/" + context.outputRoot();
+    CodeGeneratorUtil.writeGeneratedOutput(fullOutputPath, methods);
   }
 
   @Override

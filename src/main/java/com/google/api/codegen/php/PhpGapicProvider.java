@@ -16,6 +16,7 @@ package com.google.api.codegen.php;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicProvider;
+import com.google.api.codegen.CodeGeneratorUtil;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.InputElementView;
 import com.google.api.codegen.SnippetDescriptor;
@@ -51,7 +52,7 @@ public class PhpGapicProvider<InputElementT extends ProtoElement>
   public <Element> void output(
       String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
-    provider.output("", outputPath, elements);
+    CodeGeneratorUtil.writeGeneratedOutput(outputPath, elements);
   }
 
   @Override

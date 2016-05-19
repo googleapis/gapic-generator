@@ -40,16 +40,6 @@ public class JavaProvider {
   private static final String SNIPPET_RESOURCE_ROOT =
       JavaContextCommon.class.getPackage().getName().replace('.', '/');
 
-  public <Element> void output(
-      String root, String outputPath, Multimap<Element, GeneratedResult> elements)
-      throws IOException {
-    Map<String, Doc> files = new LinkedHashMap<>();
-    for (GeneratedResult generatedResult : elements.values()) {
-      files.put(root + "/" + generatedResult.getFilename(), generatedResult.getDoc());
-    }
-    ToolUtil.writeFiles(files, outputPath);
-  }
-
   @SuppressWarnings("unchecked")
   public <Element> GeneratedResult generate(
       Element element,

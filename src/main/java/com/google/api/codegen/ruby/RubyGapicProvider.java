@@ -16,6 +16,7 @@ package com.google.api.codegen.ruby;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicProvider;
+import com.google.api.codegen.CodeGeneratorUtil;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.InputElementView;
 import com.google.api.codegen.SnippetDescriptor;
@@ -49,7 +50,7 @@ public class RubyGapicProvider<InputElementT extends ProtoElement>
     return context.getModel();
   }
 
-  String getPackageRoot() {
+  private String getPackageRoot() {
     ArrayList<String> dirs = new ArrayList<>();
     for (String moduleName : context.getApiConfig().getPackageName().split("::")) {
       dirs.add(moduleName.toLowerCase());
@@ -61,8 +62,8 @@ public class RubyGapicProvider<InputElementT extends ProtoElement>
   public <Element> void output(
       String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
-    String packageRoot = getPackageRoot();
-    provider.output("lib/" + packageRoot, outputPath, elements);
+    String fullOutputPath = outputPath + "/lib/" + getPackageRoot();
+    CodeGeneratorUtil.writeGeneratedOutput(fullOutputPath, elements);
   }
 
   @Override

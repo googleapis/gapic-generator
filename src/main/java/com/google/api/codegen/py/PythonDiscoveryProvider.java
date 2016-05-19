@@ -23,6 +23,7 @@ import com.google.protobuf.Method;
 
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryProvider;
+import com.google.api.codegen.CodeGeneratorUtil;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetDescriptor;
 
@@ -54,15 +55,10 @@ public class PythonDiscoveryProvider implements DiscoveryProvider {
   }
 
   @Override
-  public void output(String outputPath,
-      Multimap<Method, GeneratedResult> methods)
+  public void output(String outputPath, Multimap<Method, GeneratedResult> methods)
           throws IOException {
-    String root = context.outputRoot();
-    Map<String, Doc> files = new LinkedHashMap<>();
-    for (GeneratedResult generatedResult : methods.values()) {
-      files.put(root + "/" + generatedResult.getFilename(), generatedResult.getDoc());
-    }
-    ToolUtil.writeFiles(files, outputPath);
+    String fullOutputPath = outputPath + "/" + context.outputRoot();
+    CodeGeneratorUtil.writeGeneratedOutput(fullOutputPath, methods);
   }
 
   @Override
