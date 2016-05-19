@@ -408,11 +408,12 @@ public class DiscoveryImporter {
     if (response == null) {
       return EMPTY_TYPE_NAME;
     }
-    String typeUrl = response.get("$ref").asText();
-    if (typeUrl.equals("Empty")) {
-      return EMPTY_TYPE_NAME;
-    }
-    return typeUrl;
+    return response.get("$ref").asText();
+    // String typeUrl = response.get("$ref").asText();
+    // if (typeUrl.equals("Empty")) {
+    //   return EMPTY_TYPE_NAME;
+    // }
+    // return typeUrl;
   }
 
   /**

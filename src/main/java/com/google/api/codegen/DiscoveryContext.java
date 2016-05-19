@@ -136,7 +136,8 @@ public abstract class DiscoveryContext extends CodegenContext {
   }
 
   public boolean isResponseEmpty(Method method) {
-    return method.getResponseTypeUrl().equals(DiscoveryImporter.EMPTY_TYPE_NAME);
+    String typeUrl = method.getResponseTypeUrl();
+    return typeUrl.equals(DiscoveryImporter.EMPTY_TYPE_NAME) || typeUrl.equals("Empty");
   }
 
   public boolean isPageStreaming(Method method) {

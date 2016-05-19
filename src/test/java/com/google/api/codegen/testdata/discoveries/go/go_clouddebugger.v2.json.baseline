@@ -183,10 +183,13 @@ func main() {
     breakpointId = ""
   )
 
-  if err = client.Debugger.Debuggees.Breakpoints.Delete(debuggeeId, breakpointId).Context(ctx).Do(); err != nil {
+  callResult, err := client.Debugger.Debuggees.Breakpoints.Delete(debuggeeId, breakpointId).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
     _ = err
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 

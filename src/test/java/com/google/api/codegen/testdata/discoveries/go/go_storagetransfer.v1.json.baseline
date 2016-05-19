@@ -314,10 +314,13 @@ func main() {
     name = ""
   )
 
-  if err = client.TransferOperations.Cancel(name).Context(ctx).Do(); err != nil {
+  callResult, err := client.TransferOperations.Cancel(name).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
     _ = err
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -357,10 +360,13 @@ func main() {
     name = ""
   )
 
-  if err = client.TransferOperations.Delete(name).Context(ctx).Do(); err != nil {
+  callResult, err := client.TransferOperations.Delete(name).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
     _ = err
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -499,10 +505,13 @@ func main() {
     requestBody = &storagetransfer.PauseTransferOperationRequest{}
   )
 
-  if err = client.TransferOperations.Pause(name, requestBody).Context(ctx).Do(); err != nil {
+  callResult, err := client.TransferOperations.Pause(name, requestBody).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
     _ = err
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
 package main
 
@@ -544,8 +553,11 @@ func main() {
     requestBody = &storagetransfer.ResumeTransferOperationRequest{}
   )
 
-  if err = client.TransferOperations.Resume(name, requestBody).Context(ctx).Do(); err != nil {
+  callResult, err := client.TransferOperations.Resume(name, requestBody).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
     _ = err
   }
+  // doThingsWith(callResult)
+  _ = callResult
 }
