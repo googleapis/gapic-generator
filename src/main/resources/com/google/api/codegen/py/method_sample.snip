@@ -1,0 +1,20 @@
+@extends "../common.snip"
+
+@snippet generateMethodSampleCode(method)
+    Example:
+      # FIXME: inject module name and class name
+      {@prompt("from google.pubsub.v1.publisher_api import PublisherApi")}
+      # FIXME: inject class name
+      {@prompt("api = PublisherApi()")}
+      # FIXME: inject method name and default arguments; look at how PublisherApi.formatTopicName is handled for Java
+      {@prompt("topic_name = api.topic_path('my-project', 'my-topic')")}
+      {@prompt("topic = api.create_topic(topic_name)")}
+      # FIXME: print the field
+      {@prompt("topic.name")}
+      # FIXME: not sure we can really do this last line; requires knowledge of method
+      u'projects/my-project/topics/my-topic'
+@end
+
+@private prompt(line)
+    >>> {@line}
+@end
