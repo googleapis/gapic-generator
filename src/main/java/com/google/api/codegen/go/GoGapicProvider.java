@@ -33,13 +33,13 @@ public class GoGapicProvider<InputElementT extends ProtoElement>
     implements GapicProvider<InputElementT> {
 
   private final GoGapicContext context;
-  private final GoProvider provider;
+  private final GoSnippetSetRunner snippetSetRunner;
   private InputElementView<InputElementT> view;
 
   public GoGapicProvider(
       Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
     this.context = new GoGapicContext(model, apiConfig);
-    this.provider = new GoProvider();
+    this.snippetSetRunner = new GoSnippetSetRunner();
     this.view = view;
   }
 
@@ -56,7 +56,7 @@ public class GoGapicProvider<InputElementT extends ProtoElement>
 
   @Override
   public GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(element, snippetDescriptor, context);
+    return snippetSetRunner.generate(element, snippetDescriptor, context);
   }
 
   @Override

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.go;
+package com.google.api.codegen.ruby;
 
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetDescriptor;
@@ -21,31 +21,31 @@ import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * A GoProvider provides general Go code generation logic.
+ * A RubyProvider provides general Ruby code generation logic.
  */
-public class GoProvider {
+public class RubySnippetSetRunner {
 
   /**
    * The path to the root of snippet resources.
    */
-  private static final String SNIPPET_RESOURCE_ROOT =
-      GoContextCommon.class.getPackage().getName().replace('.', '/');
+  static final String SNIPPET_RESOURCE_ROOT =
+      RubyGapicProvider.class.getPackage().getName().replace('.', '/');
 
   @SuppressWarnings("unchecked")
   public <Element> GeneratedResult generate(
-      Element element, SnippetDescriptor snippetDescriptor, GoContext context) {
-    GoSnippetSet<Element> snippets =
+      Element element, SnippetDescriptor snippetDescriptor, RubyContext context) {
+    ImmutableMap<String, Object> globalMap =
+        ImmutableMap.<String, Object>builder().put("context", context).build();
+    RubySnippetSet<Element> snippets =
         SnippetSet.createSnippetInterface(
-            GoSnippetSet.class,
+            RubySnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
             snippetDescriptor.getSnippetInputName(),
-            ImmutableMap.<String, Object>of("context", context));
+            globalMap);
 
-    String outputFilename = snippets.generateFilename(element).prettyPrint();
-
-    Doc body = snippets.generateBody(element);
-
-    Doc result = snippets.generateClass(element, body);
+    Doc filenameDoc = snippets.generateFilename(element);
+    String outputFilename = filenameDoc.prettyPrint();
+    Doc result = snippets.generateClass(element);
     return GeneratedResult.create(result, outputFilename);
   }
 }

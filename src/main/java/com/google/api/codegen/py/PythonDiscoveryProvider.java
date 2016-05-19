@@ -15,37 +15,32 @@
 package com.google.api.codegen.py;
 
 import com.google.api.Service;
-import com.google.api.tools.framework.snippet.Doc;
-import com.google.api.tools.framework.tools.ToolUtil;
+import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.CodeGeneratorUtil;
+import com.google.api.codegen.DiscoveryProvider;
+import com.google.api.codegen.GeneratedResult;
+import com.google.api.codegen.SnippetDescriptor;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.protobuf.Method;
 
-import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.DiscoveryProvider;
-import com.google.api.codegen.CodeGeneratorUtil;
-import com.google.api.codegen.GeneratedResult;
-import com.google.api.codegen.SnippetDescriptor;
-
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * A DiscoveryProvider for generating Python fragments.
  */
 public class PythonDiscoveryProvider implements DiscoveryProvider {
   private final PythonDiscoveryContext context;
-  private final PythonProvider provider;
+  private final PythonSnippetSetRunner snippetSetRunner;
 
   public PythonDiscoveryProvider(Service service, ApiaryConfig apiaryConfig) {
     this.context = new PythonDiscoveryContext(service, apiaryConfig);
-    this.provider = new PythonProvider();
+    this.snippetSetRunner = new PythonSnippetSetRunner();
   }
 
   @Override
   public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(
+    return snippetSetRunner.generate(
         method,
         snippetDescriptor,
         context,

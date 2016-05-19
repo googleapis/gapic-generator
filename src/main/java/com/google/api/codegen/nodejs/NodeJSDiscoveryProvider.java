@@ -30,16 +30,16 @@ import java.io.IOException;
  */
 public class NodeJSDiscoveryProvider implements DiscoveryProvider {
   private final NodeJSDiscoveryContext context;
-  private final NodeJSProvider provider;
+  private final NodeJSSnippetSetRunner snippetSetRunner;
 
   public NodeJSDiscoveryProvider(Service service, ApiaryConfig apiaryConfig) {
     this.context = new NodeJSDiscoveryContext(service, apiaryConfig);
-    this.provider = new NodeJSProvider();
+    this.snippetSetRunner = new NodeJSSnippetSetRunner();
   }
 
   @Override
   public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(method, snippetDescriptor, context);
+    return snippetSetRunner.generate(method, snippetDescriptor, context);
   }
 
   @Override

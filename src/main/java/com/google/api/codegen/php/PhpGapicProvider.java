@@ -33,13 +33,13 @@ public class PhpGapicProvider<InputElementT extends ProtoElement>
     implements GapicProvider<InputElementT> {
 
   private final PhpGapicContext context;
-  private final PhpProvider provider;
+  private final PhpSnippetSetRunner snippetSetRunner;
   private InputElementView<InputElementT> view;
 
   public PhpGapicProvider(
       Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
     this.context = new PhpGapicContext(model, apiConfig);
-    this.provider = new PhpProvider();
+    this.snippetSetRunner = new PhpSnippetSetRunner();
     this.view = view;
   }
 
@@ -57,7 +57,7 @@ public class PhpGapicProvider<InputElementT extends ProtoElement>
 
   @Override
   public GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(element, snippetDescriptor, context);
+    return snippetSetRunner.generate(element, snippetDescriptor, context);
   }
 
   @Override

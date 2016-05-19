@@ -30,16 +30,16 @@ import java.io.IOException;
  */
 public class JavaDiscoveryProvider implements DiscoveryProvider {
   private final JavaDiscoveryContext context;
-  private final JavaProvider provider;
+  private final JavaSnippetSetRunner snippetSetRunner;
 
   public JavaDiscoveryProvider(Service service, ApiaryConfig apiaryConfig) {
     this.context = new JavaDiscoveryContext(service, apiaryConfig);
-    this.provider = new JavaProvider();
+    this.snippetSetRunner = new JavaSnippetSetRunner();
   }
 
   @Override
   public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(method, snippetDescriptor, context);
+    return snippetSetRunner.generate(method, snippetDescriptor, context);
   }
 
   @Override

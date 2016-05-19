@@ -30,16 +30,16 @@ import java.io.IOException;
  */
 public class PhpDiscoveryProvider implements DiscoveryProvider {
   private final PhpDiscoveryContext context;
-  private final PhpProvider provider;
+  private final PhpSnippetSetRunner snippetSetRunner;
 
   public PhpDiscoveryProvider(Service service, ApiaryConfig apiaryConfig) {
     this.context = new PhpDiscoveryContext(service, apiaryConfig);
-    this.provider = new PhpProvider();
+    this.snippetSetRunner = new PhpSnippetSetRunner();
   }
 
   @Override
   public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(method, snippetDescriptor, context);
+    return snippetSetRunner.generate(method, snippetDescriptor, context);
   }
 
   @Override

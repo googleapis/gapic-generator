@@ -33,14 +33,13 @@ public class PythonGapicProvider<InputElementT extends ProtoElement>
     implements GapicProvider<InputElementT> {
 
   private final PythonGapicContext context;
-  private final PythonProvider provider;
+  private final PythonSnippetSetRunner snippetSetRunner;
   private final PythonInputElementView<InputElementT> view;
 
-  @SuppressWarnings("unchecked")
   public PythonGapicProvider(
       Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
     this.context = new PythonGapicContext(model, apiConfig);
-    this.provider = new PythonProvider();
+    this.snippetSetRunner = new PythonSnippetSetRunner();
     // This cast will fail if the view specified in the configuration file is of the wrong type
     this.view = (PythonInputElementView<InputElementT>) view;
   }
@@ -60,7 +59,7 @@ public class PythonGapicProvider<InputElementT extends ProtoElement>
 
   @Override
   public GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(
+    return snippetSetRunner.generate(
         element,
         snippetDescriptor,
         context,

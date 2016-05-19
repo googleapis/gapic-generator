@@ -38,13 +38,13 @@ public class CSharpGapicProvider<InputElementT extends ProtoElement>
     implements GapicProvider<InputElementT> {
 
   private final CSharpGapicContext context;
-  private final CSharpProvider provider;
+  private final CSharpSnippetSetRunner snippetSetRunner;
   private final InputElementView<InputElementT> view;
 
   public CSharpGapicProvider(
       Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
     this.context = new CSharpGapicContext(model, apiConfig);
-    this.provider = new CSharpProvider();
+    this.snippetSetRunner = new CSharpSnippetSetRunner();
     // This cast will fail if the view specified in the configuration file is of the wrong type
     this.view = view;
   }
@@ -75,7 +75,7 @@ public class CSharpGapicProvider<InputElementT extends ProtoElement>
 
   @Override
   public GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(
+    return snippetSetRunner.generate(
         element, snippetDescriptor, context, context.getNamespace(element.getFile()));
   }
 

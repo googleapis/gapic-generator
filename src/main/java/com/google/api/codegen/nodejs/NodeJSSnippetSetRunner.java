@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.ruby;
+package com.google.api.codegen.nodejs;
 
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetDescriptor;
@@ -21,31 +21,38 @@ import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * A RubyProvider provides general Ruby code generation logic.
+ * A NodeJSProvider provides general NodeJS code generation logic that is agnostic to the use
+ * case (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
+ * subclass of NodeJSContext.
  */
-public class RubyProvider {
+public class NodeJSSnippetSetRunner {
 
   /**
    * The path to the root of snippet resources.
    */
-  static final String SNIPPET_RESOURCE_ROOT =
-      RubyGapicProvider.class.getPackage().getName().replace('.', '/');
+  private static final String SNIPPET_RESOURCE_ROOT =
+      NodeJSSnippetSetRunner.class.getPackage().getName().replace('.', '/');
 
   @SuppressWarnings("unchecked")
   public <Element> GeneratedResult generate(
-      Element element, SnippetDescriptor snippetDescriptor, RubyContext context) {
-    ImmutableMap<String, Object> globalMap =
-        ImmutableMap.<String, Object>builder().put("context", context).build();
-    RubySnippetSet<Element> snippets =
+      Element element,
+      SnippetDescriptor snippetDescriptor,
+      NodeJSDiscoveryContext context,
+      String defaultPackagePrefix) {
+    NodeJSSnippetSet<Element> snippets =
         SnippetSet.createSnippetInterface(
-            RubySnippetSet.class,
+            NodeJSSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
             snippetDescriptor.getSnippetInputName(),
-            globalMap);
+            ImmutableMap.<String, Object>of("context", context));
 
-    Doc filenameDoc = snippets.generateFilename(element);
-    String outputFilename = filenameDoc.prettyPrint();
-    Doc result = snippets.generateClass(element);
-    return GeneratedResult.create(result, outputFilename);
+    String outputFilename = snippets.generateFilename(element).prettyPrint();
+    Doc body = snippets.generateBody(element);
+    return GeneratedResult.create(body, outputFilename);
+  }
+
+  public <Element> GeneratedResult generate(
+      Element element, SnippetDescriptor snippetDescriptor, NodeJSDiscoveryContext context) {
+    return generate(element, snippetDescriptor, context, null);
   }
 }

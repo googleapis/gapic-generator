@@ -16,12 +16,11 @@ package com.google.api.codegen.go;
 
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.DiscoveryProvider;
 import com.google.api.codegen.CodeGeneratorUtil;
+import com.google.api.codegen.DiscoveryProvider;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetDescriptor;
 import com.google.common.collect.Multimap;
-import com.google.protobuf.Api;
 import com.google.protobuf.Method;
 
 import java.io.IOException;
@@ -31,16 +30,16 @@ import java.io.IOException;
  */
 public class GoDiscoveryProvider implements DiscoveryProvider {
   private final GoDiscoveryContext context;
-  private final GoProvider provider;
+  private final GoSnippetSetRunner snippetSetRunner;
 
   public GoDiscoveryProvider(Service service, ApiaryConfig apiaryConfig) {
     this.context = new GoDiscoveryContext(service, apiaryConfig);
-    this.provider = new GoProvider();
+    this.snippetSetRunner = new GoSnippetSetRunner();
   }
 
   @Override
   public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(method, snippetDescriptor, context);
+    return snippetSetRunner.generate(method, snippetDescriptor, context);
   }
 
   @Override
