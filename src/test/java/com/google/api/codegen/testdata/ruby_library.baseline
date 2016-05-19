@@ -128,18 +128,11 @@ module Google
           #   A Channel object through which to make calls.
           # @param ssl_creds [Grpc::ClientCredentials]
           #   A ClientCredentials for use with an SSL-enabled channel.
-          # @param retrying_override [Hash{String => RetryOptions}]
-          #   A Hash that overrides default retrying settings.
-          #   +retrying_override+ maps method names (e.g., +'list_foo'+) to
-          #   custom RetryOptions objects, or to nil. A value of nil indicates
-          #   that the method in question should not retry.
-          # @param bundling_override [Hash{String => BundleOptions}]
-          #   A Hash that overrides default bundling settings.
-          #   +bundling_override+ maps bundling method names (e.g.,
-          #   +'publish_foo'+) to custom BundleOptions objects, or to nil. It is
-          #   invalid to have a key for a method that is not bundling-enabled. A
-          #   value of nil indicates that the method in question should not
-          #   bundle.
+          # @param client_config[Hash]
+          #   A Hash for call options for each method. See
+          #   Google::Gax#construct_settings for the structure of
+          #   this data. Falls back to the default config if not specified
+          #   or the specified config is missing data points.
           # @param timeout [Numeric]
           #   The default timeout, in seconds, for calls made through this client.
           # @param app_name [String]
@@ -152,19 +145,17 @@ module Google
             channel: nil,
             ssl_creds: nil,
             scopes: ALL_SCOPES,
-            retrying_override: {},
-            bundling_override: {},
+            client_config: {},
             timeout: DEFAULT_TIMEOUT,
             app_name: 'gax',
             app_version: Google::Gax::VERSION)
-            client_config = Pathname.new(__dir__).join(
+            client_config_file = Pathname.new(__dir__).join(
               'library_service_client_config.json')
-            @defaults = client_config.open do |f|
+            @defaults = client_config_file.open do |f|
               Google::Gax.construct_settings(
                 'google.example.library.v1.LibraryService',
                 JSON.parse(f.read),
-                bundling_override,
-                retrying_override,
+                client_config,
                 Google::Gax::Grpc::STATUS_CODE_NAMES,
                 timeout,
                 bundle_descriptors: BUNDLE_DESCRIPTORS,
