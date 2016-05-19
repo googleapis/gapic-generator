@@ -40,5 +40,8 @@ interface JavaSnippetSet<Element> {
    */
   Doc generateClass(Element element, Doc body, Iterable<String> imports);
 
+  /**
+   * Generate the example snippet for a method.
+   */
   Doc generateMethodSampleCode(JavaDocConfig config);
 }

@@ -288,6 +288,9 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
     return DocumentationUtil.getDescription(element);
   }
 
+  /**
+   * Generate the example snippet for a method.
+   */
   public String generateMethodSampleCode(JavaContextCommon.JavaDocConfig config) {
     return javaSnippetSet.generateMethodSampleCode(config).prettyPrint();
   }
