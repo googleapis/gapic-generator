@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.py;
+package com.google.api.codegen.go;
 
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetDescriptor;
@@ -20,47 +20,32 @@ import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 
-import java.util.List;
-
 /**
- * A PythonProvider provides general Python code generation logic.
+ * A GoProvider provides general Go code generation logic.
  */
-public class PythonProvider {
+public class GoSnippetSetRunner {
 
   /**
    * The path to the root of snippet resources.
    */
-  static final String SNIPPET_RESOURCE_ROOT =
-      PythonContextCommon.class.getPackage().getName().replace('.', '/');
+  private static final String SNIPPET_RESOURCE_ROOT =
+      GoContextCommon.class.getPackage().getName().replace('.', '/');
 
   @SuppressWarnings("unchecked")
   public <Element> GeneratedResult generate(
-      Element element,
-      SnippetDescriptor snippetDescriptor,
-      Object context,
-      PythonImportHandler importHandler,
-      ImmutableMap<String, Object> globalMap,
-      String pathPrefix) {
-    globalMap =
-        ImmutableMap.<String, Object>builder()
-            .putAll(globalMap)
-            .put("context", context)
-            .put("importHandler", importHandler)
-            .build();
-
-    PythonSnippetSet<Element> snippets =
+      Element element, SnippetDescriptor snippetDescriptor, GoContext context) {
+    GoSnippetSet<Element> snippets =
         SnippetSet.createSnippetInterface(
-            PythonSnippetSet.class,
+            GoSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
             snippetDescriptor.getSnippetInputName(),
-            globalMap);
+            ImmutableMap.<String, Object>of("context", context));
 
-    Doc filenameDoc = snippets.generateFilename(element);
-    String outputFilename = filenameDoc.prettyPrint();
+    String outputFilename = snippets.generateFilename(element).prettyPrint();
+
     Doc body = snippets.generateBody(element);
-    List<String> importList = importHandler.calculateImports();
-    // Generate result.
-    Doc result = snippets.generateModule(element, body, importList);
-    return GeneratedResult.create(result, pathPrefix + outputFilename);
+
+    Doc result = snippets.generateClass(element, body);
+    return GeneratedResult.create(result, outputFilename);
   }
 }

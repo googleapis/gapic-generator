@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.csharp;
+package com.google.api.codegen.java;
 
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetDescriptor;
@@ -20,45 +20,50 @@ import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 
-import java.util.TreeSet;
+import java.util.List;
 
 /**
- * A CSharpProvider provides general CSharp code generation logic.
+ * A JavaProvider provides general Java code generation logic that is agnostic to the use
+ * case (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
+ * subclass of JavaContext.
  */
-public class CSharpProvider {
+public class JavaSnippetSetRunner {
 
   /**
    * The path to the root of snippet resources.
    */
   private static final String SNIPPET_RESOURCE_ROOT =
-      CSharpContextCommon.class.getPackage().getName().replace('.', '/');
+      JavaContextCommon.class.getPackage().getName().replace('.', '/');
 
   @SuppressWarnings("unchecked")
   public <Element> GeneratedResult generate(
       Element element,
       SnippetDescriptor snippetDescriptor,
-      CSharpGapicContext context,
-      String serviceNamespace) {
-    CSharpSnippetSet<Element> snippets =
+      JavaContext context,
+      String defaultPackagePrefix) {
+    JavaSnippetSet<Element> snippets =
         SnippetSet.createSnippetInterface(
-            CSharpSnippetSet.class,
+            JavaSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
             snippetDescriptor.getSnippetInputName(),
             ImmutableMap.<String, Object>of("context", context));
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
-
-    CSharpContextCommon csharpCommon = new CSharpContextCommon(serviceNamespace);
-    context.resetState(csharpCommon);
+    JavaContextCommon javaContextCommon = new JavaContextCommon(defaultPackagePrefix);
+    context.resetState(snippets, javaContextCommon);
 
     // Generate the body, which will collect the imports.
-    // Note that generateBody populates imports.
     Doc body = snippets.generateBody(element);
 
-    TreeSet<String> imports = csharpCommon.getImports();
+    List<String> cleanedImports = javaContextCommon.getImports();
 
     // Generate result.
-    Doc result = snippets.generateClass(element, body, imports);
+    Doc result = snippets.generateClass(element, body, cleanedImports);
     return GeneratedResult.create(result, outputFilename);
+  }
+
+  public <Element> GeneratedResult generate(
+      Element element, SnippetDescriptor snippetDescriptor, JavaContext context) {
+    return generate(element, snippetDescriptor, context, null);
   }
 }

@@ -33,13 +33,13 @@ public class JavaGapicProvider<InputElementT extends ProtoElement>
     implements GapicProvider<InputElementT> {
 
   private final JavaGapicContext context;
-  private final JavaProvider provider;
+  private final JavaSnippetSetRunner snippetSetRunner;
   private InputElementView<InputElementT> view;
 
   public JavaGapicProvider(
       Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
     this.context = new JavaGapicContext(model, apiConfig);
-    this.provider = new JavaProvider();
+    this.snippetSetRunner = new JavaSnippetSetRunner();
     this.view = view;
   }
 
@@ -63,6 +63,6 @@ public class JavaGapicProvider<InputElementT extends ProtoElement>
 
   @Override
   public GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(element, snippetDescriptor, context);
+    return snippetSetRunner.generate(element, snippetDescriptor, context);
   }
 }

@@ -35,13 +35,13 @@ public class RubyGapicProvider<InputElementT extends ProtoElement>
     implements GapicProvider<InputElementT> {
 
   private final RubyGapicContext context;
-  private final RubyProvider provider;
+  private final RubySnippetSetRunner snippetSetRunner;
   private InputElementView<InputElementT> view;
 
   public RubyGapicProvider(
       Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
     this.context = new RubyGapicContext(model, apiConfig);
-    this.provider = new RubyProvider();
+    this.snippetSetRunner = new RubySnippetSetRunner();
     this.view = view;
   }
 
@@ -68,7 +68,7 @@ public class RubyGapicProvider<InputElementT extends ProtoElement>
 
   @Override
   public GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor) {
-    return provider.generate(element, snippetDescriptor, context);
+    return snippetSetRunner.generate(element, snippetDescriptor, context);
   }
 
   @Override
