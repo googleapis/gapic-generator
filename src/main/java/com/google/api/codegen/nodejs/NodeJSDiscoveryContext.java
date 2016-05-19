@@ -26,7 +26,7 @@ import com.google.protobuf.Type;
 /**
  * A DiscoveryContext specialized for NodeJS.
  */
-public class NodeJSDiscoveryContext extends DiscoveryContext {
+public class NodeJSDiscoveryContext extends DiscoveryContext implements NodeJSContext {
 
   public NodeJSDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
     super(service, apiaryConfig);

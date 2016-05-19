@@ -37,7 +37,7 @@ public class NodeJSSnippetSetRunner {
   public <Element> GeneratedResult generate(
       Element element,
       SnippetDescriptor snippetDescriptor,
-      NodeJSDiscoveryContext context,
+      NodeJSContext context,
       String defaultPackagePrefix) {
     NodeJSSnippetSet<Element> snippets =
         SnippetSet.createSnippetInterface(
@@ -52,7 +52,7 @@ public class NodeJSSnippetSetRunner {
   }
 
   public <Element> GeneratedResult generate(
-      Element element, SnippetDescriptor snippetDescriptor, NodeJSDiscoveryContext context) {
+      Element element, SnippetDescriptor snippetDescriptor, NodeJSContext context) {
     return generate(element, snippetDescriptor, context, null);
   }
 }
