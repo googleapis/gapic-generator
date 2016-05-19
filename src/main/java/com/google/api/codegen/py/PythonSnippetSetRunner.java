@@ -37,7 +37,7 @@ public class PythonSnippetSetRunner {
   public <Element> GeneratedResult generate(
       Element element,
       SnippetDescriptor snippetDescriptor,
-      Object context,
+      PythonContext context,
       PythonImportHandler importHandler,
       ImmutableMap<String, Object> globalMap,
       String pathPrefix) {
@@ -59,6 +59,8 @@ public class PythonSnippetSetRunner {
     String outputFilename = filenameDoc.prettyPrint();
     Doc body = snippets.generateBody(element);
     List<String> importList = importHandler.calculateImports();
+    context.resetState(snippets);
+
     // Generate result.
     Doc result = snippets.generateModule(element, body, importList);
     return GeneratedResult.create(result, pathPrefix + outputFilename);

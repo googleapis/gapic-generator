@@ -16,21 +16,20 @@ package com.google.api.codegen.py;
 
 import com.google.api.Service;
 import com.google.api.client.util.DateTime;
+import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.DiscoveryContext;
+import com.google.api.codegen.DiscoveryImporter;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
-
-import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.DiscoveryContext;
-import com.google.api.codegen.DiscoveryImporter;
 
 import java.util.List;
 
 /**
  * A DiscoveryContext specialized for Python.
  */
-public class PythonDiscoveryContext extends DiscoveryContext {
+public class PythonDiscoveryContext extends DiscoveryContext implements PythonContext {
 
   /**
    * A map from primitive field types used by DiscoveryImporter to Python counterparts.
@@ -87,6 +86,9 @@ public class PythonDiscoveryContext extends DiscoveryContext {
     super(service, apiaryConfig);
     pythonCommon = new PythonContextCommon();
   }
+
+  @Override
+  public void resetState(PythonSnippetSet<?> pythonSnippetSet) {}
 
   public PythonContextCommon python() {
     return pythonCommon;

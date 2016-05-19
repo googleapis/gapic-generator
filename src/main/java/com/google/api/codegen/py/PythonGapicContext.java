@@ -41,7 +41,7 @@ import javax.annotation.Nullable;
 /**
  * A GapicContext specialized for Python.
  */
-public class PythonGapicContext extends GapicContext {
+public class PythonGapicContext extends GapicContext implements PythonContext {
 
   /**
    * A map from primitive types to its default value.
@@ -66,10 +66,16 @@ public class PythonGapicContext extends GapicContext {
           .build();
 
   private PythonContextCommon pythonCommon;
+  private PythonSnippetSet<?> pythonSnippetSet;
 
   public PythonGapicContext(Model model, ApiConfig apiConfig) {
     super(model, apiConfig);
     this.pythonCommon = new PythonContextCommon();
+  }
+
+  @Override
+  public void resetState(PythonSnippetSet<?> pythonSnippetSet) {
+    this.pythonSnippetSet = pythonSnippetSet;
   }
 
   public PythonContextCommon python() {
@@ -222,6 +228,8 @@ public class PythonGapicContext extends GapicContext {
    * documentation.
    */
   private List<String> methodComments(Method msg, PythonImportHandler importHandler) {
+    String sampleCode = generateMethodSampleCode(msg);
+
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
     paramTypesBuilder.append("Args:\n");
@@ -246,6 +254,8 @@ public class PythonGapicContext extends GapicContext {
         contentBuilder.append("\n\n");
       }
     }
+    contentBuilder.append(sampleCode);
+    contentBuilder.append("\n\n");
     contentBuilder.append(paramTypes);
     if (returnType != null) {
       contentBuilder.append("\n\n" + returnType);
@@ -254,6 +264,13 @@ public class PythonGapicContext extends GapicContext {
     contentBuilder.append(
         "\n\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
     return pythonCommon.convertToCommentedBlock(contentBuilder.toString());
+  }
+
+  /**
+   * Generate the example snippet for a method.
+   */
+  public String generateMethodSampleCode(Method method) {
+    return pythonSnippetSet.generateMethodSampleCode(method).prettyPrint();
   }
 
   /**

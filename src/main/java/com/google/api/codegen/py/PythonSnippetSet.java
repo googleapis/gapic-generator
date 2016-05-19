@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.py;
 
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.snippet.Doc;
 
 /**
@@ -35,4 +36,10 @@ interface PythonSnippetSet<Element> {
    * Generates the result module with a set of accumulated imports.
    */
   Doc generateModule(Element element, Doc body, Iterable<String> imports);
+  
+  /**
+   * Generate the example snippet for the code documentation.
+   */
+  // FIXME: Does this have to be Element?
+  Doc generateMethodSampleCode(Method method);
 }
