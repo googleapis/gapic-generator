@@ -338,6 +338,14 @@ task runDiscoGen(type: JavaExec) {
   }
 }
 
+task runDiscoBatch(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'com.google.api.codegen.DiscoveryFragmentGeneratorBatch'
+  if (project.hasProperty('clargs')) {
+    args = clargs.split(',').toList()
+  }
+}
+
 task verifyLicense << {
   def licenseText = new File(rootProject.rootDir, 'license-header-javadoc.txt').text
   def srcFiles = []
