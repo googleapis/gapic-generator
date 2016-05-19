@@ -18,13 +18,7 @@ import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetDescriptor;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
-import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
-
-import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * A NodeJSProvider provides general NodeJS code generation logic that is agnostic to the use
@@ -38,16 +32,6 @@ public class NodeJSProvider {
    */
   private static final String SNIPPET_RESOURCE_ROOT =
       NodeJSProvider.class.getPackage().getName().replace('.', '/');
-
-  public <Element> void output(
-      String root, String outputPath, Multimap<Element, GeneratedResult> elements)
-      throws IOException {
-    Map<String, Doc> files = new LinkedHashMap<>();
-    for (GeneratedResult generatedResult : elements.values()) {
-      files.put(root + "/" + generatedResult.getFilename(), generatedResult.getDoc());
-    }
-    ToolUtil.writeFiles(files, outputPath);
-  }
 
   @SuppressWarnings("unchecked")
   public <Element> GeneratedResult generate(

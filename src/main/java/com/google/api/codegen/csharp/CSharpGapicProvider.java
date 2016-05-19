@@ -75,7 +75,6 @@ public class CSharpGapicProvider<InputElementT extends ProtoElement>
 
   @Override
   public GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor) {
-    InputElementView<InputElementT> view = getView();
     return provider.generate(
         element, snippetDescriptor, context, context.getNamespace(element.getFile()));
   }

@@ -16,19 +16,15 @@ package com.google.api.codegen.py;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicProvider;
+import com.google.api.codegen.CodeGeneratorUtil;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.InputElementView;
 import com.google.api.codegen.SnippetDescriptor;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.snippet.Doc;
-import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.collect.Multimap;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * The GapicProvider which runs Gapic code generation for Python.
@@ -57,20 +53,9 @@ public class PythonGapicProvider<InputElementT extends ProtoElement>
   @Override
   public <Element> void output(String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
-    String packageRoot = context.getApiConfig().getPackageName().replace('.', '/');
-    Map<String, Doc> files = new LinkedHashMap<>();
-    for (Map.Entry<Element, GeneratedResult> entry : elements.entries()) {
-      Element element = entry.getKey();
-      GeneratedResult generatedResult = entry.getValue();
-      String root;
-      if (element instanceof Method) {
-        root = ((Method) element).getFile().getFullName().replace('.', '/');
-      } else {
-        root = packageRoot;
-      }
-      files.put(root + "/" + generatedResult.getFilename(), generatedResult.getDoc());
-    }
-    ToolUtil.writeFiles(files, outputPath);
+    String subPath = context.getApiConfig().getPackageName().replace('.', '/');
+    String fullOutputPath = outputPath + "/" + subPath;
+    CodeGeneratorUtil.writeGeneratedOutput(fullOutputPath, elements);
   }
 
   @Override
