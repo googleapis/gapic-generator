@@ -349,17 +349,15 @@
           } else {
             stream.emit('error', err);
           }
-          return err;
         });
         return stream;
       @else
-        return this.apiCallables.{@methodName}.then(function(apiCall) {
-          return apiCall(req, args.callback, options, this.headers, {});
+        this.apiCallables.{@methodName}.then(function(apiCall) {
+          apiCall(req, args.callback, options, this.headers, {});
         }.bind(this), function(err) {
           if (args.callback) {
             args.callback(err);
           }
-          return err;
         });
       @end
     };

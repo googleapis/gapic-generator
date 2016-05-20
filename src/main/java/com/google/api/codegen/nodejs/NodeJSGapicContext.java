@@ -134,19 +134,17 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     String callbackType =
         isEmpty ? "EmptyCallback" : String.format("APICallback<%s>", classInfo);
     String callbackComment = "@param {?" + callbackType + "} callback\n"
-        + "  The function which will be called with the result of the API call.\n";
+        + "  The function which will be called with the result of the API call.";
     if (config.isPageStreaming()) {
       String resourceType = jsTypeName(config.getPageStreaming().getResourcesField().getType());
-      return callbackComment + "@returns {?Stream<" + resourceType + ">}\n"
+      return callbackComment + "\n@returns {?Stream<" + resourceType + ">}\n"
           + "  An object stream of " + resourceType + " instances unless\n"
           + "  page streaming is disabled through the call options or callback\n"
           + "  is specified. If page streaming is disabled or callback is specified,\n"
           + "  this return a null and callback will be called with a single instance\n"
           + "  of " + classInfo + ".";
     } else {
-      String returnType = isEmpty ? "Promise" : ("Promise<" + classInfo + ">");
-      return callbackComment + "@returns {" + returnType + "}\n"
-          + "  A promise which resolves to the return value of the API.";
+      return callbackComment;
     }
   }
 

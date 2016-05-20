@@ -230,8 +230,6 @@ LibraryServiceApi.bookPath = function bookPath(shelf, book) {
  *   retries, etc.
  * @param {?APICallback<google.example.library.v1.Shelf>} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise<google.example.library.v1.Shelf>}
- *   A promise which resolves to the return value of the API.
  * @throws an error if the RPC is aborted.
  */
 LibraryServiceApi.prototype.createShelf = function createShelf(
@@ -246,13 +244,12 @@ LibraryServiceApi.prototype.createShelf = function createShelf(
   var req = {
     'shelf': args.shelf
   };
-  return this.apiCallables.createShelf.then(function(apiCall) {
-    return apiCall(req, args.callback, options, this.headers, {});
+  this.apiCallables.createShelf.then(function(apiCall) {
+    apiCall(req, args.callback, options, this.headers, {});
   }.bind(this), function(err) {
     if (args.callback) {
       args.callback(err);
     }
-    return err;
   });
 };
 
@@ -270,8 +267,6 @@ LibraryServiceApi.prototype.createShelf = function createShelf(
  *   retries, etc.
  * @param {?APICallback<google.example.library.v1.Shelf>} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise<google.example.library.v1.Shelf>}
- *   A promise which resolves to the return value of the API.
  * @throws an error if the RPC is aborted.
  */
 LibraryServiceApi.prototype.getShelf = function getShelf(
@@ -290,13 +285,12 @@ LibraryServiceApi.prototype.getShelf = function getShelf(
     'message': args.otherArgs.message || {},
     'string_builder': args.otherArgs.stringBuilder || {}
   };
-  return this.apiCallables.getShelf.then(function(apiCall) {
-    return apiCall(req, args.callback, options, this.headers, {});
+  this.apiCallables.getShelf.then(function(apiCall) {
+    apiCall(req, args.callback, options, this.headers, {});
   }.bind(this), function(err) {
     if (args.callback) {
       args.callback(err);
     }
-    return err;
   });
 };
 
@@ -337,7 +331,6 @@ LibraryServiceApi.prototype.listShelves = function listShelves(
     } else {
       stream.emit('error', err);
     }
-    return err;
   });
   return stream;
 };
@@ -352,8 +345,6 @@ LibraryServiceApi.prototype.listShelves = function listShelves(
  *   retries, etc.
  * @param {?EmptyCallback} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise}
- *   A promise which resolves to the return value of the API.
  * @throws an error if the RPC is aborted.
  */
 LibraryServiceApi.prototype.deleteShelf = function deleteShelf(
@@ -368,13 +359,12 @@ LibraryServiceApi.prototype.deleteShelf = function deleteShelf(
   var req = {
     'name': args.name
   };
-  return this.apiCallables.deleteShelf.then(function(apiCall) {
-    return apiCall(req, args.callback, options, this.headers, {});
+  this.apiCallables.deleteShelf.then(function(apiCall) {
+    apiCall(req, args.callback, options, this.headers, {});
   }.bind(this), function(err) {
     if (args.callback) {
       args.callback(err);
     }
-    return err;
   });
 };
 
@@ -392,8 +382,6 @@ LibraryServiceApi.prototype.deleteShelf = function deleteShelf(
  *   retries, etc.
  * @param {?APICallback<google.example.library.v1.Shelf>} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise<google.example.library.v1.Shelf>}
- *   A promise which resolves to the return value of the API.
  * @throws an error if the RPC is aborted.
  */
 LibraryServiceApi.prototype.mergeShelves = function mergeShelves(
@@ -411,13 +399,12 @@ LibraryServiceApi.prototype.mergeShelves = function mergeShelves(
     'name': args.name,
     'other_shelf_name': args.otherShelfName
   };
-  return this.apiCallables.mergeShelves.then(function(apiCall) {
-    return apiCall(req, args.callback, options, this.headers, {});
+  this.apiCallables.mergeShelves.then(function(apiCall) {
+    apiCall(req, args.callback, options, this.headers, {});
   }.bind(this), function(err) {
     if (args.callback) {
       args.callback(err);
     }
-    return err;
   });
 };
 
@@ -433,8 +420,6 @@ LibraryServiceApi.prototype.mergeShelves = function mergeShelves(
  *   retries, etc.
  * @param {?APICallback<google.example.library.v1.Book>} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise<google.example.library.v1.Book>}
- *   A promise which resolves to the return value of the API.
  * @throws an error if the RPC is aborted.
  */
 LibraryServiceApi.prototype.createBook = function createBook(
@@ -452,13 +437,12 @@ LibraryServiceApi.prototype.createBook = function createBook(
     'name': args.name,
     'book': args.book
   };
-  return this.apiCallables.createBook.then(function(apiCall) {
-    return apiCall(req, args.callback, options, this.headers, {});
+  this.apiCallables.createBook.then(function(apiCall) {
+    apiCall(req, args.callback, options, this.headers, {});
   }.bind(this), function(err) {
     if (args.callback) {
       args.callback(err);
     }
-    return err;
   });
 };
 
@@ -477,8 +461,6 @@ LibraryServiceApi.prototype.createBook = function createBook(
  *   retries, etc.
  * @param {?APICallback<google.example.library.v1.PublishSeriesResponse>} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise<google.example.library.v1.PublishSeriesResponse>}
- *   A promise which resolves to the return value of the API.
  * @throws an error if the RPC is aborted.
  */
 LibraryServiceApi.prototype.publishSeries = function publishSeries(
@@ -499,13 +481,12 @@ LibraryServiceApi.prototype.publishSeries = function publishSeries(
     'books': args.books,
     'edition': args.otherArgs.edition || 0
   };
-  return this.apiCallables.publishSeries.then(function(apiCall) {
-    return apiCall(req, args.callback, options, this.headers, {});
+  this.apiCallables.publishSeries.then(function(apiCall) {
+    apiCall(req, args.callback, options, this.headers, {});
   }.bind(this), function(err) {
     if (args.callback) {
       args.callback(err);
     }
-    return err;
   });
 };
 
@@ -519,8 +500,6 @@ LibraryServiceApi.prototype.publishSeries = function publishSeries(
  *   retries, etc.
  * @param {?APICallback<google.example.library.v1.Book>} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise<google.example.library.v1.Book>}
- *   A promise which resolves to the return value of the API.
  * @throws an error if the RPC is aborted.
  */
 LibraryServiceApi.prototype.getBook = function getBook(
@@ -535,13 +514,12 @@ LibraryServiceApi.prototype.getBook = function getBook(
   var req = {
     'name': args.name
   };
-  return this.apiCallables.getBook.then(function(apiCall) {
-    return apiCall(req, args.callback, options, this.headers, {});
+  this.apiCallables.getBook.then(function(apiCall) {
+    apiCall(req, args.callback, options, this.headers, {});
   }.bind(this), function(err) {
     if (args.callback) {
       args.callback(err);
     }
-    return err;
   });
 };
 
@@ -593,7 +571,6 @@ LibraryServiceApi.prototype.listBooks = function listBooks(
     } else {
       stream.emit('error', err);
     }
-    return err;
   });
   return stream;
 };
@@ -608,8 +585,6 @@ LibraryServiceApi.prototype.listBooks = function listBooks(
  *   retries, etc.
  * @param {?EmptyCallback} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise}
- *   A promise which resolves to the return value of the API.
  * @throws an error if the RPC is aborted.
  */
 LibraryServiceApi.prototype.deleteBook = function deleteBook(
@@ -624,13 +599,12 @@ LibraryServiceApi.prototype.deleteBook = function deleteBook(
   var req = {
     'name': args.name
   };
-  return this.apiCallables.deleteBook.then(function(apiCall) {
-    return apiCall(req, args.callback, options, this.headers, {});
+  this.apiCallables.deleteBook.then(function(apiCall) {
+    apiCall(req, args.callback, options, this.headers, {});
   }.bind(this), function(err) {
     if (args.callback) {
       args.callback(err);
     }
-    return err;
   });
 };
 
@@ -651,8 +625,6 @@ LibraryServiceApi.prototype.deleteBook = function deleteBook(
  *   retries, etc.
  * @param {?APICallback<google.example.library.v1.Book>} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise<google.example.library.v1.Book>}
- *   A promise which resolves to the return value of the API.
  * @throws an error if the RPC is aborted.
  */
 LibraryServiceApi.prototype.updateBook = function updateBook(
@@ -674,13 +646,12 @@ LibraryServiceApi.prototype.updateBook = function updateBook(
     'update_mask': args.otherArgs.updateMask || {},
     'physical_mask': args.otherArgs.physicalMask || {}
   };
-  return this.apiCallables.updateBook.then(function(apiCall) {
-    return apiCall(req, args.callback, options, this.headers, {});
+  this.apiCallables.updateBook.then(function(apiCall) {
+    apiCall(req, args.callback, options, this.headers, {});
   }.bind(this), function(err) {
     if (args.callback) {
       args.callback(err);
     }
-    return err;
   });
 };
 
@@ -696,8 +667,6 @@ LibraryServiceApi.prototype.updateBook = function updateBook(
  *   retries, etc.
  * @param {?APICallback<google.example.library.v1.Book>} callback
  *   The function which will be called with the result of the API call.
- * @returns {Promise<google.example.library.v1.Book>}
- *   A promise which resolves to the return value of the API.
  * @throws an error if the RPC is aborted.
  */
 LibraryServiceApi.prototype.moveBook = function moveBook(
@@ -715,13 +684,12 @@ LibraryServiceApi.prototype.moveBook = function moveBook(
     'name': args.name,
     'other_shelf_name': args.otherShelfName
   };
-  return this.apiCallables.moveBook.then(function(apiCall) {
-    return apiCall(req, args.callback, options, this.headers, {});
+  this.apiCallables.moveBook.then(function(apiCall) {
+    apiCall(req, args.callback, options, this.headers, {});
   }.bind(this), function(err) {
     if (args.callback) {
       args.callback(err);
     }
-    return err;
   });
 };
 
@@ -767,7 +735,6 @@ LibraryServiceApi.prototype.listStrings = function listStrings(
     } else {
       stream.emit('error', err);
     }
-    return err;
   });
   return stream;
 };
