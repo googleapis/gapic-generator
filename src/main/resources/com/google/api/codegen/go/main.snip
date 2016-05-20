@@ -184,12 +184,16 @@
              methodReceiver = context.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName)
 
             // {@pathTypeName}Path returns the path for the {@humanReadableName} resource.
-            func {@pathTypeName}Path({@pathParams(collectionConfig.getNameTemplate.vars())}) (string, error) {
-                return {@pathTemplateVarName(collectionConfig)}.Instantiate(map[string]string{
+            func {@pathTypeName}Path({@pathParams(collectionConfig.getNameTemplate.vars())}) string {
+                path, err := {@pathTemplateVarName(collectionConfig)}.Instantiate(map[string]string{
                     @join param : collectionConfig.getNameTemplate.vars()
                     "{@param}": {@context.lowerUnderscoreToLowerCamel(param)},
                     @end
                 })
+                if err != nil {
+                    panic(err)
+                }
+                return path
             }
         @end
     @end
