@@ -1,7 +1,7 @@
 @extends "common.snip"
 
 @snippet generateFilename(service)
-    doc.go
+    {@context.getApiConfig().getPackageName()}/{@context.getReducedServiceName(service)}/doc.go
 @end
 
 @snippet generateClass(service, body)
@@ -27,7 +27,7 @@
 @end
 
 @private packageSection(service)
-    @let pkgName = context.getPackageName
+    @let pkgName = context.getReducedServiceName(service)
         // Package {@pkgName} provides the more language idiomatic and
         // developer friendly layer for the gRPC based API service.
         //

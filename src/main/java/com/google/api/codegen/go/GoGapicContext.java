@@ -106,22 +106,10 @@ public class GoGapicContext extends GapicContext implements GoContext {
     this.goCommon = new GoContextCommon();
   }
 
-  /**
-   * Returns the package name symbol used for the package declaration.
-   */
-  public String getPackageName() {
-    String fullPackageName = getApiConfig().getPackageName();
-    int lastSlash = fullPackageName.lastIndexOf('/');
-    if (lastSlash < 0) {
-      return fullPackageName;
-    }
-    return fullPackageName.substring(lastSlash + 1);
-  }
-
   public String getReducedServiceName(Interface service) {
     String name = service.getSimpleName().replaceAll("V[0-9]+$", "");
     name = name.replaceAll("Service$", "");
-    return name;
+    return LanguageUtil.upperCamelToLowerUnderscore(name);
   }
 
   /**
@@ -353,7 +341,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
   private GoImport createMessageImport(MessageType messageType) {
     String pkgName = messageType.getFile().getProto().getPackage().replace(".", "/");
     String localName = localPackageName(messageType);
-    return GoImport.create(getApiConfig().getPackageName() + "/proto/" + pkgName, localName);
+    return GoImport.create(getApiConfig().getPackageName() + "/" + pkgName, localName);
   }
 
   private Set<GoImport> getStandardImports(Interface service) {
