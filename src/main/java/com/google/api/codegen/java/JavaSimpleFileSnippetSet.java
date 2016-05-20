@@ -12,14 +12,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.java;
 
-import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.snippet.Doc;
 
 /**
- * An implementation of InputElementProvider is a strategy object, encapsulating a strategy for
- * retrieving a sequence of items from a model.
+ * Entry points for a simple Java snippet set. Generation is a single phase.
  */
-public interface InputElementView<InputElementT> {
-  public Iterable<InputElementT> getElementIterable(Model model);
+interface JavaSimpleFileSnippetSet<T> {
+
+  /**
+   * Generates the result filename for the generated document.
+   */
+  Doc generateFilename();
+
+  /**
+   * Generates the contents of the document.
+   */
+  Doc generateDocument(Iterable<Doc> fragments);
+
+  /**
+   * Generates a fragment of the doc from a service.
+   */
+  Doc generateFragment(T service);
+
 }

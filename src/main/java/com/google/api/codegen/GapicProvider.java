@@ -15,7 +15,6 @@
 package com.google.api.codegen;
 
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.collect.Multimap;
 
 import java.io.IOException;
@@ -24,7 +23,7 @@ import java.io.IOException;
  * A GapicProvider performs code or fragment generation using on a proto-based Model for a
  * particular language.
  */
-public interface GapicProvider<InputElementT extends ProtoElement> {
+public interface GapicProvider<InputElementT> {
 
   Model getModel();
 

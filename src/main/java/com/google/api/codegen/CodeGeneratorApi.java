@@ -22,7 +22,6 @@ import com.google.api.tools.framework.aspects.system.SystemConfigAspect;
 import com.google.api.tools.framework.aspects.versioning.VersionConfigAspect;
 import com.google.api.tools.framework.aspects.visibility.VisibilityConfigAspect;
 import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.processors.linter.Linter;
 import com.google.api.tools.framework.processors.merger.Merger;
@@ -108,14 +107,14 @@ public class CodeGeneratorApi extends ToolDriverBase {
       if (generator == null) {
         return;
       }
-      Multimap<ProtoElement, GeneratedResult> docs = ArrayListMultimap.create();
+      Multimap<Object, GeneratedResult> docs = ArrayListMultimap.create();
       for (String snippetInputName : template.getSnippetFilesList()) {
         SnippetDescriptor snippetDescriptor = new SnippetDescriptor(snippetInputName);
-        Map<ProtoElement, GeneratedResult> code = generator.generate(snippetDescriptor);
+        ImmutableMap<Object, GeneratedResult> code = generator.generate(snippetDescriptor);
         if (code == null) {
           continue;
         }
-        for (Map.Entry<ProtoElement, GeneratedResult> entry : code.entrySet()) {
+        for (Map.Entry<Object, GeneratedResult> entry : code.entrySet()) {
           docs.put(entry.getKey(), entry.getValue());
         }
       }

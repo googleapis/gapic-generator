@@ -21,7 +21,6 @@ import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.InputElementView;
 import com.google.api.codegen.SnippetDescriptor;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.collect.Multimap;
 
 import java.io.IOException;
@@ -29,17 +28,16 @@ import java.io.IOException;
 /**
  * The GapicProvider which runs Gapic code generation for Java.
  */
-public class JavaGapicProvider<InputElementT extends ProtoElement>
-    implements GapicProvider<InputElementT> {
+public class JavaSimpleFileProvider<T> implements GapicProvider<Iterable<T>> {
 
   private final JavaGapicContext context;
-  private final JavaSnippetSetRunner snippetSetRunner;
-  private InputElementView<InputElementT> view;
+  private final JavaSimpleFileSnippetSetRunner simpleFileSnippetSetRunner;
+  private InputElementView<Iterable<T>> view;
 
-  public JavaGapicProvider(
-      Model model, ApiConfig apiConfig, InputElementView<InputElementT> view) {
+  public JavaSimpleFileProvider(
+      Model model, ApiConfig apiConfig, InputElementView<Iterable<T>> view) {
     this.context = new JavaGapicContext(model, apiConfig);
-    this.snippetSetRunner = new JavaSnippetSetRunner();
+    this.simpleFileSnippetSetRunner = new JavaSimpleFileSnippetSetRunner();
     this.view = view;
   }
 
@@ -57,12 +55,12 @@ public class JavaGapicProvider<InputElementT extends ProtoElement>
   }
 
   @Override
-  public InputElementView<InputElementT> getView() {
+  public InputElementView<Iterable<T>> getView() {
     return view;
   }
 
   @Override
-  public GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor) {
-    return snippetSetRunner.generate(element, snippetDescriptor, context);
+  public GeneratedResult generate(Iterable<T> element, SnippetDescriptor snippetDescriptor) {
+    return simpleFileSnippetSetRunner.generate(element, snippetDescriptor, context);
   }
 }
