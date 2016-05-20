@@ -103,8 +103,7 @@ public class PythonGapicContext extends GapicContext {
     if (!element.hasAttribute(ElementDocumentationAttribute.KEY)) {
       return ImmutableList.<String>of("");
     }
-    return pythonCommon.convertToCommentedBlock(
-        PythonSphinxCommentFixer.sphinxify(DocumentationUtil.getScopedDescription(element)));
+    return pythonCommon.convertToCommentedBlock(getSphinxifiedScopedDescription(element));
   }
 
   /**
@@ -154,7 +153,7 @@ public class PythonGapicContext extends GapicContext {
     String comment =
         String.format(
             "  %s (%s)", field.getSimpleName(), fieldTypeCardinalityComment(field, importHandler));
-    String paramComment = DocumentationUtil.getScopedDescription(field);
+    String paramComment = getSphinxifiedScopedDescription(field);
     if (!Strings.isNullOrEmpty(paramComment)) {
       if (paramComment.charAt(paramComment.length() - 1) == '\n') {
         paramComment = paramComment.substring(0, paramComment.length() - 1);
@@ -179,7 +178,7 @@ public class PythonGapicContext extends GapicContext {
     // Generate comment contents
     StringBuilder contentBuilder = new StringBuilder();
     if (msg.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      contentBuilder.append(DocumentationUtil.getScopedDescription(msg));
+      contentBuilder.append(getSphinxifiedScopedDescription(msg));
       if (!Strings.isNullOrEmpty(paramTypes)) {
         contentBuilder.append("\n\n");
       }
@@ -238,8 +237,7 @@ public class PythonGapicContext extends GapicContext {
     // Generate comment contents
     StringBuilder contentBuilder = new StringBuilder();
     if (msg.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      String sphinxified =
-          PythonSphinxCommentFixer.sphinxify(DocumentationUtil.getScopedDescription(msg));
+      String sphinxified = getSphinxifiedScopedDescription(msg);
       sphinxified = sphinxified.trim();
       contentBuilder.append(sphinxified.replaceAll("\\s*\\n\\s*", "\n"));
       if (!Strings.isNullOrEmpty(paramTypes)) {
@@ -295,5 +293,9 @@ public class PythonGapicContext extends GapicContext {
       default:
         return false;
     }
+  }
+
+  private String getSphinxifiedScopedDescription(ProtoElement element) {
+    return PythonSphinxCommentFixer.sphinxify(DocumentationUtil.getScopedDescription(element));
   }
 }

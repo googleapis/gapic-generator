@@ -645,15 +645,15 @@ class FieldMask(object):
 
 class Any(object):
     """
-    `Any` contains an arbitrary serialized message along with a URL
+    ``Any`` contains an arbitrary serialized message along with a URL
     that describes the type of the serialized message.
 
 
     # JSON
 
-    The JSON representation of an `Any` value uses the regular
+    The JSON representation of an ``Any`` value uses the regular
     representation of the deserialized, embedded message, with an
-    additional field `@type` which contains the type URL. Example:
+    additional field ``@type`` which contains the type URL. Example:
 
         package google.profile;
         message Person {
@@ -669,8 +669,8 @@ class Any(object):
 
     If the embedded message type is well-known and has a custom JSON
     representation, that representation will be embedded adding a field
-    `value` which holds the custom JSON in addition to the `@type`
-    field. Example (for message [google.protobuf.Duration][google.protobuf.Duration]):
+    ``value`` which holds the custom JSON in addition to the ``@type``
+    field. Example (for message ``google.protobuf.Duration``):
 
         {
           "@type": "type.googleapis.com/google.protobuf.Duration",
@@ -681,13 +681,13 @@ class Any(object):
       type_url (string): A URL/resource name whose content describes the type of the
         serialized message.
 
-        For URLs which use the schema `http`, `https`, or no schema, the
+        For URLs which use the schema ``http``, ``https``, or no schema, the
         following restrictions and interpretations apply:
 
-        * If no schema is provided, `https` is assumed.
+        * If no schema is provided, ``https`` is assumed.
         * The last segment of the URL's path must represent the fully
-          qualified name of the type (as in `path/google.protobuf.Duration`).
-        * An HTTP GET on the URL must yield a [google.protobuf.Type][]
+          qualified name of the type (as in ``path/google.protobuf.Duration``).
+        * An HTTP GET on the URL must yield a ``google.protobuf.Type``
           value in binary format, or produce an error.
         * Applications are allowed to cache lookup results based on the
           URL, or have them precompiled into a binary to avoid any
@@ -695,7 +695,7 @@ class Any(object):
           on changes to types. (Use versioned type names to manage
           breaking changes.)
 
-        Schemas other than `http`, `https` (or the empty schema) might be
+        Schemas other than ``http``, ``https`` (or the empty schema) might be
         used with implementation specific semantics.
       value (bytes): Must be valid serialized data of the above specified type.
 
@@ -766,9 +766,9 @@ class Duration(object):
         to +315,576,000,000 inclusive.
       nanos (int32): Signed fractions of a second at nanosecond resolution of the span
         of time. Durations less than one second are represented with a 0
-        `seconds` field and a positive or negative `nanos` field. For durations
-        of one second or more, a non-zero value for the `nanos` field must be
-        of the same sign as the `seconds` field. Must be from -999,999,999
+        ``seconds`` field and a positive or negative ``nanos`` field. For durations
+        of one second or more, a non-zero value for the ``nanos`` field must be
+        of the same sign as the ``seconds`` field. Must be from -999,999,999
         to +999,999,999 inclusive.
 
     """
@@ -792,14 +792,14 @@ class Duration(object):
 
 class FieldMask(object):
     """
-    `FieldMask` represents a set of symbolic field paths, for example:
+    ``FieldMask`` represents a set of symbolic field paths, for example:
 
         paths: "f.a"
         paths: "f.b.d"
 
-    Here `f` represents a field in some root message, `a` and `b`
-    fields in the message found in `f`, and `d` a field found in the
-    message in `f.b`.
+    Here ``f`` represents a field in some root message, ``a`` and ``b``
+    fields in the message found in ``f``, and ``d`` a field found in the
+    message in ``f.b``.
 
     Field masks are used to specify a subset of fields that should be
     returned by a get operation or modified by an update operation.
@@ -902,7 +902,7 @@ class FieldMask(object):
           string address = 2;
         }
 
-    In proto a field mask for `Profile` may look as such:
+    In proto a field mask for ``Profile`` may look as such:
 
         mask {
           paths: "user.display_name"
@@ -949,15 +949,15 @@ class Timestamp(object):
     0001-01-01T00:00:00Z to 9999-12-31T23:59:59.999999999Z.
     By restricting to that range, we ensure that we can convert to
     and from  RFC 3339 date strings.
-    See [https://www.ietf.org/rfc/rfc3339.txt](https://www.ietf.org/rfc/rfc3339.txt).
+    See `https://www.ietf.org/rfc/rfc3339.txt <https://www.ietf.org/rfc/rfc3339.txt>`_.
 
-    Example 1: Compute Timestamp from POSIX `time()`.
+    Example 1: Compute Timestamp from POSIX ``time()``.
 
         Timestamp timestamp;
         timestamp.set_seconds(time(NULL));
         timestamp.set_nanos(0);
 
-    Example 2: Compute Timestamp from POSIX `gettimeofday()`.
+    Example 2: Compute Timestamp from POSIX ``gettimeofday()``.
 
         struct timeval tv;
         gettimeofday(&tv, NULL);
@@ -966,7 +966,7 @@ class Timestamp(object):
         timestamp.set_seconds(tv.tv_sec);
         timestamp.set_nanos(tv.tv_usec * 1000);
 
-    Example 3: Compute Timestamp from Win32 `GetSystemTimeAsFileTime()`.
+    Example 3: Compute Timestamp from Win32 ``GetSystemTimeAsFileTime()``.
 
         FILETIME ft;
         GetSystemTimeAsFileTime(&ft);
@@ -978,7 +978,7 @@ class Timestamp(object):
         timestamp.set_seconds((INT64) ((ticks / 10000000) - 11644473600LL));
         timestamp.set_nanos((INT32) ((ticks % 10000000) * 100));
 
-    Example 4: Compute Timestamp from Java `System.currentTimeMillis()`.
+    Example 4: Compute Timestamp from Java ``System.currentTimeMillis()``.
 
         long millis = System.currentTimeMillis();
 
@@ -1023,9 +1023,9 @@ class Timestamp(object):
 
 class DoubleValue(object):
     """
-    Wrapper message for `double`.
+    Wrapper message for ``double``.
 
-    The JSON representation for `DoubleValue` is JSON number.
+    The JSON representation for ``DoubleValue`` is JSON number.
 
     Attributes:
       value (double): The double value.
@@ -1036,9 +1036,9 @@ class DoubleValue(object):
 
 class FloatValue(object):
     """
-    Wrapper message for `float`.
+    Wrapper message for ``float``.
 
-    The JSON representation for `FloatValue` is JSON number.
+    The JSON representation for ``FloatValue`` is JSON number.
 
     Attributes:
       value (float): The float value.
@@ -1049,9 +1049,9 @@ class FloatValue(object):
 
 class Int64Value(object):
     """
-    Wrapper message for `int64`.
+    Wrapper message for ``int64``.
 
-    The JSON representation for `Int64Value` is JSON string.
+    The JSON representation for ``Int64Value`` is JSON string.
 
     Attributes:
       value (int64): The int64 value.
@@ -1062,9 +1062,9 @@ class Int64Value(object):
 
 class UInt64Value(object):
     """
-    Wrapper message for `uint64`.
+    Wrapper message for ``uint64``.
 
-    The JSON representation for `UInt64Value` is JSON string.
+    The JSON representation for ``UInt64Value`` is JSON string.
 
     Attributes:
       value (uint64): The uint64 value.
@@ -1075,9 +1075,9 @@ class UInt64Value(object):
 
 class Int32Value(object):
     """
-    Wrapper message for `int32`.
+    Wrapper message for ``int32``.
 
-    The JSON representation for `Int32Value` is JSON number.
+    The JSON representation for ``Int32Value`` is JSON number.
 
     Attributes:
       value (int32): The int32 value.
@@ -1088,9 +1088,9 @@ class Int32Value(object):
 
 class UInt32Value(object):
     """
-    Wrapper message for `uint32`.
+    Wrapper message for ``uint32``.
 
-    The JSON representation for `UInt32Value` is JSON number.
+    The JSON representation for ``UInt32Value`` is JSON number.
 
     Attributes:
       value (uint32): The uint32 value.
@@ -1101,9 +1101,9 @@ class UInt32Value(object):
 
 class BoolValue(object):
     """
-    Wrapper message for `bool`.
+    Wrapper message for ``bool``.
 
-    The JSON representation for `BoolValue` is JSON `true` and `false`.
+    The JSON representation for ``BoolValue`` is JSON ``true`` and ``false``.
 
     Attributes:
       value (bool): The bool value.
@@ -1114,9 +1114,9 @@ class BoolValue(object):
 
 class StringValue(object):
     """
-    Wrapper message for `string`.
+    Wrapper message for ``string``.
 
-    The JSON representation for `StringValue` is JSON string.
+    The JSON representation for ``StringValue`` is JSON string.
 
     Attributes:
       value (string): The string value.
@@ -1127,9 +1127,9 @@ class StringValue(object):
 
 class BytesValue(object):
     """
-    Wrapper message for `bytes`.
+    Wrapper message for ``bytes``.
 
-    The JSON representation for `BytesValue` is JSON string.
+    The JSON representation for ``BytesValue`` is JSON string.
 
     Attributes:
       value (bytes): The bytes value.
@@ -1167,7 +1167,7 @@ class Book(object):
 
     Attributes:
       name (string): The resource name of the book.
-        Book names have the form `shelves/{shelf_id}/books/{book_id}`.
+        Book names have the form ``shelves/{shelf_id}/books/{book_id}``.
       author (string): The name of the book author.
       title (string): The title of the book.
       read (bool): Value indicating whether the book has been read.
@@ -1221,7 +1221,7 @@ class Shelf(object):
 
     Attributes:
       name (string): The resource name of the shelf.
-        Shelf names have the form `shelves/{shelf_id}`.
+        Shelf names have the form ``shelves/{shelf_id}``.
       theme (string): The theme of the shelf
       internal_theme (string): Internal theme that is visible to trusted testers only.
 
@@ -1273,8 +1273,8 @@ class ListShelvesRequest(object):
         If unspecified, server will pick an appropriate default.
       page_token (string): A token identifying a page of results the server should return.
         Typically, this is the value of
-        [ListShelvesResponse.next_page_token][google.example.library.v1.ListShelvesResponse.next_page_token]
-        returned from the previous call to `ListShelves` method.
+        ``ListShelvesResponse.next_page_token``
+        returned from the previous call to ``ListShelves`` method.
 
     """
     pass
@@ -1288,8 +1288,8 @@ class ListShelvesResponse(object):
       shelves (list[:class:`google.example.library.v1.library_pb2.Shelf`]): The list of shelves.
       next_page_token (string): A token to retrieve next page of results.
         Pass this value in the
-        [ListShelvesRequest.page_token][google.example.library.v1.ListShelvesRequest.page_token]
-        field in the subsequent call to `ListShelves` method to retrieve the next
+        ``ListShelvesRequest.page_token``
+        field in the subsequent call to ``ListShelves`` method to retrieve the next
         page of results.
 
     """
@@ -1377,8 +1377,8 @@ class ListBooksRequest(object):
         If unspecified, server will pick an appropriate default.
       page_token (string): A token identifying a page of results the server should return.
         Typically, this is the value of
-        [ListBooksResponse.next_page_token][google.example.library.v1.ListBooksResponse.next_page_token].
-        returned from the previous call to `ListBooks` method.
+        ``ListBooksResponse.next_page_token``.
+        returned from the previous call to ``ListBooks`` method.
       filter (string): To test python built-in wrapping.
 
     """
@@ -1393,8 +1393,8 @@ class ListBooksResponse(object):
       books (list[:class:`google.example.library.v1.library_pb2.Book`]): The list of books.
       next_page_token (string): A token to retrieve next page of results.
         Pass this value in the
-        [ListBooksRequest.page_token][google.example.library.v1.ListBooksRequest.page_token]
-        field in the subsequent call to `ListBooks` method to retrieve the next
+        ``ListBooksRequest.page_token``
+        field in the subsequent call to ``ListBooks`` method to retrieve the next
         page of results.
 
     """
