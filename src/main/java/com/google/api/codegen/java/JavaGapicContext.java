@@ -347,4 +347,8 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
     String eqsString = new String(array);
     return String.format("%s\n%s\n%s", eqsString, heading, eqsString);
   }
+
+  public JavaDocConfig.Builder newJavaDocConfigBuilder() {
+    return JavaDocConfig.newBuilder();
+  }
 }

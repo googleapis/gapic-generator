@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.java;
 
-import com.google.api.codegen.java.JavaContextCommon.JavaDocConfig;
 import com.google.api.tools.framework.snippet.Doc;
 
 /**

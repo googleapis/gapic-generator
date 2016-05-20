@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.metacode.FieldStructureParser;
+import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -24,7 +26,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -45,6 +49,7 @@ public class MethodConfig {
   private final BundlingConfig bundling;
   private final boolean hasRequestObjectMethod;
   private final ImmutableMap<String, String> fieldNamePatterns;
+  private final List<String> sampleCodeInitFields;
 
   /**
    * Creates an instance of MethodConfig based on MethodConfigProto, linking it up with the provided
@@ -147,6 +152,10 @@ public class MethodConfig {
     ImmutableMap<String, String> fieldNamePatterns =
         ImmutableMap.copyOf(methodConfig.getFieldNamePatterns());
 
+    List<String> sampleCodeInitFields = new ArrayList<>();
+    sampleCodeInitFields.addAll(methodConfig.getRequiredFieldsList());
+    sampleCodeInitFields.addAll(methodConfig.getSampleCodeInitFieldsList());
+
     if (error) {
       return null;
     } else {
@@ -159,7 +168,8 @@ public class MethodConfig {
           hasRequestObjectMethod,
           requiredFields,
           optionalFields,
-          fieldNamePatterns);
+          fieldNamePatterns,
+          sampleCodeInitFields);
     }
   }
 
@@ -172,7 +182,8 @@ public class MethodConfig {
       boolean hasRequestObjectMethod,
       Iterable<Field> requiredFields,
       Iterable<Field> optionalFields,
-      ImmutableMap<String, String> fieldNamePatterns) {
+      ImmutableMap<String, String> fieldNamePatterns,
+      List<String> sampleCodeInitFields) {
     this.pageStreaming = pageStreaming;
     this.flattening = flattening;
     this.retryCodesConfigName = retryCodesConfigName;
@@ -182,6 +193,7 @@ public class MethodConfig {
     this.requiredFields = requiredFields;
     this.optionalFields = optionalFields;
     this.fieldNamePatterns = fieldNamePatterns;
+    this.sampleCodeInitFields = sampleCodeInitFields;
   }
 
   /**
@@ -266,5 +278,13 @@ public class MethodConfig {
    */
   public ImmutableMap<String, String> getFieldNamePatterns() {
     return fieldNamePatterns;
+  }
+
+  /**
+   * Returns the field structure of fields that needs to be initialized
+   * in sample code.
+   */
+  public List<String> getSampleCodeInitFields() {
+    return sampleCodeInitFields;
   }
 }

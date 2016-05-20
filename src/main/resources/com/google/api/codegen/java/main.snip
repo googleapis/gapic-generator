@@ -248,9 +248,7 @@
          methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
          isPageStreaming = methodConfig.isPageStreaming, \
          isFlattening = methodConfig.isFlattening, \
-         requestObjectMethodAccessStr = requestObjectMethodAccess(methodConfig), \
-         fieldNamePatterns = methodConfig.getFieldNamePatterns(), \
-         requiredFields = methodConfig.getRequiredFields()
+         requestObjectMethodAccessStr = requestObjectMethodAccess(methodConfig)
       // ----- {@methodName} -----
 
       # TODO (garrettjones) put some kind of limit on number of flattened parameters, and
@@ -259,23 +257,23 @@
         @if {@isFlattening}
           @join flatteningGroup: \
               methodConfig.getFlattening().getFlatteningGroups()
-            {@pagedFlattenedMethod(service, method, methodName, flatteningGroup, fieldNamePatterns)}
+            {@pagedFlattenedMethod(service, method, methodName, flatteningGroup)}
           @end
           {@BREAK}
         @end
-        {@pagedMethodWithRequestParam(service, method, methodName, inTypeName, outTypeName, requestObjectMethodAccessStr, requiredFields, fieldNamePatterns)}
-        {@methodReturningPagedCallable(service, method, methodName, inTypeName, outTypeName, requiredFields, fieldNamePatterns)}
-        {@methodReturningUnpagedListCallable(service, method, methodName, inTypeName, outTypeName, requiredFields, fieldNamePatterns)}
+        {@pagedMethodWithRequestParam(service, method, methodName, inTypeName, outTypeName, requestObjectMethodAccessStr)}
+        {@methodReturningPagedCallable(service, method, methodName, inTypeName, outTypeName)}
+        {@methodReturningUnpagedListCallable(service, method, methodName, inTypeName, outTypeName)}
       @else
         @if {@isFlattening}
           @join flatteningGroup : \
               methodConfig.getFlattening().getFlatteningGroups()
-            {@flattenedMethod(service, method, methodName, flatteningGroup, fieldNamePatterns)}
+            {@flattenedMethod(service, method, methodName, flatteningGroup)}
           @end
           {@BREAK}
         @end
-        {@methodWithRequestParam(service, method, methodName, inTypeName, outTypeName, requestObjectMethodAccessStr, requiredFields, fieldNamePatterns)}
-        {@methodReturningCallable(service, method, methodName, inTypeName, outTypeName, requiredFields, fieldNamePatterns)}
+        {@methodWithRequestParam(service, method, methodName, inTypeName, outTypeName, requestObjectMethodAccessStr)}
+        {@methodReturningCallable(service, method, methodName, inTypeName, outTypeName)}
       @end
     @end
   @end
@@ -312,12 +310,13 @@
 
 @end
 
-@private pagedFlattenedMethod(service, method, methodName, fields, fieldNamePatterns)
+@private pagedFlattenedMethod(service, method, methodName, fields)
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
        resourceTypeName = elementTypeName(pageStreaming.getResourcesField()), \
-       requestTypeName = context.typeName(method.getInputType)
-    {@iterableFlattenedMethodJavaDoc(service, method, methodName, resourceTypeName, fields, fieldNamePatterns)}
+       requestTypeName = context.typeName(method.getInputType), \
+       fieldNamePatterns = methodConfig.getFieldNamePatterns()
+    {@iterableFlattenedMethodJavaDoc(service, method, methodName, resourceTypeName, fields)}
     public final PageAccessor<{@resourceTypeName}> \
         {@methodName}({@paramList(fields)}) {
       @join field : fields
@@ -338,16 +337,16 @@
   @end
 @end
 
-@private pagedMethodWithRequestParam(service, method, methodName, inTypeName, outTypeName, accessModifier, requiredFields, fieldNamePatterns)
+@private pagedMethodWithRequestParam(service, method, methodName, inTypeName, outTypeName, accessModifier)
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
        resourceTypeName = elementTypeName(pageStreaming.getResourcesField())
-    {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
+    {@methodJavaDoc(method, context.newJavaDocConfigBuilder \
       .setApiName(context.getApiWrapperName(method.getParent)) \
       .setMethodName(methodName) \
       .setReturnType(resourceTypeName) \
-      .setSingleParam(context, method.getInputType, context.java.requestParam, context.java.requestParamDoc) \
-      .setRequiredParamsWithFormatting(context, service, requiredFields, fieldNamePatterns) \
+      .setRequestObjectInitCode(context, service, method) \
+      .setRequestObjectParam(context, service, method) \
       .setPagedVariant({@TRUE}) \
       .setCallableVariant({@FALSE}) \
       .build)}
@@ -359,17 +358,17 @@
   @end
 @end
 
-@private methodReturningPagedCallable(service, method, methodName, inTypeName, outTypeName, requiredFields, fieldNamePatterns)
+@private methodReturningPagedCallable(service, method, methodName, inTypeName, outTypeName)
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
        dummy = context.addImport("com.google.api.gax.core.PageAccessor"), \
        resourceTypeName = elementTypeName(pageStreaming.getResourcesField())
-    {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
+    {@methodJavaDoc(method, context.newJavaDocConfigBuilder \
       .setApiName(context.getApiWrapperName(method.getParent)) \
       .setMethodName(methodName) \
       .setReturnType(resourceTypeName) \
-      .setSingleParam(context, method.getInputType, context.java.requestParam, context.java.requestParamDoc) \
-      .setRequiredParamsWithFormatting(context, service, requiredFields, fieldNamePatterns) \
+      .setRequestObjectInitCode(context, service, method) \
+      .setEmptyParams() \
       .setPagedVariant({@TRUE}) \
       .setCallableVariant({@TRUE}) \
       .build)}
@@ -380,17 +379,17 @@
   @end
 @end
 
-@private methodReturningUnpagedListCallable(service, method, methodName, inTypeName, outTypeName, requiredFields, fieldNamePatterns)
+@private methodReturningUnpagedListCallable(service, method, methodName, inTypeName, outTypeName)
   @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        pageStreaming = methodConfig.getPageStreaming(), \
        dummy = context.addImport("com.google.api.gax.core.PageAccessor"), \
        resourcesField = pageStreaming.getResourcesField()
-    {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
+    {@methodJavaDoc(method, context.newJavaDocConfigBuilder \
       .setApiName(context.getApiWrapperName(method.getParent)) \
       .setMethodName(methodName) \
       .setReturnType(context.returnTypeOrEmpty(method.getOutputType)) \
-      .setSingleParam(context, method.getInputType, context.java.requestParam, context.java.requestParamDoc) \
-      .setRequiredParamsWithFormatting(context, service, requiredFields, fieldNamePatterns) \
+      .setRequestObjectInitCode(context, service, method) \
+      .setEmptyParams() \
       .setPagedVariant({@FALSE}) \
       .setCallableVariant({@TRUE}) \
       .setResourcesFieldForUnpagedListCallable(resourcesField) \
@@ -402,11 +401,13 @@
   @end
 @end
 
-@private flattenedMethod(service, method, methodName, fields, fieldNamePatterns)
-  {@flattenedMethodJavaDoc(service, method, methodName, fields, fieldNamePatterns)}
-  @let returnType = context.methodReturnTypeName(method.getOutputType), \
+@private flattenedMethod(service, method, methodName, fields)
+  {@flattenedMethodJavaDoc(service, method, methodName, fields)}
+  @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+       returnType = context.methodReturnTypeName(method.getOutputType), \
        returnStatement = context.methodReturnStatement(method.getOutputType), \
-       requestTypeName = context.typeName(method.getInputType)
+       requestTypeName = context.typeName(method.getInputType), \
+       fieldNamePatterns = methodConfig.getFieldNamePatterns()
     public final {@returnType} {@methodName}({@paramList(fields)}) {
       @join field : fields
         @if fieldNamePatterns.containsKey(field.getSimpleName)
@@ -426,13 +427,13 @@
   @end
 @end
 
-@private methodWithRequestParam(service, method, methodName, inTypeName, outTypeName, accessModifier, requiredFields, fieldNamePatterns)
-  {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
+@private methodWithRequestParam(service, method, methodName, inTypeName, outTypeName, accessModifier)
+  {@methodJavaDoc(method, context.newJavaDocConfigBuilder \
       .setApiName(context.getApiWrapperName(method.getParent)) \
       .setMethodName(context.upperCamelToLowerCamel(method.getSimpleName)) \
       .setReturnType(context.returnTypeOrEmpty(method.getOutputType)) \
-      .setSingleParam(context, method.getInputType, context.java.requestParam, context.java.requestParamDoc) \
-      .setRequiredParamsWithFormatting(context, service, requiredFields, fieldNamePatterns) \
+      .setRequestObjectInitCode(context, service, method) \
+      .setRequestObjectParam(context, service, method) \
       .setPagedVariant({@FALSE}) \
       .setCallableVariant({@FALSE}) \
       .build)}
@@ -445,13 +446,13 @@
   @end
 @end
 
-@private methodReturningCallable(service, method, methodName, inTypeName, outTypeName, requiredFields, fieldNamePatterns)
-  {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
+@private methodReturningCallable(service, method, methodName, inTypeName, outTypeName)
+  {@methodJavaDoc(method, context.newJavaDocConfigBuilder \
       .setApiName(context.getApiWrapperName(method.getParent)) \
       .setMethodName(methodName) \
       .setReturnType(context.returnTypeOrEmpty(method.getOutputType)) \
-      .setSingleParam(context, method.getInputType, context.java.requestParam, context.java.requestParamDoc) \
-      .setRequiredParamsWithFormatting(context, service, requiredFields, fieldNamePatterns) \
+      .setRequestObjectInitCode(context, service, method) \
+      .setEmptyParams() \
       .setPagedVariant({@FALSE}) \
       .setCallableVariant({@TRUE}) \
       .build)}
@@ -468,8 +469,7 @@
        # TODO: support the case where the API has no flattened methods.
        firstFlattenedMethod = context.getFirstFlattenedMethod(service), \
        firstFlattenedMethodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(firstFlattenedMethod), \
-       fields = firstFlattenedMethodConfig.getFlattening().getFlatteningGroups().get(0), \
-       fieldNamePatterns = firstFlattenedMethodConfig.getFieldNamePatterns()
+       fields = firstFlattenedMethodConfig.getFlattening().getFlatteningGroups().get(0)
     /**
     {@javaDocLinesFromStr(serviceDocString(service))}
      *
@@ -478,12 +478,12 @@
      *
      * <pre>
      * <code>
-    @join commentLine : context.java.getJavaDocLines(generateMethodSampleCode(context.java.newJavaDocConfigBuilder \
+    @join commentLine : context.java.getJavaDocLines(generateMethodSampleCode(context.newJavaDocConfigBuilder \
                                .setApiName(context.getApiWrapperName(service)) \
                                .setMethodName(context.upperCamelToLowerCamel(firstFlattenedMethod.getSimpleName)) \
                                .setReturnType(context.returnTypeOrEmpty(firstFlattenedMethod.getOutputType)) \
-                               .setParamsWithFormatting(context, service, fields, fieldNamePatterns) \
-                               .setRequiredParamsEmpty() \
+                               .setFieldInitCode(context, service, firstFlattenedMethod, fields) \
+                               .setFieldParams(context, fields) \
                                .setPagedVariant({@FALSE}) \
                                .setCallableVariant({@FALSE}) \
                                .build))
@@ -539,25 +539,25 @@
   Service Description: {@getDoc(protoElement)}
 @end
 
-@private flattenedMethodJavaDoc(service, method, methodName, fields, fieldNamePatterns)
-  {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
+@private flattenedMethodJavaDoc(service, method, methodName, fields)
+  {@methodJavaDoc(method, context.newJavaDocConfigBuilder \
       .setApiName(context.getApiWrapperName(method.getParent)) \
       .setMethodName(methodName) \
       .setReturnType(context.returnTypeOrEmpty(method.getOutputType)) \
-      .setParamsWithFormatting(context, service, fields, fieldNamePatterns) \
-      .setRequiredParamsEmpty() \
+      .setFieldInitCode(context, service, method, fields) \
+      .setFieldParams(context, fields) \
       .setPagedVariant({@FALSE}) \
       .setCallableVariant({@FALSE}) \
       .build)}
 @end
 
-@private iterableFlattenedMethodJavaDoc(service, method, methodName, resourceName, fields, fieldNamePatterns)
-  {@methodJavaDoc(method, context.java.newJavaDocConfigBuilder \
+@private iterableFlattenedMethodJavaDoc(service, method, methodName, resourceName, fields)
+  {@methodJavaDoc(method, context.newJavaDocConfigBuilder \
       .setApiName(context.getApiWrapperName(method.getParent)) \
       .setMethodName(methodName) \
       .setReturnType(resourceName) \
-      .setParamsWithFormatting(context, service, fields, fieldNamePatterns) \
-      .setRequiredParamsEmpty() \
+      .setFieldInitCode(context, service, method, fields) \
+      .setFieldParams(context, fields) \
       .setPagedVariant({@TRUE}) \
       .setCallableVariant({@FALSE}) \
       .build)}
@@ -619,9 +619,7 @@
   @let ApiName = docConfig.getApiName, \
       apiName = context.upperCamelToLowerCamel(ApiName)
     try ({@ApiName} {@apiName} = {@ApiName}.createWithDefaults()) {
-      @join param : docConfig.getParams
-        {@initLine(param, docConfig)};
-      @end
+      {@initCode(docConfig.getInitCode)}
       @if docConfig.isUnpagedListCallableVariant
         @let resourcesField = docConfig.getResourcesFieldForUnpagedListCallable
           while (true) {
@@ -670,54 +668,61 @@
   {@context.basicTypeNameBoxed(resourcesField.getType())}
 @end
 
-@private initLine(param, docConfig)
-  @let paramType = param.getType()
-    @if paramType.isMessage()
-      @if docConfig.getRequiredParams.isEmpty
-        {@initLineSimple(param, docConfig)}
-      @else
-        {@initLineMessage(param, docConfig)}
-      @end
-    @else
-      {@initLineSimple(param, docConfig)}
+@private initCode(initCodeSpec)
+  @join line : initCodeSpec.getLines()
+    @switch line.getLineType.toString()
+    @case "StructureInitLine"
+      {@initLineStructure(line)}
+    @case "ListInitLine"
+      {@initLineList(line)}
+    @case "SimpleInitLine"
+      {@initLineSimple(line)}
+    @default
+      ??
     @end
   @end
 @end
 
-@private initLineMessage(param, docConfig)
-  @join requiredParam : docConfig.getRequiredParams()
-    {@initLineSimple(requiredParam, docConfig)};
+@private initLineStructure(line)
+  {@context.typeName(line.getType)} {@formattedIdentifier(line)} = {@context.typeName(line.getType)}.newBuilder()
+  @join fieldSetting : line.getFieldSettings
+    @let setCallName = setCallName(fieldSetting.getType, context.lowerUnderscoreToUpperCamel(fieldSetting.getFieldName))
+      {@EMPTY}  .{@setCallName}({@formattedIdentifier(fieldSetting)})
+    @end
   @end
-
-  {@context.typeName(param.getType)} {@param.getName} = {@context.typeName(param.getType)}.newBuilder()
-  @join requiredParam : docConfig.getRequiredParams
-    {@EMPTY}  .{@setCallNameFromParam(requiredParam)}({@paramNameFormatted(requiredParam)})
-  @end
-  {@EMPTY}  .build()
+  {@EMPTY}  .build();
 @end
 
-@private initLineSimple(param, docConfig)
-  {@context.typeName(param.getType)} {@paramNameFormatted(param)} = {@initValue(param, docConfig.getApiName)}
+@private initLineList(line)
+  List<{@context.basicTypeNameBoxed(line.getElementType)}> {@formattedIdentifier(line)} = Arrays.asList({@initList(line)});
 @end
 
-@private paramNameFormatted(param)
-  @if param.hasFormattingConfig
-    formatted{@context.lowerCamelToUpperCamel(param.getName)}
+@private initList(line)
+  @join identifier : line.getElementIdentifiers on ", "
+    {@context.lowerUnderscoreToLowerCamel(identifier)}
+  @end
+@end
+
+@private initLineSimple(line)
+  {@context.typeName(line.getType)} {@formattedIdentifier(line)} = {@initValue(line)};
+@end
+
+@private formattedIdentifier(lineOrFieldSetting)
+  @if lineOrFieldSetting.getInitValueConfig.hasFormattingConfig
+    formatted{@context.lowerUnderscoreToUpperCamel(lineOrFieldSetting.getIdentifier)}
   @else
-    {@param.getName}
+    {@context.lowerUnderscoreToLowerCamel(lineOrFieldSetting.getIdentifier)}
   @end
 @end
 
-@private initValue(param, ApiName)
-  @if param.hasFormattingConfig()
-    {@ApiName}.{@formatResourceFunctionName(param.getFormattingConfig())}({@formatResourceFunctionArgs(param.getFormattingConfig())})
-  @else
-    {@context.zeroValue(param.getType)}
+@private initValue(line)
+  @let metadata = line.getInitValueConfig
+    @if metadata.hasFormattingConfig()
+      {@metadata.getApiWrapperName}.{@formatResourceFunctionName(metadata.getCollectionConfig)}({@formatResourceFunctionArgs(metadata.getCollectionConfig)})
+    @else
+      {@context.zeroValue(line.getType)}
+    @end
   @end
-@end
-
-@snippet setCallNameFromParam(param)
-  {@setCallName(param.getType, context.lowerCamelToUpperCamel(param.getName))}
 @end
 
 @private formatResourceFunctionArgs(collectionConfig)
@@ -734,17 +739,17 @@
 @end
 
 @private methodFutureCall(docConfig, apiName)
-  {@apiName}.{@methodCallName(docConfig)}().futureCall({@argList(docConfig.getParams)})
+  {@apiName}.{@methodCallName(docConfig)}().futureCall({@argList(docConfig.getInitCode.getArgFields)})
 @end
 
 @private methodCallSampleCode(docConfig, apiName)
   @if docConfig.isUnpagedListCallableVariant
-    {@apiName}.{@methodCallName(docConfig)}().call({@argList(docConfig.getParams)})
+    {@apiName}.{@methodCallName(docConfig)}().call({@argList(docConfig.getInitCode.getArgFields)})
   @else
     @if docConfig.isCallableVariant
       future.get()
     @else
-      {@apiName}.{@methodCallName(docConfig)}({@argList(docConfig.getParams)})
+      {@apiName}.{@methodCallName(docConfig)}({@argList(docConfig.getInitCode.getArgFields)})
     @end
   @end
 @end
@@ -765,9 +770,9 @@
   @end
 @end
 
-@private argList(params)
-  @join param : params on ", "
-    {@paramNameFormatted(param)}
+@private argList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@formattedIdentifier(fieldSetting)}
   @end
 @end
 
