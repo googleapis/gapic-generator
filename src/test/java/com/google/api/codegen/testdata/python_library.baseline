@@ -129,6 +129,45 @@ class LibraryServiceApi(object):
             'book': book,
         })
 
+    @classmethod
+    def match_shelf_from_shelf_name(cls, shelf_name):
+        """Parses the shelf from a shelf resource.
+
+        Args:
+          shelf_name (string): A fully-qualified path representing a shelf
+            resource.
+
+        Returns:
+          A string representing the shelf.
+        """
+        return cls._SHELF_PATH_TEMPLATE.match(shelf_name).get('shelf')
+
+    @classmethod
+    def match_shelf_from_book_name(cls, book_name):
+        """Parses the shelf from a book resource.
+
+        Args:
+          book_name (string): A fully-qualified path representing a book
+            resource.
+
+        Returns:
+          A string representing the shelf.
+        """
+        return cls._BOOK_PATH_TEMPLATE.match(book_name).get('shelf')
+
+    @classmethod
+    def match_book_from_book_name(cls, book_name):
+        """Parses the book from a book resource.
+
+        Args:
+          book_name (string): A fully-qualified path representing a book
+            resource.
+
+        Returns:
+          A string representing the book.
+        """
+        return cls._BOOK_PATH_TEMPLATE.match(book_name).get('book')
+
     def __init__(
             self,
             service_path=SERVICE_ADDRESS,

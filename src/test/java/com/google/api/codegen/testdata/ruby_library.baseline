@@ -120,6 +120,27 @@ module Google
               :'book' => book)
           end
 
+          # Parses the shelf from a shelf resource.
+          # @param shelf_name [String]
+          # @return [String]
+          def self.match_shelf_from_shelf_name(shelf_name)
+            SHELF_PATH_TEMPLATE.match(shelf_name)['shelf']
+          end
+
+          # Parses the shelf from a book resource.
+          # @param book_name [String]
+          # @return [String]
+          def self.match_shelf_from_book_name(book_name)
+            BOOK_PATH_TEMPLATE.match(book_name)['shelf']
+          end
+
+          # Parses the book from a book resource.
+          # @param book_name [String]
+          # @return [String]
+          def self.match_book_from_book_name(book_name)
+            BOOK_PATH_TEMPLATE.match(book_name)['book']
+          end
+
           # @param service_path [String]
           #   The domain name of the API remote host.
           # @param port [Integer]
