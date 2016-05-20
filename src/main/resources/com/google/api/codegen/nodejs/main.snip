@@ -241,6 +241,8 @@
     @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
 
       {@createResourceFunction(service, collectionConfig)}
+
+      {@createMatchFunctions(service, collectionConfig)}
     @end
   @end
 @end
@@ -258,6 +260,29 @@
       {@createRenderDictionary(collectionConfig)}
     });
   };
+@end
+
+@private createMatchFunctions(service, collectionConfig)
+  @join subField : collectionConfig.getNameTemplate.vars() on BREAK.add(BREAK)
+    @let fieldPath = resourceName(collectionConfig), \
+         fieldParam = context.upperCamelToLowerCamel(fieldPath), \
+         subFieldUpper = context.lowerUnderscoreToUpperCamel(subField)
+      /**
+       * Parses the {@fieldParam} from a {@collectionConfig.getEntityName} resource.
+       * @@param {String} {@fieldParam}
+       *   A fully-qualified path representing a {@collectionConfig.getEntityName} resources.
+       * @@returns {String} - A string representing the {@subField}.
+       */
+      {@context.getApiWrapperName(service)}.match{@subFieldUpper}From{@fieldPath} =
+          function match{@subFieldUpper}From{@fieldPath}({@fieldParam}) {
+        return {@pathTemplateName(collectionConfig)}.match({@fieldParam}).{@subField};
+      };
+    @end
+  @end
+@end
+
+@private resourceName(collectionConfig)
+  {@context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName)}Name
 @end
 
 @private createResourceFunctionParams(collectionConfig)

@@ -71,7 +71,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   /**
-   * Returns type information for a field in YARD style.
+   * Returns type information for a field in JSDoc style.
    */
   private String fieldTypeCardinalityComment(Field field) {
     TypeRef type = field.getType();
@@ -89,8 +89,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   /**
-   * Returns a JSDoc comment string for the field as a parameter to a function or
-   * attribute of a message.
+   * Returns a JSDoc comment string for the field as a parameter to a function.
    */
   private String fieldParamComment(Field field, boolean isOptional) {
     String commentType = fieldTypeCardinalityComment(field);
@@ -102,6 +101,9 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
         String.format("@param {%s} %s", commentType, fieldName), field);
   }
 
+  /**
+   * Returns a JSDoc comment string for the field as an attribute of a message.
+   */
   private String fieldPropertyComment(Field field) {
     String commentType = fieldTypeCardinalityComment(field);
     String fieldName = wrapIfKeywordOrBuiltIn(field.getSimpleName());
@@ -119,8 +121,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   /**
-   * Return JSDoc return type string for the given method, or null if the return type is
-   * nil.
+   * Return JSDoc callback comment and return type comment for the given method.
    */
   @Nullable
   private String returnTypeComment(Method method) {
@@ -138,10 +139,10 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     if (config.isPageStreaming()) {
       String resourceType = jsTypeName(config.getPageStreaming().getResourcesField().getType());
       return callbackComment + "\n@returns {?Stream<" + resourceType + ">}\n"
-          + "  An object stream of " + resourceType + " instances unless\n"
-          + "  page streaming is disabled through the call options or callback\n"
-          + "  is specified. If page streaming is disabled or callback is specified,\n"
-          + "  this return a null and callback will be called with a single instance\n"
+          + "  An object stream of " + resourceType + " instances, unless\n"
+          + "  page streaming is disabled through the call options or a callback\n"
+          + "  is specified. If page streaming is disabled or a callback is specified,\n"
+          + "  this returns null, and the callback will be called with a single instance\n"
           + "  of " + classInfo + ".";
     } else {
       return callbackComment;
@@ -196,20 +197,6 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   /**
-   * Return the list of messages within element which should be documented in NodeJS.
-   */
-  public ImmutableList<MessageType> filterDocumentingMessages(ProtoContainerElement element) {
-    ImmutableList.Builder<MessageType> builder = ImmutableList.builder();
-    for (MessageType msg : element.getMessages()) {
-      // Doesn't have to document map entries in Ruby because Hash is used.
-      if (!msg.isMapEntry()) {
-        builder.add(msg);
-      }
-    }
-    return builder.build();
-  }
-
-  /**
    * Return the doccomment for the message.
    */
   public List<String> methodDocComment(MessageType msg) {
@@ -242,10 +229,10 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    */
   public String defaultValue(Field field) {
     TypeRef type = field.getType();
-    // Return empty array if the type is repeated.
     if (type.isMap()) {
       return "{}";
     }
+    // Return empty array if the type is repeated.
     if (type.getCardinality() == Cardinality.REPEATED) {
       return "[]";
     }
@@ -255,7 +242,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       case TYPE_ENUM:
         Preconditions.checkArgument(type.getEnumType().getValues().size() > 0,
             "enum must have a value");
-        return jsTypeName(type) + "." + type.getEnumType().getValues().get(0).getSimpleName();
+        return type.getEnumType().getValues().get(0).getFullName();
       default:
         if (type.isPrimitive()) {
           return DEFAULT_VALUE_MAP.get(type.getKind());
@@ -310,7 +297,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
 
   /**
    * Convert the content string into a commented block that can be directly printed out in the
-   * generated Ruby files.
+   * generated JS files.
    */
   private List<String> convertToCommentedBlock(String content) {
     if (Strings.isNullOrEmpty(content)) {

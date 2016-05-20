@@ -189,6 +189,17 @@ LibraryServiceApi.shelfPath = function shelfPath(shelf) {
 };
 
 /**
+ * Parses the shelfName from a shelf resource.
+ * @param {String} shelfName
+ *   A fully-qualified path representing a shelf resources.
+ * @returns {String} - A string representing the shelf.
+ */
+LibraryServiceApi.matchShelfFromShelfName =
+    function matchShelfFromShelfName(shelfName) {
+  return SHELF_PATH_TEMPLATE.match(shelfName).shelf;
+};
+
+/**
  * Returns a fully-qualified book resource name string.
  * @param {String} shelf
  * @param {String} book
@@ -199,6 +210,28 @@ LibraryServiceApi.bookPath = function bookPath(shelf, book) {
     'shelf': shelf,
     'book': book
   });
+};
+
+/**
+ * Parses the bookName from a book resource.
+ * @param {String} bookName
+ *   A fully-qualified path representing a book resources.
+ * @returns {String} - A string representing the shelf.
+ */
+LibraryServiceApi.matchShelfFromBookName =
+    function matchShelfFromBookName(bookName) {
+  return BOOK_PATH_TEMPLATE.match(bookName).shelf;
+};
+
+/**
+ * Parses the bookName from a book resource.
+ * @param {String} bookName
+ *   A fully-qualified path representing a book resources.
+ * @returns {String} - A string representing the book.
+ */
+LibraryServiceApi.matchBookFromBookName =
+    function matchBookFromBookName(bookName) {
+  return BOOK_PATH_TEMPLATE.match(bookName).book;
 };
 
 // Callback types
@@ -303,10 +336,10 @@ LibraryServiceApi.prototype.getShelf = function getShelf(
  * @param {?APICallback<google.example.library.v1.ListShelvesResponse>} callback
  *   The function which will be called with the result of the API call.
  * @returns {?Stream<google.example.library.v1.Shelf>}
- *   An object stream of google.example.library.v1.Shelf instances unless
- *   page streaming is disabled through the call options or callback
- *   is specified. If page streaming is disabled or callback is specified,
- *   this return a null and callback will be called with a single instance
+ *   An object stream of google.example.library.v1.Shelf instances, unless
+ *   page streaming is disabled through the call options or a callback
+ *   is specified. If page streaming is disabled or a callback is specified,
+ *   this returns null, and the callback will be called with a single instance
  *   of google.example.library.v1.ListShelvesResponse.
  * @throws an error if the RPC is aborted.
  */
@@ -537,10 +570,10 @@ LibraryServiceApi.prototype.getBook = function getBook(
  * @param {?APICallback<google.example.library.v1.ListBooksResponse>} callback
  *   The function which will be called with the result of the API call.
  * @returns {?Stream<google.example.library.v1.Book>}
- *   An object stream of google.example.library.v1.Book instances unless
- *   page streaming is disabled through the call options or callback
- *   is specified. If page streaming is disabled or callback is specified,
- *   this return a null and callback will be called with a single instance
+ *   An object stream of google.example.library.v1.Book instances, unless
+ *   page streaming is disabled through the call options or a callback
+ *   is specified. If page streaming is disabled or a callback is specified,
+ *   this returns null, and the callback will be called with a single instance
  *   of google.example.library.v1.ListBooksResponse.
  * @throws an error if the RPC is aborted.
  */
@@ -704,10 +737,10 @@ LibraryServiceApi.prototype.moveBook = function moveBook(
  * @param {?APICallback<google.example.library.v1.ListStringsResponse>} callback
  *   The function which will be called with the result of the API call.
  * @returns {?Stream<String>}
- *   An object stream of String instances unless
- *   page streaming is disabled through the call options or callback
- *   is specified. If page streaming is disabled or callback is specified,
- *   this return a null and callback will be called with a single instance
+ *   An object stream of String instances, unless
+ *   page streaming is disabled through the call options or a callback
+ *   is specified. If page streaming is disabled or a callback is specified,
+ *   this returns null, and the callback will be called with a single instance
  *   of google.example.library.v1.ListStringsResponse.
  * @throws an error if the RPC is aborted.
  */

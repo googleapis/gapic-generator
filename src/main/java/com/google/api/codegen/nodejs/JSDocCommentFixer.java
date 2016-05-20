@@ -30,29 +30,7 @@ public class JSDocCommentFixer {
   public static String jsdocify(String comment) {
     comment = jsdocifyProtoMarkdownLinks(comment);
     comment = jsdocifyCloudMarkdownLinks(comment);
-    return cleanupTrailingWhitespaces(comment);
-  }
-
-  private static String protoToRubyDoc(String comment) {
-    boolean messageFound = false;
-    boolean isFirstSegment = true;
-    String result = "";
-    for (String name : Splitter.on(".").splitToList(comment)) {
-      char firstChar = name.charAt(0);
-      if (Character.isUpperCase(firstChar)) {
-        messageFound = true;
-        result += (isFirstSegment ? "" : "::") + name;
-      } else if (messageFound) {
-        // Lowercase segment after message is found is field.
-        // In Ruby, it is referred as "Message#field" format.
-        result += "#" + name;
-      } else {
-        result +=
-            (isFirstSegment ? "" : "::") + Character.toUpperCase(firstChar) + name.substring(1);
-      }
-      isFirstSegment = false;
-    }
-    return result;
+    return comment.trim();
   }
 
   /**
@@ -86,9 +64,5 @@ public class JSDocCommentFixer {
     } while (m.find());
     m.appendTail(sb);
     return sb.toString();
-  }
-
-  private static String cleanupTrailingWhitespaces(String comment) {
-    return comment.trim();
   }
 }
