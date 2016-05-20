@@ -173,6 +173,7 @@ class LibraryServiceApi(object):
             service_path=SERVICE_ADDRESS,
             port=DEFAULT_SERVICE_PORT,
             channel=None,
+            metadata_transformer=None,
             ssl_creds=None,
             scopes=None,
             client_config=None,
@@ -193,6 +194,8 @@ class LibraryServiceApi(object):
             :method:`google.gax.construct_settings` for the structure of
             this data. Falls back to the default config if not specified
             or the specified config is missing data points.
+          metadata_transformer (Callable[[], list]): A function that creates
+             the metadata for requests.
           timeout (int): The default timeout, in seconds, for calls made
             through this client
           app_name (string): The codename of the calling service.
@@ -229,6 +232,7 @@ class LibraryServiceApi(object):
             port,
             ssl_creds=ssl_creds,
             channel=channel,
+            metadata_transformer=metadata_transformer,
             scopes=scopes)
 
     # Service calls
