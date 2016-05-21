@@ -63,7 +63,7 @@ public class JavaCodeGeneratorTest extends CodeGeneratorTestBase {
         new Object[] {
           "java_package",
           new String[] {"java_gapic.yaml", "library_gapic.yaml"},
-          "com.google.api.codegen.java.JavaSimpleFileProvider",
+          "com.google.api.codegen.java.JavaGapicIterableProvider",
           "com.google.api.codegen.InterfaceListView",
           "package-info.snip"
         });
