@@ -28,16 +28,16 @@ import java.io.IOException;
 /**
  * The GapicProvider which runs Gapic code generation for Java.
  */
-public class JavaSimpleFileProvider<T> implements GapicProvider<Iterable<T>> {
+public class JavaGapicIterableProvider<T> implements GapicProvider<Iterable<T>> {
 
   private final JavaGapicContext context;
-  private final JavaSimpleFileSnippetSetRunner simpleFileSnippetSetRunner;
+  private final JavaIterableSnippetSetRunner simpleFileSnippetSetRunner;
   private InputElementView<Iterable<T>> view;
 
-  public JavaSimpleFileProvider(
+  public JavaGapicIterableProvider(
       Model model, ApiConfig apiConfig, InputElementView<Iterable<T>> view) {
     this.context = new JavaGapicContext(model, apiConfig);
-    this.simpleFileSnippetSetRunner = new JavaSimpleFileSnippetSetRunner();
+    this.simpleFileSnippetSetRunner = new JavaIterableSnippetSetRunner();
     this.view = view;
   }
 

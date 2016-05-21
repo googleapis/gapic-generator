@@ -19,7 +19,7 @@ import com.google.api.tools.framework.snippet.Doc;
 /**
  * Entry points for a simple Java snippet set. Generation is a single phase.
  */
-interface JavaSimpleFileSnippetSet<T> {
+interface JavaIterableSnippetSet<T> {
 
   /**
    * Generates the result filename for the generated document.

@@ -21,13 +21,14 @@ import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A JavaProvider provides general Java code generation logic that is agnostic to the use case
  * (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
  * subclass of JavaContext.
  */
-public class JavaSimpleFileSnippetSetRunner {
+public class JavaIterableSnippetSetRunner {
 
   /**
    * The path to the root of snippet resources.
@@ -36,14 +37,14 @@ public class JavaSimpleFileSnippetSetRunner {
       JavaContextCommon.class.getPackage().getName().replace('.', '/');
 
   @SuppressWarnings("unchecked")
-  public <T> GeneratedResult generate(
-      Iterable<T> elementList,
+  public <ElementT> GeneratedResult generate(
+      Iterable<ElementT> elementList,
       SnippetDescriptor snippetDescriptor,
       JavaContext context,
       String defaultPackagePrefix) {
-    JavaSimpleFileSnippetSet<T> snippets =
+    JavaIterableSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
-            JavaSimpleFileSnippetSet.class,
+            JavaIterableSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
             snippetDescriptor.getSnippetInputName(),
             ImmutableMap.<String, Object>of("context", context));
@@ -52,8 +53,8 @@ public class JavaSimpleFileSnippetSetRunner {
     JavaContextCommon javaContextCommon = new JavaContextCommon(defaultPackagePrefix);
     context.resetState(javaContextCommon);
 
-    ArrayList<Doc> fragmentList = new ArrayList<>();
-    for (T element : elementList) {
+    List<Doc> fragmentList = new ArrayList<>();
+    for (ElementT element : elementList) {
       fragmentList.add(snippets.generateFragment(element));
     }
 
@@ -62,8 +63,8 @@ public class JavaSimpleFileSnippetSetRunner {
     return GeneratedResult.create(result, outputFilename);
   }
 
-  public <T> GeneratedResult generate(
-      Iterable<T> element, SnippetDescriptor snippetDescriptor, JavaContext context) {
+  public <ElementT> GeneratedResult generate(
+      Iterable<ElementT> element, SnippetDescriptor snippetDescriptor, JavaContext context) {
     return generate(element, snippetDescriptor, context, null);
   }
 }
