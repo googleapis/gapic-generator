@@ -34,6 +34,7 @@ import com.google.common.io.Files;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * A GapicContext specialized for Java.
@@ -90,15 +91,13 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
           .build();
 
   private JavaContextCommon javaCommon;
-  private JavaSnippetSet<?> javaSnippetSet;
 
   public JavaGapicContext(Model model, ApiConfig apiConfig) {
     super(model, apiConfig);
   }
 
   @Override
-  public void resetState(JavaSnippetSet<?> javaSnippetSet, JavaContextCommon javaCommon) {
-    this.javaSnippetSet = javaSnippetSet;
+  public void resetState(JavaContextCommon javaCommon) {
     this.javaCommon = javaCommon;
   }
 
@@ -288,10 +287,6 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
     return DocumentationUtil.getDescription(element);
   }
 
-  public String generateMethodSampleCode(JavaContextCommon.JavaDocConfig config) {
-    return javaSnippetSet.generateMethodSampleCode(config).prettyPrint();
-  }
-
   public String defaultTokenValue(Field field) {
     if (field.getType().getKind().equals(Type.TYPE_STRING)) {
       return "\"\"";
@@ -340,5 +335,16 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
           "A collection config was not present for entity name " + entityName);
     }
     return result;
+  }
+
+  public String getTitle() {
+    return getModel().getServiceConfig().getTitle();
+  }
+
+  public String getMultilineHeading(String heading) {
+    final char[] array = new char[heading.length()];
+    Arrays.fill(array, '=');
+    String eqsString = new String(array);
+    return String.format("%s\n%s\n%s", eqsString, heading, eqsString);
   }
 }

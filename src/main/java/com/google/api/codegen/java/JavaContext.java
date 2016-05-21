@@ -18,5 +18,5 @@ package com.google.api.codegen.java;
  * A JavaContext provides functionality specific to a context in Java.
  */
 public interface JavaContext {
-  void resetState(JavaSnippetSet<?> javaSnippetSet, JavaContextCommon javaTypeHandler);
+  void resetState(JavaContextCommon javaTypeHandler);
 }

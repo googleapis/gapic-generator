@@ -131,7 +131,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
   }
 
   @Override
-  public void resetState(JavaSnippetSet<?> javaSnippetSet, JavaContextCommon javaCommon) {
+  public void resetState(JavaContextCommon javaCommon) {
     this.javaCommon = javaCommon;
   }
 
