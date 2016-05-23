@@ -68,7 +68,7 @@
         /// </param>
         /// <returns>A <see cref="{@name}Client"/> that wraps the specified GRPC client.</returns>
         public static {@name}Client ToClient(
-            this {@name}.I{@name}Client grpcClient,
+            this {@name}.{@name}Client grpcClient,
             {@name}Settings settings = null
         ) => new {@name}ClientImpl(grpcClient, settings);
     }
@@ -162,12 +162,12 @@
         @end
         @join method : methods
             /// <summary>
-            /// <see cref="CallSettings"/> for asynchronous and synchronous calls to
-            /// <see cref="{@name}Client.{@method.grpcName}"/> and <see cref="{@name}Client.{@method.grpcName}Async"/>.
+            /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+            /// <see cref="{@name}Client.{@method.name}"/> and <see cref="{@name}Client.{@method.name}Async"/>.
             /// </summary>
             /// <remarks>
-            /// The default <see cref="{@name}Client.{@method.grpcName}"/> and
-            /// <see cref="{@name}Client.{@method.grpcName}Async"/> <see cref="RetrySettings"/> are:
+            /// The default <see cref="{@name}Client.{@method.name}"/> and
+            /// <see cref="{@name}Client.{@method.name}Async"/> <see cref="RetrySettings"/> are:
             /// <list type="bullet">
             /// <item><description>Initial retry delay: {@method.retrySetting.delayMs} milliseconds</description></item>
             /// <item><description>Retry delay multiplier: {@method.retrySetting.delayMultiplier}</description></item>
@@ -372,7 +372,7 @@
         /// <summary>
         /// The underlying GRPC {@name} client.
         /// </summary>
-        public virtual {@name}.I{@name}Client GrpcClient
+        public virtual {@name}.{@name}Client GrpcClient
         {
             get { throw new NotImplementedException(); }
         }
@@ -410,7 +410,7 @@
             private readonly ApiCall<{@method.requestTypeName}, {@method.responseTypeName}> _call{@method.grpcName};
         @end
 
-        public {@name}ClientImpl({@name}.I{@name}Client grpcClient, {@name}Settings settings)
+        public {@name}ClientImpl({@name}.{@name}Client grpcClient, {@name}Settings settings)
         {
             this.GrpcClient = grpcClient;
             {@name}Settings effectiveSettings = settings ?? {@name}Settings.GetDefault();
@@ -421,7 +421,7 @@
             @end
         }
 
-        public override {@name}.I{@name}Client GrpcClient { get; }
+        public override {@name}.{@name}Client GrpcClient { get; }
 
         @join method : context.getMethodInfos(service)
             @join flat : method.flats
