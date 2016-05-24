@@ -15,10 +15,8 @@
 package com.google.api.codegen.java;
 
 import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.MethodConfig;
-import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Interface;
@@ -282,16 +280,9 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
   }
 
   /**
-   * Returns the description of the proto element, in markdown format.
-   */
-  public String getDescription(ProtoElement element) {
-    return DocumentationUtil.getDescription(element);
-  }
-
-  /**
    * Generate the example snippet for a method.
    */
-  public String generateMethodSampleCode(JavaContextCommon.JavaDocConfig config) {
+  public String generateMethodSampleCode(JavaDocConfig config) {
     return javaSnippetSet.generateMethodSampleCode(config).prettyPrint();
   }
 
@@ -333,15 +324,5 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
       }
     }
     throw new RuntimeException("No flattened methods available.");
-  }
-
-  public CollectionConfig getCollectionConfig(Interface service, String entityName) {
-    CollectionConfig result =
-        getApiConfig().getInterfaceConfig(service).getCollectionConfig(entityName);
-    if (result == null) {
-      throw new IllegalStateException(
-          "A collection config was not present for entity name " + entityName);
-    }
-    return result;
   }
 }
