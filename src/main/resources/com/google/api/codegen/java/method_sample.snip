@@ -80,6 +80,7 @@
   @end
 @end
 
+# Optionally render the return value from the API method call
 @private callResultSampleCode(returnType)
   @if returnType.isEmpty
   @else
@@ -87,6 +88,7 @@
   @end
 @end
 
+# Render the API method call itself
 @private methodCallSampleCode(docConfig, apiName)
   @if docConfig.isUnpagedListCallableVariant
     {@apiName}.{@methodCallName(docConfig)}().call({@argList(docConfig.getParams)})
@@ -99,6 +101,7 @@
   @end
 @end
 
+# Render the name of the method call
 @private methodCallName(docConfig)
   @if docConfig.isCallableVariant
     {@methodCallNameIter(docConfig)}Callable
@@ -131,12 +134,14 @@
   get{@context.lowerUnderscoreToUpperCamel(resourcesField.getSimpleName)}List()
 @end
 
+# Generate argument list
 @private argList(params)
   @join param : params on ", "
     {@paramNameFormatted(param)}
   @end
 @end
 
+# Format parameter name
 @private paramNameFormatted(param)
   @if param.hasFormattingConfig
     formatted{@context.lowerCamelToUpperCamel(param.getName)}
