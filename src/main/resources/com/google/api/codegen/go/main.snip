@@ -78,6 +78,11 @@
     )
 
     var (
+        @if {context.hasPageStreamingMethod(service)}
+            // Done is returned by iterators on successful completion.
+            Done = errors.New("iterator done")
+        @end
+
         @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
             {@pathTemplateVarName(collectionConfig)} = gax.MustCompilePathTemplate("{@collectionConfig.getNamePattern}")
         @end
@@ -120,7 +125,7 @@
 
     func {@context.lowerUnderscoreToLowerCamel(retryDef.getKey)}RetryOptions() []gax.CallOption {
         return []gax.CallOption{
-            gax.WithTimeout(30*time.Second),
+            gax.WithTimeout({@retryDef.getValue.getTotalTimeout.getMillis()}*time.Millisecond),
             gax.WithDelayTimeoutSettings({@retryDef.getValue.getInitialRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getRetryDelayMultiplier}),
             gax.WithRPCTimeoutSettings({@retryDef.getValue.getInitialRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getRpcTimeoutMultiplier}),
         }
@@ -215,7 +220,6 @@
             @if {@isPageStreaming}
                 @let pageStreaming = methodConfig.getPageStreaming(), \
                      iteratorTypeName = context.getIteratorTypeName(pageStreaming), \
-                     iteratorPageTypeName = context.getIteratorPageTypeName(pageStreaming), \
                      resourceFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getResourcesField().getSimpleName), \
                      requestTokenFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getRequestTokenField().getSimpleName), \
                      responseTokenFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getResponseTokenField().getSimpleName), \
@@ -225,32 +229,31 @@
                     func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) (*{@iteratorTypeName}, error) {
                         ctx = metadata.NewContext(ctx, client.metadata)
                         {@callOptions(methodName)}
-                        atLastPage := false
-                        return &{@iteratorTypeName}{
-                            apiCall: func() ({@iteratorPageTypeName}, error) {
-                                if atLastPage {
-                                    return {@iteratorPageTypeName}{}, io.EOF
-                                }
-                                var resp {@outTypeName}
-                                err := gax.Invoke(ctx, func (c context.Context) error {
-                                    var err error
-                                    resp, err = client.client.{@methodName}(c, req)
-                                    return err
-                                }, callOpts...)
-                                if err != nil {
-                                    return {@iteratorPageTypeName}{}, err
-                                }
-                                if resp.{@responseTokenFieldName} == {@tokenZeroValue} {
-                                    atLastPage = true
-                                } else {
-                                    req.{@requestTokenFieldName} = resp.{@responseTokenFieldName}
-                                }
-                                return {@iteratorPageTypeName}{
-                                    Items: resp.{@resourceFieldName},
-                                    NextPageToken: resp.{@responseTokenFieldName},
-                                }, nil
-                            },
-                        }, nil
+
+                        iterator := &{@iteratorTypeName}{}
+                        iterator.apiCall = func() error {
+                            if iterator.atLastPage {
+                                return Done
+                            }
+                            var resp {@outTypeName}
+                            err := gax.Invoke(ctx, func (c context.Context) error {
+                                var err error
+                                req.{@requestTokenFieldName} = iterator.nextPageToken
+                                resp, err = client.client.{@methodName}(c, req)
+                                return err
+                            }, callOpts...)
+                            if err != nil {
+                                return err
+                            }
+                            if resp.{@responseTokenFieldName} == {@tokenZeroValue} {
+                                iterator.atLastPage = true
+                            } else {
+                                iterator.nextPageToken = resp.{@responseTokenFieldName}
+                            }
+                            iterator.items = resp.{@resourceFieldName}
+                            return nil
+                        }
+                        return iterator, nil
                     }
 
                 @end
@@ -303,51 +306,55 @@
     //
     @join pageStreaming : context.getPageStreamingConfigs(service)
         @let iteratorTypeName = context.getIteratorTypeName(pageStreaming), \
-             iteratorPageTypeName = context.getIteratorPageTypeName(pageStreaming), \
              tokenType = context.getNextPageTokenType(service, pageStreaming), \
              resourceFieldType = context.getResourceTypeName(pageStreaming.getResourcesField)
-
-            // {@iteratorPageTypeName} represents a page in a stream of {@iteratorTypeName}.
-            // This will be updated through {@iteratorTypeName}.Advance.
-            type {@iteratorPageTypeName} struct {
-                // The elements in the current page.
-                Items []{@resourceFieldType}
-
-                // The token to get the next page response. This can be used to resume the iteration.
-                NextPageToken {@tokenType}
-            }
 
             // {@iteratorTypeName} manages a stream of {@resourceFieldType}.
             type {@iteratorTypeName} struct {
                 // The current page data.
-                Page         {@iteratorPageTypeName}
-                currentIndex int
-                apiCall      func() ({@iteratorPageTypeName}, error)
+                items         []{@resourceFieldType}
+                atLastPage    bool
+                currentIndex  int
+                nextPageToken {@tokenType}
+                apiCall       func() error
             }
 
-            // Advance moves to the next page and updates its internal data.
-            // This returns io.EOF if no more pages exist.
-            func (iterator *{@iteratorTypeName}) Advance() error {
-                page, err := iterator.apiCall()
-                if err == nil {
-                    iterator.Page = page
+            // NextPage moves to the next page and updates its internal data.
+            // It returns Done if no more pages exist.
+            func (iterator *{@iteratorTypeName}) NextPage() ([]{@resourceFieldType}, error) {
+                err := iterator.apiCall()
+                if err != nil {
+                    return nil, err
                 }
-                return err
+                return iterator.items, err
             }
 
-            // Next returns the next element in the stream. This returns io.EOF at the end of
-            // the stream.
+            // Next returns the next element in the stream. It returns Done at
+            // the end of the stream.
             func (iterator *{@iteratorTypeName}) Next() ({@resourceFieldType}, error) {
-                for iterator.currentIndex >= len(iterator.Page.Items) {
-                    err := iterator.Advance()
+                for iterator.currentIndex >= len(iterator.items) {
+                    _, err := iterator.NextPage()
                     if err != nil {
                         return nil, err
                     }
                     iterator.currentIndex = 0
                 }
-                result := iterator.Page.Items[iterator.currentIndex]
+                result := iterator.items[iterator.currentIndex]
                 iterator.currentIndex++
                 return result, nil
+            }
+
+            // SetPageToken sets the next page token to be retrieved. Note, it
+            // does not retrieve the next page, or modify the cached page. If
+            // Next is called, there is no guarantee that the result returned
+            // will be from the next page until NextPage is called.
+            func (iterator *{@iteratorTypeName}) SetPageToken(token {@tokenType}) {
+                iterator.nextPageToken = token
+            }
+
+            // NextPageToken returns the next page token.
+            func (iterator *{@iteratorTypeName}) NextPageToken() {@tokenType} {
+                return iterator.nextPageToken
             }
         @end
     @end
