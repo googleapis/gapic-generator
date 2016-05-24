@@ -17,7 +17,6 @@ package com.google.api.codegen;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.SimpleLocation;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.common.base.Preconditions;
@@ -43,11 +42,11 @@ public final class GeneratorBuilderUtil {
    * parameterized type information, so we must suppress the type safety warning here.
    */
   @SuppressWarnings("unchecked")
-  public static GapicProvider<ProtoElement> createCodegenProvider(
+  public static GapicProvider<Object> createCodegenProvider(
       ConfigProto configProto,
       TemplateProto template,
       final Model model,
-      InputElementView<ProtoElement> view) {
+      InputElementView<Object> view) {
     Preconditions.checkNotNull(model);
     Preconditions.checkNotNull(configProto);
 
@@ -83,7 +82,7 @@ public final class GeneratorBuilderUtil {
    * parameterized type information, so we must suppress the type safety warning here.
    */
   @SuppressWarnings("unchecked")
-  public static InputElementView<ProtoElement> createView(
+  public static InputElementView<Object> createView(
       TemplateProto template, final DiagCollector diagCollector) {
     return GeneratorBuilderUtil.createClass(
         template.getInputElementView(),

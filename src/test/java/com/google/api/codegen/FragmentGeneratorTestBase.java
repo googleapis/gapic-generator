@@ -14,11 +14,7 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.CodeGenerator;
-import com.google.api.codegen.GeneratedResult;
-import com.google.api.codegen.SnippetDescriptor;
 import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.ProtoElement;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -41,7 +37,7 @@ public abstract class FragmentGeneratorTestBase extends GeneratorTestBase {
     CodeGenerator generator = CodeGenerator.create(config, template, model);
     String snippetInputName = template.getSnippetFiles(0);
     SnippetDescriptor resourceDescriptor = new SnippetDescriptor(snippetInputName);
-    Map<ProtoElement, GeneratedResult> result = generator.generate(resourceDescriptor);
+    Map<Object, GeneratedResult> result = generator.generate(resourceDescriptor);
     if (result == null) {
       // Report diagnosis to baseline file.
       for (Diag diag : model.getDiags()) {

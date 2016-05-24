@@ -14,12 +14,8 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.CodeGenerator;
-import com.google.api.codegen.GeneratedResult;
-import com.google.api.codegen.ProtoElementComparator;
-import com.google.api.codegen.SnippetDescriptor;
 import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.ProtoElement;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.truth.Truth;
 
 import org.junit.runner.RunWith;
@@ -27,8 +23,7 @@ import org.junit.runners.Parameterized;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * Base class for code generator baseline tests.
@@ -64,7 +59,7 @@ public abstract class CodeGeneratorTestBase extends GeneratorTestBase {
     String snippetInputName = template.getSnippetFiles(snippetIndex);
     SnippetDescriptor resourceDescriptor = new SnippetDescriptor(snippetInputName);
 
-    Map<ProtoElement, GeneratedResult> output =
+    ImmutableMap<Object, GeneratedResult> output =
         CodeGenerator.create(config, template, model).generate(resourceDescriptor);
     if (output == null) {
       // Report diagnosis to baseline file.
@@ -73,10 +68,10 @@ public abstract class CodeGeneratorTestBase extends GeneratorTestBase {
       }
     }
 
-    Map<ProtoElement, GeneratedResult> result = new TreeMap<>(new ProtoElementComparator());
-    result.putAll(output);
+    TreeSet<GeneratedResult> results = new TreeSet<>(new GeneratedResultComparator());
+    results.addAll(output.values());
 
-    return new ArrayList<GeneratedResult>(result.values());
+    return new ArrayList<GeneratedResult>(results);
   }
 
   @Override

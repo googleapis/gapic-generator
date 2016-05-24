@@ -67,6 +67,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
           .build();
 
   private PythonContextCommon pythonCommon;
+  // FIXME: no longer needed; see changes to JavaGapicContext
   private PythonSnippetSet<?> pythonSnippetSet;
 
   public PythonGapicContext(Model model, ApiConfig apiConfig) {
@@ -110,8 +111,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     if (!element.hasAttribute(ElementDocumentationAttribute.KEY)) {
       return ImmutableList.<String>of("");
     }
-    return pythonCommon.convertToCommentedBlock(
-        PythonSphinxCommentFixer.sphinxify(DocumentationUtil.getScopedDescription(element)));
+    return pythonCommon.convertToCommentedBlock(getSphinxifiedScopedDescription(element));
   }
 
   /**
@@ -167,7 +167,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     String comment =
         String.format(
             "  %s (%s)", field.getSimpleName(), fieldTypeCardinalityComment(field, importHandler));
-    String paramComment = DocumentationUtil.getScopedDescription(field);
+    String paramComment = getSphinxifiedScopedDescription(field);
     if (!Strings.isNullOrEmpty(paramComment)) {
       if (paramComment.charAt(paramComment.length() - 1) == '\n') {
         paramComment = paramComment.substring(0, paramComment.length() - 1);
@@ -192,7 +192,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     // Generate comment contents
     StringBuilder contentBuilder = new StringBuilder();
     if (msg.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      contentBuilder.append(DocumentationUtil.getScopedDescription(msg));
+      contentBuilder.append(getSphinxifiedScopedDescription(msg));
       if (!Strings.isNullOrEmpty(paramTypes)) {
         contentBuilder.append("\n\n");
       }
@@ -253,8 +253,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     // Generate comment contents
     StringBuilder contentBuilder = new StringBuilder();
     if (method.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      String sphinxified =
-          PythonSphinxCommentFixer.sphinxify(DocumentationUtil.getScopedDescription(method));
+      String sphinxified = getSphinxifiedScopedDescription(method);
       sphinxified = sphinxified.trim();
       contentBuilder.append(sphinxified.replaceAll("\\s*\\n\\s*", "\n"));
       if (!Strings.isNullOrEmpty(paramTypes)) {
@@ -352,5 +351,9 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
       default:
         return false;
     }
+  }
+
+  private String getSphinxifiedScopedDescription(ProtoElement element) {
+    return PythonSphinxCommentFixer.sphinxify(DocumentationUtil.getScopedDescription(element));
   }
 }

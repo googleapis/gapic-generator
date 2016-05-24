@@ -14,12 +14,15 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.tools.framework.model.Model;
+import java.util.Comparator;
 
 /**
- * An implementation of InputElementProvider is a strategy object, encapsulating a strategy for
- * retrieving a sequence of items from a model.
+ * A comparator for GeneratedResult for, e.g., ensuring determinism in test output.
  */
-public interface InputElementView<InputElementT> {
-  public Iterable<InputElementT> getElementIterable(Model model);
+public class GeneratedResultComparator implements Comparator<GeneratedResult> {
+
+  @Override
+  public int compare(GeneratedResult elt1, GeneratedResult elt2) {
+    return elt1.getFilename().compareTo(elt2.getFilename());
+  }
 }

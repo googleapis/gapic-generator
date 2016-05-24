@@ -1,0 +1,76 @@
+@extends "common.snip"
+@extends "main.snip"
+
+@snippet generateFilename()
+  package-info.java
+@end
+
+@snippet generateDocument(fragmentList)
+  {@license()}
+
+  {@editingInstructions()}
+
+  {@packageJavaDoc(fragmentList)}
+
+  package {@context.getApiConfig.getPackageName};
+@end
+
+@snippet generateFragment(service)
+  @let firstFlattenedMethod = context.getFirstFlattenedMethod(service), \
+     # TODO: support the case where the API has no flattened methods.
+     firstFlattenedMethodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(firstFlattenedMethod), \
+     fields = firstFlattenedMethodConfig.getFlattening().getFlatteningGroups().get(0), \
+     fieldNamePatterns = firstFlattenedMethodConfig.getFieldNamePatterns()
+    {@javaDocLinesFromStr(context.getMultilineHeading(context.getApiWrapperName(service)))}
+     *
+    {@javaDocLinesFromStr(serviceDocString(service))}
+     *
+     * Sample for {@context.getApiWrapperName(service)}:
+     * <pre>
+     * <code>
+    @join commentLine : context.java.getJavaDocLines(generateMethodSampleCode(context.java.newJavaDocConfigBuilder \
+                               .setApiName(context.getApiWrapperName(service)) \
+                               .setMethodName(context.upperCamelToLowerCamel(firstFlattenedMethod.getSimpleName)) \
+                               .setReturnType(context.returnTypeOrEmpty(firstFlattenedMethod.getOutputType)) \
+                               .setParamsWithFormatting(context, service, fields, fieldNamePatterns) \
+                               .setRequiredParamsEmpty() \
+                               .setPagedVariant({@FALSE}) \
+                               .setCallableVariant({@FALSE}) \
+                               .build))
+      {@commentLine}
+    @end
+    {@EMPTY} * </code>
+     * </pre>
+     *
+  @end
+@end
+
+@private packageJavaDoc(fragmentList)
+  /**
+   * A client to {@context.getTitle()}.
+   *
+   * The interfaces provided are listed below, along with a usage sample
+   *
+  @join fragment : fragmentList
+    {@fragment}
+  @end
+  {@javaDocManualEdit()}
+   */
+@end
+
+@private editingInstructions()
+  /*
+   * EDITING INSTRUCTIONS
+   * This file was automatically generated. For the short term, the process for
+   * refreshing this file will only be runnable by Google engineers.
+   * Manual additions are allowed because the refresh process performs
+   * a 3-way merge in order to preserve those manual additions. In order to not
+   * break the refresh process, additional documentation should be added between
+   * "manual edit" demarcations.
+   *
+   * Other generated files allow additional edits - see the editing instructions
+   * in those files for more details.
+   *
+   * Happy editing!
+   */
+@end

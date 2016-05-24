@@ -20,50 +20,51 @@ import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A JavaProvider provides general Java code generation logic that is agnostic to the use
- * case (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
+ * A JavaProvider provides general Java code generation logic that is agnostic to the use case
+ * (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
  * subclass of JavaContext.
  */
-public class JavaSnippetSetRunner {
+public class JavaIterableSnippetSetRunner {
 
   /**
    * The path to the root of snippet resources.
    */
-  private static final String SNIPPET_RESOURCE_ROOT =
+  private final String SNIPPET_RESOURCE_ROOT =
       JavaContextCommon.class.getPackage().getName().replace('.', '/');
 
   @SuppressWarnings("unchecked")
-  public <Element> GeneratedResult generate(
-      Element element,
+  public <ElementT> GeneratedResult generate(
+      Iterable<ElementT> elementList,
       SnippetDescriptor snippetDescriptor,
       JavaContext context,
       String defaultPackagePrefix) {
-    JavaSnippetSet<Element> snippets =
+    JavaIterableSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
-            JavaSnippetSet.class,
+            JavaIterableSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
             snippetDescriptor.getSnippetInputName(),
             ImmutableMap.<String, Object>of("context", context));
 
-    String outputFilename = snippets.generateFilename(element).prettyPrint();
+    String outputFilename = snippets.generateFilename().prettyPrint();
     JavaContextCommon javaContextCommon = new JavaContextCommon(defaultPackagePrefix);
     context.resetState(javaContextCommon);
 
-    // Generate the body, which will collect the imports.
-    Doc body = snippets.generateBody(element);
-
-    List<String> cleanedImports = javaContextCommon.getImports();
+    List<Doc> fragmentList = new ArrayList<>();
+    for (ElementT element : elementList) {
+      fragmentList.add(snippets.generateFragment(element));
+    }
 
     // Generate result.
-    Doc result = snippets.generateClass(element, body, cleanedImports);
+    Doc result = snippets.generateDocument(fragmentList);
     return GeneratedResult.create(result, outputFilename);
   }
 
-  public <Element> GeneratedResult generate(
-      Element element, SnippetDescriptor snippetDescriptor, JavaContext context) {
+  public <ElementT> GeneratedResult generate(
+      Iterable<ElementT> element, SnippetDescriptor snippetDescriptor, JavaContext context) {
     return generate(element, snippetDescriptor, context, null);
   }
 }

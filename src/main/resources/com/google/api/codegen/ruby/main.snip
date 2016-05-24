@@ -252,13 +252,17 @@
 
       {@createResourceFunction(collectionConfig)}
     @end
+    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+
+        {@createMatchFunctions(collectionConfig)}
+    @end
   @end
 @end
 
 @private createResourceFunction(collectionConfig)
   @# Returns a fully-qualified {@collectionConfig.getEntityName} resource name string.
   @join param : collectionConfig.getNameTemplate.vars()
-  @# @@param {@param} [String]
+    @# @@param {@param} [String]
   @end
   @# @@return [String]
   def self.{@collectionConfig.getEntityName}_path({@createResourceFunctionParams(collectionConfig)})
@@ -279,6 +283,22 @@
   @end
 @end
 
+@private createMatchFunctions(collectionConfig)
+  @join subField : collectionConfig.getNameTemplate.vars() on BREAK.add(BREAK)
+    @let fieldPath = resourceName(collectionConfig)
+      @# Parses the {@subField} from a {@collectionConfig.getEntityName} resource.
+      @# @@param {@fieldPath} [String]
+      @# @@return [String]
+      def self.match_{@subField}_from_{@fieldPath}({@fieldPath})
+        {@pathTemplateName(collectionConfig)}.match({@fieldPath})['{@subField}']
+      end
+    @end
+  @end
+@end
+
+@private resourceName(collectionConfig)
+  {@collectionConfig.getEntityName}_name
+@end
 @private comments(commentLines)
   @join comment : commentLines
     @# {@comment}

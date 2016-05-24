@@ -15,14 +15,12 @@
 package com.google.api.codegen;
 
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -31,14 +29,14 @@ import javax.annotation.Nullable;
  */
 public class CodeGenerator {
 
-  private final GapicProvider<ProtoElement> provider;
+  private final GapicProvider<Object> provider;
 
-  public CodeGenerator(GapicProvider<ProtoElement> provider) {
+  public CodeGenerator(GapicProvider<Object> provider) {
     this.provider = Preconditions.checkNotNull(provider);
   }
 
   public static CodeGenerator create(ConfigProto configProto, TemplateProto template, Model model) {
-    InputElementView<ProtoElement> view = GeneratorBuilderUtil.createView(template, model);
+    InputElementView<Object> view = GeneratorBuilderUtil.createView(template, model);
     return new CodeGenerator(
         GeneratorBuilderUtil.createCodegenProvider(configProto, template, model, view));
   }
@@ -48,8 +46,8 @@ public class CodeGenerator {
    * Returns null if generation failed.
    */
   @Nullable
-  public Map<ProtoElement, GeneratedResult> generate(SnippetDescriptor snippetDescriptor) {
-    Iterable<ProtoElement> elements = provider.getView().getElementIterable(provider.getModel());
+  public ImmutableMap<Object, GeneratedResult> generate(SnippetDescriptor snippetDescriptor) {
+    Iterable<Object> elements = provider.getView().getElementIterable(provider.getModel());
 
     // Establish required stage for generation.
     provider.getModel().establishStage(Merged.KEY);
@@ -58,11 +56,8 @@ public class CodeGenerator {
     }
 
     // Run the generator for each service.
-    ImmutableMap.Builder<ProtoElement, GeneratedResult> generated = ImmutableMap.builder();
-    for (ProtoElement element : elements) {
-      if (!element.isReachable()) {
-        continue;
-      }
+    ImmutableMap.Builder<Object, GeneratedResult> generated = ImmutableMap.builder();
+    for (Object element : elements) {
       GeneratedResult result = provider.generate(element, snippetDescriptor);
       generated.put(element, result);
     }

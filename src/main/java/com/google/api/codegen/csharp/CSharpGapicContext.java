@@ -36,6 +36,7 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -361,6 +362,7 @@ public class CSharpGapicContext extends GapicContext {
         String requestTypeName,
         String responseTypeName,
         String syncReturnStatement,
+        boolean anyFlats,
         Iterable<FlatInfo> flats,
         RetryDefInfo retryCodes,
         RetrySettingInfo retryParams) {
@@ -374,6 +376,7 @@ public class CSharpGapicContext extends GapicContext {
           requestTypeName,
           responseTypeName,
           syncReturnStatement,
+          anyFlats,
           flats,
           retryCodes,
           retryParams);
@@ -397,6 +400,8 @@ public class CSharpGapicContext extends GapicContext {
     public abstract String responseTypeName();
 
     public abstract String syncReturnStatement();
+
+    public abstract boolean anyFlats();
 
     public abstract Iterable<FlatInfo> flats();
 
@@ -435,13 +440,13 @@ public class CSharpGapicContext extends GapicContext {
         syncReturnTypeName = typeName(returnType);
       }
     }
-    Iterable<FlatInfo> flats = flattening != null ?
+    List<FlatInfo> flats = flattening != null ?
         FluentIterable.from(flattening.getFlatteningGroups())
             .transform(new Function<List<Field>, FlatInfo>() {
               @Override public FlatInfo apply(List<Field> flat) {
                 return createFlatInfo(method, flat, pageStreamingConfig);
               }
-            }) :
+            }).toList() :
         Collections.<FlatInfo>emptyList();
     return MethodInfo.create(
         methodName,
@@ -453,6 +458,7 @@ public class CSharpGapicContext extends GapicContext {
         typeName(method.getInputType()),
         typeName(returnType),
         returnTypeEmpty ? "" : "return ",
+        !flats.isEmpty(),
         flats,
         retryDef,
         retrySetting);
@@ -480,6 +486,11 @@ public class CSharpGapicContext extends GapicContext {
             return createMethodInfo(interfaceConfig, method, methodConfig,
                 retryDefByName.get(methodConfig.getRetryCodesConfigName()),
                 retrySettingByName.get(methodConfig.getRetrySettingsConfigName()));
+          }
+        })
+        .filter(new Predicate<MethodInfo>() {
+          @Override public boolean apply(MethodInfo method) {
+            return method.anyFlats();
           }
         })
         .toList();

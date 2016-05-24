@@ -106,16 +106,10 @@ public class GoGapicContext extends GapicContext implements GoContext {
     this.goCommon = new GoContextCommon();
   }
 
-  /**
-   * Returns the package name symbol used for the package declaration.
-   */
-  public String getPackageName() {
-    String fullPackageName = getApiConfig().getPackageName();
-    int lastSlash = fullPackageName.lastIndexOf('/');
-    if (lastSlash < 0) {
-      return fullPackageName;
-    }
-    return fullPackageName.substring(lastSlash + 1);
+  public String getReducedServiceName(Interface service) {
+    String name = service.getSimpleName().replaceAll("V[0-9]+$", "");
+    name = name.replaceAll("Service$", "");
+    return LanguageUtil.upperCamelToLowerUnderscore(name);
   }
 
   /**
@@ -239,13 +233,6 @@ public class GoGapicContext extends GapicContext implements GoContext {
   }
 
   /**
-   * Returns the Go type name for the page struct in the page-streaming iterator.
-   */
-  public String getIteratorPageTypeName(PageStreamingConfig config) {
-    return getSimpleResourcesTypeName(config) + "Page";
-  }
-
-  /**
    * Returns the Go type name for the page-streaming iterator implementation of the method.
    */
   public String getIteratorTypeName(PageStreamingConfig config) {
@@ -354,7 +341,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
   private GoImport createMessageImport(MessageType messageType) {
     String pkgName = messageType.getFile().getProto().getPackage().replace(".", "/");
     String localName = localPackageName(messageType);
-    return GoImport.create(getApiConfig().getPackageName() + "/proto/" + pkgName, localName);
+    return GoImport.create(getApiConfig().getPackageName() + "/" + pkgName, localName);
   }
 
   private Set<GoImport> getStandardImports(Interface service) {
@@ -366,12 +353,8 @@ public class GoGapicContext extends GapicContext implements GoContext {
     if (!getApiConfig().getInterfaceConfig(service).getRetrySettingsDefinition().isEmpty()) {
       standardImports.add(GoImport.create("time"));
     }
-    for (Method method : service.getMethods()) {
-      MethodConfig methodConfig =
-          getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
-      if (methodConfig.isPageStreaming()) {
-        standardImports.add(GoImport.create("io"));
-      }
+    if (hasPageStreamingMethod(service)) {
+      standardImports.add(GoImport.create("errors"));
     }
     return standardImports;
   }
@@ -457,5 +440,19 @@ public class GoGapicContext extends GapicContext implements GoContext {
    */
   public boolean isEmpty(TypeRef type) {
     return type.isMessage() && type.getMessageType().getFullName().equals("google.protobuf.Empty");
+  }
+
+  /**
+   * Returns true if the service has a page streaming method.
+   */
+  public boolean hasPageStreamingMethod(Interface service) {
+    for (Method method : service.getMethods()) {
+      MethodConfig methodConfig =
+          getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+      if (methodConfig.isPageStreaming()) {
+        return true;
+      }
+    }
+    return false;
   }
 }
