@@ -73,8 +73,8 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     if (!element.hasAttribute(ElementDocumentationAttribute.KEY)) {
       return ImmutableList.<String>of();
     }
-    return convertToCommentedBlock(RDocCommentFixer.rdocify(
-        DocumentationUtil.getScopedDescription(element)));
+    return convertToCommentedBlock(
+        RDocCommentFixer.rdocify(DocumentationUtil.getScopedDescription(element)));
   }
 
   /**
@@ -87,8 +87,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     String closing;
     if (type.getCardinality() == Cardinality.REPEATED) {
       if (type.isMap()) {
-        cardinalityComment = "Hash{" +
-            rubyTypeName(type.getMapKeyField().getType()) + " => ";
+        cardinalityComment = "Hash{" + rubyTypeName(type.getMapKeyField().getType()) + " => ";
         field = type.getMapValueField();
         closing = "}";
       } else {
@@ -106,11 +105,13 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   /**
    * Returns a YARD comment string for the field as a parameter to a function.
    */
-  private String fieldParamComment(Field field) {
+  private String fieldParamComment(Field field, String paramComment) {
     String commentType = fieldTypeCardinalityComment(field);
-    String comment = String.format(
-        "@param %s [%s]", wrapIfKeywordOrBuiltIn(field.getSimpleName()), commentType);
-    String paramComment = DocumentationUtil.getScopedDescription(field);
+    String comment =
+        String.format("@param %s [%s]", wrapIfKeywordOrBuiltIn(field.getSimpleName()), commentType);
+    if (paramComment == null) {
+      paramComment = DocumentationUtil.getScopedDescription(field);
+    }
     if (!Strings.isNullOrEmpty(paramComment)) {
       paramComment = RDocCommentFixer.rdocify(paramComment);
       comment += "\n  " + paramComment.replaceAll("(\\r?\\n)", "\n  ");
@@ -122,8 +123,13 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
    * Return a YARD comment string for the field, as the attribute of a message.
    */
   private String fieldAttributeComment(Field field) {
-    String comment = "@!attribute [rw] " + field.getSimpleName() + "\n"
-        + "  @return [" + fieldTypeCardinalityComment(field) + "]";
+    String comment =
+        "@!attribute [rw] "
+            + field.getSimpleName()
+            + "\n"
+            + "  @return ["
+            + fieldTypeCardinalityComment(field)
+            + "]";
     String fieldComment = DocumentationUtil.getScopedDescription(field);
     if (!Strings.isNullOrEmpty(fieldComment)) {
       fieldComment = RDocCommentFixer.rdocify(fieldComment);
@@ -133,24 +139,25 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   }
 
   /**
-   * Return YARD return type string for the given method, or null if the return type is
-   * nil.
+   * Return YARD return type string for the given method, or null if the return type is nil.
    */
   @Nullable
-  private String returnTypeComment(Method method) {
+  private String returnTypeComment(Method method, MethodConfig config) {
     MessageType returnMessageType = method.getOutputMessage();
     if (returnMessageType.getFullName().equals("google.protobuf.Empty")) {
       return null;
     }
 
     String classInfo = rubyTypeName(method.getOutputType());
-    MethodConfig config = getApiConfig().getInterfaceConfig((Interface) method.getParent())
-        .getMethodConfig(method);
 
     if (config.isPageStreaming()) {
       String resourceType = rubyTypeName(config.getPageStreaming().getResourcesField().getType());
-      return "@return [Google::Gax::PagedEnumerable<" + resourceType + ">]\n"
-          + "  An enumerable of " + resourceType + " instances.\n"
+      return "@return [Google::Gax::PagedEnumerable<"
+          + resourceType
+          + ">]\n"
+          + "  An enumerable of "
+          + resourceType
+          + " instances.\n"
           + "  See Google::Gax::PagedEnumerable documentation for other\n"
           + "  operations such as per-page iteration or access to the response\n"
           + "  object.";
@@ -159,29 +166,43 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     }
   }
 
-
   /**
    * Return comments lines for a given method, consisting of proto doc and parameter type
    * documentation.
    */
-  public List<String> methodComments(Method msg) {
+  public List<String> methodComments(Method method) {
+    MethodConfig config =
+        getApiConfig().getInterfaceConfig((Interface) method.getParent()).getMethodConfig(method);
+
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
-    for (Field field : this.messages().flattenedFields(msg.getInputType())) {
-      paramTypesBuilder.append(fieldParamComment(field));
+    for (Field field : this.messages().flattenedFields(method.getInputType())) {
+      if (config.isPageStreaming()
+          && field.equals((config.getPageStreaming().getPageSizeField()))) {
+        paramTypesBuilder.append(
+            fieldParamComment(
+                field,
+                "The maximum number of resources contained in the underlying API\nresponse. If "
+                    + "page streaming is performed per-resource, this\nparameter does not affect "
+                    + "the return value. If page streaming is\nperformed per-page, this determines "
+                    + "the maximum number of\nresources in a page."));
+      } else {
+        paramTypesBuilder.append(fieldParamComment(field, null));
+      }
     }
-    paramTypesBuilder.append("@param options [Google::Gax::CallOptions] \n" +
-                             "  Overrides the default settings for this call, e.g, timeout,\n" +
-                             "  retries, etc.");
+    paramTypesBuilder.append(
+        "@param options [Google::Gax::CallOptions] \n"
+            + "  Overrides the default settings for this call, e.g, timeout,\n"
+            + "  retries, etc.");
     String paramTypes = paramTypesBuilder.toString();
 
-    String returnType = returnTypeComment(msg);
+    String returnType = returnTypeComment(method, config);
 
     // Generate comment contents
     StringBuilder contentBuilder = new StringBuilder();
-    if (msg.hasAttribute(ElementDocumentationAttribute.KEY)) {
+    if (method.hasAttribute(ElementDocumentationAttribute.KEY)) {
       contentBuilder.append(
-          RDocCommentFixer.rdocify(DocumentationUtil.getScopedDescription(msg)));
+          RDocCommentFixer.rdocify(DocumentationUtil.getScopedDescription(method)));
       if (!Strings.isNullOrEmpty(paramTypes)) {
         contentBuilder.append("\n\n");
       }
@@ -191,8 +212,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
       contentBuilder.append("\n" + returnType);
     }
 
-    contentBuilder.append(
-        "\n@raise [Google::Gax::GaxError] if the RPC is aborted.");
+    contentBuilder.append("\n@raise [Google::Gax::GaxError] if the RPC is aborted.");
     return convertToCommentedBlock(contentBuilder.toString());
   }
 
@@ -223,7 +243,8 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
 
     List<String> content = defaultComments(msg);
     if (!Strings.isNullOrEmpty(attributes)) {
-      return ImmutableList.<String>builder().addAll(content)
+      return ImmutableList.<String>builder()
+          .addAll(content)
           .addAll(convertToCommentedBlock(attributes))
           .build();
     }
@@ -256,8 +277,8 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
       case TYPE_MESSAGE:
         return "nil";
       case TYPE_ENUM:
-        Preconditions.checkArgument(type.getEnumType().getValues().size() > 0,
-            "enum must have a value");
+        Preconditions.checkArgument(
+            type.getEnumType().getValues().size() > 0, "enum must have a value");
         return rubyTypeName(type) + "::" + type.getEnumType().getValues().get(0).getSimpleName();
       default:
         if (type.isPrimitive()) {
@@ -297,13 +318,14 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
         return rubyTypeNameForProtoElement(typeRef.getMessageType());
       case TYPE_ENUM:
         return rubyTypeNameForProtoElement(typeRef.getEnumType());
-      default: {
-        String name = PRIMITIVE_TYPE_NAMES.get(typeRef.getKind());
-        if (!Strings.isNullOrEmpty(name)) {
-          return name;
+      default:
+        {
+          String name = PRIMITIVE_TYPE_NAMES.get(typeRef.getKind());
+          if (!Strings.isNullOrEmpty(name)) {
+            return name;
+          }
+          throw new IllegalArgumentException("unknown type kind: " + typeRef.getKind());
         }
-        throw new IllegalArgumentException("unknown type kind: " + typeRef.getKind());
-      }
     }
   }
 
@@ -342,89 +364,89 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
    */
   private static final ImmutableMap<Type, String> DEFAULT_VALUE_MAP =
       ImmutableMap.<Type, String>builder()
-      .put(Type.TYPE_BOOL, "false")
-      .put(Type.TYPE_DOUBLE, "0.0")
-      .put(Type.TYPE_FLOAT, "0.0")
-      .put(Type.TYPE_INT64, "0")
-      .put(Type.TYPE_UINT64, "0")
-      .put(Type.TYPE_SINT64, "0")
-      .put(Type.TYPE_FIXED64, "0")
-      .put(Type.TYPE_SFIXED64, "0")
-      .put(Type.TYPE_INT32, "0")
-      .put(Type.TYPE_UINT32, "0")
-      .put(Type.TYPE_SINT32, "0")
-      .put(Type.TYPE_FIXED32, "0")
-      .put(Type.TYPE_SFIXED32, "0")
-      .put(Type.TYPE_STRING, "\'\'")
-      .put(Type.TYPE_BYTES, "\'\'")
-      .build();
+          .put(Type.TYPE_BOOL, "false")
+          .put(Type.TYPE_DOUBLE, "0.0")
+          .put(Type.TYPE_FLOAT, "0.0")
+          .put(Type.TYPE_INT64, "0")
+          .put(Type.TYPE_UINT64, "0")
+          .put(Type.TYPE_SINT64, "0")
+          .put(Type.TYPE_FIXED64, "0")
+          .put(Type.TYPE_SFIXED64, "0")
+          .put(Type.TYPE_INT32, "0")
+          .put(Type.TYPE_UINT32, "0")
+          .put(Type.TYPE_SINT32, "0")
+          .put(Type.TYPE_FIXED32, "0")
+          .put(Type.TYPE_SFIXED32, "0")
+          .put(Type.TYPE_STRING, "\'\'")
+          .put(Type.TYPE_BYTES, "\'\'")
+          .build();
 
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_NAMES =
       ImmutableMap.<Type, String>builder()
-      .put(Type.TYPE_BOOL, "true, false")
-      .put(Type.TYPE_DOUBLE, "Float")
-      .put(Type.TYPE_FLOAT, "Float")
-      .put(Type.TYPE_INT64, "Integer")
-      .put(Type.TYPE_UINT64, "Integer")
-      .put(Type.TYPE_SINT64, "Integer")
-      .put(Type.TYPE_FIXED64, "Integer")
-      .put(Type.TYPE_SFIXED64, "Integer")
-      .put(Type.TYPE_INT32, "Integer")
-      .put(Type.TYPE_UINT32, "Integer")
-      .put(Type.TYPE_SINT32, "Integer")
-      .put(Type.TYPE_FIXED32, "Integer")
-      .put(Type.TYPE_SFIXED32, "Integer")
-      .put(Type.TYPE_STRING, "String")
-      .put(Type.TYPE_BYTES, "String")
-      .build();
+          .put(Type.TYPE_BOOL, "true, false")
+          .put(Type.TYPE_DOUBLE, "Float")
+          .put(Type.TYPE_FLOAT, "Float")
+          .put(Type.TYPE_INT64, "Integer")
+          .put(Type.TYPE_UINT64, "Integer")
+          .put(Type.TYPE_SINT64, "Integer")
+          .put(Type.TYPE_FIXED64, "Integer")
+          .put(Type.TYPE_SFIXED64, "Integer")
+          .put(Type.TYPE_INT32, "Integer")
+          .put(Type.TYPE_UINT32, "Integer")
+          .put(Type.TYPE_SINT32, "Integer")
+          .put(Type.TYPE_FIXED32, "Integer")
+          .put(Type.TYPE_SFIXED32, "Integer")
+          .put(Type.TYPE_STRING, "String")
+          .put(Type.TYPE_BYTES, "String")
+          .build();
 
   /**
-   * A set of ruby keywords and built-ins.
-   * keywords: http://docs.ruby-lang.org/en/2.3.0/keywords_rdoc.html
+   * A set of ruby keywords and built-ins. keywords:
+   * http://docs.ruby-lang.org/en/2.3.0/keywords_rdoc.html
    */
   private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
       ImmutableSet.<String>builder()
-      .add("__ENCODING__",
-           "__LINE__",
-           "__FILE__",
-           "BEGIN",
-           "END",
-           "alias",
-           "and",
-           "begin",
-           "break",
-           "case",
-           "class",
-           "def",
-           "defined?",
-           "do",
-           "else",
-           "elsif",
-           "end",
-           "ensure",
-           "false",
-           "for",
-           "if",
-           "in",
-           "module",
-           "next",
-           "nil",
-           "not",
-           "or",
-           "redo",
-           "rescue",
-           "retry",
-           "return",
-           "self",
-           "super",
-           "then",
-           "true",
-           "undef",
-           "unless",
-           "until",
-           "when",
-           "while",
-           "yield")
-      .build();
-
+          .add(
+              "__ENCODING__",
+              "__LINE__",
+              "__FILE__",
+              "BEGIN",
+              "END",
+              "alias",
+              "and",
+              "begin",
+              "break",
+              "case",
+              "class",
+              "def",
+              "defined?",
+              "do",
+              "else",
+              "elsif",
+              "end",
+              "ensure",
+              "false",
+              "for",
+              "if",
+              "in",
+              "module",
+              "next",
+              "nil",
+              "not",
+              "or",
+              "redo",
+              "rescue",
+              "retry",
+              "return",
+              "self",
+              "super",
+              "then",
+              "true",
+              "undef",
+              "unless",
+              "until",
+              "when",
+              "while",
+              "yield")
+          .build();
 }

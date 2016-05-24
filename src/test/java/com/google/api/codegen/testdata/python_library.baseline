@@ -298,11 +298,17 @@ class LibraryServiceApi(object):
 
     def list_shelves(
             self,
+            page_size=0,
             options=None):
         """
         Lists shelves.
 
         Args:
+          page_size (int): The maximum number of resources contained in the
+            underlying API response. If page streaming is performed per-
+            resource, this parameter does not affect the return value. If page
+            streaming is performed per-page, this determines the maximum number
+            of resources in a page.
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
 
@@ -315,7 +321,8 @@ class LibraryServiceApi(object):
         Raises:
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
         """
-        req = library_pb2.ListShelvesRequest()
+        req = library_pb2.ListShelvesRequest(
+            page_size=page_size)
         settings = self._defaults['list_shelves'].merge(options)
         api_call = api_callable.create_api_call(
             self.stub.ListShelves, settings=settings)
@@ -460,6 +467,7 @@ class LibraryServiceApi(object):
     def list_books(
             self,
             name,
+            page_size=0,
             filter_='',
             options=None):
         """
@@ -467,6 +475,11 @@ class LibraryServiceApi(object):
 
         Args:
           name (string): The name of the shelf whose books we'd like to list.
+          page_size (int): The maximum number of resources contained in the
+            underlying API response. If page streaming is performed per-
+            resource, this parameter does not affect the return value. If page
+            streaming is performed per-page, this determines the maximum number
+            of resources in a page.
           filter (string): To test python built-in wrapping.
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
@@ -482,6 +495,7 @@ class LibraryServiceApi(object):
         """
         req = library_pb2.ListBooksRequest(
             name=name,
+            page_size=page_size,
             filter=filter_)
         settings = self._defaults['list_books'].merge(options)
         api_call = api_callable.create_api_call(
@@ -579,12 +593,14 @@ class LibraryServiceApi(object):
     def list_strings(
             self,
             name='',
+            page_size=0,
             options=None):
         """
         Lists a primitive resource. To test go page streaming.
 
         Args:
           name (string)
+          page_size (int)
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
 
@@ -598,7 +614,8 @@ class LibraryServiceApi(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
         """
         req = library_pb2.ListStringsRequest(
-            name=name)
+            name=name,
+            page_size=page_size)
         settings = self._defaults['list_strings'].merge(options)
         api_call = api_callable.create_api_call(
             self.stub.ListStrings, settings=settings)
