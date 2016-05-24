@@ -265,15 +265,12 @@ LibraryServiceApi.matchBookFromBookName =
  *   The function which will be called with the result of the API call.
  * @throws an error if the RPC is aborted.
  */
-LibraryServiceApi.prototype.createShelf = function createShelf(
-    shelf,
-    options,
-    callback) {
+LibraryServiceApi.prototype.createShelf = function createShelf() {
   var args = arguejs({
     'shelf': Object,
     'options': [gax.CallOptions],
     'callback': [Function]
-  }, arguments);
+  });
   var req = {
     'shelf': args.shelf
   };
@@ -302,17 +299,13 @@ LibraryServiceApi.prototype.createShelf = function createShelf(
  *   The function which will be called with the result of the API call.
  * @throws an error if the RPC is aborted.
  */
-LibraryServiceApi.prototype.getShelf = function getShelf(
-    name,
-    otherArgs,
-    options,
-    callback) {
+LibraryServiceApi.prototype.getShelf = function getShelf() {
   var args = arguejs({
     'name': String,
     'otherArgs': [Object],
     'options': [gax.CallOptions],
     'callback': [Function]
-  }, arguments);
+  });
   var req = {
     'name': args.name,
     'message': args.otherArgs.message || {},
@@ -343,13 +336,11 @@ LibraryServiceApi.prototype.getShelf = function getShelf(
  *   of google.example.library.v1.ListShelvesResponse.
  * @throws an error if the RPC is aborted.
  */
-LibraryServiceApi.prototype.listShelves = function listShelves(
-    options,
-    callback) {
+LibraryServiceApi.prototype.listShelves = function listShelves() {
   var args = arguejs({
     'options': [gax.CallOptions],
     'callback': [Function]
-  }, arguments);
+  });
   var req = {
   };
   var stream = (args.callback) ? null : through2.obj();
@@ -380,15 +371,12 @@ LibraryServiceApi.prototype.listShelves = function listShelves(
  *   The function which will be called with the result of the API call.
  * @throws an error if the RPC is aborted.
  */
-LibraryServiceApi.prototype.deleteShelf = function deleteShelf(
-    name,
-    options,
-    callback) {
+LibraryServiceApi.prototype.deleteShelf = function deleteShelf() {
   var args = arguejs({
     'name': String,
     'options': [gax.CallOptions],
     'callback': [Function]
-  }, arguments);
+  });
   var req = {
     'name': args.name
   };
@@ -417,17 +405,13 @@ LibraryServiceApi.prototype.deleteShelf = function deleteShelf(
  *   The function which will be called with the result of the API call.
  * @throws an error if the RPC is aborted.
  */
-LibraryServiceApi.prototype.mergeShelves = function mergeShelves(
-    name,
-    otherShelfName,
-    options,
-    callback) {
+LibraryServiceApi.prototype.mergeShelves = function mergeShelves() {
   var args = arguejs({
     'name': String,
     'otherShelfName': String,
     'options': [gax.CallOptions],
     'callback': [Function]
-  }, arguments);
+  });
   var req = {
     'name': args.name,
     'other_shelf_name': args.otherShelfName
@@ -455,17 +439,13 @@ LibraryServiceApi.prototype.mergeShelves = function mergeShelves(
  *   The function which will be called with the result of the API call.
  * @throws an error if the RPC is aborted.
  */
-LibraryServiceApi.prototype.createBook = function createBook(
-    name,
-    book,
-    options,
-    callback) {
+LibraryServiceApi.prototype.createBook = function createBook() {
   var args = arguejs({
     'name': String,
     'book': Object,
     'options': [gax.CallOptions],
     'callback': [Function]
-  }, arguments);
+  });
   var req = {
     'name': args.name,
     'book': args.book
@@ -496,19 +476,14 @@ LibraryServiceApi.prototype.createBook = function createBook(
  *   The function which will be called with the result of the API call.
  * @throws an error if the RPC is aborted.
  */
-LibraryServiceApi.prototype.publishSeries = function publishSeries(
-    shelf,
-    books,
-    otherArgs,
-    options,
-    callback) {
+LibraryServiceApi.prototype.publishSeries = function publishSeries() {
   var args = arguejs({
     'shelf': Object,
     'books': Array,
     'otherArgs': [Object],
     'options': [gax.CallOptions],
     'callback': [Function]
-  }, arguments);
+  });
   var req = {
     'shelf': args.shelf,
     'books': args.books,
@@ -535,15 +510,12 @@ LibraryServiceApi.prototype.publishSeries = function publishSeries(
  *   The function which will be called with the result of the API call.
  * @throws an error if the RPC is aborted.
  */
-LibraryServiceApi.prototype.getBook = function getBook(
-    name,
-    options,
-    callback) {
+LibraryServiceApi.prototype.getBook = function getBook() {
   var args = arguejs({
     'name': String,
     'options': [gax.CallOptions],
     'callback': [Function]
-  }, arguments);
+  });
   var req = {
     'name': args.name
   };
@@ -577,17 +549,13 @@ LibraryServiceApi.prototype.getBook = function getBook(
  *   of google.example.library.v1.ListBooksResponse.
  * @throws an error if the RPC is aborted.
  */
-LibraryServiceApi.prototype.listBooks = function listBooks(
-    name,
-    otherArgs,
-    options,
-    callback) {
+LibraryServiceApi.prototype.listBooks = function listBooks() {
   var args = arguejs({
     'name': String,
     'otherArgs': [Object],
     'options': [gax.CallOptions],
     'callback': [Function]
-  }, arguments);
+  });
   var req = {
     'name': args.name,
     'filter': args.otherArgs.filter || ''
@@ -620,15 +588,12 @@ LibraryServiceApi.prototype.listBooks = function listBooks(
  *   The function which will be called with the result of the API call.
  * @throws an error if the RPC is aborted.
  */
-LibraryServiceApi.prototype.deleteBook = function deleteBook(
-    name,
-    options,
-    callback) {
+LibraryServiceApi.prototype.deleteBook = function deleteBook() {
   var args = arguejs({
     'name': String,
     'options': [gax.CallOptions],
     'callback': [Function]
-  }, arguments);
+  });
   var req = {
     'name': args.name
   };
@@ -660,19 +625,14 @@ LibraryServiceApi.prototype.deleteBook = function deleteBook(
  *   The function which will be called with the result of the API call.
  * @throws an error if the RPC is aborted.
  */
-LibraryServiceApi.prototype.updateBook = function updateBook(
-    name,
-    book,
-    otherArgs,
-    options,
-    callback) {
+LibraryServiceApi.prototype.updateBook = function updateBook() {
   var args = arguejs({
     'name': String,
     'book': Object,
     'otherArgs': [Object],
     'options': [gax.CallOptions],
     'callback': [Function]
-  }, arguments);
+  });
   var req = {
     'name': args.name,
     'book': args.book,
@@ -702,17 +662,13 @@ LibraryServiceApi.prototype.updateBook = function updateBook(
  *   The function which will be called with the result of the API call.
  * @throws an error if the RPC is aborted.
  */
-LibraryServiceApi.prototype.moveBook = function moveBook(
-    name,
-    otherShelfName,
-    options,
-    callback) {
+LibraryServiceApi.prototype.moveBook = function moveBook() {
   var args = arguejs({
     'name': String,
     'otherShelfName': String,
     'options': [gax.CallOptions],
     'callback': [Function]
-  }, arguments);
+  });
   var req = {
     'name': args.name,
     'other_shelf_name': args.otherShelfName
@@ -744,15 +700,12 @@ LibraryServiceApi.prototype.moveBook = function moveBook(
  *   of google.example.library.v1.ListStringsResponse.
  * @throws an error if the RPC is aborted.
  */
-LibraryServiceApi.prototype.listStrings = function listStrings(
-    otherArgs,
-    options,
-    callback) {
+LibraryServiceApi.prototype.listStrings = function listStrings() {
   var args = arguejs({
     'otherArgs': [Object],
     'options': [gax.CallOptions],
     'callback': [Function]
-  }, arguments);
+  });
   var req = {
     'name': args.otherArgs.name || ''
   };

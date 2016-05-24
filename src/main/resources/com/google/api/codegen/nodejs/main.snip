@@ -330,15 +330,7 @@
        */
     @end
 
-    {@serviceName}.prototype.{@methodName} = function {@methodName}(
-        @if requiredParams
-          {@requiredParameterNames(requiredParams)},
-        @end
-        @if optionalParams
-          otherArgs,
-        @end
-        options,
-        callback) {
+    {@serviceName}.prototype.{@methodName} = function {@methodName}() {
       var args = arguejs({
         @if requiredParams
           {@requiredParameterDefs(requiredParams)},
@@ -348,7 +340,7 @@
         @end
         'options': [gax.CallOptions],
         'callback': [Function]
-      }, arguments);
+      });
       var req = {
         @if requiredParams
           @if optionalParams
@@ -391,12 +383,6 @@
 
 @private fieldParameterName(field)
   {@context.wrapIfKeywordOrBuiltIn(context.lowerUnderscoreToLowerCamel(field.getSimpleName))}
-@end
-
-@private requiredParameterNames(params)
-  @join field : params on ",".add(BREAK)
-    {@fieldParameterName(field)}
-  @end
 @end
 
 @private requiredParameterDefs(params)
