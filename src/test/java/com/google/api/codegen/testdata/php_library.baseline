@@ -385,13 +385,8 @@ class LibraryServiceApi
      * Lists shelves.
      *
      * @param array $optionalArgs {
-     *     Optional.
-     *     @type integer $pageSize
-     *           The maximum number of resources contained in the underlying API
-     *           response. If page streaming is performed per-resource, this
-     *           parameter does not affect the return value. If page streaming is
-     *           performed per-page, this determines the maximum number of
-     *           resources in a page.
+     *     Optional. There are no optional parameters for this method yet;
+     *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
      *    Optional.
@@ -410,9 +405,6 @@ class LibraryServiceApi
     public function listShelves($optionalArgs = [], $callSettings = [])
     {
         $request = new ListShelvesRequest();
-        if (isset($optionalArgs['pageSize'])) {
-            $request->setPageSize($optionalArgs['pageSize']);
-        }
 
         $mergedSettings = $this->defaultCallSettings['listShelves']->merge(
             new CallSettings($callSettings));
@@ -796,6 +788,11 @@ class LibraryServiceApi
      *     Optional.
      *     @type string $name
      *     @type integer $pageSize
+     *           The maximum number of resources contained in the underlying API
+     *           response. If page streaming is performed per-resource, this
+     *           parameter does not affect the return value. If page streaming is
+     *           performed per-page, this determines the maximum number of
+     *           resources in a page.
      * }
      * @param array $callSettings {
      *    Optional.

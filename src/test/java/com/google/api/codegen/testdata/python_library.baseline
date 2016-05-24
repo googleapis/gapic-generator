@@ -298,17 +298,11 @@ class LibraryServiceApi(object):
 
     def list_shelves(
             self,
-            page_size=0,
             options=None):
         """
         Lists shelves.
 
         Args:
-          page_size (int): The maximum number of resources contained in the
-            underlying API response. If page streaming is performed per-
-            resource, this parameter does not affect the return value. If page
-            streaming is performed per-page, this determines the maximum number
-            of resources in a page.
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
 
@@ -321,8 +315,7 @@ class LibraryServiceApi(object):
         Raises:
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
         """
-        req = library_pb2.ListShelvesRequest(
-            page_size=page_size)
+        req = library_pb2.ListShelvesRequest()
         settings = self._defaults['list_shelves'].merge(options)
         api_call = api_callable.create_api_call(
             self.stub.ListShelves, settings=settings)
@@ -600,7 +593,11 @@ class LibraryServiceApi(object):
 
         Args:
           name (string)
-          page_size (int)
+          page_size (int): The maximum number of resources contained in the
+            underlying API response. If page streaming is performed per-
+            resource, this parameter does not affect the return value. If page
+            streaming is performed per-page, this determines the maximum number
+            of resources in a page.
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
 
@@ -1312,8 +1309,6 @@ class ListShelvesRequest(object):
     Request message for LibraryService.ListShelves.
 
     Attributes:
-      page_size (int): Requested page size. Server may return fewer shelves than requested.
-        If unspecified, server will pick an appropriate default.
       page_token (string): A token identifying a page of results the server should return.
         Typically, this is the value of
         ``ListShelvesResponse.next_page_token``

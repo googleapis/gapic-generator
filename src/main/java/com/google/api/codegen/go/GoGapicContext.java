@@ -341,7 +341,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
   private GoImport createMessageImport(MessageType messageType) {
     String pkgName = messageType.getFile().getProto().getPackage().replace(".", "/");
     String localName = localPackageName(messageType);
-    return GoImport.create(getApiConfig().getPackageName() + "/" + pkgName, localName);
+    return GoImport.create(getApiConfig().getPackageName() + "/generated/" + pkgName, localName);
   }
 
   private Set<GoImport> getStandardImports(Interface service) {

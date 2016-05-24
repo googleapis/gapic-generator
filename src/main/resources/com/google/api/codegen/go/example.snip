@@ -1,9 +1,9 @@
 @snippet generateFilename(service)
-    {@context.getApiConfig().getPackageName()}/{@context.getReducedServiceName(service)}/client_test.go
+    {@context.getApiConfig().getPackageName()}/generated/{@context.getReducedServiceName(service)}/client_test.go
 @end
 
 @snippet generateClass(service, body)
-    package {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
+    package {@context.getReducedServiceName(service)}
 
     {@importSection(service)}
 

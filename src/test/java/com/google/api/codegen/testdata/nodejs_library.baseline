@@ -306,13 +306,6 @@ LibraryServiceApi.prototype.getShelf = function getShelf() {
 /**
  * Lists shelves.
  *
- * @param {?Object} otherArgs
- * @param {number} otherArgs.pageSize
- *   The maximum number of resources contained in the underlying API
- *   response. If page streaming is performed per-resource, this
- *   parameter does not affect the return value. If page streaming is
- *   performed per-page, this determines the maximum number of
- *   resources in a page.
  * @param {?gax.CallOptions} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
@@ -328,12 +321,10 @@ LibraryServiceApi.prototype.getShelf = function getShelf() {
  */
 LibraryServiceApi.prototype.listShelves = function listShelves() {
   var args = arguejs({
-    'otherArgs': [Object],
     'options': [gax.CallOptions],
     'callback': [Function]
   });
   var req = {
-    'page_size': args.otherArgs.pageSize || 0
   };
   var stream = (args.callback) ? null : through2.obj();
   Promise.all([this.defaults, this.stub]).then(function(vars) {
@@ -727,6 +718,11 @@ LibraryServiceApi.prototype.moveBook = function moveBook() {
  * @param {?Object} otherArgs
  * @param {String} otherArgs.name
  * @param {number} otherArgs.pageSize
+ *   The maximum number of resources contained in the underlying API
+ *   response. If page streaming is performed per-resource, this
+ *   parameter does not affect the return value. If page streaming is
+ *   performed per-page, this determines the maximum number of
+ *   resources in a page.
  * @param {?gax.CallOptions} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.

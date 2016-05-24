@@ -1,7 +1,7 @@
 @extends "common.snip"
 
 @snippet generateFilename(service)
-    {@context.getApiConfig().getPackageName()}/{@context.getReducedServiceName(service)}/client.go
+    {@context.getApiConfig().getPackageName()}/generated/{@context.getReducedServiceName(service)}/client.go
 @end
 
 @snippet generateClass(service, body)
@@ -12,7 +12,7 @@
     @join commentLine : context.comments(service)
         {@commentLine}
     @end
-    package {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
+    package {@context.getReducedServiceName(service)}
 
     {@importSection(service)}
 
@@ -221,6 +221,7 @@
                 @let pageStreaming = methodConfig.getPageStreaming(), \
                      iteratorTypeName = context.getIteratorTypeName(pageStreaming), \
                      resourceFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getResourcesField().getSimpleName), \
+                     hasPageSizeField = pageStreaming.hasPageSizeField(), \
                      requestTokenFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getRequestTokenField().getSimpleName), \
                      responseTokenFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getResponseTokenField().getSimpleName), \
                      tokenZeroValue = context.zeroValue(pageStreaming.getRequestTokenField().getType)
@@ -239,6 +240,9 @@
                             err := gax.Invoke(ctx, func (c context.Context) error {
                                 var err error
                                 req.{@requestTokenFieldName} = iterator.nextPageToken
+                                @if hasPageSizeField
+                                    req.{@context.lowerUnderscoreToUpperCamel(pageStreaming.getPageSizeField().getSimpleName())} = iterator.pageSize
+                                @end
                                 resp, err = client.client.{@methodName}(c, req)
                                 return err
                             }, callOpts...)
@@ -307,14 +311,18 @@
     @join pageStreaming : context.getPageStreamingConfigs(service)
         @let iteratorTypeName = context.getIteratorTypeName(pageStreaming), \
              tokenType = context.getNextPageTokenType(service, pageStreaming), \
-             resourceFieldType = context.getResourceTypeName(pageStreaming.getResourcesField)
+             resourceFieldType = context.getResourceTypeName(pageStreaming.getResourcesField), \
+             hasPageSizeField = pageStreaming.hasPageSizeField()
 
             // {@iteratorTypeName} manages a stream of {@resourceFieldType}.
             type {@iteratorTypeName} struct {
                 // The current page data.
                 items         []{@resourceFieldType}
                 atLastPage    bool
-                currentIndex  int
+                currentIndex  int32
+                @if hasPageSizeField
+                    pageSize      int32
+                @end
                 nextPageToken {@tokenType}
                 apiCall       func() error
             }
@@ -344,6 +352,14 @@
                 return result, nil
             }
 
+            @if hasPageSizeField
+                // SetPageSize sets the maximum size of the next page to be
+                // retrieved.
+                func (iterator *{@iteratorTypeName}) SetPageSize(int32 pageSize) {
+                    iterator.pageSize = pageSize
+                }
+
+            @end
             // SetPageToken sets the next page token to be retrieved. Note, it
             // does not retrieve the next page, or modify the cached page. If
             // Next is called, there is no guarantee that the result returned
