@@ -90,7 +90,6 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
           .build();
 
   private PythonContextCommon pythonCommon;
-  // FIXME: no longer needed; see changes to JavaGapicContext
   private PythonSnippetSet<?> pythonSnippetSet;
 
   public PythonGapicContext(Model model, ApiConfig apiConfig) {
