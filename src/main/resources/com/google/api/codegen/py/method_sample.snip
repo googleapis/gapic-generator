@@ -7,8 +7,43 @@
       @join import : docConfig.getAppImports
         {@prompt} {@import}
       @end
+      #
+      @join param : docConfig.getParams
+        {@prompt} {@initLine(param, docConfig)};
+      @end
       {@prompt} api = {@ApiName}()
-      {@prompt} {@callResultSampleCode(docConfig.getReturnType)}{@methodCallSampleCode(docConfig)}
+      #
+      @if docConfig.isUnpagedListCallableVariant
+        # FIXME: adapt for Python
+        @let resourcesField = docConfig.getResourcesFieldForUnpagedListCallable
+          while (true) {
+            {@callResultSampleCode(docConfig.getReturnType)}{@methodCallSampleCode(docConfig, apiName)};
+            for ({@elementTypeName(resourcesField)} elements : response.{@getResourcesListCall(resourcesField)}) {
+              // doThingsWith(elements);
+            }
+            String nextPageToken = response.getNextPageToken();
+            if (!Strings.isNullOrEmpty(nextPageToken)) {
+              request = request.toBuilder().setPageToken(nextPageToken).build();
+            } else {
+              break;
+            }
+          }
+        @end
+      @else
+        @if docConfig.isCallableVariant
+          # FIXME: adapt for Python
+          ListenableFuture<{@getGenericAwareReturnType(docConfig)}> future = {@methodFutureCall(docConfig, apiName)};
+          // Do something{@BREAK}
+        @end
+        @if docConfig.isPagedVariant
+          # FIXME: adapt for Python
+          for ({@docConfig.getReturnType} elements : {@methodCallSampleCode(docConfig, apiName)}) {
+            // doThingsWith(elements);
+          }
+        @else
+          {@prompt} {@callResultSampleCode(docConfig.getReturnType)}{@methodCallSampleCode(docConfig)}
+        @end
+      @end
   @end
 @end
 
@@ -23,11 +58,11 @@
 # Render the API method call itself
 @private methodCallSampleCode(docConfig)
   @if docConfig.isUnpagedListCallableVariant
-    # FIXME: make this correct
+    # FIXME: adapt for Python
     api.{@methodCallName(docConfig)}().call({@argList(docConfig.getParams)})
   @else
     @if docConfig.isCallableVariant
-      # FIXME: make this correct
+      # FIXME: adapt for Python
       future.get()
     @else
       api.{@methodCallName(docConfig)}({@argList(docConfig.getParams)})
@@ -54,7 +89,7 @@
 # Render the name of the method call
 @private methodCallName(docConfig)
   @if docConfig.isCallableVariant
-    # FIXME: make this correct
+    # FIXME: adapt for Python
     {@methodCallNameIter(docConfig)}Callable
   @else
     {@docConfig.getMethodName}
