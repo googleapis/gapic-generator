@@ -92,7 +92,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
   private List<GeneratedResult> generateSnip(String snippetFileName) {
     // Establish required stage for generation.
     model.establishStage(Merged.KEY);
-    if (model.getErrorCount() > 0) {
+    if (model.getDiagCollector().getErrorCount() > 0) {
       return null;
     }
 
@@ -121,7 +121,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
     }
 
     // Return result.
-    if (model.getErrorCount() > 0) {
+    if (model.getDiagCollector().getErrorCount() > 0) {
       return null;
     }
 

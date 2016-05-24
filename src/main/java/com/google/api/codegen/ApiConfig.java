@@ -52,7 +52,7 @@ public abstract class ApiConfig {
   @Nullable
   public static ApiConfig createApiConfig(Model model, ConfigProto configProto) {
     ImmutableMap<String, InterfaceConfig> interfaceConfigMap =
-        createInterfaceConfigMap(model, configProto, model.getSymbolTable());
+        createInterfaceConfigMap(model.getDiagCollector(), configProto, model.getSymbolTable());
     if (interfaceConfigMap == null) {
       return null;
     } else {

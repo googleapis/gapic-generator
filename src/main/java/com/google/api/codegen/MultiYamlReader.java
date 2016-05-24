@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.tools.framework.model.ConfigSource;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -48,7 +49,11 @@ public class MultiYamlReader {
     for (int i = 0; i < inputs.size(); i++) {
       String inputName = inputNames.get(i);
       String input = inputs.get(i);
-      Message message = YamlReader.read(collector, inputName, input, supportedConfigTypes);
+
+      ConfigSource source =
+          YamlReader.readConfig(collector, inputName, input, supportedConfigTypes);
+      Message message = source != null ? source.getConfig() : null;
+
       if (message != null) {
         if (messageBuilder == null) {
           messageBuilder = message.toBuilder();
