@@ -166,7 +166,7 @@ func (client *Client) Close() error {
 
 // ShelfPath returns the path for the shelf resource.
 func ShelfPath(shelf string) string {
-    path, err := shelfPathTemplate.Instantiate(map[string]string{
+    path, err := shelfPathTemplate.Render(map[string]string{
         "shelf": shelf,
     })
     if err != nil {
@@ -177,7 +177,7 @@ func ShelfPath(shelf string) string {
 
 // BookPath returns the path for the book resource.
 func BookPath(shelf string, book string) string {
-    path, err := bookPathTemplate.Instantiate(map[string]string{
+    path, err := bookPathTemplate.Render(map[string]string{
         "shelf": shelf,
         "book": book,
     })

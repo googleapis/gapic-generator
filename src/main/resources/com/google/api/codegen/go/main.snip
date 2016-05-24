@@ -190,7 +190,7 @@
 
             // {@pathTypeName}Path returns the path for the {@humanReadableName} resource.
             func {@pathTypeName}Path({@pathParams(collectionConfig.getNameTemplate.vars())}) string {
-                path, err := {@pathTemplateVarName(collectionConfig)}.Instantiate(map[string]string{
+                path, err := {@pathTemplateVarName(collectionConfig)}.Render(map[string]string{
                     @join param : collectionConfig.getNameTemplate.vars()
                     "{@param}": {@context.lowerUnderscoreToLowerCamel(param)},
                     @end
