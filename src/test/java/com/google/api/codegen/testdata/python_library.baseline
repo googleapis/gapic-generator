@@ -414,7 +414,7 @@ class LibraryServiceApi(object):
         Args:
           shelf (:class:`google.example.library.v1.library_pb2.Shelf`): The shelf in which the series is created.
           books (list[:class:`google.example.library.v1.library_pb2.Book`]): The books to publish in the series.
-          edition (uint32): The edition of the series
+          edition (int): The edition of the series
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
 
@@ -766,9 +766,9 @@ class Duration(object):
         }
 
     Attributes:
-      seconds (int64): Signed seconds of the span of time. Must be from -315,576,000,000
+      seconds (long): Signed seconds of the span of time. Must be from -315,576,000,000
         to +315,576,000,000 inclusive.
-      nanos (int32): Signed fractions of a second at nanosecond resolution of the span
+      nanos (int): Signed fractions of a second at nanosecond resolution of the span
         of time. Durations less than one second are represented with a 0
         ``seconds`` field and a positive or negative ``nanos`` field. For durations
         of one second or more, a non-zero value for the ``nanos`` field must be
@@ -998,10 +998,10 @@ class Timestamp(object):
         timestamp = Timestamp(seconds=seconds, nanos=nanos)
 
     Attributes:
-      seconds (int64): Represents seconds of UTC time since Unix epoch
+      seconds (long): Represents seconds of UTC time since Unix epoch
         1970-01-01T00:00:00Z. Must be from from 0001-01-01T00:00:00Z to
         9999-12-31T23:59:59Z inclusive.
-      nanos (int32): Non-negative fractions of a second at nanosecond resolution. Negative
+      nanos (int): Non-negative fractions of a second at nanosecond resolution. Negative
         second values with fractions must still have non-negative nanos values
         that count forward in time. Must be from 0 to 999,999,999
         inclusive.
@@ -1032,7 +1032,7 @@ class DoubleValue(object):
     The JSON representation for ``DoubleValue`` is JSON number.
 
     Attributes:
-      value (double): The double value.
+      value (float): The double value.
 
     """
     pass
@@ -1058,7 +1058,7 @@ class Int64Value(object):
     The JSON representation for ``Int64Value`` is JSON string.
 
     Attributes:
-      value (int64): The int64 value.
+      value (long): The int64 value.
 
     """
     pass
@@ -1071,7 +1071,7 @@ class UInt64Value(object):
     The JSON representation for ``UInt64Value`` is JSON string.
 
     Attributes:
-      value (uint64): The uint64 value.
+      value (long): The uint64 value.
 
     """
     pass
@@ -1084,7 +1084,7 @@ class Int32Value(object):
     The JSON representation for ``Int32Value`` is JSON number.
 
     Attributes:
-      value (int32): The int32 value.
+      value (int): The int32 value.
 
     """
     pass
@@ -1097,7 +1097,7 @@ class UInt32Value(object):
     The JSON representation for ``UInt32Value`` is JSON number.
 
     Attributes:
-      value (uint32): The uint32 value.
+      value (int): The uint32 value.
 
     """
     pass
@@ -1193,7 +1193,7 @@ class Book(object):
       string_value (:class:`google.protobuf.wrappers_pb2.StringValue`)
       bool_value (:class:`google.protobuf.wrappers_pb2.BoolValue`)
       bytes_value (:class:`google.protobuf.wrappers_pb2.BytesValue`)
-      map_string_value (dict[int32, :class:`google.example.library.v1.library_pb2.Book.MapStringValueEntry`])
+      map_string_value (dict[int, :class:`google.example.library.v1.library_pb2.Book.MapStringValueEntry`])
       map_message_value (dict[string, :class:`google.example.library.v1.library_pb2.Book.MapMessageValueEntry`])
 
     """
@@ -1203,7 +1203,7 @@ class Book(object):
 class SomeMessage(object):
     """
     Attributes:
-      field (int32)
+      field (int)
       field2 (:class:`google.example.library.v1.library_pb2.SomeMessage2`)
 
     """
@@ -1213,7 +1213,7 @@ class SomeMessage(object):
 class SomeMessage2(object):
     """
     Attributes:
-      field1 (int32)
+      field1 (int)
 
     """
     pass
@@ -1273,7 +1273,7 @@ class ListShelvesRequest(object):
     Request message for LibraryService.ListShelves.
 
     Attributes:
-      page_size (int32): Requested page size. Server may return fewer shelves than requested.
+      page_size (int): Requested page size. Server may return fewer shelves than requested.
         If unspecified, server will pick an appropriate default.
       page_token (string): A token identifying a page of results the server should return.
         Typically, this is the value of
@@ -1343,7 +1343,7 @@ class PublishSeriesRequest(object):
     Attributes:
       shelf (:class:`google.example.library.v1.library_pb2.Shelf`): The shelf in which the series is created.
       books (list[:class:`google.example.library.v1.library_pb2.Book`]): The books to publish in the series.
-      edition (uint32): The edition of the series
+      edition (int): The edition of the series
 
     """
     pass
@@ -1377,7 +1377,7 @@ class ListBooksRequest(object):
 
     Attributes:
       name (string): The name of the shelf whose books we'd like to list.
-      page_size (int32): Requested page size. Server may return fewer books than requested.
+      page_size (int): Requested page size. Server may return fewer books than requested.
         If unspecified, server will pick an appropriate default.
       page_token (string): A token identifying a page of results the server should return.
         Typically, this is the value of
@@ -1447,7 +1447,7 @@ class ListStringsRequest(object):
     """
     Attributes:
       name (string)
-      page_size (int32)
+      page_size (int)
       page_token (string)
 
     """

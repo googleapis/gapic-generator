@@ -35,6 +35,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -63,6 +64,28 @@ public class PythonGapicContext extends GapicContext {
           .put(Type.TYPE_SFIXED32, "0")
           .put(Type.TYPE_STRING, "\'\'")
           .put(Type.TYPE_BYTES, "\'\'")
+          .build();
+
+  /**
+   * A map from primitive types to their names in Python.
+   */
+  private static final Map<Type, String> PRIMITIVE_TYPE_NAMES =
+      ImmutableMap.<Type, String>builder()
+          .put(Type.TYPE_DOUBLE, "float")
+          .put(Type.TYPE_FLOAT, "float")
+          .put(Type.TYPE_INT32, "int")
+          .put(Type.TYPE_INT64, "long")
+          .put(Type.TYPE_UINT32, "int")
+          .put(Type.TYPE_UINT64, "long")
+          .put(Type.TYPE_SINT32, "int")
+          .put(Type.TYPE_SINT64, "long")
+          .put(Type.TYPE_FIXED32, "int")
+          .put(Type.TYPE_FIXED64, "long")
+          .put(Type.TYPE_SFIXED32, "int")
+          .put(Type.TYPE_SFIXED64, "long")
+          .put(Type.TYPE_BOOL, "bool")
+          .put(Type.TYPE_STRING, "string")
+          .put(Type.TYPE_BYTES, "bytes")
           .build();
 
   private PythonContextCommon pythonCommon;
@@ -139,7 +162,7 @@ public class PythonGapicContext extends GapicContext {
         return ":class:`" + importHandler.elementPath(type.getEnumType(), true) + "`";
       default:
         if (type.isPrimitive()) {
-          return type.getPrimitiveTypeName();
+          return PRIMITIVE_TYPE_NAMES.get(type.getKind());
         } else {
           throw new IllegalArgumentException("unknown type kind: " + type.getKind());
         }
