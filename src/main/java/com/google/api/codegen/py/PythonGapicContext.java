@@ -34,6 +34,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -117,7 +118,10 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
    * Returns type information for a field in Sphinx docstring style.
    */
   private String fieldTypeCardinalityComment(Field field, PythonImportHandler importHandler) {
-    TypeRef type = field.getType();
+    return fieldTypeCardinalityComment(field.getType(), importHandler);
+  }
+
+  private String fieldTypeCardinalityComment(TypeRef type, PythonImportHandler importHandler) {
     boolean closingBrace = false;
     String prefix;
     if (type.getCardinality() == Cardinality.REPEATED) {
@@ -130,7 +134,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     } else {
       prefix = "";
     }
-    String typeComment = fieldTypeComment(field, importHandler);
+    String typeComment = fieldTypeComment(type, importHandler);
     return String.format("%s%s%s", prefix, typeComment, closingBrace ? "]" : "");
   }
 
@@ -138,7 +142,10 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
    * Returns type information for a field in Sphinx docstring style.
    */
   private String fieldTypeComment(Field field, PythonImportHandler importHandler) {
-    TypeRef type = field.getType();
+    return fieldTypeComment(field.getType(), importHandler);
+  }
+
+  private String fieldTypeComment(TypeRef type, PythonImportHandler importHandler) {
     switch (type.getKind()) {
       case TYPE_MESSAGE:
         return ":class:`" + importHandler.elementPath(type.getMessageType(), true) + "`";
@@ -227,13 +234,13 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
    * Return comments lines for a given method, consisting of proto doc and parameter type
    * documentation.
    */
-  private List<String> methodComments(Method msg, PythonImportHandler importHandler) {
-    String sampleCode = generateMethodSampleCode(msg);
+  private List<String> methodComments(Method method, PythonImportHandler importHandler) {
+    String sampleCode = methodSnippet(method, importHandler);
 
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
     paramTypesBuilder.append("Args:\n");
-    for (Field field : this.messages().flattenedFields(msg.getInputType())) {
+    for (Field field : this.messages().flattenedFields(method.getInputType())) {
       paramTypesBuilder.append(fieldComment(field, importHandler));
     }
     paramTypesBuilder.append(
@@ -241,13 +248,13 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
             + "Overrides the default\n    settings for this call, e.g, timeout, retries etc.");
     String paramTypes = paramTypesBuilder.toString();
 
-    String returnType = returnTypeComment(msg, importHandler);
+    String returnType = returnTypeComment(method, importHandler);
 
     // Generate comment contents
     StringBuilder contentBuilder = new StringBuilder();
-    if (msg.hasAttribute(ElementDocumentationAttribute.KEY)) {
+    if (method.hasAttribute(ElementDocumentationAttribute.KEY)) {
       String sphinxified =
-          PythonSphinxCommentFixer.sphinxify(DocumentationUtil.getScopedDescription(msg));
+          PythonSphinxCommentFixer.sphinxify(DocumentationUtil.getScopedDescription(method));
       sphinxified = sphinxified.trim();
       contentBuilder.append(sphinxified.replaceAll("\\s*\\n\\s*", "\n"));
       if (!Strings.isNullOrEmpty(paramTypes)) {
@@ -265,12 +272,45 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
         "\n\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
     return pythonCommon.convertToCommentedBlock(contentBuilder.toString());
   }
+  
+  private String methodSnippet(Method method, PythonImportHandler importHandler) {
+    Interface service = (Interface) method.getParent();
+    MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+    String methodName = upperCamelToLowerCamel(method.getSimpleName());
+    ImmutableMap<String, String> fieldNamePatterns = methodConfig.getFieldNamePatterns();
+
+    Iterable<Field> requiredFields = methodConfig.getRequiredFields();
+    Iterable<Field> optionalFields = methodConfig.getOptionalFields();
+    List<Field> fields = new ArrayList<Field>();
+    for (Field field : requiredFields) fields.add(field);
+    for (Field field : optionalFields) fields.add(field);
+
+    PythonDocConfig docConfig =
+        PythonDocConfig.builder()
+            .setAppImports(importHandler)
+            .setApiName(getApiWrapperName((Interface) method.getParent()))
+            .setMethodName(methodName)
+            .setReturnType(returnTypeOrEmpty(method.getOutputType(), importHandler))
+            .setParamsWithFormatting(this, service, fields, fieldNamePatterns)
+            .setRequiredParamsEmpty()
+            .setPagedVariant(false)
+            .setCallableVariant(false)
+            .build();
+
+    return generateMethodSampleCode(docConfig);
+  }
+
+  private String returnTypeOrEmpty(TypeRef returnType, PythonImportHandler importHandler) {
+    return messages().isEmptyType(returnType)
+        ? ""
+        : fieldTypeCardinalityComment(returnType, importHandler);
+  }
 
   /**
    * Generate the example snippet for a method.
    */
-  public String generateMethodSampleCode(Method method) {
-    return pythonSnippetSet.generateMethodSampleCode(method).prettyPrint();
+  public String generateMethodSampleCode(PythonDocConfig config) {
+    return pythonSnippetSet.generateMethodSampleCode(config).prettyPrint();
   }
 
   /**

@@ -15,6 +15,8 @@
 package com.google.api.codegen.py;
 
 import com.google.api.codegen.InterfaceConfig;
+import com.google.api.codegen.InterfaceConfig;
+import com.google.api.codegen.py.PythonImport.ImportType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
@@ -24,9 +26,6 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-
-import com.google.api.codegen.InterfaceConfig;
-import com.google.api.codegen.py.PythonImport.ImportType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -198,6 +197,18 @@ public class PythonImportHandler {
    * Calculate the imports map and return a sorted set of python import output strings.
    */
   public List<String> calculateImports() {
+    return calculateImports(false);
+  }
+
+  /**
+   * Calculate the application specific imports map and return a sorted set of python import output
+   * strings.
+   */
+  public List<String> calculateAppImports() {
+    return calculateImports(true);
+  }
+
+  private List<String> calculateImports(boolean appOnly) {
     // Order by import type, then lexicographically
     List<String> stdlibResult = new ArrayList<>();
     List<String> thirdPartyResult = new ArrayList<>();
@@ -205,10 +216,10 @@ public class PythonImportHandler {
     for (PythonImport protoImport : stringImports.values()) {
       switch (protoImport.type()) {
         case STDLIB:
-          stdlibResult.add(protoImport.importString());
+          if (!appOnly) stdlibResult.add(protoImport.importString());
           break;
         case THIRD_PARTY:
-          thirdPartyResult.add(protoImport.importString());
+          if (!appOnly) thirdPartyResult.add(protoImport.importString());
           break;
         case APP:
           appResult.add(protoImport.importString());

@@ -1,20 +1,62 @@
 @extends "../common.snip"
 
-@snippet generateMethodSampleCode(method)
+@snippet generateMethodSampleCode(docConfig)
+  @let prompt = ">>>", \
+       ApiName = docConfig.getApiName
     Example:
-      # FIXME: inject module name and class name
-      {@prompt("from google.pubsub.v1.publisher_api import PublisherApi")}
-      # FIXME: inject class name
-      {@prompt("api = PublisherApi()")}
-      # FIXME: inject method name and default arguments; look at how PublisherApi.formatTopicName is handled for Java
-      {@prompt("topic_name = api.topic_path('my-project', 'my-topic')")}
-      {@prompt("topic = api.create_topic(topic_name)")}
-      # FIXME: print the field
-      {@prompt("topic.name")}
-      # FIXME: not sure we can really do this last line; requires knowledge of method
-      u'projects/my-project/topics/my-topic'
+      @join import : docConfig.getAppImports
+        {@prompt} {@import}
+      @end
+      {@prompt} api = {@ApiName}()
+      {@prompt} {@callResultSampleCode(docConfig.getReturnType)}{@methodCallSampleCode(docConfig)}
+  @end
 @end
 
-@private prompt(line)
-    >>> {@line}
+# Optionally render the return value from the API method call
+@private callResultSampleCode(returnType)
+  @if returnType.isEmpty
+  @else
+    response = {@""}
+  @end
+@end
+
+# Render the API method call itself
+@private methodCallSampleCode(docConfig)
+  @if docConfig.isUnpagedListCallableVariant
+    # FIXME: make this correct
+    api.{@methodCallName(docConfig)}().call({@argList(docConfig.getParams)})
+  @else
+    @if docConfig.isCallableVariant
+      # FIXME: make this correct
+      future.get()
+    @else
+      api.{@methodCallName(docConfig)}({@argList(docConfig.getParams)})
+    @end
+  @end
+@end
+
+# Generate argument list
+@private argList(params)
+  @join param : params on ", "
+    {@paramNameFormatted(param)}
+  @end
+@end
+
+# Format parameter name
+@private paramNameFormatted(param)
+  @if param.hasFormattingConfig
+    formatted{@context.lowerCamelToUpperCamel(param.getName)}
+  @else
+    {@param.getName}
+  @end
+@end
+
+# Render the name of the method call
+@private methodCallName(docConfig)
+  @if docConfig.isCallableVariant
+    # FIXME: make this correct
+    {@methodCallNameIter(docConfig)}Callable
+  @else
+    {@docConfig.getMethodName}
+  @end
 @end

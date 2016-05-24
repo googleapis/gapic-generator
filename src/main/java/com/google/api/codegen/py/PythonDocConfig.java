@@ -19,11 +19,15 @@ import com.google.api.tools.framework.model.Field;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 
+import java.util.List;
+
 @AutoValue
 abstract class PythonDocConfig extends DocConfig {
   public static PythonDocConfig.Builder builder() {
     return new AutoValue_PythonDocConfig.Builder();
   }
+  
+  public abstract List<String> getAppImports();
 
   @AutoValue.Builder
   abstract static class Builder extends DocConfig.Builder<Builder> {
@@ -44,6 +48,15 @@ abstract class PythonDocConfig extends DocConfig {
     public abstract Builder setCallableVariant(boolean callable);
 
     public abstract Builder setResourcesFieldForUnpagedListCallable(Field field);
+
+    public abstract Builder setAppImports(List<String> appImports);
+
+    /**
+     * Set just the application specific imports to avoid bloating the doc snippets.
+     */
+    public Builder setAppImports(PythonImportHandler importHandler) {
+      return setAppImports(importHandler.calculateAppImports());
+    }
 
     @Override
     protected Builder _setParams(ImmutableList<Variable> params) {
