@@ -173,8 +173,8 @@
     @#   The port on which to connect to the remote host.
     @# @@param channel [Channel]
     @#   A Channel object through which to make calls.
-    @# @@param ssl_creds [Grpc::ClientCredentials]
-    @#   A ClientCredentials for use with an SSL-enabled channel.
+    @# @@param chan_creds [Grpc::ChannelCredentials]
+    @#   A ChannelCredentials for the setting up the RPC client.
     @# @@param client_config[Hash]
     @#   A Hash for call options for each method. See
     @#   Google::Gax#construct_settings for the structure of
@@ -190,7 +190,7 @@
       service_path: SERVICE_ADDRESS,
       port: DEFAULT_SERVICE_PORT,
       channel: nil,
-      ssl_creds: nil,
+      chan_creds: nil,
       scopes: ALL_SCOPES,
       client_config: {},
       timeout: DEFAULT_TIMEOUT,
@@ -203,7 +203,7 @@
       @@stub = Google::Gax::Grpc.create_stub(
         service_path,
         port,
-        chan_creds: ssl_creds,
+        chan_creds: chan_creds,
         channel: channel,
         scopes: scopes,
         &{@context.getApiConfig.getPackageName}::{@service.getSimpleName}::Stub.method(:new)
