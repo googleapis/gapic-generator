@@ -74,6 +74,13 @@ public class ApiaryConfig {
       HashBasedTable.<String, String, String>create();
 
   /**
+   * Specifies the pattern of the field. The pattern is expressed as a regular expression, like
+   * "^projects/[^/]*$". The table is indexed by (type name, field name).
+   */
+  private final Table<String, String, String> pattern =
+      HashBasedTable.<String, String, String>create();
+
+  /**
    * Records whether or not the method allows media upload.
    */
   private final Set<String> mediaUpload = new HashSet<>();
@@ -115,6 +122,10 @@ public class ApiaryConfig {
 
   public Table<String, String, String> getStringFormat() {
     return stringFormat;
+  }
+
+  public Table<String, String, String> getFieldPattern() {
+    return pattern;
   }
 
   public Map<String, Type> getTypes() {

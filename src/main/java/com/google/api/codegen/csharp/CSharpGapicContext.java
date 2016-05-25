@@ -47,13 +47,11 @@ import com.google.common.collect.Maps;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import autovalue.shaded.com.google.common.common.collect.ImmutableList;
-import autovalue.shaded.com.google.common.common.collect.Iterables;
 
 import io.grpc.Status;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
