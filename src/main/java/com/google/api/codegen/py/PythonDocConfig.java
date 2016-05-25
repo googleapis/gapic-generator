@@ -15,20 +15,21 @@
 package com.google.api.codegen.py;
 
 import com.google.api.codegen.DocConfig;
+import com.google.api.codegen.metacode.InitCode;
+import com.google.api.codegen.metacode.InputParameter;
 import com.google.api.tools.framework.model.Field;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 
-import java.util.List;
-
+/**
+ * Represents the Python documentation settings for an Api method.
+ */
 @AutoValue
 abstract class PythonDocConfig extends DocConfig {
-  public static PythonDocConfig.Builder builder() {
+  public static PythonDocConfig.Builder newBuilder() {
     return new AutoValue_PythonDocConfig.Builder();
   }
   
-  public abstract List<String> getAppImports();
-
   @AutoValue.Builder
   abstract static class Builder extends DocConfig.Builder<Builder> {
     public abstract PythonDocConfig build();
@@ -39,9 +40,9 @@ abstract class PythonDocConfig extends DocConfig {
 
     public abstract Builder setReturnType(String returnType);
 
-    public abstract Builder setParams(ImmutableList<Variable> params);
+    public abstract Builder setInitCode(InitCode initCode);
 
-    public abstract Builder setRequiredParams(ImmutableList<Variable> params);
+    public abstract Builder setParams(ImmutableList<InputParameter> params);
 
     public abstract Builder setPagedVariant(boolean paged);
 
@@ -49,16 +50,14 @@ abstract class PythonDocConfig extends DocConfig {
 
     public abstract Builder setResourcesFieldForUnpagedListCallable(Field field);
 
-    public abstract Builder setAppImports(List<String> appImports);
-
     @Override
-    protected Builder _setParams(ImmutableList<Variable> params) {
-      return setParams(params);
+    protected Builder setInitCodeProxy(InitCode initCode) {
+      return setInitCode(initCode);
     }
 
     @Override
-    protected Builder _setRequiredParams(ImmutableList<Variable> params) {
-      return setRequiredParams(params);
+    protected Builder setParamsProxy(ImmutableList<InputParameter> params) {
+      return setParams(params);
     }
   }
 }

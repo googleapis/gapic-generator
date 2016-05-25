@@ -322,7 +322,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     }
     
     PythonDocConfig docConfig =
-        PythonDocConfig.builder()
+        PythonDocConfig.newBuilder()
             .setAppImports(importStrings)
             .setApiName(getApiWrapperName((Interface) method.getParent()))
             .setMethodName(methodName)

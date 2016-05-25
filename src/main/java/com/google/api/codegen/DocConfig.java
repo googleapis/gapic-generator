@@ -14,15 +14,26 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.metacode.FieldStructureParser;
+import com.google.api.codegen.metacode.InitCode;
+import com.google.api.codegen.metacode.InitCodeGenerator;
+import com.google.api.codegen.metacode.InitValueConfig;
+import com.google.api.codegen.metacode.InputParameter;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import java.util.Map;
+
 import javax.annotation.Nullable;
 
+/**
+ * Represents the generic documentation settings for an Api method.
+ */
 public abstract class DocConfig {
   public abstract String getApiName();
 
@@ -40,9 +51,9 @@ public abstract class DocConfig {
     }
   }
 
-  public abstract ImmutableList<Variable> getParams();
+  public abstract InitCode getInitCode();
 
-  public abstract ImmutableList<Variable> getRequiredParams();
+  public abstract ImmutableList<InputParameter> getParams();
 
   public abstract boolean isPagedVariant();
 
@@ -102,84 +113,86 @@ public abstract class DocConfig {
    * DocConfig builder minimum functionality
    */
   public abstract static class Builder<BuilderType extends Builder<BuilderType>> {
-    protected abstract BuilderType _setParams(ImmutableList<Variable> params);
+    private static final String REQUEST_PARAM_DOC =
+        "The request object containing all of the parameters for the API call.";
 
-    protected abstract BuilderType _setRequiredParams(ImmutableList<Variable> params);
+    private static final String REQUEST_PARAM_NAME = "request";
 
-    public BuilderType setParams(GapicContext context, Iterable<Field> fields) {
-      return _setParams(fieldsToParams(context, fields));
+    protected abstract BuilderType setInitCodeProxy(InitCode initCode);
+
+    protected abstract BuilderType setParamsProxy(ImmutableList<InputParameter> params);
+
+    @SuppressWarnings("unchecked")
+    public BuilderType setRequestObjectInitCode(
+        GapicContext context, Interface service, Method method) {
+      Map<String, Object> initFieldStructure = createInitFieldStructure(context, service, method);
+      InitCodeGenerator generator = new InitCodeGenerator();
+      InitCode initCode = generator.generateRequestObjectInitCode(method, initFieldStructure);
+      setInitCodeProxy(initCode);
+      return (BuilderType) this;
     }
 
-    public BuilderType setParamsWithFormatting(
-        GapicContext context,
-        Interface service,
-        Iterable<Field> fields,
-        ImmutableMap<String, String> fieldNamePatterns) {
-      return _setParams(fieldsToParamsWithFormatting(context, service, fields, fieldNamePatterns));
+    @SuppressWarnings("unchecked")
+    public BuilderType setFieldInitCode(
+        GapicContext context, Interface service, Method method, Iterable<Field> fields) {
+      Map<String, Object> initFieldStructure = createInitFieldStructure(context, service, method);
+      InitCodeGenerator generator = new InitCodeGenerator();
+      InitCode initCode =
+          generator.generateRequestFieldInitCode(method, initFieldStructure, fields);
+      setInitCodeProxy(initCode);
+      return (BuilderType) this;
     }
 
-    public BuilderType setSingleParam(
+    private static Map<String, Object> createInitFieldStructure(
+        GapicContext context, Interface service, Method method) {
+      MethodConfig methodConfig =
+          context.getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+      Map<String, String> fieldNamePatterns = methodConfig.getFieldNamePatterns();
+
+      ImmutableMap.Builder<String, InitValueConfig> initValueConfigMap = ImmutableMap.builder();
+      for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
+        CollectionConfig collectionConfig =
+            context.getCollectionConfig(service, fieldNamePattern.getValue());
+        InitValueConfig initValueConfig =
+            InitValueConfig.create(context.getApiWrapperName(service), collectionConfig);
+        initValueConfigMap.put(fieldNamePattern.getKey(), initValueConfig);
+      }
+      Map<String, Object> initFieldStructure =
+          FieldStructureParser.parseFields(
+              methodConfig.getSampleCodeInitFields(), initValueConfigMap.build());
+      return initFieldStructure;
+    }
+
+    public BuilderType setRequestObjectParam(
         @SuppressWarnings("unused") GapicContext context,
-        TypeRef requestType,
-        String name,
-        String doc) {
-      return _setParams(ImmutableList.of(s_newVariable(requestType, name, doc)));
+        @SuppressWarnings("unused") Interface service,
+        Method method) {
+      InputParameter param =
+          InputParameter.newBuilder()
+              .setType(method.getInputType())
+              .setName(REQUEST_PARAM_NAME)
+              .setDescription(REQUEST_PARAM_DOC)
+              .build();
+      return setParamsProxy(ImmutableList.of(param));
     }
 
-    public BuilderType setRequiredParams(GapicContext context, Iterable<Field> fields) {
-      return _setRequiredParams(fieldsToParams(context, fields));
+    public BuilderType setEmptyParams() {
+      return setParamsProxy(ImmutableList.<InputParameter>of());
     }
 
-    public BuilderType setRequiredParamsWithFormatting(
-        GapicContext context,
-        Interface service,
-        Iterable<Field> fields,
-        ImmutableMap<String, String> fieldNamePatterns) {
-      return _setRequiredParams(
-          fieldsToParamsWithFormatting(context, service, fields, fieldNamePatterns));
-    }
+    @SuppressWarnings("unchecked")
+    public BuilderType setFieldParams(GapicContext context, Iterable<Field> fields) {
+      ImmutableList.Builder<InputParameter> params = ImmutableList.<InputParameter>builder();
 
-    public BuilderType setRequiredParamsEmpty() {
-      return _setRequiredParams(ImmutableList.<Variable>of());
-    }
-
-    private static ImmutableList<Variable> fieldsToParams(
-        GapicContext context, Iterable<Field> fields) {
-      ImmutableList.Builder<Variable> params = ImmutableList.<Variable>builder();
       for (Field field : fields) {
-        params.add(
-            s_newVariable(
-                field.getType(),
-                LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName()),
-                context.getDescription(field)));
+        InputParameter.Builder inputParamBuilder = InputParameter.newBuilder();
+        inputParamBuilder.setType(field.getType());
+        inputParamBuilder.setName(LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName()));
+        inputParamBuilder.setDescription(context.getDescription(field));
+        params.add(inputParamBuilder.build());
       }
-      return params.build();
-    }
-
-    private static ImmutableList<Variable> fieldsToParamsWithFormatting(
-        GapicContext context,
-        Interface service,
-        Iterable<Field> fields,
-        ImmutableMap<String, String> fieldNamePatterns) {
-      ImmutableList.Builder<Variable> params = ImmutableList.<Variable>builder();
-      for (Field field : fields) {
-        if (fieldNamePatterns.containsKey(field.getSimpleName())) {
-          params.add(
-              s_newVariable(
-                  field.getType(),
-                  LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName()),
-                  context.getDescription(field),
-                  context.getCollectionConfig(
-                      service, fieldNamePatterns.get(field.getSimpleName()))));
-        } else {
-          params.add(
-              s_newVariable(
-                  field.getType(),
-                  LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName()),
-                  context.getDescription(field)));
-        }
-      }
-      return params.build();
+      setParamsProxy(params.build());
+      return (BuilderType) this;
     }
   }
 }
