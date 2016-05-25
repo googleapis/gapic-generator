@@ -32,6 +32,11 @@ abstract class PythonDocConfig extends DocConfig {
     return new AutoValue_PythonDocConfig.Builder();
   }
   
+  @Override
+  public boolean isCallableVariant() {
+    return false;
+  }
+
   public abstract List<String> getAppImports();
 
   @AutoValue.Builder
@@ -49,6 +54,10 @@ abstract class PythonDocConfig extends DocConfig {
     public abstract Builder setParams(ImmutableList<InputParameter> params);
 
     public abstract Builder setPagedVariant(boolean paged);
+
+    public Builder setCallableVariant(boolean callable) {
+      throw new UnsupportedOperationException("Python does not have callable variants");
+    }
 
     public abstract Builder setResourcesFieldForUnpagedListCallable(Field field);
 

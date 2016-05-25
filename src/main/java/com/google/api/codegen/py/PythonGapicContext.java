@@ -309,7 +309,6 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
 
     MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
     String methodName = upperCamelToLowerCamel(method.getSimpleName());
-    ImmutableMap<String, String> fieldNamePatterns = methodConfig.getFieldNamePatterns();
 
     Iterable<Field> requiredFields = methodConfig.getRequiredFields();
     Iterable<Field> optionalFields = methodConfig.getOptionalFields();
@@ -320,17 +319,17 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     for (Field field : optionalFields) {
       fields.add(field);
     }
-    
+
     PythonDocConfig docConfig =
         PythonDocConfig.newBuilder()
             .setAppImports(importStrings)
             .setApiName(getApiWrapperName((Interface) method.getParent()))
             .setMethodName(methodName)
             .setReturnType(returnTypeOrEmpty(method.getOutputType(), importHandler))
-            .setParamsWithFormatting(this, service, fields, fieldNamePatterns)
-            .setRequiredParamsEmpty()
+            .setFieldInitCode(this, service, method, fields)
+            .setFieldParams(this, fields)
+            // FIXME: this should not be hard-coded
             .setPagedVariant(false)
-            .setCallableVariant(false)
             .build();
 
     return generateMethodSampleCode(docConfig);
