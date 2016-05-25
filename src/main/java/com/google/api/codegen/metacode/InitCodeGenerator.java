@@ -89,6 +89,9 @@ public class InitCodeGenerator {
 
   private InitCodeLine generateSampleCodeInit(String suggestedName, TypeRef typeRef,
       Object initFieldStructure) {
+    // No matter what the type in the model is, we want to stop here, because we
+    // have reached the end of initFieldStructure. At codegen time, we will
+    // generate the zero value for the type.
     if (initFieldStructure instanceof InitValueConfig) {
       InitValueConfig initValueConfig = (InitValueConfig) initFieldStructure;
       String identifier = getNewSymbol(suggestedName);
