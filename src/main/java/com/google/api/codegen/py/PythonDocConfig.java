@@ -21,6 +21,8 @@ import com.google.api.tools.framework.model.Field;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 
+import java.util.List;
+
 /**
  * Represents the Python documentation settings for an Api method.
  */
@@ -30,6 +32,8 @@ abstract class PythonDocConfig extends DocConfig {
     return new AutoValue_PythonDocConfig.Builder();
   }
   
+  public abstract List<String> getAppImports();
+
   @AutoValue.Builder
   abstract static class Builder extends DocConfig.Builder<Builder> {
     public abstract PythonDocConfig build();
@@ -46,10 +50,10 @@ abstract class PythonDocConfig extends DocConfig {
 
     public abstract Builder setPagedVariant(boolean paged);
 
-    public abstract Builder setCallableVariant(boolean callable);
-
     public abstract Builder setResourcesFieldForUnpagedListCallable(Field field);
 
+    public abstract Builder setAppImports(List<String> appImports);
+    
     @Override
     protected Builder setInitCodeProxy(InitCode initCode) {
       return setInitCode(initCode);
