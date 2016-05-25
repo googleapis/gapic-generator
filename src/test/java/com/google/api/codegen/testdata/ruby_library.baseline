@@ -147,8 +147,8 @@ module Google
           #   The port on which to connect to the remote host.
           # @param channel [Channel]
           #   A Channel object through which to make calls.
-          # @param ssl_creds [Grpc::ClientCredentials]
-          #   A ClientCredentials for use with an SSL-enabled channel.
+          # @param chan_creds [Grpc::ChannelCredentials]
+          #   A ChannelCredentials for the setting up the RPC client.
           # @param client_config[Hash]
           #   A Hash for call options for each method. See
           #   Google::Gax#construct_settings for the structure of
@@ -164,7 +164,7 @@ module Google
             service_path: SERVICE_ADDRESS,
             port: DEFAULT_SERVICE_PORT,
             channel: nil,
-            ssl_creds: nil,
+            chan_creds: nil,
             scopes: ALL_SCOPES,
             client_config: {},
             timeout: DEFAULT_TIMEOUT,
@@ -188,7 +188,7 @@ module Google
             @stub = Google::Gax::Grpc.create_stub(
               service_path,
               port,
-              chan_creds: ssl_creds,
+              chan_creds: chan_creds,
               channel: channel,
               scopes: scopes,
               &Google::Example::Library::V1::LibraryService::Stub.method(:new)
@@ -231,8 +231,8 @@ module Google
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           def get_shelf(
             name,
-            message: Google::Example::Library::V1::SomeMessage.new,
-            string_builder: Google::Example::Library::V1::StringBuilder.new,
+            message: nil,
+            string_builder: nil,
             options: nil)
             req = Google::Example::Library::V1::GetShelfRequest.new(
               name: name,
@@ -249,13 +249,11 @@ module Google
           # @param options [Google::Gax::CallOptions]
           #   Overrides the default settings for this call, e.g, timeout,
           #   retries, etc.
-          # @return [
-          #   Google::Gax::PagedEnumerable<Google::Example::Library::V1::Shelf>,
-          #   Google::Example::Library::V1::ListShelvesResponse]
-          #   An enumerable of Google::Example::Library::V1::Shelf instances unless
-          #   page streaming is disabled through the call options. If page
-          #   streaming is disabled, a single Google::Example::Library::V1::ListShelvesResponse
-          #   instance is returned.
+          # @return [Google::Gax::PagedEnumerable<Google::Example::Library::V1::Shelf>]
+          #   An enumerable of Google::Example::Library::V1::Shelf instances.
+          #   See Google::Gax::PagedEnumerable documentation for other
+          #   operations such as per-page iteration or access to the response
+          #   object.
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           def list_shelves(
             options: nil)
@@ -392,13 +390,11 @@ module Google
           # @param options [Google::Gax::CallOptions]
           #   Overrides the default settings for this call, e.g, timeout,
           #   retries, etc.
-          # @return [
-          #   Google::Gax::PagedEnumerable<Google::Example::Library::V1::Book>,
-          #   Google::Example::Library::V1::ListBooksResponse]
-          #   An enumerable of Google::Example::Library::V1::Book instances unless
-          #   page streaming is disabled through the call options. If page
-          #   streaming is disabled, a single Google::Example::Library::V1::ListBooksResponse
-          #   instance is returned.
+          # @return [Google::Gax::PagedEnumerable<Google::Example::Library::V1::Book>]
+          #   An enumerable of Google::Example::Library::V1::Book instances.
+          #   See Google::Gax::PagedEnumerable documentation for other
+          #   operations such as per-page iteration or access to the response
+          #   object.
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           def list_books(
             name,
@@ -450,8 +446,8 @@ module Google
           def update_book(
             name,
             book,
-            update_mask: Google::Protobuf::FieldMask.new,
-            physical_mask: Google::Example::Library::V1::FieldMask.new,
+            update_mask: nil,
+            physical_mask: nil,
             options: nil)
             req = Google::Example::Library::V1::UpdateBookRequest.new(
               name: name,
@@ -494,13 +490,11 @@ module Google
           # @param options [Google::Gax::CallOptions]
           #   Overrides the default settings for this call, e.g, timeout,
           #   retries, etc.
-          # @return [
-          #   Google::Gax::PagedEnumerable<String>,
-          #   Google::Example::Library::V1::ListStringsResponse]
-          #   An enumerable of String instances unless
-          #   page streaming is disabled through the call options. If page
-          #   streaming is disabled, a single Google::Example::Library::V1::ListStringsResponse
-          #   instance is returned.
+          # @return [Google::Gax::PagedEnumerable<String>]
+          #   An enumerable of String instances.
+          #   See Google::Gax::PagedEnumerable documentation for other
+          #   operations such as per-page iteration or access to the response
+          #   object.
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           def list_strings(
             name: '',

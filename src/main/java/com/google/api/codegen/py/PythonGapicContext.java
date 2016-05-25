@@ -149,7 +149,8 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     String prefix;
     if (type.getCardinality() == Cardinality.REPEATED) {
       if (type.isMap()) {
-        prefix = String.format("dict[%s, ", fieldTypeComment(type.getMapKeyField(), importHandler));
+        prefix =
+            String.format("dict[%s -> ", fieldTypeComment(type.getMapKeyField(), importHandler));
       } else {
         prefix = "list[";
       }
@@ -241,12 +242,13 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
         getApiConfig().getInterfaceConfig((Interface) method.getParent()).getMethodConfig(method);
 
     if (config.isPageStreaming()) {
-      return "Yields:\n  Instances of "
+      return "Returns:"
+          + "\n  A :class:`google.gax.PageIterator` instance. By default, this"
+          + "\n  is an iterable of "
           + fieldTypeComment(config.getPageStreaming().getResourcesField(), importHandler)
-          + "\n  unless page streaming is disabled through the call options. If"
-          + "\n  page streaming is disabled, a single \n  "
-          + classInfo
-          + "\n  is returned.";
+          + " instances."
+          + "\n  This object can also be configured to iterate over the pages"
+          + "\n  of the response through the `CallOptions` parameter.";
 
     } else {
       return "Returns:\n  A " + classInfo + ".";
@@ -283,8 +285,10 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
         contentBuilder.append("\n\n");
       }
     }
-    contentBuilder.append(sampleCode);
-    contentBuilder.append("\n\n");
+    if (!sampleCode.isEmpty()) {
+      contentBuilder.append(sampleCode);
+      contentBuilder.append("\n\n");
+    }
     contentBuilder.append(paramTypes);
     if (returnType != null) {
       contentBuilder.append("\n\n" + returnType);
