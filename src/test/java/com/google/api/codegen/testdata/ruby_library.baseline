@@ -506,6 +506,27 @@ module Google
               @stub.method(:list_strings), settings)
             api_call.call(req, **@headers)
           end
+
+          # Adds comments to a book
+          #
+          # @param name [String]
+          # @param comments [Array<Google::Example::Library::V1::Comment>]
+          # @param options [Google::Gax::CallOptions]
+          #   Overrides the default settings for this call, e.g, timeout,
+          #   retries, etc.
+          # @raise [Google::Gax::GaxError] if the RPC is aborted.
+          def add_comments(
+            name,
+            comments,
+            options: nil)
+            req = Google::Example::Library::V1::AddCommentsRequest.new(
+              name: name,
+              comments: comments)
+            settings = @defaults['add_comments'].merge(options)
+            api_call = Google::Gax.create_api_call(
+              @stub.method(:add_comments), settings)
+            api_call.call(req, **@headers)
+          end
         end
       end
     end
@@ -1295,6 +1316,20 @@ module Google
         # @!attribute [rw] next_page_token
         #   @return [String]
         class ListStringsResponse; end
+
+        # @!attribute [rw] name
+        #   @return [String]
+        # @!attribute [rw] comments
+        #   @return [Array<Google::Example::Library::V1::Comment>]
+        class AddCommentsRequest; end
+
+        # @!attribute [rw] user_name
+        #   @return [String]
+        #     should be filled in by the sample generator
+        # @!attribute [rw] comment
+        #   @return [String]
+        #     won't be filled in by the sample generator
+        class Comment; end
       end
     end
   end
@@ -1381,6 +1416,10 @@ end
         },
         "ListStrings": {
           "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        },
+        "AddComments": {
+          "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         }
       }

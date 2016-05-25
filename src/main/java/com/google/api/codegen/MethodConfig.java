@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.metacode.FieldStructureParser;
+import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -24,7 +26,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -45,6 +49,7 @@ public class MethodConfig {
   private final BundlingConfig bundling;
   private final boolean hasRequestObjectMethod;
   private final ImmutableMap<String, String> fieldNamePatterns;
+  private final List<String> sampleCodeInitFields;
 
   /**
    * Creates an instance of MethodConfig based on MethodConfigProto, linking it up with the provided
@@ -53,7 +58,7 @@ public class MethodConfig {
   @Nullable
   public static MethodConfig createMethodConfig(
       DiagCollector diagCollector,
-      final MethodConfigProto methodConfig,
+      final MethodConfigProto methodConfigProto,
       Method method,
       ImmutableSet<String> retryCodesConfigNames,
       ImmutableSet<String> retryParamsConfigNames) {
@@ -61,39 +66,39 @@ public class MethodConfig {
     boolean error = false;
 
     PageStreamingConfig pageStreaming;
-    if (PageStreamingConfigProto.getDefaultInstance().equals(methodConfig.getPageStreaming())) {
+    if (PageStreamingConfigProto.getDefaultInstance().equals(methodConfigProto.getPageStreaming())) {
       pageStreaming = null;
     } else {
       pageStreaming =
           PageStreamingConfig.createPageStreaming(
-              diagCollector, methodConfig.getPageStreaming(), method);
+              diagCollector, methodConfigProto.getPageStreaming(), method);
       if (pageStreaming == null) {
         error = true;
       }
     }
 
     FlatteningConfig flattening;
-    if (FlatteningConfigProto.getDefaultInstance().equals(methodConfig.getFlattening())) {
+    if (FlatteningConfigProto.getDefaultInstance().equals(methodConfigProto.getFlattening())) {
       flattening = null;
     } else {
       flattening =
-          FlatteningConfig.createFlattening(diagCollector, methodConfig.getFlattening(), method);
+          FlatteningConfig.createFlattening(diagCollector, methodConfigProto.getFlattening(), method);
       if (flattening == null) {
         error = true;
       }
     }
 
     BundlingConfig bundling;
-    if (BundlingConfigProto.getDefaultInstance().equals(methodConfig.getBundling())) {
+    if (BundlingConfigProto.getDefaultInstance().equals(methodConfigProto.getBundling())) {
       bundling = null;
     } else {
-      bundling = BundlingConfig.createBundling(diagCollector, methodConfig.getBundling(), method);
+      bundling = BundlingConfig.createBundling(diagCollector, methodConfigProto.getBundling(), method);
       if (bundling == null) {
         error = true;
       }
     }
 
-    String retryCodesName = methodConfig.getRetryCodesName();
+    String retryCodesName = methodConfigProto.getRetryCodesName();
     if (!retryCodesName.isEmpty() && !retryCodesConfigNames.contains(retryCodesName)) {
       diagCollector.addDiag(
           Diag.error(
@@ -104,7 +109,7 @@ public class MethodConfig {
       error = true;
     }
 
-    String retryParamsName = methodConfig.getRetryParamsName();
+    String retryParamsName = methodConfigProto.getRetryParamsName();
     if (!retryParamsConfigNames.isEmpty() && !retryParamsConfigNames.contains(retryParamsName)) {
       diagCollector.addDiag(
           Diag.error(
@@ -115,9 +120,9 @@ public class MethodConfig {
       error = true;
     }
 
-    boolean hasRequestObjectMethod = methodConfig.getRequestObjectMethod();
+    boolean hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
 
-    List<String> requiredFieldNames = methodConfig.getRequiredFieldsList();
+    List<String> requiredFieldNames = methodConfigProto.getRequiredFieldsList();
     ImmutableSet.Builder<Field> builder = ImmutableSet.builder();
     for (String fieldName : requiredFieldNames) {
       Field requiredField = method.getInputMessage().lookupField(fieldName);
@@ -140,12 +145,16 @@ public class MethodConfig {
             new Predicate<Field>() {
               @Override
               public boolean apply(Field input) {
-                return !(methodConfig.getRequiredFieldsList().contains(input.getSimpleName()));
+                return !(methodConfigProto.getRequiredFieldsList().contains(input.getSimpleName()));
               }
             });
 
     ImmutableMap<String, String> fieldNamePatterns =
-        ImmutableMap.copyOf(methodConfig.getFieldNamePatterns());
+        ImmutableMap.copyOf(methodConfigProto.getFieldNamePatterns());
+
+    List<String> sampleCodeInitFields = new ArrayList<>();
+    sampleCodeInitFields.addAll(methodConfigProto.getRequiredFieldsList());
+    sampleCodeInitFields.addAll(methodConfigProto.getSampleCodeInitFieldsList());
 
     if (error) {
       return null;
@@ -159,7 +168,8 @@ public class MethodConfig {
           hasRequestObjectMethod,
           requiredFields,
           optionalFields,
-          fieldNamePatterns);
+          fieldNamePatterns,
+          sampleCodeInitFields);
     }
   }
 
@@ -172,7 +182,8 @@ public class MethodConfig {
       boolean hasRequestObjectMethod,
       Iterable<Field> requiredFields,
       Iterable<Field> optionalFields,
-      ImmutableMap<String, String> fieldNamePatterns) {
+      ImmutableMap<String, String> fieldNamePatterns,
+      List<String> sampleCodeInitFields) {
     this.pageStreaming = pageStreaming;
     this.flattening = flattening;
     this.retryCodesConfigName = retryCodesConfigName;
@@ -182,6 +193,7 @@ public class MethodConfig {
     this.requiredFields = requiredFields;
     this.optionalFields = optionalFields;
     this.fieldNamePatterns = fieldNamePatterns;
+    this.sampleCodeInitFields = sampleCodeInitFields;
   }
 
   /**
@@ -266,5 +278,13 @@ public class MethodConfig {
    */
   public ImmutableMap<String, String> getFieldNamePatterns() {
     return fieldNamePatterns;
+  }
+
+  /**
+   * Returns the field structure of fields that needs to be initialized
+   * in sample code.
+   */
+  public List<String> getSampleCodeInitFields() {
+    return sampleCodeInitFields;
   }
 }

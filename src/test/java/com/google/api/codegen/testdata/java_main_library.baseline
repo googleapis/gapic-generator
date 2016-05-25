@@ -36,7 +36,9 @@ package com.google.gcloud.pubsub.spi;
 import com.google.api.gax.core.PageAccessor;
 import com.google.api.gax.grpc.ApiCallable;
 import com.google.api.gax.protobuf.PathTemplate;
+import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.Book;
+import com.google.example.library.v1.Comment;
 import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
 import com.google.example.library.v1.DeleteBookRequest;
@@ -161,6 +163,7 @@ public class LibraryServiceApi implements AutoCloseable {
   private final ApiCallable<ListStringsRequest, ListStringsResponse> listStringsCallable;
   private final ApiCallable<ListStringsRequest, PageAccessor<String>>
       listStringsPagedCallable;
+  private final ApiCallable<AddCommentsRequest, Empty> addCommentsCallable;
 
   public final LibraryServiceSettings getSettings() {
     return settings;
@@ -287,6 +290,7 @@ public class LibraryServiceApi implements AutoCloseable {
     this.listStringsCallable = ApiCallable.create(settings.listStringsSettings(), this.channel, this.executor);
     this.listStringsPagedCallable =
         ApiCallable.createPagedVariant(settings.listStringsSettings(), this.channel, this.executor);
+    this.addCommentsCallable = ApiCallable.create(settings.addCommentsSettings(), this.channel, this.executor);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -538,6 +542,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *
    *   for (Shelf elements : libraryServiceApi.listShelves()) {
    *     // doThingsWith(elements);
    *   }
@@ -564,7 +569,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
+   *   ListShelvesRequest request = ListShelvesRequest.newBuilder()
+   *     .build();
    *   for (Shelf elements : libraryServiceApi.listShelves(request)) {
    *     // doThingsWith(elements);
    *   }
@@ -589,7 +595,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
+   *   ListShelvesRequest request = ListShelvesRequest.newBuilder()
+   *     .build();
    *   ListenableFuture&lt;PageAccessor&lt;Shelf&gt;&gt; future = libraryServiceApi.listShelvesPagedCallable().futureCall(request);
    *   // Do something
    *   for (Shelf elements : future.get()) {
@@ -612,7 +619,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   ListShelvesRequest request = ListShelvesRequest.newBuilder().build();
+   *   ListShelvesRequest request = ListShelvesRequest.newBuilder()
+   *     .build();
    *   while (true) {
    *     ListShelvesResponse response = libraryServiceApi.listShelvesCallable().call(request);
    *     for (Shelf elements : response.getShelvesList()) {
@@ -1478,6 +1486,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *
    *   for (String elements : libraryServiceApi.listStrings()) {
    *     // doThingsWith(elements);
    *   }
@@ -1504,7 +1513,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
+   *   ListStringsRequest request = ListStringsRequest.newBuilder()
+   *     .build();
    *   for (String elements : libraryServiceApi.listStrings(request)) {
    *     // doThingsWith(elements);
    *   }
@@ -1529,7 +1539,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
+   *   ListStringsRequest request = ListStringsRequest.newBuilder()
+   *     .build();
    *   ListenableFuture&lt;PageAccessor&lt;String&gt;&gt; future = libraryServiceApi.listStringsPagedCallable().futureCall(request);
    *   // Do something
    *   for (String elements : future.get()) {
@@ -1552,7 +1563,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * Sample code:
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
-   *   ListStringsRequest request = ListStringsRequest.newBuilder().build();
+   *   ListStringsRequest request = ListStringsRequest.newBuilder()
+   *     .build();
    *   while (true) {
    *     ListStringsResponse response = libraryServiceApi.listStringsCallable().call(request);
    *     for (String elements : response.getStringsList()) {
@@ -1573,6 +1585,104 @@ public class LibraryServiceApi implements AutoCloseable {
    */
   public final ApiCallable<ListStringsRequest, ListStringsResponse> listStringsCallable() {
     return listStringsCallable;
+  }
+
+  // ----- addComments -----
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Adds comments to a book
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String userName = "";
+   *   Comment commentsElement = Comment.newBuilder()
+   *     .setUserName(userName)
+   *     .build();
+   *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
+   *   libraryServiceApi.addComments(formattedName, comments);
+   * }
+   * </code></pre>
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   *
+   * @param name
+   * @param comments
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final void addComments(String name, List<Comment> comments) {
+    BOOK_PATH_TEMPLATE.validate(name);
+
+    AddCommentsRequest request =
+        AddCommentsRequest.newBuilder()
+        .setName(name)
+        .addAllComments(comments)
+        .build();
+    addComments(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Adds comments to a book
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String userName = "";
+   *   Comment commentsElement = Comment.newBuilder()
+   *     .setUserName(userName)
+   *     .build();
+   *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
+   *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .addAllComments(comments)
+   *     .build();
+   *   libraryServiceApi.addComments(request);
+   * }
+   * </code></pre>
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public void addComments(AddCommentsRequest request) {
+    addCommentsCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Adds comments to a book
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String userName = "";
+   *   Comment commentsElement = Comment.newBuilder()
+   *     .setUserName(userName)
+   *     .build();
+   *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
+   *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .addAllComments(comments)
+   *     .build();
+   *   ListenableFuture&lt;Void&gt; future = libraryServiceApi.addCommentsCallable().futureCall(request);
+   *   // Do something
+   *   future.get();
+   * }
+   * </code></pre>
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   */
+  public final ApiCallable<AddCommentsRequest, Empty> addCommentsCallable() {
+    return addCommentsCallable;
   }
 
 

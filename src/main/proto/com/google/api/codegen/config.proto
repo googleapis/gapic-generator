@@ -65,6 +65,9 @@ option java_package = "com.google.api.codegen";
 //             subresponse_field: pic_id
 //         retry_codes_name: idempotent
 //         retry_params_name: default
+//         request_object_method: true
+//         field_name_patterns:
+//           name: book
 //       - name: GetBook
 //       ...
 //     ...
@@ -172,6 +175,10 @@ message MethodConfigProto {
   // Maps the field name of the request type to entity_name of CollectionConfigProto.
   // It is used to specify the string pattern that the field must follow.
   map<string, string> field_name_patterns = 9;
+
+  // Specifies complex structure fields that need to be initialized by the sample code for
+  // the sample to be usable.
+  repeated string sample_code_init_fields = 10;
 }
 
 // `FlatteningConfigProto` describes the parameter groups for which a
