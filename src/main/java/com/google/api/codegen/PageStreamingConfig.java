@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
  * PageStreamingConfig represents the page streaming configuration for a method.
  */
 public class PageStreamingConfig {
+  private final Field requestPageSizeField;
   private final Field requestTokenField;
   private final Field responseTokenField;
   private final Field resourcesField;
@@ -39,6 +40,19 @@ public class PageStreamingConfig {
   @Nullable
   public static PageStreamingConfig createPageStreaming(
       DiagCollector diagCollector, PageStreamingConfigProto pageStreaming, Method method) {
+    String requestPageSizeFieldName = pageStreaming.getRequest().getPageSizeField();
+    Field requestPageSizeField =
+        method.getInputType().getMessageType().lookupField(requestPageSizeFieldName);
+    if (requestPageSizeField == null) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Request field missing for page streaming: method = %s, message type = %s, field = %s",
+              method.getFullName(),
+              method.getInputType().getMessageType().getFullName(),
+              requestPageSizeFieldName));
+    }
+
     String requestTokenFieldName = pageStreaming.getRequest().getTokenField();
     Field requestTokenField =
         method.getInputType().getMessageType().lookupField(requestTokenFieldName);
@@ -77,17 +91,25 @@ public class PageStreamingConfig {
               resourcesFieldName));
     }
 
-    if (requestTokenField == null || responseTokenField == null || resourcesField == null) {
+    if (requestPageSizeField == null || requestTokenField == null || responseTokenField == null || resourcesField == null) {
       return null;
     }
-    return new PageStreamingConfig(requestTokenField, responseTokenField, resourcesField);
+    return new PageStreamingConfig(requestPageSizeField, requestTokenField, responseTokenField, resourcesField);
   }
 
   private PageStreamingConfig(
-      Field requestTokenField, Field responseTokenField, Field resourcesField) {
+      Field requestPageSizeField, Field requestTokenField, Field responseTokenField, Field resourcesField) {
+    this.requestPageSizeField = requestPageSizeField;
     this.requestTokenField = requestTokenField;
     this.responseTokenField = responseTokenField;
     this.resourcesField = resourcesField;
+  }
+
+  /**
+   * Returns the field used in the request to specify desired page size.
+   */
+  public Field getRequestPageSizeField() {
+    return requestPageSizeField;
   }
 
   /**

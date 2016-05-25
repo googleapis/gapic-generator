@@ -1,7 +1,7 @@
 @extends "common.snip"
 
 @snippet generateFilename(service)
-    {@context.getApiConfig().getPackageName()}/{@context.getReducedServiceName(service)}/client.go
+    {@context.getApiConfig().getPackageName()}/generated/{@context.getReducedServiceName(service)}/client.go
 @end
 
 @snippet generateClass(service, body)
@@ -12,7 +12,7 @@
     @join commentLine : context.comments(service)
         {@commentLine}
     @end
-    package {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
+    package {@context.getReducedServiceName(service)}
 
     {@importSection(service)}
 
@@ -221,6 +221,7 @@
                 @let pageStreaming = methodConfig.getPageStreaming(), \
                      iteratorTypeName = context.getIteratorTypeName(pageStreaming), \
                      resourceFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getResourcesField().getSimpleName), \
+                     requestPageSizeFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getRequestPageSizeField().getSimpleName), \
                      requestTokenFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getRequestTokenField().getSimpleName), \
                      responseTokenFieldName = context.lowerUnderscoreToUpperCamel(pageStreaming.getResponseTokenField().getSimpleName), \
                      tokenZeroValue = context.zeroValue(pageStreaming.getRequestTokenField().getType)
@@ -239,6 +240,7 @@
                             err := gax.Invoke(ctx, func (c context.Context) error {
                                 var err error
                                 req.{@requestTokenFieldName} = iterator.nextPageToken
+                                req.{@requestPageSizeFieldName} = iterator.pageSize
                                 resp, err = client.client.{@methodName}(c, req)
                                 return err
                             }, callOpts...)
@@ -315,6 +317,7 @@
                 items         []{@resourceFieldType}
                 atLastPage    bool
                 currentIndex  int
+                pageSize      int
                 nextPageToken {@tokenType}
                 apiCall       func() error
             }
@@ -342,6 +345,12 @@
                 result := iterator.items[iterator.currentIndex]
                 iterator.currentIndex++
                 return result, nil
+            }
+
+            // SetPageSize sets the maximum size of the next page to be
+            // retrieved.
+            func (iterator *{@iteratorTypeName}) SetPageSize(int pageSize) {
+                iterator.pageSize = pageSize
             }
 
             // SetPageToken sets the next page token to be retrieved. Note, it
