@@ -87,7 +87,7 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
           .put(Type.TYPE_FIXED32, "0")
           .put(Type.TYPE_SFIXED32, "0")
           .put(Type.TYPE_STRING, "\"\"")
-          .put(Type.TYPE_BYTES, "ByteString.EMPTY")
+          .put(Type.TYPE_BYTES, "ByteString.copyFromUtf8(\"\")")
           .build();
 
   private JavaContextCommon javaCommon;
