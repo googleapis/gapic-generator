@@ -296,6 +296,10 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
   }
   
   private String methodSnippet(Method method, PythonImportHandler importHandler) {
+    if (!getApiConfig().generateSamples()) {
+      return "";
+    }
+
     Interface service = (Interface) method.getParent();
     List<String> importStrings = new ArrayList<>();
     importStrings.add(
@@ -304,7 +308,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
                 method.getFile().getProto().getPackage()
                     + "."
                     + PythonProtoElements.getPbFileName(method.getInputMessage()),
-                service.getSimpleName() + "Api")
+                getApiWrapperName(service))
             .importString());
 
     MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
