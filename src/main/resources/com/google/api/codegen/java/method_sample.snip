@@ -40,6 +40,18 @@
 
 # Helper functions for generateMethodSampleCode()
 
+@private getGenericAwareReturnType(docConfig)
+  @if docConfig.isPagedVariant
+    PageAccessor<{@docConfig.getGenericAwareReturnType}>
+  @else
+    {@docConfig.getGenericAwareReturnType}
+  @end
+@end
+
+@private getResourcesListCall(resourcesField)
+  get{@context.lowerUnderscoreToUpperCamel(resourcesField.getSimpleName)}List()
+@end
+
 @private initCode(initCodeSpec)
   @join line : initCodeSpec.getLines()
     @switch line.getLineType.toString()
@@ -79,6 +91,15 @@
   {@context.typeName(line.getType)} {@formattedIdentifier(line)} = {@initValue(line)};
 @end
 
+# Properly format an identifier for this language
+@private formattedIdentifier(lineOrFieldSetting)
+  @if lineOrFieldSetting.getInitValueConfig.hasFormattingConfig
+    formatted{@context.lowerUnderscoreToUpperCamel(lineOrFieldSetting.getIdentifier)}
+  @else
+    {@context.lowerUnderscoreToLowerCamel(lineOrFieldSetting.getIdentifier)}
+  @end
+@end
+
 @private initValue(line)
   @let metadata = line.getInitValueConfig
     @if metadata.hasFormattingConfig()
@@ -89,12 +110,22 @@
   @end
 @end
 
+@private formatResourceFunctionArgs(collectionConfig)
+  @join param : collectionConfig.getNameTemplate.vars() on ", "
+    "[{@context.lowerUnderscoreToUpperUnderscore(param)}]"
+  @end
+@end
+
 # Optionally render the return value from the API method call
 @private callResultSampleCode(returnType)
   @if returnType.isEmpty
   @else
     {@returnType} response = {@""}
   @end
+@end
+
+@private methodFutureCall(docConfig, apiName)
+  {@apiName}.{@methodCallName(docConfig)}().futureCall({@argList(docConfig.getInitCode.getArgFields)})
 @end
 
 # Render the API method call itself
@@ -127,40 +158,9 @@
   @end
 @end
 
-@private getGenericAwareReturnType(docConfig)
-  @if docConfig.isPagedVariant
-    PageAccessor<{@docConfig.getGenericAwareReturnType}>
-  @else
-    {@docConfig.getGenericAwareReturnType}
-  @end
-@end
-
-@private methodFutureCall(docConfig, apiName)
-  {@apiName}.{@methodCallName(docConfig)}().futureCall({@argList(docConfig.getInitCode.getArgFields)})
-@end
-
-@private getResourcesListCall(resourcesField)
-  get{@context.lowerUnderscoreToUpperCamel(resourcesField.getSimpleName)}List()
-@end
-
 # Generate argument list
 @private argList(fieldSettings)
   @join fieldSetting : fieldSettings on ", "
     {@formattedIdentifier(fieldSetting)}
-  @end
-@end
-
-@private formatResourceFunctionArgs(collectionConfig)
-  @join param : collectionConfig.getNameTemplate.vars() on ", "
-    "[{@context.lowerUnderscoreToUpperUnderscore(param)}]"
-  @end
-@end
-
-# Properly format an identifier for this language
-@private formattedIdentifier(lineOrFieldSetting)
-  @if lineOrFieldSetting.getInitValueConfig.hasFormattingConfig
-    formatted{@context.lowerUnderscoreToUpperCamel(lineOrFieldSetting.getIdentifier)}
-  @else
-    {@context.lowerUnderscoreToLowerCamel(lineOrFieldSetting.getIdentifier)}
   @end
 @end
