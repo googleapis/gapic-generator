@@ -58,6 +58,7 @@ import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.SomeMessage;
 import com.google.example.library.v1.UpdateBookRequest;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.google.protobuf.FieldMask;
 import io.grpc.ManagedChannel;
@@ -1597,9 +1598,9 @@ public class LibraryServiceApi implements AutoCloseable {
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
-   *   String userName = "";
+   *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment commentsElement = Comment.newBuilder()
-   *     .setUserName(userName)
+   *     .setComment(comment)
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
    *   libraryServiceApi.addComments(formattedName, comments);
@@ -1632,9 +1633,9 @@ public class LibraryServiceApi implements AutoCloseable {
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
-   *   String userName = "";
+   *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment commentsElement = Comment.newBuilder()
-   *     .setUserName(userName)
+   *     .setComment(comment)
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
@@ -1663,9 +1664,9 @@ public class LibraryServiceApi implements AutoCloseable {
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
-   *   String userName = "";
+   *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment commentsElement = Comment.newBuilder()
-   *     .setUserName(userName)
+   *     .setComment(comment)
    *     .build();
    *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
    *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
