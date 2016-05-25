@@ -149,13 +149,11 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
 
     if (config.isPageStreaming()) {
       String resourceType = rubyTypeName(config.getPageStreaming().getResourcesField().getType());
-      return "@return [\n"
-          + "  Google::Gax::PagedEnumerable<" + resourceType + ">,\n"
-          + "  " + classInfo + "]\n"
-          + "  An enumerable of " + resourceType + " instances unless\n"
-          + "  page streaming is disabled through the call options. If page\n"
-          + "  streaming is disabled, a single " + classInfo + "\n"
-          + "  instance is returned.";
+      return "@return [Google::Gax::PagedEnumerable<" + resourceType + ">]\n"
+          + "  An enumerable of " + resourceType + " instances.\n"
+          + "  See Google::Gax::PagedEnumerable documentation for other\n"
+          + "  operations such as per-page iteration or access to the response\n"
+          + "  object.";
     } else {
       return "@return [" + classInfo + "]";
     }
@@ -249,14 +247,14 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     TypeRef type = field.getType();
     // Return empty array if the type is repeated.
     if (type.isMap()) {
-      return "{}";
+      return "nil";
     }
     if (type.getCardinality() == Cardinality.REPEATED) {
       return "[]";
     }
     switch (type.getKind()) {
       case TYPE_MESSAGE:
-        return rubyTypeName(type) + ".new";
+        return "nil";
       case TYPE_ENUM:
         Preconditions.checkArgument(type.getEnumType().getValues().size() > 0,
             "enum must have a value");
