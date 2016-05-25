@@ -51,13 +51,6 @@ abstract class PythonDocConfig extends DocConfig {
 
     public abstract Builder setAppImports(List<String> appImports);
 
-    /**
-     * Set just the application specific imports to avoid bloating the doc snippets.
-     */
-    public Builder setAppImports(PythonImportHandler importHandler) {
-      return setAppImports(importHandler.calculateAppImports());
-    }
-
     @Override
     protected Builder _setParams(ImmutableList<Variable> params) {
       return setParams(params);

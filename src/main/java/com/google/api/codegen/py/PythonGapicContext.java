@@ -17,6 +17,7 @@ package com.google.api.codegen.py;
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.py.PythonImport.ImportType;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.Field;
@@ -296,6 +297,16 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
   
   private String methodSnippet(Method method, PythonImportHandler importHandler) {
     Interface service = (Interface) method.getParent();
+    List<String> importStrings = new ArrayList<>();
+    importStrings.add(
+        PythonImport.create(
+                ImportType.APP,
+                method.getFile().getProto().getPackage()
+                    + "."
+                    + PythonProtoElements.getPbFileName(method.getInputMessage()),
+                service.getSimpleName() + "Api")
+            .importString());
+
     MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
     String methodName = upperCamelToLowerCamel(method.getSimpleName());
     ImmutableMap<String, String> fieldNamePatterns = methodConfig.getFieldNamePatterns();
@@ -309,10 +320,10 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     for (Field field : optionalFields) {
       fields.add(field);
     }
-
+    
     PythonDocConfig docConfig =
         PythonDocConfig.builder()
-            .setAppImports(importHandler)
+            .setAppImports(importStrings)
             .setApiName(getApiWrapperName((Interface) method.getParent()))
             .setMethodName(methodName)
             .setReturnType(returnTypeOrEmpty(method.getOutputType(), importHandler))

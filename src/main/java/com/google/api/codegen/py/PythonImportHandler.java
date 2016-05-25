@@ -197,18 +197,6 @@ public class PythonImportHandler {
    * Calculate the imports map and return a sorted set of python import output strings.
    */
   public List<String> calculateImports() {
-    return calculateImports(false);
-  }
-
-  /**
-   * Calculate the application specific imports map and return a sorted set of python import output
-   * strings.
-   */
-  public List<String> calculateAppImports() {
-    return calculateImports(true);
-  }
-
-  private List<String> calculateImports(boolean appOnly) {
     // Order by import type, then lexicographically
     List<String> stdlibResult = new ArrayList<>();
     List<String> thirdPartyResult = new ArrayList<>();
@@ -216,10 +204,10 @@ public class PythonImportHandler {
     for (PythonImport protoImport : stringImports.values()) {
       switch (protoImport.type()) {
         case STDLIB:
-          if (!appOnly) stdlibResult.add(protoImport.importString());
+          stdlibResult.add(protoImport.importString());
           break;
         case THIRD_PARTY:
-          if (!appOnly) thirdPartyResult.add(protoImport.importString());
+          thirdPartyResult.add(protoImport.importString());
           break;
         case APP:
           appResult.add(protoImport.importString());
