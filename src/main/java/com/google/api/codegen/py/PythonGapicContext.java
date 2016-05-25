@@ -98,7 +98,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
   }
 
   @Override
-  public void resetState(PythonSnippetSet<?> pythonSnippetSet) {
+  public void setPythonSnippetSet(PythonSnippetSet<?> pythonSnippetSet) {
     this.pythonSnippetSet = pythonSnippetSet;
   }
 
@@ -140,10 +140,10 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
    * Returns type information for a field in Sphinx docstring style.
    */
   private String fieldTypeCardinalityComment(Field field, PythonImportHandler importHandler) {
-    return fieldTypeCardinalityComment(field.getType(), importHandler);
+    return typeCardinalityComment(field.getType(), importHandler);
   }
 
-  private String fieldTypeCardinalityComment(TypeRef type, PythonImportHandler importHandler) {
+  private String typeCardinalityComment(TypeRef type, PythonImportHandler importHandler) {
     boolean closingBrace = false;
     String prefix;
     if (type.getCardinality() == Cardinality.REPEATED) {
@@ -156,7 +156,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     } else {
       prefix = "";
     }
-    String typeComment = fieldTypeComment(type, importHandler);
+    String typeComment = typeComment(type, importHandler);
     return String.format("%s%s%s", prefix, typeComment, closingBrace ? "]" : "");
   }
 
@@ -164,10 +164,10 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
    * Returns type information for a field in Sphinx docstring style.
    */
   private String fieldTypeComment(Field field, PythonImportHandler importHandler) {
-    return fieldTypeComment(field.getType(), importHandler);
+    return typeComment(field.getType(), importHandler);
   }
 
-  private String fieldTypeComment(TypeRef type, PythonImportHandler importHandler) {
+  private String typeComment(TypeRef type, PythonImportHandler importHandler) {
     switch (type.getKind()) {
       case TYPE_MESSAGE:
         return ":class:`" + importHandler.elementPath(type.getMessageType(), true) + "`";
@@ -303,8 +303,12 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     Iterable<Field> requiredFields = methodConfig.getRequiredFields();
     Iterable<Field> optionalFields = methodConfig.getOptionalFields();
     List<Field> fields = new ArrayList<Field>();
-    for (Field field : requiredFields) fields.add(field);
-    for (Field field : optionalFields) fields.add(field);
+    for (Field field : requiredFields) {
+      fields.add(field);
+    }
+    for (Field field : optionalFields) {
+      fields.add(field);
+    }
 
     PythonDocConfig docConfig =
         PythonDocConfig.builder()
@@ -324,7 +328,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
   private String returnTypeOrEmpty(TypeRef returnType, PythonImportHandler importHandler) {
     return messages().isEmptyType(returnType)
         ? ""
-        : fieldTypeCardinalityComment(returnType, importHandler);
+        : typeCardinalityComment(returnType, importHandler);
   }
 
   /**

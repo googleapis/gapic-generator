@@ -59,7 +59,7 @@ public class PythonSnippetSetRunner {
     String outputFilename = filenameDoc.prettyPrint();
     Doc body = snippets.generateBody(element);
     List<String> importList = importHandler.calculateImports();
-    context.resetState(snippets);
+    context.setPythonSnippetSet(snippets);
 
     // Generate result.
     Doc result = snippets.generateModule(element, body, importList);

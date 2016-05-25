@@ -88,7 +88,7 @@ public class PythonDiscoveryContext extends DiscoveryContext implements PythonCo
   }
 
   @Override
-  public void resetState(PythonSnippetSet<?> pythonSnippetSet) {}
+  public void setPythonSnippetSet(PythonSnippetSet<?> pythonSnippetSet) {}
 
   public PythonContextCommon python() {
     return pythonCommon;

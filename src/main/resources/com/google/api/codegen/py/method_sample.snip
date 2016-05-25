@@ -47,6 +47,8 @@
   @end
 @end
 
+# Helper functions for generateMethodSampleCode()
+
 # Optionally render the return value from the API method call
 @private callResultSampleCode(returnType)
   @if returnType.isEmpty
@@ -61,12 +63,7 @@
     # FIXME: adapt for Python
     api.{@methodCallName(docConfig)}().call({@argList(docConfig.getParams)})
   @else
-    @if docConfig.isCallableVariant
-      # FIXME: adapt for Python
-      future.get()
-    @else
-      api.{@methodCallName(docConfig)}({@argList(docConfig.getParams)})
-    @end
+    api.{@methodCallName(docConfig)}({@argList(docConfig.getParams)})
   @end
 @end
 

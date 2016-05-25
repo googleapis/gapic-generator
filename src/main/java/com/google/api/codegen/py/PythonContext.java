@@ -18,5 +18,5 @@ package com.google.api.codegen.py;
  * A PythonContext provides functionality specific to a context in Python.
  */
 public interface PythonContext {
-  void resetState(PythonSnippetSet<?> pythonSnippetSet);
+  void setPythonSnippetSet(PythonSnippetSet<?> pythonSnippetSet);
 }

@@ -30,6 +30,7 @@ public abstract class DocConfig {
 
   public abstract String getReturnType();
 
+  // FIXME: is this Java-specific?
   public String getGenericAwareReturnType() {
     String returnType = getReturnType();
     if (returnType == null || returnType.isEmpty()) {
