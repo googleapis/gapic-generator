@@ -118,7 +118,7 @@ function LibraryServiceApi(opts) {
 
   var clientConfigFile = path.join(
       __dirname, 'library_service_client_config.json');
-  var defaults = fsp.readJson(clientConfigFile).then(function(data) {
+  this.defaults = fsp.readJson(clientConfigFile).then(function(data) {
     return gax.constructSettings(
         'google.example.library.v1.LibraryService',
         data,
@@ -134,38 +134,13 @@ function LibraryServiceApi(opts) {
     'nodejs/' + process.version].join(' ');
   this.headers = new grpc.Metadata();
   this.headers.set('x-goog-api-client', googleApiClient);
-  var stub = gax.createStub(
+  this.stub = gax.createStub(
       servicePath,
       port,
       google.example.library.v1.LibraryService,
       {'getCredentials': getCredentials,
        'sslCreds': sslCreds,
        'scopes': scopes});
-
-  var methods = [
-    'createShelf',
-    'getShelf',
-    'listShelves',
-    'deleteShelf',
-    'mergeShelves',
-    'createBook',
-    'publishSeries',
-    'getBook',
-    'listBooks',
-    'deleteBook',
-    'updateBook',
-    'moveBook',
-    'listStrings'
-  ];
-  this.apiCallables = {};
-  methods.forEach(function(methodName) {
-    this.apiCallables[methodName] = Promise.all([defaults, stub]).then(
-        function(vars) {
-      var defaults = vars[0];
-      var stub = vars[1];
-      return gax.createApiCall(stub[methodName].bind(stub), defaults[methodName]);
-    }.bind(this));
-  }.bind(this));
 };
 exports.LibraryServiceApi = LibraryServiceApi;
 
@@ -274,9 +249,13 @@ LibraryServiceApi.prototype.createShelf = function createShelf() {
   var req = {
     'shelf': args.shelf
   };
-  this.apiCallables.createShelf.then(function(apiCall) {
-    apiCall(req, args.callback, options, this.headers, {});
-  }.bind(this), function(err) {
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.createShelf.merge(args.options);
+    var apiCall = gax.createApiCall(stub.createShelf.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
     if (args.callback) {
       args.callback(err);
     }
@@ -311,9 +290,13 @@ LibraryServiceApi.prototype.getShelf = function getShelf() {
     'message': args.otherArgs.message || {},
     'string_builder': args.otherArgs.stringBuilder || {}
   };
-  this.apiCallables.getShelf.then(function(apiCall) {
-    apiCall(req, args.callback, options, this.headers, {});
-  }.bind(this), function(err) {
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.getShelf.merge(args.options);
+    var apiCall = gax.createApiCall(stub.getShelf.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
     if (args.callback) {
       args.callback(err);
     }
@@ -344,12 +327,16 @@ LibraryServiceApi.prototype.listShelves = function listShelves() {
   var req = {
   };
   var stream = (args.callback) ? null : through2.obj();
-  this.apiCallables.listShelves.then(function(apiCall) {
-    var result = apiCall(req, args.callback, options, this.headers, {});
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.listShelves.merge(args.options);
+    var apiCall = gax.createApiCall(stub.listShelves.bind(stub), options);
+    var result = apiCall(req, args.callback, this.headers, {});
     if (stream) {
       result.pipe(stream);
     }
-  }.bind(this), function(err) {
+  }.bind(this))['catch'](function(err) {
     if (args.callback) {
       args.callback(err);
     } else {
@@ -380,9 +367,13 @@ LibraryServiceApi.prototype.deleteShelf = function deleteShelf() {
   var req = {
     'name': args.name
   };
-  this.apiCallables.deleteShelf.then(function(apiCall) {
-    apiCall(req, args.callback, options, this.headers, {});
-  }.bind(this), function(err) {
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.deleteShelf.merge(args.options);
+    var apiCall = gax.createApiCall(stub.deleteShelf.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
     if (args.callback) {
       args.callback(err);
     }
@@ -416,9 +407,13 @@ LibraryServiceApi.prototype.mergeShelves = function mergeShelves() {
     'name': args.name,
     'other_shelf_name': args.otherShelfName
   };
-  this.apiCallables.mergeShelves.then(function(apiCall) {
-    apiCall(req, args.callback, options, this.headers, {});
-  }.bind(this), function(err) {
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.mergeShelves.merge(args.options);
+    var apiCall = gax.createApiCall(stub.mergeShelves.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
     if (args.callback) {
       args.callback(err);
     }
@@ -450,9 +445,13 @@ LibraryServiceApi.prototype.createBook = function createBook() {
     'name': args.name,
     'book': args.book
   };
-  this.apiCallables.createBook.then(function(apiCall) {
-    apiCall(req, args.callback, options, this.headers, {});
-  }.bind(this), function(err) {
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.createBook.merge(args.options);
+    var apiCall = gax.createApiCall(stub.createBook.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
     if (args.callback) {
       args.callback(err);
     }
@@ -489,9 +488,13 @@ LibraryServiceApi.prototype.publishSeries = function publishSeries() {
     'books': args.books,
     'edition': args.otherArgs.edition || 0
   };
-  this.apiCallables.publishSeries.then(function(apiCall) {
-    apiCall(req, args.callback, options, this.headers, {});
-  }.bind(this), function(err) {
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.publishSeries.merge(args.options);
+    var apiCall = gax.createApiCall(stub.publishSeries.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
     if (args.callback) {
       args.callback(err);
     }
@@ -519,9 +522,13 @@ LibraryServiceApi.prototype.getBook = function getBook() {
   var req = {
     'name': args.name
   };
-  this.apiCallables.getBook.then(function(apiCall) {
-    apiCall(req, args.callback, options, this.headers, {});
-  }.bind(this), function(err) {
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.getBook.merge(args.options);
+    var apiCall = gax.createApiCall(stub.getBook.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
     if (args.callback) {
       args.callback(err);
     }
@@ -561,12 +568,16 @@ LibraryServiceApi.prototype.listBooks = function listBooks() {
     'filter': args.otherArgs.filter || ''
   };
   var stream = (args.callback) ? null : through2.obj();
-  this.apiCallables.listBooks.then(function(apiCall) {
-    var result = apiCall(req, args.callback, options, this.headers, {});
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.listBooks.merge(args.options);
+    var apiCall = gax.createApiCall(stub.listBooks.bind(stub), options);
+    var result = apiCall(req, args.callback, this.headers, {});
     if (stream) {
       result.pipe(stream);
     }
-  }.bind(this), function(err) {
+  }.bind(this))['catch'](function(err) {
     if (args.callback) {
       args.callback(err);
     } else {
@@ -597,9 +608,13 @@ LibraryServiceApi.prototype.deleteBook = function deleteBook() {
   var req = {
     'name': args.name
   };
-  this.apiCallables.deleteBook.then(function(apiCall) {
-    apiCall(req, args.callback, options, this.headers, {});
-  }.bind(this), function(err) {
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.deleteBook.merge(args.options);
+    var apiCall = gax.createApiCall(stub.deleteBook.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
     if (args.callback) {
       args.callback(err);
     }
@@ -639,9 +654,13 @@ LibraryServiceApi.prototype.updateBook = function updateBook() {
     'update_mask': args.otherArgs.updateMask || {},
     'physical_mask': args.otherArgs.physicalMask || {}
   };
-  this.apiCallables.updateBook.then(function(apiCall) {
-    apiCall(req, args.callback, options, this.headers, {});
-  }.bind(this), function(err) {
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.updateBook.merge(args.options);
+    var apiCall = gax.createApiCall(stub.updateBook.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
     if (args.callback) {
       args.callback(err);
     }
@@ -673,9 +692,13 @@ LibraryServiceApi.prototype.moveBook = function moveBook() {
     'name': args.name,
     'other_shelf_name': args.otherShelfName
   };
-  this.apiCallables.moveBook.then(function(apiCall) {
-    apiCall(req, args.callback, options, this.headers, {});
-  }.bind(this), function(err) {
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.moveBook.merge(args.options);
+    var apiCall = gax.createApiCall(stub.moveBook.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
     if (args.callback) {
       args.callback(err);
     }
@@ -710,12 +733,16 @@ LibraryServiceApi.prototype.listStrings = function listStrings() {
     'name': args.otherArgs.name || ''
   };
   var stream = (args.callback) ? null : through2.obj();
-  this.apiCallables.listStrings.then(function(apiCall) {
-    var result = apiCall(req, args.callback, options, this.headers, {});
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.listStrings.merge(args.options);
+    var apiCall = gax.createApiCall(stub.listStrings.bind(stub), options);
+    var result = apiCall(req, args.callback, this.headers, {});
     if (stream) {
       result.pipe(stream);
     }
-  }.bind(this), function(err) {
+  }.bind(this))['catch'](function(err) {
     if (args.callback) {
       args.callback(err);
     } else {
