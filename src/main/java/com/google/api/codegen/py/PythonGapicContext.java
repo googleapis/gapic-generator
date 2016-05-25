@@ -283,8 +283,10 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
         contentBuilder.append("\n\n");
       }
     }
-    contentBuilder.append(sampleCode);
-    contentBuilder.append("\n\n");
+    if (!sampleCode.isEmpty()) {
+      contentBuilder.append(sampleCode);
+      contentBuilder.append("\n\n");
+    }
     contentBuilder.append(paramTypes);
     if (returnType != null) {
       contentBuilder.append("\n\n" + returnType);
