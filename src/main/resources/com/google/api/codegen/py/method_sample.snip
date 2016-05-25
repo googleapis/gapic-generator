@@ -73,3 +73,12 @@
 @private methodCallName(docConfig)
   {@docConfig.getMethodName}
 @end
+
+# Properly format an identifier for this language
+@private formattedIdentifier(lineOrFieldSetting)
+  @if lineOrFieldSetting.getInitValueConfig.hasFormattingConfig
+    formatted{@context.lowerUnderscoreToUpperCamel(lineOrFieldSetting.getIdentifier)}
+  @else
+    {@context.lowerUnderscoreToLowerCamel(lineOrFieldSetting.getIdentifier)}
+  @end
+@end
