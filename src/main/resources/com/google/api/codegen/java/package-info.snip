@@ -28,12 +28,12 @@
      * Sample for {@context.getApiWrapperName(service)}:
      * <pre>
      * <code>
-    @join commentLine : context.java.getJavaDocLines(generateMethodSampleCode(context.java.newJavaDocConfigBuilder \
+    @join commentLine : context.java.getJavaDocLines(generateMethodSampleCode(context.newJavaDocConfigBuilder \
                                .setApiName(context.getApiWrapperName(service)) \
                                .setMethodName(context.upperCamelToLowerCamel(firstFlattenedMethod.getSimpleName)) \
                                .setReturnType(context.returnTypeOrEmpty(firstFlattenedMethod.getOutputType)) \
-                               .setParamsWithFormatting(context, service, fields, fieldNamePatterns) \
-                               .setRequiredParamsEmpty() \
+                               .setFieldInitCode(context, service, firstFlattenedMethod, fields) \
+                               .setFieldParams(context, fields) \
                                .setPagedVariant({@FALSE}) \
                                .setCallableVariant({@FALSE}) \
                                .build))

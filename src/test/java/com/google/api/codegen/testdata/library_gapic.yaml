@@ -235,3 +235,19 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     request_object_method: false
+  - name: AddComments
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - comments
+    required_fields:
+      - name
+      - comments
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    request_object_method: true
+    field_name_patterns:
+      name: book
+    sample_code_init_fields:
+      - comments[0].user_name

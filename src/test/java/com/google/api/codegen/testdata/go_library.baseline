@@ -96,6 +96,7 @@ func defaultClientSettings() gax.ClientSettings {
             "UpdateBook": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
             "MoveBook": append([]gax.CallOption{withNonIdempotentRetryCodes()}, defaultRetryOptions()...),
             "ListStrings": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
+            "AddComments": append([]gax.CallOption{withNonIdempotentRetryCodes()}, defaultRetryOptions()...),
         },
     }
 }
@@ -499,6 +500,23 @@ func (client *Client) ListStrings(ctx context.Context, req *google_example_libra
 }
 
 
+// AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
+
+// AddComments adds comments to a book
+func (client *Client) AddComments(ctx context.Context, req *google_example_library_v1.AddCommentsRequest, opts ...gax.CallOption) error {
+    ctx = metadata.NewContext(ctx, client.metadata)
+    var callOpts []gax.CallOption
+    callOpts = append(callOpts, client.callOptions["AddComments"]...)
+    callOpts = append(callOpts, opts...)
+    err := gax.Invoke(ctx, func (c context.Context) error {
+        var err error
+        _, err = client.client.AddComments(c, req)
+        return err
+    }, callOpts...)
+    return err
+}
+
+
 // Iterators.
 //
 
@@ -819,6 +837,15 @@ func ExampleClient_ListStrings() {
         }
     }
     _ = resp
+}
+
+func ExampleClient_AddComments() {
+    ctx := context.Background()
+    client, _ := NewClient(ctx)
+
+    req := &google_example_library_v1.AddCommentsRequest{ /* Data... */ }
+    opts := []gax.CallOption{ /* Optional call parameters. */ }
+    _ = client.AddComments(ctx, req, opts...)
 }
 ============== file: google.golang.org/cloud/library/generated/library/doc.go ==============
 // Copyright 2016 Google Inc. All Rights Reserved.
