@@ -53,8 +53,9 @@ public class DefaultString {
       String literal = elems.get(i).getLiteral();
       ret.append('/')
           .append(literal)
-          .append("/MY-")
-          .append(Inflector.singularize(literal).toUpperCase());
+          .append("/{MY-")
+          .append(Inflector.singularize(literal).toUpperCase())
+          .append('}');
     }
     return ret.substring(1);
   }

@@ -41,11 +41,11 @@ public class DefaultStringTest {
   public void testDefault() {
     ImmutableMap<String, String> tests =
         ImmutableMap.<String, String>builder()
-            .put("^projects/[^/]*$", "projects/MY-PROJECT")
-            .put("^projects/[^/]*/topics/[^/]*$", "projects/MY-PROJECT/topics/MY-TOPIC")
+            .put("^projects/[^/]*$", "projects/{MY-PROJECT}")
+            .put("^projects/[^/]*/topics/[^/]*$", "projects/{MY-PROJECT}/topics/{MY-TOPIC}")
             .put(
                 "^projects/[^/]*/regions/[^/]*/operations/[^/]*$",
-                "projects/MY-PROJECT/regions/MY-REGION/operations/MY-OPERATION")
+                "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}")
             .build();
 
     for (Map.Entry<String, String> entry : tests.entrySet()) {
