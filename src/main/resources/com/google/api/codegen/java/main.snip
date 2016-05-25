@@ -1,4 +1,5 @@
 @extends "common.snip"
+@extends "method_sample.snip"
 
 @snippet generateFilename(service)
   {@context.getApiWrapperName(service)}.java
@@ -98,10 +99,6 @@
 
 @end
 
-@private formatResourceFunctionName(collectionConfig)
-  format{@resourceName(collectionConfig)}
-@end
-
 @private formatResourceFunctionParams(collectionConfig)
   @join param : collectionConfig.getNameTemplate.vars() on ", "
     String {@context.lowerUnderscoreToLowerCamel(param)}
@@ -131,10 +128,6 @@
 
     @end
   @end
-@end
-
-@private resourceName(collectionConfig)
-  {@context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName)}Name
 @end
 
 @private members(service)
@@ -612,167 +605,6 @@
     @let paramName = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
       .{@setCallName(field)}({@paramName})
     @end
-  @end
-@end
-
-@snippet generateMethodSampleCode(docConfig)
-  @let ApiName = docConfig.getApiName, \
-      apiName = context.upperCamelToLowerCamel(ApiName)
-    try ({@ApiName} {@apiName} = {@ApiName}.createWithDefaults()) {
-      {@initCode(docConfig.getInitCode)}
-      @if docConfig.isUnpagedListCallableVariant
-        @let resourcesField = docConfig.getResourcesFieldForUnpagedListCallable
-          while (true) {
-            {@callResultSampleCode(docConfig.getReturnType)}{@methodCallSampleCode(docConfig, apiName)};
-            for ({@elementTypeName(resourcesField)} elements : response.{@getResourcesListCall(resourcesField)}) {
-              // doThingsWith(elements);
-            }
-            String nextPageToken = response.getNextPageToken();
-            if (!Strings.isNullOrEmpty(nextPageToken)) {
-              request = request.toBuilder().setPageToken(nextPageToken).build();
-            } else {
-              break;
-            }
-          }
-        @end
-      @else
-        @if docConfig.isCallableVariant
-          ListenableFuture<{@getGenericAwareReturnType(docConfig)}> future = {@methodFutureCall(docConfig, apiName)};
-          // Do something{@BREAK}
-        @end
-        @if docConfig.isPagedVariant
-          for ({@docConfig.getReturnType} elements : {@methodCallSampleCode(docConfig, apiName)}) {
-            // doThingsWith(elements);
-          }
-        @else
-          {@callResultSampleCode(docConfig.getReturnType)}{@methodCallSampleCode(docConfig, apiName)};
-        @end
-      @end
-    }
-  @end
-@end
-
-@private getGenericAwareReturnType(docConfig)
-  @if docConfig.isPagedVariant
-    PageAccessor<{@docConfig.getGenericAwareReturnType}>
-  @else
-    {@docConfig.getGenericAwareReturnType}
-  @end
-@end
-
-@private getResourcesListCall(resourcesField)
-  get{@context.lowerUnderscoreToUpperCamel(resourcesField.getSimpleName)}List()
-@end
-
-@private elementTypeName(resourcesField)
-  {@context.basicTypeNameBoxed(resourcesField.getType())}
-@end
-
-@private initCode(initCodeSpec)
-  @join line : initCodeSpec.getLines()
-    @switch line.getLineType.toString()
-    @case "StructureInitLine"
-      {@initLineStructure(line)}
-    @case "ListInitLine"
-      {@initLineList(line)}
-    @case "SimpleInitLine"
-      {@initLineSimple(line)}
-    @default
-      ??
-    @end
-  @end
-@end
-
-@private initLineStructure(line)
-  {@context.typeName(line.getType)} {@formattedIdentifier(line)} = {@context.typeName(line.getType)}.newBuilder()
-  @join fieldSetting : line.getFieldSettings
-    @let setCallName = setCallName(fieldSetting.getType, context.lowerUnderscoreToUpperCamel(fieldSetting.getFieldName))
-      {@EMPTY}  .{@setCallName}({@formattedIdentifier(fieldSetting)})
-    @end
-  @end
-  {@EMPTY}  .build();
-@end
-
-@private initLineList(line)
-  List<{@context.basicTypeNameBoxed(line.getElementType)}> {@formattedIdentifier(line)} = Arrays.asList({@initList(line)});
-@end
-
-@private initList(line)
-  @join identifier : line.getElementIdentifiers on ", "
-    {@context.lowerUnderscoreToLowerCamel(identifier)}
-  @end
-@end
-
-@private initLineSimple(line)
-  {@context.typeName(line.getType)} {@formattedIdentifier(line)} = {@initValue(line)};
-@end
-
-@private formattedIdentifier(lineOrFieldSetting)
-  @if lineOrFieldSetting.getInitValueConfig.hasFormattingConfig
-    formatted{@context.lowerUnderscoreToUpperCamel(lineOrFieldSetting.getIdentifier)}
-  @else
-    {@context.lowerUnderscoreToLowerCamel(lineOrFieldSetting.getIdentifier)}
-  @end
-@end
-
-@private initValue(line)
-  @let metadata = line.getInitValueConfig
-    @if metadata.hasFormattingConfig()
-      {@metadata.getApiWrapperName}.{@formatResourceFunctionName(metadata.getCollectionConfig)}({@formatResourceFunctionArgs(metadata.getCollectionConfig)})
-    @else
-      {@context.zeroValue(line.getType)}
-    @end
-  @end
-@end
-
-@private formatResourceFunctionArgs(collectionConfig)
-  @join param : collectionConfig.getNameTemplate.vars() on ", "
-    "[{@context.lowerUnderscoreToUpperUnderscore(param)}]"
-  @end
-@end
-
-@private callResultSampleCode(returnType)
-  @if returnType.isEmpty
-  @else
-    {@returnType} response = {@""}
-  @end
-@end
-
-@private methodFutureCall(docConfig, apiName)
-  {@apiName}.{@methodCallName(docConfig)}().futureCall({@argList(docConfig.getInitCode.getArgFields)})
-@end
-
-@private methodCallSampleCode(docConfig, apiName)
-  @if docConfig.isUnpagedListCallableVariant
-    {@apiName}.{@methodCallName(docConfig)}().call({@argList(docConfig.getInitCode.getArgFields)})
-  @else
-    @if docConfig.isCallableVariant
-      future.get()
-    @else
-      {@apiName}.{@methodCallName(docConfig)}({@argList(docConfig.getInitCode.getArgFields)})
-    @end
-  @end
-@end
-
-@private methodCallName(docConfig)
-  @if docConfig.isCallableVariant
-    {@methodCallNameIter(docConfig)}Callable
-  @else
-    {@docConfig.getMethodName}
-  @end
-@end
-
-@private methodCallNameIter(docConfig)
-  @if docConfig.isPagedVariant
-    {@docConfig.getMethodName}Paged
-  @else
-    {@docConfig.getMethodName}
-  @end
-@end
-
-@private argList(fieldSettings)
-  @join fieldSetting : fieldSettings on ", "
-    {@formattedIdentifier(fieldSetting)}
   @end
 @end
 

@@ -5,9 +5,7 @@
   @let ApiName = docConfig.getApiName, \
       apiName = context.upperCamelToLowerCamel(ApiName)
     try ({@ApiName} {@apiName} = {@ApiName}.createWithDefaults()) {
-      @join param : docConfig.getParams
-        {@initLine(param, docConfig)};
-      @end
+      {@initCode(docConfig.getInitCode)}
       @if docConfig.isUnpagedListCallableVariant
         @let resourcesField = docConfig.getResourcesFieldForUnpagedListCallable
           while (true) {
@@ -42,41 +40,52 @@
 
 # Helper functions for generateMethodSampleCode()
 
-@private initLine(param, docConfig)
-  @let paramType = param.getType()
-    @if paramType.isMessage()
-      @if docConfig.getRequiredParams.isEmpty
-        {@initLineSimple(param, docConfig)}
-      @else
-        {@initLineMessage(param, docConfig)}
-      @end
-    @else
-      {@initLineSimple(param, docConfig)}
+@private initCode(initCodeSpec)
+  @join line : initCodeSpec.getLines()
+    @switch line.getLineType.toString()
+    @case "StructureInitLine"
+      {@initLineStructure(line)}
+    @case "ListInitLine"
+      {@initLineList(line)}
+    @case "SimpleInitLine"
+      {@initLineSimple(line)}
+    @default
+      ??
     @end
   @end
 @end
 
-@private initLineSimple(param, docConfig)
-  {@context.typeName(param.getType)} {@paramNameFormatted(param)} = {@initValue(param, docConfig.getApiName)}
+@private initLineStructure(line)
+  {@context.typeName(line.getType)} {@formattedIdentifier(line)} = {@context.typeName(line.getType)}.newBuilder()
+  @join fieldSetting : line.getFieldSettings
+    @let setCallName = setCallName(fieldSetting.getType, context.lowerUnderscoreToUpperCamel(fieldSetting.getFieldName))
+      {@EMPTY}  .{@setCallName}({@formattedIdentifier(fieldSetting)})
+    @end
+  @end
+  {@EMPTY}  .build();
 @end
 
-@private initLineMessage(param, docConfig)
-  @join requiredParam : docConfig.getRequiredParams()
-    {@initLineSimple(requiredParam, docConfig)};
-  @end
-
-  {@context.typeName(param.getType)} {@param.getName} = {@context.typeName(param.getType)}.newBuilder()
-  @join requiredParam : docConfig.getRequiredParams
-    {@EMPTY}  .{@setCallNameFromParam(requiredParam)}({@paramNameFormatted(requiredParam)})
-  @end
-  {@EMPTY}  .build()
+@private initLineList(line)
+  List<{@context.basicTypeNameBoxed(line.getElementType)}> {@formattedIdentifier(line)} = Arrays.asList({@initList(line)});
 @end
 
-@private initValue(param, ApiName)
-  @if param.hasFormattingConfig()
-    {@ApiName}.{@formatResourceFunctionName(param.getFormattingConfig())}({@formatResourceFunctionArgs(param.getFormattingConfig())})
-  @else
-    {@context.zeroValue(param.getType)}
+@private initList(line)
+  @join identifier : line.getElementIdentifiers on ", "
+    {@context.lowerUnderscoreToLowerCamel(identifier)}
+  @end
+@end
+
+@private initLineSimple(line)
+  {@context.typeName(line.getType)} {@formattedIdentifier(line)} = {@initValue(line)};
+@end
+
+@private initValue(line)
+  @let metadata = line.getInitValueConfig
+    @if metadata.hasFormattingConfig()
+      {@metadata.getApiWrapperName}.{@formatResourceFunctionName(metadata.getCollectionConfig)}({@formatResourceFunctionArgs(metadata.getCollectionConfig)})
+    @else
+      {@context.zeroValue(line.getType)}
+    @end
   @end
 @end
 
@@ -91,12 +100,12 @@
 # Render the API method call itself
 @private methodCallSampleCode(docConfig, apiName)
   @if docConfig.isUnpagedListCallableVariant
-    {@apiName}.{@methodCallName(docConfig)}().call({@argList(docConfig.getParams)})
+    {@apiName}.{@methodCallName(docConfig)}().call({@argList(docConfig.getInitCode.getArgFields)})
   @else
     @if docConfig.isCallableVariant
       future.get()
     @else
-      {@apiName}.{@methodCallName(docConfig)}({@argList(docConfig.getParams)})
+      {@apiName}.{@methodCallName(docConfig)}({@argList(docConfig.getInitCode.getArgFields)})
     @end
   @end
 @end
@@ -127,7 +136,7 @@
 @end
 
 @private methodFutureCall(docConfig, apiName)
-  {@apiName}.{@methodCallName(docConfig)}().futureCall({@argList(docConfig.getParams)})
+  {@apiName}.{@methodCallName(docConfig)}().futureCall({@argList(docConfig.getInitCode.getArgFields)})
 @end
 
 @private getResourcesListCall(resourcesField)
@@ -135,23 +144,22 @@
 @end
 
 # Generate argument list
-@private argList(params)
-  @join param : params on ", "
-    {@paramNameFormatted(param)}
-  @end
-@end
-
-# Format parameter name
-@private paramNameFormatted(param)
-  @if param.hasFormattingConfig
-    formatted{@context.lowerCamelToUpperCamel(param.getName)}
-  @else
-    {@param.getName}
+@private argList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@formattedIdentifier(fieldSetting)}
   @end
 @end
 
 @private formatResourceFunctionArgs(collectionConfig)
   @join param : collectionConfig.getNameTemplate.vars() on ", "
     "[{@context.lowerUnderscoreToUpperUnderscore(param)}]"
+  @end
+@end
+
+@private formattedIdentifier(lineOrFieldSetting)
+  @if lineOrFieldSetting.getInitValueConfig.hasFormattingConfig
+    formatted{@context.lowerUnderscoreToUpperCamel(lineOrFieldSetting.getIdentifier)}
+  @else
+    {@context.lowerUnderscoreToLowerCamel(lineOrFieldSetting.getIdentifier)}
   @end
 @end

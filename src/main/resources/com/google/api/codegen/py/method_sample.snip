@@ -8,10 +8,10 @@
         {@prompt} {@import}
       @end
       #
-      @join param : docConfig.getParams
-        {@prompt} {@initLine(param, docConfig)};
-      @end
       {@prompt} api = {@ApiName}()
+      #
+      # FIXME: adapt for Python
+      #{@initCode(docConfig.getInitCode)}
       #
       @if docConfig.isUnpagedListCallableVariant
         # FIXME: adapt for Python
@@ -30,14 +30,9 @@
           }
         @end
       @else
-        @if docConfig.isCallableVariant
-          # FIXME: adapt for Python
-          ListenableFuture<{@getGenericAwareReturnType(docConfig)}> future = {@methodFutureCall(docConfig, apiName)};
-          // Do something{@BREAK}
-        @end
         @if docConfig.isPagedVariant
           # FIXME: adapt for Python
-          for ({@docConfig.getReturnType} elements : {@methodCallSampleCode(docConfig, apiName)}) {
+          for ({@docConfig.getReturnType} elements : {@methodCallSampleCode(docConfig)}) {
             // doThingsWith(elements);
           }
         @else
@@ -61,34 +56,20 @@
 @private methodCallSampleCode(docConfig)
   @if docConfig.isUnpagedListCallableVariant
     # FIXME: adapt for Python
-    api.{@methodCallName(docConfig)}().call({@argList(docConfig.getParams)})
+    api.{@methodCallName(docConfig)}().call({@argList(docConfig.getInitCode.getArgFields)})
   @else
-    api.{@methodCallName(docConfig)}({@argList(docConfig.getParams)})
+    api.{@methodCallName(docConfig)}({@argList(docConfig.getInitCode.getArgFields)})
   @end
 @end
 
 # Generate argument list
-@private argList(params)
-  @join param : params on ", "
-    {@paramNameFormatted(param)}
-  @end
-@end
-
-# Format parameter name
-@private paramNameFormatted(param)
-  @if param.hasFormattingConfig
-    formatted{@context.lowerCamelToUpperCamel(param.getName)}
-  @else
-    {@param.getName}
+@private argList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@formattedIdentifier(fieldSetting)}
   @end
 @end
 
 # Render the name of the method call
 @private methodCallName(docConfig)
-  @if docConfig.isCallableVariant
-    # FIXME: adapt for Python
-    {@methodCallNameIter(docConfig)}Callable
-  @else
-    {@docConfig.getMethodName}
-  @end
+  {@docConfig.getMethodName}
 @end
