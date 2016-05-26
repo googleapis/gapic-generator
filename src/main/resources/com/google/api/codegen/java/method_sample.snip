@@ -52,6 +52,7 @@
   get{@context.lowerUnderscoreToUpperCamel(resourcesField.getSimpleName)}List()
 @end
 
+# Generate argument initialization code for API call
 @private initCode(initCodeSpec)
   @join line : initCodeSpec.getLines()
     @switch line.getLineType.toString()
@@ -67,6 +68,7 @@
   @end
 @end
 
+# Generate a complex argument
 @private initLineStructure(line)
   {@context.typeName(line.getType)} {@formattedIdentifier(line)} = {@context.typeName(line.getType)}.newBuilder()
   @join fieldSetting : line.getFieldSettings
@@ -77,16 +79,19 @@
   {@EMPTY}  .build();
 @end
 
+# Generate a List argument
 @private initLineList(line)
   List<{@context.basicTypeNameBoxed(line.getElementType)}> {@formattedIdentifier(line)} = Arrays.asList({@initList(line)});
 @end
 
+# Helper method for initLineList()
 @private initList(line)
   @join identifier : line.getElementIdentifiers on ", "
     {@context.lowerUnderscoreToLowerCamel(identifier)}
   @end
 @end
 
+# Generate a simple argument
 @private initLineSimple(line)
   {@context.typeName(line.getType)} {@formattedIdentifier(line)} = {@initValue(line)};
 @end
@@ -100,6 +105,7 @@
   @end
 @end
 
+# Value for simple argument
 @private initValue(line)
   @let metadata = line.getInitValueConfig
     @if metadata.hasFormattingConfig()
