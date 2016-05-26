@@ -32,6 +32,15 @@ abstract class JavaDocConfig extends DocConfig {
     return new AutoValue_JavaDocConfig.Builder();
   }
 
+  public String getGenericAwareReturnType() {
+    String returnType = getReturnType();
+    if (returnType == null || returnType.isEmpty()) {
+      return "Void";
+    } else {
+      return returnType;
+    }
+  }
+
   public abstract boolean isPagedVariant();
 
   public abstract boolean isCallableVariant();

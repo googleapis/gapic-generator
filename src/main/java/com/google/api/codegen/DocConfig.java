@@ -41,16 +41,6 @@ public abstract class DocConfig {
 
   public abstract String getReturnType();
 
-  // FIXME: is this Java-specific?
-  public String getGenericAwareReturnType() {
-    String returnType = getReturnType();
-    if (returnType == null || returnType.isEmpty()) {
-      return "Void";
-    } else {
-      return returnType;
-    }
-  }
-
   public abstract InitCode getInitCode();
 
   public abstract ImmutableList<InputParameter> getParams();
