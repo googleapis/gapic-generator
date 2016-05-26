@@ -751,6 +751,42 @@ LibraryServiceApi.prototype.listStrings = function listStrings() {
   });
   return stream;
 };
+
+/**
+ * Adds comments to a book
+ *
+ * @param {String} name
+ * @param {google.example.library.v1.Comment[]} comments
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {?EmptyCallback} callback
+ *   The function which will be called with the result of the API call.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.addComments = function addComments() {
+  var args = arguejs({
+    'name': String,
+    'comments': Array,
+    'options': [gax.CallOptions],
+    'callback': [Function]
+  });
+  var req = {
+    'name': args.name,
+    'comments': args.comments
+  };
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.addComments.merge(args.options);
+    var apiCall = gax.createApiCall(stub.addComments.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
+    if (args.callback) {
+      args.callback(err);
+    }
+  });
+};
 ============== file: library_service_client_config.json ==============
 {
   "interfaces": {
@@ -833,6 +869,10 @@ LibraryServiceApi.prototype.listStrings = function listStrings() {
         },
         "ListStrings": {
           "retry_codes_name": "idempotent",
+          "retry_params_name": "default"
+        },
+        "AddComments": {
+          "retry_codes_name": "non_idempotent",
           "retry_params_name": "default"
         }
       }
