@@ -1,4 +1,4 @@
-@extends "../common.snip"
+@extends "common.snip"
 
 @snippet generateMethodSampleCode(docConfig)
   @let prompt = ">>>", \
@@ -23,9 +23,8 @@
   @join line : initCodeSpec.getLines()
     @switch line.getLineType.toString()
     @case "StructureInitLine"
-      # TODO(brianwatson): don't seem to need yet for current APIs (pubsub and logging)
+      FIXME: need this when sample_code_init_fields is defined for a service in *_gapic.yaml
       #{@prompt} {@initLineStructure(line)}
-      {@unhandledCase()}
     @case "ListInitLine"
       {@prompt} {@initLineList(line)}
     @case "SimpleInitLine"
@@ -37,7 +36,7 @@
 @end
 
 # Generate a Protobuf message argument
-# TODO(brianwatson): adapt to Pythonic way of generating a Protobuf message
+# FIXME: adapt to Pythonic way of generating a Protobuf message
 @private initLineStructure(line)
   {@context.typeName(line.getType)} {@formattedIdentifier(line)} = {@context.typeName(line.getType)}.newBuilder()
   @join fieldSetting : line.getFieldSettings
@@ -50,7 +49,7 @@
 
 # Generate a List argument
 @private initLineList(line)
-  {@formattedIdentifier(line)} = [@initList(line)];
+  {@formattedIdentifier(line)} = [{@initList(line)}];
 @end
 
 # Helper method for initLineList()
@@ -77,12 +76,18 @@
 # Value for simple argument
 @private initValue(line)
   @let metadata = line.getInitValueConfig
-    #@if metadata.hasFormattingConfig()
-    #  FIXME: this should be used for calling the classmethod stuff
-    #  {@metadata.getApiWrapperName}.{@formatResourceFunctionName(metadata.getCollectionConfig)}({@formatResourceFunctionArgs(metadata.getCollectionConfig)})
-    #@else
+    @if metadata.hasFormattingConfig()
+      {@metadata.getApiWrapperName}.{@formatResourceFunctionName(metadata.getCollectionConfig)}({@formatResourceFunctionArgs(metadata.getCollectionConfig)})
+    @else
       {@context.defaultValue(line.getType, importHandler)}
-    #@end
+    @end
+  @end
+@end
+
+# Format arguments for resource function call in snippet
+@private formatResourceFunctionArgs(collectionConfig)
+  @join param : collectionConfig.getNameTemplate.vars() on ", "
+    "[{@context.lowerUnderscoreToUpperUnderscore(param)}]"
   @end
 @end
 

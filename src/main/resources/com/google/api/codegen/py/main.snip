@@ -1,4 +1,4 @@
-@extends "../common.snip"
+@extends "common.snip"
 @extends "method_sample.snip"
 
 @snippet generateFilename(service)
@@ -299,7 +299,7 @@
 
 @private createResourceFunction(collectionConfig)
     @@classmethod
-    def {@collectionConfig.getEntityName}_path(cls, {@createResourceFunctionParams(collectionConfig)}):
+    def {@formatResourceFunctionName(collectionConfig)}(cls, {@createResourceFunctionParams(collectionConfig)}):
         """Returns a fully-qualified {@collectionConfig.getEntityName} resource name string."""
         return cls.{@pathTemplateName(collectionConfig)}.render({
             {@createRenderDictionary(collectionConfig)}
