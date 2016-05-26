@@ -2,47 +2,94 @@
 
 @snippet generateMethodSampleCode(docConfig)
   @let prompt = ">>>", \
-       ApiName = docConfig.getApiName
+       ApiName = docConfig.getApiName, \
+       initCode = {@initCode(prompt, docConfig.getInitCode)} 
     Example:
       @join import : docConfig.getAppImports
         {@prompt} {@import}
       @end
-      #
       {@prompt} api = {@ApiName}()
-      #
-      # FIXME: adapt for Python
-      #{@initCode(docConfig.getInitCode)}
-      #
-      @if docConfig.isUnpagedListCallableVariant
-        # FIXME: adapt for Python
-        @let resourcesField = docConfig.getResourcesFieldForUnpagedListCallable
-          while (true) {
-            {@callResultSampleCode(docConfig.getReturnType)}{@methodCallSampleCode(docConfig, apiName)};
-            for ({@elementTypeName(resourcesField)} elements : response.{@getResourcesListCall(resourcesField)}) {
-              // doThingsWith(elements);
-            }
-            String nextPageToken = response.getNextPageToken();
-            if (!Strings.isNullOrEmpty(nextPageToken)) {
-              request = request.toBuilder().setPageToken(nextPageToken).build();
-            } else {
-              break;
-            }
-          }
-        @end
-      @else
-        @if docConfig.isPagedVariant
-          # FIXME: adapt for Python
-          for ({@docConfig.getReturnType} elements : {@methodCallSampleCode(docConfig)}) {
-            // doThingsWith(elements);
-          }
-        @else
-          {@prompt} {@callResultSampleCode(docConfig.getReturnType)}{@methodCallSampleCode(docConfig)}
-        @end
+      @if initCode 
+        {@initCode}
       @end
+      {@prompt} {@callResultSampleCode(docConfig.getReturnType)}{@methodCallSampleCode(docConfig)}
   @end
 @end
 
 # Helper functions for generateMethodSampleCode()
+
+# Generate argument initialization code for API call
+# FIXME: need field_name_patterns to tell me when to use classmethod to construct an argument
+@private initCode(prompt, initCodeSpec)
+  @join line : initCodeSpec.getLines()
+    @switch line.getLineType.toString()
+    @case "StructureInitLine"
+      A
+      # FIXME: needed for Python?
+      {@prompt} {@initLineStructure(line)}
+    @case "ListInitLine"
+      B
+      {@prompt} {@initLineList(line)}
+    @case "SimpleInitLine"
+      C
+      {@prompt} {@initLineSimple(line)}
+    @default
+      D
+      {@unhandledCase()}
+    @end
+  @end
+@end
+
+# Generate a complex argument
+# FIXME: needed for Python?
+@private initLineStructure(line)
+  {@context.typeName(line.getType)} {@formattedIdentifier(line)} = {@context.typeName(line.getType)}.newBuilder()
+  @join fieldSetting : line.getFieldSettings
+    @let setCallName = setCallName(fieldSetting.getType, context.lowerUnderscoreToUpperCamel(fieldSetting.getFieldName))
+      {@EMPTY}  .{@setCallName}({@formattedIdentifier(fieldSetting)})
+    @end
+  @end
+  {@EMPTY}  .build();
+@end
+
+# Generate a List argument
+@private initLineList(line)
+  {@formattedIdentifier(line)} = [@initList(line)];
+@end
+
+# Helper method for initLineList()
+@private initList(line)
+  @join identifier : line.getElementIdentifiers on ", "
+    {@context.lowerUnderscoreToLowerCamel(identifier)}
+  @end
+@end
+
+# Generate a simple argument
+@private initLineSimple(line)
+  {@formattedIdentifier(line)} = {@initValue(line)};
+@end
+
+# Properly format an identifier for this language
+@private formattedIdentifier(lineOrFieldSetting)
+  @if lineOrFieldSetting.getInitValueConfig.hasFormattingConfig
+    formatted{@context.lowerUnderscoreToUpperCamel(lineOrFieldSetting.getIdentifier)}
+  @else
+    {@context.lowerUnderscoreToLowerCamel(lineOrFieldSetting.getIdentifier)}
+  @end
+@end
+
+# Value for simple argument
+# FIXME: fix for Python
+@private initValue(line)
+  @let metadata = line.getInitValueConfig
+    # FIXME: do we need anything like this formatting code?
+    #@if metadata.hasFormattingConfig()
+    #  {@metadata.getApiWrapperName}.{@formatResourceFunctionName(metadata.getCollectionConfig)}({@formatResourceFunctionArgs(metadata.getCollectionConfig)})
+    #@else
+      {@context.defaultValue(line.getType, importHandler)}
+    #@end
+  @end
+@end
 
 # Optionally render the return value from the API method call
 @private callResultSampleCode(returnType)
@@ -54,19 +101,7 @@
 
 # Render the API method call itself
 @private methodCallSampleCode(docConfig)
-  @if docConfig.isUnpagedListCallableVariant
-    # FIXME: adapt for Python
-    api.{@methodCallName(docConfig)}().call({@argList(docConfig.getInitCode.getArgFields)})
-  @else
-    api.{@methodCallName(docConfig)}({@argList(docConfig.getInitCode.getArgFields)})
-  @end
-@end
-
-# Generate argument list
-@private argList(fieldSettings)
-  @join fieldSetting : fieldSettings on ", "
-    {@formattedIdentifier(fieldSetting)}
-  @end
+  api.{@methodCallName(docConfig)}({@argList(docConfig.getInitCode.getArgFields)})
 @end
 
 # Render the name of the method call
@@ -74,11 +109,9 @@
   {@docConfig.getMethodName}
 @end
 
-# Properly format an identifier for this language
-@private formattedIdentifier(lineOrFieldSetting)
-  @if lineOrFieldSetting.getInitValueConfig.hasFormattingConfig
-    formatted{@context.lowerUnderscoreToUpperCamel(lineOrFieldSetting.getIdentifier)}
-  @else
-    {@context.lowerUnderscoreToLowerCamel(lineOrFieldSetting.getIdentifier)}
+# Generate argument list
+@private argList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@formattedIdentifier(fieldSetting)}
   @end
 @end

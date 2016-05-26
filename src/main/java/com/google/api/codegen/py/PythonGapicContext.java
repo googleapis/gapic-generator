@@ -336,8 +336,6 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
             .setReturnType(returnTypeOrEmpty(method.getOutputType(), importHandler))
             .setFieldInitCode(this, service, method, fields)
             .setFieldParams(this, fields)
-            // FIXME: this should not be hard-coded
-            .setPagedVariant(false)
             .build();
 
     return generateMethodSampleCode(docConfig);
@@ -360,7 +358,13 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
    * Return the default value for the given field. Return null if there is no default value.
    */
   public String defaultValue(Field field, PythonImportHandler importHandler) {
-    TypeRef type = field.getType();
+    return defaultValue(field.getType(), importHandler);
+  }
+
+  /**
+   * Return the default value for the given type. Return null if there is no default value.
+   */
+  public String defaultValue(TypeRef type, PythonImportHandler importHandler) {
     // Return empty array if the type is repeated.
     if (type.getCardinality() == Cardinality.REPEATED) {
       return "[]";
