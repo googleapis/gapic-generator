@@ -21,6 +21,8 @@ import com.google.api.tools.framework.model.Field;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 
+import javax.annotation.Nullable;
+
 /**
  * Represents the Java documentation settings for an Api method.
  */
@@ -28,6 +30,17 @@ import com.google.common.collect.ImmutableList;
 abstract class JavaDocConfig extends DocConfig {
   public static Builder newBuilder() {
     return new AutoValue_JavaDocConfig.Builder();
+  }
+
+  public abstract boolean isPagedVariant();
+
+  public abstract boolean isCallableVariant();
+
+  @Nullable
+  public abstract Field getResourcesFieldForUnpagedListCallable();
+
+  public boolean isUnpagedListCallableVariant() {
+    return getResourcesFieldForUnpagedListCallable() != null;
   }
 
   @AutoValue.Builder

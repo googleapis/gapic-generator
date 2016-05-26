@@ -17,7 +17,6 @@ package com.google.api.codegen.py;
 import com.google.api.codegen.DocConfig;
 import com.google.api.codegen.metacode.InitCode;
 import com.google.api.codegen.metacode.InputParameter;
-import com.google.api.tools.framework.model.Field;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 
@@ -30,11 +29,6 @@ import java.util.List;
 abstract class PythonDocConfig extends DocConfig {
   public static PythonDocConfig.Builder newBuilder() {
     return new AutoValue_PythonDocConfig.Builder();
-  }
-  
-  @Override
-  public boolean isCallableVariant() {
-    return false;
   }
 
   public abstract List<String> getAppImports();
@@ -52,14 +46,6 @@ abstract class PythonDocConfig extends DocConfig {
     public abstract Builder setInitCode(InitCode initCode);
 
     public abstract Builder setParams(ImmutableList<InputParameter> params);
-
-    public abstract Builder setPagedVariant(boolean paged);
-
-    public Builder setCallableVariant(boolean callable) {
-      throw new UnsupportedOperationException("Python does not have callable variants");
-    }
-
-    public abstract Builder setResourcesFieldForUnpagedListCallable(Field field);
 
     public abstract Builder setAppImports(List<String> appImports);
     

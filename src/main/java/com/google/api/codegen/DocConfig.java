@@ -55,17 +55,6 @@ public abstract class DocConfig {
 
   public abstract ImmutableList<InputParameter> getParams();
 
-  public abstract boolean isPagedVariant();
-
-  public abstract boolean isCallableVariant();
-
-  @Nullable
-  public abstract Field getResourcesFieldForUnpagedListCallable();
-
-  public boolean isUnpagedListCallableVariant() {
-    return getResourcesFieldForUnpagedListCallable() != null;
-  }
-
   /**
    * Generic variable definition
    */
