@@ -29,11 +29,13 @@ import java.util.Map;
 public class PageStreamingConfigGenerator implements MethodConfigGenerator {
 
   private static final String PARAMETER_PAGE_TOKEN = "page_token";
+  private static final String PARAMETER_PAGE_SIZE = "page_size";
   private static final String PARAMETER_NEXT_PAGE_TOKEN = "next_page_token";
 
   private static final String CONFIG_KEY_REQUEST = "request";
   private static final String CONFIG_KEY_RESPONSE = "response";
   private static final String CONFIG_KEY_PAGE_STREAMING = "page_streaming";
+  private static final String CONFIG_KEY_PAGE_SIZE_FIELD = "page_size_field";
   private static final String CONFIG_KEY_TOKEN_FIELD = "token_field";
   private static final String CONFIG_KEY_RESOURCE_FIELD = "resource_field";
 
@@ -54,15 +56,17 @@ public class PageStreamingConfigGenerator implements MethodConfigGenerator {
 
   private Map<String, Object> generateRequestConfig(Method method) {
     MessageType inputMessage = method.getInputMessage();
+    Map<String, Object> requestConfig = new LinkedHashMap<String, Object>();
     for (Field field : inputMessage.getFields()) {
       String fieldName = field.getSimpleName();
       if (fieldName.equals(PARAMETER_PAGE_TOKEN)) {
-        Map<String, Object> requestConfig = new LinkedHashMap<String, Object>();
         requestConfig.put(CONFIG_KEY_TOKEN_FIELD, fieldName);
-        return requestConfig;
+      }
+      if (fieldName.equals(PARAMETER_PAGE_SIZE)) {
+        requestConfig.put(CONFIG_KEY_PAGE_SIZE_FIELD, fieldName);
       }
     }
-    return null;
+    return (requestConfig.size() >= 1) ? requestConfig : null;
   }
 
   private Map<String, Object> generateResponseConfig(Method method) {

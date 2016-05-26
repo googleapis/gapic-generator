@@ -52,8 +52,9 @@ public class MethodConfig {
   private final List<String> sampleCodeInitFields;
 
   /**
-   * Creates an instance of MethodConfig based on MethodConfigProto, linking it up with the provided
-   * method. On errors, null will be returned, and diagnostics are reported to the diag collector.
+   * Creates an instance of MethodConfig based on MethodConfigProto, linking it up with the
+   * provided method. On errors, null will be returned, and diagnostics are reported to the diag
+   * collector.
    */
   @Nullable
   public static MethodConfig createMethodConfig(
