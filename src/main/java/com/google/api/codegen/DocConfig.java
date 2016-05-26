@@ -22,14 +22,10 @@ import com.google.api.codegen.metacode.InputParameter;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.TypeRef;
-import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
-
-import javax.annotation.Nullable;
 
 /**
  * Represents the generic documentation settings for an Api method.
@@ -45,49 +41,6 @@ public abstract class DocConfig {
 
   public abstract ImmutableList<InputParameter> getParams();
 
-  /**
-   * Generic variable definition
-   */
-  @AutoValue
-  public abstract static class Variable {
-    public abstract TypeRef getType();
-
-    public abstract String getName();
-
-    public abstract String getDescription();
-
-    @Nullable
-    public abstract CollectionConfig getFormattingConfig();
-
-    // This function is necessary for use in snippets
-    public boolean hasFormattingConfig() {
-      return getFormattingConfig() != null;
-    }
-  }
-
-  /**
-   * Allow snippet code to instantiate a Variable object, since snippets can't call static
-   * functions.
-   */
-  public Variable newVariable(TypeRef type, String name, String description) {
-    return s_newVariable(type, name, description);
-  }
-
-  /**
-   * Instantiate a Variable object with no formatting config.
-   */
-  public static Variable s_newVariable(TypeRef type, String name, String description) {
-    return s_newVariable(type, name, description, null);
-  }
-
-  /**
-   * Instantiate a Variable object.
-   */
-  public static Variable s_newVariable(
-      TypeRef type, String name, String description, CollectionConfig formattingConfig) {
-    return new AutoValue_DocConfig_Variable(type, name, description, formattingConfig);
-  }
-  
   /**
    * DocConfig builder minimum functionality
    */

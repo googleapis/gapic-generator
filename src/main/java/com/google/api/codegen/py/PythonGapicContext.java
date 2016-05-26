@@ -307,6 +307,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     Interface service = (Interface) method.getParent();
     List<String> importStrings = new ArrayList<>();
     importStrings.add(
+        // FIXME: revisit how this is generated per https://goto.google.com/huezs and https://goto.google.com/znnrw
         PythonImport.create(
                 ImportType.APP,
                 method.getFile().getProto().getPackage()
