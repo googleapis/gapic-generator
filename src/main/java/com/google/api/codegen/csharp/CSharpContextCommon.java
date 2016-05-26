@@ -31,11 +31,7 @@ public class CSharpContextCommon {
    */
   // TODO(jonskeet): Handle naming collisions.
   private final TreeSet<String> imports = new TreeSet<>();
-  private final String serviceNamespace;
-
-  public CSharpContextCommon(String serviceNamespace) {
-    this.serviceNamespace = serviceNamespace;
-  }
+  //private final String serviceNamespace;
 
   /**
    * Adds the given type name to the import list. Returns an empty string so that the output is not
@@ -135,7 +131,6 @@ public class CSharpContextCommon {
   }
 
   public TreeSet<String> getImports() {
-    imports.remove(serviceNamespace);
     return imports;
   }
   

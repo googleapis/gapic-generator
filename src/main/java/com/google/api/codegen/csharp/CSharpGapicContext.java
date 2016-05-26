@@ -62,7 +62,7 @@ import javax.annotation.Nullable;
 /**
  * A GapicContext specialized for C#.
  */
-public class CSharpGapicContext extends GapicContext {
+public class CSharpGapicContext extends GapicContext implements CSharpContext {
 
   /**
    * A map from primitive types in proto to C# counterparts.
@@ -92,6 +92,7 @@ public class CSharpGapicContext extends GapicContext {
     super(model, config);
   }
 
+  @Override
   public void resetState(CSharpContextCommon csharpCommon) {
     this.csharpCommon = csharpCommon;
   }
@@ -129,6 +130,15 @@ public class CSharpGapicContext extends GapicContext {
       return optionsNamespace;
     }
     return CSharpContextCommon.s_underscoresToCamelCase(file.getProto().getPackage(), true, true);
+  }
+  
+  public Iterable<String> removeItem(Iterable<String> items, final String remove) {
+    return FluentIterable.from(items)
+        .filter(new Predicate<String>() {
+          @Override public boolean apply(String item) {
+            return !item.equals(remove);
+          }
+        });
   }
 
   @AutoValue
