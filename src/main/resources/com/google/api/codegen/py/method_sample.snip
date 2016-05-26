@@ -19,29 +19,25 @@
 # Helper functions for generateMethodSampleCode()
 
 # Generate argument initialization code for API call
-# FIXME: need field_name_patterns to tell me when to use classmethod to construct an argument
 @private initCode(prompt, initCodeSpec)
   @join line : initCodeSpec.getLines()
     @switch line.getLineType.toString()
     @case "StructureInitLine"
-      A
-      # FIXME: needed for Python?
-      {@prompt} {@initLineStructure(line)}
+      # TODO(brianwatson): don't seem to need yet for current APIs (pubsub and logging)
+      #{@prompt} {@initLineStructure(line)}
+      {@unhandledCase()}
     @case "ListInitLine"
-      B
       {@prompt} {@initLineList(line)}
     @case "SimpleInitLine"
-      C
       {@prompt} {@initLineSimple(line)}
     @default
-      D
       {@unhandledCase()}
     @end
   @end
 @end
 
-# Generate a complex argument
-# FIXME: needed for Python?
+# Generate a Protobuf message argument
+# TODO(brianwatson): adapt to Pythonic way of generating a Protobuf message
 @private initLineStructure(line)
   {@context.typeName(line.getType)} {@formattedIdentifier(line)} = {@context.typeName(line.getType)}.newBuilder()
   @join fieldSetting : line.getFieldSettings
@@ -79,11 +75,10 @@
 @end
 
 # Value for simple argument
-# FIXME: fix for Python
 @private initValue(line)
   @let metadata = line.getInitValueConfig
-    # FIXME: do we need anything like this formatting code?
     #@if metadata.hasFormattingConfig()
+    #  FIXME: this should be used for calling the classmethod stuff
     #  {@metadata.getApiWrapperName}.{@formatResourceFunctionName(metadata.getCollectionConfig)}({@formatResourceFunctionArgs(metadata.getCollectionConfig)})
     #@else
       {@context.defaultValue(line.getType, importHandler)}
