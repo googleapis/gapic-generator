@@ -260,10 +260,11 @@ public class PythonGapicContext extends GapicContext {
             fieldComment(
                 field,
                 importHandler,
-                "The maximum number of resources contained in the\nunderlying API response. If "
-                    + "page streaming is performed per-\nresource, this parameter does not affect "
-                    + "the return value. If page\nstreaming is performed per-page, this determines "
-                    + "the maximum number\nof resources in a page."));
+                "The maximum number of resources contained in the\n"
+                    + "underlying API response. If page streaming is performed per-\n"
+                    + "resource, this parameter does not affect the return value. If page\n"
+                    + "streaming is performed per-page, this determines the maximum number\n"
+                    + "of resources in a page."));
       } else {
         paramTypesBuilder.append(fieldComment(field, importHandler, null));
       }

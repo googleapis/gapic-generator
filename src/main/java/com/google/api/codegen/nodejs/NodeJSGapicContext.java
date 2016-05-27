@@ -176,10 +176,11 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
           paramTypesBuilder.append(
               fieldParamComment(
                   field,
-                  "The maximum number of resources contained in the underlying API\nresponse. If "
-                      + "page streaming is performed per-resource, this\nparameter does not affect "
-                      + "the return value. If page streaming is\nperformed per-page, this "
-                      + "determines the maximum number of\nresources in a page.",
+                  "The maximum number of resources contained in the underlying API\n"
+                      + "response. If page streaming is performed per-resource, this\n"
+                      + "parameter does not affect the return value. If page streaming is\n"
+                      + "performed per-page, this determines the maximum number of\n"
+                      + "resources in a page.",
                   true));
         } else {
           paramTypesBuilder.append(fieldParamComment(field, null, true));
