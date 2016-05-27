@@ -303,6 +303,27 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     if (!getApiConfig().generateSamples()) {
       return "";
     }
+    
+    /*
+     * FIXME: Fix how imports are handled in these library examples. Also fix the casing of class and method names.
+     *
+     *  Example:
+     *    >>> from google.example.library.v1.library_pb2 import LibraryServiceApi
+     *    >>> api = LibraryServiceApi()
+     *    >>> shelf = library_pb2.Shelf();
+     *    >>> books = [];
+     *    >>> edition = 0;
+     *    >>> response = api.publishSeries(shelf, books, edition)
+     *
+     *  Example:
+     *    >>> from google.example.library.v1.library_pb2 import LibraryServiceApi
+     *    >>> api = LibraryServiceApi()
+     *    >>> formattedName = LibraryServiceApi.book_path("[SHELF]", "[BOOK]");
+     *    >>> comment = '';
+     *    >>> commentsElement = google.example.library.v1.Comment(comment)
+     *    >>> comments = [commentsElement];
+     *    >>> api.addComments(formattedName, comments)
+     */
 
     Interface service = (Interface) method.getParent();
     List<String> importStrings = new ArrayList<>();
