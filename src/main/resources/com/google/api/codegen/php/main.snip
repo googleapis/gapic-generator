@@ -487,11 +487,11 @@
              *     Optional.
             @join param : optionalFields
                 @if isPageSizeField(param, methodConfig)
-                    {@""} *     @@type integer ${@methodConfig.getPageStreaming.getPageSizeField.getSimpleName}
+                    {@""} *     @@type integer ${@context.lowerUnderscoreToLowerCamel(methodConfig.getPageStreaming.getPageSizeField.getSimpleName)}
                      *           The maximum number of resources contained in the underlying API
                      *           response. If page streaming is performed per-resource, this
                      *           parameter does not affect the return value. If page streaming is
-                     *           performed per-page, this "determines the maximum number of
+                     *           performed per-page, this determines the maximum number of
                      *           resources in a page.
                 @else
                     @join commentLine : context.php.getDocLinesWithPrefixes(context.getDescription(param), optionalParamDocLinePrefix(param), "          ")
