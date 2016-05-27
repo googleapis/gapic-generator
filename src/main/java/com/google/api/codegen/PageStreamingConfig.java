@@ -19,6 +19,7 @@ import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.SimpleLocation;
+import com.google.common.base.Strings;
 
 import javax.annotation.Nullable;
 
@@ -27,13 +28,14 @@ import javax.annotation.Nullable;
  */
 public class PageStreamingConfig {
   private final Field requestTokenField;
+  private final Field pageSizeField;
   private final Field responseTokenField;
   private final Field resourcesField;
 
   /**
    * Creates an instance of PageStreamingConfig based on PageStreamingConfigProto, linking it up
-   * with the provided method. On errors, null will be returned, and diagnostics are reported to the
-   * diag collector.
+   * with the provided method. On errors, null will be returned, and diagnostics are reported to
+   * the diag collector.
    *
    */
   @Nullable
@@ -50,6 +52,21 @@ public class PageStreamingConfig {
               method.getFullName(),
               method.getInputType().getMessageType().getFullName(),
               requestTokenFieldName));
+    }
+
+    String pageSizeFieldName = pageStreaming.getRequest().getPageSizeField();
+    Field pageSizeField = null;
+    if (!Strings.isNullOrEmpty(pageSizeFieldName)) {
+      pageSizeField = method.getInputType().getMessageType().lookupField(pageSizeFieldName);
+      if (pageSizeField == null) {
+        diagCollector.addDiag(
+            Diag.error(
+                SimpleLocation.TOPLEVEL,
+                "Request field missing for page streaming: method = %s, message type = %s, field = %s",
+                method.getFullName(),
+                method.getInputType().getMessageType().getFullName(),
+                pageSizeFieldName));
+      }
     }
 
     String responseTokenFieldName = pageStreaming.getResponse().getTokenField();
@@ -80,12 +97,17 @@ public class PageStreamingConfig {
     if (requestTokenField == null || responseTokenField == null || resourcesField == null) {
       return null;
     }
-    return new PageStreamingConfig(requestTokenField, responseTokenField, resourcesField);
+    return new PageStreamingConfig(
+        requestTokenField, pageSizeField, responseTokenField, resourcesField);
   }
 
   private PageStreamingConfig(
-      Field requestTokenField, Field responseTokenField, Field resourcesField) {
+      Field requestTokenField,
+      Field pageSizeField,
+      Field responseTokenField,
+      Field resourcesField) {
     this.requestTokenField = requestTokenField;
+    this.pageSizeField = pageSizeField;
     this.responseTokenField = responseTokenField;
     this.resourcesField = resourcesField;
   }
@@ -95,6 +117,15 @@ public class PageStreamingConfig {
    */
   public Field getRequestTokenField() {
     return requestTokenField;
+  }
+
+  /**
+   * Returns the field used in the request to specify the maximum number of elements in the
+   * response.
+   */
+  @Nullable
+  public Field getPageSizeField() {
+    return pageSizeField;
   }
 
   /**
