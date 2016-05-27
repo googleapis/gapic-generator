@@ -23,8 +23,7 @@
   @join line : initCodeSpec.getLines()
     @switch line.getLineType.toString()
     @case "StructureInitLine"
-      FIXME: need this when sample_code_init_fields is defined for a service in *_gapic.yaml
-      #{@prompt} {@initLineStructure(line)}
+      {@prompt} {@initLineStructure(line)}
     @case "ListInitLine"
       {@prompt} {@initLineList(line)}
     @case "SimpleInitLine"
@@ -36,15 +35,15 @@
 @end
 
 # Generate a Protobuf message argument
-# FIXME: adapt to Pythonic way of generating a Protobuf message
 @private initLineStructure(line)
-  {@context.typeName(line.getType)} {@formattedIdentifier(line)} = {@context.typeName(line.getType)}.newBuilder()
-  @join fieldSetting : line.getFieldSettings
-    @let setCallName = setCallName(fieldSetting.getType, context.lowerUnderscoreToUpperCamel(fieldSetting.getFieldName))
-      {@EMPTY}  .{@setCallName}({@formattedIdentifier(fieldSetting)})
-    @end
+  {@formattedIdentifier(line)} = {@line.getType}({@initLineStructureArgs(line)})
+@end
+
+# Helper method for initLineStructure()
+@private initLineStructureArgs(line) {
+  @join fieldSetting : line.getFieldSettings on ", "
+    {@formattedIdentifier(fieldSetting)}
   @end
-  {@EMPTY}  .build();
 @end
 
 # Generate a List argument
