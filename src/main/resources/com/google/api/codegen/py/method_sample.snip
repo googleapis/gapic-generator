@@ -54,7 +54,7 @@
 # Helper method for initLineList()
 @private initList(line)
   @join identifier : line.getElementIdentifiers on ", "
-    {@context.lowerUnderscoreToLowerCamel(identifier)}
+    {@identifier}
   @end
 @end
 
@@ -66,9 +66,9 @@
 # Properly format an identifier for this language
 @private formattedIdentifier(lineOrFieldSetting)
   @if lineOrFieldSetting.getInitValueConfig.hasFormattingConfig
-    formatted{@context.lowerUnderscoreToUpperCamel(lineOrFieldSetting.getIdentifier)}
+    {@lineOrFieldSetting.getInitValueConfig.getCollectionConfig.getEntityName}_{@lineOrFieldSetting.getIdentifier}
   @else
-    {@context.lowerUnderscoreToLowerCamel(lineOrFieldSetting.getIdentifier)}
+    {@lineOrFieldSetting.getIdentifier}
   @end
 @end
 
