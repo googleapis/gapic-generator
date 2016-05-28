@@ -305,7 +305,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     }
     
     /*
-     * FIXME: Fix how imports are handled in these library examples. Also fix the casing of class and method names.
+     * FIXME: Fix how imports are handled in these library examples. Also fix the casing of method names.
      *
      *  Example:
      *    >>> from google.example.library.v1.library_pb2 import LibraryServiceApi
@@ -326,20 +326,16 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
      */
 
     Interface service = (Interface) method.getParent();
+    
+    String apiName = getApiWrapperName(service);
+    String moduleName =
+        getApiConfig().getPackageName() + "." + lowerCamelToLowerUnderscore(apiName);
     List<String> importStrings = new ArrayList<>();
-    importStrings.add(
-        // FIXME: revisit how this is generated per https://goto.google.com/huezs and https://goto.google.com/znnrw
-        PythonImport.create(
-                ImportType.APP,
-                method.getFile().getProto().getPackage()
-                    + "."
-                    + PythonProtoElements.getPbFileName(method.getInputMessage()),
-                getApiWrapperName(service))
-            .importString());
+    importStrings.add(PythonImport.create(ImportType.APP, moduleName, apiName).importString());
+    String methodName = upperCamelToLowerCamel(method.getSimpleName());
+    String returnType = returnTypeOrEmpty(method.getOutputType(), importHandler);
 
     MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
-    String methodName = upperCamelToLowerCamel(method.getSimpleName());
-
     Iterable<Field> requiredFields = methodConfig.getRequiredFields();
     Iterable<Field> optionalFields = methodConfig.getOptionalFields();
     List<Field> fields = new ArrayList<Field>();
@@ -353,9 +349,9 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     PythonDocConfig docConfig =
         PythonDocConfig.newBuilder()
             .setAppImports(importStrings)
-            .setApiName(getApiWrapperName((Interface) method.getParent()))
+            .setApiName(apiName)
             .setMethodName(methodName)
-            .setReturnType(returnTypeOrEmpty(method.getOutputType(), importHandler))
+            .setReturnType(returnType)
             .setFieldInitCode(this, service, method, fields)
             .setFieldParams(this, fields)
             .build();
