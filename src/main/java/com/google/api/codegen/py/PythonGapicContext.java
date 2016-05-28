@@ -323,6 +323,14 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
      *    >>> commentsElement = google.example.library.v1.Comment(comment)
      *    >>> comments = [commentsElement];
      *    >>> api.addComments(formattedName, comments)
+     *
+     *  Example:
+     *    >>> from library.library_service_api import LibraryServiceApi
+     *    >>> api = LibraryServiceApi()
+     *    // FIXME: disambiguate these arguments
+     *    >>> shelf_path = api.shelf_path("[SHELF]");
+     *    >>> shelf_path = api.shelf_path("[SHELF]");
+     *    >>> response = api.merge_shelves(shelf_path, shelf_path)
      */
 
     Interface service = (Interface) method.getParent();
