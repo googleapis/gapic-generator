@@ -305,11 +305,10 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     }
     
     /*
-     * FIXME: Fix how imports are handled in these library examples. Also fix the casing of method names.
-     *
      *  Example:
      *    >>> from google.example.library.v1.library_pb2 import LibraryServiceApi
      *    >>> api = LibraryServiceApi()
+     *    // FIXME: need to import Shelf with correct package
      *    >>> shelf = library_pb2.Shelf();
      *    >>> books = [];
      *    >>> edition = 0;
@@ -320,6 +319,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
      *    >>> api = LibraryServiceApi()
      *    >>> formattedName = LibraryServiceApi.book_path("[SHELF]", "[BOOK]");
      *    >>> comment = '';
+     *    // FIXME: need to import Comment with correct package
      *    >>> commentsElement = google.example.library.v1.Comment(comment)
      *    >>> comments = [commentsElement];
      *    >>> api.addComments(formattedName, comments)
@@ -332,7 +332,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
         getApiConfig().getPackageName() + "." + lowerCamelToLowerUnderscore(apiName);
     List<String> importStrings = new ArrayList<>();
     importStrings.add(PythonImport.create(ImportType.APP, moduleName, apiName).importString());
-    String methodName = upperCamelToLowerCamel(method.getSimpleName());
+    String methodName = upperCamelToLowerUnderscore(method.getSimpleName());
     String returnType = returnTypeOrEmpty(method.getOutputType(), importHandler);
 
     MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
