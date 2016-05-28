@@ -65,10 +65,13 @@
 
 # Properly format an identifier for this language
 @private formattedIdentifier(lineOrFieldSetting)
-  @if lineOrFieldSetting.getInitValueConfig.hasFormattingConfig
-    {@lineOrFieldSetting.getInitValueConfig.getCollectionConfig.getEntityName}_{@lineOrFieldSetting.getIdentifier}
-  @else
-    {@lineOrFieldSetting.getIdentifier}
+  @let metadata = lineOrFieldSetting.getInitValueConfig
+    @if metadata.hasFormattingConfig
+      # FIXME: maybe this is called in too many places; carefully check generated snippets
+      {@metadata.getCollectionConfig.getEntityName}_{@lineOrFieldSetting.getIdentifier}
+    @else
+      {@lineOrFieldSetting.getIdentifier}
+    @end
   @end
 @end
 
@@ -76,7 +79,7 @@
 @private initValue(line)
   @let metadata = line.getInitValueConfig
     @if metadata.hasFormattingConfig()
-      {@metadata.getApiWrapperName}.{@formatResourceFunctionName(metadata.getCollectionConfig)}({@formatResourceFunctionArgs(metadata.getCollectionConfig)})
+      api.{@formatResourceFunctionName(metadata.getCollectionConfig)}({@formatResourceFunctionArgs(metadata.getCollectionConfig)})
     @else
       {@context.defaultValue(line.getType, importHandler)}
     @end
