@@ -486,8 +486,17 @@
             {@""} * @@param array $optionalArgs {
              *     Optional.
             @join param : optionalFields
-                @join commentLine : context.php.getDocLinesWithPrefixes(context.getDescription(param), optionalParamDocLinePrefix(param), "          ")
-                    {@commentLine}
+                @if isPageSizeField(param, methodConfig)
+                    {@""} *     @@type integer ${@context.lowerUnderscoreToLowerCamel(methodConfig.getPageStreaming.getPageSizeField.getSimpleName)}
+                     *           The maximum number of resources contained in the underlying API
+                     *           response. If page streaming is performed per-resource, this
+                     *           parameter does not affect the return value. If page streaming is
+                     *           performed per-page, this determines the maximum number of
+                     *           resources in a page.
+                @else
+                    @join commentLine : context.php.getDocLinesWithPrefixes(context.getDescription(param), optionalParamDocLinePrefix(param), "          ")
+                        {@commentLine}
+                    @end
                 @end
             @end
              * }
@@ -496,6 +505,16 @@
              *     Optional. There are no optional parameters for this method yet;
              *               this $optionalArgs parameter reserves a spot for future ones.
              * }
+        @end
+    @end
+@end
+
+@private isPageSizeField(param, methodConfig)
+    @if methodConfig.isPageStreaming
+        @if methodConfig.getPageStreaming.hasPageSizeField
+            @if param.equals(methodConfig.getPageStreaming.getPageSizeField)
+                TRUE
+            @end
         @end
     @end
 @end

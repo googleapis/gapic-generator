@@ -24,12 +24,10 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoContainerElement;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
-import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -38,7 +36,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -66,8 +63,8 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     if (!element.hasAttribute(ElementDocumentationAttribute.KEY)) {
       return ImmutableList.<String>of();
     }
-    return convertToCommentedBlock(JSDocCommentFixer.jsdocify(
-        DocumentationUtil.getScopedDescription(element)));
+    return convertToCommentedBlock(
+        JSDocCommentFixer.jsdocify(DocumentationUtil.getScopedDescription(element)));
   }
 
   /**
@@ -91,14 +88,14 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   /**
    * Returns a JSDoc comment string for the field as a parameter to a function.
    */
-  private String fieldParamComment(Field field, boolean isOptional) {
+  private String fieldParamComment(Field field, String paramComment, boolean isOptional) {
     String commentType = fieldTypeCardinalityComment(field);
     String fieldName = wrapIfKeywordOrBuiltIn(lowerUnderscoreToLowerCamel(field.getSimpleName()));
     if (isOptional) {
       fieldName = "otherArgs." + fieldName;
     }
     return fieldComment(
-        String.format("@param {%s} %s", commentType, fieldName), field);
+        String.format("@param {%s} %s", commentType, fieldName), paramComment, field);
   }
 
   /**
@@ -107,12 +104,13 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   private String fieldPropertyComment(Field field) {
     String commentType = fieldTypeCardinalityComment(field);
     String fieldName = wrapIfKeywordOrBuiltIn(field.getSimpleName());
-    return fieldComment(
-        String.format("@property {%s} %s", commentType, fieldName), field);
+    return fieldComment(String.format("@property {%s} %s", commentType, fieldName), null, field);
   }
 
-  private String fieldComment(String comment, Field field) {
-    String paramComment = DocumentationUtil.getScopedDescription(field);
+  private String fieldComment(String comment, String paramComment, Field field) {
+    if (paramComment == null) {
+      paramComment = DocumentationUtil.getScopedDescription(field);
+    }
     if (!Strings.isNullOrEmpty(paramComment)) {
       paramComment = JSDocCommentFixer.jsdocify(paramComment);
       comment += "\n  " + paramComment.replaceAll("(\\r?\\n)", "\n  ");
@@ -124,58 +122,78 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    * Return JSDoc callback comment and return type comment for the given method.
    */
   @Nullable
-  private String returnTypeComment(Method method) {
+  private String returnTypeComment(Method method, MethodConfig config) {
     MessageType returnMessageType = method.getOutputMessage();
     boolean isEmpty = returnMessageType.getFullName().equals("google.protobuf.Empty");
 
     String classInfo = jsTypeName(method.getOutputType());
-    MethodConfig config = getApiConfig().getInterfaceConfig((Interface) method.getParent())
-        .getMethodConfig(method);
 
-    String callbackType =
-        isEmpty ? "EmptyCallback" : String.format("APICallback<%s>", classInfo);
-    String callbackComment = "@param {?" + callbackType + "} callback\n"
-        + "  The function which will be called with the result of the API call.";
+    String callbackType = isEmpty ? "EmptyCallback" : String.format("APICallback<%s>", classInfo);
+    String callbackComment =
+        "@param {?"
+            + callbackType
+            + "} callback\n"
+            + "  The function which will be called with the result of the API call.";
     if (config.isPageStreaming()) {
       String resourceType = jsTypeName(config.getPageStreaming().getResourcesField().getType());
-      return callbackComment + "\n@returns {?Stream<" + resourceType + ">}\n"
-          + "  An object stream of " + resourceType + " instances, unless\n"
+      return callbackComment
+          + "\n@returns {?Stream<"
+          + resourceType
+          + ">}\n"
+          + "  An object stream of "
+          + resourceType
+          + " instances, unless\n"
           + "  page streaming is disabled through the call options or a callback\n"
           + "  is specified. If page streaming is disabled or a callback is specified,\n"
           + "  this returns null, and the callback will be called with a single instance\n"
-          + "  of " + classInfo + ".";
+          + "  of "
+          + classInfo
+          + ".";
     } else {
       return callbackComment;
     }
   }
-
 
   /**
    * Return comments lines for a given method, consisting of proto doc and parameter type
    * documentation.
    */
   public List<String> methodComments(Method msg) {
-    MethodConfig config = getApiConfig().getInterfaceConfig((Interface) msg.getParent())
-        .getMethodConfig(msg);
+    MethodConfig config =
+        getApiConfig().getInterfaceConfig((Interface) msg.getParent()).getMethodConfig(msg);
 
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
     for (Field field : config.getRequiredFields()) {
-      paramTypesBuilder.append(fieldParamComment(field, false));
+      paramTypesBuilder.append(fieldParamComment(field, null, false));
     }
     Iterable<Field> optionalParams = config.getOptionalFields();
     if (optionalParams.iterator().hasNext()) {
       paramTypesBuilder.append("@param {?Object} otherArgs\n");
       for (Field field : optionalParams) {
-        paramTypesBuilder.append(fieldParamComment(field, true));
+        if (config.isPageStreaming()
+            && field.equals((config.getPageStreaming().getPageSizeField()))) {
+          paramTypesBuilder.append(
+              fieldParamComment(
+                  field,
+                  "The maximum number of resources contained in the underlying API\n"
+                      + "response. If page streaming is performed per-resource, this\n"
+                      + "parameter does not affect the return value. If page streaming is\n"
+                      + "performed per-page, this determines the maximum number of\n"
+                      + "resources in a page.",
+                  true));
+        } else {
+          paramTypesBuilder.append(fieldParamComment(field, null, true));
+        }
       }
     }
-    paramTypesBuilder.append("@param {?gax.CallOptions} options\n" +
-                             "  Overrides the default settings for this call, e.g, timeout,\n" +
-                             "  retries, etc.");
+    paramTypesBuilder.append(
+        "@param {?gax.CallOptions} options\n"
+            + "  Overrides the default settings for this call, e.g, timeout,\n"
+            + "  retries, etc.");
     String paramTypes = paramTypesBuilder.toString();
 
-    String returnType = returnTypeComment(msg);
+    String returnType = returnTypeComment(msg, config);
 
     // Generate comment contents
     StringBuilder contentBuilder = new StringBuilder();
@@ -191,8 +209,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       contentBuilder.append("\n" + returnType);
     }
 
-    contentBuilder.append(
-        "\n@throws an error if the RPC is aborted.");
+    contentBuilder.append("\n@throws an error if the RPC is aborted.");
     return convertToCommentedBlock(contentBuilder.toString());
   }
 
@@ -209,7 +226,8 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     String attributes = attributesBuilder.toString().trim();
 
     List<String> content = defaultComments(msg);
-    return ImmutableList.<String>builder().addAll(content)
+    return ImmutableList.<String>builder()
+        .addAll(content)
         .addAll(convertToCommentedBlock(attributes))
         .build();
   }
@@ -240,8 +258,8 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       case TYPE_MESSAGE:
         return "{}";
       case TYPE_ENUM:
-        Preconditions.checkArgument(type.getEnumType().getValues().size() > 0,
-            "enum must have a value");
+        Preconditions.checkArgument(
+            type.getEnumType().getValues().size() > 0, "enum must have a value");
         return type.getEnumType().getValues().get(0).getFullName();
       default:
         if (type.isPrimitive()) {
@@ -260,13 +278,14 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
         return typeRef.getMessageType().getFullName();
       case TYPE_ENUM:
         return typeRef.getEnumType().getFullName();
-      default: {
-        String name = PRIMITIVE_TYPE_NAMES.get(typeRef.getKind());
-        if (!Strings.isNullOrEmpty(name)) {
-          return name;
+      default:
+        {
+          String name = PRIMITIVE_TYPE_NAMES.get(typeRef.getKind());
+          if (!Strings.isNullOrEmpty(name)) {
+            return name;
+          }
+          throw new IllegalArgumentException("unknown type kind: " + typeRef.getKind());
         }
-        throw new IllegalArgumentException("unknown type kind: " + typeRef.getKind());
-      }
     }
   }
 
@@ -318,97 +337,98 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    */
   private static final ImmutableMap<Type, String> DEFAULT_VALUE_MAP =
       ImmutableMap.<Type, String>builder()
-      .put(Type.TYPE_BOOL, "false")
-      .put(Type.TYPE_DOUBLE, "0.0")
-      .put(Type.TYPE_FLOAT, "0.0")
-      .put(Type.TYPE_INT64, "0")
-      .put(Type.TYPE_UINT64, "0")
-      .put(Type.TYPE_SINT64, "0")
-      .put(Type.TYPE_FIXED64, "0")
-      .put(Type.TYPE_SFIXED64, "0")
-      .put(Type.TYPE_INT32, "0")
-      .put(Type.TYPE_UINT32, "0")
-      .put(Type.TYPE_SINT32, "0")
-      .put(Type.TYPE_FIXED32, "0")
-      .put(Type.TYPE_SFIXED32, "0")
-      .put(Type.TYPE_STRING, "\'\'")
-      .put(Type.TYPE_BYTES, "\'\'")
-      .build();
+          .put(Type.TYPE_BOOL, "false")
+          .put(Type.TYPE_DOUBLE, "0.0")
+          .put(Type.TYPE_FLOAT, "0.0")
+          .put(Type.TYPE_INT64, "0")
+          .put(Type.TYPE_UINT64, "0")
+          .put(Type.TYPE_SINT64, "0")
+          .put(Type.TYPE_FIXED64, "0")
+          .put(Type.TYPE_SFIXED64, "0")
+          .put(Type.TYPE_INT32, "0")
+          .put(Type.TYPE_UINT32, "0")
+          .put(Type.TYPE_SINT32, "0")
+          .put(Type.TYPE_FIXED32, "0")
+          .put(Type.TYPE_SFIXED32, "0")
+          .put(Type.TYPE_STRING, "\'\'")
+          .put(Type.TYPE_BYTES, "\'\'")
+          .build();
 
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_NAMES =
       ImmutableMap.<Type, String>builder()
-      .put(Type.TYPE_BOOL, "boolean")
-      .put(Type.TYPE_DOUBLE, "number")
-      .put(Type.TYPE_FLOAT, "number")
-      .put(Type.TYPE_INT64, "number")
-      .put(Type.TYPE_UINT64, "number")
-      .put(Type.TYPE_SINT64, "number")
-      .put(Type.TYPE_FIXED64, "number")
-      .put(Type.TYPE_SFIXED64, "number")
-      .put(Type.TYPE_INT32, "number")
-      .put(Type.TYPE_UINT32, "number")
-      .put(Type.TYPE_SINT32, "number")
-      .put(Type.TYPE_FIXED32, "number")
-      .put(Type.TYPE_SFIXED32, "number")
-      .put(Type.TYPE_STRING, "String")
-      .put(Type.TYPE_BYTES, "String")
-      .build();
+          .put(Type.TYPE_BOOL, "boolean")
+          .put(Type.TYPE_DOUBLE, "number")
+          .put(Type.TYPE_FLOAT, "number")
+          .put(Type.TYPE_INT64, "number")
+          .put(Type.TYPE_UINT64, "number")
+          .put(Type.TYPE_SINT64, "number")
+          .put(Type.TYPE_FIXED64, "number")
+          .put(Type.TYPE_SFIXED64, "number")
+          .put(Type.TYPE_INT32, "number")
+          .put(Type.TYPE_UINT32, "number")
+          .put(Type.TYPE_SINT32, "number")
+          .put(Type.TYPE_FIXED32, "number")
+          .put(Type.TYPE_SFIXED32, "number")
+          .put(Type.TYPE_STRING, "String")
+          .put(Type.TYPE_BYTES, "String")
+          .build();
 
   /**
-   * A set of ECMAScript 2016 reserved words.
-   * See https://tc39.github.io/ecma262/2016/#sec-reserved-words
+   * A set of ECMAScript 2016 reserved words. See
+   * https://tc39.github.io/ecma262/2016/#sec-reserved-words
    */
   private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
       ImmutableSet.<String>builder()
-      .add("break",
-           "do",
-           "in",
-           "typeof",
-           "case",
-           "else",
-           "instanceof",
-           "var",
-           "catch",
-           "export",
-           "new",
-           "void",
-           "class",
-           "extends",
-           "return",
-           "while",
-           "const",
-           "finally",
-           "super",
-           "with",
-           "continue",
-           "for",
-           "switch",
-           "yield",
-           "debugger",
-           "function",
-           "this",
-           "default",
-           "if",
-           "throw",
-           "delete",
-           "import",
-           "try",
-           "let",
-           "static",
-           "enum",
-           "await",
-           "implements",
-           "package",
-           "protected",
-           "interface",
-           "private",
-           "public",
-           "null",
-           "true",
-           "false",
-           // common parameters passed to methods.
-           "otherArgs",
-           "options",
-           "callback")
-      .build();
+          .add(
+              "break",
+              "do",
+              "in",
+              "typeof",
+              "case",
+              "else",
+              "instanceof",
+              "var",
+              "catch",
+              "export",
+              "new",
+              "void",
+              "class",
+              "extends",
+              "return",
+              "while",
+              "const",
+              "finally",
+              "super",
+              "with",
+              "continue",
+              "for",
+              "switch",
+              "yield",
+              "debugger",
+              "function",
+              "this",
+              "default",
+              "if",
+              "throw",
+              "delete",
+              "import",
+              "try",
+              "let",
+              "static",
+              "enum",
+              "await",
+              "implements",
+              "package",
+              "protected",
+              "interface",
+              "private",
+              "public",
+              "null",
+              "true",
+              "false",
+              // common parameters passed to methods.
+              "otherArgs",
+              "options",
+              "callback")
+          .build();
 }
