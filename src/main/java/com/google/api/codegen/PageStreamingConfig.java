@@ -120,6 +120,13 @@ public class PageStreamingConfig {
   }
 
   /**
+   * Returns whether there is a field for page size.
+   */
+  public boolean hasPageSizeField() {
+    return pageSizeField != null;
+  }
+
+  /**
    * Returns the field used in the request to specify the maximum number of elements in the
    * response.
    */

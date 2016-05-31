@@ -173,11 +173,13 @@ public class PythonGapicContext extends GapicContext {
   /**
    * Returns a comment string for field, consisting of type information and proto comment.
    */
-  private String fieldComment(Field field, PythonImportHandler importHandler) {
+  private String fieldComment(Field field, PythonImportHandler importHandler, String paramComment) {
     String comment =
         String.format(
             "  %s (%s)", field.getSimpleName(), fieldTypeCardinalityComment(field, importHandler));
-    String paramComment = getSphinxifiedScopedDescription(field);
+    if (paramComment == null) {
+      paramComment = getSphinxifiedScopedDescription(field);
+    }
     if (!Strings.isNullOrEmpty(paramComment)) {
       if (paramComment.charAt(paramComment.length() - 1) == '\n') {
         paramComment = paramComment.substring(0, paramComment.length() - 1);
@@ -196,7 +198,7 @@ public class PythonGapicContext extends GapicContext {
     StringBuilder paramTypesBuilder = new StringBuilder();
     paramTypesBuilder.append("Attributes:\n");
     for (Field field : msg.getFields()) {
-      paramTypesBuilder.append(fieldComment(field, importHandler));
+      paramTypesBuilder.append(fieldComment(field, importHandler, null));
     }
     String paramTypes = paramTypesBuilder.toString();
     // Generate comment contents
@@ -216,7 +218,8 @@ public class PythonGapicContext extends GapicContext {
    * None.
    */
   @Nullable
-  private String returnTypeComment(Method method, PythonImportHandler importHandler) {
+  private String returnTypeComment(
+      Method method, MethodConfig config, PythonImportHandler importHandler) {
     MessageType returnMessageType = method.getOutputMessage();
     if (PythonProtoElements.isEmptyMessage(returnMessageType)) {
       return null;
@@ -224,8 +227,6 @@ public class PythonGapicContext extends GapicContext {
 
     String path = importHandler.elementPath(returnMessageType, true);
     String classInfo = ":class:`" + path + "` instance";
-    MethodConfig config =
-        getApiConfig().getInterfaceConfig((Interface) method.getParent()).getMethodConfig(method);
 
     if (config.isPageStreaming()) {
       return "Returns:"
@@ -245,24 +246,40 @@ public class PythonGapicContext extends GapicContext {
    * Return comments lines for a given method, consisting of proto doc and parameter type
    * documentation.
    */
-  private List<String> methodComments(Method msg, PythonImportHandler importHandler) {
+  private List<String> methodComments(Method method, PythonImportHandler importHandler) {
+    MethodConfig config =
+        getApiConfig().getInterfaceConfig((Interface) method.getParent()).getMethodConfig(method);
+
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
     paramTypesBuilder.append("Args:\n");
-    for (Field field : this.messages().flattenedFields(msg.getInputType())) {
-      paramTypesBuilder.append(fieldComment(field, importHandler));
+    for (Field field : this.messages().flattenedFields(method.getInputType())) {
+      if (config.isPageStreaming()
+          && field.equals((config.getPageStreaming().getPageSizeField()))) {
+        paramTypesBuilder.append(
+            fieldComment(
+                field,
+                importHandler,
+                "The maximum number of resources contained in the\n"
+                    + "underlying API response. If page streaming is performed per-\n"
+                    + "resource, this parameter does not affect the return value. If page\n"
+                    + "streaming is performed per-page, this determines the maximum number\n"
+                    + "of resources in a page."));
+      } else {
+        paramTypesBuilder.append(fieldComment(field, importHandler, null));
+      }
     }
     paramTypesBuilder.append(
         "  options (:class:`google.gax.CallOptions`): "
             + "Overrides the default\n    settings for this call, e.g, timeout, retries etc.");
     String paramTypes = paramTypesBuilder.toString();
 
-    String returnType = returnTypeComment(msg, importHandler);
+    String returnType = returnTypeComment(method, config, importHandler);
 
     // Generate comment contents
     StringBuilder contentBuilder = new StringBuilder();
-    if (msg.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      String sphinxified = getSphinxifiedScopedDescription(msg);
+    if (method.hasAttribute(ElementDocumentationAttribute.KEY)) {
+      String sphinxified = getSphinxifiedScopedDescription(method);
       sphinxified = sphinxified.trim();
       contentBuilder.append(sphinxified.replaceAll("\\s*\\n\\s*", "\n"));
       if (!Strings.isNullOrEmpty(paramTypes)) {

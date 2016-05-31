@@ -77,7 +77,8 @@ public class ServiceMessages {
     List<Field> fields = new ArrayList<>();
     for (Field field : requestType.getMessageType().getFields()) {
       String simpleName = field.getSimpleName();
-      if (simpleName.equals("page_size") || simpleName.equals("page_token")) {
+      // TODO: Look this up from the config rather than hard coding it.
+      if (simpleName.equals("page_token")) {
         continue;
       }
       fields.add(field);
