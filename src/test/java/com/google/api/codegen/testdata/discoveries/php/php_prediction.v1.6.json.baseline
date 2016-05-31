@@ -23,13 +23,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Prediction service
 $service = new Google_Service_Prediction($client);
-
 // The project associated with the model.
 $project = '';
 // The name of a hosted model.
 $hostedModelName = '';
 
-$response = $service->hostedmodels->predictHostedmodels($project, $hostedModelName);
+$postBody = new Google_Service_Prediction_Input($client);
+
+$response = $service->hostedmodels->predict($project, $hostedModelName, $postBody);
 
 <?php
 /*
@@ -55,13 +56,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Prediction service
 $service = new Google_Service_Prediction($client);
-
 // The project associated with the model.
 $project = '';
 // The unique name for the predictive model.
 $id = '';
 
-$response = $service->trainedmodels->analyzeTrainedmodels($project, $id);
+$response = $service->trainedmodels->analyze($project, $id);
 
 <?php
 /*
@@ -87,13 +87,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Prediction service
 $service = new Google_Service_Prediction($client);
-
 // The project associated with the model.
 $project = '';
 // The unique name for the predictive model.
 $id = '';
 
-$response = $service->trainedmodels->deleteTrainedmodels($project, $id);
+$response = $service->trainedmodels->delete($project, $id);
 
 <?php
 /*
@@ -119,13 +118,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Prediction service
 $service = new Google_Service_Prediction($client);
-
 // The project associated with the model.
 $project = '';
 // The unique name for the predictive model.
 $id = '';
 
-$response = $service->trainedmodels->getTrainedmodels($project, $id);
+$response = $service->trainedmodels->get($project, $id);
 
 <?php
 /*
@@ -151,11 +149,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Prediction service
 $service = new Google_Service_Prediction($client);
-
 // The project associated with the model.
 $project = '';
 
-$response = $service->trainedmodels->insertTrainedmodels($project);
+$postBody = new Google_Service_Prediction_Insert($client);
+
+$response = $service->trainedmodels->insert($project, $postBody);
 
 <?php
 /*
@@ -181,7 +180,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Prediction service
 $service = new Google_Service_Prediction($client);
-
 // The project associated with the model.
 $project = '';
 
@@ -215,13 +213,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Prediction service
 $service = new Google_Service_Prediction($client);
-
 // The project associated with the model.
 $project = '';
 // The unique name for the predictive model.
 $id = '';
 
-$response = $service->trainedmodels->predictTrainedmodels($project, $id);
+$postBody = new Google_Service_Prediction_Input($client);
+
+$response = $service->trainedmodels->predict($project, $id, $postBody);
 
 <?php
 /*
@@ -247,11 +246,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Prediction service
 $service = new Google_Service_Prediction($client);
-
 // The project associated with the model.
 $project = '';
 // The unique name for the predictive model.
 $id = '';
 
-$response = $service->trainedmodels->updateTrainedmodels($project, $id);
+$postBody = new Google_Service_Prediction_Update($client);
+
+$response = $service->trainedmodels->update($project, $id, $postBody);
 

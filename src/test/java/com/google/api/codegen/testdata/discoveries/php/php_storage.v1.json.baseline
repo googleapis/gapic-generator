@@ -23,13 +23,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
 $entity = '';
 
-$response = $service->bucketAccessControls->deleteBucketAccessControls($bucket, $entity);
+$response = $service->bucketAccessControls->delete($bucket, $entity);
 
 <?php
 /*
@@ -55,13 +54,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
 $entity = '';
 
-$response = $service->bucketAccessControls->getBucketAccessControls($bucket, $entity);
+$response = $service->bucketAccessControls->get($bucket, $entity);
 
 <?php
 /*
@@ -87,11 +85,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 
-$response = $service->bucketAccessControls->insertBucketAccessControls($bucket);
+$postBody = new Google_Service_Storage_BucketAccessControl($client);
+
+$response = $service->bucketAccessControls->insert($bucket, $postBody);
 
 <?php
 /*
@@ -117,7 +116,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 
@@ -147,13 +145,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
 $entity = '';
 
-$response = $service->bucketAccessControls->patchBucketAccessControls($bucket, $entity);
+$postBody = new Google_Service_Storage_BucketAccessControl($client);
+
+$response = $service->bucketAccessControls->patch($bucket, $entity, $postBody);
 
 <?php
 /*
@@ -179,13 +178,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
 $entity = '';
 
-$response = $service->bucketAccessControls->updateBucketAccessControls($bucket, $entity);
+$postBody = new Google_Service_Storage_BucketAccessControl($client);
+
+$response = $service->bucketAccessControls->update($bucket, $entity, $postBody);
 
 <?php
 /*
@@ -211,11 +211,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 
-$response = $service->buckets->deleteBuckets($bucket);
+$response = $service->buckets->delete($bucket);
 
 <?php
 /*
@@ -241,11 +240,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 
-$response = $service->buckets->getBuckets($bucket);
+$response = $service->buckets->get($bucket);
 
 <?php
 /*
@@ -271,11 +269,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // A valid API project identifier.
 $project = '';
 
-$response = $service->buckets->insertBuckets($project);
+$postBody = new Google_Service_Storage_Bucket($client);
+
+$response = $service->buckets->insert($project, $postBody);
 
 <?php
 /*
@@ -301,7 +300,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // A valid API project identifier.
 $project = '';
 
@@ -335,11 +333,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 
-$response = $service->buckets->patchBuckets($bucket);
+$postBody = new Google_Service_Storage_Bucket($client);
+
+$response = $service->buckets->patch($bucket, $postBody);
 
 <?php
 /*
@@ -365,11 +364,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 
-$response = $service->buckets->updateBuckets($bucket);
+$postBody = new Google_Service_Storage_Bucket($client);
+
+$response = $service->buckets->update($bucket, $postBody);
 
 <?php
 /*
@@ -396,7 +396,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
 
-$response = $service->channels->stopChannels();
+
+$postBody = new Google_Service_Storage_Channel($client);
+
+$response = $service->channels->stop($postBody);
 
 <?php
 /*
@@ -422,45 +425,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
-// Name of a bucket.
-$bucket = '';
-// The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '';
-
-$response = $service->defaultObjectAccessControls->deleteDefaultObjectAccessControls($bucket, $entity);
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
- *    https://console.developers.google.com/apis/api/storage_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-// Create a new client
-$client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-// Create a new Storage service
-$service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
 $entity = '';
 
-$response = $service->defaultObjectAccessControls->getDefaultObjectAccessControls($bucket, $entity);
+$response = $service->defaultObjectAccessControls->delete($bucket, $entity);
 
 <?php
 /*
@@ -486,11 +456,43 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
+// Name of a bucket.
+$bucket = '';
+// The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+$entity = '';
 
+$response = $service->defaultObjectAccessControls->get($bucket, $entity);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/storage_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new Storage service
+$service = new Google_Service_Storage($client);
 // Name of a bucket.
 $bucket = '';
 
-$response = $service->defaultObjectAccessControls->insertDefaultObjectAccessControls($bucket);
+$postBody = new Google_Service_Storage_ObjectAccessControl($client);
+
+$response = $service->defaultObjectAccessControls->insert($bucket, $postBody);
 
 <?php
 /*
@@ -516,7 +518,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 
@@ -546,13 +547,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
 $entity = '';
 
-$response = $service->defaultObjectAccessControls->patchDefaultObjectAccessControls($bucket, $entity);
+$postBody = new Google_Service_Storage_ObjectAccessControl($client);
+
+$response = $service->defaultObjectAccessControls->patch($bucket, $entity, $postBody);
 
 <?php
 /*
@@ -578,13 +580,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
 $entity = '';
 
-$response = $service->defaultObjectAccessControls->updateDefaultObjectAccessControls($bucket, $entity);
+$postBody = new Google_Service_Storage_ObjectAccessControl($client);
+
+$response = $service->defaultObjectAccessControls->update($bucket, $entity, $postBody);
 
 <?php
 /*
@@ -610,7 +613,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 // Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
@@ -618,7 +620,7 @@ $object = '';
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
 $entity = '';
 
-$response = $service->objectAccessControls->deleteObjectAccessControls($bucket, $object, $entity);
+$response = $service->objectAccessControls->delete($bucket, $object, $entity);
 
 <?php
 /*
@@ -644,7 +646,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 // Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
@@ -652,7 +653,7 @@ $object = '';
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
 $entity = '';
 
-$response = $service->objectAccessControls->getObjectAccessControls($bucket, $object, $entity);
+$response = $service->objectAccessControls->get($bucket, $object, $entity);
 
 <?php
 /*
@@ -678,13 +679,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 // Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
 $object = '';
 
-$response = $service->objectAccessControls->insertObjectAccessControls($bucket, $object);
+$postBody = new Google_Service_Storage_ObjectAccessControl($client);
+
+$response = $service->objectAccessControls->insert($bucket, $object, $postBody);
 
 <?php
 /*
@@ -710,7 +712,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 // Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
@@ -742,7 +743,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 // Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
@@ -750,7 +750,9 @@ $object = '';
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
 $entity = '';
 
-$response = $service->objectAccessControls->patchObjectAccessControls($bucket, $object, $entity);
+$postBody = new Google_Service_Storage_ObjectAccessControl($client);
+
+$response = $service->objectAccessControls->patch($bucket, $object, $entity, $postBody);
 
 <?php
 /*
@@ -776,7 +778,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of a bucket.
 $bucket = '';
 // Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
@@ -784,7 +785,9 @@ $object = '';
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
 $entity = '';
 
-$response = $service->objectAccessControls->updateObjectAccessControls($bucket, $object, $entity);
+$postBody = new Google_Service_Storage_ObjectAccessControl($client);
+
+$response = $service->objectAccessControls->update($bucket, $object, $entity, $postBody);
 
 <?php
 /*
@@ -810,13 +813,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of the bucket in which to store the new object.
 $destinationBucket = '';
 // Name of the new object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
 $destinationObject = '';
 
-$response = $service->objects->composeObjects($destinationBucket, $destinationObject);
+$postBody = new Google_Service_Storage_ComposeRequest($client);
+
+$response = $service->objects->compose($destinationBucket, $destinationObject, $postBody);
 
 <?php
 /*
@@ -842,7 +846,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of the bucket in which to find the source object.
 $sourceBucket = '';
 // Name of the source object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
@@ -852,7 +855,9 @@ $destinationBucket = '';
 // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the object metadata's name value, if any.
 $destinationObject = '';
 
-$response = $service->objects->copyObjects($sourceBucket, $sourceObject, $destinationBucket, $destinationObject);
+$postBody = new Google_Service_Storage_StorageObject($client);
+
+$response = $service->objects->copy($sourceBucket, $sourceObject, $destinationBucket, $destinationObject, $postBody);
 
 <?php
 /*
@@ -878,13 +883,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of the bucket in which the object resides.
 $bucket = '';
 // Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
 $object = '';
 
-$response = $service->objects->deleteObjects($bucket, $object);
+$response = $service->objects->delete($bucket, $object);
 
 <?php
 /*
@@ -910,13 +914,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of the bucket in which the object resides.
 $bucket = '';
 // Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
 $object = '';
 
-$response = $service->objects->getObjects($bucket, $object);
+$response = $service->objects->get($bucket, $object);
 
 <?php
 /*
@@ -942,11 +945,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket value, if any.
 $bucket = '';
 
-$response = $service->objects->insertObjects($bucket);
+$postBody = new Google_Service_Storage_StorageObject($client);
+
+$response = $service->objects->insert($bucket, $postBody);
 
 <?php
 /*
@@ -972,7 +976,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of the bucket in which to look for objects.
 $bucket = '';
 
@@ -1006,13 +1009,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of the bucket in which the object resides.
 $bucket = '';
 // Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
 $object = '';
 
-$response = $service->objects->patchObjects($bucket, $object);
+$postBody = new Google_Service_Storage_StorageObject($client);
+
+$response = $service->objects->patch($bucket, $object, $postBody);
 
 <?php
 /*
@@ -1038,7 +1042,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of the bucket in which to find the source object.
 $sourceBucket = '';
 // Name of the source object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
@@ -1048,7 +1051,9 @@ $destinationBucket = '';
 // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the object metadata's name value, if any. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
 $destinationObject = '';
 
-$response = $service->objects->rewriteObjects($sourceBucket, $sourceObject, $destinationBucket, $destinationObject);
+$postBody = new Google_Service_Storage_StorageObject($client);
+
+$response = $service->objects->rewrite($sourceBucket, $sourceObject, $destinationBucket, $destinationObject, $postBody);
 
 <?php
 /*
@@ -1074,13 +1079,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of the bucket in which the object resides.
 $bucket = '';
 // Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
 $object = '';
 
-$response = $service->objects->updateObjects($bucket, $object);
+$postBody = new Google_Service_Storage_StorageObject($client);
+
+$response = $service->objects->update($bucket, $object, $postBody);
 
 <?php
 /*
@@ -1106,9 +1112,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storage service
 $service = new Google_Service_Storage($client);
-
 // Name of the bucket in which to look for objects.
 $bucket = '';
 
-$response = $service->objects->watchAllObjects($bucket);
+$postBody = new Google_Service_Storage_Channel($client);
+
+$response = $service->objects->watchAll($bucket, $postBody);
 

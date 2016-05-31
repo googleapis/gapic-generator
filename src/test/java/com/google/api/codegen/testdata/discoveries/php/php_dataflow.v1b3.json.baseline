@@ -23,11 +23,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dataflow service
 $service = new Google_Service_Dataflow($client);
-
 // The project which owns the job.
 $projectId = '';
 
-$response = $service->projects->jobs->createJobs($projectId);
+$postBody = new Google_Service_Dataflow_Job($client);
+
+$response = $service->projects_jobs->create($projectId, $postBody);
 
 <?php
 /*
@@ -53,13 +54,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dataflow service
 $service = new Google_Service_Dataflow($client);
-
 // The project which owns the job.
 $projectId = '';
 // Identifies a single job.
 $jobId = '';
 
-$response = $service->projects->jobs->getJobs($projectId, $jobId);
+$response = $service->projects_jobs->get($projectId, $jobId);
 
 <?php
 /*
@@ -85,13 +85,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dataflow service
 $service = new Google_Service_Dataflow($client);
-
 // A project id.
 $projectId = '';
 // The job to get messages for.
 $jobId = '';
 
-$response = $service->projects->jobs->getMetricsJobs($projectId, $jobId);
+$response = $service->projects_jobs->getMetrics($projectId, $jobId);
 
 <?php
 /*
@@ -117,11 +116,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dataflow service
 $service = new Google_Service_Dataflow($client);
-
 // The project which owns the jobs.
 $projectId = '';
 
-$response = $service->projects->jobs->listJobs($projectId);
+$response = $service->projects_jobs->listProjectsJobs($projectId);
 
 foreach ($response['jobs'] as $element) {
   // TODO: Add code here to process the elements.
@@ -151,13 +149,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dataflow service
 $service = new Google_Service_Dataflow($client);
-
 // A project id.
 $projectId = '';
 // The job to get messages about.
 $jobId = '';
 
-$response = $service->projects->jobs->messages->listMessages($projectId, $jobId);
+$response = $service->projects_jobs_messages->listProjectsJobsMessages($projectId, $jobId);
 
 foreach ($response['jobMessages'] as $element) {
   // TODO: Add code here to process the elements.
@@ -187,13 +184,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dataflow service
 $service = new Google_Service_Dataflow($client);
-
 // The project which owns the job.
 $projectId = '';
 // Identifies a single job.
 $jobId = '';
 
-$response = $service->projects->jobs->updateJobs($projectId, $jobId);
+$postBody = new Google_Service_Dataflow_Job($client);
+
+$response = $service->projects_jobs->update($projectId, $jobId, $postBody);
 
 <?php
 /*
@@ -219,13 +217,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dataflow service
 $service = new Google_Service_Dataflow($client);
-
 // Identifies the project this worker belongs to.
 $projectId = '';
 // Identifies the workflow job this worker belongs to.
 $jobId = '';
 
-$response = $service->projects->jobs->workItems->leaseWorkItems($projectId, $jobId);
+$postBody = new Google_Service_Dataflow_LeaseWorkItemRequest($client);
+
+$response = $service->projects_jobs_workItems->lease($projectId, $jobId, $postBody);
 
 <?php
 /*
@@ -251,13 +250,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dataflow service
 $service = new Google_Service_Dataflow($client);
-
 // The project which owns the WorkItem's job.
 $projectId = '';
 // The job which the WorkItem is part of.
 $jobId = '';
 
-$response = $service->projects->jobs->workItems->reportStatusWorkItems($projectId, $jobId);
+$postBody = new Google_Service_Dataflow_ReportWorkItemStatusRequest($client);
+
+$response = $service->projects_jobs_workItems->reportStatus($projectId, $jobId, $postBody);
 
 <?php
 /*
@@ -283,9 +283,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dataflow service
 $service = new Google_Service_Dataflow($client);
-
 // The project to send the WorkerMessages to.
 $projectId = '';
 
-$response = $service->projects->workerMessagesProjects($projectId);
+$postBody = new Google_Service_Dataflow_SendWorkerMessagesRequest($client);
+
+$response = $service->projects->workerMessages($projectId, $postBody);
 
