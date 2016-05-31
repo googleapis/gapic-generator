@@ -367,7 +367,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
       }
       String stringPattern =
           getApiaryConfig().getFieldPattern().get(type.getName(), field.getName());
-      String patternSample = stringPattern == null ? null : DefaultString.of(stringPattern);
+      String patternSample = stringPattern == null ? null : DefaultString.forPattern(stringPattern);
       if (patternSample != null) {
         return String.format("\"%s\";", patternSample);
       }

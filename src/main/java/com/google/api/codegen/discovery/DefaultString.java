@@ -33,11 +33,12 @@ public class DefaultString {
   /**
    * Returns a default string from `pattern`, or null if the pattern is not supported.
    */
-  public static String of(String pattern) {
-    // We only care about patterns that look like
-    //  ^projects/[^/]*/subscriptions/[^/]*$
+  public static String forPattern(String pattern) {
+    // We only care about patterns that has alternating literal and wildcard like
+    //  ^foo/[^/]*/bar/[^/]*$
     // Ignore if what we get looks nothing like this.
-    if (!pattern.startsWith("^")
+    if (pattern == null
+        || !pattern.startsWith("^")
         || !pattern.endsWith("$")
         || substrCount(pattern, "/") != substrCount(pattern, WILDCARD_PATTERN) * 3 - 1) {
       return null;
@@ -106,7 +107,7 @@ public class DefaultString {
    * Returns whether the pattern represented by the list is in a form we expect.
    *
    * A valid pattern must have the same number of literals and wildcards, alternating, and starts
-   * with a literal. Literals must be consisted only of letters.
+   * with a literal. Literals must consists of only letters.
    */
   private static boolean validElems(ImmutableList<Elem> elems) {
     if (elems.size() % 2 != 0) {

@@ -23,9 +23,10 @@ import java.util.Map;
 
 public class DefaultStringTest {
   @Test
-  public void testInvalidString() {
+  public void testInvalidPattern() {
     String[] invalid =
         new String[] {
+          null,
           "abc",
           "(?:(?:[-a-z0-9]{1,63}\\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?))",
           "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?",
@@ -33,7 +34,7 @@ public class DefaultStringTest {
         };
 
     for (String s : invalid) {
-      Truth.assertThat(DefaultString.of(s)).isNull();
+      Truth.assertThat(DefaultString.forPattern(s)).isNull();
     }
   }
 
@@ -49,7 +50,7 @@ public class DefaultStringTest {
             .build();
 
     for (Map.Entry<String, String> entry : tests.entrySet()) {
-      Truth.assertThat(DefaultString.of(entry.getKey())).isEqualTo(entry.getValue());
+      Truth.assertThat(DefaultString.forPattern(entry.getKey())).isEqualTo(entry.getValue());
     }
   }
 }
