@@ -204,12 +204,6 @@
     @end
 @end
 
-@private callOptions(methodName)
-    var callOpts []gax.CallOption
-    callOpts = append(callOpts, client.callOptions["{@methodName}"]...)
-    callOpts = append(callOpts, opts...)
-@end
-
 @private methods(service)
     @join method : service.getMethods
         @let methodName = method.getSimpleName, \
@@ -227,10 +221,8 @@
                      tokenZeroValue = context.zeroValue(pageStreaming.getRequestTokenField().getType)
 
                     {@methodComment(method, methodName)}
-                    func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) *{@iteratorTypeName} {
+                    func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}) *{@iteratorTypeName} {
                         ctx = metadata.NewContext(ctx, client.metadata)
-                        {@callOptions(methodName)}
-
                         iterator := &{@iteratorTypeName}{}
                         iterator.apiCall = func() error {
                             if iterator.atLastPage {
@@ -245,7 +237,7 @@
                                 @end
                                 resp, err = client.client.{@methodName}(c, req)
                                 return err
-                            }, callOpts...)
+                            }, client.callOptions["{@methodName}"]...)
                             if err != nil {
                                 return err
                             }
@@ -265,26 +257,24 @@
 
                 {@methodComment(method, methodName)}
                 @if {@context.isEmpty(method.getOutputType)}
-                    func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) error {
+                    func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}) error {
                         ctx = metadata.NewContext(ctx, client.metadata)
-                        {@callOptions(methodName)}
                         err := gax.Invoke(ctx, func (c context.Context) error {
                             var err error
                             _, err = client.client.{@methodName}(c, req)
                             return err
-                        }, callOpts...)
+                        }, client.callOptions["{@methodName}"]...)
                         return err
                     }
                 @else
-                    func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) ({@outTypeName}, error) {
+                    func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}) ({@outTypeName}, error) {
                         ctx = metadata.NewContext(ctx, client.metadata)
-                        {@callOptions(methodName)}
                         var resp {@outTypeName}
                         err := gax.Invoke(ctx, func (c context.Context) error {
                             var err error
                             resp, err = client.client.{@methodName}(c, req)
                             return err
-                        }, callOpts...)
+                        }, client.callOptions["{@methodName}"]...)
                         if err != nil {
                             return nil, err
                         }
