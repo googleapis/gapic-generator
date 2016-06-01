@@ -159,7 +159,7 @@ public class GapicProviderFactory {
           .setSnippetFileNames(Arrays.asList("json.snip"))
           .build();
 
-      return Arrays.<GapicProvider<? extends Object>> asList(mainProvider, messageProvider,
+      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, messageProvider,
           clientConfigProvider);
 
     } else if (id.equals("ruby")) {
@@ -185,7 +185,7 @@ public class GapicProviderFactory {
           .setSnippetFileNames(Arrays.asList("json.snip"))
           .build();
 
-      return Arrays.<GapicProvider<? extends Object>> asList(mainProvider, messageProvider,
+      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, messageProvider,
           clientConfigProvider);
 
     } else {

@@ -42,6 +42,8 @@ import javax.annotation.Nullable;
  */
 public abstract class GapicTestBase extends ConfigBaselineTestCase {
 
+  // example: library[ruby_message]
+  // example 2: library[java_package-info]
   private static final Pattern BASELINE_PATTERN = Pattern.compile("((?:-|\\w)+)\\[((?:-|\\w)+)\\]");
 
   // Wiring
@@ -127,6 +129,14 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     return configProto;
   }
 
+  /**
+   * Creates the constructor arguments to be passed onto this class
+   * (GapicTestBase) to create test methods. The idForFactory String is passed
+   * to GapicProviderFactory to get the GapicProviders provided by that id, and
+   * then the snippet file names are scraped from those providers, and a set of
+   * arguments is created for each combination of GapicProvider x snippet that
+   * GapicProviderFactory returns.
+   */
   public static List<Object[]> createTestedConfigs(String idForFactory, String[] gapicConfigFileNames) {
     Model model = Model.create(Service.getDefaultInstance());
     ApiConfig apiConfig = ApiConfig.createDummyApiConfig();
