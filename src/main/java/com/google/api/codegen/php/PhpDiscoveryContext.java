@@ -102,7 +102,7 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
    */
   public String getMethodName(Method method) {
     StringBuilder builder = new StringBuilder(super.getMethodName(method));
-    if (RENAMED_METHODS.contains(builder.toString())) {
+    if (RENAMED_METHODS.contains(super.getMethodName(method))) {
       List<String> resources = getApiaryConfig().getResources(method.getName());
       for (String resource : resources) {
         builder.append(lowerCamelToUpperCamel(resource));
