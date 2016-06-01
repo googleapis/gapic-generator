@@ -45,7 +45,7 @@
 //
 // Check out [cloud docs!](/library/example/link).
 // This is [not a cloud link](http://www.google.com).
-package library_service
+package library
 
 import (
     "errors"
@@ -387,6 +387,7 @@ func (client *Client) ListBooks(ctx context.Context, req *google_example_library
         err := gax.Invoke(ctx, func (c context.Context) error {
             var err error
             req.PageToken = iterator.nextPageToken
+            req.PageSize = iterator.pageSize
             resp, err = client.client.ListBooks(c, req)
             return err
         }, callOpts...)
@@ -482,6 +483,7 @@ func (client *Client) ListStrings(ctx context.Context, req *google_example_libra
         err := gax.Invoke(ctx, func (c context.Context) error {
             var err error
             req.PageToken = iterator.nextPageToken
+            req.PageSize = iterator.pageSize
             resp, err = client.client.ListStrings(c, req)
             return err
         }, callOpts...)
@@ -525,7 +527,7 @@ type ShelfIterator struct {
     // The current page data.
     items         []*google_example_library_v1.Shelf
     atLastPage    bool
-    currentIndex  int
+    currentIndex  int32
     nextPageToken string
     apiCall       func() error
 }
@@ -573,7 +575,8 @@ type BookIterator struct {
     // The current page data.
     items         []*google_example_library_v1.Book
     atLastPage    bool
-    currentIndex  int
+    currentIndex  int32
+    pageSize      int32
     nextPageToken string
     apiCall       func() error
 }
@@ -603,6 +606,12 @@ func (iterator *BookIterator) Next() (*google_example_library_v1.Book, error) {
     return result, nil
 }
 
+// SetPageSize sets the maximum size of the next page to be
+// retrieved.
+func (iterator *BookIterator) SetPageSize(int32 pageSize) {
+    iterator.pageSize = pageSize
+}
+
 // SetPageToken sets the next page token to be retrieved. Note, it
 // does not retrieve the next page, or modify the cached page. If
 // Next is called, there is no guarantee that the result returned
@@ -621,7 +630,8 @@ type StringIterator struct {
     // The current page data.
     items         []string
     atLastPage    bool
-    currentIndex  int
+    currentIndex  int32
+    pageSize      int32
     nextPageToken string
     apiCall       func() error
 }
@@ -651,6 +661,12 @@ func (iterator *StringIterator) Next() (string, error) {
     return result, nil
 }
 
+// SetPageSize sets the maximum size of the next page to be
+// retrieved.
+func (iterator *StringIterator) SetPageSize(int32 pageSize) {
+    iterator.pageSize = pageSize
+}
+
 // SetPageToken sets the next page token to be retrieved. Note, it
 // does not retrieve the next page, or modify the cached page. If
 // Next is called, there is no guarantee that the result returned
@@ -664,7 +680,7 @@ func (iterator *StringIterator) NextPageToken() string {
     return iterator.nextPageToken
 }
 ============== file: google.golang.org/cloud/library/generated/library/client_test.go ==============
-package library_service
+package library
 
 import (
     gax "github.com/googleapis/gax-golang"
