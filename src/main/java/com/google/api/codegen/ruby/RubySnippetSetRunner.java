@@ -14,8 +14,9 @@
  */
 package com.google.api.codegen.ruby;
 
+import com.google.api.codegen.CodegenContext;
 import com.google.api.codegen.GeneratedResult;
-import com.google.api.codegen.SnippetDescriptor;
+import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
@@ -23,24 +24,24 @@ import com.google.common.collect.ImmutableMap;
 /**
  * A RubyProvider provides general Ruby code generation logic.
  */
-public class RubySnippetSetRunner {
+public class RubySnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
 
   /**
    * The path to the root of snippet resources.
    */
   static final String SNIPPET_RESOURCE_ROOT =
-      RubyGapicProvider.class.getPackage().getName().replace('.', '/');
+      RubySnippetSetRunner.class.getPackage().getName().replace('.', '/');
 
   @SuppressWarnings("unchecked")
-  public <Element> GeneratedResult generate(
-      Element element, SnippetDescriptor snippetDescriptor, RubyContext context) {
+  public GeneratedResult generate(
+      ElementT element, String snippetFileName, CodegenContext context) {
     ImmutableMap<String, Object> globalMap =
         ImmutableMap.<String, Object>builder().put("context", context).build();
-    RubySnippetSet<Element> snippets =
+    RubySnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             RubySnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
-            snippetDescriptor.getSnippetInputName(),
+            snippetFileName,
             globalMap);
 
     Doc filenameDoc = snippets.generateFilename(element);

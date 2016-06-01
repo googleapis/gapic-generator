@@ -12,17 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.py;
+package com.google.api.codegen;
 
-import com.google.api.codegen.InputElementView;
-import com.google.api.tools.framework.model.ProtoElement;
-import com.google.common.collect.ImmutableMap;
+/**
+ * A SnippetSetRunner takes the element, snippet file, and context as input
+ * and then uses the Snippet Set templating engine to generate an output
+ * document.
+ */
+public interface SnippetSetRunner<Element> {
 
-public interface PythonInputElementView<InputElementT extends ProtoElement>
-    extends InputElementView<InputElementT> {
-  public PythonImportHandler getImportHandler(InputElementT t, PythonGapicContext context);
+  /**
+   * Runs the code generation.
+   */
+  GeneratedResult generate(Element element, String snippetFileName,
+      CodegenContext context);
 
-  public ImmutableMap<String, Object> getGlobalMap(InputElementT element);
-
-  public String getPathPrefix(PythonGapicContext context);
 }

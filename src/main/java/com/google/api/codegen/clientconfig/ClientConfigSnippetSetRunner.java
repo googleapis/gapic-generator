@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.nodejs;
+package com.google.api.codegen.clientconfig;
 
 import com.google.api.codegen.CodegenContext;
 import com.google.api.codegen.GeneratedResult;
@@ -21,33 +21,31 @@ import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 
-/**
- * A NodeJSProvider provides general NodeJS code generation logic that is agnostic to the use
- * case (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
- * subclass of NodeJSContext.
- */
-public class NodeJSSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
+public class ClientConfigSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
 
   /**
    * The path to the root of snippet resources.
    */
   private static final String SNIPPET_RESOURCE_ROOT =
-      NodeJSSnippetSetRunner.class.getPackage().getName().replace('.', '/');
+      ClientConfigSnippetSetRunner.class.getPackage().getName().replace('.', '/');
 
   @SuppressWarnings("unchecked")
-  public GeneratedResult generate(
-      ElementT element,
+  @Override
+  public GeneratedResult generate(ElementT element,
       String snippetFileName,
       CodegenContext context) {
-    NodeJSSnippetSet<ElementT> snippets =
+    ClientConfigSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
-            NodeJSSnippetSet.class,
+            ClientConfigSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
             snippetFileName,
-            ImmutableMap.<String, Object>of("context", context));
+            ImmutableMap.<String, Object>of(
+                "context", context));
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
+
     Doc body = snippets.generateBody(element);
+
     return GeneratedResult.create(body, outputFilename);
   }
 }

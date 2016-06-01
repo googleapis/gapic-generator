@@ -19,7 +19,6 @@ import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.CodeGeneratorUtil;
 import com.google.api.codegen.DiscoveryProvider;
 import com.google.api.codegen.GeneratedResult;
-import com.google.api.codegen.SnippetDescriptor;
 import com.google.common.collect.Multimap;
 import com.google.protobuf.Method;
 
@@ -38,8 +37,8 @@ public class GoDiscoveryProvider implements DiscoveryProvider {
   }
 
   @Override
-  public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor) {
-    return snippetSetRunner.generate(method, snippetDescriptor, context);
+  public GeneratedResult generateFragments(Method method, String snippetFileName) {
+    return snippetSetRunner.generate(method, snippetFileName, context);
   }
 
   @Override

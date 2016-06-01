@@ -96,6 +96,10 @@ public class CSharpGapicContext extends GapicContext {
     this.csharpCommon = csharpCommon;
   }
 
+  public String getOutputSubPath(ProtoElement protoElement) {
+    return getNamespace(protoElement.getFile()).replace('.', '/');
+  }
+
   // Snippet Helpers
   // ===============
 

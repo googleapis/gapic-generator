@@ -14,8 +14,9 @@
  */
 package com.google.api.codegen.py;
 
+import com.google.api.codegen.CodegenContext;
 import com.google.api.codegen.GeneratedResult;
-import com.google.api.codegen.SnippetDescriptor;
+import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
@@ -25,7 +26,9 @@ import java.util.List;
 /**
  * A PythonProvider provides general Python code generation logic.
  */
-public class PythonSnippetSetRunner {
+public class PythonSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
+
+  private PythonSnippetSetInputInitializer<ElementT> initializer;
 
   /**
    * The path to the root of snippet resources.
@@ -33,14 +36,17 @@ public class PythonSnippetSetRunner {
   static final String SNIPPET_RESOURCE_ROOT =
       PythonContextCommon.class.getPackage().getName().replace('.', '/');
 
+  public PythonSnippetSetRunner(PythonSnippetSetInputInitializer<ElementT> initializer) {
+    this.initializer = initializer;
+  }
+
   @SuppressWarnings("unchecked")
-  public <Element> GeneratedResult generate(
-      Element element,
-      SnippetDescriptor snippetDescriptor,
-      Object context,
-      PythonImportHandler importHandler,
-      ImmutableMap<String, Object> globalMap,
-      String pathPrefix) {
+  public GeneratedResult generate(
+      ElementT element,
+      String snippetFileName,
+      CodegenContext context) {
+    PythonImportHandler importHandler = initializer.getImportHandler(element);
+    ImmutableMap<String, Object> globalMap = initializer.getGlobalMap(element);
     globalMap =
         ImmutableMap.<String, Object>builder()
             .putAll(globalMap)
@@ -48,11 +54,11 @@ public class PythonSnippetSetRunner {
             .put("importHandler", importHandler)
             .build();
 
-    PythonSnippetSet<Element> snippets =
+    PythonSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             PythonSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
-            snippetDescriptor.getSnippetInputName(),
+            snippetFileName,
             globalMap);
 
     Doc filenameDoc = snippets.generateFilename(element);
@@ -61,6 +67,6 @@ public class PythonSnippetSetRunner {
     List<String> importList = importHandler.calculateImports();
     // Generate result.
     Doc result = snippets.generateModule(element, body, importList);
-    return GeneratedResult.create(result, pathPrefix + outputFilename);
+    return GeneratedResult.create(result, outputFilename);
   }
 }

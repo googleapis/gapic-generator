@@ -14,8 +14,9 @@
  */
 package com.google.api.codegen.go;
 
+import com.google.api.codegen.CodegenContext;
 import com.google.api.codegen.GeneratedResult;
-import com.google.api.codegen.SnippetDescriptor;
+import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
@@ -23,7 +24,7 @@ import com.google.common.collect.ImmutableMap;
 /**
  * A GoProvider provides general Go code generation logic.
  */
-public class GoSnippetSetRunner {
+public class GoSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
 
   /**
    * The path to the root of snippet resources.
@@ -31,14 +32,15 @@ public class GoSnippetSetRunner {
   private static final String SNIPPET_RESOURCE_ROOT =
       GoContextCommon.class.getPackage().getName().replace('.', '/');
 
+  @Override
   @SuppressWarnings("unchecked")
-  public <Element> GeneratedResult generate(
-      Element element, SnippetDescriptor snippetDescriptor, GoContext context) {
-    GoSnippetSet<Element> snippets =
+  public GeneratedResult generate(
+      ElementT element, String snippetFileName, CodegenContext context) {
+    GoSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             GoSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
-            snippetDescriptor.getSnippetInputName(),
+            snippetFileName,
             ImmutableMap.<String, Object>of("context", context));
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
@@ -48,4 +50,5 @@ public class GoSnippetSetRunner {
     Doc result = snippets.generateClass(element, body);
     return GeneratedResult.create(result, outputFilename);
   }
+
 }

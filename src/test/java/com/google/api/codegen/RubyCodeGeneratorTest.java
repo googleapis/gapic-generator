@@ -30,10 +30,15 @@ import java.util.List;
  * Ruby code generator baseline tests.
  */
 @RunWith(Parameterized.class)
-public class RubyCodeGeneratorTest extends CodeGeneratorTestBase {
+public class RubyCodeGeneratorTest extends GapicTestBase {
 
-  public RubyCodeGeneratorTest(String name, String[] gapicConfigFileNames) {
-    super(name, gapicConfigFileNames);
+  public RubyCodeGeneratorTest(
+      String name,
+      String idForFactory,
+      String[] gapicConfigFileNames,
+      String snippetName) {
+    super(name, idForFactory, gapicConfigFileNames, snippetName);
+    getTestDataLocator().addTestDataSource(com.google.api.codegen.ruby.RubyGapicContext.class, "");
   }
 
   /**
@@ -42,37 +47,8 @@ public class RubyCodeGeneratorTest extends CodeGeneratorTestBase {
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
-    return ImmutableList.of(
-        new Object[] {
-          "ruby",
-          new String[] {
-            "com/google/api/codegen/ruby/ruby_gapic.yaml", "library_gapic.yaml",
-          }
-        });
-  }
-
-  @Override
-  protected Object run() {
-    // Should generate one file for the class, a list of files for the protos, and a client
-    // config.
-    List<GeneratedResult> codeResult = generateForTemplate(0, 0);
-    List<GeneratedResult> docsResult = generateForTemplate(1, 0);
-    List<GeneratedResult> configResult = generateForTemplate(2, 0);
-    Truth.assertThat(codeResult).isNotNull();
-    Truth.assertThat(docsResult).isNotNull();
-    Truth.assertThat(configResult).isNotNull();
-
-    ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String, Doc>();
-    for (GeneratedResult result : codeResult) {
-      builder.put(result.getFilename(), result.getDoc());
-    }
-    for (GeneratedResult result : docsResult) {
-      builder.put(result.getFilename(), result.getDoc());
-    }
-    for (GeneratedResult result : configResult) {
-      builder.put(result.getFilename(), result.getDoc());
-    }
-    return builder.build();
+    return GapicTestBase.createTestedConfigs("ruby",
+        new String[] { "ruby_gapic.yaml", "library_gapic.yaml" });
   }
 
   // Tests

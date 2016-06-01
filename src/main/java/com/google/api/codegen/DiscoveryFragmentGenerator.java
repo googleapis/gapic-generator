@@ -75,12 +75,12 @@ public class DiscoveryFragmentGenerator {
    * Returns null if generation failed.
    */
   @Nullable
-  public Map<Method, GeneratedResult> generateFragments(SnippetDescriptor snippetDescriptor) {
+  public Map<Method, GeneratedResult> generateFragments(String snippetFileName) {
     // Run the generator for each method of each API.
     ImmutableMap.Builder<Method, GeneratedResult> generated = ImmutableMap.builder();
     for (Api api : provider.getService().getApisList()) {
       for (Method method : api.getMethodsList()) {
-        GeneratedResult result = provider.generateFragments(method, snippetDescriptor);
+        GeneratedResult result = provider.generateFragments(method, snippetFileName);
         generated.put(method, result);
       }
     }

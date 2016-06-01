@@ -14,8 +14,9 @@
  */
 package com.google.api.codegen.java;
 
+import com.google.api.codegen.CodegenContext;
 import com.google.api.codegen.GeneratedResult;
-import com.google.api.codegen.SnippetDescriptor;
+import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
@@ -28,7 +29,7 @@ import java.util.List;
  * (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
  * subclass of JavaContext.
  */
-public class JavaIterableSnippetSetRunner {
+public class JavaIterableSnippetSetRunner<ElementT> implements SnippetSetRunner<Iterable<ElementT>> {
 
   /**
    * The path to the root of snippet resources.
@@ -37,21 +38,23 @@ public class JavaIterableSnippetSetRunner {
       JavaContextCommon.class.getPackage().getName().replace('.', '/');
 
   @SuppressWarnings("unchecked")
-  public <ElementT> GeneratedResult generate(
+  public GeneratedResult generate(
       Iterable<ElementT> elementList,
-      SnippetDescriptor snippetDescriptor,
-      JavaContext context,
-      String defaultPackagePrefix) {
+      String snippetFileName,
+      CodegenContext context) {
     JavaIterableSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             JavaIterableSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
-            snippetDescriptor.getSnippetInputName(),
+            snippetFileName,
             ImmutableMap.<String, Object>of("context", context));
 
     String outputFilename = snippets.generateFilename().prettyPrint();
-    JavaContextCommon javaContextCommon = new JavaContextCommon(defaultPackagePrefix);
-    context.resetState(javaContextCommon);
+    JavaContextCommon javaContextCommon = new JavaContextCommon();
+
+    // TODO don't depend on a cast here
+    JavaContext javaContext = (JavaContext) context;
+    javaContext.resetState(javaContextCommon);
 
     List<Doc> fragmentList = new ArrayList<>();
     for (ElementT element : elementList) {
@@ -61,10 +64,5 @@ public class JavaIterableSnippetSetRunner {
     // Generate result.
     Doc result = snippets.generateDocument(fragmentList);
     return GeneratedResult.create(result, outputFilename);
-  }
-
-  public <ElementT> GeneratedResult generate(
-      Iterable<ElementT> element, SnippetDescriptor snippetDescriptor, JavaContext context) {
-    return generate(element, snippetDescriptor, context, null);
   }
 }

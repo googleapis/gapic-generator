@@ -59,7 +59,7 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
   }
 
   @Override
-  public void resetState(PhpSnippetSet<?> phpSnippetSet, PhpContextCommon phpCommon) {
+  public void resetState(PhpContextCommon phpCommon) {
     this.phpCommon = phpCommon;
   }
 

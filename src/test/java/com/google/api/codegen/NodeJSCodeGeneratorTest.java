@@ -14,26 +14,26 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.tools.framework.snippet.Doc;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.truth.Truth;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.util.List;
-
 /**
  * NodeJS code generator baseline tests.
  */
 @RunWith(Parameterized.class)
-public class NodeJSCodeGeneratorTest extends CodeGeneratorTestBase {
+public class NodeJSCodeGeneratorTest extends GapicTestBase {
 
-  public NodeJSCodeGeneratorTest(String name, String[] gapicConfigFileNames) {
-    super(name, gapicConfigFileNames);
+  public NodeJSCodeGeneratorTest(
+      String name,
+      String idForFactory,
+      String[] gapicConfigFileNames,
+      String snippetName) {
+    super(name, idForFactory, gapicConfigFileNames, snippetName);
+    getTestDataLocator().addTestDataSource(com.google.api.codegen.nodejs.NodeJSGapicContext.class, "");
   }
 
   /**
@@ -42,32 +42,8 @@ public class NodeJSCodeGeneratorTest extends CodeGeneratorTestBase {
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
-    return ImmutableList.of(
-        new Object[] {
-          "nodejs",
-          new String[] {
-            "com/google/api/codegen/nodejs/nodejs_gapic.yaml", "library_gapic.yaml",
-          }
-        });
-  }
-
-  @Override
-  protected Object run() {
-    // Should generate one file for the class, a list of files for the protos, and a client
-    // config.
-    List<GeneratedResult> codeResult = generateForTemplate(0, 0);
-    List<GeneratedResult> configResult = generateForTemplate(1, 0);
-    Truth.assertThat(codeResult).isNotNull();
-    Truth.assertThat(configResult).isNotNull();
-
-    ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String, Doc>();
-    for (GeneratedResult result : codeResult) {
-      builder.put(result.getFilename(), result.getDoc());
-    }
-    for (GeneratedResult result : configResult) {
-      builder.put(result.getFilename(), result.getDoc());
-    }
-    return builder.build();
+    return GapicTestBase.createTestedConfigs("nodejs",
+        new String[] { "nodejs_gapic.yaml", "library_gapic.yaml" });
   }
 
   // Tests

@@ -49,6 +49,11 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     super(model, apiConfig);
   }
 
+  @Override
+  public String getOutputSubPath(ProtoElement element) {
+    return "lib";
+  }
+
   // Snippet Helpers
   // ===============
 

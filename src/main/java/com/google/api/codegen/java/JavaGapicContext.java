@@ -101,6 +101,11 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
     this.javaCommon = javaCommon;
   }
 
+  @Override
+  public String getOutputSubPath(ProtoElement element) {
+    return getApiConfig().getPackageName().replace('.', '/');
+  }
+
   public JavaContextCommon java() {
     return javaCommon;
   }

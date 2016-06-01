@@ -32,47 +32,25 @@ import java.util.List;
 public class PythonCodeGeneratorTest {
 
   @RunWith(Parameterized.class)
-  public static class PythonLibraryBaseline extends CodeGeneratorTestBase {
+  public static class PythonLibraryBaseline extends GapicTestBase {
 
-    public PythonLibraryBaseline(String name, String[] gapicConfigFileNames) {
-      super(name, gapicConfigFileNames);
+    public PythonLibraryBaseline(
+        String name,
+        String idForFactory,
+        String[] gapicConfigFileNames,
+        String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, snippetName);
+      getTestDataLocator().addTestDataSource(com.google.api.codegen.py.PythonGapicContext.class, "");
     }
 
     /**
-     * Declares test parameters, each one an array of values passed to the constructor, with the
-     * first element a name, the second a config of this name.
+     * Declares test parameters, each one an array of values passed to the constructor, with the first
+     * element a name, the second a config of this name.
      */
     @Parameters(name = "{0}")
     public static List<Object[]> testedConfigs() {
-      return ImmutableList.of(
-          new Object[] {
-            "python",
-            new String[] {"com/google/api/codegen/py/python_gapic.yaml", "library_gapic.yaml"}
-          });
-    }
-
-    @Override
-    protected Object run() {
-      // Should generate one file for the class, a list of files for the protos, and a client
-      // config.
-      List<GeneratedResult> codeResult = generateForTemplate(0, 0);
-      List<GeneratedResult> docsResult = generateForTemplate(1, 0);
-      List<GeneratedResult> configResult = generateForTemplate(2, 0);
-      Truth.assertThat(codeResult).isNotNull();
-      Truth.assertThat(docsResult).isNotNull();
-      Truth.assertThat(configResult).isNotNull();
-
-      ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String, Doc>();
-      for (GeneratedResult result : codeResult) {
-        builder.put(result.getFilename(), result.getDoc());
-      }
-      for (GeneratedResult result : docsResult) {
-        builder.put(result.getFilename(), result.getDoc());
-      }
-      for (GeneratedResult result : configResult) {
-        builder.put(result.getFilename(), result.getDoc());
-      }
-      return builder.build();
+      return GapicTestBase.createTestedConfigs("python",
+          new String[] { "python_gapic.yaml", "library_gapic.yaml" });
     }
 
     // Tests
@@ -85,47 +63,25 @@ public class PythonCodeGeneratorTest {
   }
 
   @RunWith(Parameterized.class)
-  public static class PythonNoPathTemplatesBaseline extends CodeGeneratorTestBase {
+  public static class PythonNoPathTemplatesBaseline extends GapicTestBase {
 
-    public PythonNoPathTemplatesBaseline(String name, String[] gapicConfigFileNames) {
-      super(name, gapicConfigFileNames);
+    public PythonNoPathTemplatesBaseline(
+        String name,
+        String idForFactory,
+        String[] gapicConfigFileNames,
+        String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, snippetName);
+      getTestDataLocator().addTestDataSource(com.google.api.codegen.py.PythonGapicContext.class, "");
     }
 
     /**
-     * Declares test parameters, each one an array of values passed to the constructor, with the
-     * first element a name, the second a config of this name.
+     * Declares test parameters, each one an array of values passed to the constructor, with the first
+     * element a name, the second a config of this name.
      */
     @Parameters(name = "{0}")
     public static List<Object[]> testedConfigs() {
-      return ImmutableList.of(
-          new Object[] {
-            "python",
-            new String[] {
-              "com/google/api/codegen/py/python_gapic.yaml", "no_path_templates_gapic.yaml"
-            }
-          });
-    }
-
-    @Override
-    protected Object run() {
-      List<GeneratedResult> codeResult = generateForTemplate(0, 0);
-      List<GeneratedResult> docsResult = generateForTemplate(1, 0);
-      List<GeneratedResult> configResult = generateForTemplate(2, 0);
-      Truth.assertThat(codeResult).isNotNull();
-      Truth.assertThat(docsResult).isNotNull();
-      Truth.assertThat(configResult).isNotNull();
-
-      ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String, Doc>();
-      for (GeneratedResult result : codeResult) {
-        builder.put(result.getFilename(), result.getDoc());
-      }
-      for (GeneratedResult result : docsResult) {
-        builder.put(result.getFilename(), result.getDoc());
-      }
-      for (GeneratedResult result : configResult) {
-        builder.put(result.getFilename(), result.getDoc());
-      }
-      return builder.build();
+      return GapicTestBase.createTestedConfigs("python",
+          new String[] { "python_gapic.yaml", "no_path_templates_gapic.yaml" });
     }
 
     // Tests
