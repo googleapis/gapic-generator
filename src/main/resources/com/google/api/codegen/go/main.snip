@@ -227,7 +227,7 @@
                      tokenZeroValue = context.zeroValue(pageStreaming.getRequestTokenField().getType)
 
                     {@methodComment(method, methodName)}
-                    func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) (*{@iteratorTypeName}, error) {
+                    func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}, opts ...gax.CallOption) *{@iteratorTypeName} {
                         ctx = metadata.NewContext(ctx, client.metadata)
                         {@callOptions(methodName)}
 
@@ -257,7 +257,7 @@
                             iterator.items = resp.{@resourceFieldName}
                             return nil
                         }
-                        return iterator, nil
+                        return iterator
                     }
 
                 @end
