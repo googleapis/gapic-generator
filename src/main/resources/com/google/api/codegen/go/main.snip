@@ -1,7 +1,7 @@
 @extends "common.snip"
 
 @snippet generateFilename(service)
-    {@context.getApiConfig().getPackageName()}/generated/{@context.getReducedServiceName(service)}/client.go
+    {@context.getClientPackagePath(service)}/client.go
 @end
 
 @snippet generateClass(service, body)
@@ -345,7 +345,7 @@
             @if hasPageSizeField
                 // SetPageSize sets the maximum size of the next page to be
                 // retrieved.
-                func (it *{@iteratorTypeName}) SetPageSize(int32 pageSize) {
+                func (it *{@iteratorTypeName}) SetPageSize(pageSize int32) {
                     it.pageSize = pageSize
                 }
 

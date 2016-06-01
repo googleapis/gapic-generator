@@ -563,7 +563,7 @@ func (it *BookIterator) Next() (*google_example_library_v1.Book, error) {
 
 // SetPageSize sets the maximum size of the next page to be
 // retrieved.
-func (it *BookIterator) SetPageSize(int32 pageSize) {
+func (it *BookIterator) SetPageSize(pageSize int32) {
     it.pageSize = pageSize
 }
 
@@ -618,7 +618,7 @@ func (it *StringIterator) Next() (string, error) {
 
 // SetPageSize sets the maximum size of the next page to be
 // retrieved.
-func (it *StringIterator) SetPageSize(int32 pageSize) {
+func (it *StringIterator) SetPageSize(pageSize int32) {
     it.pageSize = pageSize
 }
 
@@ -635,54 +635,54 @@ func (it *StringIterator) NextPageToken() string {
     return it.nextPageToken
 }
 ============== file: google.golang.org/cloud/library/generated/library/client_test.go ==============
-package library
+package library_test
 
 import (
     gax "github.com/googleapis/gax-golang"
     "golang.org/x/net/context"
     google_example_library_v1 "google.golang.org/cloud/library/generated/google/example/library/v1"
+    "google.golang.org/cloud/library/generated/library"
 )
 
 func ExampleNewClient() {
     ctx := context.Background()
     opts := []gax.ClientOption{ /* Optional client parameters. */ }
-    client, err := NewClient(ctx, opts...)
-    _, _ = client, err
+    c, err := library.NewClient(ctx, opts...)
+    _, _ = c, err // Handle error.
 }
 
 func ExampleClient_CreateShelf() {
     ctx := context.Background()
-    client, _ := NewClient(ctx)
+    c, err := library.NewClient(ctx)
+    _ = err // Handle error.
 
     req := &google_example_library_v1.CreateShelfRequest{ /* Data... */ }
-    opts := []gax.CallOption{ /* Optional call parameters. */ }
     var resp *google_example_library_v1.Shelf
-    resp, _ = client.CreateShelf(ctx, req, opts...)
-    _ = resp
+    resp, err = c.CreateShelf(ctx, req)
+    _, _ = resp, err // Handle error.
 }
 
 func ExampleClient_GetShelf() {
     ctx := context.Background()
-    client, _ := NewClient(ctx)
+    c, err := library.NewClient(ctx)
+    _ = err // Handle error.
 
     req := &google_example_library_v1.GetShelfRequest{ /* Data... */ }
-    opts := []gax.CallOption{ /* Optional call parameters. */ }
     var resp *google_example_library_v1.Shelf
-    resp, _ = client.GetShelf(ctx, req, opts...)
-    _ = resp
+    resp, err = c.GetShelf(ctx, req)
+    _, _ = resp, err // Handle error.
 }
 
 func ExampleClient_ListShelves() {
     ctx := context.Background()
-    client, _ := NewClient(ctx)
+    c, err := library.NewClient(ctx)
+    _ = err // Handle error.
 
     req := &google_example_library_v1.ListShelvesRequest{ /* Data... */ }
-    opts := []gax.CallOption{ /* Optional call parameters. */ }
-    iter, _ := client.ListShelves(ctx, req, opts...)
+    it := c.ListShelves(ctx, req)
     var resp *google_example_library_v1.Shelf
     for {
-        var err error
-        resp, err = iter.Next()
+        resp, err = it.Next()
         if err != nil {
             break
         }
@@ -692,68 +692,68 @@ func ExampleClient_ListShelves() {
 
 func ExampleClient_DeleteShelf() {
     ctx := context.Background()
-    client, _ := NewClient(ctx)
+    c, err := library.NewClient(ctx)
+    _ = err // Handle error.
 
     req := &google_example_library_v1.DeleteShelfRequest{ /* Data... */ }
-    opts := []gax.CallOption{ /* Optional call parameters. */ }
-    _ = client.DeleteShelf(ctx, req, opts...)
+    err = c.DeleteShelf(ctx, req)
+    _ = err // Handle error.
 }
 
 func ExampleClient_MergeShelves() {
     ctx := context.Background()
-    client, _ := NewClient(ctx)
+    c, err := library.NewClient(ctx)
+    _ = err // Handle error.
 
     req := &google_example_library_v1.MergeShelvesRequest{ /* Data... */ }
-    opts := []gax.CallOption{ /* Optional call parameters. */ }
     var resp *google_example_library_v1.Shelf
-    resp, _ = client.MergeShelves(ctx, req, opts...)
-    _ = resp
+    resp, err = c.MergeShelves(ctx, req)
+    _, _ = resp, err // Handle error.
 }
 
 func ExampleClient_CreateBook() {
     ctx := context.Background()
-    client, _ := NewClient(ctx)
+    c, err := library.NewClient(ctx)
+    _ = err // Handle error.
 
     req := &google_example_library_v1.CreateBookRequest{ /* Data... */ }
-    opts := []gax.CallOption{ /* Optional call parameters. */ }
     var resp *google_example_library_v1.Book
-    resp, _ = client.CreateBook(ctx, req, opts...)
-    _ = resp
+    resp, err = c.CreateBook(ctx, req)
+    _, _ = resp, err // Handle error.
 }
 
 func ExampleClient_PublishSeries() {
     ctx := context.Background()
-    client, _ := NewClient(ctx)
+    c, err := library.NewClient(ctx)
+    _ = err // Handle error.
 
     req := &google_example_library_v1.PublishSeriesRequest{ /* Data... */ }
-    opts := []gax.CallOption{ /* Optional call parameters. */ }
     var resp *google_example_library_v1.PublishSeriesResponse
-    resp, _ = client.PublishSeries(ctx, req, opts...)
-    _ = resp
+    resp, err = c.PublishSeries(ctx, req)
+    _, _ = resp, err // Handle error.
 }
 
 func ExampleClient_GetBook() {
     ctx := context.Background()
-    client, _ := NewClient(ctx)
+    c, err := library.NewClient(ctx)
+    _ = err // Handle error.
 
     req := &google_example_library_v1.GetBookRequest{ /* Data... */ }
-    opts := []gax.CallOption{ /* Optional call parameters. */ }
     var resp *google_example_library_v1.Book
-    resp, _ = client.GetBook(ctx, req, opts...)
-    _ = resp
+    resp, err = c.GetBook(ctx, req)
+    _, _ = resp, err // Handle error.
 }
 
 func ExampleClient_ListBooks() {
     ctx := context.Background()
-    client, _ := NewClient(ctx)
+    c, err := library.NewClient(ctx)
+    _ = err // Handle error.
 
     req := &google_example_library_v1.ListBooksRequest{ /* Data... */ }
-    opts := []gax.CallOption{ /* Optional call parameters. */ }
-    iter, _ := client.ListBooks(ctx, req, opts...)
+    it := c.ListBooks(ctx, req)
     var resp *google_example_library_v1.Book
     for {
-        var err error
-        resp, err = iter.Next()
+        resp, err = it.Next()
         if err != nil {
             break
         }
@@ -763,46 +763,46 @@ func ExampleClient_ListBooks() {
 
 func ExampleClient_DeleteBook() {
     ctx := context.Background()
-    client, _ := NewClient(ctx)
+    c, err := library.NewClient(ctx)
+    _ = err // Handle error.
 
     req := &google_example_library_v1.DeleteBookRequest{ /* Data... */ }
-    opts := []gax.CallOption{ /* Optional call parameters. */ }
-    _ = client.DeleteBook(ctx, req, opts...)
+    err = c.DeleteBook(ctx, req)
+    _ = err // Handle error.
 }
 
 func ExampleClient_UpdateBook() {
     ctx := context.Background()
-    client, _ := NewClient(ctx)
+    c, err := library.NewClient(ctx)
+    _ = err // Handle error.
 
     req := &google_example_library_v1.UpdateBookRequest{ /* Data... */ }
-    opts := []gax.CallOption{ /* Optional call parameters. */ }
     var resp *google_example_library_v1.Book
-    resp, _ = client.UpdateBook(ctx, req, opts...)
-    _ = resp
+    resp, err = c.UpdateBook(ctx, req)
+    _, _ = resp, err // Handle error.
 }
 
 func ExampleClient_MoveBook() {
     ctx := context.Background()
-    client, _ := NewClient(ctx)
+    c, err := library.NewClient(ctx)
+    _ = err // Handle error.
 
     req := &google_example_library_v1.MoveBookRequest{ /* Data... */ }
-    opts := []gax.CallOption{ /* Optional call parameters. */ }
     var resp *google_example_library_v1.Book
-    resp, _ = client.MoveBook(ctx, req, opts...)
-    _ = resp
+    resp, err = c.MoveBook(ctx, req)
+    _, _ = resp, err // Handle error.
 }
 
 func ExampleClient_ListStrings() {
     ctx := context.Background()
-    client, _ := NewClient(ctx)
+    c, err := library.NewClient(ctx)
+    _ = err // Handle error.
 
     req := &google_example_library_v1.ListStringsRequest{ /* Data... */ }
-    opts := []gax.CallOption{ /* Optional call parameters. */ }
-    iter, _ := client.ListStrings(ctx, req, opts...)
+    it := c.ListStrings(ctx, req)
     var resp string
     for {
-        var err error
-        resp, err = iter.Next()
+        resp, err = it.Next()
         if err != nil {
             break
         }
@@ -812,11 +812,12 @@ func ExampleClient_ListStrings() {
 
 func ExampleClient_AddComments() {
     ctx := context.Background()
-    client, _ := NewClient(ctx)
+    c, err := library.NewClient(ctx)
+    _ = err // Handle error.
 
     req := &google_example_library_v1.AddCommentsRequest{ /* Data... */ }
-    opts := []gax.CallOption{ /* Optional call parameters. */ }
-    _ = client.AddComments(ctx, req, opts...)
+    err = c.AddComments(ctx, req)
+    _ = err // Handle error.
 }
 ============== file: google.golang.org/cloud/library/generated/library/doc.go ==============
 // Copyright 2016 Google Inc. All Rights Reserved.
