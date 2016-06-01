@@ -56,14 +56,16 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
           .put(Field.Kind.TYPE_UINT32, "0")
           .put(Field.Kind.TYPE_FLOAT, "0.0")
           .put(Field.Kind.TYPE_DOUBLE, "0.0")
-          // As a work-around in Javascript, Disovery importor treats number format strings
-          // as TYPE_INT64 or TYPE_UINT64 depending on the string format.
+          // As a work-around in Javascript(Javascript uses string to hold 64bit integers)
+          // Disovery importer treats number format strings as TYPE_INT64 or TYPE_UINT64
+          // depending on the string format.
           .put(Field.Kind.TYPE_INT64, "\'0\'")
           .put(Field.Kind.TYPE_UINT64, "\'0\'")
           .build();
 
   /**
    * A set that contains the method names that have extra suffix in the PHP client code.
+   * Some PHP methods appends resource path in camel case, e.g. list -> listAppResources
    */
   private static final ImmutableSet<String> RENAMED_METHODS = ImmutableSet.<String>builder()
       .add("list")
@@ -71,7 +73,8 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
       .build();
 
   /**
-   * A map that contains the requests that require renaming in the PHP client code.
+   * A map that maps the original request class name to its renamed version used in PHP client
+   * code.
    */
   private static final ImmutableMap<String, String> RENAMED_REQUESTS =
       ImmutableMap.<String, String>builder()
@@ -98,14 +101,14 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
    * Returns the method names used in the PHP client code.
    */
   public String getMethodName(Method method) {
-    String name = super.getMethodName(method);
-    if (RENAMED_METHODS.contains(name)) {
+    StringBuilder builder = new StringBuilder(super.getMethodName(method));
+    if (RENAMED_METHODS.contains(builder.toString())) {
       List<String> resources = getApiaryConfig().getResources(method.getName());
       for (String resource : resources) {
-        name = name + lowerCamelToUpperCamel(resource);
+        builder.append(lowerCamelToUpperCamel(resource));
       }
     }
-    return name;
+    return builder.toString();
   }
 
   /**
