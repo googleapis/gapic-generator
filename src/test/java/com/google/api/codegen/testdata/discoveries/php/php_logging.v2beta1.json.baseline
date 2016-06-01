@@ -24,7 +24,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
 
-$response = $service->entries->listEntries();
+
+$postBody = new Google_Service_Logging_ListLogEntriesRequest($client);
+
+$response = $service->entries->listEntries($postBody);
 
 foreach ($response['entries'] as $element) {
   // TODO: Add code here to process the elements.
@@ -55,7 +58,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
 
-$response = $service->entries->writeEntries();
+
+$postBody = new Google_Service_Logging_WriteLogEntriesRequest($client);
+
+$response = $service->entries->write($postBody);
 
 <?php
 /*
@@ -81,6 +87,7 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
+
 
 $response = $service->monitoredResourceDescriptors->listMonitoredResourceDescriptors();
 
@@ -112,11 +119,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
-
 // Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
 $logName = '';
 
-$response = $service->projects->logs->deleteLogs($logName);
+$response = $service->projects_logs->delete($logName);
 
 <?php
 /*
@@ -142,11 +148,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
-
 // The resource name of the project in which to create the metric. Example: `"projects/my-project-id"`. The new metric must be provided in the request.
 $projectName = '';
 
-$response = $service->projects->metrics->createMetrics($projectName);
+$postBody = new Google_Service_Logging_LogMetric($client);
+
+$response = $service->projects_metrics->create($projectName, $postBody);
 
 <?php
 /*
@@ -172,11 +179,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
-
 // The resource name of the metric to delete. Example: `"projects/my-project-id/metrics/my-metric-id"`.
 $metricName = '';
 
-$response = $service->projects->metrics->deleteMetrics($metricName);
+$response = $service->projects_metrics->delete($metricName);
 
 <?php
 /*
@@ -202,11 +208,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
-
 // The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
 $metricName = '';
 
-$response = $service->projects->metrics->getMetrics($metricName);
+$response = $service->projects_metrics->get($metricName);
 
 <?php
 /*
@@ -232,11 +237,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
-
 // Required. The resource name of the project containing the metrics. Example: `"projects/my-project-id"`.
 $projectName = '';
 
-$response = $service->projects->metrics->listMetrics($projectName);
+$response = $service->projects_metrics->listProjectsMetrics($projectName);
 
 foreach ($response['metrics'] as $element) {
   // TODO: Add code here to process the elements.
@@ -266,11 +270,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
-
 // The resource name of the metric to update. Example: `"projects/my-project-id/metrics/my-metric-id"`. The updated metric must be provided in the request and have the same identifier that is specified in `metricName`. If the metric does not exist, it is created.
 $metricName = '';
 
-$response = $service->projects->metrics->updateMetrics($metricName);
+$postBody = new Google_Service_Logging_LogMetric($client);
+
+$response = $service->projects_metrics->update($metricName, $postBody);
 
 <?php
 /*
@@ -296,11 +301,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
-
 // The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`. The new sink must be provided in the request.
 $projectName = '';
 
-$response = $service->projects->sinks->createSinks($projectName);
+$postBody = new Google_Service_Logging_LogSink($client);
+
+$response = $service->projects_sinks->create($projectName, $postBody);
 
 <?php
 /*
@@ -326,11 +332,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
-
 // The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
 $sinkName = '';
 
-$response = $service->projects->sinks->deleteSinks($sinkName);
+$response = $service->projects_sinks->delete($sinkName);
 
 <?php
 /*
@@ -356,11 +361,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
-
 // The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
 $sinkName = '';
 
-$response = $service->projects->sinks->getSinks($sinkName);
+$response = $service->projects_sinks->get($sinkName);
 
 <?php
 /*
@@ -386,11 +390,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
-
 // Required. The resource name of the project containing the sinks. Example: `"projects/my-logging-project"`, `"projects/01234567890"`.
 $projectName = '';
 
-$response = $service->projects->sinks->listSinks($projectName);
+$response = $service->projects_sinks->listProjectsSinks($projectName);
 
 foreach ($response['sinks'] as $element) {
   // TODO: Add code here to process the elements.
@@ -420,9 +423,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
-
 // The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The updated sink must be provided in the request and have the same name that is specified in `sinkName`. If the sink does not exist, it is created.
 $sinkName = '';
 
-$response = $service->projects->sinks->updateSinks($sinkName);
+$postBody = new Google_Service_Logging_LogSink($client);
+
+$response = $service->projects_sinks->update($sinkName, $postBody);
 

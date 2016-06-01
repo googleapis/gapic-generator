@@ -23,13 +23,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Taskqueue service
 $service = new Google_Service_Taskqueue($client);
-
 // The project under which the queue lies.
 $project = '';
 // The id of the taskqueue to get the properties of.
 $taskqueue = '';
 
-$response = $service->taskqueues->getTaskqueues($project, $taskqueue);
+$response = $service->taskqueues->get($project, $taskqueue);
 
 <?php
 /*
@@ -55,7 +54,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Taskqueue service
 $service = new Google_Service_Taskqueue($client);
-
 // The project under which the queue lies.
 $project = '';
 // The taskqueue to delete a task from.
@@ -63,7 +61,7 @@ $taskqueue = '';
 // The id of the task to delete.
 $task = '';
 
-$response = $service->tasks->deleteTasks($project, $taskqueue, $task);
+$response = $service->tasks->delete($project, $taskqueue, $task);
 
 <?php
 /*
@@ -89,7 +87,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Taskqueue service
 $service = new Google_Service_Taskqueue($client);
-
 // The project under which the queue lies.
 $project = '';
 // The taskqueue in which the task belongs.
@@ -97,7 +94,7 @@ $taskqueue = '';
 // The task to get properties of.
 $task = '';
 
-$response = $service->tasks->getTasks($project, $taskqueue, $task);
+$response = $service->tasks->get($project, $taskqueue, $task);
 
 <?php
 /*
@@ -123,13 +120,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Taskqueue service
 $service = new Google_Service_Taskqueue($client);
-
 // The project under which the queue lies
 $project = '';
 // The taskqueue to insert the task into
 $taskqueue = '';
 
-$response = $service->tasks->insertTasks($project, $taskqueue);
+$postBody = new Google_Service_Taskqueue_Task($client);
+
+$response = $service->tasks->insert($project, $taskqueue, $postBody);
 
 <?php
 /*
@@ -155,7 +153,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Taskqueue service
 $service = new Google_Service_Taskqueue($client);
-
 // The project under which the queue lies.
 $project = '';
 // The taskqueue to lease a task from.
@@ -165,7 +162,7 @@ $numTasks = 0;
 // The lease in seconds.
 $leaseSecs = 0;
 
-$response = $service->tasks->leaseTasks($project, $taskqueue, $numTasks, $leaseSecs);
+$response = $service->tasks->lease($project, $taskqueue, $numTasks, $leaseSecs);
 
 <?php
 /*
@@ -191,7 +188,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Taskqueue service
 $service = new Google_Service_Taskqueue($client);
-
 // The project under which the queue lies.
 $project = '';
 // The id of the taskqueue to list tasks from.
@@ -223,7 +219,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Taskqueue service
 $service = new Google_Service_Taskqueue($client);
-
 // The project under which the queue lies.
 $project = '';
 
@@ -233,7 +228,9 @@ $task = '';
 // The new lease in seconds.
 $newLeaseSeconds = 0;
 
-$response = $service->tasks->patchTasks($project, $taskqueue, $task, $newLeaseSeconds);
+$postBody = new Google_Service_Taskqueue_Task($client);
+
+$response = $service->tasks->patch($project, $taskqueue, $task, $newLeaseSeconds, $postBody);
 
 <?php
 /*
@@ -259,7 +256,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Taskqueue service
 $service = new Google_Service_Taskqueue($client);
-
 // The project under which the queue lies.
 $project = '';
 
@@ -269,5 +265,7 @@ $task = '';
 // The new lease in seconds.
 $newLeaseSeconds = 0;
 
-$response = $service->tasks->updateTasks($project, $taskqueue, $task, $newLeaseSeconds);
+$postBody = new Google_Service_Taskqueue_Task($client);
+
+$response = $service->tasks->update($project, $taskqueue, $task, $newLeaseSeconds, $postBody);
 

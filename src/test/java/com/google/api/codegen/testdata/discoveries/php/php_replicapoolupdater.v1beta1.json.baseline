@@ -23,7 +23,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Replicapoolupdater service
 $service = new Google_Service_Replicapoolupdater($client);
-
 // The Google Developers Console project name.
 $project = '';
 // The name of the zone in which the update's target resides.
@@ -31,7 +30,7 @@ $zone = '';
 // The name of the update.
 $rollingUpdate = '';
 
-$response = $service->rollingUpdates->cancelRollingUpdates($project, $zone, $rollingUpdate);
+$response = $service->rollingUpdates->cancel($project, $zone, $rollingUpdate);
 
 <?php
 /*
@@ -57,7 +56,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Replicapoolupdater service
 $service = new Google_Service_Replicapoolupdater($client);
-
 // The Google Developers Console project name.
 $project = '';
 // The name of the zone in which the update's target resides.
@@ -65,7 +63,7 @@ $zone = '';
 // The name of the update.
 $rollingUpdate = '';
 
-$response = $service->rollingUpdates->getRollingUpdates($project, $zone, $rollingUpdate);
+$response = $service->rollingUpdates->get($project, $zone, $rollingUpdate);
 
 <?php
 /*
@@ -91,13 +89,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Replicapoolupdater service
 $service = new Google_Service_Replicapoolupdater($client);
-
 // The Google Developers Console project name.
 $project = '';
 // The name of the zone in which the update's target resides.
 $zone = '';
 
-$response = $service->rollingUpdates->insertRollingUpdates($project, $zone);
+$postBody = new Google_Service_Replicapoolupdater_RollingUpdate($client);
+
+$response = $service->rollingUpdates->insert($project, $zone, $postBody);
 
 <?php
 /*
@@ -123,7 +122,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Replicapoolupdater service
 $service = new Google_Service_Replicapoolupdater($client);
-
 // The Google Developers Console project name.
 $project = '';
 // The name of the zone in which the update's target resides.
@@ -159,7 +157,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Replicapoolupdater service
 $service = new Google_Service_Replicapoolupdater($client);
-
 // The Google Developers Console project name.
 $project = '';
 // The name of the zone in which the update's target resides.
@@ -167,7 +164,7 @@ $zone = '';
 // The name of the update.
 $rollingUpdate = '';
 
-$response = $service->rollingUpdates->listInstanceUpdatesRollingUpdates($project, $zone, $rollingUpdate);
+$response = $service->rollingUpdates->listInstanceUpdates($project, $zone, $rollingUpdate);
 
 foreach ($response['items'] as $element) {
   // TODO: Add code here to process the elements.
@@ -197,7 +194,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Replicapoolupdater service
 $service = new Google_Service_Replicapoolupdater($client);
-
 // The Google Developers Console project name.
 $project = '';
 // The name of the zone in which the update's target resides.
@@ -205,7 +201,7 @@ $zone = '';
 // The name of the update.
 $rollingUpdate = '';
 
-$response = $service->rollingUpdates->pauseRollingUpdates($project, $zone, $rollingUpdate);
+$response = $service->rollingUpdates->pause($project, $zone, $rollingUpdate);
 
 <?php
 /*
@@ -231,7 +227,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Replicapoolupdater service
 $service = new Google_Service_Replicapoolupdater($client);
-
 // The Google Developers Console project name.
 $project = '';
 // The name of the zone in which the update's target resides.
@@ -239,7 +234,7 @@ $zone = '';
 // The name of the update.
 $rollingUpdate = '';
 
-$response = $service->rollingUpdates->resumeRollingUpdates($project, $zone, $rollingUpdate);
+$response = $service->rollingUpdates->resume($project, $zone, $rollingUpdate);
 
 <?php
 /*
@@ -265,7 +260,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Replicapoolupdater service
 $service = new Google_Service_Replicapoolupdater($client);
-
 // The Google Developers Console project name.
 $project = '';
 // The name of the zone in which the update's target resides.
@@ -273,7 +267,7 @@ $zone = '';
 // The name of the update.
 $rollingUpdate = '';
 
-$response = $service->rollingUpdates->rollbackRollingUpdates($project, $zone, $rollingUpdate);
+$response = $service->rollingUpdates->rollback($project, $zone, $rollingUpdate);
 
 <?php
 /*
@@ -299,7 +293,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Replicapoolupdater service
 $service = new Google_Service_Replicapoolupdater($client);
-
 // Name of the project scoping this request.
 $project = '';
 // Name of the zone scoping this request.
@@ -307,7 +300,7 @@ $zone = '';
 // Name of the operation resource to return.
 $operation = '';
 
-$response = $service->zoneOperations->getZoneOperations($project, $zone, $operation);
+$response = $service->zoneOperations->get($project, $zone, $operation);
 
 <?php
 /*
@@ -333,7 +326,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Replicapoolupdater service
 $service = new Google_Service_Replicapoolupdater($client);
-
 // Name of the project scoping this request.
 $project = '';
 // Name of the zone scoping this request.

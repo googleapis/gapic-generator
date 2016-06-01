@@ -23,13 +23,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dns service
 $service = new Google_Service_Dns($client);
-
 // Identifies the project addressed by this request.
 $project = '';
 // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
 $managedZone = '';
 
-$response = $service->changes->createChanges($project, $managedZone);
+$postBody = new Google_Service_Dns_Change($client);
+
+$response = $service->changes->create($project, $managedZone, $postBody);
 
 <?php
 /*
@@ -55,7 +56,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dns service
 $service = new Google_Service_Dns($client);
-
 // Identifies the project addressed by this request.
 $project = '';
 // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
@@ -63,7 +63,7 @@ $managedZone = '';
 // The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
 $changeId = '';
 
-$response = $service->changes->getChanges($project, $managedZone, $changeId);
+$response = $service->changes->get($project, $managedZone, $changeId);
 
 <?php
 /*
@@ -89,7 +89,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dns service
 $service = new Google_Service_Dns($client);
-
 // Identifies the project addressed by this request.
 $project = '';
 // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
@@ -125,11 +124,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dns service
 $service = new Google_Service_Dns($client);
-
 // Identifies the project addressed by this request.
 $project = '';
 
-$response = $service->managedZones->createManagedZones($project);
+$postBody = new Google_Service_Dns_ManagedZone($client);
+
+$response = $service->managedZones->create($project, $postBody);
 
 <?php
 /*
@@ -155,45 +155,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dns service
 $service = new Google_Service_Dns($client);
-
-// Identifies the project addressed by this request.
-$project = '';
-// Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-$managedZone = '';
-
-$response = $service->managedZones->deleteManagedZones($project, $managedZone);
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
- *    https://console.developers.google.com/apis/api/dns_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-// Create a new client
-$client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-// Create a new Dns service
-$service = new Google_Service_Dns($client);
-
 // Identifies the project addressed by this request.
 $project = '';
 // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
 $managedZone = '';
 
-$response = $service->managedZones->getManagedZones($project, $managedZone);
+$response = $service->managedZones->delete($project, $managedZone);
 
 <?php
 /*
@@ -219,7 +186,37 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dns service
 $service = new Google_Service_Dns($client);
+// Identifies the project addressed by this request.
+$project = '';
+// Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+$managedZone = '';
 
+$response = $service->managedZones->get($project, $managedZone);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud DNS API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/dns_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new Dns service
+$service = new Google_Service_Dns($client);
 // Identifies the project addressed by this request.
 $project = '';
 
@@ -253,11 +250,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dns service
 $service = new Google_Service_Dns($client);
-
 // Identifies the project addressed by this request.
 $project = '';
 
-$response = $service->projects->getProjects($project);
+$response = $service->projects->get($project);
 
 <?php
 /*
@@ -283,7 +279,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dns service
 $service = new Google_Service_Dns($client);
-
 // Identifies the project addressed by this request.
 $project = '';
 // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
