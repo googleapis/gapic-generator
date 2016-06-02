@@ -16,6 +16,7 @@ package com.google.api.codegen.nodejs;
 
 import com.google.api.client.util.DateTime;
 import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.api.Service;
 import com.google.common.collect.ImmutableMap;
@@ -44,6 +45,16 @@ public class NodeJSDiscoveryContext extends DiscoveryContext implements NodeJSCo
           .put(Field.Kind.TYPE_DOUBLE, "0.0")
           .build();
 
+  private static final ImmutableMap<String, String> STRING_DEFAULT_MAP =
+      ImmutableMap.<String, String>builder()
+          .put(
+              "byte",
+              "\"\", // base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648")
+          .put("date", "\"2006-01-02\", // YYYY-MM-DD")
+          .put(
+              "date-time", "\"2006-01-02T15:04:05Z07:00\", // YYYY-MM-DDThh:mm:ss see time.RFC3339")
+          .build();
+
   /**
    * Generates placeholder assignment (to end of line) for field of type based on field kind and,
    * for explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.
@@ -66,22 +77,14 @@ public class NodeJSDiscoveryContext extends DiscoveryContext implements NodeJSCo
     }
     if (field.getKind() == Field.Kind.TYPE_STRING) {
       String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
-      if (stringFormat != null) {
-        switch (stringFormat) {
-          case "byte":
-            return "\"\","
-                + "  // base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648";
-          case "date":
-            // TODO(tcoffee): does new DateTime(new Date(0L)).toStringRfc3339() work?
-            return "\"1969-12-31\"," + "  // \"YYYY-MM-DD\"";
-          case "date-time":
-            return "\""
-                + new DateTime(0L).toStringRfc3339()
-                + "\","
-                + "  // \"YYYY-MM-DDThh:mm:ss.fffZ\" (UTC)";
-          default:
-            // fall through
-        }
+      if (STRING_DEFAULT_MAP.containsKey(stringFormat)) {
+        return STRING_DEFAULT_MAP.get(stringFormat);
+      }
+      String stringPattern =
+          getApiaryConfig().getFieldPattern().get(type.getName(), field.getName());
+      String patternSample = DefaultString.forPattern(stringPattern);
+      if (patternSample != null) {
+        return String.format("\"%s\",", patternSample);
       }
       return "\"\",";
     }

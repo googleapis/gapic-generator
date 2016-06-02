@@ -14,10 +14,11 @@
  */
 package com.google.api.codegen.php;
 
-import com.google.api.Service;
 import com.google.api.client.util.DateTime;
 import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.DiscoveryContext;
+import com.google.api.Service;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Field;
@@ -62,6 +63,12 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
           // depending on the string format.
           .put(Field.Kind.TYPE_INT64, "\'0\'")
           .put(Field.Kind.TYPE_UINT64, "\'0\'")
+          .build();
+
+  private static final ImmutableMap<String, String> STRING_DEFAULT_MAP =
+      ImmutableMap.<String, String>builder()
+          .put("date", "'1969-12-31'")
+          .put("date-time", String.format("'%s'", new DateTime(0L).toStringRfc3339()))
           .build();
 
   /**
@@ -165,17 +172,16 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
         return defaultPrimitiveValue;
       } else if (kind.equals(Field.Kind.TYPE_STRING)) {
         String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
-        if (stringFormat != null) {
-          switch (stringFormat) {
-            case "date":
-              return "\'1969-12-31\'";
-            case "date-time":
-              return "\'" + new DateTime(0L).toStringRfc3339() + "\'";
-            default:
-              // Fall through
-          }
+        if (STRING_DEFAULT_MAP.containsKey(stringFormat)) {
+          return STRING_DEFAULT_MAP.get(stringFormat);
         }
-        return "\'\'";
+        String stringPattern =
+            getApiaryConfig().getFieldPattern().get(type.getName(), field.getName());
+        String patternSample = DefaultString.forPattern(stringPattern);
+        if (patternSample != null) {
+          return String.format("'%s'", patternSample);
+        }
+        return "''";
       }
     }
     return "null";
