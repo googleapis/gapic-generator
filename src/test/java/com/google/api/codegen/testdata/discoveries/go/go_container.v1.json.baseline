@@ -5,11 +5,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Container Engine API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/container_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/container/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/container/v1
 
 import (
   "golang.org/x/net/context"
@@ -20,37 +19,34 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, container.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := container.New(httpClient)
+  client, err := container.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
-  var (
-    // The Google Developers Console [project ID or project number]
-    // (https://developers.google.com/console/help/new/#projectnumber).
-    projectId = ""
+  // The Google Developers Console [project ID or project number]
+  // (https://developers.google.com/console/help/new/#projectnumber).
+  projectId := "" // TODO: Update placeholder value.
 
-    // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-    // resides.
-    zone = ""
+  // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+  // resides.
+  zone := "" // TODO: Update placeholder value.
 
-    requestBody = &container.CreateClusterRequest{}
-  )
-
-  response, err := client.Projects.Zones.Clusters.Create(projectId, zone, requestBody).Context(ctx).Do()
+  resp, err := client.Projects.Zones.Clusters.Create(projectId, zone, &container.CreateClusterRequest{
+                                                       // TODO: Fill required fields.
+                                                     }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -58,11 +54,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Container Engine API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/container_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/container/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/container/v1
 
 import (
   "golang.org/x/net/context"
@@ -73,38 +68,35 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, container.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := container.New(httpClient)
+  client, err := container.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
-  var (
-    // The Google Developers Console [project ID or project number]
-    // (https://developers.google.com/console/help/new/#projectnumber).
-    projectId = ""
+  // The Google Developers Console [project ID or project number]
+  // (https://developers.google.com/console/help/new/#projectnumber).
+  projectId := "" // TODO: Update placeholder value.
 
-    // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-    // resides.
-    zone = ""
+  // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+  // resides.
+  zone := "" // TODO: Update placeholder value.
 
-    // The name of the cluster to delete.
-    clusterId = ""
-  )
+  // The name of the cluster to delete.
+  clusterId := "" // TODO: Update placeholder value.
 
-  response, err := client.Projects.Zones.Clusters.Delete(projectId, zone, clusterId).Context(ctx).Do()
+  resp, err := client.Projects.Zones.Clusters.Delete(projectId, zone, clusterId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -112,11 +104,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Container Engine API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/container_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/container/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/container/v1
 
 import (
   "golang.org/x/net/context"
@@ -127,38 +118,35 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, container.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := container.New(httpClient)
+  client, err := container.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-  var (
-    // The Google Developers Console [project ID or project number]
-    // (https://developers.google.com/console/help/new/#projectnumber).
-    projectId = ""
+  // The Google Developers Console [project ID or project number]
+  // (https://developers.google.com/console/help/new/#projectnumber).
+  projectId := "" // TODO: Update placeholder value.
 
-    // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-    // resides.
-    zone = ""
+  // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+  // resides.
+  zone := "" // TODO: Update placeholder value.
 
-    // The name of the cluster to retrieve.
-    clusterId = ""
-  )
+  // The name of the cluster to retrieve.
+  clusterId := "" // TODO: Update placeholder value.
 
-  response, err := client.Projects.Zones.Clusters.Get(projectId, zone, clusterId).Context(ctx).Do()
+  resp, err := client.Projects.Zones.Clusters.Get(projectId, zone, clusterId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -166,11 +154,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Container Engine API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/container_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/container/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/container/v1
 
 import (
   "golang.org/x/net/context"
@@ -181,35 +168,32 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, container.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := container.New(httpClient)
+  client, err := container.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-  var (
-    // The Google Developers Console [project ID or project number]
-    // (https://developers.google.com/console/help/new/#projectnumber).
-    projectId = ""
+  // The Google Developers Console [project ID or project number]
+  // (https://developers.google.com/console/help/new/#projectnumber).
+  projectId := "" // TODO: Update placeholder value.
 
-    // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-    // resides, or "-" for all zones.
-    zone = ""
-  )
+  // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+  // resides, or "-" for all zones.
+  zone := "" // TODO: Update placeholder value.
 
-  response, err := client.Projects.Zones.Clusters.List(projectId, zone).Context(ctx).Do()
+  resp, err := client.Projects.Zones.Clusters.List(projectId, zone).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -217,11 +201,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Container Engine API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/container_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/container/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/container/v1
 
 import (
   "golang.org/x/net/context"
@@ -232,40 +215,37 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, container.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := container.New(httpClient)
+  client, err := container.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
-  var (
-    // The Google Developers Console [project ID or project number]
-    // (https://developers.google.com/console/help/new/#projectnumber).
-    projectId = ""
+  // The Google Developers Console [project ID or project number]
+  // (https://developers.google.com/console/help/new/#projectnumber).
+  projectId := "" // TODO: Update placeholder value.
 
-    // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-    // resides.
-    zone = ""
+  // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+  // resides.
+  zone := "" // TODO: Update placeholder value.
 
-    // The name of the cluster to upgrade.
-    clusterId = ""
+  // The name of the cluster to upgrade.
+  clusterId := "" // TODO: Update placeholder value.
 
-    requestBody = &container.UpdateClusterRequest{}
-  )
-
-  response, err := client.Projects.Zones.Clusters.Update(projectId, zone, clusterId, requestBody).Context(ctx).Do()
+  resp, err := client.Projects.Zones.Clusters.Update(projectId, zone, clusterId, &container.UpdateClusterRequest{
+                                                       // TODO: Fill required fields.
+                                                     }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -273,11 +253,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Container Engine API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/container_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/container/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/container/v1
 
 import (
   "golang.org/x/net/context"
@@ -288,35 +267,32 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, container.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := container.New(httpClient)
+  client, err := container.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'getServerconfig' method:
-  var (
-    // The Google Developers Console [project ID or project number]
-    // (https://developers.google.com/console/help/new/#projectnumber).
-    projectId = ""
+  // The Google Developers Console [project ID or project number]
+  // (https://developers.google.com/console/help/new/#projectnumber).
+  projectId := "" // TODO: Update placeholder value.
 
-    // The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
-    // for, or "-" for all zones.
-    zone = ""
-  )
+  // The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
+  // for, or "-" for all zones.
+  zone := "" // TODO: Update placeholder value.
 
-  response, err := client.Projects.Zones.GetServerconfig(projectId, zone).Context(ctx).Do()
+  resp, err := client.Projects.Zones.GetServerconfig(projectId, zone).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -324,11 +300,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Container Engine API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/container_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/container/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/container/v1
 
 import (
   "golang.org/x/net/context"
@@ -339,38 +314,35 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, container.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := container.New(httpClient)
+  client, err := container.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-  var (
-    // The Google Developers Console [project ID or project number]
-    // (https://developers.google.com/console/help/new/#projectnumber).
-    projectId = ""
+  // The Google Developers Console [project ID or project number]
+  // (https://developers.google.com/console/help/new/#projectnumber).
+  projectId := "" // TODO: Update placeholder value.
 
-    // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
-    // resides.
-    zone = ""
+  // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+  // resides.
+  zone := "" // TODO: Update placeholder value.
 
-    // The server-assigned `name` of the operation.
-    operationId = ""
-  )
+  // The server-assigned `name` of the operation.
+  operationId := "" // TODO: Update placeholder value.
 
-  response, err := client.Projects.Zones.Operations.Get(projectId, zone, operationId).Context(ctx).Do()
+  resp, err := client.Projects.Zones.Operations.Get(projectId, zone, operationId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -378,11 +350,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Container Engine API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/container_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/container/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/container/v1
 
 import (
   "golang.org/x/net/context"
@@ -393,33 +364,30 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, container.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, container.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := container.New(httpClient)
+  client, err := container.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-  var (
-    // The Google Developers Console [project ID or project number]
-    // (https://developers.google.com/console/help/new/#projectnumber).
-    projectId = ""
+  // The Google Developers Console [project ID or project number]
+  // (https://developers.google.com/console/help/new/#projectnumber).
+  projectId := "" // TODO: Update placeholder value.
 
-    // The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
-    // for, or "-" for all zones.
-    zone = ""
-  )
+  // The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
+  // for, or "-" for all zones.
+  zone := "" // TODO: Update placeholder value.
 
-  response, err := client.Projects.Zones.Operations.List(projectId, zone).Context(ctx).Do()
+  resp, err := client.Projects.Zones.Operations.List(projectId, zone).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }

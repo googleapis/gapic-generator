@@ -5,11 +5,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Debugger API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/clouddebugger/v2'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/clouddebugger/v2
 
 import (
   "golang.org/x/net/context"
@@ -20,30 +19,27 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := clouddebugger.New(httpClient)
+  client, err := clouddebugger.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-  var (
-    // Identifies the debuggee.
-    debuggeeId = ""
-  )
+  // Identifies the debuggee.
+  debuggeeId := "" // TODO: Update placeholder value.
 
-  response, err := client.Controller.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
+  resp, err := client.Controller.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -51,11 +47,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Debugger API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/clouddebugger/v2'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/clouddebugger/v2
 
 import (
   "golang.org/x/net/context"
@@ -66,35 +61,32 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := clouddebugger.New(httpClient)
+  client, err := clouddebugger.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
-  var (
-    // Identifies the debuggee being debugged.
-    debuggeeId = ""
+  // Identifies the debuggee being debugged.
+  debuggeeId := "" // TODO: Update placeholder value.
 
-    // Breakpoint identifier, unique in the scope of the debuggee.
-    id = ""
+  // Breakpoint identifier, unique in the scope of the debuggee.
+  id := "" // TODO: Update placeholder value.
 
-    requestBody = &clouddebugger.UpdateActiveBreakpointRequest{}
-  )
-
-  response, err := client.Controller.Debuggees.Breakpoints.Update(debuggeeId, id, requestBody).Context(ctx).Do()
+  resp, err := client.Controller.Debuggees.Breakpoints.Update(debuggeeId, id, &clouddebugger.UpdateActiveBreakpointRequest{
+                                                                // TODO: Fill required fields.
+                                                              }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -102,11 +94,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Debugger API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/clouddebugger/v2'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/clouddebugger/v2
 
 import (
   "golang.org/x/net/context"
@@ -117,30 +108,28 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := clouddebugger.New(httpClient)
+  client, err := clouddebugger.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'register' method:
-  var (
 
-    requestBody = &clouddebugger.RegisterDebuggeeRequest{}
-  )
 
-  response, err := client.Controller.Debuggees.Register(requestBody).Context(ctx).Do()
+  resp, err := client.Controller.Debuggees.Register(&clouddebugger.RegisterDebuggeeRequest{
+                                                      // TODO: Fill required fields.
+                                                    }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -148,11 +137,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Debugger API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/clouddebugger/v2'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/clouddebugger/v2
 
 import (
   "golang.org/x/net/context"
@@ -163,33 +151,30 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := clouddebugger.New(httpClient)
+  client, err := clouddebugger.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
-  var (
-    // ID of the debuggee whose breakpoint to delete.
-    debuggeeId = ""
+  // ID of the debuggee whose breakpoint to delete.
+  debuggeeId := "" // TODO: Update placeholder value.
 
-    // ID of the breakpoint to delete.
-    breakpointId = ""
-  )
+  // ID of the breakpoint to delete.
+  breakpointId := "" // TODO: Update placeholder value.
 
-  response, err := client.Debugger.Debuggees.Breakpoints.Delete(debuggeeId, breakpointId).Context(ctx).Do()
+  resp, err := client.Debugger.Debuggees.Breakpoints.Delete(debuggeeId, breakpointId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -197,11 +182,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Debugger API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/clouddebugger/v2'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/clouddebugger/v2
 
 import (
   "golang.org/x/net/context"
@@ -212,33 +196,30 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := clouddebugger.New(httpClient)
+  client, err := clouddebugger.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-  var (
-    // ID of the debuggee whose breakpoint to get.
-    debuggeeId = ""
+  // ID of the debuggee whose breakpoint to get.
+  debuggeeId := "" // TODO: Update placeholder value.
 
-    // ID of the breakpoint to get.
-    breakpointId = ""
-  )
+  // ID of the breakpoint to get.
+  breakpointId := "" // TODO: Update placeholder value.
 
-  response, err := client.Debugger.Debuggees.Breakpoints.Get(debuggeeId, breakpointId).Context(ctx).Do()
+  resp, err := client.Debugger.Debuggees.Breakpoints.Get(debuggeeId, breakpointId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -246,11 +227,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Debugger API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/clouddebugger/v2'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/clouddebugger/v2
 
 import (
   "golang.org/x/net/context"
@@ -261,30 +241,27 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := clouddebugger.New(httpClient)
+  client, err := clouddebugger.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-  var (
-    // ID of the debuggee whose breakpoints to list.
-    debuggeeId = ""
-  )
+  // ID of the debuggee whose breakpoints to list.
+  debuggeeId := "" // TODO: Update placeholder value.
 
-  response, err := client.Debugger.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
+  resp, err := client.Debugger.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -292,11 +269,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Debugger API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/clouddebugger/v2'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/clouddebugger/v2
 
 import (
   "golang.org/x/net/context"
@@ -307,32 +283,29 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := clouddebugger.New(httpClient)
+  client, err := clouddebugger.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'set' method:
-  var (
-    // ID of the debuggee where the breakpoint is to be set.
-    debuggeeId = ""
+  // ID of the debuggee where the breakpoint is to be set.
+  debuggeeId := "" // TODO: Update placeholder value.
 
-    requestBody = &clouddebugger.Breakpoint{}
-  )
-
-  response, err := client.Debugger.Debuggees.Breakpoints.Set(debuggeeId, requestBody).Context(ctx).Do()
+  resp, err := client.Debugger.Debuggees.Breakpoints.Set(debuggeeId, &clouddebugger.Breakpoint{
+                                                           // TODO: Fill required fields.
+                                                         }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -340,11 +313,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Debugger API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/clouddebugger/v2'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/clouddebugger/v2
 
 import (
   "golang.org/x/net/context"
@@ -355,25 +327,24 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := clouddebugger.New(httpClient)
+  client, err := clouddebugger.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  var (
-  )
 
-  response, err := client.Debugger.Debuggees.List().Context(ctx).Do()
+
+  resp, err := client.Debugger.Debuggees.List().Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }

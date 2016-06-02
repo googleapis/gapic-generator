@@ -5,11 +5,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Cloud Vision API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/vision_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/vision/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/vision/v1
 
 import (
   "golang.org/x/net/context"
@@ -20,28 +19,26 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, vision.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, vision.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := vision.New(httpClient)
+  client, err := vision.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'annotate' method:
-  var (
 
-    requestBody = &vision.BatchAnnotateImagesRequest{}
-  )
 
-  response, err := client.Images.Annotate(requestBody).Context(ctx).Do()
+  resp, err := client.Images.Annotate(&vision.BatchAnnotateImagesRequest{
+                                        // TODO: Fill required fields.
+                                      }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
