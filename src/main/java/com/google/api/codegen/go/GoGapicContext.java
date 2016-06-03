@@ -336,6 +336,13 @@ public class GoGapicContext extends GapicContext implements GoContext {
   }
 
   /**
+   * Returns the package path for the client.
+   */
+  public String getClientPackagePath(Interface service) {
+    return getApiConfig().getPackageName() + "/generated/" + getReducedServiceName(service);
+  }
+
+  /**
    * Creates a Go import from the message import.
    */
   private GoImport createMessageImport(MessageType messageType) {
@@ -428,6 +435,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
   public Iterable<String> getTestImports(Interface service) {
     TreeSet<GoImport> thirdParty = new TreeSet<>();
 
+    thirdParty.add(GoImport.create(getClientPackagePath(service)));
     thirdParty.add(GoImport.create("golang.org/x/net/context"));
     thirdParty.add(GoImport.create(GAX_PACKAGE_BASE, "gax"));
     thirdParty.addAll(getMessageImports(service));
