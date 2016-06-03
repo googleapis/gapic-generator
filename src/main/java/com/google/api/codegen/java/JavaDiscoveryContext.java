@@ -17,8 +17,10 @@ package com.google.api.codegen.java;
 import com.google.api.client.util.DateTime;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.discovery.DefaultString;
+import com.google.api.codegen.discovery.SampleString;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.api.codegen.DiscoveryImporter;
+import com.google.api.codegen.LanguageUtil;
 import com.google.api.Service;
 import com.google.common.base.Defaults;
 import com.google.common.collect.ImmutableMap;
@@ -335,7 +337,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
    * Generates placeholder assignment (to end of line) for a type's field based on field kind and,
    * for explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.
    */
-  public String typeDefaultValue(Type type, Field field) {
+  public String typeDefaultValue(Type type, Field field, String paramName) {
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
       String fieldTypeName = field.getTypeUrl();
       Type items = this.getApiaryConfig().getType(fieldTypeName);
@@ -368,10 +370,21 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
       String stringPattern =
           getApiaryConfig().getFieldPattern().get(type.getName(), field.getName());
       String patternSample = stringPattern == null ? null : DefaultString.forPattern(stringPattern);
+      String defStr;
       if (patternSample != null) {
-        return String.format("\"%s\";", patternSample);
+        defStr = String.format("\"%s\";", patternSample);
+      } else {
+        defStr =
+            String.format(
+                "\"{MY-%s}\";",
+                LanguageUtil.lowerCamelToUpperUnderscore(paramName).replace('_', '-'));
       }
-      return "\"\";";
+      if (SampleString.SAMPLE.contains(getApi().getName(), paramName)) {
+        defStr =
+            String.format(
+                "%s // eg, \"%s\"", defStr, SampleString.SAMPLE.get(getApi().getName(), paramName));
+      }
+      return defStr;
     }
     return "null;";
   }
