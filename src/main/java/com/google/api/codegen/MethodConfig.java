@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.metacode.FieldStructureParser;
-import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Field;
@@ -28,7 +26,6 @@ import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -67,7 +64,8 @@ public class MethodConfig {
     boolean error = false;
 
     PageStreamingConfig pageStreaming;
-    if (PageStreamingConfigProto.getDefaultInstance().equals(methodConfigProto.getPageStreaming())) {
+    if (PageStreamingConfigProto.getDefaultInstance()
+        .equals(methodConfigProto.getPageStreaming())) {
       pageStreaming = null;
     } else {
       pageStreaming =
@@ -83,7 +81,8 @@ public class MethodConfig {
       flattening = null;
     } else {
       flattening =
-          FlatteningConfig.createFlattening(diagCollector, methodConfigProto.getFlattening(), method);
+          FlatteningConfig.createFlattening(
+              diagCollector, methodConfigProto.getFlattening(), method);
       if (flattening == null) {
         error = true;
       }
@@ -93,7 +92,8 @@ public class MethodConfig {
     if (BundlingConfigProto.getDefaultInstance().equals(methodConfigProto.getBundling())) {
       bundling = null;
     } else {
-      bundling = BundlingConfig.createBundling(diagCollector, methodConfigProto.getBundling(), method);
+      bundling =
+          BundlingConfig.createBundling(diagCollector, methodConfigProto.getBundling(), method);
       if (bundling == null) {
         error = true;
       }
