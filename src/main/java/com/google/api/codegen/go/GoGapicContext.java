@@ -30,6 +30,7 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -70,20 +71,14 @@ public class GoGapicContext extends GapicContext implements GoContext {
           .build();
 
   /**
-   * The import path for GAX. TODO(mukai): Change this address when it's decided to merge into
-   * gcloud-golang.
+   * The import path for GAX.
    */
-  private static final String GAX_PACKAGE_BASE = "github.com/googleapis/gax-golang";
+  private static final String GAX_PACKAGE_BASE = "github.com/googleapis/gax-go";
 
   /**
    * The import path for generated pb.go files for core-proto files.
-   *
-   * Right now this and CORE_PROTO_PACKAGES are not used, assumed they are placed inside of this
-   * package, which is recommended by gcloud-golang team.
-   *
-   * TODO(mukai): Set the proper location when the location is known.
    */
-  private static final String CORE_PROTO_BASE = "<TBD>";
+  private static final String CORE_PROTO_BASE = "github.com/googleapis/proto-client-go";
 
   /**
    * The set of the core protobuf packages.
@@ -339,16 +334,22 @@ public class GoGapicContext extends GapicContext implements GoContext {
    * Returns the package path for the client.
    */
   public String getClientPackagePath(Interface service) {
-    return getApiConfig().getPackageName() + "/generated/" + getReducedServiceName(service);
+    return getApiConfig().getPackageName() + "/" + getReducedServiceName(service);
   }
 
   /**
    * Creates a Go import from the message import.
    */
   private GoImport createMessageImport(MessageType messageType) {
-    String pkgName = messageType.getFile().getProto().getPackage().replace(".", "/");
+    String pkgName = messageType.getFile().getProto().getOptions().getGoPackage();
+    // If there's no `go_package` specified, we guess an import path based on the core proto base
+    // repo and the proto package.
+    if (Strings.isNullOrEmpty(pkgName)) {
+      pkgName = CORE_PROTO_BASE + "/" +
+          messageType.getFile().getProto().getPackage().replace(".", "/");
+    }
     String localName = localPackageName(messageType);
-    return GoImport.create(getApiConfig().getPackageName() + "/generated/" + pkgName, localName);
+    return GoImport.create(pkgName, localName);
   }
 
   private Set<GoImport> getStandardImports(Interface service) {
