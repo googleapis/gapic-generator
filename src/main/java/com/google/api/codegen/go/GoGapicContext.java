@@ -165,16 +165,23 @@ public class GoGapicContext extends GapicContext implements GoContext {
   }
 
   /**
-   * Returns the Go type name for the resources field.
+   * Returns the Go type for the resources field.
    *
    * Note that this returns the individual element type of the resources in the message. For
    * example, if SomeResponse has 'repeated string contents' field, the return value should be
    * 'string', not '[]string', and that's why the snippet can't use typeName() directly.
    */
-  public String getResourceTypeName(Field field) {
+  public TypeRef getResourceType(Field field) {
     // Creating a copy with 'required' to extract the type name but isn't affected by
     // repeated cardinality.
-    return typeName(field.getType().makeRequired());
+    return field.getType().makeRequired();
+  }
+
+  /**
+   * Returns the Go type name for the resources field.
+   */
+  public String getResourceTypeName(Field field) {
+    return typeName(getResourceType(field));
   }
 
   /**

@@ -301,13 +301,14 @@
     @join pageStreaming : context.getPageStreamingConfigs(service)
         @let iteratorTypeName = context.getIteratorTypeName(pageStreaming), \
              tokenType = context.getNextPageTokenType(service, pageStreaming), \
-             resourceFieldType = context.getResourceTypeName(pageStreaming.getResourcesField), \
+             resourceFieldType = context.getResourceType(pageStreaming.getResourcesField), \
+             resourceFieldTypeName = context.getResourceTypeName(pageStreaming.getResourcesField), \
              hasPageSizeField = pageStreaming.hasPageSizeField()
 
-            // {@iteratorTypeName} manages a stream of {@resourceFieldType}.
+            // {@iteratorTypeName} manages a stream of {@resourceFieldTypeName}.
             type {@iteratorTypeName} struct {
                 // The current page data.
-                items         []{@resourceFieldType}
+                items         []{@resourceFieldTypeName}
                 atLastPage    bool
                 currentIndex  int
                 @if hasPageSizeField
@@ -319,7 +320,7 @@
 
             // NextPage moves to the next page and updates its internal data.
             // It returns Done if no more pages exist.
-            func (it *{@iteratorTypeName}) NextPage() ([]{@resourceFieldType}, error) {
+            func (it *{@iteratorTypeName}) NextPage() ([]{@resourceFieldTypeName}, error) {
                 err := it.apiCall()
                 if err != nil {
                     return nil, err
@@ -329,11 +330,11 @@
 
             // Next returns the next element in the stream. It returns Done at
             // the end of the stream.
-            func (it *{@iteratorTypeName}) Next() ({@resourceFieldType}, error) {
+            func (it *{@iteratorTypeName}) Next() ({@resourceFieldTypeName}, error) {
                 for it.currentIndex >= len(it.items) {
                     _, err := it.NextPage()
                     if err != nil {
-                        return nil, err
+                        return {@context.zeroValue(resourceFieldType)}, err
                     }
                     it.currentIndex = 0
                 }
