@@ -21,13 +21,14 @@ $client->setApplicationName('Client Sample Application');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Cloudtrace service
-$service = new Google_Service_Cloudtrace($client);
-
+// Create a new CloudTrace service
+$service = new Google_Service_CloudTrace($client);
 // ID of the Cloud project where the trace data is stored.
 $projectId = '';
 
-$response = $service->projects->patchTracesProjects($projectId);
+$postBody = new Google_Service_CloudTrace_Traces($client);
+
+$response = $service->projects->patchTraces($projectId, $postBody);
 
 <?php
 /*
@@ -51,15 +52,14 @@ $client->setApplicationName('Client Sample Application');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Cloudtrace service
-$service = new Google_Service_Cloudtrace($client);
-
+// Create a new CloudTrace service
+$service = new Google_Service_CloudTrace($client);
 // ID of the Cloud project where the trace data is stored.
 $projectId = '';
 // ID of the trace to return.
 $traceId = '';
 
-$response = $service->projects->traces->getTraces($projectId, $traceId);
+$response = $service->projects_traces->get($projectId, $traceId);
 
 <?php
 /*
@@ -83,13 +83,12 @@ $client->setApplicationName('Client Sample Application');
 $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
-// Create a new Cloudtrace service
-$service = new Google_Service_Cloudtrace($client);
-
+// Create a new CloudTrace service
+$service = new Google_Service_CloudTrace($client);
 // ID of the Cloud project where the trace data is stored.
 $projectId = '';
 
-$response = $service->projects->traces->listTraces($projectId);
+$response = $service->projects_traces->listProjectsTraces($projectId);
 
 foreach ($response['traces'] as $element) {
   // TODO: Add code here to process the elements.

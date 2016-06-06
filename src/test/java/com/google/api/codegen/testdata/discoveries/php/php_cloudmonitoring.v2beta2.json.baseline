@@ -23,11 +23,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudMonitoring service
 $service = new Google_Service_CloudMonitoring($client);
-
 // The project id. The value can be the numeric project ID or string-based project name.
 $project = '';
 
-$response = $service->metricDescriptors->createMetricDescriptors($project);
+$postBody = new Google_Service_CloudMonitoring_MetricDescriptor($client);
+
+$response = $service->metricDescriptors->create($project, $postBody);
 
 <?php
 /*
@@ -53,13 +54,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudMonitoring service
 $service = new Google_Service_CloudMonitoring($client);
-
 // The project ID to which the metric belongs.
 $project = '';
 // Name of the metric.
 $metric = '';
 
-$response = $service->metricDescriptors->deleteMetricDescriptors($project, $metric);
+$response = $service->metricDescriptors->delete($project, $metric);
 
 <?php
 /*
@@ -85,11 +85,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudMonitoring service
 $service = new Google_Service_CloudMonitoring($client);
-
 // The project id. The value can be the numeric project ID or string-based project name.
 $project = '';
 
-$response = $service->metricDescriptors->listMetricDescriptors($project);
+$postBody = new Google_Service_CloudMonitoring_ListMetricDescriptorsRequest($client);
+
+$response = $service->metricDescriptors->listMetricDescriptors($project, $postBody);
 
 foreach ($response['metrics'] as $element) {
   // TODO: Add code here to process the elements.
@@ -119,7 +120,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudMonitoring service
 $service = new Google_Service_CloudMonitoring($client);
-
 // The project ID to which this time series belongs. The value can be the numeric project ID or string-based project name.
 $project = '';
 // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example, compute.googleapis.com/instance/disk/read_ops_count.
@@ -127,7 +127,9 @@ $metric = '';
 // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
 $youngest = '';
 
-$response = $service->timeseries->listTimeseries($project, $metric, $youngest);
+$postBody = new Google_Service_CloudMonitoring_ListTimeseriesRequest($client);
+
+$response = $service->timeseries->listTimeseries($project, $metric, $youngest, $postBody);
 
 foreach ($response['timeseries'] as $element) {
   // TODO: Add code here to process the elements.
@@ -157,11 +159,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudMonitoring service
 $service = new Google_Service_CloudMonitoring($client);
-
 // The project ID. The value can be the numeric project ID or string-based project name.
 $project = '';
 
-$response = $service->timeseries->writeTimeseries($project);
+$postBody = new Google_Service_CloudMonitoring_WriteTimeseriesRequest($client);
+
+$response = $service->timeseries->write($project, $postBody);
 
 <?php
 /*
@@ -187,7 +190,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudMonitoring service
 $service = new Google_Service_CloudMonitoring($client);
-
 // The project ID to which this time series belongs. The value can be the numeric project ID or string-based project name.
 $project = '';
 // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example, compute.googleapis.com/instance/disk/read_ops_count.
@@ -195,7 +197,9 @@ $metric = '';
 // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
 $youngest = '';
 
-$response = $service->timeseriesDescriptors->listTimeseriesDescriptors($project, $metric, $youngest);
+$postBody = new Google_Service_CloudMonitoring_ListTimeseriesDescriptorsRequest($client);
+
+$response = $service->timeseriesDescriptors->listTimeseriesDescriptors($project, $metric, $youngest, $postBody);
 
 foreach ($response['timeseries'] as $element) {
   // TODO: Add code here to process the elements.

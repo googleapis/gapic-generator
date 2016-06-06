@@ -14,11 +14,8 @@
  */
 package com.google.api.codegen.metacode;
 
-import com.google.api.codegen.CollectionConfig;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
-
-import javax.annotation.Nullable;
 
 /**
  * InputParameter represents an input parameter for a method call.

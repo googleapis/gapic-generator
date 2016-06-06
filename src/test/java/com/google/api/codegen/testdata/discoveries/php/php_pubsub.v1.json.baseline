@@ -23,11 +23,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // The subscription whose message is being acknowledged.
 $subscription = '';
 
-$response = $service->projects->subscriptions->acknowledgeSubscriptions($subscription);
+$postBody = new Google_Service_Pubsub_AcknowledgeRequest($client);
+
+$response = $service->projects_subscriptions->acknowledge($subscription, $postBody);
 
 <?php
 /*
@@ -53,11 +54,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // The name of the subscription. It must have the format `"projects/{project}/subscriptions/{subscription}"`. `{subscription}` must start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`), underscores (`_`), periods (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be between 3 and 255 characters in length, and it must not start with `"goog"`.
 $name = '';
 
-$response = $service->projects->subscriptions->createSubscriptions($name);
+$postBody = new Google_Service_Pubsub_Subscription($client);
+
+$response = $service->projects_subscriptions->create($name, $postBody);
 
 <?php
 /*
@@ -83,11 +85,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // The subscription to delete.
 $subscription = '';
 
-$response = $service->projects->subscriptions->deleteSubscriptions($subscription);
+$response = $service->projects_subscriptions->delete($subscription);
 
 <?php
 /*
@@ -113,11 +114,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // The name of the subscription to get.
 $subscription = '';
 
-$response = $service->projects->subscriptions->getSubscriptions($subscription);
+$response = $service->projects_subscriptions->get($subscription);
 
 <?php
 /*
@@ -143,11 +143,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // REQUIRED: The resource for which policy is being requested. `resource` is usually specified as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in this value is resource specific and is specified in the documentation for the respective GetIamPolicy rpc.
 $resource = '';
 
-$response = $service->projects->subscriptions->getIamPolicySubscriptions($resource);
+$response = $service->projects_subscriptions->getIamPolicy($resource);
 
 <?php
 /*
@@ -173,11 +172,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // The name of the cloud project that subscriptions belong to.
 $project = '';
 
-$response = $service->projects->subscriptions->listSubscriptions($project);
+$response = $service->projects_subscriptions->listProjectsSubscriptions($project);
 
 foreach ($response['subscriptions'] as $element) {
   // TODO: Add code here to process the elements.
@@ -207,11 +205,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // The name of the subscription.
 $subscription = '';
 
-$response = $service->projects->subscriptions->modifyAckDeadlineSubscriptions($subscription);
+$postBody = new Google_Service_Pubsub_ModifyAckDeadlineRequest($client);
+
+$response = $service->projects_subscriptions->modifyAckDeadline($subscription, $postBody);
 
 <?php
 /*
@@ -237,11 +236,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // The name of the subscription.
 $subscription = '';
 
-$response = $service->projects->subscriptions->modifyPushConfigSubscriptions($subscription);
+$postBody = new Google_Service_Pubsub_ModifyPushConfigRequest($client);
+
+$response = $service->projects_subscriptions->modifyPushConfig($subscription, $postBody);
 
 <?php
 /*
@@ -267,11 +267,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // The subscription from which messages should be pulled.
 $subscription = '';
 
-$response = $service->projects->subscriptions->pullSubscriptions($subscription);
+$postBody = new Google_Service_Pubsub_PullRequest($client);
+
+$response = $service->projects_subscriptions->pull($subscription, $postBody);
 
 <?php
 /*
@@ -297,11 +298,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // REQUIRED: The resource for which policy is being specified. `resource` is usually specified as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in this value is resource specific and is specified in the documentation for the respective SetIamPolicy rpc.
 $resource = '';
 
-$response = $service->projects->subscriptions->setIamPolicySubscriptions($resource);
+$postBody = new Google_Service_Pubsub_SetIamPolicyRequest($client);
+
+$response = $service->projects_subscriptions->setIamPolicy($resource, $postBody);
 
 <?php
 /*
@@ -327,11 +329,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // REQUIRED: The resource for which policy detail is being requested. `resource` is usually specified as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in this value is resource specific and is specified in the documentation for the respective TestIamPermissions rpc.
 $resource = '';
 
-$response = $service->projects->subscriptions->testIamPermissionsSubscriptions($resource);
+$postBody = new Google_Service_Pubsub_TestIamPermissionsRequest($client);
+
+$response = $service->projects_subscriptions->testIamPermissions($resource, $postBody);
 
 <?php
 /*
@@ -357,11 +360,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}` must start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`), underscores (`_`), periods (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be between 3 and 255 characters in length, and it must not start with `"goog"`.
 $name = '';
 
-$response = $service->projects->topics->createTopics($name);
+$postBody = new Google_Service_Pubsub_Topic($client);
+
+$response = $service->projects_topics->create($name, $postBody);
 
 <?php
 /*
@@ -387,11 +391,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // Name of the topic to delete.
 $topic = '';
 
-$response = $service->projects->topics->deleteTopics($topic);
+$response = $service->projects_topics->delete($topic);
 
 <?php
 /*
@@ -417,11 +420,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // The name of the topic to get.
 $topic = '';
 
-$response = $service->projects->topics->getTopics($topic);
+$response = $service->projects_topics->get($topic);
 
 <?php
 /*
@@ -447,11 +449,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // REQUIRED: The resource for which policy is being requested. `resource` is usually specified as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in this value is resource specific and is specified in the documentation for the respective GetIamPolicy rpc.
 $resource = '';
 
-$response = $service->projects->topics->getIamPolicyTopics($resource);
+$response = $service->projects_topics->getIamPolicy($resource);
 
 <?php
 /*
@@ -477,11 +478,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // The name of the cloud project that topics belong to.
 $project = '';
 
-$response = $service->projects->topics->listTopics($project);
+$response = $service->projects_topics->listProjectsTopics($project);
 
 foreach ($response['topics'] as $element) {
   // TODO: Add code here to process the elements.
@@ -511,11 +511,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // The messages in the request will be published on this topic.
 $topic = '';
 
-$response = $service->projects->topics->publishTopics($topic);
+$postBody = new Google_Service_Pubsub_PublishRequest($client);
+
+$response = $service->projects_topics->publish($topic, $postBody);
 
 <?php
 /*
@@ -541,11 +542,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // REQUIRED: The resource for which policy is being specified. `resource` is usually specified as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in this value is resource specific and is specified in the documentation for the respective SetIamPolicy rpc.
 $resource = '';
 
-$response = $service->projects->topics->setIamPolicyTopics($resource);
+$postBody = new Google_Service_Pubsub_SetIamPolicyRequest($client);
+
+$response = $service->projects_topics->setIamPolicy($resource, $postBody);
 
 <?php
 /*
@@ -571,11 +573,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // The name of the topic that subscriptions are attached to.
 $topic = '';
 
-$response = $service->projects->topics->subscriptions->listSubscriptions($topic);
+$response = $service->projects_topics_subscriptions->listProjectsTopicsSubscriptions($topic);
 
 foreach ($response['subscriptions'] as $element) {
   // TODO: Add code here to process the elements.
@@ -605,9 +606,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Pubsub service
 $service = new Google_Service_Pubsub($client);
-
 // REQUIRED: The resource for which policy detail is being requested. `resource` is usually specified as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in this value is resource specific and is specified in the documentation for the respective TestIamPermissions rpc.
 $resource = '';
 
-$response = $service->projects->topics->testIamPermissionsTopics($resource);
+$postBody = new Google_Service_Pubsub_TestIamPermissionsRequest($client);
+
+$response = $service->projects_topics->testIamPermissions($resource, $postBody);
 

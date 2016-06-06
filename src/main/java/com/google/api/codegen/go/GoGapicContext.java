@@ -30,6 +30,7 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -70,20 +71,14 @@ public class GoGapicContext extends GapicContext implements GoContext {
           .build();
 
   /**
-   * The import path for GAX. TODO(mukai): Change this address when it's decided to merge into
-   * gcloud-golang.
+   * The import path for GAX.
    */
-  private static final String GAX_PACKAGE_BASE = "github.com/googleapis/gax-golang";
+  private static final String GAX_PACKAGE_BASE = "github.com/googleapis/gax-go";
 
   /**
    * The import path for generated pb.go files for core-proto files.
-   *
-   * Right now this and CORE_PROTO_PACKAGES are not used, assumed they are placed inside of this
-   * package, which is recommended by gcloud-golang team.
-   *
-   * TODO(mukai): Set the proper location when the location is known.
    */
-  private static final String CORE_PROTO_BASE = "<TBD>";
+  private static final String CORE_PROTO_BASE = "github.com/googleapis/proto-client-go";
 
   /**
    * The set of the core protobuf packages.
@@ -170,16 +165,23 @@ public class GoGapicContext extends GapicContext implements GoContext {
   }
 
   /**
-   * Returns the Go type name for the resources field.
+   * Returns the Go type for the resources field.
    *
    * Note that this returns the individual element type of the resources in the message. For
    * example, if SomeResponse has 'repeated string contents' field, the return value should be
    * 'string', not '[]string', and that's why the snippet can't use typeName() directly.
    */
-  public String getResourceTypeName(Field field) {
+  public TypeRef getResourceType(Field field) {
     // Creating a copy with 'required' to extract the type name but isn't affected by
     // repeated cardinality.
-    return typeName(field.getType().makeRequired());
+    return field.getType().makeRequired();
+  }
+
+  /**
+   * Returns the Go type name for the resources field.
+   */
+  public String getResourceTypeName(Field field) {
+    return typeName(getResourceType(field));
   }
 
   /**
@@ -336,12 +338,25 @@ public class GoGapicContext extends GapicContext implements GoContext {
   }
 
   /**
+   * Returns the package path for the client.
+   */
+  public String getClientPackagePath(Interface service) {
+    return getApiConfig().getPackageName() + "/" + getReducedServiceName(service);
+  }
+
+  /**
    * Creates a Go import from the message import.
    */
   private GoImport createMessageImport(MessageType messageType) {
-    String pkgName = messageType.getFile().getProto().getPackage().replace(".", "/");
+    String pkgName = messageType.getFile().getProto().getOptions().getGoPackage();
+    // If there's no `go_package` specified, we guess an import path based on the core proto base
+    // repo and the proto package.
+    if (Strings.isNullOrEmpty(pkgName)) {
+      pkgName = CORE_PROTO_BASE + "/" +
+          messageType.getFile().getProto().getPackage().replace(".", "/");
+    }
     String localName = localPackageName(messageType);
-    return GoImport.create(getApiConfig().getPackageName() + "/generated/" + pkgName, localName);
+    return GoImport.create(pkgName, localName);
   }
 
   private Set<GoImport> getStandardImports(Interface service) {
@@ -428,6 +443,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
   public Iterable<String> getTestImports(Interface service) {
     TreeSet<GoImport> thirdParty = new TreeSet<>();
 
+    thirdParty.add(GoImport.create(getClientPackagePath(service)));
     thirdParty.add(GoImport.create("golang.org/x/net/context"));
     thirdParty.add(GoImport.create(GAX_PACKAGE_BASE, "gax"));
     thirdParty.addAll(getMessageImports(service));

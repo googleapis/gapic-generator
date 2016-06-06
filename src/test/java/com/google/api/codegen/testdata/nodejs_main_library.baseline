@@ -309,39 +309,29 @@ LibraryServiceApi.prototype.getShelf = function getShelf() {
  * @param {?gax.CallOptions} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
- * @param {?APICallback<google.example.library.v1.ListShelvesResponse>} callback
- *   The function which will be called with the result of the API call.
- * @returns {?Stream<google.example.library.v1.Shelf>}
- *   An object stream of google.example.library.v1.Shelf instances, unless
- *   page streaming is disabled through the call options or a callback
- *   is specified. If page streaming is disabled or a callback is specified,
- *   this returns null, and the callback will be called with a single instance
- *   of google.example.library.v1.ListShelvesResponse.
+ * @returns {Stream<google.example.library.v1.Shelf>}
+ *   An object stream. By default, this emits google.example.library.v1.Shelf
+ *   instances on 'data' event. This object can also be configured to emit
+ *   pages of the responses through the options parameter.
  * @throws an error if the RPC is aborted.
  */
 LibraryServiceApi.prototype.listShelves = function listShelves() {
   var args = arguejs({
-    'options': [gax.CallOptions],
-    'callback': [Function]
+    'options': [gax.CallOptions]
   });
   var req = {
   };
-  var stream = (args.callback) ? null : through2.obj();
+  var stream = through2.obj();
   Promise.all([this.defaults, this.stub]).then(function(vars) {
     var defaults = vars[0];
     var stub = vars[1];
     var options = defaults.listShelves.merge(args.options);
     var apiCall = gax.createApiCall(stub.listShelves.bind(stub), options);
     var result = apiCall(req, args.callback, this.headers, {});
-    if (stream) {
-      result.pipe(stream);
-    }
+    result.pipe(stream);
+    stream.on('end', function() { result.end(); });
   }.bind(this))['catch'](function(err) {
-    if (args.callback) {
-      args.callback(err);
-    } else {
-      stream.emit('error', err);
-    }
+    stream.emit('error', err);
   });
   return stream;
 };
@@ -552,44 +542,34 @@ LibraryServiceApi.prototype.getBook = function getBook() {
  * @param {?gax.CallOptions} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
- * @param {?APICallback<google.example.library.v1.ListBooksResponse>} callback
- *   The function which will be called with the result of the API call.
- * @returns {?Stream<google.example.library.v1.Book>}
- *   An object stream of google.example.library.v1.Book instances, unless
- *   page streaming is disabled through the call options or a callback
- *   is specified. If page streaming is disabled or a callback is specified,
- *   this returns null, and the callback will be called with a single instance
- *   of google.example.library.v1.ListBooksResponse.
+ * @returns {Stream<google.example.library.v1.Book>}
+ *   An object stream. By default, this emits google.example.library.v1.Book
+ *   instances on 'data' event. This object can also be configured to emit
+ *   pages of the responses through the options parameter.
  * @throws an error if the RPC is aborted.
  */
 LibraryServiceApi.prototype.listBooks = function listBooks() {
   var args = arguejs({
     'name': String,
     'otherArgs': [Object],
-    'options': [gax.CallOptions],
-    'callback': [Function]
+    'options': [gax.CallOptions]
   });
   var req = {
     'name': args.name,
     'page_size': args.otherArgs.pageSize || 0,
     'filter': args.otherArgs.filter || ''
   };
-  var stream = (args.callback) ? null : through2.obj();
+  var stream = through2.obj();
   Promise.all([this.defaults, this.stub]).then(function(vars) {
     var defaults = vars[0];
     var stub = vars[1];
     var options = defaults.listBooks.merge(args.options);
     var apiCall = gax.createApiCall(stub.listBooks.bind(stub), options);
     var result = apiCall(req, args.callback, this.headers, {});
-    if (stream) {
-      result.pipe(stream);
-    }
+    result.pipe(stream);
+    stream.on('end', function() { result.end(); });
   }.bind(this))['catch'](function(err) {
-    if (args.callback) {
-      args.callback(err);
-    } else {
-      stream.emit('error', err);
-    }
+    stream.emit('error', err);
   });
   return stream;
 };
@@ -726,42 +706,32 @@ LibraryServiceApi.prototype.moveBook = function moveBook() {
  * @param {?gax.CallOptions} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
- * @param {?APICallback<google.example.library.v1.ListStringsResponse>} callback
- *   The function which will be called with the result of the API call.
- * @returns {?Stream<String>}
- *   An object stream of String instances, unless
- *   page streaming is disabled through the call options or a callback
- *   is specified. If page streaming is disabled or a callback is specified,
- *   this returns null, and the callback will be called with a single instance
- *   of google.example.library.v1.ListStringsResponse.
+ * @returns {Stream<String>}
+ *   An object stream. By default, this emits String
+ *   instances on 'data' event. This object can also be configured to emit
+ *   pages of the responses through the options parameter.
  * @throws an error if the RPC is aborted.
  */
 LibraryServiceApi.prototype.listStrings = function listStrings() {
   var args = arguejs({
     'otherArgs': [Object],
-    'options': [gax.CallOptions],
-    'callback': [Function]
+    'options': [gax.CallOptions]
   });
   var req = {
     'name': args.otherArgs.name || '',
     'page_size': args.otherArgs.pageSize || 0
   };
-  var stream = (args.callback) ? null : through2.obj();
+  var stream = through2.obj();
   Promise.all([this.defaults, this.stub]).then(function(vars) {
     var defaults = vars[0];
     var stub = vars[1];
     var options = defaults.listStrings.merge(args.options);
     var apiCall = gax.createApiCall(stub.listStrings.bind(stub), options);
     var result = apiCall(req, args.callback, this.headers, {});
-    if (stream) {
-      result.pipe(stream);
-    }
+    result.pipe(stream);
+    stream.on('end', function() { result.end(); });
   }.bind(this))['catch'](function(err) {
-    if (args.callback) {
-      args.callback(err);
-    } else {
-      stream.emit('error', err);
-    }
+    stream.emit('error', err);
   });
   return stream;
 };

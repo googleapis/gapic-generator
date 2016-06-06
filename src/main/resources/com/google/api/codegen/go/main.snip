@@ -1,7 +1,7 @@
 @extends "common.snip"
 
 @snippet generateFilename(service)
-    {@context.getApiConfig().getPackageName()}/generated/{@context.getReducedServiceName(service)}/client.go
+    {@context.getClientPackagePath(service)}/client.go
 @end
 
 @snippet generateClass(service, body)
@@ -156,8 +156,8 @@
 
     // Close closes the connection to the API service. The user should invoke this when
     // the client is no longer required.
-    func (client *Client) Close() error {
-        return client.conn.Close()
+    func (c *Client) Close() error {
+        return c.conn.Close()
     }
 @end
 
@@ -221,35 +221,35 @@
                      tokenZeroValue = context.zeroValue(pageStreaming.getRequestTokenField().getType)
 
                     {@methodComment(method, methodName)}
-                    func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}) *{@iteratorTypeName} {
-                        ctx = metadata.NewContext(ctx, client.metadata)
-                        iterator := &{@iteratorTypeName}{}
-                        iterator.apiCall = func() error {
-                            if iterator.atLastPage {
+                    func (c *Client) {@methodName}(ctx context.Context, req {@inTypeName}) *{@iteratorTypeName} {
+                        ctx = metadata.NewContext(ctx, c.metadata)
+                        it := &{@iteratorTypeName}{}
+                        it.apiCall = func() error {
+                            if it.atLastPage {
                                 return Done
                             }
                             var resp {@outTypeName}
-                            err := gax.Invoke(ctx, func (c context.Context) error {
+                            err := gax.Invoke(ctx, func (ctx context.Context) error {
                                 var err error
-                                req.{@requestTokenFieldName} = iterator.nextPageToken
+                                req.{@requestTokenFieldName} = it.nextPageToken
                                 @if hasPageSizeField
-                                    req.{@context.lowerUnderscoreToUpperCamel(pageStreaming.getPageSizeField().getSimpleName())} = iterator.pageSize
+                                    req.{@context.lowerUnderscoreToUpperCamel(pageStreaming.getPageSizeField().getSimpleName())} = it.pageSize
                                 @end
-                                resp, err = client.client.{@methodName}(c, req)
+                                resp, err = c.client.{@methodName}(ctx, req)
                                 return err
-                            }, client.callOptions["{@methodName}"]...)
+                            }, c.callOptions["{@methodName}"]...)
                             if err != nil {
                                 return err
                             }
                             if resp.{@responseTokenFieldName} == {@tokenZeroValue} {
-                                iterator.atLastPage = true
+                                it.atLastPage = true
                             } else {
-                                iterator.nextPageToken = resp.{@responseTokenFieldName}
+                                it.nextPageToken = resp.{@responseTokenFieldName}
                             }
-                            iterator.items = resp.{@resourceFieldName}
+                            it.items = resp.{@resourceFieldName}
                             return nil
                         }
-                        return iterator
+                        return it
                     }
 
                 @end
@@ -257,24 +257,24 @@
 
                 {@methodComment(method, methodName)}
                 @if {@context.isEmpty(method.getOutputType)}
-                    func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}) error {
-                        ctx = metadata.NewContext(ctx, client.metadata)
-                        err := gax.Invoke(ctx, func (c context.Context) error {
+                    func (c *Client) {@methodName}(ctx context.Context, req {@inTypeName}) error {
+                        ctx = metadata.NewContext(ctx, c.metadata)
+                        err := gax.Invoke(ctx, func (ctx context.Context) error {
                             var err error
-                            _, err = client.client.{@methodName}(c, req)
+                            _, err = c.client.{@methodName}(ctx, req)
                             return err
-                        }, client.callOptions["{@methodName}"]...)
+                        }, c.callOptions["{@methodName}"]...)
                         return err
                     }
                 @else
-                    func (client *Client) {@methodName}(ctx context.Context, req {@inTypeName}) ({@outTypeName}, error) {
-                        ctx = metadata.NewContext(ctx, client.metadata)
+                    func (c *Client) {@methodName}(ctx context.Context, req {@inTypeName}) ({@outTypeName}, error) {
+                        ctx = metadata.NewContext(ctx, c.metadata)
                         var resp {@outTypeName}
-                        err := gax.Invoke(ctx, func (c context.Context) error {
+                        err := gax.Invoke(ctx, func (ctx context.Context) error {
                             var err error
-                            resp, err = client.client.{@methodName}(c, req)
+                            resp, err = c.client.{@methodName}(ctx, req)
                             return err
-                        }, client.callOptions["{@methodName}"]...)
+                        }, c.callOptions["{@methodName}"]...)
                         if err != nil {
                             return nil, err
                         }
@@ -301,13 +301,14 @@
     @join pageStreaming : context.getPageStreamingConfigs(service)
         @let iteratorTypeName = context.getIteratorTypeName(pageStreaming), \
              tokenType = context.getNextPageTokenType(service, pageStreaming), \
-             resourceFieldType = context.getResourceTypeName(pageStreaming.getResourcesField), \
+             resourceFieldType = context.getResourceType(pageStreaming.getResourcesField), \
+             resourceFieldTypeName = context.getResourceTypeName(pageStreaming.getResourcesField), \
              hasPageSizeField = pageStreaming.hasPageSizeField()
 
-            // {@iteratorTypeName} manages a stream of {@resourceFieldType}.
+            // {@iteratorTypeName} manages a stream of {@resourceFieldTypeName}.
             type {@iteratorTypeName} struct {
                 // The current page data.
-                items         []{@resourceFieldType}
+                items         []{@resourceFieldTypeName}
                 atLastPage    bool
                 currentIndex  int
                 @if hasPageSizeField
@@ -319,34 +320,34 @@
 
             // NextPage moves to the next page and updates its internal data.
             // It returns Done if no more pages exist.
-            func (iterator *{@iteratorTypeName}) NextPage() ([]{@resourceFieldType}, error) {
-                err := iterator.apiCall()
+            func (it *{@iteratorTypeName}) NextPage() ([]{@resourceFieldTypeName}, error) {
+                err := it.apiCall()
                 if err != nil {
                     return nil, err
                 }
-                return iterator.items, err
+                return it.items, err
             }
 
             // Next returns the next element in the stream. It returns Done at
             // the end of the stream.
-            func (iterator *{@iteratorTypeName}) Next() ({@resourceFieldType}, error) {
-                for iterator.currentIndex >= len(iterator.items) {
-                    _, err := iterator.NextPage()
+            func (it *{@iteratorTypeName}) Next() ({@resourceFieldTypeName}, error) {
+                for it.currentIndex >= len(it.items) {
+                    _, err := it.NextPage()
                     if err != nil {
-                        return nil, err
+                        return {@context.zeroValue(resourceFieldType)}, err
                     }
-                    iterator.currentIndex = 0
+                    it.currentIndex = 0
                 }
-                result := iterator.items[iterator.currentIndex]
-                iterator.currentIndex++
+                result := it.items[it.currentIndex]
+                it.currentIndex++
                 return result, nil
             }
 
             @if hasPageSizeField
                 // SetPageSize sets the maximum size of the next page to be
                 // retrieved.
-                func (iterator *{@iteratorTypeName}) SetPageSize(int32 pageSize) {
-                    iterator.pageSize = pageSize
+                func (it *{@iteratorTypeName}) SetPageSize(pageSize int32) {
+                    it.pageSize = pageSize
                 }
 
             @end
@@ -354,13 +355,13 @@
             // does not retrieve the next page, or modify the cached page. If
             // Next is called, there is no guarantee that the result returned
             // will be from the next page until NextPage is called.
-            func (iterator *{@iteratorTypeName}) SetPageToken(token {@tokenType}) {
-                iterator.nextPageToken = token
+            func (it *{@iteratorTypeName}) SetPageToken(token {@tokenType}) {
+                it.nextPageToken = token
             }
 
             // NextPageToken returns the next page token.
-            func (iterator *{@iteratorTypeName}) NextPageToken() {@tokenType} {
-                return iterator.nextPageToken
+            func (it *{@iteratorTypeName}) NextPageToken() {@tokenType} {
+                return it.nextPageToken
             }
         @end
     @end
