@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 /**
  * An interface-based view of model, consisting of a strategy for getting the interfaces of the
- * model and returning them as a single list object.
+ * model and returning them in a single iterable object.
  */
 public class InterfaceListView implements InputElementView<Iterable<Interface>> {
 
