@@ -52,7 +52,7 @@ public class NodeJSGapicProvider<InputElementT extends ProtoElement>
   public <Element> void output(
       String outputPath, Multimap<Element, GeneratedResult> elements)
       throws IOException {
-    CodeGeneratorUtil.writeGeneratedOutput("lib/" + outputPath, elements);
+    CodeGeneratorUtil.writeGeneratedOutput(outputPath + "/lib/", elements);
   }
 
   @Override

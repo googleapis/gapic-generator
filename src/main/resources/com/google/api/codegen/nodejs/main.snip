@@ -323,8 +323,12 @@
         @if optionalParams
           'otherArgs': [Object],
         @end
-        'options': [gax.CallOptions],
-        'callback': [Function]
+        @if methodConfig.isPageStreaming
+          'options': [gax.CallOptions]
+        @else
+          'options': [gax.CallOptions],
+          'callback': [Function]
+        @end
       });
       var req = {
         @if requiredParams
@@ -339,22 +343,17 @@
         @end
       };
       @if methodConfig.isPageStreaming
-        var stream = (args.callback) ? null : through2.obj();
+        var stream = through2.obj();
         Promise.all([this.defaults, this.stub]).then(function(vars) {
           var defaults = vars[0];
           var stub = vars[1];
           var options = defaults.{@methodName}.merge(args.options);
           var apiCall = gax.createApiCall(stub.{@methodName}.bind(stub), options);
           var result = apiCall(req, args.callback, this.headers, {});
-          if (stream) {
-            result.pipe(stream);
-          }
+          result.pipe(stream);
+          stream.on('end', function() { result.end(); });
         }.bind(this))['catch'](function(err) {
-          if (args.callback) {
-            args.callback(err);
-          } else {
-            stream.emit('error', err);
-          }
+          stream.emit('error', err);
         });
         return stream;
       @else
