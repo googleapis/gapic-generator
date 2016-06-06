@@ -40,7 +40,7 @@
 @end
 
 # Helper method for initLineStructure()
-@private initLineStructureArgs(line) {
+@private initLineStructureArgs(line) 
   @join fieldSetting : line.getFieldSettings on ", "
     {@formattedIdentifier(fieldSetting)}
   @end
@@ -67,7 +67,6 @@
 @private formattedIdentifier(lineOrFieldSetting)
   @let metadata = lineOrFieldSetting.getInitValueConfig
     @if metadata.hasFormattingConfig
-      # FIXME: maybe this is called in too many places; carefully check generated snippets
       {@metadata.getCollectionConfig.getEntityName}_{@lineOrFieldSetting.getIdentifier}
     @else
       {@lineOrFieldSetting.getIdentifier}
