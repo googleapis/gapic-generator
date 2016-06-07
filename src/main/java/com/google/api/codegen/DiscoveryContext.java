@@ -21,6 +21,7 @@ import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -160,6 +161,41 @@ public abstract class DiscoveryContext extends CodegenContext {
 
   public boolean isPatch(Method method) {
     return apiaryConfig.getHttpMethod(method.getName()).equals("PATCH");
+  }
+
+  // line wrap `str`, returning a list of lines. Each line in the returned list is guaranteed to
+  // not have new line characters.
+  public List<String> lineWrap(String str, int col) {
+    List<String> lines = new ArrayList<>();
+    str = str.trim();
+
+    while (!str.isEmpty()) {
+      int splitPos = str.indexOf('\n');
+      if (splitPos < 0 && str.length() > col || splitPos > col) {
+        for (int i = 0; i < str.length() && i < col; i++) {
+          char c = str.charAt(i);
+          if (Character.isWhitespace(c) || "([".indexOf(c) >= 0) {
+            splitPos = i;
+          }
+        }
+      }
+      if (splitPos < 0 && str.length() > col || splitPos > col) {
+        for (int i = 0; i < str.length(); i++) {
+          if (Character.isWhitespace(str.charAt(i))) {
+            splitPos = i;
+            break;
+          }
+        }
+      }
+      if (splitPos < 0) {
+        lines.add(str.trim());
+        str = "";
+      } else {
+        lines.add(str.substring(0, splitPos).trim());
+        str = str.substring(splitPos).trim();
+      }
+    }
+    return lines;
   }
 
   // Handlers for Exceptional Inconsistencies

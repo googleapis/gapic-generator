@@ -53,7 +53,10 @@
       @let paramField = context.getField(signatureType, param), \
            paramValue = context.typeDefaultValue(signatureType, paramField, method), \
            paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
-        @# {@paramDescription}
+        @join line : context.lineWrap(paramDescription, 100)
+          @# {@line}
+        @end
+
         {@context.getParamName(method, param)} = {@paramValue}
 
       @end

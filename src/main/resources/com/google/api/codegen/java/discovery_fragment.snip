@@ -161,7 +161,10 @@
            paramType = context.typeName(signatureType, paramField), \
            paramValue = context.typeDefaultValue(signatureType, paramField), \
            paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
-        {@item(paramDescription)}
+        @join line : context.lineWrap(paramDescription, 100)
+          // {@line}
+        @end
+        
         {@paramType} {@param} = {@paramValue}
       @end
     @end
@@ -193,12 +196,6 @@
 # name "content" used for request body as in API Explorer to avoid collisions
 @private requestName()
   content
-@end
-
-@private item(description)
-  @if description
-    // * {@description}
-  @end
 @end
 
 @private typePath(types)
