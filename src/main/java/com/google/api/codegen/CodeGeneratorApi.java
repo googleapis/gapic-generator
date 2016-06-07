@@ -16,6 +16,7 @@ package com.google.api.codegen;
 
 import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.gapic.GapicProviderFactory;
+import com.google.api.codegen.gapic.MainGapicProviderFactory;
 import com.google.api.tools.framework.aspects.context.ContextConfigAspect;
 import com.google.api.tools.framework.aspects.documentation.DocumentationConfigAspect;
 import com.google.api.tools.framework.aspects.http.HttpConfigAspect;
@@ -34,17 +35,14 @@ import com.google.api.tools.framework.processors.resolver.Resolver;
 import com.google.api.tools.framework.tools.ToolDriverBase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
 import com.google.inject.TypeLiteral;
 import com.google.protobuf.Message;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Main class for the code generator.
@@ -123,7 +121,8 @@ public class CodeGeneratorApi extends ToolDriverBase {
       String factory = generator.getFactory();
       String id = generator.getId();
 
-      GapicProviderFactory providerFactory = createProviderFactory(model, factory);
+      GapicProviderFactory<GapicProvider<? extends Object>> providerFactory = createProviderFactory(
+          model, factory);
       List<GapicProvider<? extends Object>> providers = providerFactory.create(model, apiConfig, id);
       for (GapicProvider<? extends Object> provider : providers) {
         provider.generate(options.get(OUTPUT_FILE));
@@ -131,19 +130,17 @@ public class CodeGeneratorApi extends ToolDriverBase {
     }
   }
 
-  private static GapicProviderFactory createProviderFactory(final Model model, String factory) {
+  private static GapicProviderFactory<GapicProvider<? extends Object>> createProviderFactory(
+      final Model model, String factory) {
     @SuppressWarnings("unchecked")
-    GapicProviderFactory provider = GeneratorBuilderUtil.createClass(
-        factory,
-        GapicProviderFactory.class,
-        new Class<?>[] {},
-        new Object[] {},
-        "generator", new GeneratorBuilderUtil.ErrorReporter() {
-        @Override
-        public void error(String message, Object... args) {
-          model.addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
-        }
-      });
+    GapicProviderFactory<GapicProvider<? extends Object>> provider = GeneratorBuilderUtil
+        .createClass(factory, GapicProviderFactory.class, new Class<?>[] {}, new Object[] {},
+            "generator", new GeneratorBuilderUtil.ErrorReporter() {
+              @Override
+              public void error(String message, Object... args) {
+                model.addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
+              }
+            });
     return provider;
   }
 
