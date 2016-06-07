@@ -27,24 +27,27 @@ import com.google.api.codegen.go.GoSnippetSetRunner;
 import com.google.api.codegen.java.JavaGapicContext;
 import com.google.api.codegen.java.JavaIterableSnippetSetRunner;
 import com.google.api.codegen.java.JavaSnippetSetRunner;
+import com.google.api.codegen.nodejs.NodeJSClientConfigGapicContext;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
 import com.google.api.codegen.php.PhpGapicContext;
 import com.google.api.codegen.php.PhpSnippetSetRunner;
+import com.google.api.codegen.py.PythonClientConfigGapicContext;
 import com.google.api.codegen.py.PythonGapicContext;
 import com.google.api.codegen.py.PythonInterfaceInitializer;
 import com.google.api.codegen.py.PythonProtoFileInitializer;
 import com.google.api.codegen.py.PythonSnippetSetRunner;
+import com.google.api.codegen.ruby.RubyClientConfigGapicContext;
 import com.google.api.codegen.ruby.RubyGapicContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 import java.util.Arrays;
 import java.util.List;
-
-import org.apache.commons.lang3.NotImplementedException;
 
 /**
  * GapicProviderFactory creates GapicProvider instances based on an id.
@@ -135,7 +138,7 @@ public class MainGapicProviderFactory
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
               .setView(new InterfaceView())
-              .setContext(new ClientConfigGapicContext(model, apiConfig))
+              .setContext(new NodeJSClientConfigGapicContext(model, apiConfig))
               .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
               .setSnippetFileNames(Arrays.asList("json.snip"))
               .build();
@@ -177,7 +180,7 @@ public class MainGapicProviderFactory
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
               .setView(new InterfaceView())
-              .setContext(new ClientConfigGapicContext(model, apiConfig))
+              .setContext(new PythonClientConfigGapicContext(model, apiConfig))
               .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
               .setSnippetFileNames(Arrays.asList("json.snip"))
               .build();
@@ -206,7 +209,7 @@ public class MainGapicProviderFactory
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
               .setView(new InterfaceView())
-              .setContext(new ClientConfigGapicContext(model, apiConfig))
+              .setContext(new RubyClientConfigGapicContext(model, apiConfig))
               .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
               .setSnippetFileNames(Arrays.asList("json.snip"))
               .build();

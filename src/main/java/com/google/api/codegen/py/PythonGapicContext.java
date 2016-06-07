@@ -105,12 +105,7 @@ public class PythonGapicContext extends GapicContext {
    */
   @Override
   public String getOutputSubPath(ProtoElement element) {
-    String packageName = getApiConfig().getPackageName();
-    if (Strings.isNullOrEmpty(packageName)) {
-      return "";
-    } else {
-      return packageName.replace('.', '/');
-    }
+    return pythonCommon.getOutputSubPath(getApiConfig().getPackageName());
   }
 
   // Snippet Helpers
