@@ -35,6 +35,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
+import autovalue.shaded.com.google.common.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -368,15 +370,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     String returnType = returnTypeOrEmpty(method.getOutputType(), importHandler);
 
     MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
-    Iterable<Field> requiredFields = methodConfig.getRequiredFields();
-    Iterable<Field> optionalFields = methodConfig.getOptionalFields();
-    List<Field> fields = new ArrayList<Field>();
-    for (Field field : requiredFields) {
-      fields.add(field);
-    }
-    for (Field field : optionalFields) {
-      fields.add(field);
-    }
+    List<Field> fields = Lists.newArrayList(methodConfig.getRequiredFields());
 
     PythonDocConfig docConfig =
         PythonDocConfig.newBuilder()
