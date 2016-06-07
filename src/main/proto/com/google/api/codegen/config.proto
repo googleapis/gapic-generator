@@ -72,6 +72,9 @@ option java_package = "com.google.api.codegen";
 //       ...
 //     ...
 message ConfigProto {
+  // TODO(https://github.com/googleapis/toolkit/issues/177)
+  // Remove when discovery is converted to use the generator
+  // field to specify a factory.
   repeated TemplateProto templates = 3;
 
   // The settings of generated code in a specific language.
@@ -79,6 +82,9 @@ message ConfigProto {
 
   // The language of the generated code.
   string language = 5;
+
+  // The configuration to create the providers.
+  GeneratorProto generator = 6;
 
   // A list of API interface configurations.
   repeated InterfaceConfigProto interfaces = 10;
@@ -110,6 +116,16 @@ message TemplateProto {
 message LanguageSettingsProto {
   // Package name used for the language.
   string package_name = 1;
+}
+
+message GeneratorProto {
+  // The fully qualified name of the Java class of the codegen
+  // provider factory. Must be provided.
+  string factory = 1;
+
+  // The id to pass to the provider factory for the set of providers
+  // to create.
+  string id = 2;
 }
 
 message InterfaceConfigProto {

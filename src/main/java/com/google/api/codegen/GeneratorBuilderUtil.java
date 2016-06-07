@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;

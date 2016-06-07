@@ -102,12 +102,11 @@ public class DiscoveryFragmentGeneratorApi {
     }
 
     Multimap<Method, GeneratedResult> docs = ArrayListMultimap.create();
-    
+
     // TODO: Support multiple templates; don't hard-code the zero-index here.
     Preconditions.checkArgument(configProto.getTemplatesCount() == 1);
     for (String snippetInputName : configProto.getTemplates(0).getSnippetFilesList()) {
-      SnippetDescriptor snippetDescriptor = new SnippetDescriptor(snippetInputName);
-      Map<Method, GeneratedResult> code = generator.generateFragments(snippetDescriptor);
+      Map<Method, GeneratedResult> code = generator.generateFragments(snippetInputName);
       if (code == null) {
         continue;
       }

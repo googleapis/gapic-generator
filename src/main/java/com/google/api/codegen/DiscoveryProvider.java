@@ -25,7 +25,7 @@ import java.io.IOException;
  */
 public interface DiscoveryProvider {
 
-  public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor);
+  public GeneratedResult generateFragments(Method method, String snippetFileName);
 
   public void output(String outputPath, Multimap<Method, GeneratedResult> methods)
       throws IOException;

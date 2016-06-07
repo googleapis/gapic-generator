@@ -12,20 +12,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.py;
 
-/**
- * Represents a snippet input resource.
- */
-public class SnippetDescriptor {
+import com.google.api.tools.framework.model.Interface;
+import com.google.common.collect.ImmutableMap;
 
-  private final String snippetInputName;
+public class PythonInterfaceInitializer
+    implements PythonSnippetSetInputInitializer<Interface> {
 
-  public SnippetDescriptor(String snippetInputName) {
-    this.snippetInputName = snippetInputName;
+  @Override
+  public PythonImportHandler getImportHandler(Interface iface) {
+    return new PythonImportHandler(iface);
   }
 
-  public String getSnippetInputName() {
-    return snippetInputName;
+  @Override
+  public ImmutableMap<String, Object> getGlobalMap(Interface iface) {
+    return ImmutableMap.of("pyproto", (Object) new PythonProtoElements());
   }
 }

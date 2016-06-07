@@ -12,11 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.php;
+package com.google.api.codegen.py;
 
-/**
- * A PhpContext provides functionality specific to a context in PHP.
- */
-public interface PhpContext {
-  void resetState(PhpContextCommon phpCommon);
+import com.google.common.collect.ImmutableMap;
+
+public interface PythonSnippetSetInputInitializer<InputElementT> {
+  public PythonImportHandler getImportHandler(InputElementT t);
+
+  public ImmutableMap<String, Object> getGlobalMap(InputElementT element);
 }

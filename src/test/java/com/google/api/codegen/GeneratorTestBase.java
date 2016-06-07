@@ -31,6 +31,9 @@ import javax.annotation.Nullable;
 
 /**
  * Base class for code generator baseline tests.
+ *
+ * Note: This is now only used by Discovery. TODO: move discovery over to the
+ * new model of testing (see GapiTestBase).
  */
 public abstract class GeneratorTestBase extends ConfigBaselineTestCase {
 

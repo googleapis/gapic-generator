@@ -14,8 +14,9 @@
  */
 package com.google.api.codegen.php;
 
+import com.google.api.codegen.CodegenContext;
 import com.google.api.codegen.GeneratedResult;
-import com.google.api.codegen.SnippetDescriptor;
+import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
@@ -27,7 +28,7 @@ import java.util.List;
  * case (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
  * PHP context class (PhpGapicContext vs PhpDiscoveryContext).
  */
-public class PhpSnippetSetRunner {
+public class PhpSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
 
   /**
    * The path to the root of snippet resources.
@@ -36,21 +37,23 @@ public class PhpSnippetSetRunner {
       PhpSnippetSetRunner.class.getPackage().getName().replace('.', '/');
 
   @SuppressWarnings("unchecked")
-  public <Element> GeneratedResult generate(
-      Element element,
-      SnippetDescriptor snippetDescriptor,
-      PhpContext context,
-      String defaultPackagePrefix) {
-    PhpSnippetSet<Element> snippets =
+  public GeneratedResult generate(
+      ElementT element,
+      String snippetFileName,
+      CodegenContext context) {
+    PhpSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             PhpSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
-            snippetDescriptor.getSnippetInputName(),
+            snippetFileName,
             ImmutableMap.<String, Object>of("context", context));
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
     PhpContextCommon phpContextCommon = new PhpContextCommon();
-    context.resetState(snippets, phpContextCommon);
+
+    // TODO don't depend on a cast here
+    PhpContext phpContext = (PhpContext) context;
+    phpContext.resetState(phpContextCommon);
 
     Doc body = snippets.generateBody(element);
 
@@ -58,10 +61,5 @@ public class PhpSnippetSetRunner {
 
     Doc result = snippets.generateClass(element, body, cleanedImports);
     return GeneratedResult.create(result, outputFilename);
-  }
-
-  public <Element> GeneratedResult generate(
-      Element element, SnippetDescriptor snippetDescriptor, PhpContext context) {
-    return generate(element, snippetDescriptor, context, null);
   }
 }

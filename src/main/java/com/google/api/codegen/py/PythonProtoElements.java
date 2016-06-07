@@ -57,17 +57,4 @@ public class PythonProtoElements {
     }
     return prefix;
   }
-
-  /**
-   * Converts the dot-separated Python package name from the GAPIC config to a slash-separated
-   * directory structure.
-   */
-  public static String packagePathPrefix(PythonGapicContext context) {
-    String packageName = context.getApiConfig().getPackageName();
-    if (Strings.isNullOrEmpty(packageName)) {
-      return "";
-    } else {
-      return packageName.replace('.', '/') + "/";
-    }
-  }
 }

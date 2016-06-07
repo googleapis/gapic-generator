@@ -89,7 +89,7 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
   }
 
   @Override
-  public void resetState(PhpSnippetSet<?> phpSnippetSet, PhpContextCommon phpCommon) {
+  public void resetState(PhpContextCommon phpCommon) {
     // TODO implement when necessary
   }
 
