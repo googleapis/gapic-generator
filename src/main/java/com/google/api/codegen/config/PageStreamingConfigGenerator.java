@@ -28,8 +28,8 @@ import java.util.Map;
  */
 public class PageStreamingConfigGenerator implements MethodConfigGenerator {
 
-  private static final String PARAMETER_PAGE_TOKEN = "page_token";
   private static final String PARAMETER_PAGE_SIZE = "page_size";
+  private static final String PARAMETER_PAGE_TOKEN = "page_token";
   private static final String PARAMETER_NEXT_PAGE_TOKEN = "next_page_token";
 
   private static final String CONFIG_KEY_REQUEST = "request";
@@ -61,12 +61,14 @@ public class PageStreamingConfigGenerator implements MethodConfigGenerator {
       String fieldName = field.getSimpleName();
       if (fieldName.equals(PARAMETER_PAGE_TOKEN)) {
         requestConfig.put(CONFIG_KEY_TOKEN_FIELD, fieldName);
-      }
-      if (fieldName.equals(PARAMETER_PAGE_SIZE)) {
+      } else if (fieldName.equals(PARAMETER_PAGE_SIZE)) {
         requestConfig.put(CONFIG_KEY_PAGE_SIZE_FIELD, fieldName);
       }
     }
-    return (requestConfig.size() >= 1) ? requestConfig : null;
+    if (requestConfig.size() > 0) {
+      return requestConfig;
+    }
+    return null;
   }
 
   private Map<String, Object> generateResponseConfig(Method method) {

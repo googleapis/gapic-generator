@@ -24,5 +24,8 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 // Create a new Vision service
 $service = new Google_Service_Vision($client);
 
-$response = $service->images->annotateImages();
+
+$postBody = new Google_Service_Vision_BatchAnnotateImagesRequest($client);
+
+$response = $service->images->annotate($postBody);
 

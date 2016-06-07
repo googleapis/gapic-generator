@@ -246,12 +246,6 @@ module Google
 
           # Lists shelves.
           #
-          # @param page_size [Integer]
-          #   The maximum number of resources contained in the underlying API
-          #   response. If page streaming is performed per-resource, this
-          #   parameter does not affect the return value. If page streaming is
-          #   performed per-page, this determines the maximum number of
-          #   resources in a page.
           # @param options [Google::Gax::CallOptions]
           #   Overrides the default settings for this call, e.g, timeout,
           #   retries, etc.
@@ -262,10 +256,8 @@ module Google
           #   object.
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           def list_shelves(
-            page_size: 0,
             options: nil)
-            req = Google::Example::Library::V1::ListShelvesRequest.new(
-              page_size: page_size)
+            req = Google::Example::Library::V1::ListShelvesRequest.new
             settings = @defaults['list_shelves'].merge(options)
             api_call = Google::Gax.create_api_call(
               @stub.method(:list_shelves), settings)
@@ -504,6 +496,11 @@ module Google
           #
           # @param name [String]
           # @param page_size [Integer]
+          #   The maximum number of resources contained in the underlying API
+          #   response. If page streaming is performed per-resource, this
+          #   parameter does not affect the return value. If page streaming is
+          #   performed per-page, this determines the maximum number of
+          #   resources in a page.
           # @param options [Google::Gax::CallOptions]
           #   Overrides the default settings for this call, e.g, timeout,
           #   retries, etc.
@@ -1185,10 +1182,6 @@ module Google
         class StringBuilder; end
 
         # Request message for LibraryService.ListShelves.
-        # @!attribute [rw] page_size
-        #   @return [Integer]
-        #     Requested page size. Server may return fewer shelves than requested.
-        #     If unspecified, server will pick an appropriate default.
         # @!attribute [rw] page_token
         #   @return [String]
         #     A token identifying a page of results the server should return.

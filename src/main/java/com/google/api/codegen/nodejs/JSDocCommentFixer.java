@@ -15,7 +15,6 @@
 package com.google.api.codegen.nodejs;
 
 import com.google.api.codegen.CommentPatterns;
-import com.google.common.base.Splitter;
 
 import java.util.regex.Matcher;
 

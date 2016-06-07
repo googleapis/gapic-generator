@@ -213,7 +213,8 @@ public class DiscoveryImporter {
     if (TYPE_TABLE.containsRow(typeText)) {
       return builder
           .setCardinality(Field.Cardinality.CARDINALITY_OPTIONAL)
-          .setKind(getFieldKind(typeName, fieldName, typeText, root.get("format")))
+          .setKind(
+              getFieldKind(typeName, fieldName, typeText, root.get("format"), root.get("pattern")))
           .build();
     }
 
@@ -251,7 +252,9 @@ public class DiscoveryImporter {
       String typeText = items.get("type").asText();
       if (TYPE_TABLE.containsRow(typeText)) {
         return builder
-            .setKind(getFieldKind(typeName, fieldName, typeText, items.get("format")))
+            .setKind(
+                getFieldKind(
+                    typeName, fieldName, typeText, items.get("format"), items.get("pattern")))
             .build();
       } else if (typeText.equals("object")) {
         String elementTypeName = typeName + "." + lowerCamelToUpperCamel(fieldName);
@@ -295,7 +298,9 @@ public class DiscoveryImporter {
     if (root.get("type") != null) {
       String valueTypeText = root.get("type").asText();
       if (TYPE_TABLE.containsRow(valueTypeText)) {
-        valueKind = getFieldKind(typeName, fieldName, valueTypeText, root.get("format"));
+        valueKind =
+            getFieldKind(
+                typeName, fieldName, valueTypeText, root.get("format"), root.get("pattern"));
         valueType = null;
       } else if (valueTypeText.equals("object") || valueTypeText.equals("array")) {
         valueKind = Field.Kind.TYPE_MESSAGE;
@@ -424,7 +429,8 @@ public class DiscoveryImporter {
    * Otherwise, the returned {@link Field.Kind} is simply {@link Field.Kind.TYPE_STRING}, and its
    * format, if exists, is recorded in {@link ApiaryConfig#stringFormat}.
    */
-  private Field.Kind getFieldKind(String type, String field, String kindName, JsonNode formatNode) {
+  private Field.Kind getFieldKind(
+      String type, String field, String kindName, JsonNode formatNode, JsonNode patternNode) {
     String format = "";
     if (formatNode != null) {
       format = formatNode.asText();
@@ -440,6 +446,9 @@ public class DiscoveryImporter {
             config.getStringFormat().put(type, field, format);
             // fall through
         }
+      }
+      if (patternNode != null) {
+        config.getFieldPattern().put(type, field, patternNode.asText());
       }
       return Field.Kind.TYPE_STRING;
     }

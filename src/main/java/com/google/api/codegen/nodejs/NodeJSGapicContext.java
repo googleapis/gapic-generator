@@ -123,35 +123,27 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    */
   @Nullable
   private String returnTypeComment(Method method, MethodConfig config) {
+    if (config.isPageStreaming()) {
+      String resourceType = jsTypeName(config.getPageStreaming().getResourcesField().getType());
+      return "@returns {Stream<"
+          + resourceType
+          + ">}\n"
+          + "  An object stream. By default, this emits "
+          + resourceType
+          + "\n  instances on 'data' event. This object can also be configured to emit\n"
+          + "  pages of the responses through the options parameter.";
+    }
+
     MessageType returnMessageType = method.getOutputMessage();
     boolean isEmpty = returnMessageType.getFullName().equals("google.protobuf.Empty");
 
     String classInfo = jsTypeName(method.getOutputType());
 
     String callbackType = isEmpty ? "EmptyCallback" : String.format("APICallback<%s>", classInfo);
-    String callbackComment =
-        "@param {?"
+    return "@param {?"
             + callbackType
             + "} callback\n"
             + "  The function which will be called with the result of the API call.";
-    if (config.isPageStreaming()) {
-      String resourceType = jsTypeName(config.getPageStreaming().getResourcesField().getType());
-      return callbackComment
-          + "\n@returns {?Stream<"
-          + resourceType
-          + ">}\n"
-          + "  An object stream of "
-          + resourceType
-          + " instances, unless\n"
-          + "  page streaming is disabled through the call options or a callback\n"
-          + "  is specified. If page streaming is disabled or a callback is specified,\n"
-          + "  this returns null, and the callback will be called with a single instance\n"
-          + "  of "
-          + classInfo
-          + ".";
-    } else {
-      return callbackComment;
-    }
   }
 
   /**

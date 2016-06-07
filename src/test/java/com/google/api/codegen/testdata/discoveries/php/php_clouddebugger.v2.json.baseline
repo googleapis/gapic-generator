@@ -23,11 +23,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Clouddebugger service
 $service = new Google_Service_Clouddebugger($client);
-
 // Identifies the debuggee.
 $debuggeeId = '';
 
-$response = $service->controller->debuggees->breakpoints->listBreakpoints($debuggeeId);
+$response = $service->controller_debuggees_breakpoints->listControllerDebuggeesBreakpoints($debuggeeId);
 
 <?php
 /*
@@ -53,13 +52,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Clouddebugger service
 $service = new Google_Service_Clouddebugger($client);
-
 // Identifies the debuggee being debugged.
 $debuggeeId = '';
 // Breakpoint identifier, unique in the scope of the debuggee.
 $id = '';
 
-$response = $service->controller->debuggees->breakpoints->updateBreakpoints($debuggeeId, $id);
+$postBody = new Google_Service_Clouddebugger_UpdateActiveBreakpointRequest($client);
+
+$response = $service->controller_debuggees_breakpoints->update($debuggeeId, $id, $postBody);
 
 <?php
 /*
@@ -86,7 +86,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 // Create a new Clouddebugger service
 $service = new Google_Service_Clouddebugger($client);
 
-$response = $service->controller->debuggees->registerDebuggees();
+
+$postBody = new Google_Service_Clouddebugger_RegisterDebuggeeRequest($client);
+
+$response = $service->controller_debuggees->register($postBody);
 
 <?php
 /*
@@ -112,13 +115,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Clouddebugger service
 $service = new Google_Service_Clouddebugger($client);
-
 // ID of the debuggee whose breakpoint to delete.
 $debuggeeId = '';
 // ID of the breakpoint to delete.
 $breakpointId = '';
 
-$response = $service->debugger->debuggees->breakpoints->deleteBreakpoints($debuggeeId, $breakpointId);
+$response = $service->debugger_debuggees_breakpoints->delete($debuggeeId, $breakpointId);
 
 <?php
 /*
@@ -144,13 +146,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Clouddebugger service
 $service = new Google_Service_Clouddebugger($client);
-
 // ID of the debuggee whose breakpoint to get.
 $debuggeeId = '';
 // ID of the breakpoint to get.
 $breakpointId = '';
 
-$response = $service->debugger->debuggees->breakpoints->getBreakpoints($debuggeeId, $breakpointId);
+$response = $service->debugger_debuggees_breakpoints->get($debuggeeId, $breakpointId);
 
 <?php
 /*
@@ -176,11 +177,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Clouddebugger service
 $service = new Google_Service_Clouddebugger($client);
-
 // ID of the debuggee whose breakpoints to list.
 $debuggeeId = '';
 
-$response = $service->debugger->debuggees->breakpoints->listBreakpoints($debuggeeId);
+$response = $service->debugger_debuggees_breakpoints->listDebuggerDebuggeesBreakpoints($debuggeeId);
 
 <?php
 /*
@@ -206,11 +206,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Clouddebugger service
 $service = new Google_Service_Clouddebugger($client);
-
 // ID of the debuggee where the breakpoint is to be set.
 $debuggeeId = '';
 
-$response = $service->debugger->debuggees->breakpoints->setBreakpoints($debuggeeId);
+$postBody = new Google_Service_Clouddebugger_Breakpoint($client);
+
+$response = $service->debugger_debuggees_breakpoints->set($debuggeeId, $postBody);
 
 <?php
 /*
@@ -237,5 +238,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 // Create a new Clouddebugger service
 $service = new Google_Service_Clouddebugger($client);
 
-$response = $service->debugger->debuggees->listDebuggees();
+
+$response = $service->debugger_debuggees->listDebuggerDebuggees();
 

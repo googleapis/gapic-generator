@@ -24,8 +24,6 @@ import com.google.protobuf.Type;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryContext;
 
-import java.net.URL;
-
 /**
  * A DiscoveryContext specialized for Ruby.
  */

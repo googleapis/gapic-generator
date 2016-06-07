@@ -19,6 +19,7 @@ import "google/protobuf/field_mask.proto";
 option java_multiple_files = true;
 option java_outer_classname = "LibraryProto";
 option java_package = "com.google.example.library.v1";
+option go_package = "github.com/googleapis/proto-client-go/library/v1";
 
 // This API represents a simple digital library.  It lets you manage Shelf
 // resources and Book resources in the library. It defines the following
@@ -101,10 +102,10 @@ service LibraryService {
   rpc ListStrings(ListStringsRequest) returns (ListStringsResponse) {
     option (google.api.http) = { get: "/v1/strings" };
   }
-  
+
   // Adds comments to a book
   rpc AddComments(AddCommentsRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = { post: "/v1/{name=shelves/*}/books" body: "*" };
+    option (google.api.http) = { post: "/v1/{name=shelves/*}/comments" body: "*" };
   }
 }
 
@@ -203,10 +204,6 @@ message StringBuilder {
 
 // Request message for LibraryService.ListShelves.
 message ListShelvesRequest {
-  // Requested page size. Server may return fewer shelves than requested.
-  // If unspecified, server will pick an appropriate default.
-  int32 page_size = 1;
-
   // A token identifying a page of results the server should return.
   // Typically, this is the value of
   // [ListShelvesResponse.next_page_token][google.example.library.v1.ListShelvesResponse.next_page_token]
