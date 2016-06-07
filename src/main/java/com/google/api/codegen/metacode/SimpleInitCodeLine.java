@@ -24,8 +24,8 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class SimpleInitCodeLine implements InitCodeLine {
 
-  public static SimpleInitCodeLine create(TypeRef type, String identifier,
-      InitValueConfig initValueConfig) {
+  public static SimpleInitCodeLine create(
+      TypeRef type, String identifier, InitValueConfig initValueConfig) {
     return new AutoValue_SimpleInitCodeLine(type, identifier, initValueConfig);
   }
 

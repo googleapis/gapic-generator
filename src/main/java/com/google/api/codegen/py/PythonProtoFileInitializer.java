@@ -17,8 +17,7 @@ package com.google.api.codegen.py;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.collect.ImmutableMap;
 
-public class PythonProtoFileInitializer
-    implements PythonSnippetSetInputInitializer<ProtoFile> {
+public class PythonProtoFileInitializer implements PythonSnippetSetInputInitializer<ProtoFile> {
 
   @Override
   public PythonImportHandler getImportHandler(ProtoFile file) {

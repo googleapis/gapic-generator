@@ -87,7 +87,8 @@ abstract class JavaDocConfig {
 
     public abstract JavaDocConfig.Builder setInitCode(InitCode initCode);
 
-    public JavaDocConfig.Builder setRequestObjectInitCode(JavaGapicContext context, Interface service, Method method) {
+    public JavaDocConfig.Builder setRequestObjectInitCode(
+        JavaGapicContext context, Interface service, Method method) {
       Map<String, Object> initFieldStructure = createInitFieldStructure(context, service, method);
       InitCodeGenerator generator = new InitCodeGenerator();
       InitCode initCode = generator.generateRequestObjectInitCode(method, initFieldStructure);
@@ -95,40 +96,46 @@ abstract class JavaDocConfig {
       return this;
     }
 
-    public JavaDocConfig.Builder setFieldInitCode(JavaGapicContext context, Interface service,
-      Method method, Iterable<Field> fields) {
+    public JavaDocConfig.Builder setFieldInitCode(
+        JavaGapicContext context, Interface service, Method method, Iterable<Field> fields) {
       Map<String, Object> initFieldStructure = createInitFieldStructure(context, service, method);
       InitCodeGenerator generator = new InitCodeGenerator();
-      InitCode initCode = generator.generateRequestFieldInitCode(method, initFieldStructure, fields);
+      InitCode initCode =
+          generator.generateRequestFieldInitCode(method, initFieldStructure, fields);
       setInitCode(initCode);
       return this;
     }
 
     private static Map<String, Object> createInitFieldStructure(
         JavaGapicContext context, Interface service, Method method) {
-      MethodConfig methodConfig = context.getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+      MethodConfig methodConfig =
+          context.getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
       Map<String, String> fieldNamePatterns = methodConfig.getFieldNamePatterns();
 
       ImmutableMap.Builder<String, InitValueConfig> initValueConfigMap = ImmutableMap.builder();
       for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
-        CollectionConfig collectionConfig = context.getCollectionConfig(
-            service, fieldNamePattern.getValue());
-        InitValueConfig initValueConfig = InitValueConfig.create(context.getApiWrapperName(service), collectionConfig);
+        CollectionConfig collectionConfig =
+            context.getCollectionConfig(service, fieldNamePattern.getValue());
+        InitValueConfig initValueConfig =
+            InitValueConfig.create(context.getApiWrapperName(service), collectionConfig);
         initValueConfigMap.put(fieldNamePattern.getKey(), initValueConfig);
       }
-      Map<String, Object> initFieldStructure = FieldStructureParser
-          .parseFields(methodConfig.getSampleCodeInitFields(), initValueConfigMap.build());
+      Map<String, Object> initFieldStructure =
+          FieldStructureParser.parseFields(
+              methodConfig.getSampleCodeInitFields(), initValueConfigMap.build());
       return initFieldStructure;
     }
 
     public abstract JavaDocConfig.Builder setParams(ImmutableList<InputParameter> params);
 
-    public JavaDocConfig.Builder setRequestObjectParam(JavaGapicContext context, Interface service, Method method) {
-      InputParameter param = InputParameter.newBuilder()
-          .setType(method.getInputType())
-          .setName(REQUEST_PARAM_NAME)
-          .setDescription(REQUEST_PARAM_DOC)
-          .build();
+    public JavaDocConfig.Builder setRequestObjectParam(
+        JavaGapicContext context, Interface service, Method method) {
+      InputParameter param =
+          InputParameter.newBuilder()
+              .setType(method.getInputType())
+              .setName(REQUEST_PARAM_NAME)
+              .setDescription(REQUEST_PARAM_DOC)
+              .build();
       return setParams(ImmutableList.of(param));
     }
 

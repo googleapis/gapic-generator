@@ -37,7 +37,7 @@ public class FieldStructureParser {
    * InitValueConfig.
    */
   public static Map<String, Object> parseFields(Collection<String> fieldSpecs) {
-    return parseFields(fieldSpecs, ImmutableMap.<String, InitValueConfig> of());
+    return parseFields(fieldSpecs, ImmutableMap.<String, InitValueConfig>of());
   }
 
   /**
@@ -45,14 +45,14 @@ public class FieldStructureParser {
    * InitValueConfig, and also sets InitValueConfig on fields that match the
    * paths in initValueConfigMap.
    */
-  public static Map<String, Object> parseFields(Collection<String> fieldSpecs,
-      ImmutableMap<String, InitValueConfig> initValueConfigMap) {
+  public static Map<String, Object> parseFields(
+      Collection<String> fieldSpecs, ImmutableMap<String, InitValueConfig> initValueConfigMap) {
     List<Object> unmergedFields = parseFieldList(fieldSpecs, initValueConfigMap);
     return mergeFieldList(unmergedFields);
   }
 
-  private static List<Object> parseFieldList(Collection<String> fieldSpecs,
-      ImmutableMap<String, InitValueConfig> initValueConfigMap) {
+  private static List<Object> parseFieldList(
+      Collection<String> fieldSpecs, ImmutableMap<String, InitValueConfig> initValueConfigMap) {
     List<Object> unmergedFields = new ArrayList<>();
     for (String fieldSpec : fieldSpecs) {
       Object topLevel = InitValueConfig.create();
@@ -148,8 +148,11 @@ public class FieldStructureParser {
       } else if (index == mergedList.size()) {
         mergedList.add(populate(listElementSpec.subStructure));
       } else {
-        throw new IllegalArgumentException("Index leaves gap: last index = "
-            + (mergedList.size() - 1) + ", this index = " + index);
+        throw new IllegalArgumentException(
+            "Index leaves gap: last index = "
+                + (mergedList.size() - 1)
+                + ", this index = "
+                + index);
       }
     } else {
       throw new IllegalArgumentException(
@@ -197,5 +200,4 @@ public class FieldStructureParser {
       this.subStructure = subStructure;
     }
   }
-
 }

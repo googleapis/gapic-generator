@@ -157,11 +157,11 @@ public class GoGapicContext extends GapicContext implements GoContext {
    * Returns the (dereferenced) Go type name for the specificed message TypeRef.
    */
   public String messageTypeName(TypeRef type) {
-      if (!type.isMessage()) {
-        throw new IllegalArgumentException("Expected message type, got: " + type.toString());
-      }
-      MessageType messageType = type.getMessageType();
-      return localPackageName(messageType) + "." + messageType.getProto().getName();
+    if (!type.isMessage()) {
+      throw new IllegalArgumentException("Expected message type, got: " + type.toString());
+    }
+    MessageType messageType = type.getMessageType();
+    return localPackageName(messageType) + "." + messageType.getProto().getName();
   }
 
   /**
@@ -352,8 +352,8 @@ public class GoGapicContext extends GapicContext implements GoContext {
     // If there's no `go_package` specified, we guess an import path based on the core proto base
     // repo and the proto package.
     if (Strings.isNullOrEmpty(pkgName)) {
-      pkgName = CORE_PROTO_BASE + "/" +
-          messageType.getFile().getProto().getPackage().replace(".", "/");
+      pkgName =
+          CORE_PROTO_BASE + "/" + messageType.getFile().getProto().getPackage().replace(".", "/");
     }
     String localName = localPackageName(messageType);
     return GoImport.create(pkgName, localName);

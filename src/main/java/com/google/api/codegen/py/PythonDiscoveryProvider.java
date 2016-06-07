@@ -34,17 +34,19 @@ public class PythonDiscoveryProvider implements DiscoveryProvider {
 
   public PythonDiscoveryProvider(Service service, ApiaryConfig apiaryConfig) {
     this.context = new PythonDiscoveryContext(service, apiaryConfig);
-    this.snippetSetRunner = new PythonSnippetSetRunner<Method>(new PythonSnippetSetInputInitializer<Method>() {
-      @Override
-      public PythonImportHandler getImportHandler(Method element) {
-        return new PythonImportHandler();
-      }
+    this.snippetSetRunner =
+        new PythonSnippetSetRunner<Method>(
+            new PythonSnippetSetInputInitializer<Method>() {
+              @Override
+              public PythonImportHandler getImportHandler(Method element) {
+                return new PythonImportHandler();
+              }
 
-      @Override
-      public ImmutableMap<String, Object> getGlobalMap(Method element) {
-        return ImmutableMap.<String, Object>of();
-      }
-    });
+              @Override
+              public ImmutableMap<String, Object> getGlobalMap(Method element) {
+                return ImmutableMap.<String, Object>of();
+              }
+            });
   }
 
   @Override
@@ -54,7 +56,7 @@ public class PythonDiscoveryProvider implements DiscoveryProvider {
 
   @Override
   public void output(String outputPath, Multimap<Method, GeneratedResult> methods)
-          throws IOException {
+      throws IOException {
     String fullOutputPath = outputPath + "/" + context.outputRoot();
     CodeGeneratorUtil.writeGeneratedOutput(fullOutputPath, methods);
   }

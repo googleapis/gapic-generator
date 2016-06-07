@@ -39,9 +39,7 @@ public class CSharpSnippetSetRunner<ElementT> implements SnippetSetRunner<Elemen
   @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      ElementT element,
-      String snippetFileName,
-      CodegenContext context) {
+      ElementT element, String snippetFileName, CodegenContext context) {
     CSharpSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             CSharpSnippetSet.class,
