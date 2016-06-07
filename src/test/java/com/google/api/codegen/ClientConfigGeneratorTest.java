@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.gapic.MainGapicProviderFactory;
+
 import java.util.List;
 
 import org.junit.Test;
@@ -44,7 +46,7 @@ public class ClientConfigGeneratorTest {
      */
     @Parameters(name = "{0}")
     public static List<Object[]> testedConfigs() {
-      return GapicTestBase.createTestedConfigs("client_config",
+      return GapicTestBase.createTestedConfigs(MainGapicProviderFactory.CLIENT_CONFIG,
           new String[] { "client_gapic.yaml", "library_gapic.yaml" });
     }
 

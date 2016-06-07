@@ -49,16 +49,17 @@ import org.apache.commons.lang3.NotImplementedException;
 /**
  * GapicProviderFactory creates GapicProvider instances based on an id.
  */
-public class MainGapicProviderFactory {
+public class MainGapicProviderFactory
+    implements GapicProviderFactory<GapicProvider<? extends Object>> {
 
-  private static final String CLIENT_CONFIG = "client_config";
-  private static final String CSHARP = "csharp";
-  private static final String GO = "go";
-  private static final String JAVA = "java";
-  private static final String NODEJS = "nodejs";
-  private static final String PHP = "php";
-  private static final String PYTHON = "python";
-  private static final String RUBY = "ruby";
+  public static final String CLIENT_CONFIG = "client_config";
+  public static final String CSHARP = "csharp";
+  public static final String GO = "go";
+  public static final String JAVA = "java";
+  public static final String NODEJS = "nodejs";
+  public static final String PHP = "php";
+  public static final String PYTHON = "python";
+  public static final String RUBY = "ruby";
 
   /**
    * Create the GapicProviders based on the given id
@@ -205,6 +206,7 @@ public class MainGapicProviderFactory {
   /**
    * Create the GapicProviders based on the given id
    */
+  @Override
   public List<GapicProvider<? extends Object>> create(Model model, ApiConfig apiConfig, String id) {
     return defaultCreate(model, apiConfig, id);
   }

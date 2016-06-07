@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.gapic.MainGapicProviderFactory;
+
 import java.util.List;
 
 import org.junit.Test;
@@ -43,7 +45,7 @@ public class CSharpCodeGeneratorTest extends GapicTestBase {
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
-    return GapicTestBase.createTestedConfigs("csharp",
+    return GapicTestBase.createTestedConfigs(MainGapicProviderFactory.CSHARP,
         new String[] { "csharp_gapic.yaml", "library_gapic.yaml" });
   }
 

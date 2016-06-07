@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.gapic.MainGapicProviderFactory;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,7 +45,7 @@ public class JavaCodeGeneratorTest extends GapicTestBase {
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
-    return GapicTestBase.createTestedConfigs("java",
+    return GapicTestBase.createTestedConfigs(MainGapicProviderFactory.JAVA,
         new String[] { "java_gapic.yaml", "library_gapic.yaml" });
   }
 

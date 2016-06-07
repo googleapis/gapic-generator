@@ -14,17 +14,14 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.tools.framework.snippet.Doc;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.truth.Truth;
+import com.google.api.codegen.gapic.MainGapicProviderFactory;
+
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
-import java.util.List;
 
 /**
  * Python code generator baseline tests.
@@ -49,7 +46,7 @@ public class PythonCodeGeneratorTest {
      */
     @Parameters(name = "{0}")
     public static List<Object[]> testedConfigs() {
-      return GapicTestBase.createTestedConfigs("python",
+      return GapicTestBase.createTestedConfigs(MainGapicProviderFactory.PYTHON,
           new String[] { "python_gapic.yaml", "library_gapic.yaml" });
     }
 
