@@ -51,6 +51,15 @@ import org.apache.commons.lang3.NotImplementedException;
  */
 public class MainGapicProviderFactory {
 
+  private static final String CLIENT_CONFIG = "client_config";
+  private static final String CSHARP = "csharp";
+  private static final String GO = "go";
+  private static final String JAVA = "java";
+  private static final String NODEJS = "nodejs";
+  private static final String PHP = "php";
+  private static final String PYTHON = "python";
+  private static final String RUBY = "ruby";
+
   /**
    * Create the GapicProviders based on the given id
    */
@@ -59,7 +68,7 @@ public class MainGapicProviderFactory {
 
     // Please keep the following IDs in alphabetical order
 
-    if (id.equals("client_config")) {
+    if (id.equals(CLIENT_CONFIG)) {
       GapicProvider<? extends Object> provider = CommonGapicProvider.<Interface>newBuilder()
           .setModel(model)
           .setView(new InterfaceView())
@@ -69,7 +78,7 @@ public class MainGapicProviderFactory {
           .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
-    } else if (id.equals("csharp")) {
+    } else if (id.equals(CSHARP)) {
       GapicProvider<? extends Object> provider = CommonGapicProvider.<Interface>newBuilder()
           .setModel(model)
           .setView(new InterfaceView())
@@ -79,7 +88,7 @@ public class MainGapicProviderFactory {
           .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
-    } else if (id.equals("go")) {
+    } else if (id.equals(GO)) {
       GapicProvider<? extends Object> provider = CommonGapicProvider.<Interface>newBuilder()
           .setModel(model)
           .setView(new InterfaceView())
@@ -89,7 +98,7 @@ public class MainGapicProviderFactory {
           .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
-    } else if (id.equals("java")) {
+    } else if (id.equals(JAVA)) {
       GapicProvider<? extends Object> mainProvider = CommonGapicProvider.<Interface>newBuilder()
           .setModel(model)
           .setView(new InterfaceView())
@@ -107,7 +116,7 @@ public class MainGapicProviderFactory {
 
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, packageInfoProvider);
 
-    } else if (id.equals("nodejs")) {
+    } else if (id.equals(NODEJS)) {
       GapicProvider<? extends Object> mainProvider = CommonGapicProvider.<Interface>newBuilder()
           .setModel(model)
           .setView(new InterfaceView())
@@ -125,7 +134,7 @@ public class MainGapicProviderFactory {
 
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, clientConfigProvider);
 
-    } else if (id.equals("php")) {
+    } else if (id.equals(PHP)) {
       GapicProvider<? extends Object> provider = CommonGapicProvider.<Interface>newBuilder()
           .setModel(model)
           .setView(new InterfaceView())
@@ -135,7 +144,7 @@ public class MainGapicProviderFactory {
           .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
-    } else if (id.equals("python")) {
+    } else if (id.equals(PYTHON)) {
       GapicProvider<? extends Object> mainProvider = CommonGapicProvider.<Interface>newBuilder()
           .setModel(model)
           .setView(new InterfaceView())
@@ -162,7 +171,7 @@ public class MainGapicProviderFactory {
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, messageProvider,
           clientConfigProvider);
 
-    } else if (id.equals("ruby")) {
+    } else if (id.equals(RUBY)) {
       GapicProvider<? extends Object> mainProvider = CommonGapicProvider.<Interface>newBuilder()
           .setModel(model)
           .setView(new InterfaceView())
