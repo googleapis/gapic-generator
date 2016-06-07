@@ -29,11 +29,10 @@ public class ClientConfigSnippetSetRunner<ElementT> implements SnippetSetRunner<
   private static final String SNIPPET_RESOURCE_ROOT =
       ClientConfigSnippetSetRunner.class.getPackage().getName().replace('.', '/');
 
-  @SuppressWarnings("unchecked")
   @Override
-  public GeneratedResult generate(ElementT element,
-      String snippetFileName,
-      CodegenContext context) {
+  @SuppressWarnings("unchecked")
+  public GeneratedResult generate(
+      ElementT element, String snippetFileName, CodegenContext context) {
     ClientConfigSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             ClientConfigSnippetSet.class,

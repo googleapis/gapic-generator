@@ -34,11 +34,10 @@ public class NodeJSSnippetSetRunner<ElementT> implements SnippetSetRunner<Elemen
   private static final String SNIPPET_RESOURCE_ROOT =
       NodeJSSnippetSetRunner.class.getPackage().getName().replace('.', '/');
 
+  @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      ElementT element,
-      String snippetFileName,
-      CodegenContext context) {
+      ElementT element, String snippetFileName, CodegenContext context) {
     NodeJSSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             NodeJSSnippetSet.class,

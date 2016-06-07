@@ -37,11 +37,10 @@ public class JavaIterableSnippetSetRunner<ElementT> implements SnippetSetRunner<
   private final String SNIPPET_RESOURCE_ROOT =
       JavaContextCommon.class.getPackage().getName().replace('.', '/');
 
+  @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      Iterable<ElementT> elementList,
-      String snippetFileName,
-      CodegenContext context) {
+      Iterable<ElementT> elementList, String snippetFileName, CodegenContext context) {
     JavaIterableSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             JavaIterableSnippetSet.class,
