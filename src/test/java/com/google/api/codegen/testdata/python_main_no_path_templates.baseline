@@ -95,14 +95,6 @@ class NoTemplatesServiceApi(object):
             scopes = self._ALL_SCOPES
         if client_config is None:
             client_config = {}
-        default_client_config = json.loads(pkg_resources.resource_string(
-            __name__, 'no_templates_service_client_config.json'))
-        self._defaults = api_callable.construct_settings(
-            'google.example.v1.NoTemplatesService',
-            default_client_config,
-            client_config,
-            config.STATUS_CODE_NAMES,
-            timeout)
         goog_api_client = '{}/{} {} gax/{} python/{}'.format(
             app_name,
             app_version,
@@ -110,7 +102,16 @@ class NoTemplatesServiceApi(object):
             self._GAX_VERSION,
             platform.python_version()
         )
-        self._headers = [('x-goog-api-client', goog_api_client)]
+        headers = [('x-goog-api-client', goog_api_client)]
+        default_client_config = json.loads(pkg_resources.resource_string(
+            __name__, 'no_templates_service_client_config.json'))
+        defaults = api_callable.construct_settings(
+            'google.example.v1.NoTemplatesService',
+            default_client_config,
+            client_config,
+            config.STATUS_CODE_NAMES,
+            timeout
+            headers=headers)
         self.stub = config.create_stub(
             no_path_templates_pb2.beta_create_NoTemplatesService_stub,
             service_path,
@@ -119,6 +120,9 @@ class NoTemplatesServiceApi(object):
             channel=channel,
             metadata_transformer=metadata_transformer,
             scopes=scopes)
+        self._increment = api_callable.create_api_call(
+            self.stub.Increment,
+            settings=defaults['increment'])
 
     # Service calls
     def increment(
@@ -140,8 +144,5 @@ class NoTemplatesServiceApi(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
         """
         req = no_path_templates_pb2.IncrementRequest()
-        settings = self._defaults['increment'].merge(options)
-        api_call = api_callable.create_api_call(
-            self.stub.Increment, settings=settings)
-        api_call(req, metadata=self._headers)
+        self._increment(req, options)
 

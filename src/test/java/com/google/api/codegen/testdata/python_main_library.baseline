@@ -208,16 +208,6 @@ class LibraryServiceApi(object):
             scopes = self._ALL_SCOPES
         if client_config is None:
             client_config = {}
-        default_client_config = json.loads(pkg_resources.resource_string(
-            __name__, 'library_service_client_config.json'))
-        self._defaults = api_callable.construct_settings(
-            'google.example.library.v1.LibraryService',
-            default_client_config,
-            client_config,
-            config.STATUS_CODE_NAMES,
-            timeout,
-            bundle_descriptors=self._BUNDLE_DESCRIPTORS,
-            page_descriptors=self._PAGE_DESCRIPTORS)
         goog_api_client = '{}/{} {} gax/{} python/{}'.format(
             app_name,
             app_version,
@@ -225,7 +215,18 @@ class LibraryServiceApi(object):
             self._GAX_VERSION,
             platform.python_version()
         )
-        self._headers = [('x-goog-api-client', goog_api_client)]
+        headers = [('x-goog-api-client', goog_api_client)]
+        default_client_config = json.loads(pkg_resources.resource_string(
+            __name__, 'library_service_client_config.json'))
+        defaults = api_callable.construct_settings(
+            'google.example.library.v1.LibraryService',
+            default_client_config,
+            client_config,
+            config.STATUS_CODE_NAMES,
+            timeout,
+            headers=headers,
+            bundle_descriptors=self._BUNDLE_DESCRIPTORS,
+            page_descriptors=self._PAGE_DESCRIPTORS)
         self.stub = config.create_stub(
             library_pb2.beta_create_LibraryService_stub,
             service_path,
@@ -234,6 +235,48 @@ class LibraryServiceApi(object):
             channel=channel,
             metadata_transformer=metadata_transformer,
             scopes=scopes)
+        self._create_shelf = api_callable.create_api_call(
+            self.stub.CreateShelf,
+            settings=defaults['create_shelf'])
+        self._get_shelf = api_callable.create_api_call(
+            self.stub.GetShelf,
+            settings=defaults['get_shelf'])
+        self._list_shelves = api_callable.create_api_call(
+            self.stub.ListShelves,
+            settings=defaults['list_shelves'])
+        self._delete_shelf = api_callable.create_api_call(
+            self.stub.DeleteShelf,
+            settings=defaults['delete_shelf'])
+        self._merge_shelves = api_callable.create_api_call(
+            self.stub.MergeShelves,
+            settings=defaults['merge_shelves'])
+        self._create_book = api_callable.create_api_call(
+            self.stub.CreateBook,
+            settings=defaults['create_book'])
+        self._publish_series = api_callable.create_api_call(
+            self.stub.PublishSeries,
+            settings=defaults['publish_series'])
+        self._get_book = api_callable.create_api_call(
+            self.stub.GetBook,
+            settings=defaults['get_book'])
+        self._list_books = api_callable.create_api_call(
+            self.stub.ListBooks,
+            settings=defaults['list_books'])
+        self._delete_book = api_callable.create_api_call(
+            self.stub.DeleteBook,
+            settings=defaults['delete_book'])
+        self._update_book = api_callable.create_api_call(
+            self.stub.UpdateBook,
+            settings=defaults['update_book'])
+        self._move_book = api_callable.create_api_call(
+            self.stub.MoveBook,
+            settings=defaults['move_book'])
+        self._list_strings = api_callable.create_api_call(
+            self.stub.ListStrings,
+            settings=defaults['list_strings'])
+        self._add_comments = api_callable.create_api_call(
+            self.stub.AddComments,
+            settings=defaults['add_comments'])
 
     # Service calls
     def create_shelf(
@@ -256,10 +299,7 @@ class LibraryServiceApi(object):
         """
         req = library_pb2.CreateShelfRequest(
             shelf=shelf)
-        settings = self._defaults['create_shelf'].merge(options)
-        api_call = api_callable.create_api_call(
-            self.stub.CreateShelf, settings=settings)
-        return api_call(req, metadata=self._headers)
+        return self._create_shelf(req, options)
 
     def get_shelf(
             self,
@@ -291,10 +331,7 @@ class LibraryServiceApi(object):
             name=name,
             message=message,
             string_builder=string_builder)
-        settings = self._defaults['get_shelf'].merge(options)
-        api_call = api_callable.create_api_call(
-            self.stub.GetShelf, settings=settings)
-        return api_call(req, metadata=self._headers)
+        return self._get_shelf(req, options)
 
     def list_shelves(
             self,
@@ -316,10 +353,7 @@ class LibraryServiceApi(object):
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
         """
         req = library_pb2.ListShelvesRequest()
-        settings = self._defaults['list_shelves'].merge(options)
-        api_call = api_callable.create_api_call(
-            self.stub.ListShelves, settings=settings)
-        return api_call(req, metadata=self._headers)
+        return self._list_shelves(req, options)
 
     def delete_shelf(
             self,
@@ -338,10 +372,7 @@ class LibraryServiceApi(object):
         """
         req = library_pb2.DeleteShelfRequest(
             name=name)
-        settings = self._defaults['delete_shelf'].merge(options)
-        api_call = api_callable.create_api_call(
-            self.stub.DeleteShelf, settings=settings)
-        api_call(req, metadata=self._headers)
+        self._delete_shelf(req, options)
 
     def merge_shelves(
             self,
@@ -368,10 +399,7 @@ class LibraryServiceApi(object):
         req = library_pb2.MergeShelvesRequest(
             name=name,
             other_shelf_name=other_shelf_name)
-        settings = self._defaults['merge_shelves'].merge(options)
-        api_call = api_callable.create_api_call(
-            self.stub.MergeShelves, settings=settings)
-        return api_call(req, metadata=self._headers)
+        return self._merge_shelves(req, options)
 
     def create_book(
             self,
@@ -396,10 +424,7 @@ class LibraryServiceApi(object):
         req = library_pb2.CreateBookRequest(
             name=name,
             book=book)
-        settings = self._defaults['create_book'].merge(options)
-        api_call = api_callable.create_api_call(
-            self.stub.CreateBook, settings=settings)
-        return api_call(req, metadata=self._headers)
+        return self._create_book(req, options)
 
     def publish_series(
             self,
@@ -427,10 +452,7 @@ class LibraryServiceApi(object):
             shelf=shelf,
             books=books,
             edition=edition)
-        settings = self._defaults['publish_series'].merge(options)
-        api_call = api_callable.create_api_call(
-            self.stub.PublishSeries, settings=settings)
-        return api_call(req, metadata=self._headers)
+        return self._publish_series(req, options)
 
     def get_book(
             self,
@@ -452,10 +474,7 @@ class LibraryServiceApi(object):
         """
         req = library_pb2.GetBookRequest(
             name=name)
-        settings = self._defaults['get_book'].merge(options)
-        api_call = api_callable.create_api_call(
-            self.stub.GetBook, settings=settings)
-        return api_call(req, metadata=self._headers)
+        return self._get_book(req, options)
 
     def list_books(
             self,
@@ -490,10 +509,7 @@ class LibraryServiceApi(object):
             name=name,
             page_size=page_size,
             filter=filter_)
-        settings = self._defaults['list_books'].merge(options)
-        api_call = api_callable.create_api_call(
-            self.stub.ListBooks, settings=settings)
-        return api_call(req, metadata=self._headers)
+        return self._list_books(req, options)
 
     def delete_book(
             self,
@@ -512,10 +528,7 @@ class LibraryServiceApi(object):
         """
         req = library_pb2.DeleteBookRequest(
             name=name)
-        settings = self._defaults['delete_book'].merge(options)
-        api_call = api_callable.create_api_call(
-            self.stub.DeleteBook, settings=settings)
-        api_call(req, metadata=self._headers)
+        self._delete_book(req, options)
 
     def update_book(
             self,
@@ -550,10 +563,7 @@ class LibraryServiceApi(object):
             book=book,
             update_mask=update_mask,
             physical_mask=physical_mask)
-        settings = self._defaults['update_book'].merge(options)
-        api_call = api_callable.create_api_call(
-            self.stub.UpdateBook, settings=settings)
-        return api_call(req, metadata=self._headers)
+        return self._update_book(req, options)
 
     def move_book(
             self,
@@ -578,10 +588,7 @@ class LibraryServiceApi(object):
         req = library_pb2.MoveBookRequest(
             name=name,
             other_shelf_name=other_shelf_name)
-        settings = self._defaults['move_book'].merge(options)
-        api_call = api_callable.create_api_call(
-            self.stub.MoveBook, settings=settings)
-        return api_call(req, metadata=self._headers)
+        return self._move_book(req, options)
 
     def list_strings(
             self,
@@ -613,10 +620,7 @@ class LibraryServiceApi(object):
         req = library_pb2.ListStringsRequest(
             name=name,
             page_size=page_size)
-        settings = self._defaults['list_strings'].merge(options)
-        api_call = api_callable.create_api_call(
-            self.stub.ListStrings, settings=settings)
-        return api_call(req, metadata=self._headers)
+        return self._list_strings(req, options)
 
     def add_comments(
             self,
@@ -638,8 +642,5 @@ class LibraryServiceApi(object):
         req = library_pb2.AddCommentsRequest(
             name=name,
             comments=comments)
-        settings = self._defaults['add_comments'].merge(options)
-        api_call = api_callable.create_api_call(
-            self.stub.AddComments, settings=settings)
-        api_call(req, metadata=self._headers)
+        self._add_comments(req, options)
 
