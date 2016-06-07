@@ -14,8 +14,9 @@
  */
 package com.google.api.codegen.java;
 
+import com.google.api.codegen.CodegenContext;
 import com.google.api.codegen.GeneratedResult;
-import com.google.api.codegen.SnippetDescriptor;
+import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
@@ -27,7 +28,7 @@ import java.util.List;
  * case (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
  * subclass of JavaContext.
  */
-public class JavaSnippetSetRunner {
+public class JavaSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
 
   /**
    * The path to the root of snippet resources.
@@ -36,21 +37,23 @@ public class JavaSnippetSetRunner {
       JavaContextCommon.class.getPackage().getName().replace('.', '/');
 
   @SuppressWarnings("unchecked")
-  public <Element> GeneratedResult generate(
-      Element element,
-      SnippetDescriptor snippetDescriptor,
-      JavaContext context,
-      String defaultPackagePrefix) {
-    JavaSnippetSet<Element> snippets =
+  public GeneratedResult generate(
+      ElementT element,
+      String snippetFileName,
+      CodegenContext context) {
+    JavaSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             JavaSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
-            snippetDescriptor.getSnippetInputName(),
+            snippetFileName,
             ImmutableMap.<String, Object>of("context", context));
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
-    JavaContextCommon javaContextCommon = new JavaContextCommon(defaultPackagePrefix);
-    context.resetState(javaContextCommon);
+    JavaContextCommon javaContextCommon = new JavaContextCommon();
+
+    // TODO don't depend on a cast here
+    JavaContext javaContext = (JavaContext) context;
+    javaContext.resetState(javaContextCommon);
 
     // Generate the body, which will collect the imports.
     Doc body = snippets.generateBody(element);
@@ -60,10 +63,5 @@ public class JavaSnippetSetRunner {
     // Generate result.
     Doc result = snippets.generateClass(element, body, cleanedImports);
     return GeneratedResult.create(result, outputFilename);
-  }
-
-  public <Element> GeneratedResult generate(
-      Element element, SnippetDescriptor snippetDescriptor, JavaContext context) {
-    return generate(element, snippetDescriptor, context, null);
   }
 }

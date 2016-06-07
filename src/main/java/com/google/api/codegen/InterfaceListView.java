@@ -18,26 +18,25 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An interface-based view of model, consisting of a strategy for getting the interfaces of the
- * model and returning them as a single list object.
+ * model and returning them in a single iterable object.
  */
-public class InterfaceListView implements InputElementView<List<Interface>> {
+public class InterfaceListView implements InputElementView<Iterable<Interface>> {
 
   /**
    * Gets the reachable interfaces of the model.
    */
   @Override
-  public Iterable<List<Interface>> getElementIterable(Model model) {
+  public Iterable<Iterable<Interface>> getElementIterable(Model model) {
     ArrayList<Interface> interfaces = new ArrayList<>();
     for (Interface iface : model.getSymbolTable().getInterfaces()) {
       if (iface.isReachable()) {
         interfaces.add(iface);
       }
     }
-    ArrayList<List<Interface>> result = new ArrayList<>();
+    ArrayList<Iterable<Interface>> result = new ArrayList<>();
     result.add(interfaces);
     return result;
   }

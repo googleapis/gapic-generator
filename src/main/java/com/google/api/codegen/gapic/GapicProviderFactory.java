@@ -12,11 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.php;
+package com.google.api.codegen.gapic;
+
+import com.google.api.codegen.ApiConfig;
+import com.google.api.tools.framework.model.Model;
+
+import java.util.List;
 
 /**
- * A PhpContext provides functionality specific to a context in PHP.
+ * A factory for providers which perform code generation.
  */
-public interface PhpContext {
-  void resetState(PhpContextCommon phpCommon);
+public interface GapicProviderFactory<ProviderT> {
+  /**
+   * Create the provider from the given model, apiConfig, and id.
+   */
+  public List<ProviderT> create(Model model, ApiConfig apiConfig, String id);
 }

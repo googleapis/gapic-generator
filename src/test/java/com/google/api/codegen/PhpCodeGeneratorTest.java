@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen;
 
-import com.google.common.collect.ImmutableList;
+import com.google.api.codegen.gapic.MainGapicProviderFactory;
 
 import java.util.List;
 
@@ -27,25 +27,25 @@ import org.junit.runners.Parameterized.Parameters;
  * PHP code generator baseline tests.
  */
 @RunWith(Parameterized.class)
-public class PhpCodeGeneratorTest extends CodeGeneratorTestBase {
+public class PhpCodeGeneratorTest extends GapicTestBase {
 
-  public PhpCodeGeneratorTest(String name, String[] gapicConfigFileNames) {
-    super(name, gapicConfigFileNames);
+  public PhpCodeGeneratorTest(
+      String name,
+      String idForFactory,
+      String[] gapicConfigFileNames,
+      String snippetName) {
+    super(name, idForFactory, gapicConfigFileNames, snippetName);
+    getTestDataLocator().addTestDataSource(com.google.api.codegen.php.PhpGapicContext.class, "");
   }
 
   /**
-   * Declares test parameters, each one an array of values passed to the constructor, with
-   * the first element a name, the second a config of this name.
+   * Declares test parameters, each one an array of values passed to the constructor, with the first
+   * element a name, the second a config of this name.
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
-    return ImmutableList.of(
-      new Object[] {
-          "php", new String[]{
-              "com/google/api/codegen/php/php_gapic.yaml",
-              "library_gapic.yaml",
-          }
-      });
+    return GapicTestBase.createTestedConfigs(MainGapicProviderFactory.PHP,
+        new String[] { "php_gapic.yaml", "library_gapic.yaml" });
   }
 
   // Tests

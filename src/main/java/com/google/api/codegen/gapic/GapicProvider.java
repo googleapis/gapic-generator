@@ -12,12 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.gapic;
 
-import com.google.api.tools.framework.model.Model;
-import com.google.common.collect.Multimap;
+import com.google.api.codegen.GeneratedResult;
 
-import java.io.IOException;
+import java.util.List;
 
 /**
  * A GapicProvider performs code or fragment generation using on a proto-based Model for a
@@ -25,21 +24,19 @@ import java.io.IOException;
  */
 public interface GapicProvider<InputElementT> {
 
-  Model getModel();
+  /**
+   * Returns the snippet files that this provider will use for code generation.
+   */
+  List<String> getSnippetFileNames();
 
   /**
-   * Gets the view of the model.
+   * Runs code generation and puts the output in outputPath.
    */
-  public InputElementView<InputElementT> getView();
+  void generate(String outputPath) throws Exception;
 
   /**
-   * Runs code generation.
+   * Generates code for a single snippet. Returns a map from service interface to code for the service.
+   * Returns null if generation failed.
    */
-  GeneratedResult generate(InputElementT element, SnippetDescriptor snippetDescriptor);
-
-  /**
-   * Outputs the given elements to the given output path.
-   */
-  <Element> void output(String outputPath, Multimap<Element, GeneratedResult> elements)
-      throws IOException;
+  List<GeneratedResult> generateSnip(String snippetFileName);
 }

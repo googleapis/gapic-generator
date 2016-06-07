@@ -76,6 +76,10 @@ public class GapicContext extends CodegenContext {
     return service.getSimpleName() + "Api";
   }
 
+  public String getOutputSubPath(@SuppressWarnings("unused") ProtoElement element) {
+    return "";
+  }
+
   /**
    * Returns the description of the proto element, in markdown format.
    */

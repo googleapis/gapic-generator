@@ -19,7 +19,6 @@ import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.CodeGeneratorUtil;
 import com.google.api.codegen.DiscoveryProvider;
 import com.google.api.codegen.GeneratedResult;
-import com.google.api.codegen.SnippetDescriptor;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.protobuf.Method;
@@ -31,22 +30,26 @@ import java.io.IOException;
  */
 public class PythonDiscoveryProvider implements DiscoveryProvider {
   private final PythonDiscoveryContext context;
-  private final PythonSnippetSetRunner snippetSetRunner;
+  private final PythonSnippetSetRunner<Method> snippetSetRunner;
 
   public PythonDiscoveryProvider(Service service, ApiaryConfig apiaryConfig) {
     this.context = new PythonDiscoveryContext(service, apiaryConfig);
-    this.snippetSetRunner = new PythonSnippetSetRunner();
+    this.snippetSetRunner = new PythonSnippetSetRunner<Method>(new PythonSnippetSetInputInitializer<Method>() {
+      @Override
+      public PythonImportHandler getImportHandler(Method element) {
+        return new PythonImportHandler();
+      }
+
+      @Override
+      public ImmutableMap<String, Object> getGlobalMap(Method element) {
+        return ImmutableMap.<String, Object>of();
+      }
+    });
   }
 
   @Override
-  public GeneratedResult generateFragments(Method method, SnippetDescriptor snippetDescriptor) {
-    return snippetSetRunner.generate(
-        method,
-        snippetDescriptor,
-        context,
-        new PythonImportHandler(),
-        ImmutableMap.<String, Object>of(),
-        "");
+  public GeneratedResult generateFragments(Method method, String snippetFileName) {
+    return snippetSetRunner.generate(method, snippetFileName, context);
   }
 
   @Override

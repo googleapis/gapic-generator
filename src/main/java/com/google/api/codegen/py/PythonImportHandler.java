@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.py;
 
-import com.google.api.codegen.InterfaceConfig;
-import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.py.PythonImport.ImportType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -47,7 +45,7 @@ public class PythonImportHandler {
    */
   private final BiMap<ProtoFile, String> fileImports = HashBiMap.create();
 
-  public PythonImportHandler(Interface service, InterfaceConfig config) {
+  public PythonImportHandler(Interface service) {
     // Add non-service-specific imports.
     addImportStandard("json");
     addImportStandard("os");

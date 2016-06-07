@@ -73,12 +73,6 @@ public class JavaContextCommon {
    */
   private final Map<String, Boolean> implicitImports = Maps.newHashMap();
 
-  private final String defaultPackagePrefix;
-
-  public JavaContextCommon(String defaultPackagePrefix) {
-    this.defaultPackagePrefix = defaultPackagePrefix;
-  }
-
   /**
    * Returns the Java representation of a basic type in boxed form.
    */
@@ -149,8 +143,7 @@ public class JavaContextCommon {
     // Clean up the imports.
     List<String> cleanedImports = new ArrayList<>();
     for (String imported : imports.keySet()) {
-      if (imported.startsWith(JAVA_LANG_TYPE_PREFIX)
-          || defaultPackagePrefix != null && imported.startsWith(defaultPackagePrefix)) {
+      if (imported.startsWith(JAVA_LANG_TYPE_PREFIX)) {
         // Imported type is in java.lang or in package, can be ignored.
         continue;
       }

@@ -14,25 +14,19 @@
  */
 package com.google.api.codegen.py;
 
-import com.google.api.codegen.ProtoFileView;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.collect.ImmutableMap;
 
-public class PythonProtoFileView extends ProtoFileView
-    implements PythonInputElementView<ProtoFile> {
+public class PythonProtoFileInitializer
+    implements PythonSnippetSetInputInitializer<ProtoFile> {
 
   @Override
-  public PythonImportHandler getImportHandler(ProtoFile file, PythonGapicContext context) {
+  public PythonImportHandler getImportHandler(ProtoFile file) {
     return new PythonImportHandler(file);
   }
 
   @Override
   public ImmutableMap<String, Object> getGlobalMap(ProtoFile file) {
     return ImmutableMap.of("file", (Object) file);
-  }
-
-  @Override
-  public String getPathPrefix(PythonGapicContext context) {
-    return "";
   }
 }

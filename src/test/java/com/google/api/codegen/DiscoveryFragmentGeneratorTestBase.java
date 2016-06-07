@@ -14,16 +14,13 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.DiscoveryFragmentGenerator;
-import com.google.api.codegen.GeneratedResult;
-import com.google.api.codegen.SnippetDescriptor;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.protobuf.Method;
 
+import java.util.Map;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import java.util.Map;
 
 /**
  * Fragment generator baseline tests.
@@ -39,10 +36,9 @@ public abstract class DiscoveryFragmentGeneratorTestBase extends DiscoveryGenera
   @Override
   protected Object run() {
     String snippetInputName = config.getTemplates(0).getSnippetFiles(0);
-    SnippetDescriptor resourceDescriptor = new SnippetDescriptor(snippetInputName);
     Map<Method, GeneratedResult> result =
         DiscoveryFragmentGenerator.create(config, discoveryImporter)
-            .generateFragments(resourceDescriptor);
+            .generateFragments(snippetInputName);
     if (result == null) {
       return null;
     } else {
