@@ -1,42 +1,19 @@
-@extends "common.snip"
+@extends "header.snip"
 
 @snippet generateFilename(service)
-    {@context.getClientPackagePath(service)}/client.go
+    {@context.getApiConfig.getPackageName}/{@context.getReducedServiceName(service)}_client.go
 @end
 
 @snippet generateClass(service, body)
-    {@headerComment(editingInstruction(service))}
+    {@headerComment()}
 
-    // AUTO-GENERATED DOCUMENTATION AND SERVICE -- see instructions at the top of the file for editing.
+    // AUTO-GENERATED DOCUMENTATION AND SERVICE
 
-    @join commentLine : context.comments(service)
-        {@commentLine}
-    @end
-    package {@context.getReducedServiceName(service)}
+    package {@context.getPackageName}
 
     {@importSection(service)}
 
     {@body}
-@end
-
-@private editingInstruction(service)
-    // EDITING INSTRUCTIONS
-    // This file was generated from the file
-    // https://github.com/googleapis/blob/master/{@service.getFile().getSimpleName()}
-    // and updates to that file get reflected here through a refresh process.
-    // For the short term, the refresh process will only be runnable by Google engineers.
-    // Manual additions are allowed because the refresh process performs
-    // a 3-way merge in order to preserve those manual additions. In order to not
-    // break the refresh process, only certain types of modifications are
-    // allowed.
-    //
-    // Only additional documentation of the doc comment is allowed.
-    // Please put the additional comment at the end.
-    //
-    // Additional new methods or new features can be added in additional files
-    // in the same directory.
-    //
-    // Happy editing!
 @end
 
 @private importSection(service)
@@ -50,13 +27,15 @@
 @snippet generateBody(service)
     {@globals(service)}
 
-    // Client is a client for interacting with {@service.getSimpleName}.
-    type Client struct {
-        // The connection to the service.
-        conn *grpc.ClientConn
+    @let clientName = context.getClientName(service)
+        // {@clientName} is a client for interacting with {@service.getSimpleName}.
+        type {@clientName} struct {
+            // The connection to the service.
+            conn *grpc.ClientConn
 
-        // The gRPC API client.
-        client {@context.getServiceClientName(service)}
+            // The gRPC API client.
+            client {@context.getServiceClientName(service)}
+    @end
 
         // The map from the method name to the default call options for the method of this service.
         callOptions map[string][]gax.CallOption
@@ -73,22 +52,29 @@
 @end
 
 @private globals(service)
-    const (
-        gapicNameVersion = "gapic/0.1.0"
-    )
-
     var (
-        @if {context.hasPageStreamingMethod(service)}
-            // Done is returned by iterators on successful completion.
-            Done = errors.New("iterator done")
-        @end
-
         @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-            {@pathTemplateVarName(collectionConfig)} = gax.MustCompilePathTemplate("{@collectionConfig.getNamePattern}")
+            {@pathTemplateVarName(service, collectionConfig)} = gax.MustCompilePathTemplate("{@collectionConfig.getNamePattern}")
         @end
     )
 
-    func defaultClientSettings() gax.ClientSettings {
+    func default{@context.getClientName(service)}Settings() gax.ClientSettings {
+        @join retryCodesDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetryCodesDefinition) if retryCodesDef.getValue
+            with{@context.lowerUnderscoreToUpperCamel(retryCodesDef.getKey)}RetryCodes := gax.WithRetryCodes(
+                []codes.Code{
+                    @join code : retryCodesDef.getValue
+                        codes.{@context.upperUnderscoreToUpperCamel(code.toString())},
+                    @end
+                },
+            )
+        @end
+        @join retryDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetrySettingsDefinition)
+            {@context.lowerUnderscoreToLowerCamel(retryDef.getKey)}RetryOptions := []gax.CallOption{
+                gax.WithTimeout({@retryDef.getValue.getTotalTimeout.getMillis()}*time.Millisecond),
+                gax.WithDelayTimeoutSettings({@retryDef.getValue.getInitialRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getRetryDelayMultiplier}),
+                gax.WithRPCTimeoutSettings({@retryDef.getValue.getInitialRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getRpcTimeoutMultiplier}),
+            }
+        @end
         return gax.ClientSettings{
             AppName: "gax",
             AppVersion: gax.Version,
@@ -104,65 +90,57 @@
                          methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
                          retryParamsMethodName = context.lowerUnderscoreToLowerCamel(methodConfig.getRetrySettingsConfigName), \
                          retryCodesMethodName = context.lowerUnderscoreToUpperCamel(methodConfig.getRetryCodesConfigName)
-                        "{@methodName}": append([]gax.CallOption{with{@retryCodesMethodName}RetryCodes()}, {@retryParamsMethodName}RetryOptions()...),
+                        @if {@context.hasEmptyRetryCodes(service, methodConfig)}
+                            "{@methodName}": {@retryParamsMethodName}RetryOptions,
+                        @else
+                            "{@methodName}": append([]gax.CallOption{with{@retryCodesMethodName}RetryCodes}, {@retryParamsMethodName}RetryOptions...),
+                        @end
                     @end
                 @end
             },
         }
     }
-
-    @join retryCodesDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetryCodesDefinition)
-
-    func with{@context.lowerUnderscoreToUpperCamel(retryCodesDef.getKey)}RetryCodes() gax.CallOption {
-        return gax.WithRetryCodes([]codes.Code{
-            @join code : retryCodesDef.getValue
-                codes.{@context.upperUnderscoreToUpperCamel(code.toString())},
-            @end
-        })
-    }
-    @end
-    @join retryDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetrySettingsDefinition)
-
-    func {@context.lowerUnderscoreToLowerCamel(retryDef.getKey)}RetryOptions() []gax.CallOption {
-        return []gax.CallOption{
-            gax.WithTimeout({@retryDef.getValue.getTotalTimeout.getMillis()}*time.Millisecond),
-            gax.WithDelayTimeoutSettings({@retryDef.getValue.getInitialRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getRetryDelayMultiplier}),
-            gax.WithRPCTimeoutSettings({@retryDef.getValue.getInitialRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getRpcTimeoutMultiplier}),
-        }
-    }
-    @end
 @end
 
 @private constructor(service)
-    // NewClient creates a new API service client.
-    func NewClient(ctx context.Context, opts ...gax.ClientOption) (*Client, error) {
-        s := defaultClientSettings()
-        for _, opt := range opts {
-            opt.Resolve(&s)
+    @let clientName = context.getClientName(service)
+        // New{@clientName} creates a new {@context.getReducedServiceName(service)} service client.
+        //
+        @join commentLine : context.comments(service)
+            {@commentLine}
+        @end
+        func New{@clientName}(ctx context.Context, opts ...gax.ClientOption) (*{@clientName}, error) {
+            s := default{@clientName}Settings()
+            for _, opt := range opts {
+                opt.Resolve(&s)
+            }
+            conn, err := gax.DialGRPC(ctx, s)
+            if err != nil {
+                return nil, err
+            }
+            return &{@clientName} {
+                conn: conn,
+                client: {@context.getServiceClientConstructorName(service)}(conn),
+                callOptions: s.CallOptions,
+                metadata: map[string][]string{
+                    "x-goog-api-client": []string{fmt.Sprintf("%s/%s %s gax/%s go/%s", s.AppName, s.AppVersion, gapicNameVersion, gax.Version, runtime.Version())},
+                },
+            }, nil
         }
-        conn, err := gax.DialGRPC(ctx, s)
-        if err != nil {
-            return nil, err
-        }
-        return &Client {
-            conn: conn,
-            client: {@context.getServiceClientConstructorName(service)}(conn),
-            callOptions: s.CallOptions,
-            metadata: map[string][]string{
-                "x-goog-api-client": []string{fmt.Sprintf("%s/%s %s gax/%s go/%s", s.AppName, s.AppVersion, gapicNameVersion, gax.Version, runtime.Version())},
-            },
-        }, nil
-    }
 
-    // Close closes the connection to the API service. The user should invoke this when
-    // the client is no longer required.
-    func (c *Client) Close() error {
-        return c.conn.Close()
-    }
+        // Close closes the connection to the API service. The user should invoke this when
+        // the client is no longer required.
+        func (c *{@clientName}) Close() error {
+            return c.conn.Close()
+        }
+    @end
 @end
 
-@private pathTemplateVarName(collectionConfig)
-    {@context.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName)}PathTemplate
+@private pathTemplateVarName(service, collectionConfig)
+    @let prefix = context.lowerUnderscoreToLowerCamel(context.getReducedServiceName(service)), \
+         entityName = @context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName)
+        {@prefix}{@entityName}PathTemplate
+    @end
 @end
 
 @private createResourceDocParams(collectionConfig)
@@ -186,11 +164,12 @@
     @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
         @let pathTypeName = context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName), \
              humanReadableName = collectionConfig.getEntityName.replaceAll("_", " "), \
-             methodReceiver = context.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName)
+             methodReceiver = context.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName), \
+             prefix = context.lowerUnderscoreToUpperCamel(context.getReducedServiceName(service))
 
             // {@pathTypeName}Path returns the path for the {@humanReadableName} resource.
-            func {@pathTypeName}Path({@pathParams(collectionConfig.getNameTemplate.vars())}) string {
-                path, err := {@pathTemplateVarName(collectionConfig)}.Render(map[string]string{
+            func {@prefix}{@pathTypeName}Path({@pathParams(collectionConfig.getNameTemplate.vars())}) string {
+                path, err := {@pathTemplateVarName(service, collectionConfig)}.Render(map[string]string{
                     @join param : collectionConfig.getNameTemplate.vars()
                     "{@param}": {@context.lowerUnderscoreToLowerCamel(param)},
                     @end
@@ -210,7 +189,8 @@
              inTypeName = context.typeName(method.getInputType), \
              outTypeName = context.typeName(method.getOutputType), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-             isPageStreaming = methodConfig.isPageStreaming
+             isPageStreaming = methodConfig.isPageStreaming, \
+             clientName = context.getClientName(service)
             @if {@isPageStreaming}
                 @let pageStreaming = methodConfig.getPageStreaming(), \
                      iteratorTypeName = context.getIteratorTypeName(pageStreaming), \
@@ -221,7 +201,7 @@
                      tokenZeroValue = context.zeroValue(pageStreaming.getRequestTokenField().getType)
 
                     {@methodComment(method, methodName)}
-                    func (c *Client) {@methodName}(ctx context.Context, req {@inTypeName}) *{@iteratorTypeName} {
+                    func (c *{@clientName}) {@methodName}(ctx context.Context, req {@inTypeName}) *{@iteratorTypeName} {
                         ctx = metadata.NewContext(ctx, c.metadata)
                         it := &{@iteratorTypeName}{}
                         it.apiCall = func() error {
@@ -257,7 +237,7 @@
 
                 {@methodComment(method, methodName)}
                 @if {@context.isEmpty(method.getOutputType)}
-                    func (c *Client) {@methodName}(ctx context.Context, req {@inTypeName}) error {
+                    func (c *{@clientName}) {@methodName}(ctx context.Context, req {@inTypeName}) error {
                         ctx = metadata.NewContext(ctx, c.metadata)
                         err := gax.Invoke(ctx, func (ctx context.Context) error {
                             var err error
@@ -267,7 +247,7 @@
                         return err
                     }
                 @else
-                    func (c *Client) {@methodName}(ctx context.Context, req {@inTypeName}) ({@outTypeName}, error) {
+                    func (c *{@clientName}) {@methodName}(ctx context.Context, req {@inTypeName}) ({@outTypeName}, error) {
                         ctx = metadata.NewContext(ctx, c.metadata)
                         var resp {@outTypeName}
                         err := gax.Invoke(ctx, func (ctx context.Context) error {
