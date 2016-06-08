@@ -53,7 +53,7 @@ public class CSharpSnippetSetRunner<ElementT> implements SnippetSetRunner<Elemen
     CSharpContextCommon csharpContextCommon = new CSharpContextCommon();
 
     // TODO don't depend on a cast here
-    CSharpGapicContext csharpContext = (CSharpGapicContext) context;
+    CSharpContext csharpContext = (CSharpContext) context;
     csharpContext.resetState(csharpContextCommon);
 
     // Generate the body, which will collect the imports.
