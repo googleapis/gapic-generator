@@ -131,14 +131,16 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
     }
     return CSharpContextCommon.s_underscoresToCamelCase(file.getProto().getPackage(), true, true);
   }
-  
+
   public Iterable<String> removeItem(Iterable<String> items, final String remove) {
     return FluentIterable.from(items)
-        .filter(new Predicate<String>() {
-          @Override public boolean apply(String item) {
-            return !item.equals(remove);
-          }
-        });
+        .filter(
+            new Predicate<String>() {
+              @Override
+              public boolean apply(String item) {
+                return !item.equals(remove);
+              }
+            });
   }
 
   @AutoValue

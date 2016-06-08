@@ -58,7 +58,7 @@ public class CSharpSnippetSetRunner<ElementT> implements SnippetSetRunner<Elemen
     Doc body = snippets.generateBody(element);
 
     TreeSet<String> cleanedImports = csharpContextCommon.getImports();
-    
+
     // Generate result.
     Doc result = snippets.generateClass(element, body, cleanedImports);
     return GeneratedResult.create(result, outputFilename);
