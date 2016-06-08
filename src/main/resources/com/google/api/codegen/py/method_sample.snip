@@ -3,7 +3,7 @@
 @snippet generateMethodSampleCode(docConfig)
   @let prompt = ">>>", \
        ApiName = docConfig.getApiName, \
-       initCode = {@initCode(prompt, docConfig.getInitCode)} 
+       initCode = {@initCode(prompt, docConfig.getInitCode)}
     Example:
       @join import : docConfig.getAppImports
         {@prompt} {@import}
@@ -12,7 +12,21 @@
       @if initCode 
         {@initCode}
       @end
-      {@prompt} {@callResultSampleCode(docConfig.getReturnType)}{@methodCallSampleCode(docConfig)}
+      @if docConfig.isIterableResponse
+        {@prompt}
+        {@prompt} # Iterate over list response
+        {@prompt} for element in {@methodCallSampleCode(docConfig, {@FALSE})}:
+        {@prompt}   # doThingsWith(element)
+        {@prompt}
+        {@prompt} # Or page stream the response for large lists
+        {@prompt} from google.gax import CallOptions
+        {@prompt} from google.gax import INITIAL_PAGE
+        {@prompt} for page in {@methodCallSampleCode(docConfig, {@TRUE})}:
+        {@prompt}   for element in page:
+        {@prompt}     # doThingsWith(element)
+      @else
+        {@prompt} {@callResultSampleCode(docConfig.getReturnType)}{@methodCallSampleCode(docConfig, {@FALSE})}
+      @end
   @end
 @end
 
@@ -95,8 +109,17 @@
 @end
 
 # Render the API method call itself
-@private methodCallSampleCode(docConfig)
-  api.{@methodCallName(docConfig)}({@argList(docConfig.getInitCode.getArgFields)})
+@private methodCallSampleCode(docConfig, isPageStreaming)
+  api.{@methodCallName(docConfig)}({@argList(docConfig.getInitCode.getArgFields)}{@pageStreamingArg(isPageStreaming)})
+@end
+
+# Optionally render the options argument for page streaming 
+@private pageStreamingArg(isPageStreaming)
+  @if isPageStreaming
+    , options=CallOptions(page_token=INITIAL_PAGE)
+  @else
+    {@""}
+  @end
 @end
 
 # Render the name of the method call

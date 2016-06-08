@@ -380,6 +380,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
             .setReturnType(returnType)
             .setFieldInitCode(this, service, method, fields)
             .setFieldParams(this, fields)
+            .setIterableResponse(methodConfig.isPageStreaming())
             .build();
 
     return generateMethodSampleCode(docConfig);

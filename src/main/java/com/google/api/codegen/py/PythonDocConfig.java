@@ -33,6 +33,8 @@ abstract class PythonDocConfig extends DocConfig {
 
   public abstract List<String> getAppImports();
 
+  public abstract boolean isIterableResponse();
+
   @AutoValue.Builder
   abstract static class Builder extends DocConfig.Builder<Builder> {
     public abstract PythonDocConfig build();
@@ -48,6 +50,8 @@ abstract class PythonDocConfig extends DocConfig {
     public abstract Builder setParams(ImmutableList<InputParameter> params);
 
     public abstract Builder setAppImports(List<String> appImports);
+
+    public abstract Builder setIterableResponse(boolean isIterableResponse);
     
     @Override
     protected Builder setInitCodeProxy(InitCode initCode) {
