@@ -165,36 +165,41 @@ public abstract class DiscoveryContext extends CodegenContext {
 
   // Line wrap `str`, returning a list of lines. Each line in the returned list is guaranteed to
   // not have new line characters.
-  public List<String> lineWrap(String str, int maxWidth) {
+  public List<String> lineWrapDoc(String str, int maxWidth) {
     List<String> lines = new ArrayList<>();
-    str = str.trim();
 
-    while (!str.isEmpty()) {
-      int splitPos = str.indexOf('\n');
-      if (splitPos < 0 && str.length() > maxWidth || splitPos > maxWidth) {
-        for (int i = 0; i < str.length() && i < maxWidth; i++) {
-          char c = str.charAt(i);
-          if (Character.isWhitespace(c) || "([".indexOf(c) >= 0) {
-            splitPos = i;
-          }
-        }
+    for (String line : str.trim().split("\n")) {
+      line = line.trim();
+
+      while (line.length() > maxWidth) {
+        int split = lineWrapIndex(line, maxWidth);
+        lines.add(line.substring(0, split).trim());
+        line = line.substring(split).trim();
       }
-      if (splitPos < 0 && str.length() > maxWidth || splitPos > maxWidth) {
-        for (int i = 0; i < str.length(); i++) {
-          if (Character.isWhitespace(str.charAt(i))) {
-            splitPos = i;
-            break;
-          }
-        }
+
+      if (!line.isEmpty()) {
+        lines.add(line);
       }
-      if (splitPos < 0) {
-        lines.add(str.trim());
-        break;
-      }
-      lines.add(str.substring(0, splitPos).trim());
-      str = str.substring(splitPos).trim();
     }
     return lines;
+  }
+
+  private int lineWrapIndex(String line, int maxWidth) {
+    for (int i = maxWidth; i > 0; i--) {
+      if (isLineWrapChar(line.charAt(i))) {
+        return i;
+      }
+    }
+    for (int i = maxWidth+1; i < line.length(); i++) {
+      if (isLineWrapChar(line.charAt(i))) {
+        return i;
+      }
+    }
+    return line.length();
+  }
+
+  private boolean isLineWrapChar(char c) {
+    return Character.isWhitespace(c) || "([".indexOf(c) >= 0;
   }
 
   // Handlers for Exceptional Inconsistencies
