@@ -39,6 +39,7 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
   private static final ImmutableMap<String, String> RENAMED_PACKAGE_MAP =
       ImmutableMap.<String, String>builder()
           .put("Cloudtrace", "CloudTrace")
+          .put("Clouddebugger", "CloudDebugger")
           .put("Cloudmonitoring", "CloudMonitoring")
           .put("Cloudresourcemanager", "CloudResourceManager")
           .put("Clouduseraccounts", "CloudUserAccounts")
