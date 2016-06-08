@@ -163,23 +163,23 @@ public abstract class DiscoveryContext extends CodegenContext {
     return apiaryConfig.getHttpMethod(method.getName()).equals("PATCH");
   }
 
-  // line wrap `str`, returning a list of lines. Each line in the returned list is guaranteed to
+  // Line wrap `str`, returning a list of lines. Each line in the returned list is guaranteed to
   // not have new line characters.
-  public List<String> lineWrap(String str, int col) {
+  public List<String> lineWrap(String str, int maxWidth) {
     List<String> lines = new ArrayList<>();
     str = str.trim();
 
     while (!str.isEmpty()) {
       int splitPos = str.indexOf('\n');
-      if (splitPos < 0 && str.length() > col || splitPos > col) {
-        for (int i = 0; i < str.length() && i < col; i++) {
+      if (splitPos < 0 && str.length() > maxWidth || splitPos > maxWidth) {
+        for (int i = 0; i < str.length() && i < maxWidth; i++) {
           char c = str.charAt(i);
           if (Character.isWhitespace(c) || "([".indexOf(c) >= 0) {
             splitPos = i;
           }
         }
       }
-      if (splitPos < 0 && str.length() > col || splitPos > col) {
+      if (splitPos < 0 && str.length() > maxWidth || splitPos > maxWidth) {
         for (int i = 0; i < str.length(); i++) {
           if (Character.isWhitespace(str.charAt(i))) {
             splitPos = i;
@@ -189,11 +189,10 @@ public abstract class DiscoveryContext extends CodegenContext {
       }
       if (splitPos < 0) {
         lines.add(str.trim());
-        str = "";
-      } else {
-        lines.add(str.substring(0, splitPos).trim());
-        str = str.substring(splitPos).trim();
+        break;
       }
+      lines.add(str.substring(0, splitPos).trim());
+      str = str.substring(splitPos).trim();
     }
     return lines;
   }
