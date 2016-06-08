@@ -25,7 +25,7 @@
 @end
 
 @private imports() fill
-    {@context.addImport("Apis.Auth.OAuth2")}
+    {@context.addImport("Google.Apis.Auth.OAuth2")}
     {@context.addImport("Google.Apis.Services")}
     {@context.addImport("System.Threading.Tasks")}
 @end
@@ -74,14 +74,14 @@
     @end
 
     {@sample.requestTypeName} request = {@sample.serviceVarName}.{@sample.resourcePath}.{@sample.methodName}({@sample.paramList});
-    @if sample.responseTypeName == "empty$"
+    @if sample.responseTypeName == ""
         request.Execute();
     @else
         {@sample.responseTypeName} response = request.Execute();
     @end
     
     // To execute asynchronously in an async method, use
-    @if sample.responseTypeName == "empty$"
+    @if sample.responseTypeName == ""
         // await request.ExecuteAsync();
     @else
         // {@sample.responseTypeName} response = await request.ExecuteAsync();

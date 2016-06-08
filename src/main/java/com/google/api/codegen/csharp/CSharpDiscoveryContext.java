@@ -76,11 +76,11 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     return csharpCommon.addImport(namespace);
   }
   
-  private String packageNameAndImport() {
+  private String packageNameAndImport(String suffix) {
     String packageName = CSharpContextCommon.s_underscoresToPascalCase(
         getApiaryConfig().getServiceCanonicalName());
     String versionName = getApiaryConfig().getServiceVersion().replace('.', '_');
-    String namespace = "Google.Apis." + packageName + "." + versionName;
+    String namespace = "Google.Apis." + packageName + "." + versionName + suffix;
     addImport(namespace);
     return packageName;
   }
@@ -169,7 +169,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
 
   public SampleInfo getSampleInfo(Method method) {
     String rawMethodName = method.getName();
-    String packageName = packageNameAndImport();
+    String packageName = packageNameAndImport("");
     String namespace = packageName + "Sample";
     String serviceTypeName = packageName + "Service";
     String serviceVarName =
@@ -217,6 +217,13 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
         .append(methodName + "Request")
         .join(Joiner.on('.'));
     String responseTypeName = method.getResponseTypeUrl();
+    // TODO: Use a better way of determining if the response type is void
+    if (responseTypeName.equals("empty$")) {
+      responseTypeName = "";
+    } else {
+      // Use side-effect of adding the namespace to imports
+      packageNameAndImport(".Data");
+    }
     return SampleInfo.create(
         namespace,
         serviceTypeName,

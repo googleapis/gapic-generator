@@ -31,7 +31,6 @@ public class CSharpContextCommon {
    */
   // TODO(jonskeet): Handle naming collisions.
   private final TreeSet<String> imports = new TreeSet<>();
-  //private final String serviceNamespace;
 
   /**
    * Adds the given type name to the import list. Returns an empty string so that the output is not
