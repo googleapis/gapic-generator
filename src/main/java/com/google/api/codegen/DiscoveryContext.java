@@ -166,6 +166,11 @@ public abstract class DiscoveryContext extends CodegenContext {
   // Line wrap `str`, returning a list of lines. Each line in the returned list is guaranteed to
   // not have new line characters.
   public List<String> lineWrapDoc(String str, int maxWidth) {
+    return s_lineWrapDoc(str, maxWidth);
+  }
+
+  // For testing.
+  public static List<String> s_lineWrapDoc(String str, int maxWidth) {
     List<String> lines = new ArrayList<>();
 
     for (String line : str.trim().split("\n")) {
@@ -184,7 +189,7 @@ public abstract class DiscoveryContext extends CodegenContext {
     return lines;
   }
 
-  private int lineWrapIndex(String line, int maxWidth) {
+  private static int lineWrapIndex(String line, int maxWidth) {
     for (int i = maxWidth; i > 0; i--) {
       if (isLineWrapChar(line.charAt(i))) {
         return i;
@@ -198,7 +203,7 @@ public abstract class DiscoveryContext extends CodegenContext {
     return line.length();
   }
 
-  private boolean isLineWrapChar(char c) {
+  private static boolean isLineWrapChar(char c) {
     return Character.isWhitespace(c) || "([".indexOf(c) >= 0;
   }
 
