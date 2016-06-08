@@ -1,0 +1,258 @@
+
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Google Cloud Billing API and check quota for your project at
+//    https://console.developers.google.com/apis/api/cloudbilling_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Cloudbilling.v1;
+using Google.Apis.Cloudbilling.v1.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace CloudbillingSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            CloudbillingService cloudbillingService = new CloudbillingService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // The resource name of the billing account to retrieve. For example,
+            // `billingAccounts/012345-567890-ABCDEF`.
+            string name = "";
+
+            BillingAccountsResource.GetRequest request = cloudbillingService.BillingAccounts.Get(name);
+            BillingAccount response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // BillingAccount response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Google Cloud Billing API and check quota for your project at
+//    https://console.developers.google.com/apis/api/cloudbilling_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Cloudbilling.v1;
+using Google.Apis.Cloudbilling.v1.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace CloudbillingSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            CloudbillingService cloudbillingService = new CloudbillingService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+
+            BillingAccountsResource.ListRequest request = cloudbillingService.BillingAccounts.List();
+            ListBillingAccountsResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // ListBillingAccountsResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Google Cloud Billing API and check quota for your project at
+//    https://console.developers.google.com/apis/api/cloudbilling_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Cloudbilling.v1;
+using Google.Apis.Cloudbilling.v1.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace CloudbillingSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            CloudbillingService cloudbillingService = new CloudbillingService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // The resource name of the billing account associated with the projects that you want to list. For
+            // example, `billingAccounts/012345-567890-ABCDEF`.
+            string name = "";
+
+            BillingAccountsResource.ProjectsResource.ListRequest request = cloudbillingService.BillingAccounts.Projects.List(name);
+            ListProjectBillingInfoResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // ListProjectBillingInfoResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Google Cloud Billing API and check quota for your project at
+//    https://console.developers.google.com/apis/api/cloudbilling_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Cloudbilling.v1;
+using Google.Apis.Cloudbilling.v1.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace CloudbillingSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            CloudbillingService cloudbillingService = new CloudbillingService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the GetBillingInfo() method:
+            // The resource name of the project for which billing information is retrieved. For example,
+            // `projects/tokyo-rain-123`.
+            string name = "";
+
+            ProjectsResource.GetBillingInfoRequest request = cloudbillingService.Projects.GetBillingInfo(name);
+            ProjectBillingInfo response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // ProjectBillingInfo response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Google Cloud Billing API and check quota for your project at
+//    https://console.developers.google.com/apis/api/cloudbilling_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Cloudbilling.v1;
+using Google.Apis.Cloudbilling.v1.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace CloudbillingSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            CloudbillingService cloudbillingService = new CloudbillingService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the UpdateBillingInfo() method:
+            // The resource name of the project associated with the billing information that you want to update.
+            // For example, `projects/tokyo-rain-123`.
+            string name = "";
+
+            ProjectsResource.UpdateBillingInfoRequest request = cloudbillingService.Projects.UpdateBillingInfo(name);
+            ProjectBillingInfo response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // ProjectBillingInfo response = await request.ExecuteAsync();
+        }
+    }
+}

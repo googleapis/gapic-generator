@@ -22,13 +22,13 @@ import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 
+import java.util.List;
 import java.util.TreeSet;
 
 /**
  * A CSharpProvider provides general CSharp code generation logic.
  */
-public class CSharpSnippetSetRunner<ElementT extends ProtoElement>
-    implements SnippetSetRunner<ElementT> {
+public class CSharpSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
 
   /**
    * The path to the root of snippet resources.
@@ -36,6 +36,7 @@ public class CSharpSnippetSetRunner<ElementT extends ProtoElement>
   private static final String SNIPPET_RESOURCE_ROOT =
       CSharpContextCommon.class.getPackage().getName().replace('.', '/');
 
+  @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
       ElementT element,
@@ -48,23 +49,20 @@ public class CSharpSnippetSetRunner<ElementT extends ProtoElement>
             snippetFileName,
             ImmutableMap.<String, Object>of("context", context));
 
-    // TODO don't depend on a cast here
-    CSharpGapicContext csharpContext = (CSharpGapicContext) context;
-
     String outputFilename = snippets.generateFilename(element).prettyPrint();
+    CSharpContextCommon csharpContextCommon = new CSharpContextCommon();
 
-    String serviceNamespace = csharpContext.getNamespace(element.getFile());
-    CSharpContextCommon csharpCommon = new CSharpContextCommon(serviceNamespace);
-    csharpContext.resetState(csharpCommon);
+    // TODO don't depend on a cast here
+    CSharpContext csharpContext = (CSharpContext) context;
+    csharpContext.resetState(csharpContextCommon);
 
     // Generate the body, which will collect the imports.
-    // Note that generateBody populates imports.
     Doc body = snippets.generateBody(element);
 
-    TreeSet<String> imports = csharpCommon.getImports();
-
+    TreeSet<String> cleanedImports = csharpContextCommon.getImports();
+    
     // Generate result.
-    Doc result = snippets.generateClass(element, body, imports);
+    Doc result = snippets.generateClass(element, body, cleanedImports);
     return GeneratedResult.create(result, outputFilename);
   }
 }
