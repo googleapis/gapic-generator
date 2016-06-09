@@ -122,16 +122,23 @@
 
 # Render the API method call itself
 @private methodCallSampleCode(docConfig, isPageStreaming)
-  api.{@methodCallName(docConfig)}(\
-    {@argList(docConfig.getInitCode.getArgFields)}\
-    {@pageStreamingArg(isPageStreaming)}\
-  )
+  @let argFields = {@docConfig.getInitCode.getArgFields}
+    api.{@methodCallName(docConfig)}(\
+      {@argList(argFields)}\
+      {@pageStreamingArg(argFields, isPageStreaming)}\
+    )
+  @end
 @end
 
 # Optionally render the options argument for page streaming 
-@private pageStreamingArg(isPageStreaming)
+@private pageStreamingArg(argFields, isPageStreaming)
   @if isPageStreaming
-    , options=CallOptions(page_token=INITIAL_PAGE)
+    @if argFields.isEmpty
+      {@""}
+    @else
+      , {@""}
+    @end
+    options=CallOptions(page_token=INITIAL_PAGE)
   @else
     {@""}
   @end
@@ -142,7 +149,7 @@
   {@docConfig.getMethodName}
 @end
 
-# Generate argument list
+# Generate comma-separated argument list
 @private argList(fieldSettings)
   @join fieldSetting : fieldSettings on ", "
     {@formattedIdentifier(fieldSetting)}
