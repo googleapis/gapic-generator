@@ -52,15 +52,6 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     super(model, apiConfig);
   }
 
-  @Override
-  public String getOutputSubPath(ProtoElement element) {
-    ArrayList<String> dirs = new ArrayList<>();
-    for (String moduleName : getApiConfig().getPackageName().split("::")) {
-      dirs.add(moduleName.toLowerCase());
-    }
-    return "lib/" + Joiner.on("/").join(dirs);
-  }
-
   // Snippet Helpers
   // ===============
 

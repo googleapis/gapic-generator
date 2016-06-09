@@ -15,6 +15,7 @@
 package com.google.api.codegen.go;
 
 import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.Service;
@@ -49,21 +50,10 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
       return DEFAULT_VALUES.get(field.getKind());
     }
     if (field.getKind() == Field.Kind.TYPE_STRING) {
-      String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
-      if (stringFormat == null) {
-        return "\"\"";
-      }
-      switch (stringFormat) {
-        case "byte":
-          return "\"\" // base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648";
-        case "date":
-          return "\"2006-01-02\" // YYYY-MM-DD";
-        case "date-time":
-          return "\"2006-01-02T15:04:05Z07:00\" // YYYY-MM-DDThh:mm:ss see time.RFC3339";
-      }
-      throw new IllegalArgumentException("unknown string format: " + stringFormat);
+      return String.format("\"%s\"", getDefaultString(type, field));
     }
-    return field.getTypeUrl();
+    throw new IllegalArgumentException(
+        String.format("not implemented: typeDefaultValue(%s, %s)", type, field));
   }
 
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_TYPE =

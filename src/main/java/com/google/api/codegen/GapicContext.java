@@ -16,7 +16,6 @@ package com.google.api.codegen;
 
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.base.Preconditions;
@@ -65,19 +64,11 @@ public class GapicContext extends CodegenContext {
     return serviceConfig;
   }
 
-  public boolean isIdempotent(Method method) {
-    return Resources.isIdempotent(method);
-  }
-
   /**
    * Return the name of the class which is the GAPIC wrapper for this service interface.
    */
   public String getApiWrapperName(Interface service) {
     return service.getSimpleName() + "Api";
-  }
-
-  public String getOutputSubPath(@SuppressWarnings("unused") ProtoElement element) {
-    return "";
   }
 
   /**

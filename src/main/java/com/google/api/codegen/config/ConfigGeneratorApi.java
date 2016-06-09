@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.ConfigProto;
 import com.google.api.tools.framework.aspects.context.ContextConfigAspect;
 import com.google.api.tools.framework.aspects.documentation.DocumentationConfigAspect;
 import com.google.api.tools.framework.aspects.http.HttpConfigAspect;
@@ -25,6 +26,7 @@ import com.google.api.tools.framework.processors.resolver.Resolver;
 import com.google.api.tools.framework.tools.ToolDriverBase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
+import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 
 import org.yaml.snakeyaml.DumperOptions;
@@ -47,11 +49,18 @@ public class ConfigGeneratorApi extends ToolDriverBase {
   public static final Option<String> OUTPUT_FILE =
       ToolOptions.createOption(
           String.class, "output_file", "The path of the output file to put generated config.", "");
+
+  private static final String CONFIG_KEY_TYPE = "type";
+  private static final String CONFIG_KEY_GENERATE_SAMPLES = "generate_samples";
+  private static final String CONFIG_KEY_LANGUAGE_SETTINGS = "language_settings";
+  private static final String CONFIG_KEY_INTERFACES = "interfaces";
+
   private static final String CONFIG_KEY_SERVICE_NAME = "name";
   private static final String CONFIG_KEY_METHOD_NAME = "name";
-  private static final String CONFIG_KEY_INTERFACES = "interfaces";
   private static final String CONFIG_KEY_METHODS = "methods";
   private static final String CONFIG_KEY_COLLECTIONS = "collections";
+
+  private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
 
   /**
    * Constructs a config generator api based on given options.
@@ -77,17 +86,11 @@ public class ConfigGeneratorApi extends ToolDriverBase {
   protected void process() throws Exception {
     model.establishStage(Merged.KEY);
 
-    List<Object> services = new LinkedList<Object>();
-    for (Interface service : model.getSymbolTable().getInterfaces()) {
-      Map<String, Object> serviceConfig = new LinkedHashMap<String, Object>();
-      serviceConfig.put(CONFIG_KEY_SERVICE_NAME, service.getFullName());
-      serviceConfig.put(CONFIG_KEY_COLLECTIONS, generateCollectionConfigs(service));
-      serviceConfig.put(CONFIG_KEY_METHODS, generateMethodConfigs(service));
-      services.add(serviceConfig);
-    }
-
     Map<String, Object> output = new LinkedHashMap<String, Object>();
-    output.put(CONFIG_KEY_INTERFACES, services);
+    output.put(CONFIG_KEY_TYPE, CONFIG_PROTO_TYPE);
+    output.put(CONFIG_KEY_GENERATE_SAMPLES, true);
+    output.put(CONFIG_KEY_LANGUAGE_SETTINGS, generateLanguageSettings());
+    output.put(CONFIG_KEY_INTERFACES, generateInterfacesConfig());
     dump(output);
   }
 
@@ -98,7 +101,11 @@ public class ConfigGeneratorApi extends ToolDriverBase {
 
   private List<Object> generateMethodConfigs(Interface service) {
     List<MethodConfigGenerator> methodConfigGenerators =
-        Arrays.asList(new FlatteningConfigGenerator(), new PageStreamingConfigGenerator());
+        Arrays.asList(
+            new FieldConfigGenerator(),
+            new PageStreamingConfigGenerator(),
+            new RetryGenerator(),
+            new FieldNamePatternConfigGenerator());
     List<Object> methods = new LinkedList<Object>();
     for (Method method : service.getMethods()) {
       Map<String, Object> methodConfig = new LinkedHashMap<String, Object>();
@@ -114,10 +121,30 @@ public class ConfigGeneratorApi extends ToolDriverBase {
     return methods;
   }
 
+  private List<Object> generateInterfacesConfig() {
+    List<Object> services = new LinkedList<Object>();
+    for (Interface service : model.getSymbolTable().getInterfaces()) {
+      Map<String, Object> serviceConfig = new LinkedHashMap<String, Object>();
+      serviceConfig.put(CONFIG_KEY_SERVICE_NAME, service.getFullName());
+      serviceConfig.put(CONFIG_KEY_COLLECTIONS, generateCollectionConfigs(service));
+      serviceConfig.putAll(RetryGenerator.generateRetryDefinitions());
+      serviceConfig.put(CONFIG_KEY_METHODS, generateMethodConfigs(service));
+      services.add(serviceConfig);
+    }
+    return services;
+  }
+
+  private Map<String, Object> generateLanguageSettings() {
+    int index =
+        Preconditions.checkPositionIndex(model.getFiles().size() - 1, model.getFiles().size());
+    String packageName = model.getFiles().get(index).getFullName();
+    return LanguageGenerator.generate(packageName);
+  }
+
   private void dump(Map<String, Object> data) throws IOException {
     DumperOptions dumperOptions = new DumperOptions();
     dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-    dumperOptions.setPrettyFlow(true);
+    dumperOptions.setPrettyFlow(false);
     Yaml yaml = new Yaml(dumperOptions);
     String generatedConfig = yaml.dump(data);
 

@@ -1,16 +1,52 @@
+type: com.google.api.codegen.ConfigProto
+generate_samples: true
+language_settings:
+  java:
+    package_name: com.google.example.library.v1
+  python:
+    package_name: google.example.library.v1
+  go:
+    package_name: google.golang.org/google/example/library/v1
+  csharp:
+    package_name: Google.Example.Library.V1
+  ruby:
+    package_name: Google::Example::Library::V1
+  php:
+    package_name: Google\Example\Library\V1
 interfaces:
 - name: google.example.library.v1.LibraryService
   collections:
-  - name_pattern: /shelves/{shelf}
+  - name_pattern: shelves/{shelf}
     entity_name: shelf
-  - name_pattern: /shelves/{shelf}/books/{book}
+  - name_pattern: shelves/{shelf}/books/{book}
     entity_name: book
+  retry_codes_def:
+  - name: idempotent
+    retry_codes:
+    - UNAVAILABLE
+    - DEADLINE_EXCEEDED
+  - name: non_idempotent
+    retry_codes: []
+  retry_params_def:
+  - name: default
+    initial_retry_delay_millis: 100
+    retry_delay_multiplier: 1.3
+    max_retry_delay_millis: 60000
+    initial_rpc_timeout_millis: 60000
+    rpc_timeout_multiplier: 1
+    max_rpc_timeout_millis: 60000
+    total_timeout_millis: 600000
   methods:
   - name: CreateShelf
     flattening:
       groups:
       - parameters:
         - shelf
+    required_fields:
+    - shelf
+    request_object_method: false
+    retry_codes_name: non_idempotent
+    retry_params_name: default
   - name: GetShelf
     flattening:
       groups:
@@ -18,30 +54,65 @@ interfaces:
         - name
         - message
         - string_builder
+    required_fields:
+    - name
+    - message
+    - string_builder
+    request_object_method: true
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: shelf
   - name: ListShelves
+    request_object_method: false
     page_streaming:
       request:
         token_field: page_token
       response:
         token_field: next_page_token
-        resource_field: shelves
+        resources_field: shelves
+    retry_codes_name: idempotent
+    retry_params_name: default
   - name: DeleteShelf
     flattening:
       groups:
       - parameters:
         - name
+    required_fields:
+    - name
+    request_object_method: false
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: shelf
   - name: MergeShelves
     flattening:
       groups:
       - parameters:
         - name
         - other_shelf_name
+    required_fields:
+    - name
+    - other_shelf_name
+    request_object_method: true
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: shelf
   - name: CreateBook
     flattening:
       groups:
       - parameters:
         - name
         - book
+    required_fields:
+    - name
+    - book
+    request_object_method: true
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: shelf
   - name: PublishSeries
     flattening:
       groups:
@@ -49,51 +120,118 @@ interfaces:
         - shelf
         - books
         - edition
+    required_fields:
+    - shelf
+    - books
+    - edition
+    request_object_method: true
+    retry_codes_name: non_idempotent
+    retry_params_name: default
   - name: GetBook
     flattening:
       groups:
       - parameters:
         - name
+    required_fields:
+    - name
+    request_object_method: false
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: book
   - name: ListBooks
     flattening:
       groups:
       - parameters:
         - name
         - filter
+    required_fields:
+    - name
+    - filter
+    request_object_method: true
     page_streaming:
       request:
         page_size_field: page_size
         token_field: page_token
       response:
         token_field: next_page_token
-        resource_field: books
+        resources_field: books
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: shelf
   - name: DeleteBook
     flattening:
       groups:
       - parameters:
         - name
+    required_fields:
+    - name
+    request_object_method: false
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: book
   - name: UpdateBook
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - book
+        - update_mask
+        - physical_mask
+    required_fields:
+    - name
+    - book
+    - update_mask
+    - physical_mask
+    request_object_method: true
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: book
   - name: MoveBook
     flattening:
       groups:
       - parameters:
         - name
         - other_shelf_name
+    required_fields:
+    - name
+    - other_shelf_name
+    request_object_method: true
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: book
   - name: ListStrings
     flattening:
       groups:
       - parameters:
         - name
+    required_fields:
+    - name
+    request_object_method: false
     page_streaming:
       request:
         page_size_field: page_size
         token_field: page_token
       response:
         token_field: next_page_token
-        resource_field: strings
+        resources_field: strings
+    retry_codes_name: idempotent
+    retry_params_name: default
   - name: AddComments
     flattening:
       groups:
       - parameters:
         - name
         - comments
+    required_fields:
+    - name
+    - comments
+    request_object_method: true
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: shelf

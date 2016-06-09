@@ -14,10 +14,8 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.Resources;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.FieldSegment;
 import com.google.api.tools.framework.model.Interface;
-import com.google.common.collect.Lists;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -39,15 +37,9 @@ public class CollectionConfigGenerator {
     for (FieldSegment segment : segments) {
       Map<String, Object> collectionMap = new LinkedHashMap<String, Object>();
       collectionMap.put(CONFIG_KEY_NAME_PATTERN, Resources.templatize(segment));
-      collectionMap.put(CONFIG_KEY_ENTITY_NAME, getEntityName(segment));
+      collectionMap.put(CONFIG_KEY_ENTITY_NAME, Resources.getEntityName(segment));
       output.add(collectionMap);
     }
     return output;
-  }
-
-  private String getEntityName(FieldSegment segment) {
-    // TODO(shinfan): Consider finding a better way to determine the name if possible.
-    List<String> params = Lists.newArrayList(Resources.getParamsForResourceNameWildcards(segment));
-    return params.get(params.size() - 1);
   }
 }
