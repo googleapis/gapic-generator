@@ -25,20 +25,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Config generator for method parameter flattening.
+ * Config generator for method parameter flattening and required fields.
  */
-public class FlatteningConfigGenerator implements MethodConfigGenerator {
+public class FlatteningAndRequiredFieldsConfigGenerator implements MethodConfigGenerator {
 
   private static final String CONFIG_KEY_GROUPS = "groups";
   private static final String CONFIG_KEY_PARAMETERS = "parameters";
   private static final String CONFIG_KEY_FLATTENING = "flattening";
+  private static final String CONFIG_KEY_REQUIRED_FIELDS = "required_fields";
 
   private static final String PARAMETER_PAGE_TOKEN = "page_token";
   private static final String PARAMETER_PAGE_SIZE = "page_size";
 
   // Do not apply flattening if the parameter count exceeds the threshold.
   // TODO(shinfan): Investigate a more intelligent way to handle this.
-  private static final int FLATTENING_THRESHOLD = 3;
+  private static final int FLATTENING_THRESHOLD = 4;
 
   @Override
   public Map<String, Object> generate(Method method) {
@@ -52,11 +53,13 @@ public class FlatteningConfigGenerator implements MethodConfigGenerator {
         parameterList.add(field.getSimpleName());
       }
     }
+
+    Map<String, Object> result = new LinkedHashMap<String, Object>();
     if (parameterList.size() > 0 && parameterList.size() <= FLATTENING_THRESHOLD) {
-      return createFlatteningConfig(parameterList);
-    } else {
-      return null;
+      result.put(CONFIG_KEY_FLATTENING, createFlatteningConfig(parameterList));
     }
+    result.put(CONFIG_KEY_REQUIRED_FIELDS, new LinkedList<String>(parameterList));
+    return result;
   }
 
   private Map<String, Object> createFlatteningConfig(List<String> parameterList) {
@@ -69,8 +72,6 @@ public class FlatteningConfigGenerator implements MethodConfigGenerator {
     Map<String, Object> flattening = new LinkedHashMap<String, Object>();
     flattening.put(CONFIG_KEY_GROUPS, groups);
 
-    Map<String, Object> output = new LinkedHashMap<String, Object>();
-    output.put(CONFIG_KEY_FLATTENING, flattening);
-    return output;
+    return flattening;
   }
 }

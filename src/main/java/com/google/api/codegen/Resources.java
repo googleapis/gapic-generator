@@ -21,10 +21,13 @@ import com.google.api.tools.framework.aspects.http.model.HttpAttribute.MethodKin
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.PathSegment;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.WildcardSegment;
 import com.google.api.tools.framework.model.Method;
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -69,22 +72,48 @@ public class Resources {
     // (useful for testability).
     Map<String, FieldSegment> specs = new TreeMap<>();
 
+    Map<String, List<FieldSegment>> methodFieldSegs = getAllFieldSegmentsFromHttpPathsPerMethod(methods);
+    for (List<FieldSegment> segList : methodFieldSegs.values()) {
+      for (FieldSegment fieldSegment : segList) {
+        String resourcePath = PathSegment.toSyntax(fieldSegment.getSubPath());
+        // If there are multiple field segments with the same resource path, the last
+        // one will be used, making the output deterministic. Also, the first field path
+        // encountered tends to be simply "name" because it is the corresponding create
+        // API method for the type.
+        specs.put(resourcePath, fieldSegment);
+      }
+    }
+    return specs.values();
+  }
+
+  /**
+   * Returns a map from method name to a list of FieldSegment objects. Each FieldSegment will be
+   * composed of a field name and a path segment, representing an abstract resource name with
+   * wildcards.
+   */
+  public static Map<String, List<FieldSegment>> getAllFieldSegmentsFromHttpPathsPerMethod(
+      List<Method> methods) {
+    Map<String, List<FieldSegment>> fieldSegmentsPerMethodMap =
+        new Hashtable<String, List<FieldSegment>>();
+
     for (Method method : methods) {
+      fieldSegmentsPerMethodMap.put(method.getFullName(), new ArrayList<FieldSegment>());
       HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);
       for (PathSegment pathSegment : httpAttr.getPath()) {
         if (isTemplateFieldSegment(pathSegment)) {
           FieldSegment fieldSegment = (FieldSegment) pathSegment;
-          String resourcePath = PathSegment.toSyntax(fieldSegment.getSubPath());
-          // If there are multiple field segments with the same resource path, the last
-          // one will be used, making the output deterministic. Also, the first field path
-          // encountered tends to be simply "name" because it is the corresponding create
-          // API method for the type.
-          specs.put(resourcePath, fieldSegment);
+          fieldSegmentsPerMethodMap.get(method.getFullName()).add(fieldSegment);
         }
       }
     }
 
-    return specs.values();
+    return fieldSegmentsPerMethodMap;
+  }
+
+  public static String getEntityName(FieldSegment segment) {
+    // TODO(shinfan): Consider finding a better way to determine the name if possible.
+    List<String> params = Lists.newArrayList(Resources.getParamsForResourceNameWildcards(segment));
+    return params.get(params.size() - 1);
   }
 
   /**
@@ -98,17 +127,17 @@ public class Resources {
 
   /**
    * Returns the templatized form of the resource path (replacing each * with a name) which can be
-   * used with PathTemplate.
+   * used with PathTemplate. Does not produce leading or trailing forward slashes.
    */
   public static String templatize(FieldSegment fieldSegment) {
-    StringBuilder builder = new StringBuilder();
+    List<String> componentStrings = new ArrayList<String>();
 
     for (String collectionName : getWildcardCollectionNames(fieldSegment)) {
       String paramName = Inflector.singularize(collectionName);
-      builder.append("/" + collectionName + "/{" + paramName + "}");
+      componentStrings.add(collectionName + "/{" + paramName + "}");
     }
 
-    return builder.toString();
+    return Joiner.on("/").join(componentStrings);
   }
 
   private static boolean isTemplateFieldSegment(PathSegment pathSegment) {
