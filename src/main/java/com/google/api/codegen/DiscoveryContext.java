@@ -21,6 +21,7 @@ import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -160,6 +161,50 @@ public abstract class DiscoveryContext extends CodegenContext {
 
   public boolean isPatch(Method method) {
     return apiaryConfig.getHttpMethod(method.getName()).equals("PATCH");
+  }
+
+  // Line wrap `str`, returning a list of lines. Each line in the returned list is guaranteed to
+  // not have new line characters.
+  public List<String> lineWrapDoc(String str, int maxWidth) {
+    return s_lineWrapDoc(str, maxWidth);
+  }
+
+  // For testing.
+  public static List<String> s_lineWrapDoc(String str, int maxWidth) {
+    List<String> lines = new ArrayList<>();
+
+    for (String line : str.trim().split("\n")) {
+      line = line.trim();
+
+      while (line.length() > maxWidth) {
+        int split = lineWrapIndex(line, maxWidth);
+        lines.add(line.substring(0, split).trim());
+        line = line.substring(split).trim();
+      }
+
+      if (!line.isEmpty()) {
+        lines.add(line);
+      }
+    }
+    return lines;
+  }
+
+  private static int lineWrapIndex(String line, int maxWidth) {
+    for (int i = maxWidth; i > 0; i--) {
+      if (isLineWrapChar(line.charAt(i))) {
+        return i;
+      }
+    }
+    for (int i = maxWidth + 1; i < line.length(); i++) {
+      if (isLineWrapChar(line.charAt(i))) {
+        return i;
+      }
+    }
+    return line.length();
+  }
+
+  private static boolean isLineWrapChar(char c) {
+    return Character.isWhitespace(c) || "([".indexOf(c) >= 0;
   }
 
   // Handlers for Exceptional Inconsistencies

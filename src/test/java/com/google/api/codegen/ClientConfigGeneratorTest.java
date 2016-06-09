@@ -32,12 +32,11 @@ public class ClientConfigGeneratorTest {
   public static class ClientConfigLibraryBaseline extends GapicTestBase {
 
     public ClientConfigLibraryBaseline(
-        String name,
-        String idForFactory,
-        String[] gapicConfigFileNames,
-        String snippetName) {
+        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, snippetName);
-      getTestDataLocator().addTestDataSource(com.google.api.codegen.clientconfig.ClientConfigGapicContext.class, "");
+      getTestDataLocator()
+          .addTestDataSource(
+              com.google.api.codegen.clientconfig.ClientConfigGapicContext.class, "");
     }
 
     /**
@@ -46,8 +45,9 @@ public class ClientConfigGeneratorTest {
      */
     @Parameters(name = "{0}")
     public static List<Object[]> testedConfigs() {
-      return GapicTestBase.createTestedConfigs(MainGapicProviderFactory.CLIENT_CONFIG,
-          new String[] { "client_gapic.yaml", "library_gapic.yaml" });
+      return GapicTestBase.createTestedConfigs(
+          MainGapicProviderFactory.CLIENT_CONFIG,
+          new String[] {"client_gapic.yaml", "library_gapic.yaml"});
     }
 
     // Tests

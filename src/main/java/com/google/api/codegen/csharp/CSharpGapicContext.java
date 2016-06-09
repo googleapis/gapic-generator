@@ -131,14 +131,16 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
     }
     return CSharpContextCommon.s_underscoresToCamelCase(file.getProto().getPackage(), true, true);
   }
-  
+
   public Iterable<String> removeItem(Iterable<String> items, final String remove) {
     return FluentIterable.from(items)
-        .filter(new Predicate<String>() {
-          @Override public boolean apply(String item) {
-            return !item.equals(remove);
-          }
-        });
+        .filter(
+            new Predicate<String>() {
+              @Override
+              public boolean apply(String item) {
+                return !item.equals(remove);
+              }
+            });
   }
 
   @AutoValue
@@ -165,100 +167,142 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
   @AutoValue
   public static abstract class RetryDefInfo {
     public static RetryDefInfo create(
-        String rawName, String name, String statusCodeUseList,
-        boolean anyStatusCodes, Iterable<String> statusCodeNames) {
+        String rawName,
+        String name,
+        String statusCodeUseList,
+        boolean anyStatusCodes,
+        Iterable<String> statusCodeNames) {
       return new AutoValue_CSharpGapicContext_RetryDefInfo(
-        rawName, name, statusCodeUseList,
-        anyStatusCodes, statusCodeNames);
+          rawName, name, statusCodeUseList, anyStatusCodes, statusCodeNames);
     }
+
     public abstract String rawName();
+
     public abstract String name();
+
     public abstract String statusCodeUseList();
+
     public abstract boolean anyStatusCodes();
+
     public abstract Iterable<String> statusCodeNames();
   }
 
   @AutoValue
   public static abstract class RetrySettingInfo {
     public static RetrySettingInfo create(
-        String rawName, String name,
-        long delayMs, double delayMultiplier, long delayMaxMs,
-        long timeoutMs, double timeoutMultiplier, long timeoutMaxMs,
+        String rawName,
+        String name,
+        long delayMs,
+        double delayMultiplier,
+        long delayMaxMs,
+        long timeoutMs,
+        double timeoutMultiplier,
+        long timeoutMaxMs,
         long totalTimeoutMs) {
       return new AutoValue_CSharpGapicContext_RetrySettingInfo(
-          rawName, name,
-          delayMs, delayMultiplier, delayMaxMs,
-          timeoutMs, timeoutMultiplier, timeoutMaxMs,
+          rawName,
+          name,
+          delayMs,
+          delayMultiplier,
+          delayMaxMs,
+          timeoutMs,
+          timeoutMultiplier,
+          timeoutMaxMs,
           totalTimeoutMs);
     }
+
     public abstract String rawName();
+
     public abstract String name();
+
     public abstract long delayMs();
+
     public abstract double delayMultiplier();
+
     public abstract long delayMaxMs();
+
     public abstract long timeoutMs();
+
     public abstract double timeoutMultiplier();
+
     public abstract long timeoutMaxMs();
+
     public abstract long totalTimeoutMs();
   }
 
   @AutoValue
   public static abstract class RetryInfo {
-    public static RetryInfo create(
-        List<RetryDefInfo> defs, List<RetrySettingInfo> settings) {
-      return new AutoValue_CSharpGapicContext_RetryInfo(
-          defs, settings);
+    public static RetryInfo create(List<RetryDefInfo> defs, List<RetrySettingInfo> settings) {
+      return new AutoValue_CSharpGapicContext_RetryInfo(defs, settings);
     }
+
     public abstract List<RetryDefInfo> defs();
+
     public abstract List<RetrySettingInfo> settings();
   }
 
   public RetryInfo getRetryInfo(Interface service) {
     final InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
-    List<RetryDefInfo> defs = FluentIterable.from(interfaceConfig.getRetryCodesDefinition().entrySet())
-        .transform(new Function<Map.Entry<String, ImmutableSet<Status.Code>>, RetryDefInfo>() {
-          @Override public RetryDefInfo apply(Map.Entry<String, ImmutableSet<Status.Code>> entry) {
-            Iterable<String> statusCodeNames = FluentIterable.from(entry.getValue())
-                .transform(new Function<Status.Code, String>() {
-                  @Override public String apply(Status.Code statusCode) {
-                    String statusCodeNameLower = statusCode.toString().toLowerCase();
-                    return CSharpContextCommon.s_underscoresToPascalCase(statusCodeNameLower);
+    List<RetryDefInfo> defs =
+        FluentIterable.from(interfaceConfig.getRetryCodesDefinition().entrySet())
+            .transform(
+                new Function<Map.Entry<String, ImmutableSet<Status.Code>>, RetryDefInfo>() {
+                  @Override
+                  public RetryDefInfo apply(Map.Entry<String, ImmutableSet<Status.Code>> entry) {
+                    Iterable<String> statusCodeNames =
+                        FluentIterable.from(entry.getValue())
+                            .transform(
+                                new Function<Status.Code, String>() {
+                                  @Override
+                                  public String apply(Status.Code statusCode) {
+                                    String statusCodeNameLower =
+                                        statusCode.toString().toLowerCase();
+                                    return CSharpContextCommon.s_underscoresToPascalCase(
+                                        statusCodeNameLower);
+                                  }
+                                });
+                    return RetryDefInfo.create(
+                        entry.getKey(),
+                        CSharpContextCommon.s_underscoresToPascalCase(entry.getKey()),
+                        Joiner.on(", ")
+                            .join(CSharpContextCommon.s_prefix(statusCodeNames, "StatusCode.")),
+                        entry.getValue().size() > 0,
+                        statusCodeNames);
                   }
-                });
-            return RetryDefInfo.create(
-                entry.getKey(),
-                CSharpContextCommon.s_underscoresToPascalCase(entry.getKey()),
-                Joiner.on(", ").join(CSharpContextCommon.s_prefix(statusCodeNames, "StatusCode.")),
-                entry.getValue().size() > 0,
-                statusCodeNames);
-          }
-        })
-        .toList();
-    List<RetrySettingInfo> settings = FluentIterable.from(interfaceConfig.getRetrySettingsDefinition().entrySet())
-        .transform(new Function<Map.Entry<String, RetrySettings>, RetrySettingInfo>() {
-          @Override public RetrySettingInfo apply(Map.Entry<String, RetrySettings> entry) {
-            RetrySettings retrySettings = entry.getValue();
-            return RetrySettingInfo.create(
-                entry.getKey(),
-                CSharpContextCommon.s_underscoresToPascalCase(entry.getKey()),
-                retrySettings.getInitialRetryDelay().getMillis(),
-                retrySettings.getRetryDelayMultiplier(),
-                retrySettings.getMaxRetryDelay().getMillis(),
-                retrySettings.getInitialRpcTimeout().getMillis(),
-                retrySettings.getRpcTimeoutMultiplier(),
-                retrySettings.getMaxRpcTimeout().getMillis(),
-                retrySettings.getTotalTimeout().getMillis());
-          }
-        })
-        .toList();
+                })
+            .toList();
+    List<RetrySettingInfo> settings =
+        FluentIterable.from(interfaceConfig.getRetrySettingsDefinition().entrySet())
+            .transform(
+                new Function<Map.Entry<String, RetrySettings>, RetrySettingInfo>() {
+                  @Override
+                  public RetrySettingInfo apply(Map.Entry<String, RetrySettings> entry) {
+                    RetrySettings retrySettings = entry.getValue();
+                    return RetrySettingInfo.create(
+                        entry.getKey(),
+                        CSharpContextCommon.s_underscoresToPascalCase(entry.getKey()),
+                        retrySettings.getInitialRetryDelay().getMillis(),
+                        retrySettings.getRetryDelayMultiplier(),
+                        retrySettings.getMaxRetryDelay().getMillis(),
+                        retrySettings.getInitialRpcTimeout().getMillis(),
+                        retrySettings.getRpcTimeoutMultiplier(),
+                        retrySettings.getMaxRpcTimeout().getMillis(),
+                        retrySettings.getTotalTimeout().getMillis());
+                  }
+                })
+            .toList();
     return RetryInfo.create(defs, settings);
   }
 
   @AutoValue
   public static abstract class ParamInfo {
     public static ParamInfo create(
-        String name, String typeName, String defaultValue,
-        String propertyName, String propertyTransform, boolean isRepeated) {
+        String name,
+        String typeName,
+        String defaultValue,
+        String propertyName,
+        String propertyTransform,
+        boolean isRepeated) {
       return new AutoValue_CSharpGapicContext_ParamInfo(
           name, typeName, defaultValue, propertyName, propertyTransform, isRepeated);
     }
@@ -322,38 +366,39 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
   @AutoValue
   public static abstract class FlatInfo {
     public static FlatInfo create(
-      Iterable<ParamInfo> params,
-      Iterable<String> xmlDocAsync,
-      Iterable<String> xmlDocSync) {
-      return new AutoValue_CSharpGapicContext_FlatInfo(
-          params, xmlDocAsync, xmlDocSync);
+        Iterable<ParamInfo> params, Iterable<String> xmlDocAsync, Iterable<String> xmlDocSync) {
+      return new AutoValue_CSharpGapicContext_FlatInfo(params, xmlDocAsync, xmlDocSync);
     }
+
     public abstract Iterable<ParamInfo> params();
+
     public abstract Iterable<String> xmlDocAsync();
+
     public abstract Iterable<String> xmlDocSync();
   }
 
   private FlatInfo createFlatInfo(Method method, List<Field> flat, PageStreamingConfig page) {
-    List<ParamInfo> params = FluentIterable.from(flat)
-        .transform(new Function<Field, ParamInfo>() {
-          @Override public ParamInfo apply(Field field) {
-            return ParamInfo.create(
-                CSharpContextCommon.s_underscoresToCamelCase(field.getSimpleName()),
-                typeName(field.getType()),
-                "",
-                CSharpContextCommon.s_underscoresToPascalCase(field.getSimpleName()),
-                "",
-                field.getType().isRepeated());
-          }
-        })
-        .toList();
+    List<ParamInfo> params =
+        FluentIterable.from(flat)
+            .transform(
+                new Function<Field, ParamInfo>() {
+                  @Override
+                  public ParamInfo apply(Field field) {
+                    return ParamInfo.create(
+                        CSharpContextCommon.s_underscoresToCamelCase(field.getSimpleName()),
+                        typeName(field.getType()),
+                        "",
+                        CSharpContextCommon.s_underscoresToPascalCase(field.getSimpleName()),
+                        "",
+                        field.getType().isRepeated());
+                  }
+                })
+            .toList();
     if (page != null) {
-      ParamInfo pageToken = ParamInfo.create(
-          "pageToken", "string", " = null",
-          "PageToken", " ?? \"\"", false);
-      ParamInfo pageSize = ParamInfo.create(
-          "pageSize", "int?", " = null",
-          "PageSize", " ?? 0", false);
+      ParamInfo pageToken =
+          ParamInfo.create("pageToken", "string", " = null", "PageToken", " ?? \"\"", false);
+      ParamInfo pageSize =
+          ParamInfo.create("pageSize", "int?", " = null", "PageSize", " ?? 0", false);
       params = FluentIterable.from(params).append(pageToken, pageSize).toList();
     }
     return FlatInfo.create(
@@ -444,22 +489,28 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
         methodName = method.getSimpleName() + "PageStream";
         TypeRef resourceType = pageStreamingConfig.getResourcesField().getType();
         String elementTypeName = basicTypeName(resourceType);
-        asyncReturnTypeName = "IPagedAsyncEnumerable<" + typeName(returnType) + ", " + elementTypeName + ">";
-        syncReturnTypeName = "IPagedEnumerable<" + typeName(returnType) + ", " + elementTypeName + ">";
+        asyncReturnTypeName =
+            "IPagedAsyncEnumerable<" + typeName(returnType) + ", " + elementTypeName + ">";
+        syncReturnTypeName =
+            "IPagedEnumerable<" + typeName(returnType) + ", " + elementTypeName + ">";
       } else {
         methodName = method.getSimpleName();
         asyncReturnTypeName = "Task<" + typeName(returnType) + ">";
         syncReturnTypeName = typeName(returnType);
       }
     }
-    List<FlatInfo> flats = flattening != null ?
-        FluentIterable.from(flattening.getFlatteningGroups())
-            .transform(new Function<List<Field>, FlatInfo>() {
-              @Override public FlatInfo apply(List<Field> flat) {
-                return createFlatInfo(method, flat, pageStreamingConfig);
-              }
-            }).toList() :
-        Collections.<FlatInfo>emptyList();
+    List<FlatInfo> flats =
+        flattening != null
+            ? FluentIterable.from(flattening.getFlatteningGroups())
+                .transform(
+                    new Function<List<Field>, FlatInfo>() {
+                      @Override
+                      public FlatInfo apply(List<Field> flat) {
+                        return createFlatInfo(method, flat, pageStreamingConfig);
+                      }
+                    })
+                .toList()
+            : Collections.<FlatInfo>emptyList();
     return MethodInfo.create(
         methodName,
         method.getSimpleName(),
@@ -479,32 +530,45 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
   public List<MethodInfo> getMethodInfos(Interface service) {
     final InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
     RetryInfo retryInfo = getRetryInfo(service);
-    final Map<String, RetryDefInfo> retryDefByName = Maps.uniqueIndex(retryInfo.defs(),
-        new Function<RetryDefInfo, String>() {
-          @Override public String apply(RetryDefInfo value) {
-            return value.rawName();
-          }
-        });
-    final Map<String, RetrySettingInfo> retrySettingByName = Maps.uniqueIndex(retryInfo.settings(),
-        new Function<RetrySettingInfo, String>() {
-          @Override public String apply(RetrySettingInfo value) {
-            return value.rawName();
-          }
-        });
+    final Map<String, RetryDefInfo> retryDefByName =
+        Maps.uniqueIndex(
+            retryInfo.defs(),
+            new Function<RetryDefInfo, String>() {
+              @Override
+              public String apply(RetryDefInfo value) {
+                return value.rawName();
+              }
+            });
+    final Map<String, RetrySettingInfo> retrySettingByName =
+        Maps.uniqueIndex(
+            retryInfo.settings(),
+            new Function<RetrySettingInfo, String>() {
+              @Override
+              public String apply(RetrySettingInfo value) {
+                return value.rawName();
+              }
+            });
     return FluentIterable.from(service.getMethods())
-        .transform(new Function<Method, MethodInfo>() {
-          @Override public MethodInfo apply(Method method) {
-            MethodConfig methodConfig = interfaceConfig.getMethodConfig(method);
-            return createMethodInfo(interfaceConfig, method, methodConfig,
-                retryDefByName.get(methodConfig.getRetryCodesConfigName()),
-                retrySettingByName.get(methodConfig.getRetrySettingsConfigName()));
-          }
-        })
-        .filter(new Predicate<MethodInfo>() {
-          @Override public boolean apply(MethodInfo method) {
-            return method.anyFlats();
-          }
-        })
+        .transform(
+            new Function<Method, MethodInfo>() {
+              @Override
+              public MethodInfo apply(Method method) {
+                MethodConfig methodConfig = interfaceConfig.getMethodConfig(method);
+                return createMethodInfo(
+                    interfaceConfig,
+                    method,
+                    methodConfig,
+                    retryDefByName.get(methodConfig.getRetryCodesConfigName()),
+                    retrySettingByName.get(methodConfig.getRetrySettingsConfigName()));
+              }
+            })
+        .filter(
+            new Predicate<MethodInfo>() {
+              @Override
+              public boolean apply(MethodInfo method) {
+                return method.anyFlats();
+              }
+            })
         .toList();
   }
 
@@ -522,20 +586,25 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
         typeName(method.getOutputType()),
         typeName(pageStreamingConfig.getRequestTokenField().getType()),
         "s_" + firstLetterToLower(method.getSimpleName()) + "PageStreamer",
-        CSharpContextCommon.s_underscoresToPascalCase(pageStreamingConfig.getRequestTokenField().getSimpleName()),
-        CSharpContextCommon.s_underscoresToPascalCase(pageStreamingConfig.getResponseTokenField().getSimpleName()),
-        CSharpContextCommon.s_underscoresToPascalCase(pageStreamingConfig.getResourcesField().getSimpleName()),
+        CSharpContextCommon.s_underscoresToPascalCase(
+            pageStreamingConfig.getRequestTokenField().getSimpleName()),
+        CSharpContextCommon.s_underscoresToPascalCase(
+            pageStreamingConfig.getResponseTokenField().getSimpleName()),
+        CSharpContextCommon.s_underscoresToPascalCase(
+            pageStreamingConfig.getResourcesField().getSimpleName()),
         "\"\"");
   }
 
   public List<PageStreamerInfo> getPageStreamerInfos(Interface service) {
     final InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
     return FluentIterable.from(service.getMethods())
-        .transform(new Function<Method, PageStreamerInfo>() {
-          @Override public PageStreamerInfo apply(Method method) {
-            return getPageStreamerInfo(interfaceConfig, method);
-          }
-        })
+        .transform(
+            new Function<Method, PageStreamerInfo>() {
+              @Override
+              public PageStreamerInfo apply(Method method) {
+                return getPageStreamerInfo(interfaceConfig, method);
+              }
+            })
         .filter(Predicates.notNull())
         .toList();
   }
@@ -569,25 +638,27 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
   public List<PathTemplateInfo> getPathTemplateInfos(Interface service) {
     InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
     return FluentIterable.from(interfaceConfig.getCollectionConfigs())
-        .transform(new Function<CollectionConfig, PathTemplateInfo>() {
-          @Override public PathTemplateInfo apply(CollectionConfig collection) {
-            PathTemplate template = collection.getNameTemplate();
-            Set<String> vars = template.vars();
-            StringBuilder varArgDeclList = new StringBuilder();
-            StringBuilder varArgUseList = new StringBuilder();
-            for (String var : vars) {
-              varArgDeclList.append("string " + var + "Id, ");
-              varArgUseList.append(var + "Id, ");
-            }
-            return PathTemplateInfo.create(
-                CSharpContextCommon.s_underscoresToPascalCase(collection.getEntityName()),
-                CSharpContextCommon.s_underscoresToCamelCase(collection.getEntityName()),
-                collection.getNamePattern(),
-                vars,
-                varArgDeclList.substring(0, varArgDeclList.length() - 2),
-                varArgUseList.substring(0, varArgUseList.length() - 2));
-          }
-        })
+        .transform(
+            new Function<CollectionConfig, PathTemplateInfo>() {
+              @Override
+              public PathTemplateInfo apply(CollectionConfig collection) {
+                PathTemplate template = collection.getNameTemplate();
+                Set<String> vars = template.vars();
+                StringBuilder varArgDeclList = new StringBuilder();
+                StringBuilder varArgUseList = new StringBuilder();
+                for (String var : vars) {
+                  varArgDeclList.append("string " + var + "Id, ");
+                  varArgUseList.append(var + "Id, ");
+                }
+                return PathTemplateInfo.create(
+                    CSharpContextCommon.s_underscoresToPascalCase(collection.getEntityName()),
+                    CSharpContextCommon.s_underscoresToCamelCase(collection.getEntityName()),
+                    collection.getNamePattern(),
+                    vars,
+                    varArgDeclList.substring(0, varArgDeclList.length() - 2),
+                    varArgUseList.substring(0, varArgUseList.length() - 2));
+              }
+            })
         .toList();
   }
 
@@ -651,53 +722,64 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
   }
 
   private List<String> docLines(ProtoElement element, final String prefix) {
-    FluentIterable<String> lines = FluentIterable.from(
-        Splitter.on(String.format("%n")).split(DocumentationUtil.getDescription(element))
-    );
+    FluentIterable<String> lines =
+        FluentIterable.from(
+            Splitter.on(String.format("%n")).split(DocumentationUtil.getDescription(element)));
     return lines
-        .transform(new Function<String, String>() {
-          @Override public String apply(String line) {
-            return prefix + line.replace("&", "&amp;").replace("<", "&lt;");
-          }
-        })
+        .transform(
+            new Function<String, String>() {
+              @Override
+              public String apply(String line) {
+                return prefix + line.replace("&", "&amp;").replace("<", "&lt;");
+              }
+            })
         .toList();
   }
 
-  private List<String> makeMethodXmlDoc(Method method, List<Field> params, boolean isAsync, boolean isPageStreaming) {
-    Iterable<String> parameters = FluentIterable.from(params)
-        .transformAndConcat(new Function<Field, Iterable<String>>() {
-          @Override public Iterable<String> apply(Field param) {
-            String header = "/// <param name=\"" + param.getSimpleName() + "\">";
-            List<String> lines = docLines(param, "");
-            if (lines.size() > 1) {
-              return ImmutableList.<String>builder()
-                  .add(header)
-                  .addAll(FluentIterable.from(lines).transform(
-                      new Function<String, String>() {
-                        @Override public String apply(String line) {
-                          return "/// " + line;
-                        }
-                      }))
-                  .add("/// </param>")
-                  .build();
-            } else {
-              return Collections.singletonList(header + lines.get(0) + "</param>");
-            }
-          }
-        });
+  private List<String> makeMethodXmlDoc(
+      Method method, List<Field> params, boolean isAsync, boolean isPageStreaming) {
+    Iterable<String> parameters =
+        FluentIterable.from(params)
+            .transformAndConcat(
+                new Function<Field, Iterable<String>>() {
+                  @Override
+                  public Iterable<String> apply(Field param) {
+                    String header = "/// <param name=\"" + param.getSimpleName() + "\">";
+                    List<String> lines = docLines(param, "");
+                    if (lines.size() > 1) {
+                      return ImmutableList.<String>builder()
+                          .add(header)
+                          .addAll(
+                              FluentIterable.from(lines)
+                                  .transform(
+                                      new Function<String, String>() {
+                                        @Override
+                                        public String apply(String line) {
+                                          return "/// " + line;
+                                        }
+                                      }))
+                          .add("/// </param>")
+                          .build();
+                    } else {
+                      return Collections.singletonList(header + lines.get(0) + "</param>");
+                    }
+                  }
+                });
     if (isPageStreaming) {
       String[] pageToken = {
-          "/// <param name=\"pageToken\">The token returned from the previous request.",
-          "/// A value of <c>null</c> or an empty string retrieves the first page.</param>",
+        "/// <param name=\"pageToken\">The token returned from the previous request.",
+        "/// A value of <c>null</c> or an empty string retrieves the first page.</param>",
       };
       String[] pageSize = {
-          "/// <param name=\"pageSize\">The size of page to request.",
-          "/// The response will not be larger than this, but may be smaller.",
-          "/// A value of <c>null</c> or 0 uses a server-defined page size.</param>",
+        "/// <param name=\"pageSize\">The size of page to request.",
+        "/// The response will not be larger than this, but may be smaller.",
+        "/// A value of <c>null</c> or 0 uses a server-defined page size.</param>",
       };
-      parameters = FluentIterable.from(parameters)
-          .append(Arrays.asList(pageToken)).append(Arrays.asList(pageSize))
-          .toList();
+      parameters =
+          FluentIterable.from(parameters)
+              .append(Arrays.asList(pageToken))
+              .append(Arrays.asList(pageSize))
+              .toList();
     }
     return ImmutableList.<String>builder()
         .add("/// <summary>")

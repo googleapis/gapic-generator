@@ -59,59 +59,49 @@ public class PythonImportTest {
 
   @Test
   public void testImport_disambiguate_noLocalName() {
-    PythonImport imp =
-        PythonImport.create(STDLIB, "foo", "bar").disambiguate();
+    PythonImport imp = PythonImport.create(STDLIB, "foo", "bar").disambiguate();
     Truth.assertThat(imp.importString()).isEqualTo("from foo import bar as foo_bar");
   }
 
   @Test
   public void testImport_disambiguate_movePackage() {
-    PythonImport imp =
-        PythonImport.create(STDLIB, "foo", "bar", "baz").disambiguate();
+    PythonImport imp = PythonImport.create(STDLIB, "foo", "bar", "baz").disambiguate();
     Truth.assertThat(imp.importString()).isEqualTo("from foo import bar as foo_baz");
   }
 
   @Test
   public void testImport_disambiguate_movePackage2() {
-    PythonImport imp =
-        PythonImport.create(STDLIB, "a.b.c", "d", "e").disambiguate();
+    PythonImport imp = PythonImport.create(STDLIB, "a.b.c", "d", "e").disambiguate();
     Truth.assertThat(imp.importString()).isEqualTo("from a.b.c import d as c_e");
   }
 
   @Test
   public void testImport_disambiguate_moveAnotherPackage() {
-    PythonImport imp =
-        PythonImport.create(STDLIB, "a.b.c", "d", "c_d").disambiguate();
+    PythonImport imp = PythonImport.create(STDLIB, "a.b.c", "d", "c_d").disambiguate();
     Truth.assertThat(imp.importString()).isEqualTo("from a.b.c import d as b_c_d");
   }
 
   @Test
   public void testImport_disambiguate_moveAnotherPackage2() {
-    PythonImport imp =
-        PythonImport.create(STDLIB, "a.b.c", "d", "b_c_d").disambiguate();
+    PythonImport imp = PythonImport.create(STDLIB, "a.b.c", "d", "b_c_d").disambiguate();
     Truth.assertThat(imp.importString()).isEqualTo("from a.b.c import d as a_b_c_d");
   }
 
   @Test
   public void testImport_disambiguate_moveUnderscorePackage() {
-    PythonImport imp =
-        PythonImport.create(STDLIB, "a.b_c.d", "e", "d_e").disambiguate();
+    PythonImport imp = PythonImport.create(STDLIB, "a.b_c.d", "e", "d_e").disambiguate();
     Truth.assertThat(imp.importString()).isEqualTo("from a.b_c.d import e as b_c_d_e");
   }
 
   @Test
   public void testImport_disambiguate_mangle() {
-    PythonImport imp =
-        PythonImport.create(STDLIB, "a.b_c.d", "e", "a_b_c_d_e")
-            .disambiguate();
+    PythonImport imp = PythonImport.create(STDLIB, "a.b_c.d", "e", "a_b_c_d_e").disambiguate();
     Truth.assertThat(imp.importString()).isEqualTo("from a.b_c.d import e as a_b_c_d_e_");
   }
 
   @Test
   public void testImport_disambiguate_doubleMangle() {
-    PythonImport imp =
-        PythonImport.create(STDLIB, "a.b_c.d", "e", "a_b_c_d_e_")
-            .disambiguate();
+    PythonImport imp = PythonImport.create(STDLIB, "a.b_c.d", "e", "a_b_c_d_e_").disambiguate();
     Truth.assertThat(imp.importString()).isEqualTo("from a.b_c.d import e as a_b_c_d_e__");
   }
 }

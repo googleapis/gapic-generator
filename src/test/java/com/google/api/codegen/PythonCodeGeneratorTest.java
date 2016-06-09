@@ -33,12 +33,10 @@ public class PythonCodeGeneratorTest {
   public static class PythonLibraryBaseline extends GapicTestBase {
 
     public PythonLibraryBaseline(
-        String name,
-        String idForFactory,
-        String[] gapicConfigFileNames,
-        String snippetName) {
+        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, snippetName);
-      getTestDataLocator().addTestDataSource(com.google.api.codegen.py.PythonGapicContext.class, "");
+      getTestDataLocator()
+          .addTestDataSource(com.google.api.codegen.py.PythonGapicContext.class, "");
     }
 
     /**
@@ -47,8 +45,9 @@ public class PythonCodeGeneratorTest {
      */
     @Parameters(name = "{0}")
     public static List<Object[]> testedConfigs() {
-      return GapicTestBase.createTestedConfigs(MainGapicProviderFactory.PYTHON,
-          new String[] { "python_gapic.yaml", "library_gapic.yaml" });
+      return GapicTestBase.createTestedConfigs(
+          MainGapicProviderFactory.PYTHON,
+          new String[] {"python_gapic.yaml", "library_gapic.yaml"});
     }
 
     // Tests
@@ -66,12 +65,10 @@ public class PythonCodeGeneratorTest {
   public static class PythonNoPathTemplatesBaseline extends GapicTestBase {
 
     public PythonNoPathTemplatesBaseline(
-        String name,
-        String idForFactory,
-        String[] gapicConfigFileNames,
-        String snippetName) {
+        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, snippetName);
-      getTestDataLocator().addTestDataSource(com.google.api.codegen.py.PythonGapicContext.class, "");
+      getTestDataLocator()
+          .addTestDataSource(com.google.api.codegen.py.PythonGapicContext.class, "");
     }
 
     /**
@@ -80,8 +77,8 @@ public class PythonCodeGeneratorTest {
      */
     @Parameters(name = "{0}")
     public static List<Object[]> testedConfigs() {
-      return GapicTestBase.createTestedConfigs("python",
-          new String[] { "python_gapic.yaml", "no_path_templates_gapic.yaml" });
+      return GapicTestBase.createTestedConfigs(
+          "python", new String[] {"python_gapic.yaml", "no_path_templates_gapic.yaml"});
     }
 
     // Tests

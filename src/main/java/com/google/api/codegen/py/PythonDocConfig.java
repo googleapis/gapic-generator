@@ -52,7 +52,7 @@ abstract class PythonDocConfig extends DocConfig {
     public abstract Builder setAppImports(List<String> appImports);
 
     public abstract Builder setIterableResponse(boolean isIterableResponse);
-    
+
     @Override
     protected Builder setInitCodeProxy(InitCode initCode) {
       return setInitCode(initCode);

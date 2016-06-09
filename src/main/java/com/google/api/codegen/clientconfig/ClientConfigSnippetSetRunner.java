@@ -38,8 +38,7 @@ public class ClientConfigSnippetSetRunner<ElementT> implements SnippetSetRunner<
             ClientConfigSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
             snippetFileName,
-            ImmutableMap.<String, Object>of(
-                "context", context));
+            ImmutableMap.<String, Object>of("context", context));
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
 

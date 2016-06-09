@@ -43,9 +43,7 @@ public class PythonSnippetSetRunner<ElementT> implements SnippetSetRunner<Elemen
   @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      ElementT element,
-      String snippetFileName,
-      CodegenContext context) {
+      ElementT element, String snippetFileName, CodegenContext context) {
     PythonImportHandler importHandler = initializer.getImportHandler(element);
     ImmutableMap<String, Object> globalMap = initializer.getGlobalMap(element);
     globalMap =
@@ -57,10 +55,7 @@ public class PythonSnippetSetRunner<ElementT> implements SnippetSetRunner<Elemen
 
     PythonSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
-            PythonSnippetSet.class,
-            SNIPPET_RESOURCE_ROOT,
-            snippetFileName,
-            globalMap);
+            PythonSnippetSet.class, SNIPPET_RESOURCE_ROOT, snippetFileName, globalMap);
 
     // TODO don't depend on a cast here
     PythonContext pythonContext = (PythonContext) context;

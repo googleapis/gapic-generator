@@ -35,7 +35,7 @@ interface PythonSnippetSet<Element> {
    * Generates the result module with a set of accumulated imports.
    */
   Doc generateModule(Element element, Doc body, Iterable<String> imports);
-  
+
   /**
    * Generate the example snippet for the code documentation.
    */

@@ -123,7 +123,6 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     }
   }
 
-
   // Snippet Helpers
   // ===============
 
@@ -279,7 +278,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
    */
   private List<String> methodComments(Method method, PythonImportHandler importHandler) {
     String sampleCode = methodSnippet(method, importHandler);
-	  
+
     MethodConfig config =
         getApiConfig().getInterfaceConfig((Interface) method.getParent()).getMethodConfig(method);
 
@@ -332,12 +331,12 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
         "\n\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
     return pythonCommon.convertToCommentedBlock(contentBuilder.toString());
   }
-  
+
   private String methodSnippet(Method method, PythonImportHandler importHandler) {
     if (!getApiConfig().generateSamples()) {
       return "";
     }
-    
+
     /*
      *  Example:
      *    >>> from google.example.library.v1.library_pb2 import LibraryServiceApi
@@ -360,7 +359,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
      */
 
     Interface service = (Interface) method.getParent();
-    
+
     String apiName = getApiWrapperName(service);
     String moduleName =
         getApiConfig().getPackageName() + "." + lowerCamelToLowerUnderscore(apiName);

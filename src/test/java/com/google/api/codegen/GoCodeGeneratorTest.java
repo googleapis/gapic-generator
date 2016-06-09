@@ -30,10 +30,7 @@ import org.junit.runners.Parameterized.Parameters;
 public class GoCodeGeneratorTest extends GapicTestBase {
 
   public GoCodeGeneratorTest(
-      String name,
-      String idForFactory,
-      String[] gapicConfigFileNames,
-      String snippetName) {
+      String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
     super(name, idForFactory, gapicConfigFileNames, snippetName);
     getTestDataLocator().addTestDataSource(com.google.api.codegen.go.GoGapicContext.class, "");
   }
@@ -44,8 +41,8 @@ public class GoCodeGeneratorTest extends GapicTestBase {
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
-    return GapicTestBase.createTestedConfigs(MainGapicProviderFactory.GO,
-        new String[] { "go_gapic.yaml", "library_gapic.yaml" });
+    return GapicTestBase.createTestedConfigs(
+        MainGapicProviderFactory.GO, new String[] {"go_gapic.yaml", "library_gapic.yaml"});
   }
 
   // Tests

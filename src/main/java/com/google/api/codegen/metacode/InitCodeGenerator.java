@@ -40,13 +40,17 @@ public class InitCodeGenerator {
    * Generates the InitCode for a method, where the input of the function
    * representing the method will take a request object.
    */
-  public InitCode generateRequestObjectInitCode(Method method,
-      Map<String, Object> initFieldStructure) {
-    InitCodeLine lastLine = generateSampleCodeInit("request", method.getInputType(),
-        initFieldStructure);
+  public InitCode generateRequestObjectInitCode(
+      Method method, Map<String, Object> initFieldStructure) {
+    InitCodeLine lastLine =
+        generateSampleCodeInit("request", method.getInputType(), initFieldStructure);
     initLineSpecs.add(lastLine);
-    FieldSetting requestField = FieldSetting.create(method.getInputType(), "request",
-        lastLine.getIdentifier(), lastLine.getInitValueConfig());
+    FieldSetting requestField =
+        FieldSetting.create(
+            method.getInputType(),
+            "request",
+            lastLine.getIdentifier(),
+            lastLine.getInitValueConfig());
     List<FieldSetting> outputFields = Arrays.asList(requestField);
     return InitCode.create(initLineSpecs, outputFields);
   }
@@ -55,8 +59,8 @@ public class InitCodeGenerator {
    * Generates the InitCode for a method, where the input of the function
    * representing the method will take the given set of fields.
    */
-  public InitCode generateRequestFieldInitCode(Method method,
-      Map<String, Object> initFieldStructure, Iterable<Field> fields) {
+  public InitCode generateRequestFieldInitCode(
+      Method method, Map<String, Object> initFieldStructure, Iterable<Field> fields) {
 
     Map<String, Object> filteredInit = new HashMap<>();
     for (Field field : fields) {
@@ -87,8 +91,8 @@ public class InitCodeGenerator {
     return actualName;
   }
 
-  private InitCodeLine generateSampleCodeInit(String suggestedName, TypeRef typeRef,
-      Object initFieldStructure) {
+  private InitCodeLine generateSampleCodeInit(
+      String suggestedName, TypeRef typeRef, Object initFieldStructure) {
     // No matter what the type in the model is, we want to stop here, because we
     // have reached the end of initFieldStructure. At codegen time, we will
     // generate the zero value for the type.
@@ -101,9 +105,14 @@ public class InitCodeGenerator {
     if (typeRef.isMessage() && !typeRef.isRepeated()) {
       if (!(initFieldStructure instanceof Map)) {
         throw new IllegalArgumentException(
-            "Message typeRef needs a Map, found " + initFieldStructure.getClass().getName()
-                + "; typeRef = " + typeRef + ", suggestedName = " + suggestedName
-                + ", initFieldStructure = " + initFieldStructure);
+            "Message typeRef needs a Map, found "
+                + initFieldStructure.getClass().getName()
+                + "; typeRef = "
+                + typeRef
+                + ", suggestedName = "
+                + suggestedName
+                + ", initFieldStructure = "
+                + initFieldStructure);
       }
 
       @SuppressWarnings("unchecked")
@@ -116,12 +125,16 @@ public class InitCodeGenerator {
           continue;
         }
 
-        InitCodeLine subFieldInit = generateSampleCodeInit(field.getSimpleName(), field.getType(),
-            thisFieldInitStructure);
+        InitCodeLine subFieldInit =
+            generateSampleCodeInit(field.getSimpleName(), field.getType(), thisFieldInitStructure);
         initLineSpecs.add(subFieldInit);
 
-        FieldSetting fieldSetting = FieldSetting.create(field.getType(), field.getSimpleName(),
-            subFieldInit.getIdentifier(), subFieldInit.getInitValueConfig());
+        FieldSetting fieldSetting =
+            FieldSetting.create(
+                field.getType(),
+                field.getSimpleName(),
+                subFieldInit.getIdentifier(),
+                subFieldInit.getInitValueConfig());
         fieldSettings.add(fieldSetting);
       }
 
@@ -136,9 +149,14 @@ public class InitCodeGenerator {
     } else if (typeRef.isRepeated()) {
       if (!(initFieldStructure instanceof List)) {
         throw new IllegalArgumentException(
-            "Repeated typeRef needs a List, found " + initFieldStructure.getClass().getName()
-                + "; typeRef = " + typeRef + ", suggestedName = " + suggestedName
-                + ", initFieldStructure = " + initFieldStructure);
+            "Repeated typeRef needs a List, found "
+                + initFieldStructure.getClass().getName()
+                + "; typeRef = "
+                + typeRef
+                + ", suggestedName = "
+                + suggestedName
+                + ", initFieldStructure = "
+                + initFieldStructure);
       }
       @SuppressWarnings("unchecked")
       List<Object> thisFieldInitList = (List<Object>) initFieldStructure;
@@ -148,8 +166,8 @@ public class InitCodeGenerator {
         String suggestedElementName = suggestedName + "_element";
         // Using the Optional cardinality replaces the Repeated cardinality
         TypeRef elementType = typeRef.makeOptional();
-        InitCodeLine subFieldInit = generateSampleCodeInit(suggestedElementName, elementType,
-            elementInitStructure);
+        InitCodeLine subFieldInit =
+            generateSampleCodeInit(suggestedElementName, elementType, elementInitStructure);
         initLineSpecs.add(subFieldInit);
 
         elementIdentifiers.add(subFieldInit.getIdentifier());

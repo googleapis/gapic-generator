@@ -118,8 +118,9 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
   private static final ImmutableSet<String> VERSIONED_PACKAGE_SET =
       ImmutableSet.<String>builder()
           .add("clouddebugger")
-          .add("logging")
           .add("cloudtrace")
+          .add("logging")
+          .add("monitoring")
           .add("storagetransfer")
           .add("vision")
           .build();

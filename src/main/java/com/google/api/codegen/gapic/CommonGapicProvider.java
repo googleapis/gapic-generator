@@ -43,8 +43,12 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
   private final List<String> snippetFileNames;
   private final String outputSubPath;
 
-  private CommonGapicProvider(Model model, InputElementView<ElementT> view, GapicContext context,
-      SnippetSetRunner<ElementT> snippetSetRunner, List<String> snippetFileNames,
+  private CommonGapicProvider(
+      Model model,
+      InputElementView<ElementT> view,
+      GapicContext context,
+      SnippetSetRunner<ElementT> snippetSetRunner,
+      List<String> snippetFileNames,
       String outputSubPath) {
     this.model = model;
     this.view = view;
@@ -129,8 +133,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
     private List<String> snippetFileNames;
     private String outputSubPath;
 
-    private Builder() {
-    }
+    private Builder() {}
 
     public Builder<ElementT> setModel(Model model) {
       this.model = model;
@@ -166,8 +169,8 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
     }
 
     public CommonGapicProvider<ElementT> build() {
-      return new CommonGapicProvider<ElementT>(model, view, context, snippetSetRunner,
-          snippetFileNames, outputSubPath);
+      return new CommonGapicProvider<ElementT>(
+          model, view, context, snippetSetRunner, snippetFileNames, outputSubPath);
     }
   }
 }

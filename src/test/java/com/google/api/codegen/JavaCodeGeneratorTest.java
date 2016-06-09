@@ -31,10 +31,7 @@ import org.junit.runners.Parameterized.Parameters;
 public class JavaCodeGeneratorTest extends GapicTestBase {
 
   public JavaCodeGeneratorTest(
-      String name,
-      String idForFactory,
-      String[] gapicConfigFileNames,
-      String snippetName) {
+      String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
     super(name, idForFactory, gapicConfigFileNames, snippetName);
     getTestDataLocator().addTestDataSource(com.google.api.codegen.java.JavaGapicContext.class, "");
   }
@@ -45,8 +42,8 @@ public class JavaCodeGeneratorTest extends GapicTestBase {
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
-    return GapicTestBase.createTestedConfigs(MainGapicProviderFactory.JAVA,
-        new String[] { "java_gapic.yaml", "library_gapic.yaml" });
+    return GapicTestBase.createTestedConfigs(
+        MainGapicProviderFactory.JAVA, new String[] {"java_gapic.yaml", "library_gapic.yaml"});
   }
 
   // Tests
