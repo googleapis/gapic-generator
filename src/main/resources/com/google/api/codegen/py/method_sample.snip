@@ -1,5 +1,6 @@
 @extends "common.snip"
 
+# Generate code samples for method-level documentation.
 @snippet generateMethodSampleCode(docConfig)
   @let prompt = ">>>", \
        ApiName = docConfig.getApiName, \
@@ -27,7 +28,8 @@
         {@prompt}     pass
         {@prompt}     # process element
       @else
-        {@prompt} {@callResultSampleCode(docConfig.getReturnType)}{@methodCallSampleCode(docConfig, {@FALSE})}
+        {@prompt} {@callResultSampleCode(docConfig.getReturnType)}\
+        {@methodCallSampleCode(docConfig, {@FALSE})}
       @end
   @end
 @end
@@ -52,7 +54,12 @@
 
 # Generate a Protobuf message argument
 @private initLineStructure(line)
-  {@formattedIdentifier(line)} = {@line.getType}({@initLineStructureArgs(line)})
+  @let messageType = line.getType.getMessageType, \
+       initLineStructureClass = importHandler.elementPath(messageType, {@FALSE})
+    {@formattedIdentifier(line)} = {@initLineStructureClass}(\
+      {@initLineStructureArgs(line)}\
+    )
+  @end
 @end
 
 # Helper method for initLineStructure()
@@ -81,25 +88,23 @@
 
 # Properly format an identifier for this language
 @private formattedIdentifier(lineOrFieldSetting)
-  @if lineOrFieldSetting.getInitValueConfig.hasFormattingConfig
-    formatted_{@lineOrFieldSetting.getIdentifier}
-  @else
-    {@lineOrFieldSetting.getIdentifier}
-  @end
+  {@lineOrFieldSetting.getIdentifier}
 @end
 
 # Value for simple argument
 @private initValue(line)
   @let metadata = line.getInitValueConfig
     @if metadata.hasFormattingConfig()
-      api.{@formatResourceFunctionName(metadata.getCollectionConfig)}({@formatResourceFunctionArgs(metadata.getCollectionConfig)})
+      api.{@formatResourceFunctionName(metadata.getCollectionConfig)}(\
+        {@formatResourceFunctionArgs(metadata.getCollectionConfig)}\
+      )
     @else
       {@context.defaultValue(line.getType, importHandler)}
     @end
   @end
 @end
 
-# Format arguments for resource function call in snippet
+# Format arguments for resource function call in sample
 @private formatResourceFunctionArgs(collectionConfig)
   @join param : collectionConfig.getNameTemplate.vars() on ", "
     '[{@context.lowerUnderscoreToUpperUnderscore(param)}]'
@@ -116,7 +121,10 @@
 
 # Render the API method call itself
 @private methodCallSampleCode(docConfig, isPageStreaming)
-  api.{@methodCallName(docConfig)}({@argList(docConfig.getInitCode.getArgFields)}{@pageStreamingArg(isPageStreaming)})
+  api.{@methodCallName(docConfig)}(\
+    {@argList(docConfig.getInitCode.getArgFields)}\
+    {@pageStreamingArg(isPageStreaming)}\
+  )
 @end
 
 # Optionally render the options argument for page streaming 

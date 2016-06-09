@@ -17,6 +17,9 @@ package com.google.api.codegen.py;
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.metacode.InitCodeLine;
+import com.google.api.codegen.metacode.SimpleInitCodeLine;
+import com.google.api.codegen.metacode.StructureInitCodeLine;
 import com.google.api.codegen.py.PythonImport.ImportType;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
@@ -277,7 +280,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
    * documentation.
    */
   private List<String> methodComments(Method method, PythonImportHandler importHandler) {
-    String sampleCode = methodSnippet(method, importHandler);
+    String sampleCode = methodSample(method, importHandler);
 
     MethodConfig config =
         getApiConfig().getInterfaceConfig((Interface) method.getParent()).getMethodConfig(method);
@@ -332,49 +335,24 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     return pythonCommon.convertToCommentedBlock(contentBuilder.toString());
   }
 
-  private String methodSnippet(Method method, PythonImportHandler importHandler) {
+  private String methodSample(Method method, PythonImportHandler importHandler) {
     if (!getApiConfig().generateSamples()) {
       return "";
     }
 
-    /*
-     *  Example:
-     *    >>> from google.example.library.v1.library_pb2 import LibraryServiceApi
-     *    >>> api = LibraryServiceApi()
-     *    // FIXME: need to import Shelf with correct package
-     *    >>> shelf = library_pb2.Shelf();
-     *    >>> books = [];
-     *    >>> edition = 0;
-     *    >>> response = api.publishSeries(shelf, books, edition)
-     *
-     *  Example:
-     *    >>> from google.example.library.v1.library_pb2 import LibraryServiceApi
-     *    >>> api = LibraryServiceApi()
-     *    >>> formattedName = LibraryServiceApi.book_path("[SHELF]", "[BOOK]");
-     *    >>> comment = '';
-     *    // FIXME: need to import Comment with correct package
-     *    >>> commentsElement = google.example.library.v1.Comment(comment)
-     *    >>> comments = [commentsElement];
-     *    >>> api.addComments(formattedName, comments)
-     */
-
     Interface service = (Interface) method.getParent();
-
     String apiName = getApiWrapperName(service);
-    String moduleName =
-        getApiConfig().getPackageName() + "." + lowerCamelToLowerUnderscore(apiName);
     List<String> importStrings = new ArrayList<>();
-    importStrings.add(PythonImport.create(ImportType.APP, moduleName, apiName).importString());
+    importStrings.add(apiImport(apiName));
     String methodName = upperCamelToLowerUnderscore(method.getSimpleName());
     String returnType = returnTypeOrEmpty(method.getOutputType(), importHandler);
-
     MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
     List<Field> fields = Lists.newArrayList(methodConfig.getRequiredFields());
 
     PythonDocConfig docConfig =
         PythonDocConfig.newBuilder()
-            .setAppImports(importStrings)
             .setApiName(apiName)
+            .setAppImports(importStrings)
             .setMethodName(methodName)
             .setReturnType(returnType)
             .setFieldInitCode(this, service, method, fields)
@@ -382,6 +360,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
             .setIterableResponse(methodConfig.isPageStreaming())
             .build();
 
+    protoImports(method, docConfig);
     return generateMethodSampleCode(docConfig);
   }
 
@@ -391,8 +370,36 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
         : typeCardinalityComment(returnType, importHandler);
   }
 
+  private String apiImport(String apiName) {
+    String packageName = getApiConfig().getPackageName();
+    String moduleName = packageName + "." + lowerCamelToLowerUnderscore(apiName);
+    return PythonImport.create(ImportType.APP, moduleName, apiName).importString();
+  }
+  
+  // mutates appImports list in docConfig
+  private void protoImports(Method method, PythonDocConfig docConfig) {
+    List<String> importStrings = docConfig.getAppImports();
+    for (InitCodeLine line : docConfig.getInitCode().getLines()) {
+      TypeRef lineType = null;
+      switch (line.getLineType()) {
+        case SimpleInitLine:
+          lineType = ((SimpleInitCodeLine) line).getType();
+          break;
+        case StructureInitLine:
+          lineType = ((StructureInitCodeLine) line).getType();
+          break;
+        default:
+          break;
+      }
+
+      if (lineType != null && lineType.isMessage()) {
+        importStrings.addAll(new PythonImportHandler(method).calculateImports());
+      }
+    }
+  }
+
   /**
-   * Generate the example snippet for a method.
+   * Generate the sample code for a method.
    */
   public String generateMethodSampleCode(PythonDocConfig config) {
     return pythonSnippetSet.generateMethodSampleCode(config).prettyPrint();

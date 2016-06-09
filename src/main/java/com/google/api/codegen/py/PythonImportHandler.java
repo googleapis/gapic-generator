@@ -93,6 +93,15 @@ public class PythonImportHandler {
       }
     }
   }
+  
+  public PythonImportHandler(Method method) {
+    addImport(
+        method.getFile(),
+        PythonImport.create(
+            ImportType.APP,
+            method.getFile().getProto().getPackage(),
+            PythonProtoElements.getPbFileName(method.getInputMessage())));
+  }
 
   // Independent import handler to support fragment generation from discovery sources
   public PythonImportHandler() {}
