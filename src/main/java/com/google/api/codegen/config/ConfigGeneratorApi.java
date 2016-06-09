@@ -60,7 +60,6 @@ public class ConfigGeneratorApi extends ToolDriverBase {
   private static final String CONFIG_KEY_METHODS = "methods";
   private static final String CONFIG_KEY_COLLECTIONS = "collections";
 
-  //private static final String CONFIG_PROTO_TYPE = "com.google.api.codegen.ConfigProto";
   private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
 
   /**

@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Config generator for retry codes and retry params. Static methods are used to generate retry
- * definitions.
+ * Generator for language settings section. Currently the only language setting is the package
+ * name.
  */
 public class LanguageGenerator {
 
