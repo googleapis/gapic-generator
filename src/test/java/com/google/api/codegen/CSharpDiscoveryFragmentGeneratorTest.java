@@ -34,9 +34,7 @@ public class CSharpDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGener
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
     File dir =
-        new File(
-            System.getProperty("user.dir"),
-            "src/test/java/com/google/api/codegen/testdata/discoveries");
+        new File(System.getProperty("user.dir"), "src/test/java/com/google/api/codegen/testdata/discoveries");
     ImmutableList.Builder<Object[]> builder = ImmutableList.<Object[]>builder();
     for (File file : dir.listFiles(new DiscoveryFile())) {
       String fileName = file.getName();
@@ -60,3 +58,4 @@ public class CSharpDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGener
     test();
   }
 }
+

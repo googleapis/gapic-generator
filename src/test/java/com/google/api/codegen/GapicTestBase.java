@@ -56,7 +56,10 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
   protected ConfigProto config;
 
   public GapicTestBase(
-      String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
+      String name,
+      String idForFactory,
+      String[] gapicConfigFileNames,
+      String snippetName) {
     this.name = name;
     this.idForFactory = idForFactory;
     this.gapicConfigFileNames = gapicConfigFileNames;
@@ -134,23 +137,28 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
    * arguments is created for each combination of GapicProvider x snippet that
    * GapicProviderFactory returns.
    */
-  public static List<Object[]> createTestedConfigs(
-      String idForFactory, String[] gapicConfigFileNames) {
+  public static List<Object[]> createTestedConfigs(String idForFactory, String[] gapicConfigFileNames) {
     Model model = Model.create(Service.getDefaultInstance());
     ApiConfig apiConfig = ApiConfig.createDummyApiConfig();
 
-    List<GapicProvider<? extends Object>> providers =
-        MainGapicProviderFactory.defaultCreate(model, apiConfig, idForFactory);
+    List<GapicProvider<? extends Object>> providers = MainGapicProviderFactory
+        .defaultCreate(model, apiConfig, idForFactory);
     List<Object[]> testArgs = new ArrayList<>();
     for (GapicProvider<? extends Object> provider : providers) {
       for (String snippetFileName : provider.getSnippetFileNames()) {
         String[] fileNameParts = snippetFileName.split("\\.");
         String id = idForFactory + "_" + fileNameParts[0];
-        testArgs.add(new Object[] {id, idForFactory, gapicConfigFileNames, snippetFileName});
+        testArgs.add(new Object[] {
+            id,
+            idForFactory,
+            gapicConfigFileNames,
+            snippetFileName
+        });
       }
     }
     return testArgs;
   }
+
 
   private List<GeneratedResult> generate() {
     model.establishStage(Merged.KEY);
@@ -181,7 +189,8 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
       }
     }
 
-    List<GeneratedResult> output = testedProvider.generateSnip(snippetName);
+    List<GeneratedResult> output =
+        testedProvider.generateSnip(snippetName);
     if (output == null) {
       // Report diagnosis to baseline file.
       for (Diag diag : model.getDiags()) {
@@ -194,4 +203,5 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
 
     return new ArrayList<GeneratedResult>(results);
   }
+
 }

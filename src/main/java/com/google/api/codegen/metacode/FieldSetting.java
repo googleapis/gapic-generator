@@ -24,8 +24,8 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class FieldSetting {
 
-  public static FieldSetting create(
-      TypeRef type, String fieldName, String identifier, InitValueConfig initValueConfig) {
+  public static FieldSetting create(TypeRef type, String fieldName, String identifier,
+      InitValueConfig initValueConfig) {
     return new AutoValue_FieldSetting(type, fieldName, identifier, initValueConfig);
   }
 

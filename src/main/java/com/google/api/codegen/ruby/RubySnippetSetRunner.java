@@ -39,7 +39,10 @@ public class RubySnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT
         ImmutableMap.<String, Object>builder().put("context", context).build();
     RubySnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
-            RubySnippetSet.class, SNIPPET_RESOURCE_ROOT, snippetFileName, globalMap);
+            RubySnippetSet.class,
+            SNIPPET_RESOURCE_ROOT,
+            snippetFileName,
+            globalMap);
 
     Doc filenameDoc = snippets.generateFilename(element);
     String outputFilename = filenameDoc.prettyPrint();

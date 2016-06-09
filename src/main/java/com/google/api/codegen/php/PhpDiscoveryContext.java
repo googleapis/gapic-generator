@@ -68,8 +68,10 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
    * A set that contains the method names that have extra suffix in the PHP client code.
    * Some PHP methods appends resource path in camel case, e.g. list -> listAppResources
    */
-  private static final ImmutableSet<String> RENAMED_METHODS =
-      ImmutableSet.<String>builder().add("list").add("clone").build();
+  private static final ImmutableSet<String> RENAMED_METHODS = ImmutableSet.<String>builder()
+      .add("list")
+      .add("clone")
+      .build();
 
   /**
    * A map that maps the original request class name to its renamed version used in PHP client
@@ -77,8 +79,8 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
    */
   private static final ImmutableMap<String, String> RENAMED_REQUESTS =
       ImmutableMap.<String, String>builder()
-          .put("Google_Service_Storage_Object", "Google_Service_Storage_StorageObject")
-          .build();
+      .put("Google_Service_Storage_Object", "Google_Service_Storage_StorageObject")
+      .build();
 
   /**
    * Constructs the PHP discovery context.
@@ -170,7 +172,9 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
             case "date":
               return "\'1969-12-31\'";
             case "date-time":
-              return "\'" + new DateTime(0L).toStringRfc3339() + "\'";
+              return "\'"
+                  + new DateTime(0L).toStringRfc3339()
+                  + "\'";
             default:
               // Fall through
           }

@@ -50,4 +50,5 @@ public class GoSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> 
     Doc result = snippets.generateClass(element, body);
     return GeneratedResult.create(result, outputFilename);
   }
+
 }

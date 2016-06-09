@@ -30,7 +30,10 @@ import org.junit.runners.Parameterized.Parameters;
 public class RubyCodeGeneratorTest extends GapicTestBase {
 
   public RubyCodeGeneratorTest(
-      String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
+      String name,
+      String idForFactory,
+      String[] gapicConfigFileNames,
+      String snippetName) {
     super(name, idForFactory, gapicConfigFileNames, snippetName);
     getTestDataLocator().addTestDataSource(com.google.api.codegen.ruby.RubyGapicContext.class, "");
   }
@@ -41,8 +44,8 @@ public class RubyCodeGeneratorTest extends GapicTestBase {
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
-    return GapicTestBase.createTestedConfigs(
-        MainGapicProviderFactory.RUBY, new String[] {"ruby_gapic.yaml", "library_gapic.yaml"});
+    return GapicTestBase.createTestedConfigs(MainGapicProviderFactory.RUBY,
+        new String[] { "ruby_gapic.yaml", "library_gapic.yaml" });
   }
 
   // Tests

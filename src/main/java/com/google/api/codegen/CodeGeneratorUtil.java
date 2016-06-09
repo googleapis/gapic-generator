@@ -30,12 +30,13 @@ public class CodeGeneratorUtil {
   /**
    * Writes generated output to files under the given root.
    */
-  public static <Element> void writeGeneratedOutput(
-      String root, Multimap<Element, GeneratedResult> elements) throws IOException {
+  public static <Element> void writeGeneratedOutput(String root, Multimap<Element, GeneratedResult> elements)
+      throws IOException {
     Map<String, Doc> files = new LinkedHashMap<>();
     for (GeneratedResult generatedResult : elements.values()) {
       files.put(generatedResult.getFilename(), generatedResult.getDoc());
     }
     ToolUtil.writeFiles(files, root);
   }
+
 }

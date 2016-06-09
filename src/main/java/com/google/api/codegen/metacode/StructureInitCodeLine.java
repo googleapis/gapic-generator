@@ -26,8 +26,8 @@ import java.util.List;
 @AutoValue
 public abstract class StructureInitCodeLine implements InitCodeLine {
 
-  public static StructureInitCodeLine create(
-      TypeRef type, String identifier, List<FieldSetting> fieldSettings) {
+  public static StructureInitCodeLine create(TypeRef type, String identifier,
+      List<FieldSetting> fieldSettings) {
     return new AutoValue_StructureInitCodeLine(type, identifier, fieldSettings);
   }
 

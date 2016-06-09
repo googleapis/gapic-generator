@@ -121,10 +121,9 @@ public class CodeGeneratorApi extends ToolDriverBase {
       String factory = generator.getFactory();
       String id = generator.getId();
 
-      GapicProviderFactory<GapicProvider<? extends Object>> providerFactory =
-          createProviderFactory(model, factory);
-      List<GapicProvider<? extends Object>> providers =
-          providerFactory.create(model, apiConfig, id);
+      GapicProviderFactory<GapicProvider<? extends Object>> providerFactory = createProviderFactory(
+          model, factory);
+      List<GapicProvider<? extends Object>> providers = providerFactory.create(model, apiConfig, id);
       for (GapicProvider<? extends Object> provider : providers) {
         provider.generate(options.get(OUTPUT_FILE));
       }
@@ -134,14 +133,9 @@ public class CodeGeneratorApi extends ToolDriverBase {
   private static GapicProviderFactory<GapicProvider<? extends Object>> createProviderFactory(
       final Model model, String factory) {
     @SuppressWarnings("unchecked")
-    GapicProviderFactory<GapicProvider<? extends Object>> provider =
-        GeneratorBuilderUtil.createClass(
-            factory,
-            GapicProviderFactory.class,
-            new Class<?>[] {},
-            new Object[] {},
-            "generator",
-            new GeneratorBuilderUtil.ErrorReporter() {
+    GapicProviderFactory<GapicProvider<? extends Object>> provider = GeneratorBuilderUtil
+        .createClass(factory, GapicProviderFactory.class, new Class<?>[] {}, new Object[] {},
+            "generator", new GeneratorBuilderUtil.ErrorReporter() {
               @Override
               public void error(String message, Object... args) {
                 model.addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));

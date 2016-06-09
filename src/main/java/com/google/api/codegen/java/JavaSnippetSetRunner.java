@@ -38,7 +38,9 @@ public class JavaSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT
 
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      ElementT element, String snippetFileName, CodegenContext context) {
+      ElementT element,
+      String snippetFileName,
+      CodegenContext context) {
     JavaSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             JavaSnippetSet.class,

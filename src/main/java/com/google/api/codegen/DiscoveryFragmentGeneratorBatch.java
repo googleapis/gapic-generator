@@ -65,7 +65,8 @@ public class DiscoveryFragmentGeneratorBatch {
       options.set(DiscoveryFragmentGeneratorApi.DISCOVERY_DOC, discoPath);
       options.set(DiscoveryFragmentGeneratorApi.OUTPUT_FILE, outputDir);
       options.set(
-          DiscoveryFragmentGeneratorApi.GENERATOR_CONFIG_FILES, ImmutableList.<String>of(yamlPath));
+          DiscoveryFragmentGeneratorApi.GENERATOR_CONFIG_FILES,
+          ImmutableList.<String>of(yamlPath));
       new DiscoveryFragmentGeneratorApi(options).run();
     }
   }

@@ -64,155 +64,139 @@ public class MainGapicProviderFactory
   /**
    * Create the GapicProviders based on the given id
    */
-  public static List<GapicProvider<? extends Object>> defaultCreate(
-      Model model, ApiConfig apiConfig, String id) {
+  public static List<GapicProvider<? extends Object>> defaultCreate(Model model,
+      ApiConfig apiConfig, String id) {
 
     // Please keep the following IDs in alphabetical order
 
     if (id.equals(CLIENT_CONFIG)) {
-      GapicProvider<? extends Object> provider =
-          CommonGapicProvider.<Interface>newBuilder()
-              .setModel(model)
-              .setView(new InterfaceView())
-              .setContext(new ClientConfigGapicContext(model, apiConfig))
-              .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("json.snip"))
-              .build();
+      GapicProvider<? extends Object> provider = CommonGapicProvider.<Interface>newBuilder()
+          .setModel(model)
+          .setView(new InterfaceView())
+          .setContext(new ClientConfigGapicContext(model, apiConfig))
+          .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
+          .setSnippetFileNames(Arrays.asList("json.snip"))
+          .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
     } else if (id.equals(CSHARP)) {
-      GapicProvider<? extends Object> provider =
-          CommonGapicProvider.<Interface>newBuilder()
-              .setModel(model)
-              .setView(new InterfaceView())
-              .setContext(new CSharpGapicContext(model, apiConfig))
-              .setSnippetSetRunner(new CSharpSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("wrapper.snip"))
-              .build();
+      GapicProvider<? extends Object> provider = CommonGapicProvider.<Interface>newBuilder()
+          .setModel(model)
+          .setView(new InterfaceView())
+          .setContext(new CSharpGapicContext(model, apiConfig))
+          .setSnippetSetRunner(new CSharpSnippetSetRunner<Interface>())
+          .setSnippetFileNames(Arrays.asList("wrapper.snip"))
+          .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
     } else if (id.equals(GO)) {
-      GapicProvider<? extends Object> provider =
-          CommonGapicProvider.<Interface>newBuilder()
-              .setModel(model)
-              .setView(new InterfaceView())
-              .setContext(new GoGapicContext(model, apiConfig))
-              .setSnippetSetRunner(new GoSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("main.snip", "example.snip", "doc.snip"))
-              .build();
+      GapicProvider<? extends Object> provider = CommonGapicProvider.<Interface>newBuilder()
+          .setModel(model)
+          .setView(new InterfaceView())
+          .setContext(new GoGapicContext(model, apiConfig))
+          .setSnippetSetRunner(new GoSnippetSetRunner<Interface>())
+          .setSnippetFileNames(Arrays.asList("main.snip", "example.snip", "doc.snip"))
+          .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
     } else if (id.equals(JAVA)) {
-      GapicProvider<? extends Object> mainProvider =
-          CommonGapicProvider.<Interface>newBuilder()
-              .setModel(model)
-              .setView(new InterfaceView())
-              .setContext(new JavaGapicContext(model, apiConfig))
-              .setSnippetSetRunner(new JavaSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("main.snip", "settings.snip"))
-              .build();
-      GapicProvider<? extends Object> packageInfoProvider =
-          CommonGapicProvider.<Iterable<Interface>>newBuilder()
-              .setModel(model)
-              .setView(new InterfaceListView())
-              .setContext(new JavaGapicContext(model, apiConfig))
-              .setSnippetSetRunner(new JavaIterableSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("package-info.snip"))
-              .build();
+      GapicProvider<? extends Object> mainProvider = CommonGapicProvider.<Interface>newBuilder()
+          .setModel(model)
+          .setView(new InterfaceView())
+          .setContext(new JavaGapicContext(model, apiConfig))
+          .setSnippetSetRunner(new JavaSnippetSetRunner<Interface>())
+          .setSnippetFileNames(Arrays.asList("main.snip", "settings.snip"))
+          .build();
+      GapicProvider<? extends Object> packageInfoProvider = CommonGapicProvider.<Iterable<Interface>>newBuilder()
+          .setModel(model)
+          .setView(new InterfaceListView())
+          .setContext(new JavaGapicContext(model, apiConfig))
+          .setSnippetSetRunner(new JavaIterableSnippetSetRunner<Interface>())
+          .setSnippetFileNames(Arrays.asList("package-info.snip"))
+          .build();
 
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, packageInfoProvider);
 
     } else if (id.equals(NODEJS)) {
-      GapicProvider<? extends Object> mainProvider =
-          CommonGapicProvider.<Interface>newBuilder()
-              .setModel(model)
-              .setView(new InterfaceView())
-              .setContext(new NodeJSGapicContext(model, apiConfig))
-              .setSnippetSetRunner(new NodeJSSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("main.snip"))
-              .build();
-      GapicProvider<? extends Object> clientConfigProvider =
-          CommonGapicProvider.<Interface>newBuilder()
-              .setModel(model)
-              .setView(new InterfaceView())
-              .setContext(new ClientConfigGapicContext(model, apiConfig))
-              .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("json.snip"))
-              .build();
+      GapicProvider<? extends Object> mainProvider = CommonGapicProvider.<Interface>newBuilder()
+          .setModel(model)
+          .setView(new InterfaceView())
+          .setContext(new NodeJSGapicContext(model, apiConfig))
+          .setSnippetSetRunner(new NodeJSSnippetSetRunner<Interface>())
+          .setSnippetFileNames(Arrays.asList("main.snip"))
+          .build();
+      GapicProvider<? extends Object> clientConfigProvider = CommonGapicProvider.<Interface>newBuilder()
+          .setModel(model)
+          .setView(new InterfaceView())
+          .setContext(new ClientConfigGapicContext(model, apiConfig))
+          .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
+          .setSnippetFileNames(Arrays.asList("json.snip"))
+          .build();
 
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, clientConfigProvider);
 
     } else if (id.equals(PHP)) {
-      GapicProvider<? extends Object> provider =
-          CommonGapicProvider.<Interface>newBuilder()
-              .setModel(model)
-              .setView(new InterfaceView())
-              .setContext(new PhpGapicContext(model, apiConfig))
-              .setSnippetSetRunner(new PhpSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("main.snip"))
-              .build();
+      GapicProvider<? extends Object> provider = CommonGapicProvider.<Interface>newBuilder()
+          .setModel(model)
+          .setView(new InterfaceView())
+          .setContext(new PhpGapicContext(model, apiConfig))
+          .setSnippetSetRunner(new PhpSnippetSetRunner<Interface>())
+          .setSnippetFileNames(Arrays.asList("main.snip"))
+          .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
     } else if (id.equals(PYTHON)) {
-      GapicProvider<? extends Object> mainProvider =
-          CommonGapicProvider.<Interface>newBuilder()
-              .setModel(model)
-              .setView(new InterfaceView())
-              .setContext(new PythonGapicContext(model, apiConfig))
-              .setSnippetSetRunner(
-                  new PythonSnippetSetRunner<Interface>(new PythonInterfaceInitializer()))
-              .setSnippetFileNames(Arrays.asList("main.snip"))
-              .build();
-      GapicProvider<? extends Object> messageProvider =
-          CommonGapicProvider.<ProtoFile>newBuilder()
-              .setModel(model)
-              .setView(new ProtoFileView())
-              .setContext(new PythonGapicContext(model, apiConfig))
-              .setSnippetSetRunner(
-                  new PythonSnippetSetRunner<ProtoFile>(new PythonProtoFileInitializer()))
-              .setSnippetFileNames(Arrays.asList("message.snip"))
-              .setOutputSubPath("")
-              .build();
-      GapicProvider<? extends Object> clientConfigProvider =
-          CommonGapicProvider.<Interface>newBuilder()
-              .setModel(model)
-              .setView(new InterfaceView())
-              .setContext(new ClientConfigGapicContext(model, apiConfig))
-              .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("json.snip"))
-              .build();
+      GapicProvider<? extends Object> mainProvider = CommonGapicProvider.<Interface>newBuilder()
+          .setModel(model)
+          .setView(new InterfaceView())
+          .setContext(new PythonGapicContext(model, apiConfig))
+          .setSnippetSetRunner(new PythonSnippetSetRunner<Interface>(new PythonInterfaceInitializer()))
+          .setSnippetFileNames(Arrays.asList("main.snip"))
+          .build();
+      GapicProvider<? extends Object> messageProvider = CommonGapicProvider.<ProtoFile>newBuilder()
+          .setModel(model)
+          .setView(new ProtoFileView())
+          .setContext(new PythonGapicContext(model, apiConfig))
+          .setSnippetSetRunner(new PythonSnippetSetRunner<ProtoFile>(new PythonProtoFileInitializer()))
+          .setSnippetFileNames(Arrays.asList("message.snip"))
+          .setOutputSubPath("")
+          .build();
+      GapicProvider<? extends Object> clientConfigProvider = CommonGapicProvider.<Interface>newBuilder()
+          .setModel(model)
+          .setView(new InterfaceView())
+          .setContext(new ClientConfigGapicContext(model, apiConfig))
+          .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
+          .setSnippetFileNames(Arrays.asList("json.snip"))
+          .build();
 
-      return Arrays.<GapicProvider<? extends Object>>asList(
-          mainProvider, messageProvider, clientConfigProvider);
+      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, messageProvider,
+          clientConfigProvider);
 
     } else if (id.equals(RUBY)) {
-      GapicProvider<? extends Object> mainProvider =
-          CommonGapicProvider.<Interface>newBuilder()
-              .setModel(model)
-              .setView(new InterfaceView())
-              .setContext(new RubyGapicContext(model, apiConfig))
-              .setSnippetSetRunner(new RubySnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("main.snip"))
-              .build();
-      GapicProvider<? extends Object> messageProvider =
-          CommonGapicProvider.<ProtoFile>newBuilder()
-              .setModel(model)
-              .setView(new ProtoFileView())
-              .setContext(new RubyGapicContext(model, apiConfig))
-              .setSnippetSetRunner(new RubySnippetSetRunner<ProtoFile>())
-              .setSnippetFileNames(Arrays.asList("message.snip"))
-              .build();
-      GapicProvider<? extends Object> clientConfigProvider =
-          CommonGapicProvider.<Interface>newBuilder()
-              .setModel(model)
-              .setView(new InterfaceView())
-              .setContext(new ClientConfigGapicContext(model, apiConfig))
-              .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("json.snip"))
-              .build();
+      GapicProvider<? extends Object> mainProvider = CommonGapicProvider.<Interface>newBuilder()
+          .setModel(model)
+          .setView(new InterfaceView())
+          .setContext(new RubyGapicContext(model, apiConfig))
+          .setSnippetSetRunner(new RubySnippetSetRunner<Interface>())
+          .setSnippetFileNames(Arrays.asList("main.snip"))
+          .build();
+      GapicProvider<? extends Object> messageProvider = CommonGapicProvider.<ProtoFile>newBuilder()
+          .setModel(model)
+          .setView(new ProtoFileView())
+          .setContext(new RubyGapicContext(model, apiConfig))
+          .setSnippetSetRunner(new RubySnippetSetRunner<ProtoFile>())
+          .setSnippetFileNames(Arrays.asList("message.snip"))
+          .build();
+      GapicProvider<? extends Object> clientConfigProvider = CommonGapicProvider.<Interface>newBuilder()
+          .setModel(model)
+          .setView(new InterfaceView())
+          .setContext(new ClientConfigGapicContext(model, apiConfig))
+          .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
+          .setSnippetFileNames(Arrays.asList("json.snip"))
+          .build();
 
-      return Arrays.<GapicProvider<? extends Object>>asList(
-          mainProvider, messageProvider, clientConfigProvider);
+      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, messageProvider,
+          clientConfigProvider);
 
     } else {
       throw new NotImplementedException("GapicProviderFactory: invalid id \"" + id + "\"");

@@ -38,7 +38,9 @@ public class PhpSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT>
 
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      ElementT element, String snippetFileName, CodegenContext context) {
+      ElementT element,
+      String snippetFileName,
+      CodegenContext context) {
     PhpSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             PhpSnippetSet.class,

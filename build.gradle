@@ -11,24 +11,18 @@ buildscript {
       // this version is releaed.
       url 'https://oss.sonatype.org/content/repositories/snapshots/'
     }
-    maven {
-      url 'https://plugins.gradle.org/m2/'
-    }
     mavenCentral()
   }
   dependencies {
     classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.2-SNAPSHOT'
-    classpath "gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.2"
   }
 }
-
 
 apply plugin: "java"
 apply plugin: "maven"
 apply plugin: "idea"
 apply plugin: "eclipse"
 apply plugin: "com.google.protobuf"
-apply plugin: "com.github.sherter.google-java-format"
 
 sourceCompatibility = 1.7
 
@@ -367,4 +361,3 @@ task verifyLicense << {
   }
 }
 test.dependsOn verifyLicense
-test.dependsOn verifyGoogleJavaFormat

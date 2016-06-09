@@ -146,9 +146,9 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
 
     String callbackType = isEmpty ? "EmptyCallback" : String.format("APICallback<%s>", classInfo);
     return "@param {?"
-        + callbackType
-        + "} callback\n"
-        + "  The function which will be called with the result of the API call.";
+            + callbackType
+            + "} callback\n"
+            + "  The function which will be called with the result of the API call.";
   }
 
   /**

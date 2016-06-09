@@ -24,5 +24,7 @@ public interface SnippetSetRunner<Element> {
   /**
    * Runs the code generation.
    */
-  GeneratedResult generate(Element element, String snippetFileName, CodegenContext context);
+  GeneratedResult generate(Element element, String snippetFileName,
+      CodegenContext context);
+
 }
