@@ -26,8 +26,8 @@ import java.util.List;
 @AutoValue
 public abstract class ListInitCodeLine implements InitCodeLine {
 
-  public static ListInitCodeLine create(TypeRef elementType, String identifier,
-      List<String> elementIdentifiers) {
+  public static ListInitCodeLine create(
+      TypeRef elementType, String identifier, List<String> elementIdentifiers) {
     return new AutoValue_ListInitCodeLine(elementType, identifier, elementIdentifiers);
   }
 

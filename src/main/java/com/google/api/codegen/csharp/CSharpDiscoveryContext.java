@@ -64,7 +64,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
   private CSharpContextCommon csharpCommon;
 
   protected CSharpDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
-    super(service,apiaryConfig);
+    super(service, apiaryConfig);
   }
 
   @Override
@@ -75,10 +75,10 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
   public String addImport(String namespace) {
     return csharpCommon.addImport(namespace);
   }
-  
+
   private String packageNameAndImport(String suffix) {
-    String packageName = CSharpContextCommon.s_underscoresToPascalCase(
-        getApiaryConfig().getServiceCanonicalName());
+    String packageName =
+        CSharpContextCommon.s_underscoresToPascalCase(getApiaryConfig().getServiceCanonicalName());
     String versionName = getApiaryConfig().getServiceVersion().replace('.', '_');
     String namespace = "Google.Apis." + packageName + "." + versionName + suffix;
     addImport(namespace);
@@ -88,35 +88,39 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
   private List<String> buildDescription(String raw) {
     final int lineLength = 100;
     return FluentIterable.from(Splitter.on('\n').split(raw))
-        .transformAndConcat(new Function<String, Iterable<String>>() {
-          @Override public Iterable<String> apply(String line) {
-            List<String> lines = new ArrayList<>();
-            line = line.trim();
-            while (line.length() > lineLength) {
-              int i = lineLength;
-              for (; i >= 0; i--) {
-                if (Character.isWhitespace(line.charAt(i))) {
-                  break;
+        .transformAndConcat(
+            new Function<String, Iterable<String>>() {
+              @Override
+              public Iterable<String> apply(String line) {
+                List<String> lines = new ArrayList<>();
+                line = line.trim();
+                while (line.length() > lineLength) {
+                  int i = lineLength;
+                  for (; i >= 0; i--) {
+                    if (Character.isWhitespace(line.charAt(i))) {
+                      break;
+                    }
+                  }
+                  if (i <= 0) {
+                    // Just truncate at lineLength if it can't be split
+                    i = lineLength;
+                  }
+                  lines.add(line.substring(0, i).trim());
+                  line = line.substring(i).trim();
                 }
+                if (line.length() > 0) {
+                  lines.add(line);
+                }
+                return lines;
               }
-              if (i <= 0) {
-                // Just truncate at lineLength if it can't be split
-                i = lineLength;
+            })
+        .transform(
+            new Function<String, String>() {
+              @Override
+              public String apply(String line) {
+                return "// " + line;
               }
-              lines.add(line.substring(0, i).trim());
-              line = line.substring(i).trim();
-            }
-            if (line.length() > 0) {
-              lines.add(line);
-            }
-            return lines;
-          }
-        })
-        .transform(new Function<String, String>() {
-          @Override public String apply(String line) {
-            return "// " + line;
-          }
-        })
+            })
         .toList();
   }
 
@@ -127,9 +131,13 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
       return new AutoValue_CSharpDiscoveryContext_ParamInfo(
           typeName, name, defaultValue, description);
     }
+
     public abstract String typeName();
+
     public abstract String name();
+
     public abstract String defaultValue();
+
     public abstract List<String> description();
   }
 
@@ -156,14 +164,23 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
           requestTypeName,
           responseTypeName);
     }
+
     public abstract String namespace();
+
     public abstract String serviceTypeName();
+
     public abstract String serviceVarName();
+
     public abstract String methodName();
+
     public abstract List<ParamInfo> params();
+
     public abstract String paramList();
+
     public abstract String resourcePath();
+
     public abstract String requestTypeName();
+
     public abstract String responseTypeName();
   }
 
@@ -172,50 +189,60 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     String packageName = packageNameAndImport("");
     String namespace = packageName + "Sample";
     String serviceTypeName = packageName + "Service";
-    String serviceVarName =
-        CSharpContextCommon.s_underscoresToCamelCase(packageName) + "Service";
-    String methodName =
-        CSharpContextCommon.s_underscoresToPascalCase(getSimpleName(rawMethodName));
+    String serviceVarName = CSharpContextCommon.s_underscoresToCamelCase(packageName) + "Service";
+    String methodName = CSharpContextCommon.s_underscoresToPascalCase(getSimpleName(rawMethodName));
 
     final ApiaryConfig apiary = getApiaryConfig();
     final Type methodType = apiary.getType(method.getRequestTypeUrl());
-    List<ParamInfo> params = FluentIterable.from(getFlatMethodParams(method))
-        .transform(new Function<String, ParamInfo>() {
-          @Override public ParamInfo apply(String paramName) {
-            Field field = getField(methodType, paramName);
-            String typeName = FIELD_TYPE_MAP.get(field.getKind());
-            String name = CSharpContextCommon.s_underscoresToCamelCase(paramName);
-            String defaultValue = DEFAULTVALUE_MAP.get(field.getKind());
-            List<String> description = buildDescription(
-                apiary.getDescription(methodType.getName(), paramName));
-            return ParamInfo.create(typeName, name, defaultValue, description);
-          }
-        })
-        .toList();
-    String paramList = FluentIterable.from(params)
-        .transform(new Function<ParamInfo, String>() {
-          @Override public String apply(ParamInfo paramInfo) {
-            return paramInfo.name();
-          }
-        })
-        .join(Joiner.on(", "));
+    List<ParamInfo> params =
+        FluentIterable.from(getFlatMethodParams(method))
+            .transform(
+                new Function<String, ParamInfo>() {
+                  @Override
+                  public ParamInfo apply(String paramName) {
+                    Field field = getField(methodType, paramName);
+                    String typeName = FIELD_TYPE_MAP.get(field.getKind());
+                    String name = CSharpContextCommon.s_underscoresToCamelCase(paramName);
+                    String defaultValue = DEFAULTVALUE_MAP.get(field.getKind());
+                    List<String> description =
+                        buildDescription(apiary.getDescription(methodType.getName(), paramName));
+                    return ParamInfo.create(typeName, name, defaultValue, description);
+                  }
+                })
+            .toList();
+    String paramList =
+        FluentIterable.from(params)
+            .transform(
+                new Function<ParamInfo, String>() {
+                  @Override
+                  public String apply(ParamInfo paramInfo) {
+                    return paramInfo.name();
+                  }
+                })
+            .join(Joiner.on(", "));
 
-    String resourcePath = FluentIterable.from(apiary.getResources(rawMethodName))
-        .transform(new Function<String, String>() {
-          @Override public String apply(String resourceName) {
-            return CSharpContextCommon.s_underscoresToPascalCase(resourceName);
-          }
-        })
-        .join(Joiner.on('.'));
+    String resourcePath =
+        FluentIterable.from(apiary.getResources(rawMethodName))
+            .transform(
+                new Function<String, String>() {
+                  @Override
+                  public String apply(String resourceName) {
+                    return CSharpContextCommon.s_underscoresToPascalCase(resourceName);
+                  }
+                })
+            .join(Joiner.on('.'));
 
-    String requestTypeName = FluentIterable.from(apiary.getResources(rawMethodName))
-        .transform(new Function<String, String>() {
-          @Override public String apply(String resourceName) {
-            return CSharpContextCommon.s_underscoresToPascalCase(resourceName) + "Resource";
-          }
-        })
-        .append(methodName + "Request")
-        .join(Joiner.on('.'));
+    String requestTypeName =
+        FluentIterable.from(apiary.getResources(rawMethodName))
+            .transform(
+                new Function<String, String>() {
+                  @Override
+                  public String apply(String resourceName) {
+                    return CSharpContextCommon.s_underscoresToPascalCase(resourceName) + "Resource";
+                  }
+                })
+            .append(methodName + "Request")
+            .join(Joiner.on('.'));
     String responseTypeName = method.getResponseTypeUrl();
     // TODO: Use a better way of determining if the response type is void
     if (responseTypeName.equals("empty$")) {
@@ -236,4 +263,3 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
         responseTypeName);
   }
 }
-

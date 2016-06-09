@@ -132,7 +132,7 @@ public class CSharpContextCommon {
   public TreeSet<String> getImports() {
     return imports;
   }
-  
+
   public static Iterable<String> s_prefix(Iterable<String> input, String prefix) {
     ArrayList<String> output = new ArrayList<>();
     for (String s : input) {

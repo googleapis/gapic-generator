@@ -31,16 +31,14 @@ public class ClientConfigSnippetSetRunner<ElementT> implements SnippetSetRunner<
 
   @SuppressWarnings("unchecked")
   @Override
-  public GeneratedResult generate(ElementT element,
-      String snippetFileName,
-      CodegenContext context) {
+  public GeneratedResult generate(
+      ElementT element, String snippetFileName, CodegenContext context) {
     ClientConfigSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             ClientConfigSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
             snippetFileName,
-            ImmutableMap.<String, Object>of(
-                "context", context));
+            ImmutableMap.<String, Object>of("context", context));
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
 

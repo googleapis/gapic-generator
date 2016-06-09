@@ -36,9 +36,7 @@ public class NodeJSSnippetSetRunner<ElementT> implements SnippetSetRunner<Elemen
 
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      ElementT element,
-      String snippetFileName,
-      CodegenContext context) {
+      ElementT element, String snippetFileName, CodegenContext context) {
     NodeJSSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             NodeJSSnippetSet.class,

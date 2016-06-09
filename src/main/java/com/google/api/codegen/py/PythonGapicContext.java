@@ -113,7 +113,6 @@ public class PythonGapicContext extends GapicContext {
     }
   }
 
-
   // Snippet Helpers
   // ===============
 

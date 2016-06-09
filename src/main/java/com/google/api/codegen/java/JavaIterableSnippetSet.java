@@ -35,5 +35,4 @@ interface JavaIterableSnippetSet<T> {
    * Generates a fragment of the doc from a service.
    */
   Doc generateFragment(T service);
-
 }

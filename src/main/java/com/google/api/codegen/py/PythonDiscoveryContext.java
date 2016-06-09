@@ -66,17 +66,20 @@ public class PythonDiscoveryContext extends DiscoveryContext {
    */
   private static final ImmutableMap<String, String> STRING_DEFAULT_MAP =
       ImmutableMap.<String, String>builder()
-          .put("byte", "''"
-              + "  # base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648")
-          .put("date", "'1969-12-31'"
-              + "  # 'YYYY-MM-DD': see datetime.date.isoformat()")
-          .put("date-time", "'" + new DateTime(0L).toStringRfc3339() + "'"
-              + "  # 'YYYY-MM-DDThh:mm:ss.fffZ' (UTC): see datetime.datetime.isoformat()")
+          .put(
+              "byte",
+              "''" + "  # base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648")
+          .put("date", "'1969-12-31'" + "  # 'YYYY-MM-DD': see datetime.date.isoformat()")
+          .put(
+              "date-time",
+              "'"
+                  + new DateTime(0L).toStringRfc3339()
+                  + "'"
+                  + "  # 'YYYY-MM-DDThh:mm:ss.fffZ' (UTC): see datetime.datetime.isoformat()")
           .build();
 
   private static final ImmutableMap<String, String> RENAMED_METHOD_MAP =
-      ImmutableMap.<String, String>builder()
-          .build();
+      ImmutableMap.<String, String>builder().build();
 
   private final PythonContextCommon pythonCommon;
 
@@ -182,8 +185,7 @@ public class PythonDiscoveryContext extends DiscoveryContext {
             typeDefaultValue(items, this.getField(items, "key")),
             typeDefaultValue(items, this.getField(items, "value")));
       } else {
-        return String.format(
-            "[ %s ]", elementDefaultValue(type, field));
+        return String.format("[ %s ]", elementDefaultValue(type, field));
       }
     }
     return nativeDefaultValue(type, field);
