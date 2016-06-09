@@ -78,22 +78,6 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
           .put("double", double.class)
           .build();
 
-  /**
-   * A map from {@link ApiaryConfig#stringFormat} label (or null) to corresponding default value.
-   */
-  private static final ImmutableMap<String, String> STRING_DEFAULT_MAP =
-      ImmutableMap.<String, String>builder()
-          .put(
-              "byte",
-              "\"\";  // base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648")
-          .put("date", "\"1969-12-31\";  // \"YYYY-MM-DD\": see java.text.SimpleDateFormat")
-          .put(
-              "date-time",
-              String.format("\"%s\";", new DateTime(0L).toStringRfc3339())
-                  + "  // \"YYYY-MM-DDThh:mm:ss.fffZ\" (UTC): "
-                  + "see com.google.api.client.util.DateTime.toStringRfc3339()")
-          .build();
-
   private static final ImmutableMap<String, String> RENAMED_METHOD_MAP =
       ImmutableMap.<String, String>builder()
           .put("sql.instances.import", "sql.instances.sqladminImport")
@@ -359,20 +343,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
       return String.valueOf(Defaults.defaultValue(primitiveClass)) + ";";
     }
     if (typeName.equals("java.lang.String")) {
-      String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
-      if (stringFormat != null) {
-        String value = STRING_DEFAULT_MAP.get(stringFormat);
-        if (value != null) {
-          return value;
-        }
-      }
-      String stringPattern =
-          getApiaryConfig().getFieldPattern().get(type.getName(), field.getName());
-      String patternSample = stringPattern == null ? null : DefaultString.forPattern(stringPattern);
-      if (patternSample != null) {
-        return String.format("\"%s\";", patternSample);
-      }
-      return "\"\";";
+      return String.format("\"%s\";", getDefaultString(type, field));
     }
     return "null;";
   }

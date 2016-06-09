@@ -14,10 +14,11 @@
  */
 package com.google.api.codegen.php;
 
-import com.google.api.Service;
 import com.google.api.client.util.DateTime;
 import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.DiscoveryContext;
+import com.google.api.Service;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Field;
@@ -164,18 +165,7 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
       if (defaultPrimitiveValue != null) {
         return defaultPrimitiveValue;
       } else if (kind.equals(Field.Kind.TYPE_STRING)) {
-        String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
-        if (stringFormat != null) {
-          switch (stringFormat) {
-            case "date":
-              return "\'1969-12-31\'";
-            case "date-time":
-              return "\'" + new DateTime(0L).toStringRfc3339() + "\'";
-            default:
-              // Fall through
-          }
-        }
-        return "\'\'";
+        return String.format("'%s'", getDefaultString(type, field));
       }
     }
     return "null";
