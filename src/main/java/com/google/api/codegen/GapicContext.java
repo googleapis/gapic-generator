@@ -15,7 +15,6 @@
 package com.google.api.codegen;
 
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.base.Preconditions;
@@ -62,10 +61,6 @@ public class GapicContext extends CodegenContext {
 
   public ServiceConfig getServiceConfig() {
     return serviceConfig;
-  }
-
-  public boolean isIdempotent(Method method) {
-    return Resources.isIdempotent(method);
   }
 
   /**
