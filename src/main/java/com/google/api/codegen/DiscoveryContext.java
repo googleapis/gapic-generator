@@ -195,7 +195,7 @@ public abstract class DiscoveryContext extends CodegenContext {
         return i;
       }
     }
-    for (int i = maxWidth+1; i < line.length(); i++) {
+    for (int i = maxWidth + 1; i < line.length(); i++) {
       if (isLineWrapChar(line.charAt(i))) {
         return i;
       }
