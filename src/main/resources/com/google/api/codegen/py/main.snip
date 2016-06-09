@@ -360,9 +360,9 @@
 
 @private callLine(method)
     @if pyproto.isEmptyMessage(method.getOutputMessage)
-        self._{@methodName(method)}(req, options)
+        self._{@methodName(method)}(request, options)
     @else
-        return self._{@methodName(method)}(req, options)
+        return self._{@methodName(method)}(request, options)
     @end
 @end
 
@@ -399,15 +399,15 @@
                 @end
                 @if requiredParams
                     @if optionalParams
-                        req = {@methodInputModule}.{@inputTypeName}(
+                        request = {@methodInputModule}.{@inputTypeName}(
                             {@namedParameters(requiredParams)},
                             {@namedParameters(optionalParams)})
                     @else
-                        req = {@methodInputModule}.{@inputTypeName}(
+                        request = {@methodInputModule}.{@inputTypeName}(
                             {@namedParameters(requiredParams)})
                     @end
                 @else
-                    req = {@methodInputModule}.{@inputTypeName}(
+                    request = {@methodInputModule}.{@inputTypeName}(
                         {@namedParameters(optionalParams)})
                 @end
                 {@callLine(method)}
@@ -418,7 +418,7 @@
                 @if documentation
                     {@documentation}
                 @end
-                req = {@methodInputModule}.{@inputTypeName}()
+                request = {@methodInputModule}.{@inputTypeName}()
                 {@callLine(method)}
         @end
     @end
