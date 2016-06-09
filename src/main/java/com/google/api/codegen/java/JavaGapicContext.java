@@ -101,11 +101,6 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
     this.javaCommon = javaCommon;
   }
 
-  @Override
-  public String getOutputSubPath(ProtoElement element) {
-    return getApiConfig().getPackageName().replace('.', '/');
-  }
-
   public JavaContextCommon java() {
     return javaCommon;
   }
@@ -303,8 +298,7 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
           String.format(
               "Unsupported type for field %s - found %s, "
                   + "but expected TYPE_STRING or TYPE_BYTES",
-              field.getFullName(),
-              field.getType().getKind()));
+              field.getFullName(), field.getType().getKind()));
     }
   }
 

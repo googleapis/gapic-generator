@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.gapic;
 
+import com.google.api.codegen.CodePathMapper;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.InputElementView;
@@ -41,7 +42,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
   private final GapicContext context;
   private final SnippetSetRunner<ElementT> snippetSetRunner;
   private final List<String> snippetFileNames;
-  private final String outputSubPath;
+  private final CodePathMapper pathMapper;
 
   private CommonGapicProvider(
       Model model,
@@ -49,13 +50,13 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
       GapicContext context,
       SnippetSetRunner<ElementT> snippetSetRunner,
       List<String> snippetFileNames,
-      String outputSubPath) {
+      CodePathMapper pathMapper) {
     this.model = model;
     this.view = view;
     this.context = context;
     this.snippetSetRunner = snippetSetRunner;
     this.snippetFileNames = snippetFileNames;
-    this.outputSubPath = outputSubPath;
+    this.pathMapper = pathMapper;
   }
 
   @Override
@@ -93,16 +94,15 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
     for (ElementT element : view.getElementIterable(model)) {
       GeneratedResult result = snippetSetRunner.generate(element, snippetFileName, context);
 
-      String subPath = outputSubPath;
-      if (subPath == null) {
-        // Note on usage of instanceof: there is one case (as of this writing)
-        // where the element is an Iterable<> instead of a ProtoElement.
-        if (element instanceof ProtoElement) {
-          subPath = context.getOutputSubPath((ProtoElement) element);
-        } else {
-          subPath = context.getOutputSubPath(null);
-        }
+      String subPath;
+      // Note on usage of instanceof: there is one case (as of this writing)
+      // where the element is an Iterable<> instead of a ProtoElement.
+      if (element instanceof ProtoElement) {
+        subPath = pathMapper.getOutputPath((ProtoElement) element, context.getApiConfig());
+      } else {
+        subPath = pathMapper.getOutputPath(null, context.getApiConfig());
       }
+
       if (!Strings.isNullOrEmpty(subPath)) {
         subPath = subPath + "/" + result.getFilename();
       } else {
@@ -131,7 +131,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
     private GapicContext context;
     private SnippetSetRunner<ElementT> snippetSetRunner;
     private List<String> snippetFileNames;
-    private String outputSubPath;
+    private CodePathMapper pathMapper;
 
     private Builder() {}
 
@@ -160,17 +160,14 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
       return this;
     }
 
-    /**
-     * Optional. Overrides the path normally acquired from the GapicContext.
-     */
-    public Builder<ElementT> setOutputSubPath(String outputSubPath) {
-      this.outputSubPath = outputSubPath;
+    public Builder<ElementT> setCodePathMapper(CodePathMapper pathMapper) {
+      this.pathMapper = pathMapper;
       return this;
     }
 
     public CommonGapicProvider<ElementT> build() {
       return new CommonGapicProvider<ElementT>(
-          model, view, context, snippetSetRunner, snippetFileNames, outputSubPath);
+          model, view, context, snippetSetRunner, snippetFileNames, pathMapper);
     }
   }
 }
