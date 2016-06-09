@@ -128,8 +128,10 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
   // so we can generate samples properly.
   private static final ImmutableMap<String, String> SERVICE_RENAME =
       ImmutableMap.<String, String>builder()
+          .put("clouddebugger", "CloudDebugger")
           .put("cloudmonitoring", "CloudMonitoring")
           .put("cloudresourcemanager", "CloudResourceManager")
+          .put("cloudtrace", "CloudTrace")
           .put("clouduseraccounts", "CloudUserAccounts")
           .put("deploymentmanager", "DeploymentManager")
           .put("sqladmin", "SQLAdmin")

@@ -17,7 +17,7 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouddebugger.v2.Clouddebugger;
+import com.google.api.services.clouddebugger.v2.CloudDebugger;
 import com.google.api.services.clouddebugger.v2.model.ListActiveBreakpointsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -25,7 +25,7 @@ import java.util.Collections;
 
 
 
-public class ClouddebuggerExample {
+public class CloudDebuggerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
@@ -41,7 +41,7 @@ public class ClouddebuggerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Clouddebugger clouddebuggerService = new Clouddebugger.Builder(httpTransport, jsonFactory, credential)
+    CloudDebugger clouddebuggerService = new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
@@ -49,7 +49,7 @@ public class ClouddebuggerExample {
     // Identifies the debuggee.
     String debuggeeId = "";
 
-    Clouddebugger.Controller.Debuggees.Breakpoints.List request = clouddebuggerService.controller().debuggees().breakpoints().list(debuggeeId);
+    CloudDebugger.Controller.Debuggees.Breakpoints.List request = clouddebuggerService.controller().debuggees().breakpoints().list(debuggeeId);
     ListActiveBreakpointsResponse response = request.execute();
 
     // TODO: Add code here to process the 'response' object
@@ -73,7 +73,7 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouddebugger.v2.Clouddebugger;
+import com.google.api.services.clouddebugger.v2.CloudDebugger;
 import com.google.api.services.clouddebugger.v2.model.UpdateActiveBreakpointRequest;
 import com.google.api.services.clouddebugger.v2.model.UpdateActiveBreakpointResponse;
 import java.io.IOException;
@@ -82,7 +82,7 @@ import java.util.Collections;
 
 
 
-public class ClouddebuggerExample {
+public class CloudDebuggerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
@@ -98,7 +98,7 @@ public class ClouddebuggerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Clouddebugger clouddebuggerService = new Clouddebugger.Builder(httpTransport, jsonFactory, credential)
+    CloudDebugger clouddebuggerService = new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
@@ -111,7 +111,7 @@ public class ClouddebuggerExample {
     UpdateActiveBreakpointRequest content = new UpdateActiveBreakpointRequest();
     // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Clouddebugger.Controller.Debuggees.Breakpoints.Update request = clouddebuggerService.controller().debuggees().breakpoints().update(debuggeeId, id, content);
+    CloudDebugger.Controller.Debuggees.Breakpoints.Update request = clouddebuggerService.controller().debuggees().breakpoints().update(debuggeeId, id, content);
     UpdateActiveBreakpointResponse response = request.execute();
 
     // TODO: Add code here to process the 'response' object
@@ -135,7 +135,7 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouddebugger.v2.Clouddebugger;
+import com.google.api.services.clouddebugger.v2.CloudDebugger;
 import com.google.api.services.clouddebugger.v2.model.RegisterDebuggeeRequest;
 import com.google.api.services.clouddebugger.v2.model.RegisterDebuggeeResponse;
 import java.io.IOException;
@@ -144,7 +144,7 @@ import java.util.Collections;
 
 
 
-public class ClouddebuggerExample {
+public class CloudDebuggerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
@@ -160,7 +160,7 @@ public class ClouddebuggerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Clouddebugger clouddebuggerService = new Clouddebugger.Builder(httpTransport, jsonFactory, credential)
+    CloudDebugger clouddebuggerService = new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
@@ -168,7 +168,7 @@ public class ClouddebuggerExample {
     RegisterDebuggeeRequest content = new RegisterDebuggeeRequest();
     // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Clouddebugger.Controller.Debuggees.Register request = clouddebuggerService.controller().debuggees().register(content);
+    CloudDebugger.Controller.Debuggees.Register request = clouddebuggerService.controller().debuggees().register(content);
     RegisterDebuggeeResponse response = request.execute();
 
     // TODO: Add code here to process the 'response' object
@@ -192,14 +192,14 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouddebugger.v2.Clouddebugger;
+import com.google.api.services.clouddebugger.v2.CloudDebugger;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 
 
 
-public class ClouddebuggerExample {
+public class CloudDebuggerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
@@ -215,7 +215,7 @@ public class ClouddebuggerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Clouddebugger clouddebuggerService = new Clouddebugger.Builder(httpTransport, jsonFactory, credential)
+    CloudDebugger clouddebuggerService = new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
@@ -225,7 +225,7 @@ public class ClouddebuggerExample {
     // ID of the breakpoint to delete.
     String breakpointId = "";
 
-    Clouddebugger.Debugger.Debuggees.Breakpoints.Delete request = clouddebuggerService.debugger().debuggees().breakpoints().delete(debuggeeId, breakpointId);
+    CloudDebugger.Debugger.Debuggees.Breakpoints.Delete request = clouddebuggerService.debugger().debuggees().breakpoints().delete(debuggeeId, breakpointId);
     request.execute();
   }
 }
@@ -247,7 +247,7 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouddebugger.v2.Clouddebugger;
+import com.google.api.services.clouddebugger.v2.CloudDebugger;
 import com.google.api.services.clouddebugger.v2.model.GetBreakpointResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -255,7 +255,7 @@ import java.util.Collections;
 
 
 
-public class ClouddebuggerExample {
+public class CloudDebuggerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
@@ -271,7 +271,7 @@ public class ClouddebuggerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Clouddebugger clouddebuggerService = new Clouddebugger.Builder(httpTransport, jsonFactory, credential)
+    CloudDebugger clouddebuggerService = new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
@@ -281,7 +281,7 @@ public class ClouddebuggerExample {
     // ID of the breakpoint to get.
     String breakpointId = "";
 
-    Clouddebugger.Debugger.Debuggees.Breakpoints.Get request = clouddebuggerService.debugger().debuggees().breakpoints().get(debuggeeId, breakpointId);
+    CloudDebugger.Debugger.Debuggees.Breakpoints.Get request = clouddebuggerService.debugger().debuggees().breakpoints().get(debuggeeId, breakpointId);
     GetBreakpointResponse response = request.execute();
 
     // TODO: Add code here to process the 'response' object
@@ -305,7 +305,7 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouddebugger.v2.Clouddebugger;
+import com.google.api.services.clouddebugger.v2.CloudDebugger;
 import com.google.api.services.clouddebugger.v2.model.ListBreakpointsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -313,7 +313,7 @@ import java.util.Collections;
 
 
 
-public class ClouddebuggerExample {
+public class CloudDebuggerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
@@ -329,7 +329,7 @@ public class ClouddebuggerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Clouddebugger clouddebuggerService = new Clouddebugger.Builder(httpTransport, jsonFactory, credential)
+    CloudDebugger clouddebuggerService = new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
@@ -337,7 +337,7 @@ public class ClouddebuggerExample {
     // ID of the debuggee whose breakpoints to list.
     String debuggeeId = "";
 
-    Clouddebugger.Debugger.Debuggees.Breakpoints.List request = clouddebuggerService.debugger().debuggees().breakpoints().list(debuggeeId);
+    CloudDebugger.Debugger.Debuggees.Breakpoints.List request = clouddebuggerService.debugger().debuggees().breakpoints().list(debuggeeId);
     ListBreakpointsResponse response = request.execute();
 
     // TODO: Add code here to process the 'response' object
@@ -361,7 +361,7 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouddebugger.v2.Clouddebugger;
+import com.google.api.services.clouddebugger.v2.CloudDebugger;
 import com.google.api.services.clouddebugger.v2.model.Breakpoint;
 import com.google.api.services.clouddebugger.v2.model.SetBreakpointResponse;
 import java.io.IOException;
@@ -370,7 +370,7 @@ import java.util.Collections;
 
 
 
-public class ClouddebuggerExample {
+public class CloudDebuggerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
@@ -386,7 +386,7 @@ public class ClouddebuggerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Clouddebugger clouddebuggerService = new Clouddebugger.Builder(httpTransport, jsonFactory, credential)
+    CloudDebugger clouddebuggerService = new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
@@ -397,7 +397,7 @@ public class ClouddebuggerExample {
     Breakpoint content = new Breakpoint();
     // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Clouddebugger.Debugger.Debuggees.Breakpoints.Set request = clouddebuggerService.debugger().debuggees().breakpoints().set(debuggeeId, content);
+    CloudDebugger.Debugger.Debuggees.Breakpoints.Set request = clouddebuggerService.debugger().debuggees().breakpoints().set(debuggeeId, content);
     SetBreakpointResponse response = request.execute();
 
     // TODO: Add code here to process the 'response' object
@@ -421,7 +421,7 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.clouddebugger.v2.Clouddebugger;
+import com.google.api.services.clouddebugger.v2.CloudDebugger;
 import com.google.api.services.clouddebugger.v2.model.ListDebuggeesResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -429,7 +429,7 @@ import java.util.Collections;
 
 
 
-public class ClouddebuggerExample {
+public class CloudDebuggerExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
@@ -445,12 +445,12 @@ public class ClouddebuggerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Clouddebugger clouddebuggerService = new Clouddebugger.Builder(httpTransport, jsonFactory, credential)
+    CloudDebugger clouddebuggerService = new CloudDebugger.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
 
-    Clouddebugger.Debugger.Debuggees.List request = clouddebuggerService.debugger().debuggees().list();
+    CloudDebugger.Debugger.Debuggees.List request = clouddebuggerService.debugger().debuggees().list();
     ListDebuggeesResponse response = request.execute();
 
     // TODO: Add code here to process the 'response' object

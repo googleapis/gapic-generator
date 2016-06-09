@@ -89,8 +89,10 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
    */
   private static final ImmutableMap<String, String> RENAMED_PACKAGE_MAP =
       ImmutableMap.<String, String>builder()
+          .put("Clouddebugger", "CloudDebugger")
           .put("Cloudmonitoring", "CloudMonitoring")
           .put("Cloudresourcemanager", "CloudResourceManager")
+          .put("Cloudtrace", "CloudTrace")
           .put("Clouduseraccounts", "CloudUserAccounts")
           .put("Deploymentmanager", "DeploymentManager")
           .put("Sqladmin", "SQLAdmin")

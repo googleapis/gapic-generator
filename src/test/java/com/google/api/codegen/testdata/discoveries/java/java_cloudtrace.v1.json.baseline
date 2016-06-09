@@ -17,7 +17,7 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudtrace.v1.Cloudtrace;
+import com.google.api.services.cloudtrace.v1.CloudTrace;
 import com.google.api.services.cloudtrace.v1.model.Traces;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -25,7 +25,7 @@ import java.util.Collections;
 
 
 
-public class CloudtraceExample {
+public class CloudTraceExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
@@ -41,7 +41,7 @@ public class CloudtraceExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Cloudtrace cloudtraceService = new Cloudtrace.Builder(httpTransport, jsonFactory, credential)
+    CloudTrace cloudtraceService = new CloudTrace.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
@@ -52,7 +52,7 @@ public class CloudtraceExample {
     Traces content = new Traces();
     // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Cloudtrace.Projects.PatchTraces request = cloudtraceService.projects().patchTraces(projectId, content);
+    CloudTrace.Projects.PatchTraces request = cloudtraceService.projects().patchTraces(projectId, content);
     request.execute();
   }
 }
@@ -74,7 +74,7 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudtrace.v1.Cloudtrace;
+import com.google.api.services.cloudtrace.v1.CloudTrace;
 import com.google.api.services.cloudtrace.v1.model.Trace;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -82,7 +82,7 @@ import java.util.Collections;
 
 
 
-public class CloudtraceExample {
+public class CloudTraceExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
@@ -98,7 +98,7 @@ public class CloudtraceExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Cloudtrace cloudtraceService = new Cloudtrace.Builder(httpTransport, jsonFactory, credential)
+    CloudTrace cloudtraceService = new CloudTrace.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
@@ -108,7 +108,7 @@ public class CloudtraceExample {
     // ID of the trace to return.
     String traceId = "";
 
-    Cloudtrace.Projects.Traces.Get request = cloudtraceService.projects().traces().get(projectId, traceId);
+    CloudTrace.Projects.Traces.Get request = cloudtraceService.projects().traces().get(projectId, traceId);
     Trace response = request.execute();
 
     // TODO: Add code here to process the 'response' object
@@ -132,7 +132,7 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.cloudtrace.v1.Cloudtrace;
+import com.google.api.services.cloudtrace.v1.CloudTrace;
 import com.google.api.services.cloudtrace.v1.model.ListTracesResponse;
 import com.google.api.services.cloudtrace.v1.model.Trace;
 import java.io.IOException;
@@ -141,7 +141,7 @@ import java.util.Collections;
 
 
 
-public class CloudtraceExample {
+public class CloudTraceExample {
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
@@ -157,7 +157,7 @@ public class CloudtraceExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-    Cloudtrace cloudtraceService = new Cloudtrace.Builder(httpTransport, jsonFactory, credential)
+    CloudTrace cloudtraceService = new CloudTrace.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
@@ -165,7 +165,7 @@ public class CloudtraceExample {
     // ID of the Cloud project where the trace data is stored.
     String projectId = "";
 
-    Cloudtrace.Projects.Traces.List request = cloudtraceService.projects().traces().list(projectId);
+    CloudTrace.Projects.Traces.List request = cloudtraceService.projects().traces().list(projectId);
     ListTracesResponse response;
     do {
       response = request.execute();
