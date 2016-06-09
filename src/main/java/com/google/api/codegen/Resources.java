@@ -72,7 +72,7 @@ public class Resources {
     // (useful for testability).
     Map<String, FieldSegment> specs = new TreeMap<>();
 
-    Map<String, List<FieldSegment>> methodFieldSegs = getAllFieldSegmentsFromHttpPathsPerMethod(methods);
+    Map<String, List<FieldSegment>> methodFieldSegs = getMethodFieldSegmentMapFromHttpPaths(methods);
     for (List<FieldSegment> segList : methodFieldSegs.values()) {
       for (FieldSegment fieldSegment : segList) {
         String resourcePath = PathSegment.toSyntax(fieldSegment.getSubPath());
@@ -91,7 +91,7 @@ public class Resources {
    * composed of a field name and a path segment, representing an abstract resource name with
    * wildcards.
    */
-  public static Map<String, List<FieldSegment>> getAllFieldSegmentsFromHttpPathsPerMethod(
+  public static Map<String, List<FieldSegment>> getMethodFieldSegmentMapFromHttpPaths(
       List<Method> methods) {
     Map<String, List<FieldSegment>> fieldSegmentsPerMethodMap =
         new Hashtable<String, List<FieldSegment>>();

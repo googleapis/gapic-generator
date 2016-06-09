@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Config generator for method parameter flattening and required fields.
  */
-public class FlatteningAndRequiredFieldsConfigGenerator implements MethodConfigGenerator {
+public class FieldConfigGenerator implements MethodConfigGenerator {
 
   private static final String CONFIG_KEY_GROUPS = "groups";
   private static final String CONFIG_KEY_PARAMETERS = "parameters";

@@ -33,7 +33,7 @@ public class FieldNamePatternConfigGenerator implements MethodConfigGenerator {
   private Map<String, List<FieldSegment>> fieldSegmentMap;
 
   public FieldNamePatternConfigGenerator(Interface service) {
-    fieldSegmentMap = Resources.getAllFieldSegmentsFromHttpPathsPerMethod(service.getMethods());
+    fieldSegmentMap = Resources.getMethodFieldSegmentMapFromHttpPaths(service.getMethods());
   }
 
   @Override

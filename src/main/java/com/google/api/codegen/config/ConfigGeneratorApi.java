@@ -114,7 +114,7 @@ public class ConfigGeneratorApi extends ToolDriverBase {
   private List<Object> generateMethodConfigs(Interface service) {
     List<MethodConfigGenerator> methodConfigGenerators =
         Arrays.asList(
-            new FlatteningAndRequiredFieldsConfigGenerator(),
+            new FieldConfigGenerator(),
             new PageStreamingConfigGenerator(),
             new RetryGenerator(),
             createFixedValueGenerator(CONFIG_KEY_REQUEST_OBJECT_METHOD, false),
