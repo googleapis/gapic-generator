@@ -45,16 +45,6 @@ public class NodeJSDiscoveryContext extends DiscoveryContext implements NodeJSCo
           .put(Field.Kind.TYPE_DOUBLE, "0.0")
           .build();
 
-  private static final ImmutableMap<String, String> STRING_DEFAULT_MAP =
-      ImmutableMap.<String, String>builder()
-          .put(
-              "byte",
-              "\"\", // base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648")
-          .put("date", "\"2006-01-02\", // YYYY-MM-DD")
-          .put(
-              "date-time", "\"2006-01-02T15:04:05Z07:00\", // YYYY-MM-DDThh:mm:ss see time.RFC3339")
-          .build();
-
   /**
    * Generates placeholder assignment (to end of line) for field of type based on field kind and,
    * for explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.
@@ -76,17 +66,7 @@ public class NodeJSDiscoveryContext extends DiscoveryContext implements NodeJSCo
       return DEFAULT_VALUES.get(field.getKind()) + ",";
     }
     if (field.getKind() == Field.Kind.TYPE_STRING) {
-      String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
-      if (STRING_DEFAULT_MAP.containsKey(stringFormat)) {
-        return STRING_DEFAULT_MAP.get(stringFormat);
-      }
-      String stringPattern =
-          getApiaryConfig().getFieldPattern().get(type.getName(), field.getName());
-      String patternSample = DefaultString.forPattern(stringPattern);
-      if (patternSample != null) {
-        return String.format("\"%s\",", patternSample);
-      }
-      return "\"\",";
+      return String.format("\"%s\",", getDefaultString(type, field));
     }
     return "null,";
   }

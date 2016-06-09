@@ -14,8 +14,10 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.Service;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.protobuf.Api;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
@@ -161,6 +163,14 @@ public abstract class DiscoveryContext extends CodegenContext {
 
   public boolean isPatch(Method method) {
     return apiaryConfig.getHttpMethod(method.getName()).equals("PATCH");
+  }
+
+  // Returns default string. If ApiaryConfig specifies a pattern, default string for that pattern
+  // is returned. Otherwise, returns empty string.
+  protected String getDefaultString(Type type, Field field) {
+    String stringPattern =
+        getApiaryConfig().getFieldPattern().get(type.getName(), field.getName());
+    return Strings.nullToEmpty(DefaultString.forPattern(stringPattern));
   }
 
   // Line wrap `str`, returning a list of lines. Each line in the returned list is guaranteed to

@@ -65,12 +65,6 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
           .put(Field.Kind.TYPE_UINT64, "\'0\'")
           .build();
 
-  private static final ImmutableMap<String, String> STRING_DEFAULT_MAP =
-      ImmutableMap.<String, String>builder()
-          .put("date", "'1969-12-31'")
-          .put("date-time", String.format("'%s'", new DateTime(0L).toStringRfc3339()))
-          .build();
-
   /**
    * A set that contains the method names that have extra suffix in the PHP client code.
    * Some PHP methods appends resource path in camel case, e.g. list -> listAppResources
@@ -171,17 +165,7 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
       if (defaultPrimitiveValue != null) {
         return defaultPrimitiveValue;
       } else if (kind.equals(Field.Kind.TYPE_STRING)) {
-        String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
-        if (STRING_DEFAULT_MAP.containsKey(stringFormat)) {
-          return STRING_DEFAULT_MAP.get(stringFormat);
-        }
-        String stringPattern =
-            getApiaryConfig().getFieldPattern().get(type.getName(), field.getName());
-        String patternSample = DefaultString.forPattern(stringPattern);
-        if (patternSample != null) {
-          return String.format("'%s'", patternSample);
-        }
-        return "''";
+        return String.format("'%s'", getDefaultString(type, field));
       }
     }
     return "null";
