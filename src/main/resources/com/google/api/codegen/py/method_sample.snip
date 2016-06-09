@@ -81,7 +81,11 @@
 
 # Properly format an identifier for this language
 @private formattedIdentifier(lineOrFieldSetting)
-  {@lineOrFieldSetting.getIdentifier}
+  @if lineOrFieldSetting.getInitValueConfig.hasFormattingConfig
+    formatted_{@lineOrFieldSetting.getIdentifier}
+  @else
+    {@lineOrFieldSetting.getIdentifier}
+  @end
 @end
 
 # Value for simple argument
