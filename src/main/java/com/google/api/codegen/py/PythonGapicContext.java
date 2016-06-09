@@ -389,11 +389,12 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
           lineType = ((StructureInitCodeLine) line).getType();
           break;
         default:
-          break;
+          // nothing to do
       }
 
       if (lineType != null && lineType.isMessage()) {
         importStrings.addAll(new PythonImportHandler(method).calculateImports());
+        return;
       }
     }
   }
