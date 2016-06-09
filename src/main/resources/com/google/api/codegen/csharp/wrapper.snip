@@ -19,7 +19,7 @@
 
     // Generated code. DO NOT EDIT!
 
-    @join import : imports
+    @join import : context.removeItem(imports, context.getNamespace(service.getFile))
         using {@import};
     @end
 
@@ -190,13 +190,13 @@
             /// </remarks>
             public CallSettings {@method.grpcName}Settings { get; set; } = new CallSettings
             {
-                RetrySettings = new RetrySettings
+                Timing = CallTiming.FromRetry(new RetrySettings
                 {
                     RetryBackoff = Get{@method.retrySetting.name}RetryBackoff(),
                     TimeoutBackoff = Get{@method.retrySetting.name}TimeoutBackoff(),
                     RetryFilter = {@method.retryCodes.name}RetryFilter,
-                },
-                Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds({@method.retrySetting.totalTimeoutMs})),
+                    TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds({@method.retrySetting.totalTimeoutMs})),
+                }),
             };
 
         @end

@@ -1,0 +1,449 @@
+
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Google Container Engine API and check quota for your project at
+//    https://console.developers.google.com/apis/api/container_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Container.v1;
+using Google.Apis.Container.v1.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace ContainerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            ContainerService containerService = new ContainerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Create() method:
+            // The Google Developers Console [project ID or project
+            // number](https://developers.google.com/console/help/new/#projectnumber).
+            string projectId = "";
+            // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+            // resides.
+            string zone = "";
+
+            ProjectsResource.ZonesResource.ClustersResource.CreateRequest request = containerService.Projects.Zones.Clusters.Create(projectId, zone);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Google Container Engine API and check quota for your project at
+//    https://console.developers.google.com/apis/api/container_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Container.v1;
+using Google.Apis.Container.v1.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace ContainerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            ContainerService containerService = new ContainerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Delete() method:
+            // The Google Developers Console [project ID or project
+            // number](https://developers.google.com/console/help/new/#projectnumber).
+            string projectId = "";
+            // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+            // resides.
+            string zone = "";
+            // The name of the cluster to delete.
+            string clusterId = "";
+
+            ProjectsResource.ZonesResource.ClustersResource.DeleteRequest request = containerService.Projects.Zones.Clusters.Delete(projectId, zone, clusterId);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Google Container Engine API and check quota for your project at
+//    https://console.developers.google.com/apis/api/container_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Container.v1;
+using Google.Apis.Container.v1.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace ContainerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            ContainerService containerService = new ContainerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // The Google Developers Console [project ID or project
+            // number](https://developers.google.com/console/help/new/#projectnumber).
+            string projectId = "";
+            // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+            // resides.
+            string zone = "";
+            // The name of the cluster to retrieve.
+            string clusterId = "";
+
+            ProjectsResource.ZonesResource.ClustersResource.GetRequest request = containerService.Projects.Zones.Clusters.Get(projectId, zone, clusterId);
+            Cluster response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Cluster response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Google Container Engine API and check quota for your project at
+//    https://console.developers.google.com/apis/api/container_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Container.v1;
+using Google.Apis.Container.v1.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace ContainerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            ContainerService containerService = new ContainerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // The Google Developers Console [project ID or project
+            // number](https://developers.google.com/console/help/new/#projectnumber).
+            string projectId = "";
+            // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+            // resides, or "-" for all zones.
+            string zone = "";
+
+            ProjectsResource.ZonesResource.ClustersResource.ListRequest request = containerService.Projects.Zones.Clusters.List(projectId, zone);
+            ListClustersResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // ListClustersResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Google Container Engine API and check quota for your project at
+//    https://console.developers.google.com/apis/api/container_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Container.v1;
+using Google.Apis.Container.v1.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace ContainerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            ContainerService containerService = new ContainerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Update() method:
+            // The Google Developers Console [project ID or project
+            // number](https://developers.google.com/console/help/new/#projectnumber).
+            string projectId = "";
+            // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+            // resides.
+            string zone = "";
+            // The name of the cluster to upgrade.
+            string clusterId = "";
+
+            ProjectsResource.ZonesResource.ClustersResource.UpdateRequest request = containerService.Projects.Zones.Clusters.Update(projectId, zone, clusterId);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Google Container Engine API and check quota for your project at
+//    https://console.developers.google.com/apis/api/container_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Container.v1;
+using Google.Apis.Container.v1.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace ContainerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            ContainerService containerService = new ContainerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the GetServerconfig() method:
+            // The Google Developers Console [project ID or project
+            // number](https://developers.google.com/console/help/new/#projectnumber).
+            string projectId = "";
+            // The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
+            // for, or "-" for all zones.
+            string zone = "";
+
+            ProjectsResource.ZonesResource.GetServerconfigRequest request = containerService.Projects.Zones.GetServerconfig(projectId, zone);
+            ServerConfig response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // ServerConfig response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Google Container Engine API and check quota for your project at
+//    https://console.developers.google.com/apis/api/container_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Container.v1;
+using Google.Apis.Container.v1.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace ContainerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            ContainerService containerService = new ContainerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // The Google Developers Console [project ID or project
+            // number](https://developers.google.com/console/help/new/#projectnumber).
+            string projectId = "";
+            // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+            // resides.
+            string zone = "";
+            // The server-assigned `name` of the operation.
+            string operationId = "";
+
+            ProjectsResource.ZonesResource.OperationsResource.GetRequest request = containerService.Projects.Zones.Operations.Get(projectId, zone, operationId);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Google Container Engine API and check quota for your project at
+//    https://console.developers.google.com/apis/api/container_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Container.v1;
+using Google.Apis.Container.v1.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace ContainerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            ContainerService containerService = new ContainerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // The Google Developers Console [project ID or project
+            // number](https://developers.google.com/console/help/new/#projectnumber).
+            string projectId = "";
+            // The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
+            // for, or "-" for all zones.
+            string zone = "";
+
+            ProjectsResource.ZonesResource.OperationsResource.ListRequest request = containerService.Projects.Zones.Operations.List(projectId, zone);
+            ListOperationsResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // ListOperationsResponse response = await request.ExecuteAsync();
+        }
+    }
+}

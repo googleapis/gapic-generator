@@ -168,13 +168,13 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings CreateShelfSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = NonIdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
@@ -201,13 +201,13 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings GetShelfSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = IdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
@@ -234,13 +234,13 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings ListShelvesSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = IdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
@@ -267,13 +267,13 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings DeleteShelfSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = IdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
@@ -299,13 +299,13 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings MergeShelvesSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = NonIdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
@@ -331,13 +331,13 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings CreateBookSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = NonIdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
@@ -363,13 +363,13 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings PublishSeriesSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = NonIdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
@@ -396,13 +396,13 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings GetBookSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = IdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
@@ -429,13 +429,13 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings ListBooksSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = IdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
@@ -462,13 +462,13 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings DeleteBookSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = IdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
@@ -495,13 +495,13 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings UpdateBookSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = IdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
@@ -527,13 +527,13 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings MoveBookSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = NonIdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
@@ -560,13 +560,13 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings ListStringsSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = IdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
@@ -592,13 +592,13 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings AddCommentsSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = NonIdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
 

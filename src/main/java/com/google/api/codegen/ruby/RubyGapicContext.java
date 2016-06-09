@@ -58,7 +58,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     for (String moduleName : getApiConfig().getPackageName().split("::")) {
       dirs.add(moduleName.toLowerCase());
     }
-    return Joiner.on("/").join(dirs);
+    return "lib/" + Joiner.on("/").join(dirs);
   }
 
   // Snippet Helpers

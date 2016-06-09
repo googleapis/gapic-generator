@@ -150,6 +150,12 @@ public class DiscoveryImporter {
         importer.config.getFields().put(type, field.getName(), field);
       }
     }
+    if (disco.get("canonicalName") != null) {
+      importer.config.setServiceCanonicalName(disco.get("canonicalName").asText());
+    } else {
+      importer.config.setServiceCanonicalName(disco.get("name").asText());
+    }
+    importer.config.setServiceVersion(disco.get("version").asText());
 
     return importer;
   }

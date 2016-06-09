@@ -100,6 +100,16 @@ public class ApiaryConfig {
    * Maps (type, field name) to field.
    */
   private final Table<Type, String, Field> fields = HashBasedTable.<Type, String, Field>create();
+  
+  /*
+   * The service canonical name, or name if no canonical name
+   */
+  private String serviceCanonicalName;
+  
+  /*
+   * The service version string
+   */
+  private String serviceVersion;
 
   public ListMultimap<String, String> getMethodParams() {
     return methodParams;
@@ -139,6 +149,22 @@ public class ApiaryConfig {
 
   public Set<String> getMediaUpload() {
     return mediaUpload;
+  }
+
+  public String getServiceCanonicalName() {
+    return serviceCanonicalName;
+  }
+
+  public void setServiceCanonicalName(String serviceCanonicalName) {
+    this.serviceCanonicalName = serviceCanonicalName;
+  }
+
+  public String getServiceVersion() {
+    return serviceVersion;
+  }
+
+  public void setServiceVersion(String serviceVersion) {
+    this.serviceVersion = serviceVersion;
   }
 
   /**
