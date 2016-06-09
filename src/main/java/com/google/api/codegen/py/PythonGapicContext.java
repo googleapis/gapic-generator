@@ -99,15 +99,6 @@ public class PythonGapicContext extends GapicContext {
     return pythonCommon;
   }
 
-  /**
-   * Converts the dot-separated Python package name from the GAPIC config to a slash-separated
-   * directory structure.
-   */
-  @Override
-  public String getOutputSubPath(ProtoElement element) {
-    return pythonCommon.getOutputSubPath(getApiConfig().getPackageName());
-  }
-
   // Snippet Helpers
   // ===============
 

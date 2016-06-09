@@ -12,17 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.nodejs;
+package com.google.api.codegen;
+
+import com.google.api.tools.framework.model.ProtoElement;
 
 /**
- * Utility methods for NodeJS GAPIC contexts.
+ * An implementation of CodePathMapper is a strategy object, encapsulating a strategy for
+ * constructing a path to the GAPIC output.
  */
-public class NodeJSGapicContextUtil {
-
-  /**
-   * Returns the base output directory for GAPIC files.
-   */
-  public static String getOutputSubPath() {
-    return "lib";
-  }
+public interface CodePathMapper {
+  public String getOutputPath(ProtoElement element, ApiConfig config);
 }

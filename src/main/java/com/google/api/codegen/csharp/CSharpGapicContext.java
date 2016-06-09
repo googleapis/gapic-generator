@@ -47,7 +47,6 @@ import com.google.common.collect.Maps;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import autovalue.shaded.com.google.common.common.collect.ImmutableList;
-
 import io.grpc.Status;
 
 import java.util.Arrays;
@@ -97,10 +96,6 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
     this.csharpCommon = csharpCommon;
   }
 
-  public String getOutputSubPath(ProtoElement protoElement) {
-    return getNamespace(protoElement.getFile()).replace('.', '/');
-  }
-
   // Snippet Helpers
   // ===============
 
@@ -144,7 +139,7 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
   }
 
   @AutoValue
-  public static abstract class ServiceInfo {
+  public abstract static class ServiceInfo {
     public static ServiceInfo create(String host, int port, Iterable<String> scopes) {
       return new AutoValue_CSharpGapicContext_ServiceInfo(host, port, scopes);
     }
@@ -165,7 +160,7 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
   }
 
   @AutoValue
-  public static abstract class RetryDefInfo {
+  public abstract static class RetryDefInfo {
     public static RetryDefInfo create(
         String rawName,
         String name,
@@ -188,7 +183,7 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
   }
 
   @AutoValue
-  public static abstract class RetrySettingInfo {
+  public abstract static class RetrySettingInfo {
     public static RetrySettingInfo create(
         String rawName,
         String name,
@@ -231,7 +226,7 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
   }
 
   @AutoValue
-  public static abstract class RetryInfo {
+  public abstract static class RetryInfo {
     public static RetryInfo create(List<RetryDefInfo> defs, List<RetrySettingInfo> settings) {
       return new AutoValue_CSharpGapicContext_RetryInfo(defs, settings);
     }
@@ -295,7 +290,7 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
   }
 
   @AutoValue
-  public static abstract class ParamInfo {
+  public abstract static class ParamInfo {
     public static ParamInfo create(
         String name,
         String typeName,
@@ -321,7 +316,7 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
   }
 
   @AutoValue
-  public static abstract class PageStreamerInfo {
+  public abstract static class PageStreamerInfo {
     public static PageStreamerInfo create(
         String resourceTypeName,
         String requestTypeName,
@@ -364,7 +359,7 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
   }
 
   @AutoValue
-  public static abstract class FlatInfo {
+  public abstract static class FlatInfo {
     public static FlatInfo create(
         Iterable<ParamInfo> params, Iterable<String> xmlDocAsync, Iterable<String> xmlDocSync) {
       return new AutoValue_CSharpGapicContext_FlatInfo(params, xmlDocAsync, xmlDocSync);
@@ -408,7 +403,7 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
   }
 
   @AutoValue
-  public static abstract class MethodInfo {
+  public abstract static class MethodInfo {
     public static MethodInfo create(
         String name,
         String grpcName,
@@ -610,7 +605,7 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
   }
 
   @AutoValue
-  public static abstract class PathTemplateInfo {
+  public abstract static class PathTemplateInfo {
     public static PathTemplateInfo create(
         String baseName,
         String docName,

@@ -181,16 +181,4 @@ public class PythonContextCommon {
               "zip",
               "__import__")
           .build();
-
-  /**
-   * Converts the dot-separated Python package name from the GAPIC config to a slash-separated
-   * directory structure.
-   */
-  public String getOutputSubPath(String packageName) {
-    if (Strings.isNullOrEmpty(packageName)) {
-      return "";
-    } else {
-      return packageName.replace('.', '/');
-    }
-  }
 }

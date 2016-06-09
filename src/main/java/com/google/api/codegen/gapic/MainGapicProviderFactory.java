@@ -15,11 +15,14 @@
 package com.google.api.codegen.gapic;
 
 import com.google.api.codegen.ApiConfig;
+import com.google.api.codegen.CodePathMapper;
 import com.google.api.codegen.InterfaceListView;
 import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.PrefixPackageCodePathMapper;
 import com.google.api.codegen.ProtoFileView;
 import com.google.api.codegen.clientconfig.ClientConfigGapicContext;
 import com.google.api.codegen.clientconfig.ClientConfigSnippetSetRunner;
+import com.google.api.codegen.csharp.CSharpCodePathMapper;
 import com.google.api.codegen.csharp.CSharpGapicContext;
 import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
 import com.google.api.codegen.go.GoGapicContext;
@@ -27,17 +30,14 @@ import com.google.api.codegen.go.GoSnippetSetRunner;
 import com.google.api.codegen.java.JavaGapicContext;
 import com.google.api.codegen.java.JavaIterableSnippetSetRunner;
 import com.google.api.codegen.java.JavaSnippetSetRunner;
-import com.google.api.codegen.nodejs.NodeJSClientConfigGapicContext;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
 import com.google.api.codegen.php.PhpGapicContext;
 import com.google.api.codegen.php.PhpSnippetSetRunner;
-import com.google.api.codegen.py.PythonClientConfigGapicContext;
 import com.google.api.codegen.py.PythonGapicContext;
 import com.google.api.codegen.py.PythonInterfaceInitializer;
 import com.google.api.codegen.py.PythonProtoFileInitializer;
 import com.google.api.codegen.py.PythonSnippetSetRunner;
-import com.google.api.codegen.ruby.RubyClientConfigGapicContext;
 import com.google.api.codegen.ruby.RubyGapicContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
 import com.google.api.tools.framework.model.Interface;
@@ -80,6 +80,7 @@ public class MainGapicProviderFactory
               .setContext(new ClientConfigGapicContext(model, apiConfig))
               .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
               .setSnippetFileNames(Arrays.asList("json.snip"))
+              .setCodePathMapper(new PrefixPackageCodePathMapper(""))
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
@@ -91,6 +92,7 @@ public class MainGapicProviderFactory
               .setContext(new CSharpGapicContext(model, apiConfig))
               .setSnippetSetRunner(new CSharpSnippetSetRunner<Interface>())
               .setSnippetFileNames(Arrays.asList("wrapper.snip"))
+              .setCodePathMapper(new CSharpCodePathMapper())
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
@@ -102,10 +104,12 @@ public class MainGapicProviderFactory
               .setContext(new GoGapicContext(model, apiConfig))
               .setSnippetSetRunner(new GoSnippetSetRunner<Interface>())
               .setSnippetFileNames(Arrays.asList("main.snip", "example.snip", "doc.snip"))
+              .setCodePathMapper(new PrefixPackageCodePathMapper(""))
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
     } else if (id.equals(JAVA)) {
+      CodePathMapper javaPathMapper = new PrefixPackageCodePathMapper("", ".");
       GapicProvider<? extends Object> mainProvider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
@@ -113,6 +117,7 @@ public class MainGapicProviderFactory
               .setContext(new JavaGapicContext(model, apiConfig))
               .setSnippetSetRunner(new JavaSnippetSetRunner<Interface>())
               .setSnippetFileNames(Arrays.asList("main.snip", "settings.snip"))
+              .setCodePathMapper(javaPathMapper)
               .build();
       GapicProvider<? extends Object> packageInfoProvider =
           CommonGapicProvider.<Iterable<Interface>>newBuilder()
@@ -121,11 +126,13 @@ public class MainGapicProviderFactory
               .setContext(new JavaGapicContext(model, apiConfig))
               .setSnippetSetRunner(new JavaIterableSnippetSetRunner<Interface>())
               .setSnippetFileNames(Arrays.asList("package-info.snip"))
+              .setCodePathMapper(javaPathMapper)
               .build();
 
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, packageInfoProvider);
 
     } else if (id.equals(NODEJS)) {
+      CodePathMapper nodeJSPathMapper = new PrefixPackageCodePathMapper("lib");
       GapicProvider<? extends Object> mainProvider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
@@ -133,14 +140,16 @@ public class MainGapicProviderFactory
               .setContext(new NodeJSGapicContext(model, apiConfig))
               .setSnippetSetRunner(new NodeJSSnippetSetRunner<Interface>())
               .setSnippetFileNames(Arrays.asList("main.snip"))
+              .setCodePathMapper(nodeJSPathMapper)
               .build();
       GapicProvider<? extends Object> clientConfigProvider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
               .setView(new InterfaceView())
-              .setContext(new NodeJSClientConfigGapicContext(model, apiConfig))
+              .setContext(new ClientConfigGapicContext(model, apiConfig))
               .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
               .setSnippetFileNames(Arrays.asList("json.snip"))
+              .setCodePathMapper(nodeJSPathMapper)
               .build();
 
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, clientConfigProvider);
@@ -153,10 +162,12 @@ public class MainGapicProviderFactory
               .setContext(new PhpGapicContext(model, apiConfig))
               .setSnippetSetRunner(new PhpSnippetSetRunner<Interface>())
               .setSnippetFileNames(Arrays.asList("main.snip"))
+              .setCodePathMapper(new PrefixPackageCodePathMapper(""))
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
     } else if (id.equals(PYTHON)) {
+      CodePathMapper pythonPathMapper = new PrefixPackageCodePathMapper("", ".");
       GapicProvider<? extends Object> mainProvider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
@@ -165,6 +176,7 @@ public class MainGapicProviderFactory
               .setSnippetSetRunner(
                   new PythonSnippetSetRunner<Interface>(new PythonInterfaceInitializer()))
               .setSnippetFileNames(Arrays.asList("main.snip"))
+              .setCodePathMapper(pythonPathMapper)
               .build();
       GapicProvider<? extends Object> messageProvider =
           CommonGapicProvider.<ProtoFile>newBuilder()
@@ -174,21 +186,23 @@ public class MainGapicProviderFactory
               .setSnippetSetRunner(
                   new PythonSnippetSetRunner<ProtoFile>(new PythonProtoFileInitializer()))
               .setSnippetFileNames(Arrays.asList("message.snip"))
-              .setOutputSubPath("")
+              .setCodePathMapper(new PrefixPackageCodePathMapper(""))
               .build();
       GapicProvider<? extends Object> clientConfigProvider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
               .setView(new InterfaceView())
-              .setContext(new PythonClientConfigGapicContext(model, apiConfig))
+              .setContext(new ClientConfigGapicContext(model, apiConfig))
               .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
               .setSnippetFileNames(Arrays.asList("json.snip"))
+              .setCodePathMapper(pythonPathMapper)
               .build();
 
       return Arrays.<GapicProvider<? extends Object>>asList(
           mainProvider, messageProvider, clientConfigProvider);
 
     } else if (id.equals(RUBY)) {
+      CodePathMapper rubyPathMapper = new PrefixPackageCodePathMapper("lib", "::");
       GapicProvider<? extends Object> mainProvider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
@@ -196,6 +210,7 @@ public class MainGapicProviderFactory
               .setContext(new RubyGapicContext(model, apiConfig))
               .setSnippetSetRunner(new RubySnippetSetRunner<Interface>())
               .setSnippetFileNames(Arrays.asList("main.snip"))
+              .setCodePathMapper(rubyPathMapper)
               .build();
       GapicProvider<? extends Object> messageProvider =
           CommonGapicProvider.<ProtoFile>newBuilder()
@@ -204,14 +219,16 @@ public class MainGapicProviderFactory
               .setContext(new RubyGapicContext(model, apiConfig))
               .setSnippetSetRunner(new RubySnippetSetRunner<ProtoFile>())
               .setSnippetFileNames(Arrays.asList("message.snip"))
+              .setCodePathMapper(rubyPathMapper)
               .build();
       GapicProvider<? extends Object> clientConfigProvider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
               .setView(new InterfaceView())
-              .setContext(new RubyClientConfigGapicContext(model, apiConfig))
+              .setContext(new ClientConfigGapicContext(model, apiConfig))
               .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
               .setSnippetFileNames(Arrays.asList("json.snip"))
+              .setCodePathMapper(rubyPathMapper)
               .build();
 
       return Arrays.<GapicProvider<? extends Object>>asList(

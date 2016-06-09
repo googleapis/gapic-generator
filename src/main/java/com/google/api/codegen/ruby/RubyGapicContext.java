@@ -52,11 +52,6 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     super(model, apiConfig);
   }
 
-  @Override
-  public String getOutputSubPath(ProtoElement element) {
-    return RubyGapicContextUtil.getOutputSubPath(getApiConfig().getPackageName());
-  }
-
   // Snippet Helpers
   // ===============
 

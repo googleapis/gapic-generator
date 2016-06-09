@@ -12,20 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.nodejs;
+package com.google.api.codegen.csharp;
 
 import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.clientconfig.ClientConfigGapicContext;
-import com.google.api.tools.framework.model.Model;
+import com.google.api.codegen.CodePathMapper;
 import com.google.api.tools.framework.model.ProtoElement;
 
-public class NodeJSClientConfigGapicContext extends ClientConfigGapicContext {
-  public NodeJSClientConfigGapicContext(Model model, ApiConfig config) {
-    super(model, config);
-  }
-
+public class CSharpCodePathMapper implements CodePathMapper {
   @Override
-  public String getOutputSubPath(ProtoElement element) {
-    return NodeJSGapicContextUtil.getOutputSubPath();
+  public String getOutputPath(ProtoElement element, ApiConfig config) {
+    return CSharpGapicContext.s_getNamespace(element.getFile()).replace('.', '/');
   }
 }
