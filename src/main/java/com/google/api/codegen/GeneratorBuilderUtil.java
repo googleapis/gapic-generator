@@ -141,10 +141,10 @@ public final class GeneratorBuilderUtil {
     }
     try {
       return (LP) ctor.newInstance(ctorArg);
-    } catch (
-        InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException
-            e) {
+    } catch (InstantiationException
+        | IllegalAccessException
+        | IllegalArgumentException
+        | InvocationTargetException e) {
       // At this point, this is likely a bug and not a user error, so propagate exception.
       throw Throwables.propagate(e);
     }

@@ -61,8 +61,7 @@ public class PhpContextCommon {
     return getDocLinesWithPrefixes(text, firstLinePrefix, "");
   }
 
-  public Iterable<String> getDocLinesWithPrefixes(
-      String text, String firstLinePrefix, String remainderPrefix) {
+  public Iterable<String> getDocLinesWithPrefixes(String text, String firstLinePrefix, String remainderPrefix) {
     // TODO: convert markdown to phpDoc
     List<String> result = new ArrayList<>();
     boolean onFirstLine = true;

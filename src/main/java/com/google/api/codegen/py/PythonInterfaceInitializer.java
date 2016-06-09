@@ -17,7 +17,8 @@ package com.google.api.codegen.py;
 import com.google.api.tools.framework.model.Interface;
 import com.google.common.collect.ImmutableMap;
 
-public class PythonInterfaceInitializer implements PythonSnippetSetInputInitializer<Interface> {
+public class PythonInterfaceInitializer
+    implements PythonSnippetSetInputInitializer<Interface> {
 
   @Override
   public PythonImportHandler getImportHandler(Interface iface) {

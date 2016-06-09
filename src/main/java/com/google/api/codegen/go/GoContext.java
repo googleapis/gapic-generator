@@ -14,4 +14,5 @@
  */
 package com.google.api.codegen.go;
 
-public interface GoContext {}
+public interface GoContext {
+}
