@@ -12,8 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.config;
 
+import com.google.api.codegen.Inflector;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.FieldSegment;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.LiteralSegment;
@@ -24,41 +25,17 @@ import com.google.api.tools.framework.model.Method;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 /**
  * Utility class with methods for working with resource names.
  */
 public class Resources {
-
-  /**
-   * Generate parameter names for wildcards in a resource path, based on singularized collection
-   * names.
-   */
-  public static Iterable<String> getParamsForResourceNameWildcards(FieldSegment fieldSegment) {
-    Preconditions.checkArgument(isTemplateFieldSegment(fieldSegment));
-
-    // Using a LinkedHashSet to preserve insertion order
-    Set<String> paramList = new LinkedHashSet<>();
-    for (String collectionName : getWildcardCollectionNames(fieldSegment)) {
-      // TODO(shinfan): Replace this simple singularizer with one that may be expected to
-      // work across all APIs, such as Google NLP singularizer or Wordnet stemmer.
-      String paramName = Inflector.singularize(collectionName);
-      // TODO (garrettjones) handle potential non-uniqueness of parameter names;
-      // make consistent with templatize().
-      paramList.add(paramName);
-    }
-
-    return paramList;
-  }
 
   /**
    * Returns the field segments referenced in the http attributes of the given methods. Each
@@ -72,9 +49,8 @@ public class Resources {
     // (useful for testability).
     Map<String, FieldSegment> specs = new TreeMap<>();
 
-    Map<String, List<FieldSegment>> methodFieldSegs = getMethodFieldSegmentMapFromHttpPaths(methods);
-    for (List<FieldSegment> segList : methodFieldSegs.values()) {
-      for (FieldSegment fieldSegment : segList) {
+    for (Method method : methods) {
+      for (FieldSegment fieldSegment : getFieldSegmentsFromMethodHttpPath(method)) {
         String resourcePath = PathSegment.toSyntax(fieldSegment.getSubPath());
         // If there are multiple field segments with the same resource path, the last
         // one will be used, making the output deterministic. Also, the first field path
@@ -87,33 +63,26 @@ public class Resources {
   }
 
   /**
-   * Returns a map from method name to a list of FieldSegment objects. Each FieldSegment will be
-   * composed of a field name and a path segment, representing an abstract resource name with
-   * wildcards.
+   * Returns a list of FieldSegment objects. Each FieldSegment will be composed of a field name and
+   * a path segment, representing an abstract resource name with wildcards.
    */
-  public static Map<String, List<FieldSegment>> getMethodFieldSegmentMapFromHttpPaths(
-      List<Method> methods) {
-    Map<String, List<FieldSegment>> fieldSegmentsPerMethodMap =
-        new Hashtable<String, List<FieldSegment>>();
-
-    for (Method method : methods) {
-      fieldSegmentsPerMethodMap.put(method.getFullName(), new ArrayList<FieldSegment>());
-      HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);
-      for (PathSegment pathSegment : httpAttr.getPath()) {
-        if (isTemplateFieldSegment(pathSegment)) {
-          FieldSegment fieldSegment = (FieldSegment) pathSegment;
-          fieldSegmentsPerMethodMap.get(method.getFullName()).add(fieldSegment);
-        }
+  public static List<FieldSegment> getFieldSegmentsFromMethodHttpPath(Method method) {
+    List<FieldSegment> fieldSegments = new LinkedList<FieldSegment>();
+    HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);
+    for (PathSegment pathSegment : httpAttr.getPath()) {
+      if (isTemplateFieldSegment(pathSegment)) {
+        fieldSegments.add((FieldSegment) pathSegment);
       }
     }
-
-    return fieldSegmentsPerMethodMap;
+    return fieldSegments;
   }
 
   public static String getEntityName(FieldSegment segment) {
+    Preconditions.checkArgument(isTemplateFieldSegment(segment));
     // TODO(shinfan): Consider finding a better way to determine the name if possible.
-    List<String> params = Lists.newArrayList(Resources.getParamsForResourceNameWildcards(segment));
-    return params.get(params.size() - 1);
+    List<String> params = getWildcardCollectionNames(segment);
+    String lastParam = params.get(params.size() - 1);
+    return Inflector.singularize(lastParam);
   }
 
   /**

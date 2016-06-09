@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.codegen.ConfigProto;
 import com.google.api.tools.framework.aspects.context.ContextConfigAspect;
 import com.google.api.tools.framework.aspects.documentation.DocumentationConfigAspect;
 import com.google.api.tools.framework.aspects.http.HttpConfigAspect;
@@ -26,7 +27,6 @@ import com.google.api.tools.framework.tools.ToolDriverBase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 
 import org.yaml.snakeyaml.DumperOptions;
@@ -59,20 +59,9 @@ public class ConfigGeneratorApi extends ToolDriverBase {
   private static final String CONFIG_KEY_METHOD_NAME = "name";
   private static final String CONFIG_KEY_METHODS = "methods";
   private static final String CONFIG_KEY_COLLECTIONS = "collections";
-  private static final String CONFIG_KEY_PACKAGE_NAME = "package_name";
-  private static final String CONFIG_KEY_REQUEST_OBJECT_METHOD = "request_object_method";
 
-  private static final String CONFIG_PROTO_TYPE = "com.google.api.codegen.ConfigProto";
-
-  private static final Map<String, String> LANGUAGE_PACKAGE_SEPARATORS =
-      ImmutableMap.<String, String>builder()
-          .put("java", ".")
-          .put("python", ".")
-          .put("go", ".")
-          .put("csharp", ".")
-          .put("ruby", "::")
-          .put("php", "\\")
-          .build();
+  //private static final String CONFIG_PROTO_TYPE = "com.google.api.codegen.ConfigProto";
+  private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
 
   /**
    * Constructs a config generator api based on given options.
@@ -117,8 +106,7 @@ public class ConfigGeneratorApi extends ToolDriverBase {
             new FieldConfigGenerator(),
             new PageStreamingConfigGenerator(),
             new RetryGenerator(),
-            createFixedValueGenerator(CONFIG_KEY_REQUEST_OBJECT_METHOD, false),
-            new FieldNamePatternConfigGenerator(service));
+            new FieldNamePatternConfigGenerator());
     List<Object> methods = new LinkedList<Object>();
     for (Method method : service.getMethods()) {
       Map<String, Object> methodConfig = new LinkedHashMap<String, Object>();
@@ -132,10 +120,6 @@ public class ConfigGeneratorApi extends ToolDriverBase {
       methods.add(methodConfig);
     }
     return methods;
-  }
-
-  private static MethodConfigGenerator createFixedValueGenerator(String key, Object value) {
-    return new AutoValue_FixedValueGenerator(key, value);
   }
 
   private List<Object> generateInterfacesConfig() {
@@ -152,23 +136,10 @@ public class ConfigGeneratorApi extends ToolDriverBase {
   }
 
   private Map<String, Object> generateLanguageSettings() {
-    Map<String, Object> languages = new LinkedHashMap<String, Object>();
-    String packageName = generatePackageName();
-    for (Map.Entry<String, String> kvPair : LANGUAGE_PACKAGE_SEPARATORS.entrySet()) {
-      languages.put(kvPair.getKey(), formatPackageNameEntry(packageName, kvPair.getValue()));
-    }
-    return languages;
-  }
-
-  private String generatePackageName() {
-    int index = Preconditions.checkPositionIndex(0, model.getFiles().size());
-    return model.getFiles().get(index).getFullName();
-  }
-
-  private Map<String, Object> formatPackageNameEntry(String packageName, String separator) {
-    Map<String, Object> packageNameMap = new LinkedHashMap<String, Object>();
-    packageNameMap.put(CONFIG_KEY_PACKAGE_NAME, packageName.replace(".", separator));
-    return packageNameMap;
+    int index =
+        Preconditions.checkPositionIndex(model.getFiles().size() - 1, model.getFiles().size());
+    String packageName = model.getFiles().get(index).getFullName();
+    return LanguageGenerator.generate(packageName);
   }
 
   private void dump(Map<String, Object> data) throws IOException {

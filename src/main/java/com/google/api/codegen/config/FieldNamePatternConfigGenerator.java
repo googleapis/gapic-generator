@@ -14,9 +14,7 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.Resources;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.FieldSegment;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 
 import java.util.LinkedHashMap;
@@ -30,20 +28,15 @@ public class FieldNamePatternConfigGenerator implements MethodConfigGenerator {
 
   private static final String CONFIG_KEY_FIELD_NAME_PATTERNS = "field_name_patterns";
 
-  private Map<String, List<FieldSegment>> fieldSegmentMap;
-
-  public FieldNamePatternConfigGenerator(Interface service) {
-    fieldSegmentMap = Resources.getMethodFieldSegmentMapFromHttpPaths(service.getMethods());
-  }
-
   @Override
   public Map<String, Object> generate(Method method) {
-    if (fieldSegmentMap.containsKey(method.getFullName())) {
+    List<FieldSegment> fieldSegments = Resources.getFieldSegmentsFromMethodHttpPath(method);
+    if (fieldSegments.size() > 0) {
+      Map<String, Object> result = new LinkedHashMap<String, Object>();
       Map<String, Object> nameMap = new LinkedHashMap<String, Object>();
-      for (FieldSegment fieldSegment : fieldSegmentMap.get(method.getFullName())) {
+      for (FieldSegment fieldSegment : fieldSegments) {
         nameMap.put(fieldSegment.getFieldPath(), Resources.getEntityName(fieldSegment));
       }
-      Map<String, Object> result = new LinkedHashMap<String, Object>();
       result.put(CONFIG_KEY_FIELD_NAME_PATTERNS, nameMap);
       return result;
     } else {

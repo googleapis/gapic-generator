@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Config generator for method parameter flattening and required fields.
+ * Config generator for method parameter flattening, required fields, and request method object.
  */
 public class FieldConfigGenerator implements MethodConfigGenerator {
 
@@ -33,6 +33,7 @@ public class FieldConfigGenerator implements MethodConfigGenerator {
   private static final String CONFIG_KEY_PARAMETERS = "parameters";
   private static final String CONFIG_KEY_FLATTENING = "flattening";
   private static final String CONFIG_KEY_REQUIRED_FIELDS = "required_fields";
+  private static final String CONFIG_KEY_REQUEST_OBJECT_METHOD = "request_object_method";
 
   private static final String PARAMETER_PAGE_TOKEN = "page_token";
   private static final String PARAMETER_PAGE_SIZE = "page_size";
@@ -40,6 +41,8 @@ public class FieldConfigGenerator implements MethodConfigGenerator {
   // Do not apply flattening if the parameter count exceeds the threshold.
   // TODO(shinfan): Investigate a more intelligent way to handle this.
   private static final int FLATTENING_THRESHOLD = 4;
+
+  private static final int REQUEST_OBJECT_METHOD_THRESHOLD = 1;
 
   @Override
   public Map<String, Object> generate(Method method) {
@@ -55,10 +58,17 @@ public class FieldConfigGenerator implements MethodConfigGenerator {
     }
 
     Map<String, Object> result = new LinkedHashMap<String, Object>();
-    if (parameterList.size() > 0 && parameterList.size() <= FLATTENING_THRESHOLD) {
-      result.put(CONFIG_KEY_FLATTENING, createFlatteningConfig(parameterList));
+    if (parameterList.size() > 0) {
+      if (parameterList.size() <= FLATTENING_THRESHOLD) {
+        result.put(CONFIG_KEY_FLATTENING, createFlatteningConfig(parameterList));
+      }
+      result.put(CONFIG_KEY_REQUIRED_FIELDS, new LinkedList<String>(parameterList));
     }
-    result.put(CONFIG_KEY_REQUIRED_FIELDS, new LinkedList<String>(parameterList));
+    if (parameterList.size() > REQUEST_OBJECT_METHOD_THRESHOLD) {
+      result.put(CONFIG_KEY_REQUEST_OBJECT_METHOD, true);
+    } else {
+      result.put(CONFIG_KEY_REQUEST_OBJECT_METHOD, false);
+    }
     return result;
   }
 

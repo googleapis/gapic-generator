@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.Resources;
 import com.google.api.tools.framework.model.Method;
 
 import io.grpc.Status;

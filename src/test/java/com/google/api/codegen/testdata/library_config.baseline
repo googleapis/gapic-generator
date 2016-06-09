@@ -2,17 +2,17 @@ type: com.google.api.codegen.ConfigProto
 generate_samples: true
 language_settings:
   java:
-    package_name: google.example.library.v1
+    package_name: com.google.example.library.v1
   python:
     package_name: google.example.library.v1
   go:
-    package_name: google.example.library.v1
+    package_name: google.golang.org/google/example/library/v1
   csharp:
-    package_name: google.example.library.v1
+    package_name: Google.Example.Library.V1
   ruby:
-    package_name: google::example::library::v1
+    package_name: Google::Example::Library::V1
   php:
-    package_name: google\example\library\v1
+    package_name: Google\Example\Library\V1
 interfaces:
 - name: google.example.library.v1.LibraryService
   collections:
@@ -44,10 +44,9 @@ interfaces:
         - shelf
     required_fields:
     - shelf
+    request_object_method: false
     retry_codes_name: non_idempotent
     retry_params_name: default
-    request_object_method: false
-    field_name_patterns: {}
   - name: GetShelf
     flattening:
       groups:
@@ -59,13 +58,13 @@ interfaces:
     - name
     - message
     - string_builder
+    request_object_method: true
     retry_codes_name: idempotent
     retry_params_name: default
-    request_object_method: false
     field_name_patterns:
       name: shelf
   - name: ListShelves
-    required_fields: []
+    request_object_method: false
     page_streaming:
       request:
         token_field: page_token
@@ -74,8 +73,6 @@ interfaces:
         resources_field: shelves
     retry_codes_name: idempotent
     retry_params_name: default
-    request_object_method: false
-    field_name_patterns: {}
   - name: DeleteShelf
     flattening:
       groups:
@@ -83,9 +80,9 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     retry_codes_name: idempotent
     retry_params_name: default
-    request_object_method: false
     field_name_patterns:
       name: shelf
   - name: MergeShelves
@@ -97,9 +94,9 @@ interfaces:
     required_fields:
     - name
     - other_shelf_name
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
-    request_object_method: false
     field_name_patterns:
       name: shelf
   - name: CreateBook
@@ -111,9 +108,9 @@ interfaces:
     required_fields:
     - name
     - book
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
-    request_object_method: false
     field_name_patterns:
       name: shelf
   - name: PublishSeries
@@ -127,10 +124,9 @@ interfaces:
     - shelf
     - books
     - edition
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
-    request_object_method: false
-    field_name_patterns: {}
   - name: GetBook
     flattening:
       groups:
@@ -138,9 +134,9 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     retry_codes_name: idempotent
     retry_params_name: default
-    request_object_method: false
     field_name_patterns:
       name: book
   - name: ListBooks
@@ -152,6 +148,7 @@ interfaces:
     required_fields:
     - name
     - filter
+    request_object_method: true
     page_streaming:
       request:
         page_size_field: page_size
@@ -161,7 +158,6 @@ interfaces:
         resources_field: books
     retry_codes_name: idempotent
     retry_params_name: default
-    request_object_method: false
     field_name_patterns:
       name: shelf
   - name: DeleteBook
@@ -171,9 +167,9 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     retry_codes_name: idempotent
     retry_params_name: default
-    request_object_method: false
     field_name_patterns:
       name: book
   - name: UpdateBook
@@ -189,9 +185,9 @@ interfaces:
     - book
     - update_mask
     - physical_mask
+    request_object_method: true
     retry_codes_name: idempotent
     retry_params_name: default
-    request_object_method: false
     field_name_patterns:
       name: book
   - name: MoveBook
@@ -203,9 +199,9 @@ interfaces:
     required_fields:
     - name
     - other_shelf_name
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
-    request_object_method: false
     field_name_patterns:
       name: book
   - name: ListStrings
@@ -215,6 +211,7 @@ interfaces:
         - name
     required_fields:
     - name
+    request_object_method: false
     page_streaming:
       request:
         page_size_field: page_size
@@ -224,8 +221,6 @@ interfaces:
         resources_field: strings
     retry_codes_name: idempotent
     retry_params_name: default
-    request_object_method: false
-    field_name_patterns: {}
   - name: AddComments
     flattening:
       groups:
@@ -235,8 +230,8 @@ interfaces:
     required_fields:
     - name
     - comments
+    request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
-    request_object_method: false
     field_name_patterns:
       name: shelf
