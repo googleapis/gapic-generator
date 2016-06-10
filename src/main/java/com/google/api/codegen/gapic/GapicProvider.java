@@ -14,9 +14,10 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.codegen.GeneratedResult;
+import com.google.api.tools.framework.snippet.Doc;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * A GapicProvider performs code or fragment generation using on a proto-based Model for a
@@ -30,13 +31,13 @@ public interface GapicProvider<InputElementT> {
   List<String> getSnippetFileNames();
 
   /**
-   * Runs code generation and puts the output in outputPath.
+   * Runs code generation and returns a map relative file paths to generated Doc.
    */
-  void generate(String outputPath) throws Exception;
+  Map<String, Doc> generate();
 
   /**
-   * Generates code for a single snippet. Returns a map from service interface to code for the service.
-   * Returns null if generation failed.
+   * Runs code generation for a single snippet and returns a map relative file
+   * paths to generated Doc.
    */
-  List<GeneratedResult> generateSnip(String snippetFileName);
+  Map<String, Doc> generate(String snippetFileName);
 }

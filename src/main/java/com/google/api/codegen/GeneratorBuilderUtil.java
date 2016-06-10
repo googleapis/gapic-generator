@@ -14,13 +14,6 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.gapic.GapicProvider;
-import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.SimpleLocation;
-import com.google.api.tools.framework.model.stages.Merged;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 
 import java.lang.reflect.Constructor;
@@ -36,67 +29,6 @@ public final class GeneratorBuilderUtil {
 
   public interface ErrorReporter {
     void error(String message, Object... args);
-  }
-
-  /**
-   * Constructs a codegen provider from a configuration; the configuration cannot contain
-   * parameterized type information, so we must suppress the type safety warning here.
-   */
-  @SuppressWarnings("unchecked")
-  public static GapicProvider<Object> createCodegenProvider(
-      ConfigProto configProto,
-      TemplateProto template,
-      final Model model,
-      InputElementView<Object> view) {
-    Preconditions.checkNotNull(model);
-    Preconditions.checkNotNull(configProto);
-
-    model.establishStage(Merged.KEY);
-    if (model.getErrorCount() > 0) {
-      for (Diag diag : model.getDiags()) {
-        System.err.println(diag.toString());
-      }
-      return null;
-    }
-
-    ApiConfig apiConfig = ApiConfig.createApiConfig(model, configProto);
-    if (apiConfig == null) {
-      return null;
-    }
-
-    return GeneratorBuilderUtil.createClass(
-        template.getCodegenProvider(),
-        GapicProvider.class,
-        new Class<?>[] {Model.class, ApiConfig.class, InputElementView.class},
-        new Object[] {model, apiConfig, view},
-        "codegen provider",
-        new GeneratorBuilderUtil.ErrorReporter() {
-          @Override
-          public void error(String message, Object... args) {
-            model.addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
-          }
-        });
-  }
-
-  /**
-   * Constructs an InputElementView from a configuration; the configuration cannot contain
-   * parameterized type information, so we must suppress the type safety warning here.
-   */
-  @SuppressWarnings("unchecked")
-  public static InputElementView<Object> createView(
-      TemplateProto template, final DiagCollector diagCollector) {
-    return GeneratorBuilderUtil.createClass(
-        template.getInputElementView(),
-        InputElementView.class,
-        new Class<?>[] {},
-        new Object[] {},
-        "input element view",
-        new GeneratorBuilderUtil.ErrorReporter() {
-          @Override
-          public void error(String message, Object... args) {
-            diagCollector.addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
-          }
-        });
   }
 
   public static <LP> LP createClass(

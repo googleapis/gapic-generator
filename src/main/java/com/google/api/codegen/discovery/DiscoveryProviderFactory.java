@@ -12,19 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.gapic;
+package com.google.api.codegen.discovery;
 
-import com.google.api.codegen.ApiConfig;
-import com.google.api.tools.framework.model.Model;
-
-import java.util.List;
+import com.google.api.Service;
+import com.google.api.codegen.ApiaryConfig;
 
 /**
- * A factory for GapicProviders which perform code generation.
+ * A factory for DiscoveryProviders which perform code generation.
  */
-public interface GapicProviderFactory<ProviderT> {
+public interface DiscoveryProviderFactory {
   /**
-   * Create the provider from the given model, apiConfig, and id.
+   * Create the provider from the given service, apiaryConfig, and id.
    */
-  public List<ProviderT> create(Model model, ApiConfig apiConfig, String id);
+  DiscoveryProvider create(Service service, ApiaryConfig apiaryConfig, String id);
 }

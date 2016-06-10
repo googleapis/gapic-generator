@@ -12,23 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.py;
 
-import com.google.api.Service;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Method;
 
-import java.io.IOException;
+public class PythonDiscoveryInitializer implements PythonSnippetSetInputInitializer<Method> {
+  @Override
+  public PythonImportHandler getImportHandler(Method element) {
+    return new PythonImportHandler();
+  }
 
-/**
- * A DiscoveryProvider performs fragment generation using discovery-based input.
- */
-public interface DiscoveryProvider {
-
-  public GeneratedResult generateFragments(Method method, String snippetFileName);
-
-  public void output(String outputPath, Multimap<Method, GeneratedResult> methods)
-      throws IOException;
-
-  public Service getService();
+  @Override
+  public ImmutableMap<String, Object> getGlobalMap(Method element) {
+    return ImmutableMap.<String, Object>of();
+  }
 }

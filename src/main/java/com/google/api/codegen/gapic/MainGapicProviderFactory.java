@@ -50,7 +50,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * GapicProviderFactory creates GapicProvider instances based on an id.
+ * MainGapicProviderFactory creates GapicProvider instances based on an id.
  */
 public class MainGapicProviderFactory
     implements GapicProviderFactory<GapicProvider<? extends Object>> {

@@ -12,19 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.gapic;
+package com.google.api.codegen.discovery;
 
-import com.google.api.codegen.ApiConfig;
-import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.snippet.Doc;
+import com.google.protobuf.Method;
 
-import java.util.List;
+import java.util.Map;
 
 /**
- * A factory for GapicProviders which perform code generation.
+ * A DiscoveryProvider performs fragment generation using discovery-based input.
  */
-public interface GapicProviderFactory<ProviderT> {
+public interface DiscoveryProvider {
   /**
-   * Create the provider from the given model, apiConfig, and id.
+   * Runs code generation and returns a map relative file paths to generated Doc.
    */
-  public List<ProviderT> create(Model model, ApiConfig apiConfig, String id);
+  Map<String, Doc> generate(Method method);
 }

@@ -23,13 +23,12 @@ import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.snippet.Doc;
-import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.base.Strings;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
@@ -65,24 +64,33 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
   }
 
   @Override
-  public void generate(String outputPath) throws Exception {
-    Map<String, Doc> docs = new HashMap<>();
-    for (String snippetInputName : snippetFileNames) {
-      List<GeneratedResult> generatedOutput = generateSnip(snippetInputName);
-      if (generatedOutput == null) {
-        continue;
-      }
-      for (GeneratedResult result : generatedOutput) {
-        docs.put(result.getFilename(), result.getDoc());
-      }
+  public Map<String, Doc> generate() {
+    Map<String, Doc> docs = new TreeMap<>();
+
+    for (String snippetFileName : snippetFileNames) {
+      Map<String, Doc> snippetDocs = generate(snippetFileName);
+      docs.putAll(snippetDocs);
     }
 
-    ToolUtil.writeFiles(docs, outputPath);
+    return docs;
   }
 
   @Nullable
   @Override
-  public List<GeneratedResult> generateSnip(String snippetFileName) {
+  public Map<String, Doc> generate(String snippetFileName) {
+    Map<String, Doc> docs = new TreeMap<>();
+    List<GeneratedResult> generatedOutput = generateSnip(snippetFileName);
+    if (generatedOutput == null) {
+      return docs;
+    }
+    for (GeneratedResult result : generatedOutput) {
+      docs.put(result.getFilename(), result.getDoc());
+    }
+    return docs;
+  }
+
+  @Nullable
+  private List<GeneratedResult> generateSnip(String snippetFileName) {
     // Establish required stage for generation.
     model.establishStage(Merged.KEY);
     if (model.getErrorCount() > 0) {
