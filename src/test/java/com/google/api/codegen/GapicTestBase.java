@@ -31,6 +31,7 @@ import com.google.protobuf.Message;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -64,22 +65,10 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
   }
 
   @Override
-  protected Object run() {
-    List<GeneratedResult> results = generate();
-    Truth.assertThat(results).isNotNull();
-
-    ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String, Doc>();
-    for (GeneratedResult result : results) {
-      builder.put(result.getFilename(), result.getDoc());
-    }
-    return builder.build();
-  }
-
-  @Override
   protected void setupModel() {
     super.setupModel();
 
-    config = readConfig(model);
+    config = CodegenTestUtil.readConfig(model, getTestDataLocator(), gapicConfigFileNames);
     // TODO (garrettjones) depend on the framework to take care of this.
     if (model.getErrorCount() > 0) {
       for (Diag diag : model.getDiags()) {
@@ -104,26 +93,6 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     } else {
       return name + "_" + methodName + ".baseline";
     }
-  }
-
-  private ConfigProto readConfig(DiagCollector diagCollector) {
-    List<String> inputNames = new ArrayList<>();
-    List<String> inputs = new ArrayList<>();
-
-    for (String gapicConfigFileName : gapicConfigFileNames) {
-      URL gapicConfigUrl = getTestDataLocator().findTestData(gapicConfigFileName);
-      String configData = getTestDataLocator().readTestData(gapicConfigUrl);
-      inputNames.add(gapicConfigFileName);
-      inputs.add(configData);
-    }
-
-    ImmutableMap<String, Message> supportedConfigTypes =
-        ImmutableMap.<String, Message>of(
-            ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
-    ConfigProto configProto =
-        (ConfigProto) MultiYamlReader.read(model, inputNames, inputs, supportedConfigTypes);
-
-    return configProto;
   }
 
   /**
@@ -151,7 +120,8 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     return testArgs;
   }
 
-  private List<GeneratedResult> generate() {
+  @Override
+  public Map<String, Doc> run() {
     model.establishStage(Merged.KEY);
     if (model.getErrorCount() > 0) {
       for (Diag diag : model.getDiags()) {
@@ -180,7 +150,7 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
       }
     }
 
-    List<GeneratedResult> output = testedProvider.generateSnip(snippetName);
+    Map<String, Doc> output = testedProvider.generate(snippetName);
     if (output == null) {
       // Report diagnosis to baseline file.
       for (Diag diag : model.getDiags()) {
@@ -188,9 +158,6 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
       }
     }
 
-    TreeSet<GeneratedResult> results = new TreeSet<>(new GeneratedResultComparator());
-    results.addAll(output);
-
-    return new ArrayList<GeneratedResult>(results);
+    return output;
   }
 }

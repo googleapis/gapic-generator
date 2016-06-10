@@ -16,20 +16,20 @@ package com.google.api.codegen;
 
 import com.google.common.collect.ImmutableList;
 
+import java.io.File;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.io.File;
-import java.util.List;
-
 /**
  * Node.js discovery doc fragment generator baseline tests.
  */
 @RunWith(Parameterized.class)
-public class NodeJSDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGeneratorTestBase {
+public class NodeJSDiscoveryFragmentGeneratorTest extends DiscoveryGeneratorTestBase {
 
   public NodeJSDiscoveryFragmentGeneratorTest(
       String name, String discoveryDocFileName, String[] gapicConfigFileNames) {

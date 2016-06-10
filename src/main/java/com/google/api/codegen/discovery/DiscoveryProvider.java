@@ -12,23 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.discovery;
 
-import com.google.api.Service;
-import com.google.common.collect.Multimap;
+import com.google.api.tools.framework.snippet.Doc;
 import com.google.protobuf.Method;
 
-import java.io.IOException;
+import java.util.Map;
 
 /**
  * A DiscoveryProvider performs fragment generation using discovery-based input.
  */
 public interface DiscoveryProvider {
-
-  public GeneratedResult generateFragments(Method method, String snippetFileName);
-
-  public void output(String outputPath, Multimap<Method, GeneratedResult> methods)
-      throws IOException;
-
-  public Service getService();
+  /**
+   * Runs code generation and returns a map from relative file paths to
+   * generated Doc.
+   */
+  Map<String, Doc> generate(Method method);
 }

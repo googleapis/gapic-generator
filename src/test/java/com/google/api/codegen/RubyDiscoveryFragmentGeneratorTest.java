@@ -17,20 +17,20 @@ package com.google.api.codegen;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
+import java.io.File;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.io.File;
-import java.util.List;
-
 /**
  * Java discovery doc fragment generator baseline tests.
  */
 @RunWith(Parameterized.class)
-public class RubyDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGeneratorTestBase {
+public class RubyDiscoveryFragmentGeneratorTest extends DiscoveryGeneratorTestBase {
 
   public RubyDiscoveryFragmentGeneratorTest(
       String name, String discoveryDocFileName, String[] gapicConfigFileNames) {

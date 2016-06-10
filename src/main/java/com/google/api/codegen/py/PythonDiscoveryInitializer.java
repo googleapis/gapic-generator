@@ -12,19 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.gapic;
+package com.google.api.codegen.py;
 
-import com.google.api.codegen.ApiConfig;
-import com.google.api.tools.framework.model.Model;
+import com.google.common.collect.ImmutableMap;
+import com.google.protobuf.Method;
 
-import java.util.List;
+public class PythonDiscoveryInitializer implements PythonSnippetSetInputInitializer<Method> {
+  @Override
+  public PythonImportHandler getImportHandler(Method element) {
+    return new PythonImportHandler();
+  }
 
-/**
- * A factory for GapicProviders which perform code generation.
- */
-public interface GapicProviderFactory<ProviderT> {
-  /**
-   * Create the provider from the given model, apiConfig, and id.
-   */
-  public List<ProviderT> create(Model model, ApiConfig apiConfig, String id);
+  @Override
+  public ImmutableMap<String, Object> getGlobalMap(Method element) {
+    return ImmutableMap.<String, Object>of();
+  }
 }
