@@ -1,39 +1,24 @@
-@extends "common.snip"
+@extends "header.snip"
 
 @snippet generateFilename(service)
-    {@context.getClientPackagePath(service)}/doc.go
+    {@context.getApiConfig.getPackageName}/doc.go
 @end
 
 @snippet generateClass(service, body)
-    {@headerComment(editingInstruction())}
+    {@headerComment()}
 
-    {@packageSection(service)}
-    {@body}
-@end
-
-@private editingInstruction()
-    // EDITING INSTRUCTIONS
-    // This file was auto-generated and updates to that file get reflected
-    // here through a refresh process. For the short term, the refresh
-    // process will only be runnable by Google engineers. Manual additions are
-    // allowed because the refresh process performs a 3-way merge in order to
-    // preserve those manual additions. In order to notbreak the refresh
-    // process, only certain types of modifications are allowed.
+    // Package {@context.getPackageName} is an experimental, auto-generated package for the
+    // {@context.getPackageName} API.
     //
-    // Happy editing!
+    {@packageCommentSection(service)}
+    package {@context.getPackageName}
 @end
 
 @snippet generateBody(service)
 @end
 
-@private packageSection(service)
-    @let pkgName = context.getReducedServiceName(service)
-        // Package {@pkgName} provides the more language idiomatic and
-        // developer friendly layer for the gRPC based API service.
-        //
-        @join commentLine : context.getPackageDocument(service)
-            {@commentLine}
-        @end
-        package {@pkgName}
+@private packageCommentSection(service)
+    @join commentLine : context.getPackageDocument(service)
+        {@commentLine}
     @end
 @end

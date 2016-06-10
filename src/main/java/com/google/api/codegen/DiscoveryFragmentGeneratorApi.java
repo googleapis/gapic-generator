@@ -14,19 +14,22 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.codegen.discovery.DiscoveryProvider;
+import com.google.api.codegen.discovery.DiscoveryProviderFactory;
+import com.google.api.codegen.util.ClassInstantiator;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.testing.SimpleDiag;
+import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
+import com.google.api.tools.framework.tools.ToolUtil;
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
 import com.google.inject.TypeLiteral;
+import com.google.protobuf.Api;
 import com.google.protobuf.Message;
 import com.google.protobuf.Method;
 
@@ -95,26 +98,39 @@ public class DiscoveryFragmentGeneratorApi {
       return;
     }
 
-    DiscoveryFragmentGenerator generator =
-        DiscoveryFragmentGenerator.create(configProto, discovery);
-    if (generator == null) {
-      return;
-    }
+    GeneratorProto generator = configProto.getGenerator();
 
-    Multimap<Method, GeneratedResult> docs = ArrayListMultimap.create();
+    String factory = generator.getFactory();
+    String id = generator.getId();
 
-    // TODO: Support multiple templates; don't hard-code the zero-index here.
-    Preconditions.checkArgument(configProto.getTemplatesCount() == 1);
-    for (String snippetInputName : configProto.getTemplates(0).getSnippetFilesList()) {
-      Map<Method, GeneratedResult> code = generator.generateFragments(snippetInputName);
-      if (code == null) {
-        continue;
-      }
-      for (Map.Entry<Method, GeneratedResult> entry : code.entrySet()) {
-        docs.put(entry.getKey(), entry.getValue());
+    DiscoveryProviderFactory providerFactory = createProviderFactory(factory);
+    DiscoveryProvider provider =
+        providerFactory.create(discovery.getService(), discovery.getConfig(), id);
+
+    for (Api api : discovery.getService().getApisList()) {
+      for (Method method : api.getMethodsList()) {
+        Map<String, Doc> files = provider.generate(method);
+        ToolUtil.writeFiles(files, options.get(OUTPUT_FILE));
       }
     }
-    generator.outputFragments(options.get(OUTPUT_FILE), docs);
+  }
+
+  private static DiscoveryProviderFactory createProviderFactory(String factory) {
+    @SuppressWarnings("unchecked")
+    DiscoveryProviderFactory provider =
+        ClassInstantiator.createClass(
+            factory,
+            DiscoveryProviderFactory.class,
+            new Class<?>[] {},
+            new Object[] {},
+            "generator",
+            new ClassInstantiator.ErrorReporter() {
+              @Override
+              public void error(String message, Object... args) {
+                System.err.printf(message, args);
+              }
+            });
+    return provider;
   }
 
   public void run() throws Exception {

@@ -5,11 +5,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Dataproc API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataproc_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/dataproc/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/dataproc/v1
 
 import (
   "golang.org/x/net/context"
@@ -20,35 +19,32 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := dataproc.New(httpClient)
+  client, err := dataproc.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
-  var (
-    // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-    projectId = ""
+  // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+  projectId := "" // TODO: Update placeholder value.
 
-    // [Required] The Cloud Dataproc region in which to handle the request.
-    region = ""
+  // [Required] The Cloud Dataproc region in which to handle the request.
+  region := "" // TODO: Update placeholder value.
 
-    requestBody = &dataproc.Cluster{}
-  )
-
-  response, err := client.Projects.Regions.Clusters.Create(projectId, region, requestBody).Context(ctx).Do()
+  resp, err := client.Projects.Regions.Clusters.Create(projectId, region, &dataproc.Cluster{
+                                                         // TODO: Fill required fields.
+                                                       }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -56,11 +52,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Dataproc API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataproc_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/dataproc/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/dataproc/v1
 
 import (
   "golang.org/x/net/context"
@@ -71,36 +66,33 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := dataproc.New(httpClient)
+  client, err := dataproc.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
-  var (
-    // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-    projectId = ""
+  // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+  projectId := "" // TODO: Update placeholder value.
 
-    // [Required] The Cloud Dataproc region in which to handle the request.
-    region = ""
+  // [Required] The Cloud Dataproc region in which to handle the request.
+  region := "" // TODO: Update placeholder value.
 
-    // [Required] The cluster name.
-    clusterName = ""
-  )
+  // [Required] The cluster name.
+  clusterName := "" // TODO: Update placeholder value.
 
-  response, err := client.Projects.Regions.Clusters.Delete(projectId, region, clusterName).Context(ctx).Do()
+  resp, err := client.Projects.Regions.Clusters.Delete(projectId, region, clusterName).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -108,11 +100,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Dataproc API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataproc_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/dataproc/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/dataproc/v1
 
 import (
   "golang.org/x/net/context"
@@ -123,38 +114,35 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := dataproc.New(httpClient)
+  client, err := dataproc.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'diagnose' method:
-  var (
-    // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-    projectId = ""
+  // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+  projectId := "" // TODO: Update placeholder value.
 
-    // [Required] The Cloud Dataproc region in which to handle the request.
-    region = ""
+  // [Required] The Cloud Dataproc region in which to handle the request.
+  region := "" // TODO: Update placeholder value.
 
-    // [Required] The cluster name.
-    clusterName = ""
+  // [Required] The cluster name.
+  clusterName := "" // TODO: Update placeholder value.
 
-    requestBody = &dataproc.DiagnoseClusterRequest{}
-  )
-
-  response, err := client.Projects.Regions.Clusters.Diagnose(projectId, region, clusterName, requestBody).Context(ctx).Do()
+  resp, err := client.Projects.Regions.Clusters.Diagnose(projectId, region, clusterName, &dataproc.DiagnoseClusterRequest{
+                                                           // TODO: Fill required fields.
+                                                         }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -162,11 +150,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Dataproc API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataproc_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/dataproc/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/dataproc/v1
 
 import (
   "golang.org/x/net/context"
@@ -177,36 +164,33 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := dataproc.New(httpClient)
+  client, err := dataproc.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-  var (
-    // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-    projectId = ""
+  // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+  projectId := "" // TODO: Update placeholder value.
 
-    // [Required] The Cloud Dataproc region in which to handle the request.
-    region = ""
+  // [Required] The Cloud Dataproc region in which to handle the request.
+  region := "" // TODO: Update placeholder value.
 
-    // [Required] The cluster name.
-    clusterName = ""
-  )
+  // [Required] The cluster name.
+  clusterName := "" // TODO: Update placeholder value.
 
-  response, err := client.Projects.Regions.Clusters.Get(projectId, region, clusterName).Context(ctx).Do()
+  resp, err := client.Projects.Regions.Clusters.Get(projectId, region, clusterName).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -214,11 +198,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Dataproc API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataproc_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/dataproc/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/dataproc/v1
 
 import (
   "golang.org/x/net/context"
@@ -229,35 +212,31 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := dataproc.New(httpClient)
+  client, err := dataproc.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-  var (
-    // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-    projectId = ""
+  // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
+  projectId := "" // TODO: Update placeholder value.
 
-    // [Required] The Cloud Dataproc region in which to handle the request.
-    region = ""
-  )
+  // [Required] The Cloud Dataproc region in which to handle the request.
+  region := "" // TODO: Update placeholder value.
 
-  fn := func(page *dataproc.ListClustersResponse) error {
-    // doThingsWith(page)
-    for i, element := range page.Clusters {
-      // doThingsWith(element)
-      _, _ = i, element
+
+  call := client.Projects.Regions.Clusters.List(projectId, region)
+  if err := call.Pages(ctx, func(page *dataproc.ListClustersResponse) error {
+    for _, v := range page.Clusters {
+      // TODO: Use v.
     }
-    return nil
-  }
-  if err = client.Projects.Regions.Clusters.List(projectId, region).Pages(ctx, fn); err != nil {
+    return nil // NOTE: returning a non-nil error stops pagination.
+  }); err != nil {
     // TODO: Handle error.
     _ = err
   }
@@ -268,11 +247,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Dataproc API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataproc_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/dataproc/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/dataproc/v1
 
 import (
   "golang.org/x/net/context"
@@ -283,38 +261,35 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := dataproc.New(httpClient)
+  client, err := dataproc.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
-  var (
-    // [Required] The ID of the Google Cloud Platform project the cluster belongs to.
-    projectId = ""
+  // [Required] The ID of the Google Cloud Platform project the cluster belongs to.
+  projectId := "" // TODO: Update placeholder value.
 
-    // [Required] The Cloud Dataproc region in which to handle the request.
-    region = ""
+  // [Required] The Cloud Dataproc region in which to handle the request.
+  region := "" // TODO: Update placeholder value.
 
-    // [Required] The cluster name.
-    clusterName = ""
+  // [Required] The cluster name.
+  clusterName := "" // TODO: Update placeholder value.
 
-    requestBody = &dataproc.Cluster{}
-  )
-
-  response, err := client.Projects.Regions.Clusters.Patch(projectId, region, clusterName, requestBody).Context(ctx).Do()
+  resp, err := client.Projects.Regions.Clusters.Patch(projectId, region, clusterName, &dataproc.Cluster{
+                                                        // TODO: Fill required fields.
+                                                      }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -322,11 +297,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Dataproc API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataproc_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/dataproc/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/dataproc/v1
 
 import (
   "golang.org/x/net/context"
@@ -337,38 +311,35 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := dataproc.New(httpClient)
+  client, err := dataproc.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'cancel' method:
-  var (
-    // [Required] The ID of the Google Cloud Platform project that the job belongs to.
-    projectId = ""
+  // [Required] The ID of the Google Cloud Platform project that the job belongs to.
+  projectId := "" // TODO: Update placeholder value.
 
-    // [Required] The Cloud Dataproc region in which to handle the request.
-    region = ""
+  // [Required] The Cloud Dataproc region in which to handle the request.
+  region := "" // TODO: Update placeholder value.
 
-    // [Required] The job ID.
-    jobId = ""
+  // [Required] The job ID.
+  jobId := "" // TODO: Update placeholder value.
 
-    requestBody = &dataproc.CancelJobRequest{}
-  )
-
-  response, err := client.Projects.Regions.Jobs.Cancel(projectId, region, jobId, requestBody).Context(ctx).Do()
+  resp, err := client.Projects.Regions.Jobs.Cancel(projectId, region, jobId, &dataproc.CancelJobRequest{
+                                                     // TODO: Fill required fields.
+                                                   }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -376,11 +347,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Dataproc API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataproc_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/dataproc/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/dataproc/v1
 
 import (
   "golang.org/x/net/context"
@@ -391,36 +361,33 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := dataproc.New(httpClient)
+  client, err := dataproc.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
-  var (
-    // [Required] The ID of the Google Cloud Platform project that the job belongs to.
-    projectId = ""
+  // [Required] The ID of the Google Cloud Platform project that the job belongs to.
+  projectId := "" // TODO: Update placeholder value.
 
-    // [Required] The Cloud Dataproc region in which to handle the request.
-    region = ""
+  // [Required] The Cloud Dataproc region in which to handle the request.
+  region := "" // TODO: Update placeholder value.
 
-    // [Required] The job ID.
-    jobId = ""
-  )
+  // [Required] The job ID.
+  jobId := "" // TODO: Update placeholder value.
 
-  response, err := client.Projects.Regions.Jobs.Delete(projectId, region, jobId).Context(ctx).Do()
+  resp, err := client.Projects.Regions.Jobs.Delete(projectId, region, jobId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -428,11 +395,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Dataproc API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataproc_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/dataproc/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/dataproc/v1
 
 import (
   "golang.org/x/net/context"
@@ -443,36 +409,33 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := dataproc.New(httpClient)
+  client, err := dataproc.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-  var (
-    // [Required] The ID of the Google Cloud Platform project that the job belongs to.
-    projectId = ""
+  // [Required] The ID of the Google Cloud Platform project that the job belongs to.
+  projectId := "" // TODO: Update placeholder value.
 
-    // [Required] The Cloud Dataproc region in which to handle the request.
-    region = ""
+  // [Required] The Cloud Dataproc region in which to handle the request.
+  region := "" // TODO: Update placeholder value.
 
-    // [Required] The job ID.
-    jobId = ""
-  )
+  // [Required] The job ID.
+  jobId := "" // TODO: Update placeholder value.
 
-  response, err := client.Projects.Regions.Jobs.Get(projectId, region, jobId).Context(ctx).Do()
+  resp, err := client.Projects.Regions.Jobs.Get(projectId, region, jobId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -480,11 +443,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Dataproc API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataproc_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/dataproc/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/dataproc/v1
 
 import (
   "golang.org/x/net/context"
@@ -495,35 +457,31 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := dataproc.New(httpClient)
+  client, err := dataproc.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-  var (
-    // [Required] The ID of the Google Cloud Platform project that the job belongs to.
-    projectId = ""
+  // [Required] The ID of the Google Cloud Platform project that the job belongs to.
+  projectId := "" // TODO: Update placeholder value.
 
-    // [Required] The Cloud Dataproc region in which to handle the request.
-    region = ""
-  )
+  // [Required] The Cloud Dataproc region in which to handle the request.
+  region := "" // TODO: Update placeholder value.
 
-  fn := func(page *dataproc.ListJobsResponse) error {
-    // doThingsWith(page)
-    for i, element := range page.Jobs {
-      // doThingsWith(element)
-      _, _ = i, element
+
+  call := client.Projects.Regions.Jobs.List(projectId, region)
+  if err := call.Pages(ctx, func(page *dataproc.ListJobsResponse) error {
+    for _, v := range page.Jobs {
+      // TODO: Use v.
     }
-    return nil
-  }
-  if err = client.Projects.Regions.Jobs.List(projectId, region).Pages(ctx, fn); err != nil {
+    return nil // NOTE: returning a non-nil error stops pagination.
+  }); err != nil {
     // TODO: Handle error.
     _ = err
   }
@@ -534,11 +492,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Dataproc API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataproc_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/dataproc/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/dataproc/v1
 
 import (
   "golang.org/x/net/context"
@@ -549,35 +506,32 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := dataproc.New(httpClient)
+  client, err := dataproc.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'submit' method:
-  var (
-    // [Required] The ID of the Google Cloud Platform project that the job belongs to.
-    projectId = ""
+  // [Required] The ID of the Google Cloud Platform project that the job belongs to.
+  projectId := "" // TODO: Update placeholder value.
 
-    // [Required] The Cloud Dataproc region in which to handle the request.
-    region = ""
+  // [Required] The Cloud Dataproc region in which to handle the request.
+  region := "" // TODO: Update placeholder value.
 
-    requestBody = &dataproc.SubmitJobRequest{}
-  )
-
-  response, err := client.Projects.Regions.Jobs.Submit(projectId, region, requestBody).Context(ctx).Do()
+  resp, err := client.Projects.Regions.Jobs.Submit(projectId, region, &dataproc.SubmitJobRequest{
+                                                     // TODO: Fill required fields.
+                                                   }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -585,11 +539,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Dataproc API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataproc_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/dataproc/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/dataproc/v1
 
 import (
   "golang.org/x/net/context"
@@ -600,30 +553,27 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := dataproc.New(httpClient)
+  client, err := dataproc.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'cancel' method:
-  var (
-    // The name of the operation resource to be cancelled.
-    name = "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}"
-  )
+  // The name of the operation resource to be cancelled.
+  name := "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}" // TODO: Update placeholder value.
 
-  response, err := client.Projects.Regions.Operations.Cancel(name).Context(ctx).Do()
+  resp, err := client.Projects.Regions.Operations.Cancel(name).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -631,11 +581,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Dataproc API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataproc_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/dataproc/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/dataproc/v1
 
 import (
   "golang.org/x/net/context"
@@ -646,30 +595,27 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := dataproc.New(httpClient)
+  client, err := dataproc.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
-  var (
-    // The name of the operation resource to be deleted.
-    name = "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}"
-  )
+  // The name of the operation resource to be deleted.
+  name := "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}" // TODO: Update placeholder value.
 
-  response, err := client.Projects.Regions.Operations.Delete(name).Context(ctx).Do()
+  resp, err := client.Projects.Regions.Operations.Delete(name).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -677,11 +623,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Dataproc API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataproc_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/dataproc/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/dataproc/v1
 
 import (
   "golang.org/x/net/context"
@@ -692,30 +637,27 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := dataproc.New(httpClient)
+  client, err := dataproc.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-  var (
-    // The name of the operation resource.
-    name = "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}"
-  )
+  // The name of the operation resource.
+  name := "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}" // TODO: Update placeholder value.
 
-  response, err := client.Projects.Regions.Operations.Get(name).Context(ctx).Do()
+  resp, err := client.Projects.Regions.Operations.Get(name).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(response)
-  _ = response
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -723,11 +665,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Dataproc API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataproc_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/dataproc/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/dataproc/v1
 
 import (
   "golang.org/x/net/context"
@@ -738,32 +679,28 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := dataproc.New(httpClient)
+  client, err := dataproc.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-  var (
-    // The name of the operation collection.
-    name = ""
-  )
+  // The name of the operation collection.
+  name := "" // TODO: Update placeholder value.
 
-  fn := func(page *dataproc.ListOperationsResponse) error {
-    // doThingsWith(page)
-    for i, element := range page.Operations {
-      // doThingsWith(element)
-      _, _ = i, element
+
+  call := client.Projects.Regions.Operations.List(name)
+  if err := call.Pages(ctx, func(page *dataproc.ListOperationsResponse) error {
+    for _, v := range page.Operations {
+      // TODO: Use v.
     }
-    return nil
-  }
-  if err = client.Projects.Regions.Operations.List(name).Pages(ctx, fn); err != nil {
+    return nil // NOTE: returning a non-nil error stops pagination.
+  }); err != nil {
     // TODO: Handle error.
     _ = err
   }

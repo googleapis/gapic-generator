@@ -50,7 +50,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * GapicProviderFactory creates GapicProvider instances based on an id.
+ * MainGapicProviderFactory creates GapicProvider instances based on an id.
  */
 public class MainGapicProviderFactory
     implements GapicProviderFactory<GapicProvider<? extends Object>> {
@@ -103,7 +103,8 @@ public class MainGapicProviderFactory
               .setView(new InterfaceView())
               .setContext(new GoGapicContext(model, apiConfig))
               .setSnippetSetRunner(new GoSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("main.snip", "example.snip", "doc.snip"))
+              .setSnippetFileNames(
+                  Arrays.asList("main.snip", "example.snip", "doc.snip", "common.snip"))
               .setCodePathMapper(new PrefixPackageCodePathMapper(""))
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);

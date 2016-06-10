@@ -14,17 +14,19 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.DiscoveryGeneratorTestBase.DiscoveryFile;
 import com.google.common.collect.ImmutableList;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runners.Parameterized.Parameters;
 
 import java.io.File;
 import java.util.List;
 
-public class CSharpDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGeneratorTestBase {
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+
+@RunWith(Parameterized.class)
+public class CSharpDiscoveryFragmentGeneratorTest extends DiscoveryGeneratorTestBase {
 
   public CSharpDiscoveryFragmentGeneratorTest(
       String name, String discoveryDocFileName, String[] gapicConfigFileNames) {

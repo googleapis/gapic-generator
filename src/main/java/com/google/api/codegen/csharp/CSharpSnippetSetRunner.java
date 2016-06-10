@@ -17,12 +17,10 @@ package com.google.api.codegen.csharp;
 import com.google.api.codegen.CodegenContext;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 
-import java.util.List;
 import java.util.TreeSet;
 
 /**

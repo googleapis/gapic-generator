@@ -63,7 +63,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
 
   private CSharpContextCommon csharpCommon;
 
-  protected CSharpDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
+  public CSharpDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
     super(service, apiaryConfig);
   }
 
