@@ -116,7 +116,9 @@ public final class GeneratorBuilderUtil {
     if (!coerceType.isAssignableFrom(classType)) {
       errorReporter.error(
           "the %s class '%s' does not extend the expected class '%s'",
-          classDescription, classType.getName(), coerceType.getName());
+          classDescription,
+          classType.getName(),
+          coerceType.getName());
       return null;
     }
     Constructor<?> ctor;
@@ -127,7 +129,8 @@ public final class GeneratorBuilderUtil {
           new StringBuilder(
               String.format(
                   "the %s class '%s' does not have the expected constructor with parameters:",
-                  classDescription, classType.getName()));
+                  classDescription,
+                  classType.getName()));
       for (Class c : ctorParam) {
         error.append(" ");
         error.append(c.getName());

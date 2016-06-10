@@ -90,7 +90,10 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
       throw new IllegalArgumentException(
           String.format(
               "Ruby name not found: %s::%s::%s::%s",
-              getApi().getName(), getApi().getVersion(), method.getName(), param));
+              getApi().getName(),
+              getApi().getVersion(),
+              method.getName(),
+              param));
     }
     return rename;
   }
@@ -105,7 +108,9 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
       throw new IllegalArgumentException(
           String.format(
               "Ruby name not found: %s::%s::%s",
-              getApi().getName(), getApi().getVersion(), method.getName()));
+              getApi().getName(),
+              getApi().getVersion(),
+              method.getName()));
     }
     return name;
   }

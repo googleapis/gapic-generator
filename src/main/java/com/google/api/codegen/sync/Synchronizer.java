@@ -102,7 +102,9 @@ public class Synchronizer extends SimpleFileVisitor<Path> {
     } catch (IOException e) {
       error(
           "I/O error: %s (%s): %s",
-          e.getMessage(), e.getClass().getSimpleName(), Throwables.getStackTraceAsString(e));
+          e.getMessage(),
+          e.getClass().getSimpleName(),
+          Throwables.getStackTraceAsString(e));
     }
     return diagnosis;
   }
@@ -162,7 +164,8 @@ public class Synchronizer extends SimpleFileVisitor<Path> {
         if (resultCode != 0) {
           error(
               "unresolved merge conflict for '%s', aborting. Output:%n%s",
-              relativePath, CharStreams.toString(stdout));
+              relativePath,
+              CharStreams.toString(stdout));
           return FileVisitResult.TERMINATE;
         }
         if (!Files.exists(baselinePath)) {
@@ -172,7 +175,8 @@ public class Synchronizer extends SimpleFileVisitor<Path> {
       } catch (InterruptedException e) {
         error(
             "interrupted during merge conflict resolution for '%s', aborting. Output:%n%s",
-            relativePath, CharStreams.toString(stdout));
+            relativePath,
+            CharStreams.toString(stdout));
         return FileVisitResult.TERMINATE;
       }
     }
