@@ -16,6 +16,7 @@ package com.google.api.codegen;
 
 import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.gapic.GapicProviderFactory;
+import com.google.api.codegen.util.ClassInstantiator;
 import com.google.api.tools.framework.aspects.context.ContextConfigAspect;
 import com.google.api.tools.framework.aspects.documentation.DocumentationConfigAspect;
 import com.google.api.tools.framework.aspects.http.HttpConfigAspect;
@@ -138,13 +139,13 @@ public class CodeGeneratorApi extends ToolDriverBase {
       final Model model, String factory) {
     @SuppressWarnings("unchecked")
     GapicProviderFactory<GapicProvider<? extends Object>> provider =
-        GeneratorBuilderUtil.createClass(
+        ClassInstantiator.createClass(
             factory,
             GapicProviderFactory.class,
             new Class<?>[] {},
             new Object[] {},
             "generator",
-            new GeneratorBuilderUtil.ErrorReporter() {
+            new ClassInstantiator.ErrorReporter() {
               @Override
               public void error(String message, Object... args) {
                 model.addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));

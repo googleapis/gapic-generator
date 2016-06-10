@@ -31,13 +31,14 @@ public interface GapicProvider<InputElementT> {
   List<String> getSnippetFileNames();
 
   /**
-   * Runs code generation and returns a map relative file paths to generated Doc.
+   * Runs code generation and returns a map from relative file paths to
+   * generated Doc.
    */
   Map<String, Doc> generate();
 
   /**
-   * Runs code generation for a single snippet and returns a map relative file
-   * paths to generated Doc.
+   * Runs code generation for a single snippet and returns a map from relative
+   * file paths to generated Doc.
    */
   Map<String, Doc> generate(String snippetFileName);
 }

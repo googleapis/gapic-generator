@@ -16,6 +16,7 @@ package com.google.api.codegen;
 
 import com.google.api.codegen.discovery.DiscoveryProvider;
 import com.google.api.codegen.discovery.DiscoveryProviderFactory;
+import com.google.api.codegen.util.ClassInstantiator;
 import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.testing.SimpleDiag;
 import com.google.api.tools.framework.snippet.Doc;
@@ -117,13 +118,13 @@ public class DiscoveryFragmentGeneratorApi {
   private static DiscoveryProviderFactory createProviderFactory(String factory) {
     @SuppressWarnings("unchecked")
     DiscoveryProviderFactory provider =
-        GeneratorBuilderUtil.createClass(
+        ClassInstantiator.createClass(
             factory,
             DiscoveryProviderFactory.class,
             new Class<?>[] {},
             new Object[] {},
             "generator",
-            new GeneratorBuilderUtil.ErrorReporter() {
+            new ClassInstantiator.ErrorReporter() {
               @Override
               public void error(String message, Object... args) {
                 System.err.printf(message, args);

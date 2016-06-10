@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.util;
 
 import com.google.common.base.Throwables;
 
@@ -20,12 +20,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Utility class for creating code generators, by dynamic class loading of a
- * codegen provider.
+ * Utility class for constructing an instance of a class.
  */
-public final class GeneratorBuilderUtil {
+public final class ClassInstantiator {
 
-  private GeneratorBuilderUtil() {}
+  private ClassInstantiator() {}
 
   public interface ErrorReporter {
     void error(String message, Object... args);
