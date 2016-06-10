@@ -123,6 +123,11 @@ public class GoGapicContext extends GapicContext implements GoContext {
    */
   public String getClientName(Interface service) {
     String name = getReducedServiceName(service);
+    // If there's only one service, or the service name matches the package name, don't prefix with
+    // the service name.
+    if (getModel().getSymbolTable().getInterfaces().size() == 1 || name.equals(getPackageName())) {
+      return "Client";
+    }
     return LanguageUtil.lowerUnderscoreToUpperCamel(name) + "Client";
   }
 
