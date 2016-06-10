@@ -18,6 +18,7 @@ import com.google.api.Documentation;
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.GapicContext;
+import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
@@ -101,6 +102,36 @@ public class GoGapicContext extends GapicContext implements GoContext {
     this.goCommon = new GoContextCommon();
   }
 
+  /**
+   * Returns the Go package name.
+   *
+   * Retrieved by splitting the package string on `/` and returning the second to last string if
+   * possible, and otherwise the last string in the resulting array.
+   *
+   * TODO(saicheems): Figure out how to reliably get the intended value...
+   */
+  public String getPackageName() {
+    String split[] = getApiConfig().getPackageName().split("/");
+    if (split.length - 2 >= 0) {
+      return split[split.length - 2];
+    }
+    return split[split.length - 1];
+  }
+
+  /**
+   * Returns the name of the service's client.
+   */
+  public String getClientName(Interface service) {
+    String name = getReducedServiceName(service);
+    return LanguageUtil.lowerUnderscoreToUpperCamel(name) + "Client";
+  }
+
+  /**
+   * Returns the service name with common suffixes removed.
+   *
+   * For example:
+   *  LoggingServiceV2 => logging
+   */
   public String getReducedServiceName(Interface service) {
     String name = service.getSimpleName().replaceAll("V[0-9]+$", "");
     name = name.replaceAll("Service$", "");
@@ -336,13 +367,6 @@ public class GoGapicContext extends GapicContext implements GoContext {
   }
 
   /**
-   * Returns the package path for the client.
-   */
-  public String getClientPackagePath(Interface service) {
-    return getApiConfig().getPackageName() + "/" + getReducedServiceName(service);
-  }
-
-  /**
    * Creates a Go import from the message import.
    */
   private GoImport createMessageImport(MessageType messageType) {
@@ -365,9 +389,6 @@ public class GoGapicContext extends GapicContext implements GoContext {
 
     if (!getApiConfig().getInterfaceConfig(service).getRetrySettingsDefinition().isEmpty()) {
       standardImports.add(GoImport.create("time"));
-    }
-    if (hasPageStreamingMethod(service)) {
-      standardImports.add(GoImport.create("errors"));
     }
     return standardImports;
   }
@@ -442,7 +463,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
   public Iterable<String> getTestImports(Interface service) {
     TreeSet<GoImport> thirdParty = new TreeSet<>();
 
-    thirdParty.add(GoImport.create(getClientPackagePath(service)));
+    thirdParty.add(GoImport.create(getApiConfig().getPackageName()));
     thirdParty.add(GoImport.create("golang.org/x/net/context"));
     thirdParty.add(GoImport.create(GAX_PACKAGE_BASE, "gax"));
     thirdParty.addAll(getMessageImports(service));
@@ -451,10 +472,35 @@ public class GoGapicContext extends GapicContext implements GoContext {
   }
 
   /**
-   * Returns true if the speficied type is the Empty type.
+   * Returns true if the specified type is the Empty type.
    */
   public boolean isEmpty(TypeRef type) {
     return type.isMessage() && type.getMessageType().getFullName().equals("google.protobuf.Empty");
+  }
+
+  /**
+   * Returns true if the methodConfig's retry codes name refers to an empty list of retry codes.
+   */
+  public boolean hasEmptyRetryCodes(Interface service, MethodConfig methodConfig) {
+    InterfaceConfig config = getApiConfig().getInterfaceConfig(service);
+    for (String name : config.getRetryCodesDefinition().keySet()) {
+      if (name.equals(methodConfig.getRetryCodesConfigName())) {
+        return config.getRetryCodesDefinition().get(name).size() == 0;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Returns true if the API has a page streaming method.
+   */
+  public boolean hasPageStreamingMethod() {
+    for (Interface service : getModel().getSymbolTable().getInterfaces()) {
+      if (hasPageStreamingMethod(service)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**

@@ -1,54 +1,23 @@
-============== file: google.golang.org/cloud/library/apiv1/library/client.go ==============
+============== file: google.golang.org/cloud/library/apiv1/library_client.go ==============
 // Copyright 2016 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//      http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
-// EDITING INSTRUCTIONS
-// This file was generated from the file
-// https://github.com/googleapis/blob/master/library.proto
-// and updates to that file get reflected here through a refresh process.
-// For the short term, the refresh process will only be runnable by Google engineers.
-// Manual additions are allowed because the refresh process performs
-// a 3-way merge in order to preserve those manual additions. In order to not
-// break the refresh process, only certain types of modifications are
-// allowed.
-//
-// Only additional documentation of the doc comment is allowed.
-// Please put the additional comment at the end.
-//
-// Additional new methods or new features can be added in additional files
-// in the same directory.
-//
-// Happy editing!
 
-// AUTO-GENERATED DOCUMENTATION AND SERVICE -- see instructions at the top of the file for editing.
+// AUTO-GENERATED DOCUMENTATION AND SERVICE
 
-// This API represents a simple digital library.  It lets you manage Shelf
-// resources and Book resources in the library. It defines the following
-// resource model:
-//
-// - The API has a collection of [Shelf][google.example.library.v1.Shelf]
-//   resources, named ``shelves/*``
-//
-// - Each Shelf has a collection of [Book][google.example.library.v1.Book]
-//   resources, named `shelves/*/books/*`
-//
-// Check out [cloud docs!](/library/example/link).
-// This is [not a cloud link](http://www.google.com).
 package library
 
 import (
-    "errors"
     "fmt"
     "runtime"
     "time"
@@ -61,19 +30,23 @@ import (
     "google.golang.org/grpc/metadata"
 )
 
-const (
-    gapicNameVersion = "gapic/0.1.0"
-)
-
 var (
-    // Done is returned by iterators on successful completion.
-    Done = errors.New("iterator done")
-
-    shelfPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}")
-    bookPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}/books/{book}")
+    libraryShelfPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}")
+    libraryBookPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}/books/{book}")
 )
 
-func defaultClientSettings() gax.ClientSettings {
+func defaultLibraryClientSettings() gax.ClientSettings {
+    withIdempotentRetryCodes := gax.WithRetryCodes(
+        []codes.Code{
+            codes.DeadlineExceeded,
+            codes.Unavailable,
+        },
+    )
+    defaultRetryOptions := []gax.CallOption{
+        gax.WithTimeout(30000*time.Millisecond),
+        gax.WithDelayTimeoutSettings(100*time.Millisecond, 1000*time.Millisecond, 1.2),
+        gax.WithRPCTimeoutSettings(300*time.Millisecond, 3000*time.Millisecond, 1.3),
+    }
     return gax.ClientSettings{
         AppName: "gax",
         AppVersion: gax.Version,
@@ -83,47 +56,26 @@ func defaultClientSettings() gax.ClientSettings {
             "https://www.googleapis.com/auth/cloud-platform",
         },
         CallOptions: map[string][]gax.CallOption{
-            "CreateShelf": append([]gax.CallOption{withNonIdempotentRetryCodes()}, defaultRetryOptions()...),
-            "GetShelf": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
-            "ListShelves": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
-            "DeleteShelf": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
-            "MergeShelves": append([]gax.CallOption{withNonIdempotentRetryCodes()}, defaultRetryOptions()...),
-            "CreateBook": append([]gax.CallOption{withNonIdempotentRetryCodes()}, defaultRetryOptions()...),
-            "PublishSeries": append([]gax.CallOption{withNonIdempotentRetryCodes()}, defaultRetryOptions()...),
-            "GetBook": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
-            "ListBooks": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
-            "DeleteBook": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
-            "UpdateBook": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
-            "MoveBook": append([]gax.CallOption{withNonIdempotentRetryCodes()}, defaultRetryOptions()...),
-            "ListStrings": append([]gax.CallOption{withIdempotentRetryCodes()}, defaultRetryOptions()...),
-            "AddComments": append([]gax.CallOption{withNonIdempotentRetryCodes()}, defaultRetryOptions()...),
+            "CreateShelf": defaultRetryOptions,
+            "GetShelf": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+            "ListShelves": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+            "DeleteShelf": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+            "MergeShelves": defaultRetryOptions,
+            "CreateBook": defaultRetryOptions,
+            "PublishSeries": defaultRetryOptions,
+            "GetBook": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+            "ListBooks": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+            "DeleteBook": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+            "UpdateBook": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+            "MoveBook": defaultRetryOptions,
+            "ListStrings": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+            "AddComments": defaultRetryOptions,
         },
     }
 }
 
-
-func withIdempotentRetryCodes() gax.CallOption {
-    return gax.WithRetryCodes([]codes.Code{
-        codes.DeadlineExceeded,
-        codes.Unavailable,
-    })
-}
-
-func withNonIdempotentRetryCodes() gax.CallOption {
-    return gax.WithRetryCodes([]codes.Code{
-    })
-}
-
-func defaultRetryOptions() []gax.CallOption {
-    return []gax.CallOption{
-        gax.WithTimeout(30000*time.Millisecond),
-        gax.WithDelayTimeoutSettings(100*time.Millisecond, 1000*time.Millisecond, 1.2),
-        gax.WithRPCTimeoutSettings(300*time.Millisecond, 3000*time.Millisecond, 1.3),
-    }
-}
-
-// Client is a client for interacting with LibraryService.
-type Client struct {
+// LibraryClient is a client for interacting with LibraryService.
+type LibraryClient struct {
     // The connection to the service.
     conn *grpc.ClientConn
 
@@ -137,9 +89,22 @@ type Client struct {
     metadata map[string][]string
 }
 
-// NewClient creates a new API service client.
-func NewClient(ctx context.Context, opts ...gax.ClientOption) (*Client, error) {
-    s := defaultClientSettings()
+// NewLibraryClient creates a new library service client.
+//
+// This API represents a simple digital library.  It lets you manage Shelf
+// resources and Book resources in the library. It defines the following
+// resource model:
+//
+// - The API has a collection of [Shelf][google.example.library.v1.Shelf]
+//   resources, named ``shelves/*``
+//
+// - Each Shelf has a collection of [Book][google.example.library.v1.Book]
+//   resources, named `shelves/*/books/*`
+//
+// Check out [cloud docs!](/library/example/link).
+// This is [not a cloud link](http://www.google.com).
+func NewLibraryClient(ctx context.Context, opts ...gax.ClientOption) (*LibraryClient, error) {
+    s := defaultLibraryClientSettings()
     for _, opt := range opts {
         opt.Resolve(&s)
     }
@@ -147,7 +112,7 @@ func NewClient(ctx context.Context, opts ...gax.ClientOption) (*Client, error) {
     if err != nil {
         return nil, err
     }
-    return &Client {
+    return &LibraryClient {
         conn: conn,
         client: google_example_library_v1.NewLibraryServiceClient(conn),
         callOptions: s.CallOptions,
@@ -159,15 +124,15 @@ func NewClient(ctx context.Context, opts ...gax.ClientOption) (*Client, error) {
 
 // Close closes the connection to the API service. The user should invoke this when
 // the client is no longer required.
-func (c *Client) Close() error {
+func (c *LibraryClient) Close() error {
     return c.conn.Close()
 }
 
 // Path templates.
 
 // ShelfPath returns the path for the shelf resource.
-func ShelfPath(shelf string) string {
-    path, err := shelfPathTemplate.Render(map[string]string{
+func LibraryShelfPath(shelf string) string {
+    path, err := libraryShelfPathTemplate.Render(map[string]string{
         "shelf": shelf,
     })
     if err != nil {
@@ -177,8 +142,8 @@ func ShelfPath(shelf string) string {
 }
 
 // BookPath returns the path for the book resource.
-func BookPath(shelf string, book string) string {
-    path, err := bookPathTemplate.Render(map[string]string{
+func LibraryBookPath(shelf string, book string) string {
+    path, err := libraryBookPathTemplate.Render(map[string]string{
         "shelf": shelf,
         "book": book,
     })
@@ -191,7 +156,7 @@ func BookPath(shelf string, book string) string {
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // CreateShelf creates a shelf, and returns the new Shelf.
-func (c *Client) CreateShelf(ctx context.Context, req *google_example_library_v1.CreateShelfRequest) (*google_example_library_v1.Shelf, error) {
+func (c *LibraryClient) CreateShelf(ctx context.Context, req *google_example_library_v1.CreateShelfRequest) (*google_example_library_v1.Shelf, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *google_example_library_v1.Shelf
     err := gax.Invoke(ctx, func (ctx context.Context) error {
@@ -209,7 +174,7 @@ func (c *Client) CreateShelf(ctx context.Context, req *google_example_library_v1
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // GetShelf gets a shelf.
-func (c *Client) GetShelf(ctx context.Context, req *google_example_library_v1.GetShelfRequest) (*google_example_library_v1.Shelf, error) {
+func (c *LibraryClient) GetShelf(ctx context.Context, req *google_example_library_v1.GetShelfRequest) (*google_example_library_v1.Shelf, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *google_example_library_v1.Shelf
     err := gax.Invoke(ctx, func (ctx context.Context) error {
@@ -227,7 +192,7 @@ func (c *Client) GetShelf(ctx context.Context, req *google_example_library_v1.Ge
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // ListShelves lists shelves.
-func (c *Client) ListShelves(ctx context.Context, req *google_example_library_v1.ListShelvesRequest) *ShelfIterator {
+func (c *LibraryClient) ListShelves(ctx context.Context, req *google_example_library_v1.ListShelvesRequest) *ShelfIterator {
     ctx = metadata.NewContext(ctx, c.metadata)
     it := &ShelfIterator{}
     it.apiCall = func() error {
@@ -259,7 +224,7 @@ func (c *Client) ListShelves(ctx context.Context, req *google_example_library_v1
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // DeleteShelf deletes a shelf.
-func (c *Client) DeleteShelf(ctx context.Context, req *google_example_library_v1.DeleteShelfRequest) error {
+func (c *LibraryClient) DeleteShelf(ctx context.Context, req *google_example_library_v1.DeleteShelfRequest) error {
     ctx = metadata.NewContext(ctx, c.metadata)
     err := gax.Invoke(ctx, func (ctx context.Context) error {
         var err error
@@ -275,7 +240,7 @@ func (c *Client) DeleteShelf(ctx context.Context, req *google_example_library_v1
 // MergeShelves merges two shelves by adding all books from the shelf named
 // `other_shelf_name` to shelf `name`, and deletes
 // `other_shelf_name`. Returns the updated shelf.
-func (c *Client) MergeShelves(ctx context.Context, req *google_example_library_v1.MergeShelvesRequest) (*google_example_library_v1.Shelf, error) {
+func (c *LibraryClient) MergeShelves(ctx context.Context, req *google_example_library_v1.MergeShelvesRequest) (*google_example_library_v1.Shelf, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *google_example_library_v1.Shelf
     err := gax.Invoke(ctx, func (ctx context.Context) error {
@@ -293,7 +258,7 @@ func (c *Client) MergeShelves(ctx context.Context, req *google_example_library_v
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // CreateBook creates a book.
-func (c *Client) CreateBook(ctx context.Context, req *google_example_library_v1.CreateBookRequest) (*google_example_library_v1.Book, error) {
+func (c *LibraryClient) CreateBook(ctx context.Context, req *google_example_library_v1.CreateBookRequest) (*google_example_library_v1.Book, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *google_example_library_v1.Book
     err := gax.Invoke(ctx, func (ctx context.Context) error {
@@ -311,7 +276,7 @@ func (c *Client) CreateBook(ctx context.Context, req *google_example_library_v1.
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // PublishSeries creates a series of books.
-func (c *Client) PublishSeries(ctx context.Context, req *google_example_library_v1.PublishSeriesRequest) (*google_example_library_v1.PublishSeriesResponse, error) {
+func (c *LibraryClient) PublishSeries(ctx context.Context, req *google_example_library_v1.PublishSeriesRequest) (*google_example_library_v1.PublishSeriesResponse, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *google_example_library_v1.PublishSeriesResponse
     err := gax.Invoke(ctx, func (ctx context.Context) error {
@@ -329,7 +294,7 @@ func (c *Client) PublishSeries(ctx context.Context, req *google_example_library_
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // GetBook gets a book.
-func (c *Client) GetBook(ctx context.Context, req *google_example_library_v1.GetBookRequest) (*google_example_library_v1.Book, error) {
+func (c *LibraryClient) GetBook(ctx context.Context, req *google_example_library_v1.GetBookRequest) (*google_example_library_v1.Book, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *google_example_library_v1.Book
     err := gax.Invoke(ctx, func (ctx context.Context) error {
@@ -347,7 +312,7 @@ func (c *Client) GetBook(ctx context.Context, req *google_example_library_v1.Get
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // ListBooks lists books in a shelf.
-func (c *Client) ListBooks(ctx context.Context, req *google_example_library_v1.ListBooksRequest) *BookIterator {
+func (c *LibraryClient) ListBooks(ctx context.Context, req *google_example_library_v1.ListBooksRequest) *BookIterator {
     ctx = metadata.NewContext(ctx, c.metadata)
     it := &BookIterator{}
     it.apiCall = func() error {
@@ -380,7 +345,7 @@ func (c *Client) ListBooks(ctx context.Context, req *google_example_library_v1.L
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // DeleteBook deletes a book.
-func (c *Client) DeleteBook(ctx context.Context, req *google_example_library_v1.DeleteBookRequest) error {
+func (c *LibraryClient) DeleteBook(ctx context.Context, req *google_example_library_v1.DeleteBookRequest) error {
     ctx = metadata.NewContext(ctx, c.metadata)
     err := gax.Invoke(ctx, func (ctx context.Context) error {
         var err error
@@ -394,7 +359,7 @@ func (c *Client) DeleteBook(ctx context.Context, req *google_example_library_v1.
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // UpdateBook updates a book.
-func (c *Client) UpdateBook(ctx context.Context, req *google_example_library_v1.UpdateBookRequest) (*google_example_library_v1.Book, error) {
+func (c *LibraryClient) UpdateBook(ctx context.Context, req *google_example_library_v1.UpdateBookRequest) (*google_example_library_v1.Book, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *google_example_library_v1.Book
     err := gax.Invoke(ctx, func (ctx context.Context) error {
@@ -412,7 +377,7 @@ func (c *Client) UpdateBook(ctx context.Context, req *google_example_library_v1.
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // MoveBook moves a book to another shelf, and returns the new book.
-func (c *Client) MoveBook(ctx context.Context, req *google_example_library_v1.MoveBookRequest) (*google_example_library_v1.Book, error) {
+func (c *LibraryClient) MoveBook(ctx context.Context, req *google_example_library_v1.MoveBookRequest) (*google_example_library_v1.Book, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
     var resp *google_example_library_v1.Book
     err := gax.Invoke(ctx, func (ctx context.Context) error {
@@ -430,7 +395,7 @@ func (c *Client) MoveBook(ctx context.Context, req *google_example_library_v1.Mo
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // ListStrings lists a primitive resource. To test go page streaming.
-func (c *Client) ListStrings(ctx context.Context, req *google_example_library_v1.ListStringsRequest) *StringIterator {
+func (c *LibraryClient) ListStrings(ctx context.Context, req *google_example_library_v1.ListStringsRequest) *StringIterator {
     ctx = metadata.NewContext(ctx, c.metadata)
     it := &StringIterator{}
     it.apiCall = func() error {
@@ -463,7 +428,7 @@ func (c *Client) ListStrings(ctx context.Context, req *google_example_library_v1
 // AUTO-GENERATED DOCUMENTATION AND METHOD -- see instructions at the top of the file for editing.
 
 // AddComments adds comments to a book
-func (c *Client) AddComments(ctx context.Context, req *google_example_library_v1.AddCommentsRequest) error {
+func (c *LibraryClient) AddComments(ctx context.Context, req *google_example_library_v1.AddCommentsRequest) error {
     ctx = metadata.NewContext(ctx, c.metadata)
     err := gax.Invoke(ctx, func (ctx context.Context) error {
         var err error
