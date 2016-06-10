@@ -93,7 +93,7 @@ public class PythonImportHandler {
       }
     }
   }
-  
+
   public PythonImportHandler(Method method) {
     addImport(
         method.getFile(),

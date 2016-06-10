@@ -361,7 +361,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     String moduleName = packageName + "." + lowerCamelToLowerUnderscore(apiName);
     return PythonImport.create(ImportType.APP, moduleName, apiName).importString();
   }
-  
+
   // mutates appImports list in docConfig
   private void protoImports(Method method, PythonDocConfig docConfig) {
     List<String> importStrings = docConfig.getAppImports();
