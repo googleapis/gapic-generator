@@ -15,9 +15,8 @@
 package com.google.api.codegen;
 
 /**
- * A SnippetSetRunner takes the element, snippet file, and context as input
- * and then uses the Snippet Set templating engine to generate an output
- * document.
+ * A SnippetSetRunner takes the element, snippet file, and context as input and then uses the
+ * Snippet Set templating engine to generate an output document.
  */
 public interface SnippetSetRunner<Element> {
 

@@ -168,8 +168,7 @@ public abstract class DiscoveryContext extends CodegenContext {
   // Returns default string. If ApiaryConfig specifies a pattern, default string for that pattern
   // is returned. Otherwise, returns empty string.
   protected String getDefaultString(Type type, Field field) {
-    String stringPattern =
-        getApiaryConfig().getFieldPattern().get(type.getName(), field.getName());
+    String stringPattern = getApiaryConfig().getFieldPattern().get(type.getName(), field.getName());
     return Strings.nullToEmpty(DefaultString.forPattern(stringPattern));
   }
 

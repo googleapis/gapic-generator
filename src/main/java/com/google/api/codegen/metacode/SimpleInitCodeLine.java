@@ -18,8 +18,8 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 
 /**
- * SimpleInitCodeLine represents an InitCodeLine that initializes a variable
- * that does not depend on other initialized variables.
+ * SimpleInitCodeLine represents an InitCodeLine that initializes a variable that does not depend
+ * on other initialized variables.
  */
 @AutoValue
 public abstract class SimpleInitCodeLine implements InitCodeLine {

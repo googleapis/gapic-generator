@@ -221,9 +221,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
   /**
    * Returns the upper camel prefix name for the resource field.
    *
-   * Specifically:
-   * `repeated float hellos`: `Float`
-   * `repeated World worlds`: `World`
+   * Specifically: `repeated float hellos`: `Float` `repeated World worlds`: `World`
    */
   private String getSimpleResourcesTypeName(PageStreamingConfig config) {
     TypeRef type = config.getResourcesField().getType();
@@ -416,8 +414,9 @@ public class GoGapicContext extends GapicContext implements GoContext {
 
   /**
    * Calculates the set of imports and returns a sorted set of Go import output strings. This
-   * imitates the same order which gofmt does, which means: - standard imports (Go standard libraries)
-   * in alphabetical order - a blank line (so an empty string) - other imports, alphabetical order
+   * imitates the same order which gofmt does, which means: - standard imports (Go standard
+   * libraries) in alphabetical order - a blank line (so an empty string) - other imports,
+   * alphabetical order
    *
    * Each of the lines (except for the blank line) starts with a tab character '\t' for the
    * indentation within the 'import' section in Go file.

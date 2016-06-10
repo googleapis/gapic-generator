@@ -292,8 +292,9 @@ public class DiscoveryImporter {
    * Parses {@code root} as a member of "additionalProperties" of an object and adds it to
    * {@code types}.
    *
-   * Properties are expressed as types, but are not strictly types as defined by discovery. They are
-   * not to be instantiated. Rather they provide a "schema" describing how data should be laid out.
+   * Properties are expressed as types, but are not strictly types as defined by discovery. They
+   * are not to be instantiated. Rather they provide a "schema" describing how data should be laid
+   * out.
    */
   private String createSyntheticTypeForProperty(JsonNode root) {
     String typeName = getNewSyntheticName();
@@ -368,11 +369,11 @@ public class DiscoveryImporter {
   /**
    * Parses a single method.
    *
-   * In discovery, a method can take multiple parameters, but in Service they can only take one. For
-   * this reason, a synthetic type is created for each method to "pull together" the parameters. For
-   * example, if a discovery-doc method takes two parameters, a string {@code s} and a number
-   * {@code i}, it will be instead structured as having one parameter. The type of the parameter
-   * will be a message with two fields: a string {@code s} and a number {@code i}.
+   * In discovery, a method can take multiple parameters, but in Service they can only take one.
+   * For this reason, a synthetic type is created for each method to "pull together" the
+   * parameters. For example, if a discovery-doc method takes two parameters, a string {@code s}
+   * and a number {@code i}, it will be instead structured as having one parameter. The type of the
+   * parameter will be a message with two fields: a string {@code s} and a number {@code i}.
    */
   private Method methodFrom(JsonNode root) {
     String methodName = root.get("id").asText();

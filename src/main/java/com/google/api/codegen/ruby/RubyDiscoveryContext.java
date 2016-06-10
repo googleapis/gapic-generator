@@ -66,10 +66,8 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
   }
 
   /**
-   * Returns Ruby user-friendly name for the request type of method. Eg,
-   *   analytics.v3's AnalyticsDataimportDeleteUploadDataRequest
-   * becomes
-   *   delete_upload_data_request
+   * Returns Ruby user-friendly name for the request type of method. Eg, analytics.v3's
+   * AnalyticsDataimportDeleteUploadDataRequest becomes delete_upload_data_request
    */
   public String getRequestTypeName(Method method) {
     String type = getRequestField(method).getTypeUrl();
@@ -83,10 +81,8 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
   }
 
   /**
-   * Returns Ruby user-friendly name for the given param. Eg,
-   *   storage.v1's Bucket/cors/cors_configuration/method
-   * becomes
-   *   http_method
+   * Returns Ruby user-friendly name for the given param. Eg, storage.v1's
+   * Bucket/cors/cors_configuration/method becomes http_method
    */
   public String getParamName(Method method, String param) {
     String rename = getNameFromMap(method.getName() + "/" + param);
@@ -94,16 +90,17 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
       throw new IllegalArgumentException(
           String.format(
               "Ruby name not found: %s::%s::%s::%s",
-              getApi().getName(), getApi().getVersion(), method.getName(), param));
+              getApi().getName(),
+              getApi().getVersion(),
+              method.getName(),
+              param));
     }
     return rename;
   }
 
   /**
-   * Returns Ruby user-friendly name for the given method. Eg,
-   *   analytics.v3's analytics.management.accountSummaries.list
-   * becomes
-   *   list_account_summaries
+   * Returns Ruby user-friendly name for the given method. Eg, analytics.v3's
+   * analytics.management.accountSummaries.list becomes list_account_summaries
    */
   public String getMethodName(Method method) {
     String name = getNameFromMap(method.getName());
@@ -111,7 +108,9 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
       throw new IllegalArgumentException(
           String.format(
               "Ruby name not found: %s::%s::%s",
-              getApi().getName(), getApi().getVersion(), method.getName()));
+              getApi().getName(),
+              getApi().getVersion(),
+              method.getName()));
     }
     return name;
   }

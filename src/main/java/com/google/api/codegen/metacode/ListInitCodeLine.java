@@ -20,8 +20,8 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 
 /**
- * ListInitCodeLine represents an InitCodeLine that initializes a list with
- * values from other variables.
+ * ListInitCodeLine represents an InitCodeLine that initializes a list with values from other
+ * variables.
  */
 @AutoValue
 public abstract class ListInitCodeLine implements InitCodeLine {

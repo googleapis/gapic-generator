@@ -36,8 +36,8 @@ public class PhpCodeGeneratorTest extends GapicTestBase {
   }
 
   /**
-   * Declares test parameters, each one an array of values passed to the constructor, with the first
-   * element a name, the second a config of this name.
+   * Declares test parameters, each one an array of values passed to the constructor, with the
+   * first element a name, the second a config of this name.
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
