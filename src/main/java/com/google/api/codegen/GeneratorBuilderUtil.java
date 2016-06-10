@@ -27,8 +27,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Utility class for creating code generators, by dynamic class loading of a
- * codegen provider.
+ * Utility class for creating code generators, by dynamic class loading of a codegen provider.
  */
 public final class GeneratorBuilderUtil {
 
@@ -117,9 +116,7 @@ public final class GeneratorBuilderUtil {
     if (!coerceType.isAssignableFrom(classType)) {
       errorReporter.error(
           "the %s class '%s' does not extend the expected class '%s'",
-          classDescription,
-          classType.getName(),
-          coerceType.getName());
+          classDescription, classType.getName(), coerceType.getName());
       return null;
     }
     Constructor<?> ctor;
@@ -130,8 +127,7 @@ public final class GeneratorBuilderUtil {
           new StringBuilder(
               String.format(
                   "the %s class '%s' does not have the expected constructor with parameters:",
-                  classDescription,
-                  classType.getName()));
+                  classDescription, classType.getName()));
       for (Class c : ctorParam) {
         error.append(" ");
         error.append(c.getName());
@@ -141,10 +137,10 @@ public final class GeneratorBuilderUtil {
     }
     try {
       return (LP) ctor.newInstance(ctorArg);
-    } catch (
-        InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException
-            e) {
+    } catch (InstantiationException
+        | IllegalAccessException
+        | IllegalArgumentException
+        | InvocationTargetException e) {
       // At this point, this is likely a bug and not a user error, so propagate exception.
       throw Throwables.propagate(e);
     }

@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.TreeSet;
 
 /**
- * A class that provides helper methods for snippet files generating C# code to get data and perform
- * data transformations that are difficult or messy to do in the snippets themselves.
+ * A class that provides helper methods for snippet files generating C# code to get data and
+ * perform data transformations that are difficult or messy to do in the snippets themselves.
  */
 public class CSharpContextCommon {
 

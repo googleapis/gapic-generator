@@ -34,8 +34,8 @@ interface GoSnippetSet<Element> {
   Doc generateBody(Element element);
 
   /**
-   * Generates the result class, based on the result for the body, and a set of accumulated types to
-   * be imported.
+   * Generates the result class, based on the result for the body, and a set of accumulated types
+   * to be imported.
    */
   Doc generateClass(Element element, Doc body);
 }

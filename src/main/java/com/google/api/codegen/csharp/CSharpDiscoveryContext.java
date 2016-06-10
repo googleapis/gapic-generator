@@ -125,7 +125,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
   }
 
   @AutoValue
-  public static abstract class ParamInfo {
+  public abstract static class ParamInfo {
     public static ParamInfo create(
         String typeName, String name, String defaultValue, List<String> description) {
       return new AutoValue_CSharpDiscoveryContext_ParamInfo(
@@ -142,7 +142,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
   }
 
   @AutoValue
-  public static abstract class SampleInfo {
+  public abstract static class SampleInfo {
     public static SampleInfo create(
         String namespace,
         String serviceTypeName,

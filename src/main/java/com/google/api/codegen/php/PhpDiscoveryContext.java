@@ -66,8 +66,8 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
           .build();
 
   /**
-   * A set that contains the method names that have extra suffix in the PHP client code.
-   * Some PHP methods appends resource path in camel case, e.g. list -> listAppResources
+   * A set that contains the method names that have extra suffix in the PHP client code. Some PHP
+   * methods appends resource path in camel case, e.g. list -> listAppResources
    */
   private static final ImmutableSet<String> RENAMED_METHODS =
       ImmutableSet.<String>builder().add("list").add("clone").build();
@@ -130,8 +130,8 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
   }
 
   /**
-   * Returns the request class name of the given method in PHP.
-   * If the method does not have a request returns an empty string.
+   * Returns the request class name of the given method in PHP. If the method does not have a
+   * request returns an empty string.
    */
   public String getRequestClassName(Method method) {
     if (hasRequestField(method)) {
@@ -153,8 +153,8 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
   }
 
   /**
-   * Generates placeholder value for field of type based on field kind and,
-   * for explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.
+   * Generates placeholder value for field of type based on field kind and, for
+   * explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.
    */
   public String typeDefaultValue(Type type, Field field) {
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
