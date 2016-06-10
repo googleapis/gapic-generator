@@ -488,10 +488,10 @@ type ShelfIterator struct {
 }
 
 // NextPage moves to the next page and updates its internal data.
-// It returns Done if no more pages exist.
+// On completion, the last page is returned with Done.
 func (it *ShelfIterator) NextPage() ([]*google_example_library_v1.Shelf, error) {
     err := it.apiCall()
-    if err != nil {
+    if err != nil && err != Done {
         return nil, err
     }
     return it.items, err
@@ -537,10 +537,10 @@ type BookIterator struct {
 }
 
 // NextPage moves to the next page and updates its internal data.
-// It returns Done if no more pages exist.
+// On completion, the last page is returned with Done.
 func (it *BookIterator) NextPage() ([]*google_example_library_v1.Book, error) {
     err := it.apiCall()
-    if err != nil {
+    if err != nil && err != Done {
         return nil, err
     }
     return it.items, err
@@ -559,6 +559,12 @@ func (it *BookIterator) Next() (*google_example_library_v1.Book, error) {
     result := it.items[it.currentIndex]
     it.currentIndex++
     return result, nil
+}
+
+// PageSize returns the maximum size of the next page to be
+// retrieved.
+func (it *BookIterator) PageSize() int32 {
+    return it.pageSize
 }
 
 // SetPageSize sets the maximum size of the next page to be
@@ -592,10 +598,10 @@ type StringIterator struct {
 }
 
 // NextPage moves to the next page and updates its internal data.
-// It returns Done if no more pages exist.
+// On completion, the last page is returned with Done.
 func (it *StringIterator) NextPage() ([]string, error) {
     err := it.apiCall()
-    if err != nil {
+    if err != nil && err != Done {
         return nil, err
     }
     return it.items, err
@@ -614,6 +620,12 @@ func (it *StringIterator) Next() (string, error) {
     result := it.items[it.currentIndex]
     it.currentIndex++
     return result, nil
+}
+
+// PageSize returns the maximum size of the next page to be
+// retrieved.
+func (it *StringIterator) PageSize() int32 {
+    return it.pageSize
 }
 
 // SetPageSize sets the maximum size of the next page to be

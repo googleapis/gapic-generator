@@ -15,6 +15,7 @@
 package com.google.api.codegen.ruby;
 
 import com.google.api.client.util.DateTime;
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.Service;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
@@ -51,7 +52,7 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
    * Generates placeholder assignment (to end of line) for field of type based on field kind and,
    * for explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.
    */
-  public String typeDefaultValue(Type type, Field field, Method method) {
+  public String typeDefaultValue(Type type, Field field) {
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
       return isMapField(type, field.getName()) ? "{}" : "[]";
     }
@@ -59,19 +60,7 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
       return DEFAULT_VALUES.get(field.getKind());
     }
     if (field.getKind() == Field.Kind.TYPE_STRING) {
-      String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
-      if (stringFormat != null) {
-        switch (stringFormat) {
-          case "byte":
-            return "'' # base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648";
-          case "date":
-            return "'1969-12-31' # 'YYYY-MM-DD'";
-          case "date-time":
-            return String.format(
-                "'%s' // 'YYYY-MM-DDThh:mm:ss.fffZ' (UTC)", new DateTime(0L).toStringRfc3339());
-        }
-      }
-      return "''";
+      return String.format("'%s'", getDefaultString(type, field));
     }
     return "nil";
   }
@@ -105,10 +94,7 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
       throw new IllegalArgumentException(
           String.format(
               "Ruby name not found: %s::%s::%s::%s",
-              getApi().getName(),
-              getApi().getVersion(),
-              method.getName(),
-              param));
+              getApi().getName(), getApi().getVersion(), method.getName(), param));
     }
     return rename;
   }
@@ -125,9 +111,7 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
       throw new IllegalArgumentException(
           String.format(
               "Ruby name not found: %s::%s::%s",
-              getApi().getName(),
-              getApi().getVersion(),
-              method.getName()));
+              getApi().getName(), getApi().getVersion(), method.getName()));
     }
     return name;
   }

@@ -37,7 +37,7 @@ public class PageStreamingConfigGenerator implements MethodConfigGenerator {
   private static final String CONFIG_KEY_PAGE_STREAMING = "page_streaming";
   private static final String CONFIG_KEY_PAGE_SIZE_FIELD = "page_size_field";
   private static final String CONFIG_KEY_TOKEN_FIELD = "token_field";
-  private static final String CONFIG_KEY_RESOURCE_FIELD = "resource_field";
+  private static final String CONFIG_KEY_RESOURCE_FIELD = "resources_field";
 
   @Override
   public Map<String, Object> generate(Method method) {

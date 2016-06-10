@@ -14,8 +14,9 @@
  */
 package com.google.api.codegen.py;
 
-import com.google.api.Service;
 import com.google.api.client.util.DateTime;
+import com.google.api.codegen.discovery.DefaultString;
+import com.google.api.Service;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
@@ -219,6 +220,12 @@ public class PythonDiscoveryContext extends DiscoveryContext {
           if (value != null) {
             return value;
           }
+        }
+        String stringPattern =
+            getApiaryConfig().getFieldPattern().get(type.getName(), field.getName());
+        String patternSample = DefaultString.forPattern(stringPattern);
+        if (patternSample != null) {
+          return String.format("'%s'", patternSample);
         }
         return "''";
       }

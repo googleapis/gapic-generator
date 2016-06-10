@@ -319,10 +319,10 @@
             }
 
             // NextPage moves to the next page and updates its internal data.
-            // It returns Done if no more pages exist.
+            // On completion, the last page is returned with Done.
             func (it *{@iteratorTypeName}) NextPage() ([]{@resourceFieldTypeName}, error) {
                 err := it.apiCall()
-                if err != nil {
+                if err != nil && err != Done {
                     return nil, err
                 }
                 return it.items, err
@@ -344,6 +344,12 @@
             }
 
             @if hasPageSizeField
+                // PageSize returns the maximum size of the next page to be
+                // retrieved.
+                func (it *{@iteratorTypeName}) PageSize() int32 {
+                    return it.pageSize
+                }
+
                 // SetPageSize sets the maximum size of the next page to be
                 // retrieved.
                 func (it *{@iteratorTypeName}) SetPageSize(pageSize int32) {

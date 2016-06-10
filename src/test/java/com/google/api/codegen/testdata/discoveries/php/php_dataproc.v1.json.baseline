@@ -23,66 +23,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Dataproc service
 $service = new Google_Service_Dataproc($client);
-// Name of the media that is being downloaded. See ByteStream.ReadRequest.resource_name.
-$resourceName = '';
-
-$response = $service->media->download($resourceName);
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google Cloud Dataproc API and check quota for your project at
- *    https://console.developers.google.com/apis/api/dataproc_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-// Create a new client
-$client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-// Create a new Dataproc service
-$service = new Google_Service_Dataproc($client);
-// Name of the media that is being downloaded. See ByteStream.ReadRequest.resource_name.
-$resourceName = '';
-
-$postBody = new Google_Service_Dataproc_Media($client);
-
-$response = $service->media->upload($resourceName, $postBody);
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google Cloud Dataproc API and check quota for your project at
- *    https://console.developers.google.com/apis/api/dataproc_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-// Create a new client
-$client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-// Create a new Dataproc service
-$service = new Google_Service_Dataproc($client);
 // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
 $projectId = '';
 // [Required] The Cloud Dataproc region in which to handle the request.
@@ -457,7 +397,7 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 // Create a new Dataproc service
 $service = new Google_Service_Dataproc($client);
 // The name of the operation resource to be cancelled.
-$name = '';
+$name = 'projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}';
 
 $response = $service->projects_regions_operations->cancel($name);
 
@@ -486,7 +426,7 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 // Create a new Dataproc service
 $service = new Google_Service_Dataproc($client);
 // The name of the operation resource to be deleted.
-$name = '';
+$name = 'projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}';
 
 $response = $service->projects_regions_operations->delete($name);
 
@@ -515,7 +455,7 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 // Create a new Dataproc service
 $service = new Google_Service_Dataproc($client);
 // The name of the operation resource.
-$name = '';
+$name = 'projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}';
 
 $response = $service->projects_regions_operations->get($name);
 

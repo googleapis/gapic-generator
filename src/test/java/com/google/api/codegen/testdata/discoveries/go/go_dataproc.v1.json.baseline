@@ -31,100 +31,6 @@ func main() {
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'download' method:
-  var (
-    // Name of the media that is being downloaded. See ByteStream.ReadRequest.resource_name.
-    resourceName = ""
-  )
-
-  response, err := client.Media.Download(resourceName).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-  // doThingsWith(response)
-  _ = response
-}
-package main
-
-// PRE-REQUISITES:
-// ---------------
-// 1. If not already done, enable the Google Cloud Dataproc API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dataproc_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/dataproc/v1'
-//    'go get golang.org/x/oauth2/google'
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/dataproc/v1"
-)
-
-func main() {
-  ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-  client, err := dataproc.New(httpClient)
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-
-  // TODO: Change placeholders below to appropriate parameter values for the 'upload' method:
-  var (
-    // Name of the media that is being downloaded. See ByteStream.ReadRequest.resource_name.
-    resourceName = ""
-
-    requestBody = &dataproc.Media{}
-  )
-
-  response, err := client.Media.Upload(resourceName, requestBody).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-  // doThingsWith(response)
-  _ = response
-}
-package main
-
-// PRE-REQUISITES:
-// ---------------
-// 1. If not already done, enable the Google Cloud Dataproc API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dataproc_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/dataproc/v1'
-//    'go get golang.org/x/oauth2/google'
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/dataproc/v1"
-)
-
-func main() {
-  ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-  client, err := dataproc.New(httpClient)
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-
   // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
   var (
     // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
@@ -708,7 +614,7 @@ func main() {
   // TODO: Change placeholders below to appropriate parameter values for the 'cancel' method:
   var (
     // The name of the operation resource to be cancelled.
-    name = ""
+    name = "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}"
   )
 
   response, err := client.Projects.Regions.Operations.Cancel(name).Context(ctx).Do()
@@ -754,7 +660,7 @@ func main() {
   // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
   var (
     // The name of the operation resource to be deleted.
-    name = ""
+    name = "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}"
   )
 
   response, err := client.Projects.Regions.Operations.Delete(name).Context(ctx).Do()
@@ -800,7 +706,7 @@ func main() {
   // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
   var (
     // The name of the operation resource.
-    name = ""
+    name = "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}"
   )
 
   response, err := client.Projects.Regions.Operations.Get(name).Context(ctx).Do()
