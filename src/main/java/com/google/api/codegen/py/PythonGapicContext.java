@@ -17,10 +17,6 @@ package com.google.api.codegen.py;
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.MethodConfig;
-import com.google.api.codegen.metacode.InitCodeLine;
-import com.google.api.codegen.metacode.SimpleInitCodeLine;
-import com.google.api.codegen.metacode.StructureInitCodeLine;
-import com.google.api.codegen.py.PythonImport.ImportType;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.aspects.documentation.model.ElementDocumentationAttribute;
 import com.google.api.tools.framework.model.Field;
@@ -33,14 +29,13 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-import autovalue.shaded.com.google.common.common.collect.Lists;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +44,7 @@ import javax.annotation.Nullable;
 /**
  * A GapicContext specialized for Python.
  */
-public class PythonGapicContext extends GapicContext implements PythonContext {
+public class PythonGapicContext extends GapicContext {
 
   /**
    * A map from primitive types to its default value.
@@ -96,16 +91,10 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
           .build();
 
   private PythonContextCommon pythonCommon;
-  private PythonSnippetSet<?> pythonSnippetSet;
 
   public PythonGapicContext(Model model, ApiConfig apiConfig) {
     super(model, apiConfig);
     this.pythonCommon = new PythonContextCommon();
-  }
-
-  @Override
-  public void setPythonSnippetSet(PythonSnippetSet<?> pythonSnippetSet) {
-    this.pythonSnippetSet = pythonSnippetSet;
   }
 
   public PythonContextCommon python() {
@@ -248,23 +237,39 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
     }
   }
 
-  /**
-   * Return comments lines for a given method, consisting of proto doc and parameter type
-   * documentation.
-   */
-  public List<String> methodComments(Method method, PythonImportHandler importHandler) {
-    String sampleCode = methodSample(method, importHandler);
+  public PythonDocConfig.Builder newDocConfigBuilder() {
+    return PythonDocConfig.newBuilder();
+  }
 
+  /**
+   * Generate comments lines for a given method's description.
+   */
+  public List<String> methodDescriptionComments(Method method) {
+    String description = "";
+    if (method.hasAttribute(ElementDocumentationAttribute.KEY)) {
+      String sphinxified = getSphinxifiedScopedDescription(method);
+      sphinxified = sphinxified.trim();
+      description = sphinxified.replaceAll("\\s*\\n\\s*", "\n");
+    }
+    return Splitter.on("\n").splitToList(description);
+  }
+
+  /**
+   * Generate comments lines for a given method's signature, consisting of proto doc and parameter
+   * type documentation.
+   */
+  public List<String> methodSignatureComments(Method method, PythonImportHandler importHandler) {
     MethodConfig config =
         getApiConfig().getInterfaceConfig((Interface) method.getParent()).getMethodConfig(method);
 
-    // Generate parameter types
-    StringBuilder paramTypesBuilder = new StringBuilder();
-    paramTypesBuilder.append("Args:\n");
+    StringBuilder contentBuilder = new StringBuilder();
+
+    // parameter types
+    contentBuilder.append("Args:\n");
     for (Field field : this.messages().flattenedFields(method.getInputType())) {
       if (config.isPageStreaming()
           && field.equals((config.getPageStreaming().getPageSizeField()))) {
-        paramTypesBuilder.append(
+        contentBuilder.append(
             fieldComment(
                 field,
                 importHandler,
@@ -274,109 +279,43 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
                     + "streaming is performed per-page, this determines the maximum number\n"
                     + "of resources in a page."));
       } else {
-        paramTypesBuilder.append(fieldComment(field, importHandler, null));
+        contentBuilder.append(fieldComment(field, importHandler, null));
       }
     }
-    paramTypesBuilder.append(
+    contentBuilder.append(
         "  options (:class:`google.gax.CallOptions`): "
             + "Overrides the default\n    settings for this call, e.g, timeout, retries etc.");
-    String paramTypes = paramTypesBuilder.toString();
 
+    // return type
     String returnType = returnTypeComment(method, config, importHandler);
-
-    // Generate comment contents
-    StringBuilder contentBuilder = new StringBuilder();
-    if (method.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      String sphinxified = getSphinxifiedScopedDescription(method);
-      sphinxified = sphinxified.trim();
-      contentBuilder.append(sphinxified.replaceAll("\\s*\\n\\s*", "\n"));
-      if (!Strings.isNullOrEmpty(paramTypes)) {
-        contentBuilder.append("\n\n");
-      }
-    }
-    if (!sampleCode.isEmpty()) {
-      contentBuilder.append(sampleCode);
-      contentBuilder.append("\n\n");
-    }
-    contentBuilder.append(paramTypes);
     if (returnType != null) {
       contentBuilder.append("\n\n" + returnType);
     }
 
+    // exception types
     contentBuilder.append(
         "\n\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
-    return pythonCommon.convertToCommentedBlock(contentBuilder.toString());
-  }
 
-  private String methodSample(Method method, PythonImportHandler importHandler) {
-    if (!getApiConfig().generateSamples()) {
-      return "";
-    }
-
-    Interface service = (Interface) method.getParent();
-    String apiName = getApiWrapperName(service);
-    List<String> importStrings = new ArrayList<>();
-    importStrings.add(apiImport(apiName));
-    String methodName = upperCamelToLowerUnderscore(method.getSimpleName());
-    String returnType = returnTypeOrEmpty(method.getOutputType(), importHandler);
-    MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
-    List<Field> fields = Lists.newArrayList(methodConfig.getRequiredFields());
-
-    PythonDocConfig docConfig =
-        PythonDocConfig.newBuilder()
-            .setApiName(apiName)
-            .setAppImports(importStrings)
-            .setMethodName(methodName)
-            .setReturnType(returnType)
-            .setFieldInitCode(this, service, method, fields)
-            .setFieldParams(this, fields)
-            .setIterableResponse(methodConfig.isPageStreaming())
-            .build();
-
-    protoImports(method, docConfig);
-    return generateMethodSampleCode(docConfig);
-  }
-
-  private String returnTypeOrEmpty(TypeRef returnType, PythonImportHandler importHandler) {
-    return messages().isEmptyType(returnType)
-        ? ""
-        : typeCardinalityComment(returnType, importHandler);
-  }
-
-  private String apiImport(String apiName) {
-    String packageName = getApiConfig().getPackageName();
-    String moduleName = packageName + "." + lowerCamelToLowerUnderscore(apiName);
-    return PythonImport.create(ImportType.APP, moduleName, apiName).importString();
-  }
-
-  // mutates appImports list in docConfig
-  private void protoImports(Method method, PythonDocConfig docConfig) {
-    List<String> importStrings = docConfig.getAppImports();
-    for (InitCodeLine line : docConfig.getInitCode().getLines()) {
-      TypeRef lineType = null;
-      switch (line.getLineType()) {
-        case SimpleInitLine:
-          lineType = ((SimpleInitCodeLine) line).getType();
-          break;
-        case StructureInitLine:
-          lineType = ((StructureInitCodeLine) line).getType();
-          break;
-        default:
-          // nothing to do
-      }
-
-      if (lineType != null && lineType.isMessage()) {
-        importStrings.addAll(new PythonImportHandler(method).calculateImports());
-        return;
-      }
-    }
+    return Splitter.on("\n").splitToList(contentBuilder.toString());
   }
 
   /**
-   * Generate the sample code for a method.
+   * Get required (non-optional) fields.
    */
-  public String generateMethodSampleCode(PythonDocConfig config) {
-    return pythonSnippetSet.generateMethodSampleCode(config).prettyPrint();
+  public List<Field> getRequiredFields(Method method) {
+    Interface service = (Interface) method.getParent();
+    MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+    return Lists.newArrayList(methodConfig.getRequiredFields());
+  }
+
+  /**
+   * Get return type string, or an empty string if there is no return type.
+   */
+  public String returnTypeOrEmpty(Method method, PythonImportHandler importHandler) {
+    TypeRef returnType = method.getOutputType();
+    return messages().isEmptyType(returnType)
+        ? ""
+        : typeCardinalityComment(returnType, importHandler);
   }
 
   /**

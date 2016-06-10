@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * A DiscoveryContext specialized for Python.
  */
-public class PythonDiscoveryContext extends DiscoveryContext implements PythonContext {
+public class PythonDiscoveryContext extends DiscoveryContext {
 
   /**
    * A map from primitive field types used by DiscoveryImporter to Python counterparts.
@@ -90,9 +90,6 @@ public class PythonDiscoveryContext extends DiscoveryContext implements PythonCo
     super(service, apiaryConfig);
     pythonCommon = new PythonContextCommon();
   }
-
-  @Override
-  public void setPythonSnippetSet(PythonSnippetSet<?> pythonSnippetSet) {}
 
   public PythonContextCommon python() {
     return pythonCommon;

@@ -347,10 +347,48 @@
     @end
 @end
 
-@private methodComments(element)
-    @join comment : context.methodComments(element, importHandler)
-        {@comment}
+@private methodComments(method)
+  @let descriptionComments = context.methodDescriptionComments(method), \
+       signatureComments = context.methodSignatureComments(method, importHandler)
+    """
+    @join comment : descriptionComments
+      {@comment}
     @end
+    @if context.getApiConfig.generateSamples
+      @if descriptionComments.isEmpty
+      @else
+        
+        
+      @end
+      {@methodSample(method)}
+      @if signatureComments.isEmpty
+      @else
+
+        
+      @end
+    @end
+    @join comment : signatureComments
+      {@comment}
+    @end
+    """
+  @end
+@end
+
+@private methodSample(method) 
+  @let apiConfig = context.getApiConfig, \
+       service = method.getParent, \
+       apiName = context.getApiWrapperName(service), \
+       returnType = context.returnTypeOrEmpty(method, importHandler), \
+       fields = context.getRequiredFields(method)
+    {@generateMethodSampleCode(context.newDocConfigBuilder \
+      .setApiConfig(apiConfig) \
+      .setApiName(apiName) \
+      .setMethod(method) \
+      .setReturnType(returnType) \
+      .setFieldInitCode(context, service, method, fields) \
+      .setFieldParams(context, fields) \
+      .build)}
+  @end
 @end
 
 @private serviceMethodsSection(service)

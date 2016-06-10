@@ -57,10 +57,6 @@ public class PythonSnippetSetRunner<ElementT> implements SnippetSetRunner<Elemen
         SnippetSet.createSnippetInterface(
             PythonSnippetSet.class, SNIPPET_RESOURCE_ROOT, snippetFileName, globalMap);
 
-    // TODO don't depend on a cast here
-    PythonContext pythonContext = (PythonContext) context;
-    pythonContext.setPythonSnippetSet(snippets);
-
     Doc body = snippets.generateBody(element);
     List<String> importList = importHandler.calculateImports();
     Doc result = snippets.generateModule(element, body, importList);

@@ -14,12 +14,23 @@
  */
 package com.google.api.codegen.py;
 
+import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.DocConfig;
+import com.google.api.codegen.LanguageUtil;
+import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.metacode.InitCode;
+import com.google.api.codegen.metacode.InitCodeLine;
 import com.google.api.codegen.metacode.InputParameter;
+import com.google.api.codegen.metacode.SimpleInitCodeLine;
+import com.google.api.codegen.metacode.StructureInitCodeLine;
+import com.google.api.codegen.py.PythonImport.ImportType;
+import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,27 +42,78 @@ abstract class PythonDocConfig extends DocConfig {
     return new AutoValue_PythonDocConfig.Builder();
   }
 
-  public abstract List<String> getAppImports();
+  public abstract ApiConfig getApiConfig();
 
-  public abstract boolean isIterableResponse();
+  public abstract Method getMethod();
+
+  @Override
+  public String getMethodName() {
+    return LanguageUtil.upperCamelToLowerUnderscore(getMethod().getSimpleName());
+  }
+
+  /**
+   * Does this method return an iterable response?
+   */
+  public boolean isIterableResponse() {
+    Method method = getMethod();
+    Interface service = (Interface) method.getParent();
+    MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+    return methodConfig.isPageStreaming();
+  }
+
+  /**
+   * Get list of import statements for this method's code sample.
+   */
+  public List<String> getAppImports() {
+    List<String> importStrings = new ArrayList<>();
+    importStrings.add(apiImport(getApiName()));
+    addProtoImports(importStrings);
+    return importStrings;
+  }
+
+  private String apiImport(String apiName) {
+    String packageName = getApiConfig().getPackageName();
+    String moduleName = packageName + "." + LanguageUtil.lowerCamelToLowerUnderscore(apiName);
+    return PythonImport.create(ImportType.APP, moduleName, apiName).importString();
+  }
+
+  private List<String> addProtoImports(List<String> importStrings) {
+    for (InitCodeLine line : getInitCode().getLines()) {
+      TypeRef lineType = null;
+      switch (line.getLineType()) {
+        case SimpleInitLine:
+          lineType = ((SimpleInitCodeLine) line).getType();
+          break;
+        case StructureInitLine:
+          lineType = ((StructureInitCodeLine) line).getType();
+          break;
+        default:
+          // nothing to do
+      }
+
+      if (lineType != null && lineType.isMessage()) {
+        importStrings.addAll(new PythonImportHandler(getMethod()).calculateImports());
+        break;
+      }
+    }
+    return importStrings;
+  }
 
   @AutoValue.Builder
   abstract static class Builder extends DocConfig.Builder<Builder> {
     public abstract PythonDocConfig build();
 
+    public abstract Builder setApiConfig(ApiConfig apiConfig);
+
     public abstract Builder setApiName(String serviceName);
 
-    public abstract Builder setMethodName(String methodName);
+    public abstract Builder setMethod(Method method);
 
     public abstract Builder setReturnType(String returnType);
 
     public abstract Builder setInitCode(InitCode initCode);
 
     public abstract Builder setParams(ImmutableList<InputParameter> params);
-
-    public abstract Builder setAppImports(List<String> appImports);
-
-    public abstract Builder setIterableResponse(boolean isIterableResponse);
 
     @Override
     protected Builder setInitCodeProxy(InitCode initCode) {
