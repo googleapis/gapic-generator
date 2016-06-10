@@ -79,7 +79,7 @@
 
 @private serviceClass(service)
     @let path_templates = {@pathTemplateSection(service)}, \
-         documentation = {@comments(service)}
+         documentation = {@defaultComments(service)}
         class {@context.getApiWrapperName(service)}(object):
             @if documentation
                 {@documentation}
@@ -341,8 +341,14 @@
     @end
 @end
 
-@private comments(element)
-    @join comment : context.comments(element, importHandler)
+@private defaultComments(element)
+    @join comment : context.defaultComments(element)
+        {@comment}
+    @end
+@end
+
+@private methodComments(element)
+    @join comment : context.methodComments(element, importHandler)
         {@comment}
     @end
 @end
@@ -368,7 +374,7 @@
     @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
              methodInputModule = pyproto.getPbFileName(method.getInputMessage()), \
              inputTypeName = method.getInputMessage().getSimpleName(), \
-             documentation = comments(method), \
+             documentation = methodComments(method), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              requiredParams = methodConfig.getRequiredFields(), \
              optionalParams = methodConfig.getOptionalFields()

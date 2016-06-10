@@ -120,22 +120,9 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
   }
 
   /**
-   * Return a Python docstring to be associated with the given ProtoElement.
-   */
-  public List<String> comments(ProtoElement element, PythonImportHandler importHandler) {
-    if (element instanceof Method) {
-      return methodComments((Method) element, importHandler);
-    } else if (element instanceof MessageType) {
-      return messageComments((MessageType) element, importHandler);
-    } else {
-      return defaultComments(element);
-    }
-  }
-
-  /**
    * Return comments lines for a given proto element, extracted directly from the proto doc
    */
-  private List<String> defaultComments(ProtoElement element) {
+  public List<String> defaultComments(ProtoElement element) {
     if (!element.hasAttribute(ElementDocumentationAttribute.KEY)) {
       return ImmutableList.<String>of("");
     }
@@ -212,7 +199,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
    * Return comments lines for a given message, consisting of proto doc and argument type
    * documentation.
    */
-  private List<String> messageComments(MessageType msg, PythonImportHandler importHandler) {
+  public List<String> messageComments(MessageType msg, PythonImportHandler importHandler) {
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
     paramTypesBuilder.append("Attributes:\n");
@@ -265,7 +252,7 @@ public class PythonGapicContext extends GapicContext implements PythonContext {
    * Return comments lines for a given method, consisting of proto doc and parameter type
    * documentation.
    */
-  private List<String> methodComments(Method method, PythonImportHandler importHandler) {
+  public List<String> methodComments(Method method, PythonImportHandler importHandler) {
     String sampleCode = methodSample(method, importHandler);
 
     MethodConfig config =
