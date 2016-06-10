@@ -22,8 +22,8 @@ import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 
 /**
- * A NodeJSProvider provides general NodeJS code generation logic that is agnostic to the use
- * case (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
+ * A NodeJSProvider provides general NodeJS code generation logic that is agnostic to the use case
+ * (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
  * subclass of NodeJSContext.
  */
 public class NodeJSSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {

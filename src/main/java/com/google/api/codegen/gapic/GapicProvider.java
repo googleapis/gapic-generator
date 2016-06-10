@@ -35,8 +35,8 @@ public interface GapicProvider<InputElementT> {
   void generate(String outputPath) throws Exception;
 
   /**
-   * Generates code for a single snippet. Returns a map from service interface to code for the service.
-   * Returns null if generation failed.
+   * Generates code for a single snippet. Returns a map from service interface to code for the
+   * service. Returns null if generation failed.
    */
   List<GeneratedResult> generateSnip(String snippetFileName);
 }

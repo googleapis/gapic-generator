@@ -27,8 +27,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * Utility class for creating code generators, by dynamic class loading of a
- * codegen provider.
+ * Utility class for creating code generators, by dynamic class loading of a codegen provider.
  */
 public final class GeneratorBuilderUtil {
 
@@ -141,10 +140,10 @@ public final class GeneratorBuilderUtil {
     }
     try {
       return (LP) ctor.newInstance(ctorArg);
-    } catch (
-        InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException
-            e) {
+    } catch (InstantiationException
+        | IllegalAccessException
+        | IllegalArgumentException
+        | InvocationTargetException e) {
       // At this point, this is likely a bug and not a user error, so propagate exception.
       throw Throwables.propagate(e);
     }

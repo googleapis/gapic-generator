@@ -65,9 +65,9 @@ public class ApiaryConfig {
       HashBasedTable.<String, String, Boolean>create();
 
   /**
-   * Specifies the format of each field. A pair (type name, field name) is in this table if the type
-   * of the field is "string" and specific format is given in the discovery doc. The format is one
-   * of {"int64", "uint64", "byte", "date", "date-time"}. Note: other string formats from the
+   * Specifies the format of each field. A pair (type name, field name) is in this table if the
+   * type of the field is "string" and specific format is given in the discovery doc. The format is
+   * one of {"int64", "uint64", "byte", "date", "date-time"}. Note: other string formats from the
    * discovery doc are encoded as types in the Service.
    */
   private final Table<String, String, String> stringFormat =

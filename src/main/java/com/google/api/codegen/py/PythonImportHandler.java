@@ -39,9 +39,9 @@ public class PythonImportHandler {
   private final BiMap<String, PythonImport> stringImports = HashBiMap.create();
 
   /**
-   * Bi-map from proto files to short names for imports. Should only be modified through addImport()
-   * to maintain the invariant that elements of this map are in 1:1 correspondence with those in
-   * stringImports.
+   * Bi-map from proto files to short names for imports. Should only be modified through
+   * addImport() to maintain the invariant that elements of this map are in 1:1 correspondence with
+   * those in stringImports.
    */
   private final BiMap<ProtoFile, String> fileImports = HashBiMap.create();
 

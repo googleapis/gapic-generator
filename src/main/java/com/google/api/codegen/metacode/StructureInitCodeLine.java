@@ -20,8 +20,8 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 
 /**
- * StructureInitCodeLine represents an InitCodeLine that initializes a structure
- * that depends on values from other variables.
+ * StructureInitCodeLine represents an InitCodeLine that initializes a structure that depends on
+ * values from other variables.
  */
 @AutoValue
 public abstract class StructureInitCodeLine implements InitCodeLine {

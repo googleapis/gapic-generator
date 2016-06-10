@@ -24,9 +24,9 @@ import com.google.common.collect.ImmutableMap;
 import java.util.List;
 
 /**
- * A PhpProvider provides general PHP code generation logic that is agnostic to the use
- * case (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
- * PHP context class (PhpGapicContext vs PhpDiscoveryContext).
+ * A PhpProvider provides general PHP code generation logic that is agnostic to the use case (e.g.
+ * Gapic vs Discovery). Behavior that is specific to a use case is provided through a PHP context
+ * class (PhpGapicContext vs PhpDiscoveryContext).
  */
 public class PhpSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
 

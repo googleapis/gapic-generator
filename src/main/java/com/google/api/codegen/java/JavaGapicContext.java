@@ -289,7 +289,8 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
           String.format(
               "Unsupported type for field %s - found %s, "
                   + "but expected TYPE_STRING or TYPE_BYTES",
-              field.getFullName(), field.getType().getKind()));
+              field.getFullName(),
+              field.getType().getKind()));
     }
   }
 

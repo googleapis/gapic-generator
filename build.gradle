@@ -368,5 +368,17 @@ task verifyLicense << {
 }
 test.dependsOn verifyLicense
 
-// TODO(pongad): Unflake the build, it currently races with AutoValue generation.
-// test.dependsOn verifyGoogleJavaFormat
+googleJavaFormat {
+  toolVersion '1.0'
+}
+tasks.googleJavaFormat {
+  exclude '.apt_generated/**'
+  exclude 'bin/**'
+  exclude 'build/**'
+}
+tasks.verifyGoogleJavaFormat {
+  exclude '.apt_generated/**'
+  exclude 'bin/**'
+  exclude 'build/**'
+}
+test.dependsOn verifyGoogleJavaFormat
