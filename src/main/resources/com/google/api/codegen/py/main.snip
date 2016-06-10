@@ -165,7 +165,7 @@
                 client_config,
                 config.STATUS_CODE_NAMES,
                 timeout,
-                headers=headers,
+                metadata=metadata,
                 @if context.messages.filterBundlingMethods(ifaceConfig, service.getMethods)
                     @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
                         bundle_descriptors=self._BUNDLE_DESCRIPTORS,
@@ -183,7 +183,7 @@
                 client_config,
                 config.STATUS_CODE_NAMES,
                 timeout
-                headers=headers)
+                metadata=metadata)
         @end
     @end
 @end
@@ -239,7 +239,7 @@
                 self._GAX_VERSION,
                 platform.python_version()
             )
-            headers = [('x-goog-api-client', goog_api_client)]
+            metadata = [('x-goog-api-client', goog_api_client)]
             {@constructDefaults(service)}
             self.stub = config.create_stub(
                 {@stubModule}.beta_create_{@stubService}_stub,

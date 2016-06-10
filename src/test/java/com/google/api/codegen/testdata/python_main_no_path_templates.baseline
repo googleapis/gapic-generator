@@ -102,7 +102,7 @@ class NoTemplatesServiceApi(object):
             self._GAX_VERSION,
             platform.python_version()
         )
-        headers = [('x-goog-api-client', goog_api_client)]
+        metadata = [('x-goog-api-client', goog_api_client)]
         default_client_config = json.loads(pkg_resources.resource_string(
             __name__, 'no_templates_service_client_config.json'))
         defaults = api_callable.construct_settings(
@@ -111,7 +111,7 @@ class NoTemplatesServiceApi(object):
             client_config,
             config.STATUS_CODE_NAMES,
             timeout
-            headers=headers)
+            metadata=metadata)
         self.stub = config.create_stub(
             no_path_templates_pb2.beta_create_NoTemplatesService_stub,
             service_path,
