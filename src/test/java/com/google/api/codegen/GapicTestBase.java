@@ -96,11 +96,10 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
   }
 
   /**
-   * Creates the constructor arguments to be passed onto this class
-   * (GapicTestBase) to create test methods. The idForFactory String is passed
-   * to GapicProviderFactory to get the GapicProviders provided by that id, and
-   * then the snippet file names are scraped from those providers, and a set of
-   * arguments is created for each combination of GapicProvider x snippet that
+   * Creates the constructor arguments to be passed onto this class (GapicTestBase) to create test
+   * methods. The idForFactory String is passed to GapicProviderFactory to get the GapicProviders
+   * provided by that id, and then the snippet file names are scraped from those providers, and a
+   * set of arguments is created for each combination of GapicProvider x snippet that
    * GapicProviderFactory returns.
    */
   public static List<Object[]> createTestedConfigs(

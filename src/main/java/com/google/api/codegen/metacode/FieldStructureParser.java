@@ -25,25 +25,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * FieldStructureParser parses a dotted path specification into a map of String
- * to Map, List, or InitValueConfig.
+ * FieldStructureParser parses a dotted path specification into a map of String to Map, List, or
+ * InitValueConfig.
  */
 public class FieldStructureParser {
   // example: "messages[0]"
   private static Pattern fieldListPattern = Pattern.compile("([^\\[]+)\\[([^\\]]+)\\]");
 
   /**
-   * Parses a dotted path specification into a map of String to Map, List, or
-   * InitValueConfig.
+   * Parses a dotted path specification into a map of String to Map, List, or InitValueConfig.
    */
   public static Map<String, Object> parseFields(Collection<String> fieldSpecs) {
     return parseFields(fieldSpecs, ImmutableMap.<String, InitValueConfig>of());
   }
 
   /**
-   * Parses a dotted path specification into a map of String to Map, List, or
-   * InitValueConfig, and also sets InitValueConfig on fields that match the
-   * paths in initValueConfigMap.
+   * Parses a dotted path specification into a map of String to Map, List, or InitValueConfig, and
+   * also sets InitValueConfig on fields that match the paths in initValueConfigMap.
    */
   public static Map<String, Object> parseFields(
       Collection<String> fieldSpecs, ImmutableMap<String, InitValueConfig> initValueConfigMap) {

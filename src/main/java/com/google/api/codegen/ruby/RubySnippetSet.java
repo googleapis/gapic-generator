@@ -17,10 +17,9 @@ package com.google.api.codegen.ruby;
 import com.google.api.tools.framework.snippet.Doc;
 
 /**
- * Entry points for the snippet set. Generation is partitioned into a first phase
- * which generates the content of the class without package and imports header,
- * and a second phase which completes the class based on the knowledge of which
- * other classes have been imported.
+ * Entry points for the snippet set. Generation is partitioned into a first phase which generates
+ * the content of the class without package and imports header, and a second phase which completes
+ * the class based on the knowledge of which other classes have been imported.
  */
 interface RubySnippetSet<Element> {
 

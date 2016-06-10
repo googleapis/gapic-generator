@@ -31,8 +31,8 @@ public class CollectionConfig {
   private final String entityName;
 
   /**
-   * Creates an instance of CollectionConfig based on CollectionConfigProto. On errors, null will be
-   * returned, and diagnostics are reported to the diag collector.
+   * Creates an instance of CollectionConfig based on CollectionConfigProto. On errors, null will
+   * be returned, and diagnostics are reported to the diag collector.
    */
   @Nullable
   public static CollectionConfig createCollection(

@@ -37,8 +37,8 @@ public class PythonDiscoveryFragmentGeneratorTest extends DiscoveryGeneratorTest
   }
 
   /**
-   * Declares test parameters, each one an array of values passed to the constructor, with the first
-   * element a name, the second a discovery doc, and the third a partial GAPIC config.
+   * Declares test parameters, each one an array of values passed to the constructor, with the
+   * first element a name, the second a discovery doc, and the third a partial GAPIC config.
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {

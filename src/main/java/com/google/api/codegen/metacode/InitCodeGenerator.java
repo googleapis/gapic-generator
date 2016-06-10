@@ -29,16 +29,16 @@ import java.util.Set;
 import org.apache.commons.lang3.NotImplementedException;
 
 /**
- * InitCodeGenerator generates an InitCode object for a given method and
- * initialization field structure (as constructed by FieldStructureParser).
+ * InitCodeGenerator generates an InitCode object for a given method and initialization field
+ * structure (as constructed by FieldStructureParser).
  */
 public class InitCodeGenerator {
   private Set<String> symbolTable = new HashSet<>();
   private List<InitCodeLine> initLineSpecs = new ArrayList<>();
 
   /**
-   * Generates the InitCode for a method, where the input of the function
-   * representing the method will take a request object.
+   * Generates the InitCode for a method, where the input of the function representing the method
+   * will take a request object.
    */
   public InitCode generateRequestObjectInitCode(
       Method method, Map<String, Object> initFieldStructure) {
@@ -56,8 +56,8 @@ public class InitCodeGenerator {
   }
 
   /**
-   * Generates the InitCode for a method, where the input of the function
-   * representing the method will take the given set of fields.
+   * Generates the InitCode for a method, where the input of the function representing the method
+   * will take the given set of fields.
    */
   public InitCode generateRequestFieldInitCode(
       Method method, Map<String, Object> initFieldStructure, Iterable<Field> fields) {

@@ -24,8 +24,8 @@ import com.google.common.collect.ImmutableMap;
 import java.util.List;
 
 /**
- * A JavaProvider provides general Java code generation logic that is agnostic to the use
- * case (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
+ * A JavaProvider provides general Java code generation logic that is agnostic to the use case
+ * (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
  * subclass of JavaContext.
  */
 public class JavaSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {

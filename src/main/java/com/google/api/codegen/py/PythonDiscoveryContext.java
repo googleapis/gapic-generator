@@ -113,8 +113,8 @@ public class PythonDiscoveryContext extends DiscoveryContext {
   }
 
   /**
-   * Returns a name for a type's field's type, substituting the given name when a native
-   * type is encountered.
+   * Returns a name for a type's field's type, substituting the given name when a native type is
+   * encountered.
    */
   public String typeName(Type type, Field field, String name) {
     String fieldName = field.getName();

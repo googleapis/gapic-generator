@@ -282,8 +282,7 @@ public class MethodConfig {
   }
 
   /**
-   * Returns the field structure of fields that needs to be initialized
-   * in sample code.
+   * Returns the field structure of fields that needs to be initialized in sample code.
    */
   public List<String> getSampleCodeInitFields() {
     return sampleCodeInitFields;
