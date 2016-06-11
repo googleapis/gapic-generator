@@ -95,10 +95,7 @@ public abstract class DocConfig {
       return initFieldStructure;
     }
 
-    public BuilderType setRequestObjectParam(
-        @SuppressWarnings("unused") GapicContext context,
-        @SuppressWarnings("unused") Interface service,
-        Method method) {
+    public BuilderType setRequestObjectParam(Method method) {
       InputParameter param =
           InputParameter.newBuilder()
               .setType(method.getInputType())
