@@ -102,6 +102,11 @@ module Google
 
           private_constant :BOOK_PATH_TEMPLATE
 
+          ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
+            'archives/{archive_path=**}/books/{book}')
+
+          private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
+
           # Returns a fully-qualified shelf resource name string.
           # @param shelf [String]
           # @return [String]
@@ -117,6 +122,16 @@ module Google
           def self.book_path(shelf, book)
             BOOK_PATH_TEMPLATE.render(
               :'shelf' => shelf,
+              :'book' => book)
+          end
+
+          # Returns a fully-qualified archived_book resource name string.
+          # @param archive_path [String]
+          # @param book [String]
+          # @return [String]
+          def self.archived_book_path(archive_path, book)
+            ARCHIVED_BOOK_PATH_TEMPLATE.render(
+              :'archive_path' => archive_path,
               :'book' => book)
           end
 
@@ -139,6 +154,20 @@ module Google
           # @return [String]
           def self.match_book_from_book_name(book_name)
             BOOK_PATH_TEMPLATE.match(book_name)['book']
+          end
+
+          # Parses the archive_path from a archived_book resource.
+          # @param archived_book_name [String]
+          # @return [String]
+          def self.match_archive_path_from_archived_book_name(archived_book_name)
+            ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name)['archive_path']
+          end
+
+          # Parses the book from a archived_book resource.
+          # @param archived_book_name [String]
+          # @return [String]
+          def self.match_book_from_archived_book_name(archived_book_name)
+            ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name)['book']
           end
 
           # @param service_path [String]
@@ -541,6 +570,26 @@ module Google
             settings = @defaults['add_comments'].merge(options)
             api_call = Google::Gax.create_api_call(
               @stub.method(:add_comments), settings)
+            api_call.call(req, **@headers)
+          end
+
+          # Gets a book from an archive.
+          #
+          # @param name [String]
+          #   The name of the book to retrieve.
+          # @param options [Google::Gax::CallOptions]
+          #   Overrides the default settings for this call, e.g, timeout,
+          #   retries, etc.
+          # @return [Google::Example::Library::V1::Book]
+          # @raise [Google::Gax::GaxError] if the RPC is aborted.
+          def get_book_from_archive(
+            name,
+            options: nil)
+            req = Google::Example::Library::V1::GetBookFromArchiveRequest.new(
+              name: name)
+            settings = @defaults['get_book_from_archive'].merge(options)
+            api_call = Google::Gax.create_api_call(
+              @stub.method(:get_book_from_archive), settings)
             api_call.call(req, **@headers)
           end
         end

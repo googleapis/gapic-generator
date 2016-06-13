@@ -57,6 +57,7 @@ import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
 import com.google.example.library.v1.DeleteBookRequest;
 import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
 import com.google.example.library.v1.LibraryServiceGrpc;
@@ -170,6 +171,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       listStringsSettings;
 
   private final SimpleCallSettings<AddCommentsRequest, Empty> addCommentsSettings;
+  private final SimpleCallSettings<GetBookFromArchiveRequest, Book> getBookFromArchiveSettings;
 
   /**
    * Returns the object with the settings used for calls to createShelf.
@@ -272,6 +274,13 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     return addCommentsSettings;
   }
 
+  /**
+   * Returns the object with the settings used for calls to getBookFromArchive.
+   */
+  public SimpleCallSettings<GetBookFromArchiveRequest, Book> getBookFromArchiveSettings() {
+    return getBookFromArchiveSettings;
+  }
+
 
   /**
    * Returns a builder for this class with recommended defaults.
@@ -316,6 +325,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     moveBookSettings = settingsBuilder.moveBookSettings().build();
     listStringsSettings = settingsBuilder.listStringsSettings().build();
     addCommentsSettings = settingsBuilder.addCommentsSettings().build();
+    getBookFromArchiveSettings = settingsBuilder.getBookFromArchiveSettings().build();
   }
 
   private static PageStreamingDescriptor<ListShelvesRequest, ListShelvesResponse, Shelf> LIST_SHELVES_PAGE_STR_DESC =
@@ -477,6 +487,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     private PageStreamingCallSettings.Builder<ListStringsRequest, ListStringsResponse, String>
         listStringsSettings;
     private SimpleCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
+    private SimpleCallSettings.Builder<GetBookFromArchiveRequest, Book> getBookFromArchiveSettings;
 
     private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
 
@@ -548,8 +559,24 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
       addCommentsSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_ADD_COMMENTS);
 
+      getBookFromArchiveSettings = SimpleCallSettings.newBuilder(LibraryServiceGrpc.METHOD_GET_BOOK_FROM_ARCHIVE);
+
       methodSettingsBuilders = ImmutableList.<ApiCallSettings.Builder>of(
-          createShelfSettings,getShelfSettings,listShelvesSettings,deleteShelfSettings,mergeShelvesSettings,createBookSettings,publishSeriesSettings,getBookSettings,listBooksSettings,deleteBookSettings,updateBookSettings,moveBookSettings,listStringsSettings,addCommentsSettings
+          createShelfSettings,
+          getShelfSettings,
+          listShelvesSettings,
+          deleteShelfSettings,
+          mergeShelvesSettings,
+          createBookSettings,
+          publishSeriesSettings,
+          getBookSettings,
+          listBooksSettings,
+          deleteBookSettings,
+          updateBookSettings,
+          moveBookSettings,
+          listStringsSettings,
+          addCommentsSettings,
+          getBookFromArchiveSettings
       );
     }
 
@@ -618,6 +645,10 @@ public class LibraryServiceSettings extends ServiceApiSettings {
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
+      builder.getBookFromArchiveSettings()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+
       return builder;
     }
 
@@ -638,9 +669,24 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       moveBookSettings = settings.moveBookSettings.toBuilder();
       listStringsSettings = settings.listStringsSettings.toBuilder();
       addCommentsSettings = settings.addCommentsSettings.toBuilder();
+      getBookFromArchiveSettings = settings.getBookFromArchiveSettings.toBuilder();
 
       methodSettingsBuilders = ImmutableList.<ApiCallSettings.Builder>of(
-          createShelfSettings,getShelfSettings,listShelvesSettings,deleteShelfSettings,mergeShelvesSettings,createBookSettings,publishSeriesSettings,getBookSettings,listBooksSettings,deleteBookSettings,updateBookSettings,moveBookSettings,listStringsSettings,addCommentsSettings
+          createShelfSettings,
+          getShelfSettings,
+          listShelvesSettings,
+          deleteShelfSettings,
+          mergeShelvesSettings,
+          createBookSettings,
+          publishSeriesSettings,
+          getBookSettings,
+          listBooksSettings,
+          deleteBookSettings,
+          updateBookSettings,
+          moveBookSettings,
+          listStringsSettings,
+          addCommentsSettings,
+          getBookFromArchiveSettings
       );
     }
 
@@ -793,6 +839,13 @@ public class LibraryServiceSettings extends ServiceApiSettings {
      */
     public SimpleCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings() {
       return addCommentsSettings;
+    }
+
+    /**
+     * Returns the builder for the settings used for calls to getBookFromArchive.
+     */
+    public SimpleCallSettings.Builder<GetBookFromArchiveRequest, Book> getBookFromArchiveSettings() {
+      return getBookFromArchiveSettings;
     }
 
     @Override

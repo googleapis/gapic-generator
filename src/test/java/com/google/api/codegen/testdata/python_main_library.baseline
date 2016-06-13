@@ -113,6 +113,8 @@ class LibraryServiceApi(object):
         'shelves/{shelf}')
     _BOOK_PATH_TEMPLATE = path_template.PathTemplate(
         'shelves/{shelf}/books/{book}')
+    _ARCHIVED_BOOK_PATH_TEMPLATE = path_template.PathTemplate(
+        'archives/{archive_path=**}/books/{book}')
 
     @classmethod
     def shelf_path(cls, shelf):
@@ -126,6 +128,14 @@ class LibraryServiceApi(object):
         """Returns a fully-qualified book resource name string."""
         return cls._BOOK_PATH_TEMPLATE.render({
             'shelf': shelf,
+            'book': book,
+        })
+
+    @classmethod
+    def archived_book_path(cls, archive_path, book):
+        """Returns a fully-qualified archived_book resource name string."""
+        return cls._ARCHIVED_BOOK_PATH_TEMPLATE.render({
+            'archive_path': archive_path,
             'book': book,
         })
 
@@ -167,6 +177,32 @@ class LibraryServiceApi(object):
           A string representing the book.
         """
         return cls._BOOK_PATH_TEMPLATE.match(book_name).get('book')
+
+    @classmethod
+    def match_archive_path_from_archived_book_name(cls, archived_book_name):
+        """Parses the archive_path from a archived_book resource.
+
+        Args:
+          archived_book_name (string): A fully-qualified path representing a archived_book
+            resource.
+
+        Returns:
+          A string representing the archive_path.
+        """
+        return cls._ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name).get('archive_path')
+
+    @classmethod
+    def match_book_from_archived_book_name(cls, archived_book_name):
+        """Parses the book from a archived_book resource.
+
+        Args:
+          archived_book_name (string): A fully-qualified path representing a archived_book
+            resource.
+
+        Returns:
+          A string representing the book.
+        """
+        return cls._ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name).get('book')
 
     def __init__(
             self,
@@ -771,4 +807,35 @@ class LibraryServiceApi(object):
             name=name,
             comments=comments)
         self._add_comments(request, options)
+
+    def get_book_from_archive(
+            self,
+            name,
+            options=None):
+        """
+        Gets a book from an archive.
+
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> api = LibraryServiceApi()
+          >>> name = api.archived_book_path('[ARCHIVE_PATH]', '[BOOK]')
+          >>> response = api.get_book_from_archive(name)
+
+        Args:
+          name (string): The name of the book to retrieve.
+          options (:class:`google.gax.CallOptions`): Overrides the default
+            settings for this call, e.g, timeout, retries etc.
+
+        Returns:
+          A :class:`google.example.library.v1.library_pb2.Book` instance.
+
+        Raises:
+          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+        """
+        req = library_pb2.GetBookFromArchiveRequest(
+            name=name)
+        settings = self._defaults['get_book_from_archive'].merge(options)
+        api_call = api_callable.create_api_call(
+            self.stub.GetBookFromArchive, settings=settings)
+        return api_call(req, metadata=self._headers)
 

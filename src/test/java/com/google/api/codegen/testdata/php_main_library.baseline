@@ -37,6 +37,7 @@ use google\example\library\v1\CreateBookRequest;
 use google\example\library\v1\CreateShelfRequest;
 use google\example\library\v1\DeleteBookRequest;
 use google\example\library\v1\DeleteShelfRequest;
+use google\example\library\v1\GetBookFromArchiveRequest;
 use google\example\library\v1\GetBookRequest;
 use google\example\library\v1\GetShelfRequest;
 use google\example\library\v1\LibraryServiceClient;
@@ -115,6 +116,7 @@ class LibraryServiceApi
 
     private static $shelfNameTemplate;
     private static $bookNameTemplate;
+    private static $archivedBookNameTemplate;
 
     private $grpcBootstrap;
     private $stub;
@@ -145,6 +147,17 @@ class LibraryServiceApi
     }
 
     /**
+     * Formats a string containing the fully-qualified path to represent
+     * a archived_book resource.
+     */
+    public static function formatArchivedBookName($archivePath, $book)
+    {
+        return self::getArchivedBookNameTemplate()->render([
+            'archive_path' => $archivePath, 'book' => $book,
+        ]);
+    }
+
+    /**
      * Parses the shelf from the given fully-qualified path which
      * represents a shelf resource.
      */
@@ -171,6 +184,24 @@ class LibraryServiceApi
         return self::getBookNameTemplate()->match($bookName)['book'];
     }
 
+    /**
+     * Parses the archive_path from the given fully-qualified path which
+     * represents a archivedBook resource.
+     */
+    public static function parseArchivePathFromArchivedBookName($archivedBookName)
+    {
+        return self::getArchivedBookNameTemplate()->match($archivedBookName)['archive_path'];
+    }
+
+    /**
+     * Parses the book from the given fully-qualified path which
+     * represents a archivedBook resource.
+     */
+    public static function parseBookFromArchivedBookName($archivedBookName)
+    {
+        return self::getArchivedBookNameTemplate()->match($archivedBookName)['book'];
+    }
+
 
     private static function getShelfNameTemplate()
     {
@@ -188,6 +219,15 @@ class LibraryServiceApi
         }
 
         return self::$bookNameTemplate;
+    }
+
+    private static function getArchivedBookNameTemplate()
+    {
+        if (self::$archivedBookNameTemplate == null) {
+            self::$archivedBookNameTemplate = new PathTemplate('archives/{archive_path=**}/books/{book}');
+        }
+
+        return self::$archivedBookNameTemplate;
     }
 
     private static function getPageStreamingDescriptors()
@@ -292,6 +332,7 @@ class LibraryServiceApi
             'moveBook' => $defaultDescriptors,
             'listStrings' => $defaultDescriptors,
             'addComments' => $defaultDescriptors,
+            'getBookFromArchive' => $defaultDescriptors,
         ];
         $pageStreamingDescriptors = self::getPageStreamingDescriptors();
         foreach ($pageStreamingDescriptors as $method => $pageStreamingDescriptor) {
@@ -1096,6 +1137,57 @@ class LibraryServiceApi
             new CallSettings($callSettings));
         $callable = ApiCallable::createApiCall(
             $this->stub, 'AddComments', $mergedSettings, $this->descriptors['addComments']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    /**
+     * Gets a book from an archive.
+     *
+     * Sample code:
+     * <pre><code>
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $formattedName = LibraryServiceApi::formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
+     *     $response = $libraryServiceApi->getBookFromArchive($formattedName);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
+     * </code></pre>
+     *
+     * @param string $name The name of the book to retrieve.
+     * @param array $optionalArgs {
+     *     Optional. There are no optional parameters for this method yet;
+     *               this $optionalArgs parameter reserves a spot for future ones.
+     * }
+     * @param array $callSettings {
+     *    Optional.
+     *    @var Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeout is ignored.
+     *    @var int $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     *
+     * @return google\example\library\v1\Book
+     *
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
+    public function getBookFromArchive($name, $optionalArgs = [], $callSettings = [])
+    {
+        $request = new GetBookFromArchiveRequest();
+        $request->setName($name);
+
+        $mergedSettings = $this->defaultCallSettings['getBookFromArchive']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'GetBookFromArchive', $mergedSettings, $this->descriptors['getBookFromArchive']);
 
         return $callable(
             $request,

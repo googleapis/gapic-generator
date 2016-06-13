@@ -152,6 +152,9 @@ var SHELF_PATH_TEMPLATE = new gax.PathTemplate(
 var BOOK_PATH_TEMPLATE = new gax.PathTemplate(
     'shelves/{shelf}/books/{book}');
 
+var ARCHIVED_BOOK_PATH_TEMPLATE = new gax.PathTemplate(
+    'archives/{archive_path=**}/books/{book}');
+
 /**
  * Returns a fully-qualified shelf resource name string.
  * @param {String} shelf
@@ -207,6 +210,41 @@ LibraryServiceApi.matchShelfFromBookName =
 LibraryServiceApi.matchBookFromBookName =
     function matchBookFromBookName(bookName) {
   return BOOK_PATH_TEMPLATE.match(bookName).book;
+};
+
+/**
+ * Returns a fully-qualified archived_book resource name string.
+ * @param {String} archive_path
+ * @param {String} book
+ * @returns {String}
+ */
+LibraryServiceApi.archived_bookPath = function archived_bookPath(archive_path, book) {
+  return ARCHIVED_BOOK_PATH_TEMPLATE.render({
+    'archive_path': archive_path,
+    'book': book
+  });
+};
+
+/**
+ * Parses the archivedBookName from a archived_book resource.
+ * @param {String} archivedBookName
+ *   A fully-qualified path representing a archived_book resources.
+ * @returns {String} - A string representing the archive_path.
+ */
+LibraryServiceApi.matchArchivePathFromArchivedBookName =
+    function matchArchivePathFromArchivedBookName(archivedBookName) {
+  return ARCHIVED_BOOK_PATH_TEMPLATE.match(archivedBookName).archive_path;
+};
+
+/**
+ * Parses the archivedBookName from a archived_book resource.
+ * @param {String} archivedBookName
+ *   A fully-qualified path representing a archived_book resources.
+ * @returns {String} - A string representing the book.
+ */
+LibraryServiceApi.matchBookFromArchivedBookName =
+    function matchBookFromArchivedBookName(archivedBookName) {
+  return ARCHIVED_BOOK_PATH_TEMPLATE.match(archivedBookName).book;
 };
 
 // Callback types
@@ -764,6 +802,40 @@ LibraryServiceApi.prototype.addComments = function addComments() {
     var stub = vars[1];
     var options = defaults.addComments.merge(args.options);
     var apiCall = gax.createApiCall(stub.addComments.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
+    if (args.callback) {
+      args.callback(err);
+    }
+  });
+};
+
+/**
+ * Gets a book from an archive.
+ *
+ * @param {String} name
+ *   The name of the book to retrieve.
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {?APICallback<google.example.library.v1.Book>} callback
+ *   The function which will be called with the result of the API call.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.getBookFromArchive = function getBookFromArchive() {
+  var args = arguejs({
+    'name': String,
+    'options': [gax.CallOptions],
+    'callback': [Function]
+  });
+  var req = {
+    'name': args.name
+  };
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.getBookFromArchive.merge(args.options);
+    var apiCall = gax.createApiCall(stub.getBookFromArchive.bind(stub), options);
     apiCall(req, args.callback, this.headers, {});
   }.bind(this))['catch'](function(err) {
     if (args.callback) {

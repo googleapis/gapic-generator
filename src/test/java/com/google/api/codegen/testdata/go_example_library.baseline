@@ -199,3 +199,14 @@ func ExampleClient_AddComments() {
     err = c.AddComments(ctx, req)
     _ = err // Handle error.
 }
+
+func ExampleClient_GetBookFromArchive() {
+    ctx := context.Background()
+    c, err := library.NewClient(ctx)
+    _ = err // Handle error.
+
+    req := &google_example_library_v1.GetBookFromArchiveRequest{ /* Data... */ }
+    var resp *google_example_library_v1.Book
+    resp, err = c.GetBookFromArchive(ctx, req)
+    _, _ = resp, err // Handle error.
+}

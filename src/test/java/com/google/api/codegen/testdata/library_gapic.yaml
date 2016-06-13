@@ -34,6 +34,8 @@ interfaces:
     entity_name: shelf
   - name_pattern: shelves/{shelf}/books/{book}
     entity_name: book
+  - name_pattern: archives/{archive_path=**}/books/{book}
+    entity_name: archived_book
   methods:
   - name: CreateShelf
     flattening:
@@ -253,3 +255,15 @@ interfaces:
       name: book
     sample_code_init_fields:
       - comments[0].comment
+  - name: GetBookFromArchive
+    flattening:
+      groups:
+      - parameters:
+        - name
+    required_fields:
+      - name
+    retry_codes_name: idempotent
+    retry_params_name: default
+    request_object_method: false
+    field_name_patterns:
+      name: archived_book

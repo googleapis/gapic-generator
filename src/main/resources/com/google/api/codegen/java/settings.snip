@@ -129,7 +129,7 @@
 
   {@methodGetters(service)}
 
-  @let className = @settingsClassName(service)
+  @let className = settingsClassName(service)
     /**
      * Returns a builder for this class with recommended defaults.
      */
@@ -225,7 +225,7 @@
 @end
 
 @private constructors(service)
-  @let className = @settingsClassName(service)
+  @let className = settingsClassName(service)
     private {@className}(Builder settingsBuilder) throws IOException {
       super(settingsBuilder.getChannelProvider(),
             settingsBuilder.getExecutorProvider(),
@@ -671,11 +671,11 @@
 @end
 
 @private settingsList(service)
-  @join method : service.getMethods on ","
+  @join method : service.getMethods vertical on ",".add(BREAK)
     @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
          methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
          isPageStreaming = methodConfig.isPageStreaming
-{@methodName}Settings
+      {@methodName}Settings
     @end
   @end
 @end

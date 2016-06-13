@@ -105,7 +105,7 @@ public class ConfigGeneratorApi extends ToolDriverBase {
             new FieldConfigGenerator(),
             new PageStreamingConfigGenerator(),
             new RetryGenerator(),
-            new FieldNamePatternConfigGenerator());
+            new FieldNamePatternConfigGenerator(service));
     List<Object> methods = new LinkedList<Object>();
     for (Method method : service.getMethods()) {
       Map<String, Object> methodConfig = new LinkedHashMap<String, Object>();
