@@ -22,7 +22,7 @@ import com.google.common.base.Strings;
 import java.util.ArrayList;
 
 /**
- * An implementation of CodePathMapper that generates the output path from a prefix, and/or package
+ * An implementation of GapicCodePathMapper that generates the output path from a prefix, and/or package
  * name.
  */
 public class CommonGapicCodePathMapper implements GapicCodePathMapper {
