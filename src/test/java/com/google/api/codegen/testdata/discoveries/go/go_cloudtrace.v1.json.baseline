@@ -127,6 +127,7 @@ func main() {
   if err := call.Pages(ctx, func(page *cloudtrace.ListTracesResponse) error {
     for _, v := range page.Traces {
       // TODO: Use v.
+      _ = v
     }
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
