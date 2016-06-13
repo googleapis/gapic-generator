@@ -196,9 +196,6 @@ func (c *Client) ListShelves(ctx context.Context, req *google_example_library_v1
     ctx = metadata.NewContext(ctx, c.metadata)
     it := &ShelfIterator{}
     it.apiCall = func() error {
-        if it.atLastPage {
-            return Done
-        }
         var resp *google_example_library_v1.ListShelvesResponse
         err := gax.Invoke(ctx, func (ctx context.Context) error {
             var err error
@@ -211,9 +208,8 @@ func (c *Client) ListShelves(ctx context.Context, req *google_example_library_v1
         }
         if resp.NextPageToken == "" {
             it.atLastPage = true
-        } else {
-            it.nextPageToken = resp.NextPageToken
         }
+        it.nextPageToken = resp.NextPageToken
         it.items = resp.Shelves
         return nil
     }
@@ -316,9 +312,6 @@ func (c *Client) ListBooks(ctx context.Context, req *google_example_library_v1.L
     ctx = metadata.NewContext(ctx, c.metadata)
     it := &BookIterator{}
     it.apiCall = func() error {
-        if it.atLastPage {
-            return Done
-        }
         var resp *google_example_library_v1.ListBooksResponse
         err := gax.Invoke(ctx, func (ctx context.Context) error {
             var err error
@@ -332,9 +325,8 @@ func (c *Client) ListBooks(ctx context.Context, req *google_example_library_v1.L
         }
         if resp.NextPageToken == "" {
             it.atLastPage = true
-        } else {
-            it.nextPageToken = resp.NextPageToken
         }
+        it.nextPageToken = resp.NextPageToken
         it.items = resp.Books
         return nil
     }
@@ -399,9 +391,6 @@ func (c *Client) ListStrings(ctx context.Context, req *google_example_library_v1
     ctx = metadata.NewContext(ctx, c.metadata)
     it := &StringIterator{}
     it.apiCall = func() error {
-        if it.atLastPage {
-            return Done
-        }
         var resp *google_example_library_v1.ListStringsResponse
         err := gax.Invoke(ctx, func (ctx context.Context) error {
             var err error
@@ -415,9 +404,8 @@ func (c *Client) ListStrings(ctx context.Context, req *google_example_library_v1
         }
         if resp.NextPageToken == "" {
             it.atLastPage = true
-        } else {
-            it.nextPageToken = resp.NextPageToken
         }
+        it.nextPageToken = resp.NextPageToken
         it.items = resp.Strings
         return nil
     }
@@ -455,19 +443,28 @@ type ShelfIterator struct {
 // NextPage moves to the next page and updates its internal data.
 // On completion, the last page is returned with Done.
 func (it *ShelfIterator) NextPage() ([]*google_example_library_v1.Shelf, error) {
-    err := it.apiCall()
-    if err != nil && err != Done {
+    if it.atLastPage {
+        // We already returned Done with the last page of items. Continue to
+        // return Done, but with no items.
+        return nil, Done
+    }
+    if err := it.apiCall(); err != nil {
         return nil, err
     }
-    return it.items, err
+    if it.atLastPage {
+        return it.items, Done
+    }
+    return it.items, nil
 }
 
 // Next returns the next element in the stream. It returns Done at
 // the end of the stream.
 func (it *ShelfIterator) Next() (*google_example_library_v1.Shelf, error) {
     for it.currentIndex >= len(it.items) {
-        _, err := it.NextPage()
-        if err != nil {
+        if it.atLastPage {
+            return nil, Done
+        }
+        if err := it.apiCall(); err != nil {
             return nil, err
         }
         it.currentIndex = 0
@@ -504,19 +501,28 @@ type BookIterator struct {
 // NextPage moves to the next page and updates its internal data.
 // On completion, the last page is returned with Done.
 func (it *BookIterator) NextPage() ([]*google_example_library_v1.Book, error) {
-    err := it.apiCall()
-    if err != nil && err != Done {
+    if it.atLastPage {
+        // We already returned Done with the last page of items. Continue to
+        // return Done, but with no items.
+        return nil, Done
+    }
+    if err := it.apiCall(); err != nil {
         return nil, err
     }
-    return it.items, err
+    if it.atLastPage {
+        return it.items, Done
+    }
+    return it.items, nil
 }
 
 // Next returns the next element in the stream. It returns Done at
 // the end of the stream.
 func (it *BookIterator) Next() (*google_example_library_v1.Book, error) {
     for it.currentIndex >= len(it.items) {
-        _, err := it.NextPage()
-        if err != nil {
+        if it.atLastPage {
+            return nil, Done
+        }
+        if err := it.apiCall(); err != nil {
             return nil, err
         }
         it.currentIndex = 0
@@ -565,19 +571,28 @@ type StringIterator struct {
 // NextPage moves to the next page and updates its internal data.
 // On completion, the last page is returned with Done.
 func (it *StringIterator) NextPage() ([]string, error) {
-    err := it.apiCall()
-    if err != nil && err != Done {
+    if it.atLastPage {
+        // We already returned Done with the last page of items. Continue to
+        // return Done, but with no items.
+        return nil, Done
+    }
+    if err := it.apiCall(); err != nil {
         return nil, err
     }
-    return it.items, err
+    if it.atLastPage {
+        return it.items, Done
+    }
+    return it.items, nil
 }
 
 // Next returns the next element in the stream. It returns Done at
 // the end of the stream.
 func (it *StringIterator) Next() (string, error) {
     for it.currentIndex >= len(it.items) {
-        _, err := it.NextPage()
-        if err != nil {
+        if it.atLastPage {
+            return nil, Done
+        }
+        if err := it.apiCall(); err != nil {
             return "", err
         }
         it.currentIndex = 0
