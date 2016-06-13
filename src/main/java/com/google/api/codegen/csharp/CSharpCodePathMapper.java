@@ -15,10 +15,10 @@
 package com.google.api.codegen.csharp;
 
 import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.CodePathMapper;
+import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.tools.framework.model.ProtoElement;
 
-public class CSharpCodePathMapper implements CodePathMapper {
+public class CSharpCodePathMapper implements GapicCodePathMapper {
   @Override
   public String getOutputPath(ProtoElement element, ApiConfig config) {
     return CSharpGapicContext.s_getNamespace(element.getFile()).replace('.', '/');

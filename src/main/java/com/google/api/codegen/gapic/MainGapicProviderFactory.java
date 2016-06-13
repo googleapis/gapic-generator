@@ -15,10 +15,8 @@
 package com.google.api.codegen.gapic;
 
 import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.CodePathMapper;
 import com.google.api.codegen.InterfaceListView;
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.PrefixPackageCodePathMapper;
 import com.google.api.codegen.ProtoFileView;
 import com.google.api.codegen.clientconfig.ClientConfigGapicContext;
 import com.google.api.codegen.clientconfig.ClientConfigSnippetSetRunner;
@@ -80,7 +78,7 @@ public class MainGapicProviderFactory
               .setContext(new ClientConfigGapicContext(model, apiConfig))
               .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
               .setSnippetFileNames(Arrays.asList("json.snip"))
-              .setCodePathMapper(new PrefixPackageCodePathMapper(""))
+              .setCodePathMapper(CommonGapicCodePathMapper.defaultInstance())
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
@@ -105,12 +103,16 @@ public class MainGapicProviderFactory
               .setSnippetSetRunner(new GoSnippetSetRunner<Interface>())
               .setSnippetFileNames(
                   Arrays.asList("main.snip", "example.snip", "doc.snip", "common.snip"))
-              .setCodePathMapper(new PrefixPackageCodePathMapper(""))
+              .setCodePathMapper(CommonGapicCodePathMapper.defaultInstance())
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
     } else if (id.equals(JAVA)) {
-      CodePathMapper javaPathMapper = new PrefixPackageCodePathMapper("", ".");
+      GapicCodePathMapper javaPathMapper =
+          CommonGapicCodePathMapper.newBuilder()
+              .setPrefix("src/main/java")
+              .setShouldAppendPackage(true)
+              .build();
       GapicProvider<? extends Object> mainProvider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
@@ -133,7 +135,8 @@ public class MainGapicProviderFactory
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, packageInfoProvider);
 
     } else if (id.equals(NODEJS)) {
-      CodePathMapper nodeJSPathMapper = new PrefixPackageCodePathMapper("lib");
+      GapicCodePathMapper nodeJSPathMapper =
+          CommonGapicCodePathMapper.newBuilder().setPrefix("lib").build();
       GapicProvider<? extends Object> mainProvider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
@@ -156,6 +159,8 @@ public class MainGapicProviderFactory
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, clientConfigProvider);
 
     } else if (id.equals(PHP)) {
+      GapicCodePathMapper phpPathMapper =
+          CommonGapicCodePathMapper.newBuilder().setPrefix("src").build();
       GapicProvider<? extends Object> provider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
@@ -163,12 +168,13 @@ public class MainGapicProviderFactory
               .setContext(new PhpGapicContext(model, apiConfig))
               .setSnippetSetRunner(new PhpSnippetSetRunner<Interface>())
               .setSnippetFileNames(Arrays.asList("main.snip"))
-              .setCodePathMapper(new PrefixPackageCodePathMapper(""))
+              .setCodePathMapper(phpPathMapper)
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
     } else if (id.equals(PYTHON)) {
-      CodePathMapper pythonPathMapper = new PrefixPackageCodePathMapper("", ".");
+      GapicCodePathMapper pythonPathMapper =
+          CommonGapicCodePathMapper.newBuilder().setShouldAppendPackage(true).build();
       GapicProvider<? extends Object> mainProvider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
@@ -187,7 +193,7 @@ public class MainGapicProviderFactory
               .setSnippetSetRunner(
                   new PythonSnippetSetRunner<ProtoFile>(new PythonProtoFileInitializer()))
               .setSnippetFileNames(Arrays.asList("message.snip"))
-              .setCodePathMapper(new PrefixPackageCodePathMapper(""))
+              .setCodePathMapper(CommonGapicCodePathMapper.defaultInstance())
               .build();
       GapicProvider<? extends Object> clientConfigProvider =
           CommonGapicProvider.<Interface>newBuilder()
@@ -203,7 +209,11 @@ public class MainGapicProviderFactory
           mainProvider, messageProvider, clientConfigProvider);
 
     } else if (id.equals(RUBY)) {
-      CodePathMapper rubyPathMapper = new PrefixPackageCodePathMapper("lib", "::");
+      GapicCodePathMapper rubyPathMapper =
+          CommonGapicCodePathMapper.newBuilder()
+              .setPrefix("lib")
+              .setShouldAppendPackage(true)
+              .build();
       GapicProvider<? extends Object> mainProvider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
