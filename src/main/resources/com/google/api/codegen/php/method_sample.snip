@@ -1,0 +1,119 @@
+@snippet methodSampleDoc(docConfig)
+    @let ApiName = docConfig.getApiName, \
+            apiName = context.upperCamelToLowerCamel(ApiName), \
+            methodName = docConfig.getMethodName(), \
+            returnType = docConfig.getReturnType(), \
+            initCodeSpec = docConfig.getInitCode()
+        try {
+            ${@apiName} = new {@ApiName}();
+            {@initCode(initCodeSpec)}
+            @if docConfig.isPagedVariant()
+                for ({@methodCallSampleCode(methodName, apiName, initCodeSpec)} as element) {
+                    // doThingsWith(element);
+                }
+            @else
+                @if returnType
+                    $response = {@methodCallSampleCode(methodName, apiName, initCodeSpec)};
+                @else
+                    {@methodCallSampleCode(methodName, apiName, initCodeSpec)};
+                @end
+            @end
+        } finally {
+            if (isset(${@apiName})) {
+                ${@apiName}->close();
+            }
+        }
+    @end
+@end
+
+@private methodCallSampleCode(methodName, apiName, initCodeSpec)
+    ${@apiName}->{@methodName}({@argList(initCodeSpec.getArgFields)})
+@end
+
+@private initCode(initCodeSpec)
+  @join line : initCodeSpec.getLines()
+    @switch line.getLineType.toString()
+    @case "StructureInitLine"
+      {@initLineStructure(line)}
+    @case "ListInitLine"
+      {@initLineList(line)}
+    @case "SimpleInitLine"
+      {@initLineSimple(line)}
+    @default
+      {@unhandledCase()}
+    @end
+  @end
+@end
+
+@private initLineStructure(line)
+  {@formattedIdentifier(line)} = new {@context.typeName(line.getType)}();
+  @join fieldSetting : line.getFieldSettings
+    @let setCallName = setCallName(fieldSetting)
+      {@formattedIdentifier(line)}->{@setCallName}({@formattedIdentifier(fieldSetting)});
+    @end
+  @end
+@end
+
+@private initLineList(line)
+  {@formattedIdentifier(line)} = [{@initList(line)}];
+@end
+
+@private initList(line)
+  @join identifier : line.getElementIdentifiers on ", "
+    {@unformattedIdentifier(identifier)}
+  @end
+@end
+
+@private initLineSimple(line)
+  {@formattedIdentifier(line)} = {@initValue(line)};
+@end
+
+@private formattedIdentifier(lineOrFieldSetting)
+  {@formattedIdentifier(lineOrFieldSetting.getIdentifier, lineOrFieldSetting.getInitValueConfig.hasFormattingConfig)}
+@end
+
+@private unformattedIdentifier(identifier)
+  {@formattedIdentifier(identifier, FALSE)}
+@end
+
+@private formattedIdentifier(identifier, isFormatted)
+  @if isFormatted
+    $formatted{@context.lowerUnderscoreToUpperCamel(identifier)}
+  @else
+    ${@context.lowerUnderscoreToLowerCamel(identifier)}
+  @end
+@end
+
+@private initValue(line)
+  @let metadata = line.getInitValueConfig
+    @if metadata.hasFormattingConfig()
+      {@metadata.getApiWrapperName}::{@formatResourceFunctionName(metadata.getCollectionConfig)}({@formatResourceFunctionArgs(metadata.getCollectionConfig)})
+    @else
+      {@context.zeroValue(line.getType)}
+    @end
+  @end
+@end
+
+@private formatResourceFunctionArgs(collectionConfig)
+  @join param : collectionConfig.getNameTemplate.vars() on ", "
+    "[{@context.lowerUnderscoreToUpperUnderscore(param)}]"
+  @end
+@end
+
+@private formatResourceFunctionName(collectionConfig)
+    format{@resourceName(collectionConfig)}
+@end
+
+@private resourceName(collectionConfig)
+    {@context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName)}Name
+@end
+
+@snippet setCallName(field)
+  set{@context.lowerUnderscoreToUpperCamel(field.getFieldName)}
+@end
+
+@private argList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@formattedIdentifier(fieldSetting)}
+  @end
+@end
