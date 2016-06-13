@@ -36,6 +36,7 @@ public class PhpSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT>
   private static final String SNIPPET_RESOURCE_ROOT =
       PhpSnippetSetRunner.class.getPackage().getName().replace('.', '/');
 
+  @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
       ElementT element, String snippetFileName, CodegenContext context) {

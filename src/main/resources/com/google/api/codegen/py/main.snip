@@ -1,4 +1,5 @@
-@extends "../common.snip"
+@extends "common.snip"
+@extends "method_sample.snip"
 
 @snippet generateFilename(service)
     {@context.upperCamelToLowerUnderscore(context.getApiWrapperName(service))}.py
@@ -78,7 +79,7 @@
 
 @private serviceClass(service)
     @let path_templates = {@pathTemplateSection(service)}, \
-         documentation = {@comments(service)}
+         documentation = {@defaultComments(service)}
         class {@context.getApiWrapperName(service)}(object):
             @if documentation
                 {@documentation}
@@ -298,7 +299,7 @@
 
 @private createResourceFunction(collectionConfig)
     @@classmethod
-    def {@collectionConfig.getEntityName}_path(cls, {@createResourceFunctionParams(collectionConfig)}):
+    def {@formatResourceFunctionName(collectionConfig)}(cls, {@createResourceFunctionParams(collectionConfig)}):
         """Returns a fully-qualified {@collectionConfig.getEntityName} resource name string."""
         return cls.{@pathTemplateName(collectionConfig)}.render({
             {@createRenderDictionary(collectionConfig)}
@@ -340,10 +341,54 @@
     @end
 @end
 
-@private comments(element)
-    @join comment : context.comments(element, importHandler)
+@private defaultComments(element)
+    @join comment : context.defaultComments(element)
         {@comment}
     @end
+@end
+
+@private methodComments(method)
+  @let descriptionComments = context.methodDescriptionComments(method), \
+       signatureComments = context.methodSignatureComments(method, importHandler)
+    """
+    @join comment : descriptionComments
+      {@comment}
+    @end
+    @if context.getApiConfig.generateSamples
+      @if descriptionComments.isEmpty
+      @else
+        
+        
+      @end
+      {@methodSample(method)}
+      @if signatureComments.isEmpty
+      @else
+
+        
+      @end
+    @end
+    @join comment : signatureComments
+      {@comment}
+    @end
+    """
+  @end
+@end
+
+@private methodSample(method) 
+  @let apiConfig = context.getApiConfig, \
+       service = method.getParent, \
+       apiName = context.getApiWrapperName(service), \
+       returnType = context.returnTypeOrEmpty(method, importHandler), \
+       fields = context.getRequiredFields(method)
+    {@generateMethodSampleCode(context.newDocConfigBuilder \
+      .setApiConfig(apiConfig) \
+      .setApiName(apiName) \
+      .setMethod(method) \
+      .setReturnType(returnType) \
+      .setFieldInitCode(context, service, method, fields) \
+      .setFieldParams(context, fields) \
+      .build)}
+  @end
 @end
 
 @private serviceMethodsSection(service)
@@ -367,7 +412,7 @@
     @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
              methodInputModule = pyproto.getPbFileName(method.getInputMessage()), \
              inputTypeName = method.getInputMessage().getSimpleName(), \
-             documentation = comments(method), \
+             documentation = methodComments(method), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              requiredParams = methodConfig.getRequiredFields(), \
              optionalParams = methodConfig.getOptionalFields()

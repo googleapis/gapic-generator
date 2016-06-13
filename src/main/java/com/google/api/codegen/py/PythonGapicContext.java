@@ -29,9 +29,11 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import java.util.List;
@@ -107,22 +109,9 @@ public class PythonGapicContext extends GapicContext {
   }
 
   /**
-   * Return a Python docstring to be associated with the given ProtoElement.
-   */
-  public List<String> comments(ProtoElement element, PythonImportHandler importHandler) {
-    if (element instanceof Method) {
-      return methodComments((Method) element, importHandler);
-    } else if (element instanceof MessageType) {
-      return messageComments((MessageType) element, importHandler);
-    } else {
-      return defaultComments(element);
-    }
-  }
-
-  /**
    * Return comments lines for a given proto element, extracted directly from the proto doc
    */
-  private List<String> defaultComments(ProtoElement element) {
+  public List<String> defaultComments(ProtoElement element) {
     if (!element.hasAttribute(ElementDocumentationAttribute.KEY)) {
       return ImmutableList.<String>of("");
     }
@@ -133,7 +122,10 @@ public class PythonGapicContext extends GapicContext {
    * Returns type information for a field in Sphinx docstring style.
    */
   private String fieldTypeCardinalityComment(Field field, PythonImportHandler importHandler) {
-    TypeRef type = field.getType();
+    return typeCardinalityComment(field.getType(), importHandler);
+  }
+
+  private String typeCardinalityComment(TypeRef type, PythonImportHandler importHandler) {
     boolean closingBrace = false;
     String prefix;
     if (type.getCardinality() == Cardinality.REPEATED) {
@@ -147,7 +139,7 @@ public class PythonGapicContext extends GapicContext {
     } else {
       prefix = "";
     }
-    String typeComment = fieldTypeComment(field, importHandler);
+    String typeComment = typeComment(type, importHandler);
     return String.format("%s%s%s", prefix, typeComment, closingBrace ? "]" : "");
   }
 
@@ -155,7 +147,10 @@ public class PythonGapicContext extends GapicContext {
    * Returns type information for a field in Sphinx docstring style.
    */
   private String fieldTypeComment(Field field, PythonImportHandler importHandler) {
-    TypeRef type = field.getType();
+    return typeComment(field.getType(), importHandler);
+  }
+
+  private String typeComment(TypeRef type, PythonImportHandler importHandler) {
     switch (type.getKind()) {
       case TYPE_MESSAGE:
         return ":class:`" + importHandler.elementPath(type.getMessageType(), true) + "`";
@@ -193,7 +188,7 @@ public class PythonGapicContext extends GapicContext {
    * Return comments lines for a given message, consisting of proto doc and argument type
    * documentation.
    */
-  private List<String> messageComments(MessageType msg, PythonImportHandler importHandler) {
+  public List<String> messageComments(MessageType msg, PythonImportHandler importHandler) {
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
     paramTypesBuilder.append("Attributes:\n");
@@ -242,21 +237,39 @@ public class PythonGapicContext extends GapicContext {
     }
   }
 
+  public PythonDocConfig.Builder newDocConfigBuilder() {
+    return PythonDocConfig.newBuilder();
+  }
+
   /**
-   * Return comments lines for a given method, consisting of proto doc and parameter type
-   * documentation.
+   * Generate comments lines for a given method's description.
    */
-  private List<String> methodComments(Method method, PythonImportHandler importHandler) {
+  public List<String> methodDescriptionComments(Method method) {
+    String description = "";
+    if (method.hasAttribute(ElementDocumentationAttribute.KEY)) {
+      String sphinxified = getSphinxifiedScopedDescription(method);
+      sphinxified = sphinxified.trim();
+      description = sphinxified.replaceAll("\\s*\\n\\s*", "\n");
+    }
+    return Splitter.on("\n").splitToList(description);
+  }
+
+  /**
+   * Generate comments lines for a given method's signature, consisting of proto doc and parameter
+   * type documentation.
+   */
+  public List<String> methodSignatureComments(Method method, PythonImportHandler importHandler) {
     MethodConfig config =
         getApiConfig().getInterfaceConfig((Interface) method.getParent()).getMethodConfig(method);
 
-    // Generate parameter types
-    StringBuilder paramTypesBuilder = new StringBuilder();
-    paramTypesBuilder.append("Args:\n");
+    StringBuilder contentBuilder = new StringBuilder();
+
+    // parameter types
+    contentBuilder.append("Args:\n");
     for (Field field : this.messages().flattenedFields(method.getInputType())) {
       if (config.isPageStreaming()
           && field.equals((config.getPageStreaming().getPageSizeField()))) {
-        paramTypesBuilder.append(
+        contentBuilder.append(
             fieldComment(
                 field,
                 importHandler,
@@ -266,41 +279,56 @@ public class PythonGapicContext extends GapicContext {
                     + "streaming is performed per-page, this determines the maximum number\n"
                     + "of resources in a page."));
       } else {
-        paramTypesBuilder.append(fieldComment(field, importHandler, null));
+        contentBuilder.append(fieldComment(field, importHandler, null));
       }
     }
-    paramTypesBuilder.append(
+    contentBuilder.append(
         "  options (:class:`google.gax.CallOptions`): "
             + "Overrides the default\n    settings for this call, e.g, timeout, retries etc.");
-    String paramTypes = paramTypesBuilder.toString();
 
+    // return type
     String returnType = returnTypeComment(method, config, importHandler);
-
-    // Generate comment contents
-    StringBuilder contentBuilder = new StringBuilder();
-    if (method.hasAttribute(ElementDocumentationAttribute.KEY)) {
-      String sphinxified = getSphinxifiedScopedDescription(method);
-      sphinxified = sphinxified.trim();
-      contentBuilder.append(sphinxified.replaceAll("\\s*\\n\\s*", "\n"));
-      if (!Strings.isNullOrEmpty(paramTypes)) {
-        contentBuilder.append("\n\n");
-      }
-    }
-    contentBuilder.append(paramTypes);
     if (returnType != null) {
       contentBuilder.append("\n\n" + returnType);
     }
 
+    // exception types
     contentBuilder.append(
         "\n\nRaises:\n  :exc:`google.gax.errors.GaxError` if the RPC is aborted.");
-    return pythonCommon.convertToCommentedBlock(contentBuilder.toString());
+
+    return Splitter.on("\n").splitToList(contentBuilder.toString());
+  }
+
+  /**
+   * Get required (non-optional) fields.
+   */
+  public List<Field> getRequiredFields(Method method) {
+    Interface service = (Interface) method.getParent();
+    MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+    return Lists.newArrayList(methodConfig.getRequiredFields());
+  }
+
+  /**
+   * Get return type string, or an empty string if there is no return type.
+   */
+  public String returnTypeOrEmpty(Method method, PythonImportHandler importHandler) {
+    TypeRef returnType = method.getOutputType();
+    return messages().isEmptyType(returnType)
+        ? ""
+        : typeCardinalityComment(returnType, importHandler);
   }
 
   /**
    * Return the default value for the given field. Return null if there is no default value.
    */
   public String defaultValue(Field field, PythonImportHandler importHandler) {
-    TypeRef type = field.getType();
+    return defaultValue(field.getType(), importHandler);
+  }
+
+  /**
+   * Return the default value for the given type. Return null if there is no default value.
+   */
+  public String defaultValue(TypeRef type, PythonImportHandler importHandler) {
     // Return empty array if the type is repeated.
     if (type.getCardinality() == Cardinality.REPEATED) {
       return "[]";

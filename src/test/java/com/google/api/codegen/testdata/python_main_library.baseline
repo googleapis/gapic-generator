@@ -243,6 +243,13 @@ class LibraryServiceApi(object):
         """
         Creates a shelf, and returns the new Shelf.
 
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1 import library_pb2
+          >>> api = LibraryServiceApi()
+          >>> shelf = library_pb2.Shelf()
+          >>> response = api.create_shelf(shelf)
+
         Args:
           shelf (:class:`google.example.library.v1.library_pb2.Shelf`): The shelf to create.
           options (:class:`google.gax.CallOptions`): Overrides the default
@@ -269,6 +276,12 @@ class LibraryServiceApi(object):
             options=None):
         """
         Gets a shelf.
+
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> api = LibraryServiceApi()
+          >>> name = api.shelf_path('[SHELF]')
+          >>> response = api.get_shelf(name)
 
         Args:
           name (string): The name of the shelf to retrieve.
@@ -302,6 +315,22 @@ class LibraryServiceApi(object):
         """
         Lists shelves.
 
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.gax import CallOptions, INITIAL_PAGE
+          >>> api = LibraryServiceApi()
+          >>>
+          >>> # Iterate over all results
+          >>> for element in api.list_shelves():
+          >>>   # process element
+          >>>   pass
+          >>>
+          >>> # Or iterate over results one page at a time
+          >>> for page in api.list_shelves(options=CallOptions(page_token=INITIAL_PAGE)):
+          >>>   for element in page:
+          >>>     # process element
+          >>>     pass
+
         Args:
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
@@ -328,6 +357,12 @@ class LibraryServiceApi(object):
         """
         Deletes a shelf.
 
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> api = LibraryServiceApi()
+          >>> name = api.shelf_path('[SHELF]')
+          >>> api.delete_shelf(name)
+
         Args:
           name (string): The name of the shelf to delete.
           options (:class:`google.gax.CallOptions`): Overrides the default
@@ -352,6 +387,13 @@ class LibraryServiceApi(object):
         Merges two shelves by adding all books from the shelf named
         ``other_shelf_name`` to shelf ``name``, and deletes
         ``other_shelf_name``. Returns the updated shelf.
+
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> api = LibraryServiceApi()
+          >>> name = api.shelf_path('[SHELF]')
+          >>> other_shelf_name = api.shelf_path('[SHELF]')
+          >>> response = api.merge_shelves(name, other_shelf_name)
 
         Args:
           name (string): The name of the shelf we're adding books to.
@@ -380,6 +422,14 @@ class LibraryServiceApi(object):
             options=None):
         """
         Creates a book.
+
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1 import library_pb2
+          >>> api = LibraryServiceApi()
+          >>> name = api.shelf_path('[SHELF]')
+          >>> book = library_pb2.Book()
+          >>> response = api.create_book(name, book)
 
         Args:
           name (string): The name of the shelf in which the book is created.
@@ -410,6 +460,14 @@ class LibraryServiceApi(object):
         """
         Creates a series of books.
 
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1 import library_pb2
+          >>> api = LibraryServiceApi()
+          >>> shelf = library_pb2.Shelf()
+          >>> books = []
+          >>> response = api.publish_series(shelf, books)
+
         Args:
           shelf (:class:`google.example.library.v1.library_pb2.Shelf`): The shelf in which the series is created.
           books (list[:class:`google.example.library.v1.library_pb2.Book`]): The books to publish in the series.
@@ -439,6 +497,12 @@ class LibraryServiceApi(object):
         """
         Gets a book.
 
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> api = LibraryServiceApi()
+          >>> name = api.book_path('[SHELF]', '[BOOK]')
+          >>> response = api.get_book(name)
+
         Args:
           name (string): The name of the book to retrieve.
           options (:class:`google.gax.CallOptions`): Overrides the default
@@ -465,6 +529,23 @@ class LibraryServiceApi(object):
             options=None):
         """
         Lists books in a shelf.
+
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.gax import CallOptions, INITIAL_PAGE
+          >>> api = LibraryServiceApi()
+          >>> name = api.shelf_path('[SHELF]')
+          >>>
+          >>> # Iterate over all results
+          >>> for element in api.list_books(name):
+          >>>   # process element
+          >>>   pass
+          >>>
+          >>> # Or iterate over results one page at a time
+          >>> for page in api.list_books(name, options=CallOptions(page_token=INITIAL_PAGE)):
+          >>>   for element in page:
+          >>>     # process element
+          >>>     pass
 
         Args:
           name (string): The name of the shelf whose books we'd like to list.
@@ -502,6 +583,12 @@ class LibraryServiceApi(object):
         """
         Deletes a book.
 
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> api = LibraryServiceApi()
+          >>> name = api.book_path('[SHELF]', '[BOOK]')
+          >>> api.delete_book(name)
+
         Args:
           name (string): The name of the book to delete.
           options (:class:`google.gax.CallOptions`): Overrides the default
@@ -526,6 +613,14 @@ class LibraryServiceApi(object):
             options=None):
         """
         Updates a book.
+
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1 import library_pb2
+          >>> api = LibraryServiceApi()
+          >>> name = api.book_path('[SHELF]', '[BOOK]')
+          >>> book = library_pb2.Book()
+          >>> response = api.update_book(name, book)
 
         Args:
           name (string): The name of the book to update.
@@ -563,6 +658,13 @@ class LibraryServiceApi(object):
         """
         Moves a book to another shelf, and returns the new book.
 
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> api = LibraryServiceApi()
+          >>> name = api.book_path('[SHELF]', '[BOOK]')
+          >>> other_shelf_name = api.shelf_path('[SHELF]')
+          >>> response = api.move_book(name, other_shelf_name)
+
         Args:
           name (string): The name of the book to move.
           other_shelf_name (string): The name of the destination shelf.
@@ -590,6 +692,22 @@ class LibraryServiceApi(object):
             options=None):
         """
         Lists a primitive resource. To test go page streaming.
+
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.gax import CallOptions, INITIAL_PAGE
+          >>> api = LibraryServiceApi()
+          >>>
+          >>> # Iterate over all results
+          >>> for element in api.list_strings():
+          >>>   # process element
+          >>>   pass
+          >>>
+          >>> # Or iterate over results one page at a time
+          >>> for page in api.list_strings(options=CallOptions(page_token=INITIAL_PAGE)):
+          >>>   for element in page:
+          >>>     # process element
+          >>>     pass
 
         Args:
           name (string)
@@ -625,6 +743,16 @@ class LibraryServiceApi(object):
             options=None):
         """
         Adds comments to a book
+
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> from google.example.library.v1 import library_pb2
+          >>> api = LibraryServiceApi()
+          >>> name = api.book_path('[SHELF]', '[BOOK]')
+          >>> comment = ''
+          >>> comments_element = library_pb2.Comment(comment)
+          >>> comments = [comments_element]
+          >>> api.add_comments(name, comments)
 
         Args:
           name (string)

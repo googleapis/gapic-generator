@@ -32,6 +32,7 @@ public class RubySnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT
   static final String SNIPPET_RESOURCE_ROOT =
       RubySnippetSetRunner.class.getPackage().getName().replace('.', '/');
 
+  @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
       ElementT element, String snippetFileName, CodegenContext context) {

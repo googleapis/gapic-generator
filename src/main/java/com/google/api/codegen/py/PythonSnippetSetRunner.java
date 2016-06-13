@@ -40,6 +40,7 @@ public class PythonSnippetSetRunner<ElementT> implements SnippetSetRunner<Elemen
     this.initializer = initializer;
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
       ElementT element, String snippetFileName, CodegenContext context) {
@@ -56,12 +57,12 @@ public class PythonSnippetSetRunner<ElementT> implements SnippetSetRunner<Elemen
         SnippetSet.createSnippetInterface(
             PythonSnippetSet.class, SNIPPET_RESOURCE_ROOT, snippetFileName, globalMap);
 
-    Doc filenameDoc = snippets.generateFilename(element);
-    String outputFilename = filenameDoc.prettyPrint();
     Doc body = snippets.generateBody(element);
     List<String> importList = importHandler.calculateImports();
-    // Generate result.
     Doc result = snippets.generateModule(element, body, importList);
+
+    Doc filenameDoc = snippets.generateFilename(element);
+    String outputFilename = filenameDoc.prettyPrint();
     return GeneratedResult.create(result, outputFilename);
   }
 }

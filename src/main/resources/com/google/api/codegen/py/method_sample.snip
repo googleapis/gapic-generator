@@ -1,0 +1,155 @@
+@extends "common.snip"
+
+# Generate code samples for method-level documentation.
+@snippet generateMethodSampleCode(docConfig)
+  @let prompt = ">>>", \
+       ApiName = docConfig.getApiName, \
+       initCode = {@initCode(prompt, docConfig.getInitCode)}
+    Example:
+      @join import : docConfig.getAppImports
+        {@prompt} {@import}
+      @end
+      @if docConfig.isIterableResponse
+        {@prompt} from google.gax import CallOptions, INITIAL_PAGE
+      @end
+      {@prompt} api = {@ApiName}()
+      @if initCode 
+        {@initCode}
+      @end
+      @if docConfig.isIterableResponse
+        {@prompt}
+        {@prompt} # Iterate over all results
+        {@prompt} for element in {@methodCallSampleCode(docConfig, {@FALSE})}:
+        {@prompt}   # process element
+        {@prompt}   pass
+        {@prompt}
+        {@prompt} # Or iterate over results one page at a time
+        {@prompt} for page in {@methodCallSampleCode(docConfig, {@TRUE})}:
+        {@prompt}   for element in page:
+        {@prompt}     # process element
+        {@prompt}     pass
+      @else
+        {@prompt} {@callResultSampleCode(docConfig.getReturnType)}\
+        {@methodCallSampleCode(docConfig, {@FALSE})}
+      @end
+  @end
+@end
+
+# Helper functions for generateMethodSampleCode()
+
+# Generate argument initialization code for API call
+@private initCode(prompt, initCodeSpec)
+  @join line : initCodeSpec.getLines()
+    @switch line.getLineType.toString()
+    @case "StructureInitLine"
+      {@prompt} {@initLineStructure(line)}
+    @case "ListInitLine"
+      {@prompt} {@initLineList(line)}
+    @case "SimpleInitLine"
+      {@prompt} {@initLineSimple(line)}
+    @default
+      {@unhandledCase()}
+    @end
+  @end
+@end
+
+# Generate a Protobuf message argument
+@private initLineStructure(line)
+  @let messageType = line.getType.getMessageType, \
+       initLineStructureClass = importHandler.elementPath(messageType, {@FALSE})
+    {@formattedIdentifier(line)} = {@initLineStructureClass}(\
+      {@initLineStructureArgs(line)}\
+    )
+  @end
+@end
+
+# Helper method for initLineStructure()
+@private initLineStructureArgs(line) 
+  @join fieldSetting : line.getFieldSettings on ", "
+    {@formattedIdentifier(fieldSetting)}
+  @end
+@end
+
+# Generate a List argument
+@private initLineList(line)
+  {@formattedIdentifier(line)} = [{@initList(line)}]
+@end
+
+# Helper method for initLineList()
+@private initList(line)
+  @join identifier : line.getElementIdentifiers on ", "
+    {@identifier}
+  @end
+@end
+
+# Generate a simple argument
+@private initLineSimple(line)
+  {@formattedIdentifier(line)} = {@initValue(line)}
+@end
+
+# Properly format an identifier for this language
+@private formattedIdentifier(lineOrFieldSetting)
+  {@lineOrFieldSetting.getIdentifier}
+@end
+
+# Value for simple argument
+@private initValue(line)
+  @let metadata = line.getInitValueConfig
+    @if metadata.hasFormattingConfig()
+      api.{@formatResourceFunctionName(metadata.getCollectionConfig)}(\
+        {@formatResourceFunctionArgs(metadata.getCollectionConfig)}\
+      )
+    @else
+      {@context.defaultValue(line.getType, importHandler)}
+    @end
+  @end
+@end
+
+# Format arguments for resource function call in sample
+@private formatResourceFunctionArgs(collectionConfig)
+  @join param : collectionConfig.getNameTemplate.vars() on ", "
+    '[{@context.lowerUnderscoreToUpperUnderscore(param)}]'
+  @end
+@end
+
+# Optionally render the return value from the API method call
+@private callResultSampleCode(returnType)
+  @if returnType.isEmpty
+  @else
+    response = {@""}
+  @end
+@end
+
+# Render the API method call itself
+@private methodCallSampleCode(docConfig, isPageStreaming)
+  @let argFields = {@docConfig.getInitCode.getArgFields}
+    api.{@methodCallName(docConfig)}(\
+      {@argList(argFields)}\
+      {@pageStreamingArg(argFields, isPageStreaming)}\
+    )
+  @end
+@end
+
+# Optionally render the options argument for page streaming 
+@private pageStreamingArg(argFields, isPageStreaming)
+  @if isPageStreaming
+    @if argFields.isEmpty
+    @else
+      , {@""}
+    @end
+    options=CallOptions(page_token=INITIAL_PAGE)
+  @else
+  @end
+@end
+
+# Render the name of the method call
+@private methodCallName(docConfig)
+  {@docConfig.getMethodName}
+@end
+
+# Generate comma-separated argument list
+@private argList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@formattedIdentifier(fieldSetting)}
+  @end
+@end

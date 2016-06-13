@@ -15,7 +15,7 @@
 
 
         class {@element.getSimpleName()}(object):
-            {@comments(element)}
+            {@messageComments(element)}
             pass
     @end
 
@@ -43,8 +43,11 @@
     @end
 @end
 
-@private comments(element)
-    @join comment : context.comments(element, importHandler)
+@private messageComments(message)
+    @join comment : context.messageComments(message, importHandler)
         {@comment}
     @end
+@end
+
+@snippet generateMethodSampleCode(docConfig)
 @end
