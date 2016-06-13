@@ -210,9 +210,6 @@
                         ctx = metadata.NewContext(ctx, c.metadata)
                         it := &{@iteratorTypeName}{}
                         it.apiCall = func() error {
-                            if it.atLastPage {
-                                return Done
-                            }
                             var resp {@outTypeName}
                             err := gax.Invoke(ctx, func (ctx context.Context) error {
                                 var err error
@@ -228,9 +225,8 @@
                             }
                             if resp.{@responseTokenFieldName} == {@tokenZeroValue} {
                                 it.atLastPage = true
-                            } else {
-                                it.nextPageToken = resp.{@responseTokenFieldName}
                             }
+                            it.nextPageToken = resp.{@responseTokenFieldName}
                             it.items = resp.{@resourceFieldName}
                             return nil
                         }
@@ -306,19 +302,28 @@
             // NextPage moves to the next page and updates its internal data.
             // On completion, the last page is returned with Done.
             func (it *{@iteratorTypeName}) NextPage() ([]{@resourceFieldTypeName}, error) {
-                err := it.apiCall()
-                if err != nil && err != Done {
+                if it.atLastPage {
+                    // We already returned Done with the last page of items. Continue to
+                    // return Done, but with no items.
+                    return nil, Done
+                }
+                if err := it.apiCall(); err != nil {
                     return nil, err
                 }
-                return it.items, err
+                if it.atLastPage {
+                    return it.items, Done
+                }
+                return it.items, nil
             }
 
             // Next returns the next element in the stream. It returns Done at
             // the end of the stream.
             func (it *{@iteratorTypeName}) Next() ({@resourceFieldTypeName}, error) {
                 for it.currentIndex >= len(it.items) {
-                    _, err := it.NextPage()
-                    if err != nil {
+                    if it.atLastPage {
+                        return nil, Done
+                    }
+                    if err := it.apiCall(); err != nil {
                         return {@context.zeroValue(resourceFieldType)}, err
                     }
                     it.currentIndex = 0
