@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.codegen.CodePathMapper;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.InputElementView;
@@ -41,7 +40,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
   private final GapicContext context;
   private final SnippetSetRunner<ElementT> snippetSetRunner;
   private final List<String> snippetFileNames;
-  private final CodePathMapper pathMapper;
+  private final GapicCodePathMapper pathMapper;
 
   private CommonGapicProvider(
       Model model,
@@ -49,7 +48,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
       GapicContext context,
       SnippetSetRunner<ElementT> snippetSetRunner,
       List<String> snippetFileNames,
-      CodePathMapper pathMapper) {
+      GapicCodePathMapper pathMapper) {
     this.model = model;
     this.view = view;
     this.context = context;
@@ -139,7 +138,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
     private GapicContext context;
     private SnippetSetRunner<ElementT> snippetSetRunner;
     private List<String> snippetFileNames;
-    private CodePathMapper pathMapper;
+    private GapicCodePathMapper pathMapper;
 
     private Builder() {}
 
@@ -168,7 +167,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
       return this;
     }
 
-    public Builder<ElementT> setCodePathMapper(CodePathMapper pathMapper) {
+    public Builder<ElementT> setCodePathMapper(GapicCodePathMapper pathMapper) {
       this.pathMapper = pathMapper;
       return this;
     }

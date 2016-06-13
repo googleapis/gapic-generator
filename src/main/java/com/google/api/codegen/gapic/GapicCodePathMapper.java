@@ -12,14 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen;
+package com.google.api.codegen.gapic;
 
+import com.google.api.codegen.ApiConfig;
 import com.google.api.tools.framework.model.ProtoElement;
 
 /**
  * An implementation of CodePathMapper is a strategy object, encapsulating a strategy for
  * constructing a path to the GAPIC output.
  */
-public interface CodePathMapper {
+public interface GapicCodePathMapper {
   public String getOutputPath(ProtoElement element, ApiConfig config);
 }
