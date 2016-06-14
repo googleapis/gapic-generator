@@ -15,7 +15,6 @@
 package com.google.api.codegen.go;
 
 import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.Service;

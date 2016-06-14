@@ -23,15 +23,12 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableMap;
-import com.google.protobuf.Api;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpContext {
 
