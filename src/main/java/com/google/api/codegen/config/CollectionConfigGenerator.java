@@ -34,10 +34,12 @@ public class CollectionConfigGenerator {
     List<Object> output = new LinkedList<Object>();
 
     Iterable<FieldSegment> segments = Resources.getFieldSegmentsFromHttpPaths(service.getMethods());
+    Map<String, String> nameMap = Resources.getResourceToEntityNameMap(segments);
     for (FieldSegment segment : segments) {
       Map<String, Object> collectionMap = new LinkedHashMap<String, Object>();
-      collectionMap.put(CONFIG_KEY_NAME_PATTERN, Resources.templatize(segment));
-      collectionMap.put(CONFIG_KEY_ENTITY_NAME, Resources.getEntityName(segment));
+      String resourceNameString = Resources.templatize(segment);
+      collectionMap.put(CONFIG_KEY_NAME_PATTERN, resourceNameString);
+      collectionMap.put(CONFIG_KEY_ENTITY_NAME, nameMap.get(resourceNameString));
       output.add(collectionMap);
     }
     return output;

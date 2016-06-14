@@ -24,7 +24,7 @@ public class Inflector {
    * Gives the singular form of an English word (only works for regular English plurals).
    */
   public static String singularize(String in) {
-    if (in.endsWith("ves")) {
+    if (in.endsWith("lves") || in.endsWith("rves")) {
       return in.substring(0, in.length() - 3) + "f";
 
     } else if (in.endsWith("ies")) {

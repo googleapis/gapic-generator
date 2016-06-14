@@ -44,6 +44,7 @@ import com.google.example.library.v1.CreateBookRequest;
 import com.google.example.library.v1.CreateShelfRequest;
 import com.google.example.library.v1.DeleteBookRequest;
 import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.GetBookFromArchiveRequest;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
 import com.google.example.library.v1.ListBooksRequest;
@@ -166,6 +167,7 @@ public class LibraryServiceApi implements AutoCloseable {
   private final ApiCallable<ListStringsRequest, PageAccessor<String>>
       listStringsPagedCallable;
   private final ApiCallable<AddCommentsRequest, Empty> addCommentsCallable;
+  private final ApiCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable;
 
   public final LibraryServiceSettings getSettings() {
     return settings;
@@ -176,6 +178,9 @@ public class LibraryServiceApi implements AutoCloseable {
 
   private static final PathTemplate BOOK_PATH_TEMPLATE =
       PathTemplate.createWithoutUrlEncoding("shelves/{shelf}/books/{book}");
+
+  private static final PathTemplate ARCHIVED_BOOK_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("archives/{archive_path=**}/books/{book}");
 
   /**
    * Formats a string containing the fully-qualified path to represent
@@ -199,6 +204,18 @@ public class LibraryServiceApi implements AutoCloseable {
   public static final String formatBookName(String shelf, String book) {
     return BOOK_PATH_TEMPLATE.instantiate(
         "shelf", shelf,"book", book);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a archived_book resource.
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   */
+  public static final String formatArchivedBookName(String archivePath, String book) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.instantiate(
+        "archive_path", archivePath,"book", book);
   }
 
   /**
@@ -232,6 +249,28 @@ public class LibraryServiceApi implements AutoCloseable {
    */
   public static final String parseBookFromBookName(String bookName) {
     return BOOK_PATH_TEMPLATE.parse(bookName).get("book");
+  }
+
+  /**
+   * Parses the archive_path from the given fully-qualified path which
+   * represents a archivedBook resource.
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   */
+  public static final String parseArchivePathFromArchivedBookName(String archivedBookName) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("archive_path");
+  }
+
+  /**
+   * Parses the book from the given fully-qualified path which
+   * represents a archivedBook resource.
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   */
+  public static final String parseBookFromArchivedBookName(String archivedBookName) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("book");
   }
 
 
@@ -293,6 +332,7 @@ public class LibraryServiceApi implements AutoCloseable {
     this.listStringsPagedCallable =
         ApiCallable.createPagedVariant(settings.listStringsSettings(), this.channel, this.executor);
     this.addCommentsCallable = ApiCallable.create(settings.addCommentsSettings(), this.channel, this.executor);
+    this.getBookFromArchiveCallable = ApiCallable.create(settings.getBookFromArchiveSettings(), this.channel, this.executor);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -1685,6 +1725,84 @@ public class LibraryServiceApi implements AutoCloseable {
    */
   public final ApiCallable<AddCommentsRequest, Empty> addCommentsCallable() {
     return addCommentsCallable;
+  }
+
+  // ----- getBookFromArchive -----
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Gets a book from an archive.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
+   *   Book response = libraryServiceApi.getBookFromArchive(formattedName);
+   * }
+   * </code></pre>
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Book getBookFromArchive(String name) {
+    ARCHIVED_BOOK_PATH_TEMPLATE.validate(name);
+    GetBookFromArchiveRequest request =
+        GetBookFromArchiveRequest.newBuilder()
+        .setName(name)
+        .build();
+    return getBookFromArchive(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Gets a book from an archive.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
+   *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
+   *   Book response = libraryServiceApi.getBookFromArchive(request);
+   * }
+   * </code></pre>
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  private Book getBookFromArchive(GetBookFromArchiveRequest request) {
+    return getBookFromArchiveCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Gets a book from an archive.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
+   *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
+   *   ListenableFuture&lt;Book&gt; future = libraryServiceApi.getBookFromArchiveCallable().futureCall(request);
+   *   // Do something
+   *   Book response = future.get();
+   * }
+   * </code></pre>
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   */
+  public final ApiCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable() {
+    return getBookFromArchiveCallable;
   }
 
 

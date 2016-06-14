@@ -33,6 +33,7 @@ import (
 var (
     libraryShelfPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}")
     libraryBookPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}/books/{book}")
+    libraryArchivedBookPathTemplate = gax.MustCompilePathTemplate("archives/{archive_path=**}/books/{book}")
 )
 
 func defaultClientSettings() gax.ClientSettings {
@@ -70,6 +71,7 @@ func defaultClientSettings() gax.ClientSettings {
             "MoveBook": defaultRetryOptions,
             "ListStrings": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
             "AddComments": defaultRetryOptions,
+            "GetBookFromArchive": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
         },
     }
 }
@@ -150,6 +152,18 @@ func LibraryShelfPath(shelf string) string {
 func LibraryBookPath(shelf string, book string) string {
     path, err := libraryBookPathTemplate.Render(map[string]string{
         "shelf": shelf,
+        "book": book,
+    })
+    if err != nil {
+        panic(err)
+    }
+    return path
+}
+
+// ArchivedBookPath returns the path for the archived book resource.
+func LibraryArchivedBookPath(archivePath string, book string) string {
+    path, err := libraryArchivedBookPathTemplate.Render(map[string]string{
+        "archive_path": archivePath,
         "book": book,
     })
     if err != nil {
@@ -401,6 +415,22 @@ func (c *Client) AddComments(ctx context.Context, req *google_example_library_v1
         return err
     }, c.callOptions["AddComments"]...)
     return err
+}
+
+
+// GetBookFromArchive gets a book from an archive.
+func (c *Client) GetBookFromArchive(ctx context.Context, req *google_example_library_v1.GetBookFromArchiveRequest) (*google_example_library_v1.Book, error) {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    var resp *google_example_library_v1.Book
+    err := gax.Invoke(ctx, func (ctx context.Context) error {
+        var err error
+        resp, err = c.client.GetBookFromArchive(ctx, req)
+        return err
+    }, c.callOptions["GetBookFromArchive"]...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
 }
 
 

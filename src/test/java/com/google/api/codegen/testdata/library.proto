@@ -107,6 +107,12 @@ service LibraryService {
   rpc AddComments(AddCommentsRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = { post: "/v1/{name=shelves/*}/comments" body: "*" };
   }
+
+  // Gets a book from an archive.
+  rpc GetBookFromArchive(GetBookFromArchiveRequest) returns (Book) {
+    option (google.api.http) = { get: "/v1/{name=archives/**/books/*}" };
+  }
+
 }
 
 // A single book in the library.
@@ -359,4 +365,10 @@ message Comment {
 
   // should be filled in by the sample generator
   bytes comment = 2;
+}
+
+// Request message for LibraryService.GetBookFromArchive.
+message GetBookFromArchiveRequest {
+  // The name of the book to retrieve.
+  string name = 1;
 }

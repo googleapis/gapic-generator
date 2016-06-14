@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.codegen.Inflector;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.FieldSegment;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.LiteralSegment;
@@ -27,9 +26,12 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -79,10 +81,30 @@ public class Resources {
 
   public static String getEntityName(FieldSegment segment) {
     Preconditions.checkArgument(isTemplateFieldSegment(segment));
-    // TODO(shinfan): Consider finding a better way to determine the name if possible.
-    List<String> params = getWildcardCollectionNames(segment);
-    String lastParam = params.get(params.size() - 1);
-    return Inflector.singularize(lastParam);
+    List<NamedWildcard> namedWildcardList = getNamedWildcards(segment);
+    return namedWildcardList.get(namedWildcardList.size() - 1).paramName();
+  }
+
+  public static Map<String, String> getResourceToEntityNameMap(Iterable<FieldSegment> segments) {
+    Set<String> usedNameSet = new HashSet<>();
+    Map<String, String> nameMap = new LinkedHashMap<>();
+    for (FieldSegment segment : segments) {
+      String resourceNameString = templatize(segment);
+      String entityNameString = getUniqueName(getEntityName(segment), usedNameSet);
+      usedNameSet.add(entityNameString);
+      nameMap.put(resourceNameString, entityNameString);
+    }
+    return nameMap;
+  }
+
+  private static String getUniqueName(String desiredName, Set<String> usedNameSet) {
+    String actualName = desiredName;
+    int i = 2;
+    while (usedNameSet.contains(actualName)) {
+      actualName = desiredName + "_" + i;
+      i += 1;
+    }
+    return actualName;
   }
 
   /**
@@ -101,9 +123,8 @@ public class Resources {
   public static String templatize(FieldSegment fieldSegment) {
     List<String> componentStrings = new ArrayList<String>();
 
-    for (String collectionName : getWildcardCollectionNames(fieldSegment)) {
-      String paramName = Inflector.singularize(collectionName);
-      componentStrings.add(collectionName + "/{" + paramName + "}");
+    for (NamedWildcard namedWildcard : getNamedWildcards(fieldSegment)) {
+      componentStrings.add(namedWildcard.resourcePathString());
     }
 
     return Joiner.on("/").join(componentStrings);
@@ -126,20 +147,20 @@ public class Resources {
     return true;
   }
 
-  private static List<String> getWildcardCollectionNames(FieldSegment fieldSegment) {
-    List<String> collectionNames = new ArrayList<>();
+  private static List<NamedWildcard> getNamedWildcards(FieldSegment fieldSegment) {
+    List<NamedWildcard> namedWildcardList = new ArrayList<>();
 
     PathSegment lastSegment = null;
     for (PathSegment pathSegment : fieldSegment.getSubPath()) {
       if (pathSegment instanceof WildcardSegment
           && lastSegment != null
           && lastSegment instanceof LiteralSegment) {
-        String collectionName = ((LiteralSegment) lastSegment).getLiteral();
-        collectionNames.add(collectionName);
+        namedWildcardList.add(
+            NamedWildcard.create((LiteralSegment) lastSegment, (WildcardSegment) pathSegment));
       }
       lastSegment = pathSegment;
     }
 
-    return collectionNames;
+    return namedWildcardList;
   }
 }
