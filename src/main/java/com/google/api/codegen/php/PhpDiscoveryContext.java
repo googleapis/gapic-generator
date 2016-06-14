@@ -14,9 +14,7 @@
  */
 package com.google.api.codegen.php;
 
-import com.google.api.client.util.DateTime;
 import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.api.Service;
 import com.google.common.collect.ImmutableMap;

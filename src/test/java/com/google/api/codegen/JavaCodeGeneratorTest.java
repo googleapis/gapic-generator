@@ -16,7 +16,6 @@ package com.google.api.codegen;
 
 import com.google.api.codegen.gapic.MainGapicProviderFactory;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;

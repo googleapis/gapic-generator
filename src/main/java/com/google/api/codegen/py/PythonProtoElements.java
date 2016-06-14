@@ -16,7 +16,6 @@ package com.google.api.codegen.py;
 
 import com.google.api.tools.framework.model.MessageType;
 import com.google.api.tools.framework.model.ProtoElement;
-import com.google.common.base.Strings;
 
 public class PythonProtoElements {
   /**
