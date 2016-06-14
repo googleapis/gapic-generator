@@ -81,7 +81,6 @@ public class Resources {
 
   public static String getEntityName(FieldSegment segment) {
     Preconditions.checkArgument(isTemplateFieldSegment(segment));
-    // TODO(shinfan): Consider finding a better way to determine the name if possible.
     List<LiteralWildcardSegment> literalWildcardSegments =
         getWildcardCollectionMapFieldSegment(segment);
     return literalWildcardSegments.get(literalWildcardSegments.size() - 1).paramName();
