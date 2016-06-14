@@ -313,6 +313,9 @@ class LibraryServiceApi(object):
         self._add_comments = api_callable.create_api_call(
             self.stub.AddComments,
             settings=defaults['add_comments'])
+        self._get_book_from_archive = api_callable.create_api_call(
+            self.stub.GetBookFromArchive,
+            settings=defaults['get_book_from_archive'])
 
     # Service calls
     def create_shelf(
@@ -832,10 +835,7 @@ class LibraryServiceApi(object):
         Raises:
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
         """
-        req = library_pb2.GetBookFromArchiveRequest(
+        request = library_pb2.GetBookFromArchiveRequest(
             name=name)
-        settings = self._defaults['get_book_from_archive'].merge(options)
-        api_call = api_callable.create_api_call(
-            self.stub.GetBookFromArchive, settings=settings)
-        return api_call(req, metadata=self._headers)
+        return self._get_book_from_archive(request, options)
 
