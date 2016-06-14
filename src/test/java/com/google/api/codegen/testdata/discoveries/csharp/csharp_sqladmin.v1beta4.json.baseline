@@ -1,0 +1,2029 @@
+
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Delete() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+            // The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
+            long id = 0L;
+
+            BackupRunsResource.DeleteRequest request = sQLAdminService.BackupRuns.Delete(project, instance, id);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+            // The ID of this Backup Run.
+            long id = 0L;
+
+            BackupRunsResource.GetRequest request = sQLAdminService.BackupRuns.Get(project, instance, id);
+            BackupRun response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // BackupRun response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+
+            BackupRunsResource.ListRequest request = sQLAdminService.BackupRuns.List(project, instance);
+            BackupRunsListResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // BackupRunsListResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Delete() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Database instance ID. This does not include the project ID.
+            string instance = "";
+            // Name of the database to be deleted in the instance.
+            string database = "";
+
+            DatabasesResource.DeleteRequest request = sQLAdminService.Databases.Delete(project, instance, database);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Database instance ID. This does not include the project ID.
+            string instance = "";
+            // Name of the database in the instance.
+            string database = "";
+
+            DatabasesResource.GetRequest request = sQLAdminService.Databases.Get(project, instance, database);
+            Database response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Database response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Insert() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Database instance ID. This does not include the project ID.
+            string instance = "";
+
+            DatabasesResource.InsertRequest request = sQLAdminService.Databases.Insert(project, instance);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // Project ID of the project for which to list Cloud SQL instances.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+
+            DatabasesResource.ListRequest request = sQLAdminService.Databases.List(project, instance);
+            DatabasesListResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // DatabasesListResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Patch() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Database instance ID. This does not include the project ID.
+            string instance = "";
+            // Name of the database to be updated in the instance.
+            string database = "";
+
+            DatabasesResource.PatchRequest request = sQLAdminService.Databases.Patch(project, instance, database);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Update() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Database instance ID. This does not include the project ID.
+            string instance = "";
+            // Name of the database to be updated in the instance.
+            string database = "";
+
+            DatabasesResource.UpdateRequest request = sQLAdminService.Databases.Update(project, instance, database);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+
+            FlagsResource.ListRequest request = sQLAdminService.Flags.List();
+            FlagsListResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // FlagsListResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Clone() method:
+            // Project ID of the source as well as the clone Cloud SQL instance.
+            string project = "";
+            // The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
+            string instance = "";
+
+            InstancesResource.CloneRequest request = sQLAdminService.Instances.Clone(project, instance);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Delete() method:
+            // Project ID of the project that contains the instance to be deleted.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+
+            InstancesResource.DeleteRequest request = sQLAdminService.Instances.Delete(project, instance);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Export() method:
+            // Project ID of the project that contains the instance to be exported.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+
+            InstancesResource.ExportRequest request = sQLAdminService.Instances.Export(project, instance);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Failover() method:
+            // ID of the project that contains the read replica.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+
+            InstancesResource.FailoverRequest request = sQLAdminService.Instances.Failover(project, instance);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Database instance ID. This does not include the project ID.
+            string instance = "";
+
+            InstancesResource.GetRequest request = sQLAdminService.Instances.Get(project, instance);
+            DatabaseInstance response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // DatabaseInstance response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Import() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+
+            InstancesResource.ImportRequest request = sQLAdminService.Instances.Import(project, instance);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Insert() method:
+            // Project ID of the project to which the newly created Cloud SQL instances should belong.
+            string project = "";
+
+            InstancesResource.InsertRequest request = sQLAdminService.Instances.Insert(project);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // Project ID of the project for which to list Cloud SQL instances.
+            string project = "";
+
+            InstancesResource.ListRequest request = sQLAdminService.Instances.List(project);
+            InstancesListResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // InstancesListResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Patch() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+
+            InstancesResource.PatchRequest request = sQLAdminService.Instances.Patch(project, instance);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the PromoteReplica() method:
+            // ID of the project that contains the read replica.
+            string project = "";
+            // Cloud SQL read replica instance name.
+            string instance = "";
+
+            InstancesResource.PromoteReplicaRequest request = sQLAdminService.Instances.PromoteReplica(project, instance);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the ResetSslConfig() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+
+            InstancesResource.ResetSslConfigRequest request = sQLAdminService.Instances.ResetSslConfig(project, instance);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Restart() method:
+            // Project ID of the project that contains the instance to be restarted.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+
+            InstancesResource.RestartRequest request = sQLAdminService.Instances.Restart(project, instance);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the RestoreBackup() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+
+            InstancesResource.RestoreBackupRequest request = sQLAdminService.Instances.RestoreBackup(project, instance);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the StartReplica() method:
+            // ID of the project that contains the read replica.
+            string project = "";
+            // Cloud SQL read replica instance name.
+            string instance = "";
+
+            InstancesResource.StartReplicaRequest request = sQLAdminService.Instances.StartReplica(project, instance);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the StopReplica() method:
+            // ID of the project that contains the read replica.
+            string project = "";
+            // Cloud SQL read replica instance name.
+            string instance = "";
+
+            InstancesResource.StopReplicaRequest request = sQLAdminService.Instances.StopReplica(project, instance);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Update() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+
+            InstancesResource.UpdateRequest request = sQLAdminService.Instances.Update(project, instance);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Instance operation ID.
+            string operation = "";
+
+            OperationsResource.GetRequest request = sQLAdminService.Operations.Get(project, operation);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+
+            OperationsResource.ListRequest request = sQLAdminService.Operations.List(project, instance);
+            OperationsListResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // OperationsListResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the CreateEphemeral() method:
+            // Project ID of the Cloud SQL project.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+
+            SslCertsResource.CreateEphemeralRequest request = sQLAdminService.SslCerts.CreateEphemeral(project, instance);
+            SslCert response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // SslCert response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Delete() method:
+            // Project ID of the project that contains the instance to be deleted.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+            // Sha1 FingerPrint.
+            string sha1Fingerprint = "";
+
+            SslCertsResource.DeleteRequest request = sQLAdminService.SslCerts.Delete(project, instance, sha1Fingerprint);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+            // Sha1 FingerPrint.
+            string sha1Fingerprint = "";
+
+            SslCertsResource.GetRequest request = sQLAdminService.SslCerts.Get(project, instance, sha1Fingerprint);
+            SslCert response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // SslCert response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Insert() method:
+            // Project ID of the project to which the newly created Cloud SQL instances should belong.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+
+            SslCertsResource.InsertRequest request = sQLAdminService.SslCerts.Insert(project, instance);
+            SslCertsInsertResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // SslCertsInsertResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // Project ID of the project for which to list Cloud SQL instances.
+            string project = "";
+            // Cloud SQL instance ID. This does not include the project ID.
+            string instance = "";
+
+            SslCertsResource.ListRequest request = sQLAdminService.SslCerts.List(project, instance);
+            SslCertsListResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // SslCertsListResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // Project ID of the project for which to list tiers.
+            string project = "";
+
+            TiersResource.ListRequest request = sQLAdminService.Tiers.List(project);
+            TiersListResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // TiersListResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Delete() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Database instance ID. This does not include the project ID.
+            string instance = "";
+            // Host of the user in the instance.
+            string host = "";
+            // Name of the user in the instance.
+            string name = "";
+
+            UsersResource.DeleteRequest request = sQLAdminService.Users.Delete(project, instance, host, name);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Insert() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Database instance ID. This does not include the project ID.
+            string instance = "";
+
+            UsersResource.InsertRequest request = sQLAdminService.Users.Insert(project, instance);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Database instance ID. This does not include the project ID.
+            string instance = "";
+
+            UsersResource.ListRequest request = sQLAdminService.Users.List(project, instance);
+            UsersListResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // UsersListResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.SQLAdmin.v1beta4;
+using Google.Apis.SQLAdmin.v1beta4.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace SQLAdminSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            SQLAdminService sQLAdminService = new SQLAdminService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Update() method:
+            // Project ID of the project that contains the instance.
+            string project = "";
+            // Database instance ID. This does not include the project ID.
+            string instance = "";
+            // Host of the user in the instance.
+            string host = "";
+            // Name of the user in the instance.
+            string name = "";
+
+            UsersResource.UpdateRequest request = sQLAdminService.Users.Update(project, instance, host, name);
+            Operation response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Operation response = await request.ExecuteAsync();
+        }
+    }
+}

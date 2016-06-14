@@ -16,12 +16,13 @@ package com.google.api.codegen.php;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
-import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
@@ -35,21 +36,43 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
    */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Type, String>builder()
-          .put(Type.TYPE_BOOL, "boolean")
+          .put(Type.TYPE_BOOL, "bool")
           .put(Type.TYPE_DOUBLE, "float")
           .put(Type.TYPE_FLOAT, "float")
-          .put(Type.TYPE_INT64, "integer")
-          .put(Type.TYPE_UINT64, "integer")
-          .put(Type.TYPE_SINT64, "integer")
-          .put(Type.TYPE_FIXED64, "integer")
-          .put(Type.TYPE_SFIXED64, "integer")
-          .put(Type.TYPE_INT32, "integer")
-          .put(Type.TYPE_UINT32, "integer")
-          .put(Type.TYPE_SINT32, "integer")
-          .put(Type.TYPE_FIXED32, "integer")
-          .put(Type.TYPE_SFIXED32, "integer")
+          .put(Type.TYPE_INT64, "int")
+          .put(Type.TYPE_UINT64, "int")
+          .put(Type.TYPE_SINT64, "int")
+          .put(Type.TYPE_FIXED64, "int")
+          .put(Type.TYPE_SFIXED64, "int")
+          .put(Type.TYPE_INT32, "int")
+          .put(Type.TYPE_UINT32, "int")
+          .put(Type.TYPE_SINT32, "int")
+          .put(Type.TYPE_FIXED32, "int")
+          .put(Type.TYPE_SFIXED32, "int")
           .put(Type.TYPE_STRING, "string")
-          .put(Type.TYPE_BYTES, "com\\google\\protobuf\\ByteString")
+          .put(Type.TYPE_BYTES, "string")
+          .build();
+
+  /**
+   * A map from primitive types in proto to zero value in PHP
+   */
+  private static final ImmutableMap<Type, String> PRIMITIVE_ZERO_VALUE =
+      ImmutableMap.<Type, String>builder()
+          .put(Type.TYPE_BOOL, "false")
+          .put(Type.TYPE_DOUBLE, "0.0")
+          .put(Type.TYPE_FLOAT, "0.0")
+          .put(Type.TYPE_INT64, "0")
+          .put(Type.TYPE_UINT64, "0")
+          .put(Type.TYPE_SINT64, "0")
+          .put(Type.TYPE_FIXED64, "0")
+          .put(Type.TYPE_SFIXED64, "0")
+          .put(Type.TYPE_INT32, "0")
+          .put(Type.TYPE_UINT32, "0")
+          .put(Type.TYPE_SINT32, "0")
+          .put(Type.TYPE_FIXED32, "0")
+          .put(Type.TYPE_SFIXED32, "0")
+          .put(Type.TYPE_STRING, "\"\"")
+          .put(Type.TYPE_BYTES, "\"\"")
           .build();
 
   private PhpContextCommon phpCommon;
@@ -59,7 +82,7 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
   }
 
   @Override
-  public void resetState(PhpSnippetSet<?> phpSnippetSet, PhpContextCommon phpCommon) {
+  public void resetState(PhpContextCommon phpCommon) {
     this.phpCommon = phpCommon;
   }
 
@@ -117,8 +140,8 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
   }
 
   /**
-   * Returns the PHP representation of a type, without cardinality. If the type is a
-   * primitive, basicTypeName returns it in unboxed form.
+   * Returns the PHP representation of a type, without cardinality. If the type is a primitive,
+   * basicTypeName returns it in unboxed form.
    */
   public String basicTypeName(TypeRef type) {
     String result = PRIMITIVE_TYPE_MAP.get(type.getKind());
@@ -138,6 +161,29 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
       default:
         throw new IllegalArgumentException("unknown type kind: " + type.getKind());
     }
+  }
+
+  /**
+   * Returns the PHP representation of a zero value for that type, to be used in code sample doc.
+   *
+   * Parametric types may use the diamond operator, since the return value will be used only in
+   * initialization.
+   */
+  public String zeroValue(TypeRef type) {
+    // Don't call getTypeName; we don't need to import these.
+    if (type.isMap()) {
+      return "[]";
+    }
+    if (type.isRepeated()) {
+      return "[]";
+    }
+    if (PRIMITIVE_ZERO_VALUE.containsKey(type.getKind())) {
+      return PRIMITIVE_ZERO_VALUE.get(type.getKind());
+    }
+    if (type.isMessage()) {
+      return "new " + typeName(type) + "()";
+    }
+    return "null";
   }
 
   public String fullyQualifiedName(TypeRef type) {
@@ -167,94 +213,105 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
     return file.getProto().getPackage().replaceAll("\\.", "\\\\");
   }
 
-  public String getDescription(ProtoElement element) {
-    return DocumentationUtil.getDescription(element);
+  public Method getFirstMethod(Interface service) {
+    ImmutableList<Method> methods = service.getMethods();
+    if (methods.size() > 0) {
+      return methods.get(0);
+    }
+    throw new RuntimeException("No methods available.");
+  }
+
+  public String returnTypeOrEmpty(TypeRef returnType) {
+    return messages().isEmptyType(returnType) ? "" : typeName(returnType);
+  }
+
+  public PhpDocConfig.Builder newPhpDocConfigBuilder() {
+    return PhpDocConfig.newBuilder();
   }
 
   // Constants
   // =========
 
   /**
-   * A set of PHP keywords and built-ins.
-   * keywords: http://php.net/manual/en/reserved.keywords.php
+   * A set of PHP keywords and built-ins. keywords: http://php.net/manual/en/reserved.keywords.php
    */
   private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
       ImmutableSet.<String>builder()
-      .add("__halt_compiler",
-          "abstract",
-          "and",
-          "array",
-          "as",
-          "break",
-          "callable",
-          "case",
-          "catch",
-          "class",
-          "clone",
-          "const",
-          "continue",
-          "declare",
-          "default",
-          "die",
-          "do",
-          "echo",
-          "else",
-          "elseif",
-          "empty",
-          "enddeclare",
-          "endfor",
-          "endforeach",
-          "endif",
-          "endswitch",
-          "endwhile",
-          "eval",
-          "exit",
-          "extends",
-          "final",
-          "finally",
-          "for",
-          "foreach",
-          "function",
-          "global",
-          "goto",
-          "if",
-          "implements",
-          "include",
-          "include_once",
-          "instanceof",
-          "insteadof",
-          "interface",
-          "isset",
-          "list",
-          "namespace",
-          "new",
-          "or",
-          "print",
-          "private",
-          "protected",
-          "public",
-          "require",
-          "require_once",
-          "return",
-          "static",
-          "switch",
-          "throw",
-          "trait",
-          "try",
-          "unset",
-          "use",
-          "var",
-          "while",
-          "xor",
-          "yield",
-          "__CLASS__",
-          "__DIR__",
-          "__FILE__",
-          "__FUNCTION__",
-          "__LINE__",
-          "__METHOD__",
-          "__NAMESPACE__",
-          "__TRAIT__")
-      .build();
-
+          .add(
+              "__halt_compiler",
+              "abstract",
+              "and",
+              "array",
+              "as",
+              "break",
+              "callable",
+              "case",
+              "catch",
+              "class",
+              "clone",
+              "const",
+              "continue",
+              "declare",
+              "default",
+              "die",
+              "do",
+              "echo",
+              "else",
+              "elseif",
+              "empty",
+              "enddeclare",
+              "endfor",
+              "endforeach",
+              "endif",
+              "endswitch",
+              "endwhile",
+              "eval",
+              "exit",
+              "extends",
+              "final",
+              "finally",
+              "for",
+              "foreach",
+              "function",
+              "global",
+              "goto",
+              "if",
+              "implements",
+              "include",
+              "include_once",
+              "instanceof",
+              "insteadof",
+              "interface",
+              "isset",
+              "list",
+              "namespace",
+              "new",
+              "or",
+              "print",
+              "private",
+              "protected",
+              "public",
+              "require",
+              "require_once",
+              "return",
+              "static",
+              "switch",
+              "throw",
+              "trait",
+              "try",
+              "unset",
+              "use",
+              "var",
+              "while",
+              "xor",
+              "yield",
+              "__CLASS__",
+              "__DIR__",
+              "__FILE__",
+              "__FUNCTION__",
+              "__LINE__",
+              "__METHOD__",
+              "__NAMESPACE__",
+              "__TRAIT__")
+          .build();
 }

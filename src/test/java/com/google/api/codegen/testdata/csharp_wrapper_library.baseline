@@ -1,3 +1,4 @@
+============== file: Google/Example/Library/V1/LibraryServiceClient.cs ==============
 // Copyright 2016 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,7 +43,7 @@ namespace Google.Example.Library.V1
         /// </param>
         /// <returns>A <see cref="LibraryServiceClient"/> that wraps the specified GRPC client.</returns>
         public static LibraryServiceClient ToClient(
-            this LibraryService.ILibraryServiceClient grpcClient,
+            this LibraryService.LibraryServiceClient grpcClient,
             LibraryServiceSettings settings = null
         ) => new LibraryServiceClientImpl(grpcClient, settings);
     }
@@ -79,6 +80,8 @@ namespace Google.Example.Library.V1
             UpdateBookSettings = existing.UpdateBookSettings?.Clone();
             MoveBookSettings = existing.MoveBookSettings?.Clone();
             ListStringsSettings = existing.ListStringsSettings?.Clone();
+            AddCommentsSettings = existing.AddCommentsSettings?.Clone();
+            GetBookFromArchiveSettings = existing.GetBookFromArchiveSettings?.Clone();
         }
 
         /// <summary>
@@ -144,7 +147,7 @@ namespace Google.Example.Library.V1
         };
 
         /// <summary>
-        /// <see cref="CallSettings"/> for asynchronous and synchronous calls to
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
         /// <see cref="LibraryServiceClient.CreateShelf"/> and <see cref="LibraryServiceClient.CreateShelfAsync"/>.
         /// </summary>
         /// <remarks>
@@ -166,17 +169,17 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings CreateShelfSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = NonIdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
-        /// <see cref="CallSettings"/> for asynchronous and synchronous calls to
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
         /// <see cref="LibraryServiceClient.GetShelf"/> and <see cref="LibraryServiceClient.GetShelfAsync"/>.
         /// </summary>
         /// <remarks>
@@ -199,22 +202,22 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings GetShelfSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = IdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
-        /// <see cref="CallSettings"/> for asynchronous and synchronous calls to
-        /// <see cref="LibraryServiceClient.ListShelves"/> and <see cref="LibraryServiceClient.ListShelvesAsync"/>.
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+        /// <see cref="LibraryServiceClient.ListShelvesPageStream"/> and <see cref="LibraryServiceClient.ListShelvesPageStreamAsync"/>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.ListShelves"/> and
-        /// <see cref="LibraryServiceClient.ListShelvesAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <see cref="LibraryServiceClient.ListShelvesPageStream"/> and
+        /// <see cref="LibraryServiceClient.ListShelvesPageStreamAsync"/> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -232,17 +235,17 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings ListShelvesSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = IdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
-        /// <see cref="CallSettings"/> for asynchronous and synchronous calls to
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
         /// <see cref="LibraryServiceClient.DeleteShelf"/> and <see cref="LibraryServiceClient.DeleteShelfAsync"/>.
         /// </summary>
         /// <remarks>
@@ -265,17 +268,17 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings DeleteShelfSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = IdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
-        /// <see cref="CallSettings"/> for asynchronous and synchronous calls to
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
         /// <see cref="LibraryServiceClient.MergeShelves"/> and <see cref="LibraryServiceClient.MergeShelvesAsync"/>.
         /// </summary>
         /// <remarks>
@@ -297,17 +300,17 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings MergeShelvesSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = NonIdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
-        /// <see cref="CallSettings"/> for asynchronous and synchronous calls to
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
         /// <see cref="LibraryServiceClient.CreateBook"/> and <see cref="LibraryServiceClient.CreateBookAsync"/>.
         /// </summary>
         /// <remarks>
@@ -329,17 +332,17 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings CreateBookSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = NonIdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
-        /// <see cref="CallSettings"/> for asynchronous and synchronous calls to
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
         /// <see cref="LibraryServiceClient.PublishSeries"/> and <see cref="LibraryServiceClient.PublishSeriesAsync"/>.
         /// </summary>
         /// <remarks>
@@ -361,17 +364,17 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings PublishSeriesSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = NonIdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
-        /// <see cref="CallSettings"/> for asynchronous and synchronous calls to
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
         /// <see cref="LibraryServiceClient.GetBook"/> and <see cref="LibraryServiceClient.GetBookAsync"/>.
         /// </summary>
         /// <remarks>
@@ -394,22 +397,22 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings GetBookSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = IdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
-        /// <see cref="CallSettings"/> for asynchronous and synchronous calls to
-        /// <see cref="LibraryServiceClient.ListBooks"/> and <see cref="LibraryServiceClient.ListBooksAsync"/>.
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+        /// <see cref="LibraryServiceClient.ListBooksPageStream"/> and <see cref="LibraryServiceClient.ListBooksPageStreamAsync"/>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.ListBooks"/> and
-        /// <see cref="LibraryServiceClient.ListBooksAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <see cref="LibraryServiceClient.ListBooksPageStream"/> and
+        /// <see cref="LibraryServiceClient.ListBooksPageStreamAsync"/> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -427,17 +430,17 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings ListBooksSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = IdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
-        /// <see cref="CallSettings"/> for asynchronous and synchronous calls to
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
         /// <see cref="LibraryServiceClient.DeleteBook"/> and <see cref="LibraryServiceClient.DeleteBookAsync"/>.
         /// </summary>
         /// <remarks>
@@ -460,17 +463,17 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings DeleteBookSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = IdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
-        /// <see cref="CallSettings"/> for asynchronous and synchronous calls to
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
         /// <see cref="LibraryServiceClient.UpdateBook"/> and <see cref="LibraryServiceClient.UpdateBookAsync"/>.
         /// </summary>
         /// <remarks>
@@ -493,17 +496,17 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings UpdateBookSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = IdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
-        /// <see cref="CallSettings"/> for asynchronous and synchronous calls to
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
         /// <see cref="LibraryServiceClient.MoveBook"/> and <see cref="LibraryServiceClient.MoveBookAsync"/>.
         /// </summary>
         /// <remarks>
@@ -525,22 +528,22 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings MoveBookSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = NonIdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
         /// <summary>
-        /// <see cref="CallSettings"/> for asynchronous and synchronous calls to
-        /// <see cref="LibraryServiceClient.ListStrings"/> and <see cref="LibraryServiceClient.ListStringsAsync"/>.
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+        /// <see cref="LibraryServiceClient.ListStringsPageStream"/> and <see cref="LibraryServiceClient.ListStringsPageStreamAsync"/>.
         /// </summary>
         /// <remarks>
-        /// The default <see cref="LibraryServiceClient.ListStrings"/> and
-        /// <see cref="LibraryServiceClient.ListStringsAsync"/> <see cref="RetrySettings"/> are:
+        /// The default <see cref="LibraryServiceClient.ListStringsPageStream"/> and
+        /// <see cref="LibraryServiceClient.ListStringsPageStreamAsync"/> <see cref="RetrySettings"/> are:
         /// <list type="bullet">
         /// <item><description>Initial retry delay: 100 milliseconds</description></item>
         /// <item><description>Retry delay multiplier: 1.2</description></item>
@@ -558,13 +561,78 @@ namespace Google.Example.Library.V1
         /// </remarks>
         public CallSettings ListStringsSettings { get; set; } = new CallSettings
         {
-            RetrySettings = new RetrySettings
+            Timing = CallTiming.FromRetry(new RetrySettings
             {
                 RetryBackoff = GetDefaultRetryBackoff(),
                 TimeoutBackoff = GetDefaultTimeoutBackoff(),
                 RetryFilter = IdempotentRetryFilter,
-            },
-            Expiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
+        };
+
+        /// <summary>
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+        /// <see cref="LibraryServiceClient.AddComments"/> and <see cref="LibraryServiceClient.AddCommentsAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.AddComments"/> and
+        /// <see cref="LibraryServiceClient.AddCommentsAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description>No status codes</description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public CallSettings AddCommentsSettings { get; set; } = new CallSettings
+        {
+            Timing = CallTiming.FromRetry(new RetrySettings
+            {
+                RetryBackoff = GetDefaultRetryBackoff(),
+                TimeoutBackoff = GetDefaultTimeoutBackoff(),
+                RetryFilter = NonIdempotentRetryFilter,
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
+        };
+
+        /// <summary>
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+        /// <see cref="LibraryServiceClient.GetBookFromArchive"/> and <see cref="LibraryServiceClient.GetBookFromArchiveAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.GetBookFromArchive"/> and
+        /// <see cref="LibraryServiceClient.GetBookFromArchiveAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description><see cref="StatusCode.DeadlineExceeded"/></description></item>
+        /// <item><description><see cref="StatusCode.Unavailable"/></description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public CallSettings GetBookFromArchiveSettings { get; set; } = new CallSettings
+        {
+            Timing = CallTiming.FromRetry(new RetrySettings
+            {
+                RetryBackoff = GetDefaultRetryBackoff(),
+                TimeoutBackoff = GetDefaultTimeoutBackoff(),
+                RetryFilter = IdempotentRetryFilter,
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
         };
 
 
@@ -615,7 +683,7 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="shelfId">The shelf ID.</param>
         /// <returns>The full shelf resource name.</returns>
-        public static string GetShelfName(string shelfId) => ShelfTemplate.Expand(shelfId);
+        public static string FormatShelfName(string shelfId) => ShelfTemplate.Expand(shelfId);
 
         /// <summary>
         /// Path template for a book resource. Parameters:
@@ -632,7 +700,24 @@ namespace Google.Example.Library.V1
         /// <param name="shelfId">The shelf ID.</param>
         /// <param name="bookId">The book ID.</param>
         /// <returns>The full book resource name.</returns>
-        public static string GetBookName(string shelfId, string bookId) => BookTemplate.Expand(shelfId, bookId);
+        public static string FormatBookName(string shelfId, string bookId) => BookTemplate.Expand(shelfId, bookId);
+
+        /// <summary>
+        /// Path template for a archivedBook resource. Parameters:
+        /// <list type="bullet">
+        /// <item><description>archive_path</description></item>
+        /// <item><description>book</description></item>
+        /// </list>
+        /// </summary>
+        public static PathTemplate ArchivedBookTemplate { get; } = new PathTemplate("archives/{archive_path=**}/books/{book}");
+
+        /// <summary>
+        /// Creates a archivedBook resource name from its component IDs.
+        /// </summary>
+        /// <param name="archive_pathId">The archive_path ID.</param>
+        /// <param name="bookId">The book ID.</param>
+        /// <returns>The full archivedBook resource name.</returns>
+        public static string FormatArchivedBookName(string archive_pathId, string bookId) => ArchivedBookTemplate.Expand(archive_pathId, bookId);
 
         // Note: we could have parameterless overloads of Create and CreateAsync,
         // documented to just use the default endpoint, settings and credentials.
@@ -696,7 +781,7 @@ namespace Google.Example.Library.V1
         /// <summary>
         /// The underlying GRPC LibraryService client.
         /// </summary>
-        public virtual LibraryService.ILibraryServiceClient GrpcClient
+        public virtual LibraryService.LibraryServiceClient GrpcClient
         {
             get { throw new NotImplementedException(); }
         }
@@ -827,7 +912,7 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">The name of the shelf to retrieve.</param>
         /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
-        /// <param name="string_builder"></param>
+        /// <param name="stringBuilder"></param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>A Task containing the RPC response.</returns>
         public virtual Task<Shelf> GetShelfAsync(
@@ -844,7 +929,7 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">The name of the shelf to retrieve.</param>
         /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
-        /// <param name="string_builder"></param>
+        /// <param name="stringBuilder"></param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
         /// <returns>A Task containing the RPC response.</returns>
         public virtual Task<Shelf> GetShelfAsync(
@@ -862,7 +947,7 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">The name of the shelf to retrieve.</param>
         /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
-        /// <param name="string_builder"></param>
+        /// <param name="stringBuilder"></param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>The RPC response.</returns>
         public virtual Shelf GetShelf(
@@ -954,7 +1039,7 @@ namespace Google.Example.Library.V1
         /// `other_shelf_name`. Returns the updated shelf.
         /// </summary>
         /// <param name="name">The name of the shelf we're adding books to.</param>
-        /// <param name="other_shelf_name">The name of the shelf we're removing books from and deleting.</param>
+        /// <param name="otherShelfName">The name of the shelf we're removing books from and deleting.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>A Task containing the RPC response.</returns>
         public virtual Task<Shelf> MergeShelvesAsync(
@@ -971,7 +1056,7 @@ namespace Google.Example.Library.V1
         /// `other_shelf_name`. Returns the updated shelf.
         /// </summary>
         /// <param name="name">The name of the shelf we're adding books to.</param>
-        /// <param name="other_shelf_name">The name of the shelf we're removing books from and deleting.</param>
+        /// <param name="otherShelfName">The name of the shelf we're removing books from and deleting.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
         /// <returns>A Task containing the RPC response.</returns>
         public virtual Task<Shelf> MergeShelvesAsync(
@@ -988,7 +1073,7 @@ namespace Google.Example.Library.V1
         /// `other_shelf_name`. Returns the updated shelf.
         /// </summary>
         /// <param name="name">The name of the shelf we're adding books to.</param>
-        /// <param name="other_shelf_name">The name of the shelf we're removing books from and deleting.</param>
+        /// <param name="otherShelfName">The name of the shelf we're removing books from and deleting.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>The RPC response.</returns>
         public virtual Shelf MergeShelves(
@@ -1266,8 +1351,8 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">The name of the book to update.</param>
         /// <param name="book">The book to update with.</param>
-        /// <param name="update_mask">A field mask to apply, rendered as an HTTP parameter.</param>
-        /// <param name="physical_mask">To test Python import clash resolution.</param>
+        /// <param name="updateMask">A field mask to apply, rendered as an HTTP parameter.</param>
+        /// <param name="physicalMask">To test Python import clash resolution.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>A Task containing the RPC response.</returns>
         public virtual Task<Book> UpdateBookAsync(
@@ -1285,8 +1370,8 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">The name of the book to update.</param>
         /// <param name="book">The book to update with.</param>
-        /// <param name="update_mask">A field mask to apply, rendered as an HTTP parameter.</param>
-        /// <param name="physical_mask">To test Python import clash resolution.</param>
+        /// <param name="updateMask">A field mask to apply, rendered as an HTTP parameter.</param>
+        /// <param name="physicalMask">To test Python import clash resolution.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
         /// <returns>A Task containing the RPC response.</returns>
         public virtual Task<Book> UpdateBookAsync(
@@ -1306,8 +1391,8 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">The name of the book to update.</param>
         /// <param name="book">The book to update with.</param>
-        /// <param name="update_mask">A field mask to apply, rendered as an HTTP parameter.</param>
-        /// <param name="physical_mask">To test Python import clash resolution.</param>
+        /// <param name="updateMask">A field mask to apply, rendered as an HTTP parameter.</param>
+        /// <param name="physicalMask">To test Python import clash resolution.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>The RPC response.</returns>
         public virtual Book UpdateBook(
@@ -1324,7 +1409,7 @@ namespace Google.Example.Library.V1
         /// Moves a book to another shelf, and returns the new book.
         /// </summary>
         /// <param name="name">The name of the book to move.</param>
-        /// <param name="other_shelf_name">The name of the destination shelf.</param>
+        /// <param name="otherShelfName">The name of the destination shelf.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>A Task containing the RPC response.</returns>
         public virtual Task<Book> MoveBookAsync(
@@ -1339,7 +1424,7 @@ namespace Google.Example.Library.V1
         /// Moves a book to another shelf, and returns the new book.
         /// </summary>
         /// <param name="name">The name of the book to move.</param>
-        /// <param name="other_shelf_name">The name of the destination shelf.</param>
+        /// <param name="otherShelfName">The name of the destination shelf.</param>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
         /// <returns>A Task containing the RPC response.</returns>
         public virtual Task<Book> MoveBookAsync(
@@ -1354,7 +1439,7 @@ namespace Google.Example.Library.V1
         /// Moves a book to another shelf, and returns the new book.
         /// </summary>
         /// <param name="name">The name of the book to move.</param>
-        /// <param name="other_shelf_name">The name of the destination shelf.</param>
+        /// <param name="otherShelfName">The name of the destination shelf.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>The RPC response.</returns>
         public virtual Book MoveBook(
@@ -1401,6 +1486,89 @@ namespace Google.Example.Library.V1
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Adds comments to a book
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="comments"></param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task AddCommentsAsync(
+            string name,
+            IEnumerable<Comment> comments,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Adds comments to a book
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="comments"></param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task AddCommentsAsync(
+            string name,
+            IEnumerable<Comment> comments,
+            CancellationToken cancellationToken) => AddCommentsAsync(
+                name,
+                comments,
+                new CallSettings { CancellationToken = cancellationToken });
+
+        /// <summary>
+        /// Adds comments to a book
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="comments"></param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual void AddComments(
+            string name,
+            IEnumerable<Comment> comments,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets a book from an archive.
+        /// </summary>
+        /// <param name="name">The name of the book to retrieve.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task<Book> GetBookFromArchiveAsync(
+            string name,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets a book from an archive.
+        /// </summary>
+        /// <param name="name">The name of the book to retrieve.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task<Book> GetBookFromArchiveAsync(
+            string name,
+            CancellationToken cancellationToken) => GetBookFromArchiveAsync(
+                name,
+                new CallSettings { CancellationToken = cancellationToken });
+
+        /// <summary>
+        /// Gets a book from an archive.
+        /// </summary>
+        /// <param name="name">The name of the book to retrieve.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual Book GetBookFromArchive(
+            string name,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 
     public sealed partial class LibraryServiceClientImpl : LibraryServiceClient
@@ -1419,8 +1587,10 @@ namespace Google.Example.Library.V1
         private readonly ApiCall<UpdateBookRequest, Book> _callUpdateBook;
         private readonly ApiCall<MoveBookRequest, Book> _callMoveBook;
         private readonly ApiCall<ListStringsRequest, ListStringsResponse> _callListStrings;
+        private readonly ApiCall<AddCommentsRequest, Empty> _callAddComments;
+        private readonly ApiCall<GetBookFromArchiveRequest, Book> _callGetBookFromArchive;
 
-        public LibraryServiceClientImpl(LibraryService.ILibraryServiceClient grpcClient, LibraryServiceSettings settings)
+        public LibraryServiceClientImpl(LibraryService.LibraryServiceClient grpcClient, LibraryServiceSettings settings)
         {
             this.GrpcClient = grpcClient;
             LibraryServiceSettings effectiveSettings = settings ?? LibraryServiceSettings.GetDefault();
@@ -1451,9 +1621,13 @@ namespace Google.Example.Library.V1
                 GrpcClient.MoveBookAsync, GrpcClient.MoveBook, effectiveSettings.MoveBookSettings);
             _callListStrings = _clientHelper.BuildApiCall<ListStringsRequest, ListStringsResponse>(
                 GrpcClient.ListStringsAsync, GrpcClient.ListStrings, effectiveSettings.ListStringsSettings);
+            _callAddComments = _clientHelper.BuildApiCall<AddCommentsRequest, Empty>(
+                GrpcClient.AddCommentsAsync, GrpcClient.AddComments, effectiveSettings.AddCommentsSettings);
+            _callGetBookFromArchive = _clientHelper.BuildApiCall<GetBookFromArchiveRequest, Book>(
+                GrpcClient.GetBookFromArchiveAsync, GrpcClient.GetBookFromArchive, effectiveSettings.GetBookFromArchiveSettings);
         }
 
-        public override LibraryService.ILibraryServiceClient GrpcClient { get; }
+        public override LibraryService.LibraryServiceClient GrpcClient { get; }
 
         /// <summary>
         /// Creates a shelf, and returns the new Shelf.
@@ -1556,7 +1730,7 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">The name of the shelf to retrieve.</param>
         /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
-        /// <param name="string_builder"></param>
+        /// <param name="stringBuilder"></param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>A Task containing the RPC response.</returns>
         public override Task<Shelf> GetShelfAsync(
@@ -1577,7 +1751,7 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">The name of the shelf to retrieve.</param>
         /// <param name="message">Field to verify that message-type query parameter gets flattened.</param>
-        /// <param name="string_builder"></param>
+        /// <param name="stringBuilder"></param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>The RPC response.</returns>
         public override Shelf GetShelf(
@@ -1673,7 +1847,7 @@ namespace Google.Example.Library.V1
         /// `other_shelf_name`. Returns the updated shelf.
         /// </summary>
         /// <param name="name">The name of the shelf we're adding books to.</param>
-        /// <param name="other_shelf_name">The name of the shelf we're removing books from and deleting.</param>
+        /// <param name="otherShelfName">The name of the shelf we're removing books from and deleting.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>A Task containing the RPC response.</returns>
         public override Task<Shelf> MergeShelvesAsync(
@@ -1693,7 +1867,7 @@ namespace Google.Example.Library.V1
         /// `other_shelf_name`. Returns the updated shelf.
         /// </summary>
         /// <param name="name">The name of the shelf we're adding books to.</param>
-        /// <param name="other_shelf_name">The name of the shelf we're removing books from and deleting.</param>
+        /// <param name="otherShelfName">The name of the shelf we're removing books from and deleting.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>The RPC response.</returns>
         public override Shelf MergeShelves(
@@ -1942,8 +2116,8 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">The name of the book to update.</param>
         /// <param name="book">The book to update with.</param>
-        /// <param name="update_mask">A field mask to apply, rendered as an HTTP parameter.</param>
-        /// <param name="physical_mask">To test Python import clash resolution.</param>
+        /// <param name="updateMask">A field mask to apply, rendered as an HTTP parameter.</param>
+        /// <param name="physicalMask">To test Python import clash resolution.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>A Task containing the RPC response.</returns>
         public override Task<Book> UpdateBookAsync(
@@ -1966,8 +2140,8 @@ namespace Google.Example.Library.V1
         /// </summary>
         /// <param name="name">The name of the book to update.</param>
         /// <param name="book">The book to update with.</param>
-        /// <param name="update_mask">A field mask to apply, rendered as an HTTP parameter.</param>
-        /// <param name="physical_mask">To test Python import clash resolution.</param>
+        /// <param name="updateMask">A field mask to apply, rendered as an HTTP parameter.</param>
+        /// <param name="physicalMask">To test Python import clash resolution.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>The RPC response.</returns>
         public override Book UpdateBook(
@@ -1989,7 +2163,7 @@ namespace Google.Example.Library.V1
         /// Moves a book to another shelf, and returns the new book.
         /// </summary>
         /// <param name="name">The name of the book to move.</param>
-        /// <param name="other_shelf_name">The name of the destination shelf.</param>
+        /// <param name="otherShelfName">The name of the destination shelf.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>A Task containing the RPC response.</returns>
         public override Task<Book> MoveBookAsync(
@@ -2007,7 +2181,7 @@ namespace Google.Example.Library.V1
         /// Moves a book to another shelf, and returns the new book.
         /// </summary>
         /// <param name="name">The name of the book to move.</param>
-        /// <param name="other_shelf_name">The name of the destination shelf.</param>
+        /// <param name="otherShelfName">The name of the destination shelf.</param>
         /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
         /// <returns>The RPC response.</returns>
         public override Book MoveBook(
@@ -2062,6 +2236,72 @@ namespace Google.Example.Library.V1
                 {
                     PageToken = pageToken ?? "",
                     PageSize = pageSize ?? 0,
+                },
+                callSettings);
+
+        /// <summary>
+        /// Adds comments to a book
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="comments"></param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override Task AddCommentsAsync(
+            string name,
+            IEnumerable<Comment> comments,
+            CallSettings callSettings = null) => _callAddComments.Async(
+                new AddCommentsRequest
+                {
+                    Name = name,
+                    Comments = { comments },
+                },
+                callSettings);
+
+        /// <summary>
+        /// Adds comments to a book
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="comments"></param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override void AddComments(
+            string name,
+            IEnumerable<Comment> comments,
+            CallSettings callSettings = null) => _callAddComments.Sync(
+                new AddCommentsRequest
+                {
+                    Name = name,
+                    Comments = { comments },
+                },
+                callSettings);
+
+        /// <summary>
+        /// Gets a book from an archive.
+        /// </summary>
+        /// <param name="name">The name of the book to retrieve.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override Task<Book> GetBookFromArchiveAsync(
+            string name,
+            CallSettings callSettings = null) => _callGetBookFromArchive.Async(
+                new GetBookFromArchiveRequest
+                {
+                    Name = name,
+                },
+                callSettings);
+
+        /// <summary>
+        /// Gets a book from an archive.
+        /// </summary>
+        /// <param name="name">The name of the book to retrieve.</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override Book GetBookFromArchive(
+            string name,
+            CallSettings callSettings = null) => _callGetBookFromArchive.Sync(
+                new GetBookFromArchiveRequest
+                {
+                    Name = name,
                 },
                 callSettings);
 

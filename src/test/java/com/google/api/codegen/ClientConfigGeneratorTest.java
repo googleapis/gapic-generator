@@ -14,14 +14,14 @@
  */
 package com.google.api.codegen;
 
-import com.google.common.collect.ImmutableList;
+import com.google.api.codegen.gapic.MainGapicProviderFactory;
+
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
-import java.util.List;
 
 /**
  * Client config code generator baseline tests.
@@ -29,10 +29,14 @@ import java.util.List;
 public class ClientConfigGeneratorTest {
 
   @RunWith(Parameterized.class)
-  public static class ClientConfigLibraryBaseline extends CodeGeneratorTestBase {
+  public static class ClientConfigLibraryBaseline extends GapicTestBase {
 
-    public ClientConfigLibraryBaseline(String name, String[] gapicConfigFileNames) {
-      super(name, gapicConfigFileNames);
+    public ClientConfigLibraryBaseline(
+        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, snippetName);
+      getTestDataLocator()
+          .addTestDataSource(
+              com.google.api.codegen.clientconfig.ClientConfigGapicContext.class, "");
     }
 
     /**
@@ -41,13 +45,9 @@ public class ClientConfigGeneratorTest {
      */
     @Parameters(name = "{0}")
     public static List<Object[]> testedConfigs() {
-      return ImmutableList.of(
-          new Object[] {
-            "client_config",
-            new String[] {
-              "com/google/api/codegen/clientconfig/client_gapic.yaml", "library_gapic.yaml"
-            }
-          });
+      return GapicTestBase.createTestedConfigs(
+          MainGapicProviderFactory.CLIENT_CONFIG,
+          new String[] {"client_gapic.yaml", "library_gapic.yaml"});
     }
 
     // Tests

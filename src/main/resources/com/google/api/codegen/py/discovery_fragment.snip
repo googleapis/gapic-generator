@@ -1,3 +1,5 @@
+@extends "../common.snip"
+
 @snippet generateFilename(method)
     {@method.getName}.frag.py
 @end
@@ -11,22 +13,22 @@
         PRE-REQUISITES:
         ---------------
         1. If not already done, enable the {@serviceTitle} and check quota for your project at
-           https://console.developers.google.com/apis/api/{@apiName}_component/quotas 
+           https://console.developers.google.com/apis/api/{@apiName}_component/quotas
         2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-        3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from 
+        3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
            https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
         """
-    
+
         @join import : imports
             {@import}
         @end
-        
+
         @# Authentication is provided by the 'gcloud' tool when running locally
         @# and by built-in service accounts when running on GAE, GCE, or GKE.
         @# See https://developers.google.com/identity/protocols/application-default-credentials for more information.
         credentials = GoogleCredentials.get_application_default()
-        
-        @# Construct the {@apiName} service object (version {@apiVersion}) for interacting 
+
+        @# Construct the {@apiName} service object (version {@apiVersion}) for interacting
         @# with the API. You can browse other available API services and versions at
         @# https://developers.google.com/api-client-library/python/apis/
         {@serviceName()} = discovery.build('{@apiName}', '{@apiVersion}', credentials=credentials)
@@ -38,7 +40,7 @@
     {@alwaysImport()}
     @let params = context.getApiaryConfig.getMethodParams(method.getName)
         {@initialize(method, params)}
-    
+
         @if context.hasRequestField(method)
             {@initializeRequest(method)}
         @end
@@ -48,6 +50,9 @@
             {@compactCall(method)}
         @end
     @end
+@end
+
+@snippet generateMethodSampleCode(docConfig)
 @end
 
 # TODO(tcoffee): check if resource field is always first repeated field of response type
@@ -64,7 +69,7 @@
         request = {@resourcesObject}.{@methodName}({@arguments(method)})
         while request is not None:
             response = request.execute()
-            
+
             # TODO(tcoffee): add sample processing code to show visible results
             @if context.isMapField(responseTypeRef, resourceField.getName)
                 for {@resourceName} in response['{@resources}'].items():
@@ -73,7 +78,7 @@
                 for {@resourceName} in response['{@resources}']:
                     @# {@TODO()} Add code here to process each '{@resourceName}' resource
             @end
-        
+
             # used to handle inconsistency in log entries list method for Logging API
             # remove exceptional case if inconsistency is resolved
             @if context.isLogEntriesListMethod(method)
@@ -92,7 +97,7 @@
             request.execute()
         @else
             response = request.execute()
-            
+
             @# {@TODO()} Change code below to process the 'response' dict:
             @let json = importHandler.addImportStandard("json"), \
                  _ = importHandler.addImportStandard("__future__", "print_function")
@@ -124,9 +129,9 @@
          signatureType = apiaryConfig.getType(method.getRequestTypeUrl), \
          params = context.getFlatMethodParams(method)
         @if params
-      
-            @# {@TODO()} Change placeholders below to values for parameters to the '{@methodName}' method:
-            
+
+            @# {@TODO()} Change placeholders below to appropriate parameter values for the '{@methodName}' method:
+
         @end
         @join param : params
             @let paramField = context.getField(signatureType, param), \
@@ -148,7 +153,7 @@
         @# {@TODO()} Add desired entries of the '{@requestName(method)}' dict
     @end
     }
-    
+
 @end
 
 @private serviceName()
@@ -175,10 +180,6 @@
     @join argument : arguments on ", "
         {@argument}
     @end
-@end
-
-@private TODO()
-    {@context.getTODO()}
 @end
 
 @private alwaysImport() fill

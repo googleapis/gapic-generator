@@ -23,13 +23,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Container service
 $service = new Google_Service_Container($client);
-
-// The Google Developers Console [project ID or project number](https://developers.google.com/console/help/new/#projectnumber).
+// The Google Developers Console [project ID or project number]
+// (https://developers.google.com/console/help/new/#projectnumber).
 $projectId = '';
-// The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster resides.
+// The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+// resides.
 $zone = '';
 
-$response = $service->projects->zones->clusters->createClusters($projectId, $zone);
+$postBody = new Google_Service_Container_CreateClusterRequest($client);
+
+$response = $service->projects_zones_clusters->create($projectId, $zone, $postBody);
 
 <?php
 /*
@@ -55,15 +58,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Container service
 $service = new Google_Service_Container($client);
-
-// The Google Developers Console [project ID or project number](https://developers.google.com/console/help/new/#projectnumber).
+// The Google Developers Console [project ID or project number]
+// (https://developers.google.com/console/help/new/#projectnumber).
 $projectId = '';
-// The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster resides.
+// The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+// resides.
 $zone = '';
 // The name of the cluster to delete.
 $clusterId = '';
 
-$response = $service->projects->zones->clusters->deleteClusters($projectId, $zone, $clusterId);
+$response = $service->projects_zones_clusters->delete($projectId, $zone, $clusterId);
 
 <?php
 /*
@@ -89,15 +93,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Container service
 $service = new Google_Service_Container($client);
-
-// The Google Developers Console [project ID or project number](https://developers.google.com/console/help/new/#projectnumber).
+// The Google Developers Console [project ID or project number]
+// (https://developers.google.com/console/help/new/#projectnumber).
 $projectId = '';
-// The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster resides.
+// The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+// resides.
 $zone = '';
 // The name of the cluster to retrieve.
 $clusterId = '';
 
-$response = $service->projects->zones->clusters->getClusters($projectId, $zone, $clusterId);
+$response = $service->projects_zones_clusters->get($projectId, $zone, $clusterId);
 
 <?php
 /*
@@ -123,13 +128,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Container service
 $service = new Google_Service_Container($client);
-
-// The Google Developers Console [project ID or project number](https://developers.google.com/console/help/new/#projectnumber).
+// The Google Developers Console [project ID or project number]
+// (https://developers.google.com/console/help/new/#projectnumber).
 $projectId = '';
-// The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster resides, or "-" for all zones.
+// The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+// resides, or "-" for all zones.
 $zone = '';
 
-$response = $service->projects->zones->clusters->listClusters($projectId, $zone);
+$response = $service->projects_zones_clusters->listProjectsZonesClusters($projectId, $zone);
 
 <?php
 /*
@@ -155,15 +161,18 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Container service
 $service = new Google_Service_Container($client);
-
-// The Google Developers Console [project ID or project number](https://developers.google.com/console/help/new/#projectnumber).
+// The Google Developers Console [project ID or project number]
+// (https://developers.google.com/console/help/new/#projectnumber).
 $projectId = '';
-// The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster resides.
+// The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+// resides.
 $zone = '';
 // The name of the cluster to upgrade.
 $clusterId = '';
 
-$response = $service->projects->zones->clusters->updateClusters($projectId, $zone, $clusterId);
+$postBody = new Google_Service_Container_UpdateClusterRequest($client);
+
+$response = $service->projects_zones_clusters->update($projectId, $zone, $clusterId, $postBody);
 
 <?php
 /*
@@ -189,13 +198,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Container service
 $service = new Google_Service_Container($client);
-
-// The Google Developers Console [project ID or project number](https://developers.google.com/console/help/new/#projectnumber).
+// The Google Developers Console [project ID or project number]
+// (https://developers.google.com/console/help/new/#projectnumber).
 $projectId = '';
-// The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations for, or "-" for all zones.
+// The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
+// for, or "-" for all zones.
 $zone = '';
 
-$response = $service->projects->zones->getServerconfigZones($projectId, $zone);
+$response = $service->projects_zones->getServerconfig($projectId, $zone);
 
 <?php
 /*
@@ -221,15 +231,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Container service
 $service = new Google_Service_Container($client);
-
-// The Google Developers Console [project ID or project number](https://developers.google.com/console/help/new/#projectnumber).
+// The Google Developers Console [project ID or project number]
+// (https://developers.google.com/console/help/new/#projectnumber).
 $projectId = '';
-// The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster resides.
+// The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+// resides.
 $zone = '';
 // The server-assigned `name` of the operation.
 $operationId = '';
 
-$response = $service->projects->zones->operations->getOperations($projectId, $zone, $operationId);
+$response = $service->projects_zones_operations->get($projectId, $zone, $operationId);
 
 <?php
 /*
@@ -255,11 +266,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Container service
 $service = new Google_Service_Container($client);
-
-// The Google Developers Console [project ID or project number](https://developers.google.com/console/help/new/#projectnumber).
+// The Google Developers Console [project ID or project number]
+// (https://developers.google.com/console/help/new/#projectnumber).
 $projectId = '';
-// The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations for, or "-" for all zones.
+// The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
+// for, or "-" for all zones.
 $zone = '';
 
-$response = $service->projects->zones->operations->listOperations($projectId, $zone);
+$response = $service->projects_zones_operations->listProjectsZonesOperations($projectId, $zone);
 

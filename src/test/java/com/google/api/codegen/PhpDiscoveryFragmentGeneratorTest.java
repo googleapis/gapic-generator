@@ -16,20 +16,20 @@ package com.google.api.codegen;
 
 import com.google.common.collect.ImmutableList;
 
+import java.io.File;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.io.File;
-import java.util.List;
-
 /**
  * PHP discovery doc fragment generator baseline tests.
  */
 @RunWith(Parameterized.class)
-public class PhpDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGeneratorTestBase {
+public class PhpDiscoveryFragmentGeneratorTest extends DiscoveryGeneratorTestBase {
 
   public PhpDiscoveryFragmentGeneratorTest(
       String name, String discoveryDocFileName, String[] gapicConfigFileNames) {
@@ -37,13 +37,15 @@ public class PhpDiscoveryFragmentGeneratorTest extends DiscoveryFragmentGenerato
   }
 
   /**
-   * Declares test parameters, each one an array of values passed to the constructor, with the first
-   * element a name, the second a discovery doc, and the third a partial GAPIC config.
+   * Declares test parameters, each one an array of values passed to the constructor, with the
+   * first element a name, the second a discovery doc, and the third a partial GAPIC config.
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
     File dir =
-        new File(System.getProperty("user.dir"), "src/test/java/com/google/api/codegen/testdata/discoveries");
+        new File(
+            System.getProperty("user.dir"),
+            "src/test/java/com/google/api/codegen/testdata/discoveries");
     ImmutableList.Builder<Object[]> builder = ImmutableList.<Object[]>builder();
     for (File file : dir.listFiles(new DiscoveryFile())) {
       String fileName = file.getName();

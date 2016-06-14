@@ -14,52 +14,36 @@
  */
 package com.google.api.codegen;
 
-import com.google.common.collect.ImmutableList;
+import com.google.api.codegen.gapic.MainGapicProviderFactory;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.util.List;
-
 /**
  * Java code generator baseline tests.
  */
 @RunWith(Parameterized.class)
-public class JavaCodeGeneratorTest extends CodeGeneratorTestBase {
+public class JavaCodeGeneratorTest extends GapicTestBase {
 
   public JavaCodeGeneratorTest(
-      String name,
-      String[] gapicConfigFileNames,
-      String providerName,
-      String viewName,
-      String snippetName) {
-    super(name, gapicConfigFileNames, providerName, viewName, snippetName);
+      String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
+    super(name, idForFactory, gapicConfigFileNames, snippetName);
     getTestDataLocator().addTestDataSource(com.google.api.codegen.java.JavaGapicContext.class, "");
   }
 
   /**
-   * Declares test parameters, each one an array of values passed to the constructor, with the first
-   * element a name, the second a config of this name.
+   * Declares test parameters, each one an array of values passed to the constructor, with the
+   * first element a name, the second a config of this name.
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
-    return ImmutableList.of(
-        new Object[] {
-          "java_main",
-          new String[] {"java_gapic.yaml", "library_gapic.yaml"},
-          "com.google.api.codegen.java.JavaGapicProvider",
-          "com.google.api.codegen.InterfaceView",
-          "main.snip"
-        },
-        new Object[] {
-          "java_settings",
-          new String[] {"java_gapic.yaml", "library_gapic.yaml"},
-          "com.google.api.codegen.java.JavaGapicProvider",
-          "com.google.api.codegen.InterfaceView",
-          "settings.snip"
-        });
+    return GapicTestBase.createTestedConfigs(
+        MainGapicProviderFactory.JAVA, new String[] {"java_gapic.yaml", "library_gapic.yaml"});
   }
 
   // Tests

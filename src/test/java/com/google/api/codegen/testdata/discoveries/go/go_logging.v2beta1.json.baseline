@@ -5,11 +5,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/logging/v2beta1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/logging/v2beta1
 
 import (
   "golang.org/x/net/context"
@@ -20,30 +19,28 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := logging.New(httpClient)
+  client, err := logging.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-  var (
 
-    requestBody = &logging.ListLogEntriesRequest{}
-  )
 
-  callResult, err := client.Entries.List(requestBody).Context(ctx).Do()
+  resp, err := client.Entries.List(&logging.ListLogEntriesRequest{
+                                     // TODO: Fill required fields.
+                                   }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -51,11 +48,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/logging/v2beta1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/logging/v2beta1
 
 import (
   "golang.org/x/net/context"
@@ -66,30 +62,28 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := logging.New(httpClient)
+  client, err := logging.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'write' method:
-  var (
 
-    requestBody = &logging.WriteLogEntriesRequest{}
-  )
 
-  callResult, err := client.Entries.Write(requestBody).Context(ctx).Do()
+  resp, err := client.Entries.Write(&logging.WriteLogEntriesRequest{
+                                      // TODO: Fill required fields.
+                                    }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -97,11 +91,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/logging/v2beta1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/logging/v2beta1
 
 import (
   "golang.org/x/net/context"
@@ -112,29 +105,28 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := logging.New(httpClient)
+  client, err := logging.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  var (
-  )
 
-  fn := func(page *logging.ListMonitoredResourceDescriptorsResponse) error {
-    // doThingsWith(page)
-    for i, element := range page.ResourceDescriptors {
-      // doThingsWith(element)
-      _, _ = i, element
+
+
+  call := client.MonitoredResourceDescriptors.List()
+  if err := call.Pages(ctx, func(page *logging.ListMonitoredResourceDescriptorsResponse) error {
+    for _, v := range page.ResourceDescriptors {
+      // TODO: Use v.
+      _ = v
     }
-    return nil
-  }
-  if err = client.MonitoredResourceDescriptors.List().Pages(ctx, fn); err != nil {
+    return nil // NOTE: returning a non-nil error stops pagination.
+  }); err != nil {
     // TODO: Handle error.
     _ = err
   }
@@ -145,11 +137,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/logging/v2beta1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/logging/v2beta1
 
 import (
   "golang.org/x/net/context"
@@ -160,27 +151,27 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := logging.New(httpClient)
+  client, err := logging.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
-  var (
-    // Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
-    logName = ""
-  )
+  // Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
+  logName := "projects/{MY-PROJECT}/logs/{MY-LOG}" // TODO: Update placeholder value.
 
-  if err = client.Projects.Logs.Delete(logName).Context(ctx).Do(); err != nil {
+  resp, err := client.Projects.Logs.Delete(logName).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
     _ = err
   }
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -188,11 +179,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/logging/v2beta1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/logging/v2beta1
 
 import (
   "golang.org/x/net/context"
@@ -203,32 +193,30 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := logging.New(httpClient)
+  client, err := logging.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
-  var (
-    // The resource name of the project in which to create the metric. Example: `"projects/my-project-id"`. The new metric must be provided in the request.
-    projectName = ""
+  // The resource name of the project in which to create the metric. Example: `"projects/my-project-id"`.
+  // The new metric must be provided in the request.
+  projectName := "projects/{MY-PROJECT}" // TODO: Update placeholder value.
 
-    requestBody = &logging.LogMetric{}
-  )
-
-  callResult, err := client.Projects.Metrics.Create(projectName, requestBody).Context(ctx).Do()
+  resp, err := client.Projects.Metrics.Create(projectName, &logging.LogMetric{
+                                                // TODO: Fill required fields.
+                                              }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -236,11 +224,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/logging/v2beta1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/logging/v2beta1
 
 import (
   "golang.org/x/net/context"
@@ -251,27 +238,27 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := logging.New(httpClient)
+  client, err := logging.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
-  var (
-    // The resource name of the metric to delete. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-    metricName = ""
-  )
+  // The resource name of the metric to delete. Example: `"projects/my-project-id/metrics/my-metric-id"`.
+  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}" // TODO: Update placeholder value.
 
-  if err = client.Projects.Metrics.Delete(metricName).Context(ctx).Do(); err != nil {
+  resp, err := client.Projects.Metrics.Delete(metricName).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
     _ = err
   }
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -279,11 +266,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/logging/v2beta1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/logging/v2beta1
 
 import (
   "golang.org/x/net/context"
@@ -294,30 +280,27 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := logging.New(httpClient)
+  client, err := logging.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-  var (
-    // The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-    metricName = ""
-  )
+  // The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
+  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}" // TODO: Update placeholder value.
 
-  callResult, err := client.Projects.Metrics.Get(metricName).Context(ctx).Do()
+  resp, err := client.Projects.Metrics.Get(metricName).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -325,11 +308,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/logging/v2beta1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/logging/v2beta1
 
 import (
   "golang.org/x/net/context"
@@ -340,32 +322,30 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := logging.New(httpClient)
+  client, err := logging.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-  var (
-    // Required. The resource name of the project containing the metrics. Example: `"projects/my-project-id"`.
-    projectName = ""
-  )
+  // Required. The resource name of the project containing the metrics. Example:
+  // `"projects/my-project-id"`.
+  projectName := "projects/{MY-PROJECT}" // TODO: Update placeholder value.
 
-  fn := func(page *logging.ListLogMetricsResponse) error {
-    // doThingsWith(page)
-    for i, element := range page.Metrics {
-      // doThingsWith(element)
-      _, _ = i, element
+
+  call := client.Projects.Metrics.List(projectName)
+  if err := call.Pages(ctx, func(page *logging.ListLogMetricsResponse) error {
+    for _, v := range page.Metrics {
+      // TODO: Use v.
+      _ = v
     }
-    return nil
-  }
-  if err = client.Projects.Metrics.List(projectName).Pages(ctx, fn); err != nil {
+    return nil // NOTE: returning a non-nil error stops pagination.
+  }); err != nil {
     // TODO: Handle error.
     _ = err
   }
@@ -376,11 +356,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/logging/v2beta1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/logging/v2beta1
 
 import (
   "golang.org/x/net/context"
@@ -391,32 +370,31 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := logging.New(httpClient)
+  client, err := logging.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
-  var (
-    // The resource name of the metric to update. Example: `"projects/my-project-id/metrics/my-metric-id"`. The updated metric must be provided in the request and have the same identifier that is specified in `metricName`. If the metric does not exist, it is created.
-    metricName = ""
+  // The resource name of the metric to update. Example: `"projects/my-project-id/metrics/my-metric-id"`.
+  // The updated metric must be provided in the request and have the same identifier that is specified in
+  // `metricName`. If the metric does not exist, it is created.
+  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}" // TODO: Update placeholder value.
 
-    requestBody = &logging.LogMetric{}
-  )
-
-  callResult, err := client.Projects.Metrics.Update(metricName, requestBody).Context(ctx).Do()
+  resp, err := client.Projects.Metrics.Update(metricName, &logging.LogMetric{
+                                                // TODO: Fill required fields.
+                                              }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -424,11 +402,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/logging/v2beta1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/logging/v2beta1
 
 import (
   "golang.org/x/net/context"
@@ -439,32 +416,30 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := logging.New(httpClient)
+  client, err := logging.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
-  var (
-    // The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`. The new sink must be provided in the request.
-    projectName = ""
+  // The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`.
+  // The new sink must be provided in the request.
+  projectName := "projects/{MY-PROJECT}" // TODO: Update placeholder value.
 
-    requestBody = &logging.LogSink{}
-  )
-
-  callResult, err := client.Projects.Sinks.Create(projectName, requestBody).Context(ctx).Do()
+  resp, err := client.Projects.Sinks.Create(projectName, &logging.LogSink{
+                                              // TODO: Fill required fields.
+                                            }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -472,11 +447,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/logging/v2beta1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/logging/v2beta1
 
 import (
   "golang.org/x/net/context"
@@ -487,27 +461,27 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := logging.New(httpClient)
+  client, err := logging.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
-  var (
-    // The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-    sinkName = ""
-  )
+  // The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
+  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}" // TODO: Update placeholder value.
 
-  if err = client.Projects.Sinks.Delete(sinkName).Context(ctx).Do(); err != nil {
+  resp, err := client.Projects.Sinks.Delete(sinkName).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
     _ = err
   }
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -515,11 +489,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/logging/v2beta1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/logging/v2beta1
 
 import (
   "golang.org/x/net/context"
@@ -530,30 +503,27 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := logging.New(httpClient)
+  client, err := logging.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-  var (
-    // The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-    sinkName = ""
-  )
+  // The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
+  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}" // TODO: Update placeholder value.
 
-  callResult, err := client.Projects.Sinks.Get(sinkName).Context(ctx).Do()
+  resp, err := client.Projects.Sinks.Get(sinkName).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -561,11 +531,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/logging/v2beta1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/logging/v2beta1
 
 import (
   "golang.org/x/net/context"
@@ -576,32 +545,30 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := logging.New(httpClient)
+  client, err := logging.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-  var (
-    // Required. The resource name of the project containing the sinks. Example: `"projects/my-logging-project"`, `"projects/01234567890"`.
-    projectName = ""
-  )
+  // Required. The resource name of the project containing the sinks. Example:
+  // `"projects/my-logging-project"`, `"projects/01234567890"`.
+  projectName := "projects/{MY-PROJECT}" // TODO: Update placeholder value.
 
-  fn := func(page *logging.ListSinksResponse) error {
-    // doThingsWith(page)
-    for i, element := range page.Sinks {
-      // doThingsWith(element)
-      _, _ = i, element
+
+  call := client.Projects.Sinks.List(projectName)
+  if err := call.Pages(ctx, func(page *logging.ListSinksResponse) error {
+    for _, v := range page.Sinks {
+      // TODO: Use v.
+      _ = v
     }
-    return nil
-  }
-  if err = client.Projects.Sinks.List(projectName).Pages(ctx, fn); err != nil {
+    return nil // NOTE: returning a non-nil error stops pagination.
+  }); err != nil {
     // TODO: Handle error.
     _ = err
   }
@@ -612,11 +579,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Logging API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/logging_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/logging/v2beta1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/logging/v2beta1
 
 import (
   "golang.org/x/net/context"
@@ -627,30 +593,29 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := logging.New(httpClient)
+  client, err := logging.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
-  var (
-    // The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The updated sink must be provided in the request and have the same name that is specified in `sinkName`. If the sink does not exist, it is created.
-    sinkName = ""
+  // The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The
+  // updated sink must be provided in the request and have the same name that is specified in `sinkName`.
+  // If the sink does not exist, it is created.
+  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}" // TODO: Update placeholder value.
 
-    requestBody = &logging.LogSink{}
-  )
-
-  callResult, err := client.Projects.Sinks.Update(sinkName, requestBody).Context(ctx).Do()
+  resp, err := client.Projects.Sinks.Update(sinkName, &logging.LogSink{
+                                              // TODO: Fill required fields.
+                                            }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }

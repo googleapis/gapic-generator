@@ -20,11 +20,6 @@ import java.util.Map;
 
 /**
  * Some static utility methods.
- *
- * Many of these methods are copied from CodegenContext. This is due to the fact that the snippet
- * rendering engine cannot reference static methods. At the same time, instance methods are awkward
- * to use in Java code. Consequently, utility methods that are useful in both circumstances are
- * written twice.
  */
 public class LanguageUtil {
   public static String getRename(String name, Map<String, String> map) {
@@ -70,5 +65,9 @@ public class LanguageUtil {
 
   public static String lowerCamelToUpperCamel(String name) {
     return CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, name);
+  }
+
+  public static String lowerCamelToLowerUnderscore(String name) {
+    return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, name);
   }
 }

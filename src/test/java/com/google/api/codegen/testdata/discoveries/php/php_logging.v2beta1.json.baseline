@@ -24,7 +24,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
 
-$response = $service->entries->listEntries();
+
+$postBody = new Google_Service_Logging_ListLogEntriesRequest($client);
+
+$response = $service->entries->listEntries($postBody);
 
 foreach ($response['entries'] as $element) {
   // TODO: Add code here to process the elements.
@@ -55,7 +58,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
 
-$response = $service->entries->writeEntries();
+
+$postBody = new Google_Service_Logging_WriteLogEntriesRequest($client);
+
+$response = $service->entries->write($postBody);
 
 <?php
 /*
@@ -81,6 +87,7 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
+
 
 $response = $service->monitoredResourceDescriptors->listMonitoredResourceDescriptors();
 
@@ -112,41 +119,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
-
 // Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
-$logName = '';
+$logName = 'projects/{MY-PROJECT}/logs/{MY-LOG}';
 
-$response = $service->projects->logs->deleteLogs($logName);
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
- *    https://console.developers.google.com/apis/api/logging_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-// Create a new client
-$client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-// Create a new Logging service
-$service = new Google_Service_Logging($client);
-
-// The resource name of the project in which to create the metric. Example: `"projects/my-project-id"`. The new metric must be provided in the request.
-$projectName = '';
-
-$response = $service->projects->metrics->createMetrics($projectName);
+$response = $service->projects_logs->delete($logName);
 
 <?php
 /*
@@ -172,11 +148,42 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
+// The resource name of the project in which to create the metric. Example: `"projects/my-project-id"`.
+// The new metric must be provided in the request.
+$projectName = 'projects/{MY-PROJECT}';
 
+$postBody = new Google_Service_Logging_LogMetric($client);
+
+$response = $service->projects_metrics->create($projectName, $postBody);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/logging_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new Logging service
+$service = new Google_Service_Logging($client);
 // The resource name of the metric to delete. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-$metricName = '';
+$metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}';
 
-$response = $service->projects->metrics->deleteMetrics($metricName);
+$response = $service->projects_metrics->delete($metricName);
 
 <?php
 /*
@@ -202,11 +209,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
-
 // The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-$metricName = '';
+$metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}';
 
-$response = $service->projects->metrics->getMetrics($metricName);
+$response = $service->projects_metrics->get($metricName);
 
 <?php
 /*
@@ -232,11 +238,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
+// Required. The resource name of the project containing the metrics. Example:
+// `"projects/my-project-id"`.
+$projectName = 'projects/{MY-PROJECT}';
 
-// Required. The resource name of the project containing the metrics. Example: `"projects/my-project-id"`.
-$projectName = '';
-
-$response = $service->projects->metrics->listMetrics($projectName);
+$response = $service->projects_metrics->listProjectsMetrics($projectName);
 
 foreach ($response['metrics'] as $element) {
   // TODO: Add code here to process the elements.
@@ -266,41 +272,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
+// The resource name of the metric to update. Example: `"projects/my-project-id/metrics/my-metric-id"`.
+// The updated metric must be provided in the request and have the same identifier that is specified in
+// `metricName`. If the metric does not exist, it is created.
+$metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}';
 
-// The resource name of the metric to update. Example: `"projects/my-project-id/metrics/my-metric-id"`. The updated metric must be provided in the request and have the same identifier that is specified in `metricName`. If the metric does not exist, it is created.
-$metricName = '';
+$postBody = new Google_Service_Logging_LogMetric($client);
 
-$response = $service->projects->metrics->updateMetrics($metricName);
-
-<?php
-/*
- * PRE-REQUISITES:
- * ---------------
- * 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
- *    https://console.developers.google.com/apis/api/logging_component/quotas
- * 2. To install the client library on Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
- */
-
-// composer autoloading
-require_once __DIR__ . '/vendor/autoload.php';
-
-
-// Create a new client
-$client = new Google_Client();
-$client->setApplicationName('Client Sample Application');
-$client->useApplicationDefaultCredentials();
-$client->addScope('https://www.googleapis.com/auth/cloud-platform');
-
-// Create a new Logging service
-$service = new Google_Service_Logging($client);
-
-// The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`. The new sink must be provided in the request.
-$projectName = '';
-
-$response = $service->projects->sinks->createSinks($projectName);
+$response = $service->projects_metrics->update($metricName, $postBody);
 
 <?php
 /*
@@ -326,11 +305,42 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
+// The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`.
+// The new sink must be provided in the request.
+$projectName = 'projects/{MY-PROJECT}';
 
+$postBody = new Google_Service_Logging_LogSink($client);
+
+$response = $service->projects_sinks->create($projectName, $postBody);
+
+<?php
+/*
+ * PRE-REQUISITES:
+ * ---------------
+ * 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
+ *    https://console.developers.google.com/apis/api/logging_component/quotas
+ * 2. To install the client library on Composer, check installation instructions at
+ *    https://github.com/google/google-api-php-client.
+ * 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+ */
+
+// composer autoloading
+require_once __DIR__ . '/vendor/autoload.php';
+
+
+// Create a new client
+$client = new Google_Client();
+$client->setApplicationName('Client Sample Application');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+// Create a new Logging service
+$service = new Google_Service_Logging($client);
 // The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-$sinkName = '';
+$sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}';
 
-$response = $service->projects->sinks->deleteSinks($sinkName);
+$response = $service->projects_sinks->delete($sinkName);
 
 <?php
 /*
@@ -356,11 +366,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
-
 // The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-$sinkName = '';
+$sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}';
 
-$response = $service->projects->sinks->getSinks($sinkName);
+$response = $service->projects_sinks->get($sinkName);
 
 <?php
 /*
@@ -386,11 +395,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
+// Required. The resource name of the project containing the sinks. Example:
+// `"projects/my-logging-project"`, `"projects/01234567890"`.
+$projectName = 'projects/{MY-PROJECT}';
 
-// Required. The resource name of the project containing the sinks. Example: `"projects/my-logging-project"`, `"projects/01234567890"`.
-$projectName = '';
-
-$response = $service->projects->sinks->listSinks($projectName);
+$response = $service->projects_sinks->listProjectsSinks($projectName);
 
 foreach ($response['sinks'] as $element) {
   // TODO: Add code here to process the elements.
@@ -420,9 +429,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Logging service
 $service = new Google_Service_Logging($client);
+// The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The
+// updated sink must be provided in the request and have the same name that is specified in `sinkName`.
+// If the sink does not exist, it is created.
+$sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}';
 
-// The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The updated sink must be provided in the request and have the same name that is specified in `sinkName`. If the sink does not exist, it is created.
-$sinkName = '';
+$postBody = new Google_Service_Logging_LogSink($client);
 
-$response = $service->projects->sinks->updateSinks($sinkName);
+$response = $service->projects_sinks->update($sinkName, $postBody);
 

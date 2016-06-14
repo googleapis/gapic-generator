@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.py;
 
-import com.google.api.codegen.InterfaceConfig;
+import com.google.api.codegen.py.PythonImport.ImportType;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.MessageType;
@@ -24,9 +24,6 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-
-import com.google.api.codegen.InterfaceConfig;
-import com.google.api.codegen.py.PythonImport.ImportType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,13 +39,13 @@ public class PythonImportHandler {
   private final BiMap<String, PythonImport> stringImports = HashBiMap.create();
 
   /**
-   * Bi-map from proto files to short names for imports. Should only be modified through addImport()
-   * to maintain the invariant that elements of this map are in 1:1 correspondence with those in
-   * stringImports.
+   * Bi-map from proto files to short names for imports. Should only be modified through
+   * addImport() to maintain the invariant that elements of this map are in 1:1 correspondence with
+   * those in stringImports.
    */
   private final BiMap<ProtoFile, String> fileImports = HashBiMap.create();
 
-  public PythonImportHandler(Interface service, InterfaceConfig config) {
+  public PythonImportHandler(Interface service) {
     // Add non-service-specific imports.
     addImportStandard("json");
     addImportStandard("os");
@@ -95,6 +92,15 @@ public class PythonImportHandler {
         }
       }
     }
+  }
+
+  public PythonImportHandler(Method method) {
+    addImport(
+        method.getFile(),
+        PythonImport.create(
+            ImportType.APP,
+            method.getFile().getProto().getPackage(),
+            PythonProtoElements.getPbFileName(method.getInputMessage())));
   }
 
   // Independent import handler to support fragment generation from discovery sources

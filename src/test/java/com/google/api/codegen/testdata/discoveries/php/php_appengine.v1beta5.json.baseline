@@ -23,11 +23,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Appengine service
 $service = new Google_Service_Appengine($client);
-
 // Part of `name`. Name of the application to get. For example: "apps/myapp".
 $appsId = '';
 
-$response = $service->apps->getApps($appsId);
+$response = $service->apps->get($appsId);
 
 <?php
 /*
@@ -53,13 +52,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Appengine service
 $service = new Google_Service_Appengine($client);
-
 // Part of `name`. The name of the operation resource.
 $appsId = '';
 // Part of `name`. See documentation of `appsId`.
 $operationsId = '';
 
-$response = $service->apps->operations->getOperations($appsId, $operationsId);
+$response = $service->apps_operations->get($appsId, $operationsId);
 
 <?php
 /*
@@ -85,11 +83,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Appengine service
 $service = new Google_Service_Appengine($client);
-
 // Part of `name`. The name of the operation collection.
 $appsId = '';
 
-$response = $service->apps->operations->listOperations($appsId);
+$response = $service->apps_operations->listAppsOperations($appsId);
 
 foreach ($response['operations'] as $element) {
   // TODO: Add code here to process the elements.
@@ -119,13 +116,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Appengine service
 $service = new Google_Service_Appengine($client);
-
 // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
 $appsId = '';
 // Part of `name`. See documentation of `appsId`.
 $servicesId = '';
 
-$response = $service->apps->services->deleteServices($appsId, $servicesId);
+$response = $service->apps_services->delete($appsId, $servicesId);
 
 <?php
 /*
@@ -151,13 +147,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Appengine service
 $service = new Google_Service_Appengine($client);
-
 // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
 $appsId = '';
 // Part of `name`. See documentation of `appsId`.
 $servicesId = '';
 
-$response = $service->apps->services->getServices($appsId, $servicesId);
+$response = $service->apps_services->get($appsId, $servicesId);
 
 <?php
 /*
@@ -183,11 +178,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Appengine service
 $service = new Google_Service_Appengine($client);
-
 // Part of `name`. Name of the resource requested. For example: "apps/myapp".
 $appsId = '';
 
-$response = $service->apps->services->listServices($appsId);
+$response = $service->apps_services->listAppsServices($appsId);
 
 foreach ($response['services'] as $element) {
   // TODO: Add code here to process the elements.
@@ -217,13 +211,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Appengine service
 $service = new Google_Service_Appengine($client);
-
 // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
 $appsId = '';
 // Part of `name`. See documentation of `appsId`.
 $servicesId = '';
 
-$response = $service->apps->services->patchServices($appsId, $servicesId);
+$postBody = new Google_Service_Appengine_Service($client);
+
+$response = $service->apps_services->patch($appsId, $servicesId, $postBody);
 
 <?php
 /*
@@ -249,13 +244,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Appengine service
 $service = new Google_Service_Appengine($client);
-
 // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
 $appsId = '';
 // Part of `name`. See documentation of `appsId`.
 $servicesId = '';
 
-$response = $service->apps->services->versions->createVersions($appsId, $servicesId);
+$postBody = new Google_Service_Appengine_Version($client);
+
+$response = $service->apps_services_versions->create($appsId, $servicesId, $postBody);
 
 <?php
 /*
@@ -281,15 +277,15 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Appengine service
 $service = new Google_Service_Appengine($client);
-
-// Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default/versions/v1".
+// Part of `name`. Name of the resource requested. For example:
+// "apps/myapp/services/default/versions/v1".
 $appsId = '';
 // Part of `name`. See documentation of `appsId`.
 $servicesId = '';
 // Part of `name`. See documentation of `appsId`.
 $versionsId = '';
 
-$response = $service->apps->services->versions->deleteVersions($appsId, $servicesId, $versionsId);
+$response = $service->apps_services_versions->delete($appsId, $servicesId, $versionsId);
 
 <?php
 /*
@@ -315,15 +311,15 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Appengine service
 $service = new Google_Service_Appengine($client);
-
-// Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default/versions/v1".
+// Part of `name`. Name of the resource requested. For example:
+// "apps/myapp/services/default/versions/v1".
 $appsId = '';
 // Part of `name`. See documentation of `appsId`.
 $servicesId = '';
 // Part of `name`. See documentation of `appsId`.
 $versionsId = '';
 
-$response = $service->apps->services->versions->getVersions($appsId, $servicesId, $versionsId);
+$response = $service->apps_services_versions->get($appsId, $servicesId, $versionsId);
 
 <?php
 /*
@@ -349,15 +345,15 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Appengine service
 $service = new Google_Service_Appengine($client);
-
-// Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default/versions/v1".
+// Part of `name`. Name of the resource requested. For example:
+// "apps/myapp/services/default/versions/v1".
 $appsId = '';
 // Part of `name`. See documentation of `appsId`.
 $servicesId = '';
 // Part of `name`. See documentation of `appsId`.
 $versionsId = '';
 
-$response = $service->apps->services->versions->instances->listInstances($appsId, $servicesId, $versionsId);
+$response = $service->apps_services_versions_instances->listAppsServicesVersionsInstances($appsId, $servicesId, $versionsId);
 
 foreach ($response['instances'] as $element) {
   // TODO: Add code here to process the elements.
@@ -387,13 +383,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Appengine service
 $service = new Google_Service_Appengine($client);
-
 // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
 $appsId = '';
 // Part of `name`. See documentation of `appsId`.
 $servicesId = '';
 
-$response = $service->apps->services->versions->listVersions($appsId, $servicesId);
+$response = $service->apps_services_versions->listAppsServicesVersions($appsId, $servicesId);
 
 foreach ($response['versions'] as $element) {
   // TODO: Add code here to process the elements.
@@ -423,13 +418,15 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Appengine service
 $service = new Google_Service_Appengine($client);
-
-// Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default/versions/1".
+// Part of `name`. Name of the resource to update. For example:
+// "apps/myapp/services/default/versions/1".
 $appsId = '';
 // Part of `name`. See documentation of `appsId`.
 $servicesId = '';
 // Part of `name`. See documentation of `appsId`.
 $versionsId = '';
 
-$response = $service->apps->services->versions->patchVersions($appsId, $servicesId, $versionsId);
+$postBody = new Google_Service_Appengine_Version($client);
+
+$response = $service->apps_services_versions->patch($appsId, $servicesId, $versionsId, $postBody);
 

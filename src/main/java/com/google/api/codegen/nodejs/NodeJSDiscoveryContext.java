@@ -16,6 +16,7 @@ package com.google.api.codegen.nodejs;
 
 import com.google.api.client.util.DateTime;
 import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.api.Service;
 import com.google.common.collect.ImmutableMap;
@@ -26,7 +27,7 @@ import com.google.protobuf.Type;
 /**
  * A DiscoveryContext specialized for NodeJS.
  */
-public class NodeJSDiscoveryContext extends DiscoveryContext {
+public class NodeJSDiscoveryContext extends DiscoveryContext implements NodeJSContext {
 
   public NodeJSDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
     super(service, apiaryConfig);
@@ -65,27 +66,14 @@ public class NodeJSDiscoveryContext extends DiscoveryContext {
       return DEFAULT_VALUES.get(field.getKind()) + ",";
     }
     if (field.getKind() == Field.Kind.TYPE_STRING) {
-      String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
-      if (stringFormat != null) {
-        switch (stringFormat) {
-          case "byte":
-            return "\"\","
-                + "  // base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648";
-          case "date":
-            // TODO(tcoffee): does new DateTime(new Date(0L)).toStringRfc3339() work?
-            return "\"1969-12-31\"," + "  // \"YYYY-MM-DD\"";
-          case "date-time":
-            return "\""
-                + new DateTime(0L).toStringRfc3339()
-                + "\","
-                + "  // \"YYYY-MM-DDThh:mm:ss.fffZ\" (UTC)";
-          default:
-            // fall through
-        }
-      }
-      return "\"\",";
+      return getDefaultString(type, field);
     }
     return "null,";
+  }
+
+  @Override
+  public String lineEnding(String value) {
+    return value + ",";
   }
 
   private static final ImmutableMap<String, String> MAP_PARAM_NAME =

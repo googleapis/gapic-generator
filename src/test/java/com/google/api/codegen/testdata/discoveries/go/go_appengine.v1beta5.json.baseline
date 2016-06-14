@@ -5,11 +5,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google App Engine Admin API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/appengine_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/appengine/v1beta5'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/appengine/v1beta5
 
 import (
   "golang.org/x/net/context"
@@ -20,30 +19,27 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := appengine.New(httpClient)
+  client, err := appengine.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-  var (
-    // Part of `name`. Name of the application to get. For example: "apps/myapp".
-    appsId = ""
-  )
+  // Part of `name`. Name of the application to get. For example: "apps/myapp".
+  appsId := "" // TODO: Update placeholder value.
 
-  callResult, err := client.Apps.Get(appsId).Context(ctx).Do()
+  resp, err := client.Apps.Get(appsId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -51,11 +47,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google App Engine Admin API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/appengine_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/appengine/v1beta5'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/appengine/v1beta5
 
 import (
   "golang.org/x/net/context"
@@ -66,33 +61,30 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := appengine.New(httpClient)
+  client, err := appengine.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-  var (
-    // Part of `name`. The name of the operation resource.
-    appsId = ""
+  // Part of `name`. The name of the operation resource.
+  appsId := "" // TODO: Update placeholder value.
 
-    // Part of `name`. See documentation of `appsId`.
-    operationsId = ""
-  )
+  // Part of `name`. See documentation of `appsId`.
+  operationsId := "" // TODO: Update placeholder value.
 
-  callResult, err := client.Apps.Operations.Get(appsId, operationsId).Context(ctx).Do()
+  resp, err := client.Apps.Operations.Get(appsId, operationsId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -100,11 +92,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google App Engine Admin API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/appengine_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/appengine/v1beta5'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/appengine/v1beta5
 
 import (
   "golang.org/x/net/context"
@@ -115,32 +106,29 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := appengine.New(httpClient)
+  client, err := appengine.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-  var (
-    // Part of `name`. The name of the operation collection.
-    appsId = ""
-  )
+  // Part of `name`. The name of the operation collection.
+  appsId := "" // TODO: Update placeholder value.
 
-  fn := func(page *appengine.ListOperationsResponse) error {
-    // doThingsWith(page)
-    for i, element := range page.Operations {
-      // doThingsWith(element)
-      _, _ = i, element
+
+  call := client.Apps.Operations.List(appsId)
+  if err := call.Pages(ctx, func(page *appengine.ListOperationsResponse) error {
+    for _, v := range page.Operations {
+      // TODO: Use v.
+      _ = v
     }
-    return nil
-  }
-  if err = client.Apps.Operations.List(appsId).Pages(ctx, fn); err != nil {
+    return nil // NOTE: returning a non-nil error stops pagination.
+  }); err != nil {
     // TODO: Handle error.
     _ = err
   }
@@ -151,11 +139,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google App Engine Admin API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/appengine_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/appengine/v1beta5'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/appengine/v1beta5
 
 import (
   "golang.org/x/net/context"
@@ -166,33 +153,30 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := appengine.New(httpClient)
+  client, err := appengine.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
-  var (
-    // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
-    appsId = ""
+  // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
+  appsId := "" // TODO: Update placeholder value.
 
-    // Part of `name`. See documentation of `appsId`.
-    servicesId = ""
-  )
+  // Part of `name`. See documentation of `appsId`.
+  servicesId := "" // TODO: Update placeholder value.
 
-  callResult, err := client.Apps.Services.Delete(appsId, servicesId).Context(ctx).Do()
+  resp, err := client.Apps.Services.Delete(appsId, servicesId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -200,11 +184,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google App Engine Admin API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/appengine_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/appengine/v1beta5'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/appengine/v1beta5
 
 import (
   "golang.org/x/net/context"
@@ -215,33 +198,30 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := appengine.New(httpClient)
+  client, err := appengine.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-  var (
-    // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
-    appsId = ""
+  // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
+  appsId := "" // TODO: Update placeholder value.
 
-    // Part of `name`. See documentation of `appsId`.
-    servicesId = ""
-  )
+  // Part of `name`. See documentation of `appsId`.
+  servicesId := "" // TODO: Update placeholder value.
 
-  callResult, err := client.Apps.Services.Get(appsId, servicesId).Context(ctx).Do()
+  resp, err := client.Apps.Services.Get(appsId, servicesId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -249,11 +229,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google App Engine Admin API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/appengine_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/appengine/v1beta5'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/appengine/v1beta5
 
 import (
   "golang.org/x/net/context"
@@ -264,32 +243,29 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := appengine.New(httpClient)
+  client, err := appengine.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-  var (
-    // Part of `name`. Name of the resource requested. For example: "apps/myapp".
-    appsId = ""
-  )
+  // Part of `name`. Name of the resource requested. For example: "apps/myapp".
+  appsId := "" // TODO: Update placeholder value.
 
-  fn := func(page *appengine.ListServicesResponse) error {
-    // doThingsWith(page)
-    for i, element := range page.Services {
-      // doThingsWith(element)
-      _, _ = i, element
+
+  call := client.Apps.Services.List(appsId)
+  if err := call.Pages(ctx, func(page *appengine.ListServicesResponse) error {
+    for _, v := range page.Services {
+      // TODO: Use v.
+      _ = v
     }
-    return nil
-  }
-  if err = client.Apps.Services.List(appsId).Pages(ctx, fn); err != nil {
+    return nil // NOTE: returning a non-nil error stops pagination.
+  }); err != nil {
     // TODO: Handle error.
     _ = err
   }
@@ -300,11 +276,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google App Engine Admin API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/appengine_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/appengine/v1beta5'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/appengine/v1beta5
 
 import (
   "golang.org/x/net/context"
@@ -315,35 +290,32 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := appengine.New(httpClient)
+  client, err := appengine.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
-  var (
-    // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
-    appsId = ""
+  // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
+  appsId := "" // TODO: Update placeholder value.
 
-    // Part of `name`. See documentation of `appsId`.
-    servicesId = ""
+  // Part of `name`. See documentation of `appsId`.
+  servicesId := "" // TODO: Update placeholder value.
 
-    requestBody = &appengine.Service{}
-  )
-
-  callResult, err := client.Apps.Services.Patch(appsId, servicesId, requestBody).Context(ctx).Do()
+  resp, err := client.Apps.Services.Patch(appsId, servicesId, &appengine.Service{
+                                            // TODO: Fill required fields.
+                                          }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -351,11 +323,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google App Engine Admin API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/appengine_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/appengine/v1beta5'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/appengine/v1beta5
 
 import (
   "golang.org/x/net/context"
@@ -366,35 +337,32 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := appengine.New(httpClient)
+  client, err := appengine.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
-  var (
-    // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
-    appsId = ""
+  // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
+  appsId := "" // TODO: Update placeholder value.
 
-    // Part of `name`. See documentation of `appsId`.
-    servicesId = ""
+  // Part of `name`. See documentation of `appsId`.
+  servicesId := "" // TODO: Update placeholder value.
 
-    requestBody = &appengine.Version{}
-  )
-
-  callResult, err := client.Apps.Services.Versions.Create(appsId, servicesId, requestBody).Context(ctx).Do()
+  resp, err := client.Apps.Services.Versions.Create(appsId, servicesId, &appengine.Version{
+                                                      // TODO: Fill required fields.
+                                                    }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -402,11 +370,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google App Engine Admin API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/appengine_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/appengine/v1beta5'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/appengine/v1beta5
 
 import (
   "golang.org/x/net/context"
@@ -417,36 +384,34 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := appengine.New(httpClient)
+  client, err := appengine.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
-  var (
-    // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default/versions/v1".
-    appsId = ""
+  // Part of `name`. Name of the resource requested. For example:
+  // "apps/myapp/services/default/versions/v1".
+  appsId := "" // TODO: Update placeholder value.
 
-    // Part of `name`. See documentation of `appsId`.
-    servicesId = ""
+  // Part of `name`. See documentation of `appsId`.
+  servicesId := "" // TODO: Update placeholder value.
 
-    // Part of `name`. See documentation of `appsId`.
-    versionsId = ""
-  )
+  // Part of `name`. See documentation of `appsId`.
+  versionsId := "" // TODO: Update placeholder value.
 
-  callResult, err := client.Apps.Services.Versions.Delete(appsId, servicesId, versionsId).Context(ctx).Do()
+  resp, err := client.Apps.Services.Versions.Delete(appsId, servicesId, versionsId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -454,11 +419,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google App Engine Admin API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/appengine_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/appengine/v1beta5'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/appengine/v1beta5
 
 import (
   "golang.org/x/net/context"
@@ -469,36 +433,34 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := appengine.New(httpClient)
+  client, err := appengine.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-  var (
-    // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default/versions/v1".
-    appsId = ""
+  // Part of `name`. Name of the resource requested. For example:
+  // "apps/myapp/services/default/versions/v1".
+  appsId := "" // TODO: Update placeholder value.
 
-    // Part of `name`. See documentation of `appsId`.
-    servicesId = ""
+  // Part of `name`. See documentation of `appsId`.
+  servicesId := "" // TODO: Update placeholder value.
 
-    // Part of `name`. See documentation of `appsId`.
-    versionsId = ""
-  )
+  // Part of `name`. See documentation of `appsId`.
+  versionsId := "" // TODO: Update placeholder value.
 
-  callResult, err := client.Apps.Services.Versions.Get(appsId, servicesId, versionsId).Context(ctx).Do()
+  resp, err := client.Apps.Services.Versions.Get(appsId, servicesId, versionsId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -506,11 +468,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google App Engine Admin API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/appengine_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/appengine/v1beta5'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/appengine/v1beta5
 
 import (
   "golang.org/x/net/context"
@@ -521,38 +482,36 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := appengine.New(httpClient)
+  client, err := appengine.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-  var (
-    // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default/versions/v1".
-    appsId = ""
+  // Part of `name`. Name of the resource requested. For example:
+  // "apps/myapp/services/default/versions/v1".
+  appsId := "" // TODO: Update placeholder value.
 
-    // Part of `name`. See documentation of `appsId`.
-    servicesId = ""
+  // Part of `name`. See documentation of `appsId`.
+  servicesId := "" // TODO: Update placeholder value.
 
-    // Part of `name`. See documentation of `appsId`.
-    versionsId = ""
-  )
+  // Part of `name`. See documentation of `appsId`.
+  versionsId := "" // TODO: Update placeholder value.
 
-  fn := func(page *appengine.ListInstancesResponse) error {
-    // doThingsWith(page)
-    for i, element := range page.Instances {
-      // doThingsWith(element)
-      _, _ = i, element
+
+  call := client.Apps.Services.Versions.Instances.List(appsId, servicesId, versionsId)
+  if err := call.Pages(ctx, func(page *appengine.ListInstancesResponse) error {
+    for _, v := range page.Instances {
+      // TODO: Use v.
+      _ = v
     }
-    return nil
-  }
-  if err = client.Apps.Services.Versions.Instances.List(appsId, servicesId, versionsId).Pages(ctx, fn); err != nil {
+    return nil // NOTE: returning a non-nil error stops pagination.
+  }); err != nil {
     // TODO: Handle error.
     _ = err
   }
@@ -563,11 +522,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google App Engine Admin API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/appengine_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/appengine/v1beta5'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/appengine/v1beta5
 
 import (
   "golang.org/x/net/context"
@@ -578,35 +536,32 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := appengine.New(httpClient)
+  client, err := appengine.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-  var (
-    // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
-    appsId = ""
+  // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
+  appsId := "" // TODO: Update placeholder value.
 
-    // Part of `name`. See documentation of `appsId`.
-    servicesId = ""
-  )
+  // Part of `name`. See documentation of `appsId`.
+  servicesId := "" // TODO: Update placeholder value.
 
-  fn := func(page *appengine.ListVersionsResponse) error {
-    // doThingsWith(page)
-    for i, element := range page.Versions {
-      // doThingsWith(element)
-      _, _ = i, element
+
+  call := client.Apps.Services.Versions.List(appsId, servicesId)
+  if err := call.Pages(ctx, func(page *appengine.ListVersionsResponse) error {
+    for _, v := range page.Versions {
+      // TODO: Use v.
+      _ = v
     }
-    return nil
-  }
-  if err = client.Apps.Services.Versions.List(appsId, servicesId).Pages(ctx, fn); err != nil {
+    return nil // NOTE: returning a non-nil error stops pagination.
+  }); err != nil {
     // TODO: Handle error.
     _ = err
   }
@@ -617,11 +572,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google App Engine Admin API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/appengine_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/appengine/v1beta5'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/appengine/v1beta5
 
 import (
   "golang.org/x/net/context"
@@ -632,36 +586,34 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := appengine.New(httpClient)
+  client, err := appengine.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
-  var (
-    // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default/versions/1".
-    appsId = ""
+  // Part of `name`. Name of the resource to update. For example:
+  // "apps/myapp/services/default/versions/1".
+  appsId := "" // TODO: Update placeholder value.
 
-    // Part of `name`. See documentation of `appsId`.
-    servicesId = ""
+  // Part of `name`. See documentation of `appsId`.
+  servicesId := "" // TODO: Update placeholder value.
 
-    // Part of `name`. See documentation of `appsId`.
-    versionsId = ""
+  // Part of `name`. See documentation of `appsId`.
+  versionsId := "" // TODO: Update placeholder value.
 
-    requestBody = &appengine.Version{}
-  )
-
-  callResult, err := client.Apps.Services.Versions.Patch(appsId, servicesId, versionsId, requestBody).Context(ctx).Do()
+  resp, err := client.Apps.Services.Versions.Patch(appsId, servicesId, versionsId, &appengine.Version{
+                                                     // TODO: Fill required fields.
+                                                   }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }

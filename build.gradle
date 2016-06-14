@@ -11,22 +11,28 @@ buildscript {
       // this version is releaed.
       url 'https://oss.sonatype.org/content/repositories/snapshots/'
     }
+    maven {
+      url 'https://plugins.gradle.org/m2/'
+    }
     mavenCentral()
   }
   dependencies {
     classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.2-SNAPSHOT'
+    classpath "gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.2"
   }
 }
+
 
 apply plugin: "java"
 apply plugin: "maven"
 apply plugin: "idea"
 apply plugin: "eclipse"
 apply plugin: "com.google.protobuf"
+apply plugin: "com.github.sherter.google-java-format"
 
 sourceCompatibility = 1.7
 
-group = "io.gapi"
+group = "com.google.api"
 version = "0.0.0-SNAPSHOT"
 // url to the snapshot repository of a private maven repo.
 def privateSnapshotRepo = "http://104.197.230.53:8081/nexus/content/repositories/snapshots/"
@@ -72,6 +78,7 @@ ext {
 }
 
 repositories {
+  mavenLocal()
   mavenCentral()
   maven {
     // For 0.7.2-SNAPSHOT of protobuf gradle plugin. This should be removed once
@@ -82,7 +89,6 @@ repositories {
     // Private maven repo.
     url privateSnapshotRepo
   }
-  mavenLocal()
 }
 
 dependencies {
@@ -338,6 +344,14 @@ task runDiscoGen(type: JavaExec) {
   }
 }
 
+task runDiscoBatch(type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'com.google.api.codegen.DiscoveryFragmentGeneratorBatch'
+  if (project.hasProperty('clargs')) {
+    args = clargs.split(',').toList()
+  }
+}
+
 task verifyLicense << {
   def licenseText = new File(rootProject.rootDir, 'license-header-javadoc.txt').text
   def srcFiles = []
@@ -353,3 +367,22 @@ task verifyLicense << {
   }
 }
 test.dependsOn verifyLicense
+
+googleJavaFormat {
+  toolVersion '1.0'
+}
+tasks.googleJavaFormat {
+  exclude '.apt_generated/**'
+  exclude 'bin/**'
+  exclude 'build/**'
+  exclude 'vgen/build/**'
+  exclude 'vgen/.apt_generated/**'
+}
+tasks.verifyGoogleJavaFormat {
+  exclude '.apt_generated/**'
+  exclude 'bin/**'
+  exclude 'build/**'
+  exclude 'vgen/build/**'
+  exclude 'vgen/.apt_generated/**'
+}
+test.dependsOn verifyGoogleJavaFormat

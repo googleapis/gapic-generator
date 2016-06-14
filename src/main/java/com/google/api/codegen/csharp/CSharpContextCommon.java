@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.TreeSet;
 
 /**
- * A class that provides helper methods for snippet files generating C# code to get data and perform
- * data transformations that are difficult or messy to do in the snippets themselves.
+ * A class that provides helper methods for snippet files generating C# code to get data and
+ * perform data transformations that are difficult or messy to do in the snippets themselves.
  */
 public class CSharpContextCommon {
 
@@ -31,11 +31,6 @@ public class CSharpContextCommon {
    */
   // TODO(jonskeet): Handle naming collisions.
   private final TreeSet<String> imports = new TreeSet<>();
-  private final String serviceNamespace;
-
-  public CSharpContextCommon(String serviceNamespace) {
-    this.serviceNamespace = serviceNamespace;
-  }
 
   /**
    * Adds the given type name to the import list. Returns an empty string so that the output is not
@@ -135,10 +130,9 @@ public class CSharpContextCommon {
   }
 
   public TreeSet<String> getImports() {
-    imports.remove(serviceNamespace);
     return imports;
   }
-  
+
   public static Iterable<String> s_prefix(Iterable<String> input, String prefix) {
     ArrayList<String> output = new ArrayList<>();
     for (String s : input) {

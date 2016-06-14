@@ -14,9 +14,10 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.base.Preconditions;
 
 /**
@@ -63,14 +64,30 @@ public class GapicContext extends CodegenContext {
     return serviceConfig;
   }
 
-  public boolean isIdempotent(Method method) {
-    return Resources.isIdempotent(method);
-  }
-
   /**
    * Return the name of the class which is the GAPIC wrapper for this service interface.
    */
   public String getApiWrapperName(Interface service) {
     return service.getSimpleName() + "Api";
+  }
+
+  /**
+   * Returns the description of the proto element, in markdown format.
+   */
+  public String getDescription(ProtoElement element) {
+    return DocumentationUtil.getDescription(element);
+  }
+
+  /**
+   * Get collection configuration for a method.
+   */
+  public CollectionConfig getCollectionConfig(Interface service, String entityName) {
+    CollectionConfig result =
+        getApiConfig().getInterfaceConfig(service).getCollectionConfig(entityName);
+    if (result == null) {
+      throw new IllegalStateException(
+          "A collection config was not present for entity name " + entityName);
+    }
+    return result;
   }
 }

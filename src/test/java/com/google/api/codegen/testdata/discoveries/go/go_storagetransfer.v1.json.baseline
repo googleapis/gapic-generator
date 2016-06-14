@@ -5,11 +5,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Storage Transfer API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storagetransfer_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/storagetransfer/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/storagetransfer/v1
 
 import (
   "golang.org/x/net/context"
@@ -20,27 +19,26 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := storagetransfer.New(httpClient)
+  client, err := storagetransfer.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  var (
-  )
 
-  callResult, err := client.V1.GetGoogleServiceAccount().Context(ctx).Do()
+
+  resp, err := client.V1.GetGoogleServiceAccount().Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -48,11 +46,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Storage Transfer API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storagetransfer_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/storagetransfer/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/storagetransfer/v1
 
 import (
   "golang.org/x/net/context"
@@ -63,30 +60,28 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := storagetransfer.New(httpClient)
+  client, err := storagetransfer.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-  var (
-    // The ID of the Google Developers Console project that the Google service account is associated with. Required.
-    projectId = ""
-  )
+  // The ID of the Google Developers Console project that the Google service account is associated with.
+  // Required.
+  projectId := "" // TODO: Update placeholder value.
 
-  callResult, err := client.GoogleServiceAccounts.Get(projectId).Context(ctx).Do()
+  resp, err := client.GoogleServiceAccounts.Get(projectId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -94,11 +89,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Storage Transfer API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storagetransfer_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/storagetransfer/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/storagetransfer/v1
 
 import (
   "golang.org/x/net/context"
@@ -109,30 +103,28 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := storagetransfer.New(httpClient)
+  client, err := storagetransfer.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
-  var (
 
-    requestBody = &storagetransfer.TransferJob{}
-  )
 
-  callResult, err := client.TransferJobs.Create(requestBody).Context(ctx).Do()
+  resp, err := client.TransferJobs.Create(&storagetransfer.TransferJob{
+                                            // TODO: Fill required fields.
+                                          }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -140,11 +132,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Storage Transfer API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storagetransfer_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/storagetransfer/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/storagetransfer/v1
 
 import (
   "golang.org/x/net/context"
@@ -155,30 +146,27 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := storagetransfer.New(httpClient)
+  client, err := storagetransfer.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-  var (
-    // The job to get. Required.
-    jobName = ""
-  )
+  // The job to get. Required.
+  jobName := "" // TODO: Update placeholder value.
 
-  callResult, err := client.TransferJobs.Get(jobName).Context(ctx).Do()
+  resp, err := client.TransferJobs.Get(jobName).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -186,11 +174,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Storage Transfer API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storagetransfer_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/storagetransfer/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/storagetransfer/v1
 
 import (
   "golang.org/x/net/context"
@@ -201,29 +188,28 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := storagetransfer.New(httpClient)
+  client, err := storagetransfer.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  var (
-  )
 
-  fn := func(page *storagetransfer.ListTransferJobsResponse) error {
-    // doThingsWith(page)
-    for i, element := range page.TransferJobs {
-      // doThingsWith(element)
-      _, _ = i, element
+
+
+  call := client.TransferJobs.List()
+  if err := call.Pages(ctx, func(page *storagetransfer.ListTransferJobsResponse) error {
+    for _, v := range page.TransferJobs {
+      // TODO: Use v.
+      _ = v
     }
-    return nil
-  }
-  if err = client.TransferJobs.List().Pages(ctx, fn); err != nil {
+    return nil // NOTE: returning a non-nil error stops pagination.
+  }); err != nil {
     // TODO: Handle error.
     _ = err
   }
@@ -234,11 +220,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Storage Transfer API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storagetransfer_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/storagetransfer/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/storagetransfer/v1
 
 import (
   "golang.org/x/net/context"
@@ -249,32 +234,29 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := storagetransfer.New(httpClient)
+  client, err := storagetransfer.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
-  var (
-    // The name of job to update. Required.
-    jobName = ""
+  // The name of job to update. Required.
+  jobName := "" // TODO: Update placeholder value.
 
-    requestBody = &storagetransfer.UpdateTransferJobRequest{}
-  )
-
-  callResult, err := client.TransferJobs.Patch(jobName, requestBody).Context(ctx).Do()
+  resp, err := client.TransferJobs.Patch(jobName, &storagetransfer.UpdateTransferJobRequest{
+                                           // TODO: Fill required fields.
+                                         }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -282,11 +264,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Storage Transfer API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storagetransfer_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/storagetransfer/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/storagetransfer/v1
 
 import (
   "golang.org/x/net/context"
@@ -297,27 +278,27 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := storagetransfer.New(httpClient)
+  client, err := storagetransfer.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'cancel' method:
-  var (
-    // The name of the operation resource to be cancelled.
-    name = ""
-  )
+  // The name of the operation resource to be cancelled.
+  name := "" // TODO: Update placeholder value.
 
-  if err = client.TransferOperations.Cancel(name).Context(ctx).Do(); err != nil {
+  resp, err := client.TransferOperations.Cancel(name).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
     _ = err
   }
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -325,11 +306,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Storage Transfer API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storagetransfer_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/storagetransfer/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/storagetransfer/v1
 
 import (
   "golang.org/x/net/context"
@@ -340,27 +320,27 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := storagetransfer.New(httpClient)
+  client, err := storagetransfer.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
-  var (
-    // The name of the operation resource to be deleted.
-    name = ""
-  )
+  // The name of the operation resource to be deleted.
+  name := "" // TODO: Update placeholder value.
 
-  if err = client.TransferOperations.Delete(name).Context(ctx).Do(); err != nil {
+  resp, err := client.TransferOperations.Delete(name).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
     _ = err
   }
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -368,11 +348,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Storage Transfer API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storagetransfer_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/storagetransfer/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/storagetransfer/v1
 
 import (
   "golang.org/x/net/context"
@@ -383,30 +362,27 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := storagetransfer.New(httpClient)
+  client, err := storagetransfer.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-  var (
-    // The name of the operation resource.
-    name = ""
-  )
+  // The name of the operation resource.
+  name := "" // TODO: Update placeholder value.
 
-  callResult, err := client.TransferOperations.Get(name).Context(ctx).Do()
+  resp, err := client.TransferOperations.Get(name).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -414,11 +390,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Storage Transfer API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storagetransfer_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/storagetransfer/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/storagetransfer/v1
 
 import (
   "golang.org/x/net/context"
@@ -429,32 +404,29 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := storagetransfer.New(httpClient)
+  client, err := storagetransfer.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-  var (
-    // The value `transferOperations`.
-    name = ""
-  )
+  // The value `transferOperations`.
+  name := "" // TODO: Update placeholder value.
 
-  fn := func(page *storagetransfer.ListOperationsResponse) error {
-    // doThingsWith(page)
-    for i, element := range page.Operations {
-      // doThingsWith(element)
-      _, _ = i, element
+
+  call := client.TransferOperations.List(name)
+  if err := call.Pages(ctx, func(page *storagetransfer.ListOperationsResponse) error {
+    for _, v := range page.Operations {
+      // TODO: Use v.
+      _ = v
     }
-    return nil
-  }
-  if err = client.TransferOperations.List(name).Pages(ctx, fn); err != nil {
+    return nil // NOTE: returning a non-nil error stops pagination.
+  }); err != nil {
     // TODO: Handle error.
     _ = err
   }
@@ -465,11 +437,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Storage Transfer API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storagetransfer_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/storagetransfer/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/storagetransfer/v1
 
 import (
   "golang.org/x/net/context"
@@ -480,29 +451,29 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := storagetransfer.New(httpClient)
+  client, err := storagetransfer.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'pause' method:
-  var (
-    // The name of the transfer operation. Required.
-    name = ""
+  // The name of the transfer operation. Required.
+  name := "" // TODO: Update placeholder value.
 
-    requestBody = &storagetransfer.PauseTransferOperationRequest{}
-  )
-
-  if err = client.TransferOperations.Pause(name, requestBody).Context(ctx).Do(); err != nil {
+  resp, err := client.TransferOperations.Pause(name, &storagetransfer.PauseTransferOperationRequest{
+                                                 // TODO: Fill required fields.
+                                               }).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
     _ = err
   }
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -510,11 +481,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Storage Transfer API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storagetransfer_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/storagetransfer/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/storagetransfer/v1
 
 import (
   "golang.org/x/net/context"
@@ -525,27 +495,27 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, storagetransfer.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := storagetransfer.New(httpClient)
+  client, err := storagetransfer.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'resume' method:
-  var (
-    // The name of the transfer operation. Required.
-    name = ""
+  // The name of the transfer operation. Required.
+  name := "" // TODO: Update placeholder value.
 
-    requestBody = &storagetransfer.ResumeTransferOperationRequest{}
-  )
-
-  if err = client.TransferOperations.Resume(name, requestBody).Context(ctx).Do(); err != nil {
+  resp, err := client.TransferOperations.Resume(name, &storagetransfer.ResumeTransferOperationRequest{
+                                                  // TODO: Fill required fields.
+                                                }).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
     _ = err
   }
+  // TODO: Use resp.
+  _ = resp
 }

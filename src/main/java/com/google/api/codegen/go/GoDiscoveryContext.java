@@ -14,9 +14,12 @@
  */
 package com.google.api.codegen.go;
 
-import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.DiscoveryContext;
+import com.google.api.codegen.DiscoveryImporter;
+import com.google.api.Service;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
 import com.google.protobuf.Field;
@@ -47,21 +50,15 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
       return DEFAULT_VALUES.get(field.getKind());
     }
     if (field.getKind() == Field.Kind.TYPE_STRING) {
-      String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
-      if (stringFormat == null) {
-        return "\"\"";
-      }
-      switch (stringFormat) {
-        case "byte":
-          return "\"\" // base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648";
-        case "date":
-          return "\"2006-01-02\" // YYYY-MM-DD";
-        case "date-time":
-          return "\"2006-01-02T15:04:05Z07:00\" // YYYY-MM-DDThh:mm:ss see time.RFC3339";
-      }
-      throw new IllegalArgumentException("unknown string format: " + stringFormat);
+      return getDefaultString(type, field);
     }
-    return field.getTypeUrl();
+    throw new IllegalArgumentException(
+        String.format("not implemented: typeDefaultValue(%s, %s)", type, field));
+  }
+
+  @Override
+  public String lineEnding(String value) {
+    return value;
   }
 
   private static final ImmutableMap<Field.Kind, String> PRIMITIVE_TYPE =
@@ -109,6 +106,17 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
   }
 
   @Override
+  /**
+   * Most languages ignore return type "Empty". However, Go cannot since the client library will
+   * return an empty struct, and we have to assign it to something. Consequently, the only time the
+   * response is truly "empty" for Go is when DiscoveryImporter says EMPTY_TYPE_NAME, which
+   * signifies complete absence of return value.
+   */
+  public boolean isResponseEmpty(Method method) {
+    return method.getResponseTypeUrl().equals(DiscoveryImporter.EMPTY_TYPE_NAME);
+  }
+
+  @Override
   public boolean isPageStreaming(Method method) {
     if (isResponseEmpty(method) || hasRequestField(method)) {
       return false;
@@ -146,5 +154,29 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
   public String getApiVersion() {
     String rename = API_VERSION_RENAME.get(getApi().getName(), getApi().getVersion());
     return rename == null ? getApi().getVersion() : rename;
+  }
+
+  /*
+   * Returns an empty or singleton list of auth scopes for the method. If the method has no scope,
+   * returns an empty list; otherwise returns the first scope. We return an empty list instead of
+   * null to denote absence of scope since the snippet cannot handle null values. If the scope
+   * exists, it is stripped to its last path-element and converted to camel case, eg
+   * "https://www.googleapis.com/auth/cloud-platform" becomes "CloudPlatform".
+   */
+  public ImmutableList<String> getAuthScopes(Method method) {
+    if (!getApiaryConfig().getAuthScopes().containsKey(method.getName())) {
+      return ImmutableList.<String>of();
+    }
+    String scope = getApiaryConfig().getAuthScopes().get(method.getName()).get(0);
+    int slash = scope.lastIndexOf('/');
+    if (slash < 0) {
+      throw new IllegalArgumentException(
+          String.format("malformed scope, cannot find slash: %s", scope));
+    }
+    scope = scope.substring(slash + 1);
+    scope = scope.replace('.', '_');
+    scope = scope.replace('-', '_');
+    scope = lowerUnderscoreToUpperCamel(scope);
+    return ImmutableList.<String>of(scope);
   }
 }

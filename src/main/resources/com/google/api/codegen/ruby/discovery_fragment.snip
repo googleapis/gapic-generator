@@ -1,0 +1,114 @@
+@extends "../common.snip"
+
+@snippet generateFilename(method)
+  {@method.getName}.frag.rb
+@end
+
+@snippet generateClass(method)
+  @let apiName = context.getApi.getName, \
+      ApiName = context.lowerCamelToUpperCamel(apiName), \
+      apiVersion = context.getApiVersion, \
+      ApiVersion = context.lowerCamelToUpperCamel(apiVersion)
+    @# PRE-REQUISITES:
+    @# ---------------
+    @# 1. If not already done, enable the {@context.getService.getTitle} and check the quota for your project at
+    @#    https://console.developers.google.com/apis/api/{@context.getApi.getName}_component/quotas
+    @# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+    @#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+    @# 3. To install the client library and Application Default Credentials library, run:
+    @#    'gem install google-api-client'
+    @#    'gem install googleauth'
+    require 'googleauth'
+    require 'google/apis/{@apiName}_{@apiVersion}'
+
+    service = Google::Apis::{@ApiName}{@ApiVersion}::{@context.getServiceName}.new
+    service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+  @end
+
+
+  {@initialize(method)}
+
+  @# Perform the call
+  @if context.isPageStreaming(method)
+    {@iterableCall(method)}
+  @else
+    {@compactCall(method)}
+  @end
+@end
+
+@private initialize(method)
+  @let methodName = context.getMethodName(method), \
+        apiaryConfig = context.getApiaryConfig, \
+        signatureType = apiaryConfig.getType(method.getRequestTypeUrl), \
+        params = context.getFlatMethodParams(method), \
+        apiName = context.getApi.getName, \
+        ApiName = context.lowerCamelToUpperCamel(apiName), \
+        apiVersion = context.getApiVersion, \
+        ApiVersion = context.lowerCamelToUpperCamel(apiVersion)
+    @if params
+      @# {@TODO()} Change placeholders below to appropriate parameter values for the '{@methodName}' method:
+
+    @end
+    @join param : params
+      @let paramField = context.getField(signatureType, param), \
+           paramValue = context.typeDefaultValue(signatureType, paramField), \
+           paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
+        @join line : context.lineWrapDoc(paramDescription, 100)
+          @# {@line}
+        @end
+
+        {@context.getParamName(method, param)} = {@paramValue}
+
+      @end
+    @end
+    @if context.hasRequestField(method)
+      {@resourceObject(method)} = \
+          Google::Apis::{@ApiName}{@ApiVersion}::{@context.lowerUnderscoreToUpperCamel(context.getRequestTypeName(method))}.new
+
+    @end
+  @end
+@end
+
+@private compactCall(method)
+  @if context.isResponseEmpty(method)
+    service.{@context.getMethodName(method)}({@callArg(method)})
+  @else
+    response = service.{@context.getMethodName(method)}({@callArg(method)})
+  @end
+@end
+
+@private iterableCall(method)
+  @let responseType = method.getResponseTypeUrl, \
+       responseTypeRef = context.getApiaryConfig.getType(responseType), \
+       resourceField = context.getFirstRepeatedField(responseTypeRef), \
+       methodName = context.getMethodName(method)
+    result_list = service.fetch_all(items: :{@resourceField.getName}) { |token|
+      service.{@methodName}({@callArg(method)}, page_token: token)
+    }
+    result_list.each { |element|
+      @# doThingsWith(element)
+    }
+  @end
+@end
+
+@private callArg(method)
+  @if context.hasRequestField(method)
+    @if context.getFlatMethodParams(method)
+      {@callArgNoBody(method)}, {@resourceObject(method)}
+    @else
+      {@resourceObject(method)}
+    @end
+  @else
+    {@callArgNoBody(method)}
+  @end
+@end
+
+@private callArgNoBody(method)
+  @join param : context.getFlatMethodParams(method) on ", "
+    {@context.getParamName(method, param)}
+  @end
+@end
+
+@private resourceObject(method)
+  {@context.getRequestTypeName(method)}_object
+@end

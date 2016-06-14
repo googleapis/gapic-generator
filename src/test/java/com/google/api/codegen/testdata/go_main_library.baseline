@@ -1,0 +1,635 @@
+============== file: google.golang.org/cloud/library/apiv1/library_client.go ==============
+// Copyright 2016 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// AUTO-GENERATED CODE. DO NOT EDIT.
+
+package library
+
+import (
+    "fmt"
+    "runtime"
+    "time"
+
+    gax "github.com/googleapis/gax-go"
+    google_example_library_v1 "github.com/googleapis/proto-client-go/library/v1"
+    "golang.org/x/net/context"
+    "google.golang.org/grpc"
+    "google.golang.org/grpc/codes"
+    "google.golang.org/grpc/metadata"
+)
+
+var (
+    libraryShelfPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}")
+    libraryBookPathTemplate = gax.MustCompilePathTemplate("shelves/{shelf}/books/{book}")
+    libraryArchivedBookPathTemplate = gax.MustCompilePathTemplate("archives/{archive_path=**}/books/{book}")
+)
+
+func defaultClientSettings() gax.ClientSettings {
+    withIdempotentRetryCodes := gax.WithRetryCodes(
+        []codes.Code{
+            codes.DeadlineExceeded,
+            codes.Unavailable,
+        },
+    )
+    defaultRetryOptions := []gax.CallOption{
+        gax.WithTimeout(30000*time.Millisecond),
+        gax.WithDelayTimeoutSettings(100*time.Millisecond, 1000*time.Millisecond, 1.2),
+        gax.WithRPCTimeoutSettings(300*time.Millisecond, 3000*time.Millisecond, 1.3),
+    }
+    return gax.ClientSettings{
+        AppName: "gax",
+        AppVersion: gax.Version,
+        Endpoint: "library-example.googleapis.com:443",
+        Scopes: []string{
+            "https://www.googleapis.com/auth/library",
+            "https://www.googleapis.com/auth/cloud-platform",
+        },
+        CallOptions: map[string][]gax.CallOption{
+            "CreateShelf": defaultRetryOptions,
+            "GetShelf": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+            "ListShelves": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+            "DeleteShelf": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+            "MergeShelves": defaultRetryOptions,
+            "CreateBook": defaultRetryOptions,
+            "PublishSeries": defaultRetryOptions,
+            "GetBook": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+            "ListBooks": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+            "DeleteBook": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+            "UpdateBook": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+            "MoveBook": defaultRetryOptions,
+            "ListStrings": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+            "AddComments": defaultRetryOptions,
+            "GetBookFromArchive": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+        },
+    }
+}
+
+// Client is a client for interacting with LibraryService.
+type Client struct {
+    // The connection to the service.
+    conn *grpc.ClientConn
+
+    // The gRPC API client.
+    client google_example_library_v1.LibraryServiceClient
+
+    // The map from the method name to the default call options for the method of this service.
+    callOptions map[string][]gax.CallOption
+
+    // The metadata to be sent with each request.
+    metadata map[string][]string
+}
+
+// NewClient creates a new library service client.
+//
+// This API represents a simple digital library.  It lets you manage Shelf
+// resources and Book resources in the library. It defines the following
+// resource model:
+//
+// - The API has a collection of [Shelf][google.example.library.v1.Shelf]
+//   resources, named ``shelves/*``
+//
+// - Each Shelf has a collection of [Book][google.example.library.v1.Book]
+//   resources, named `shelves/*/books/*`
+//
+// Check out [cloud docs!](/library/example/link).
+// This is [not a cloud link](http://www.google.com).
+func NewClient(ctx context.Context, opts ...gax.ClientOption) (*Client, error) {
+    s := defaultClientSettings()
+    for _, opt := range opts {
+        opt.Resolve(&s)
+    }
+    conn, err := gax.DialGRPC(ctx, s)
+    if err != nil {
+        return nil, err
+    }
+    return &Client {
+        conn: conn,
+        client: google_example_library_v1.NewLibraryServiceClient(conn),
+        callOptions: s.CallOptions,
+        metadata: map[string][]string{
+            "x-goog-api-client": []string{fmt.Sprintf("%s/%s %s gax/%s go/%s", s.AppName, s.AppVersion, gapicNameVersion, gax.Version, runtime.Version())},
+        },
+    }, nil
+}
+
+// Connection returns the client's connection to the API service.
+func (c *Client) Connection() *grpc.ClientConn {
+    return c.conn
+}
+
+// Close closes the connection to the API service. The user should invoke this when
+// the client is no longer required.
+func (c *Client) Close() error {
+    return c.conn.Close()
+}
+
+// Path templates.
+
+// ShelfPath returns the path for the shelf resource.
+func LibraryShelfPath(shelf string) string {
+    path, err := libraryShelfPathTemplate.Render(map[string]string{
+        "shelf": shelf,
+    })
+    if err != nil {
+        panic(err)
+    }
+    return path
+}
+
+// BookPath returns the path for the book resource.
+func LibraryBookPath(shelf string, book string) string {
+    path, err := libraryBookPathTemplate.Render(map[string]string{
+        "shelf": shelf,
+        "book": book,
+    })
+    if err != nil {
+        panic(err)
+    }
+    return path
+}
+
+// ArchivedBookPath returns the path for the archived book resource.
+func LibraryArchivedBookPath(archivePath string, book string) string {
+    path, err := libraryArchivedBookPathTemplate.Render(map[string]string{
+        "archive_path": archivePath,
+        "book": book,
+    })
+    if err != nil {
+        panic(err)
+    }
+    return path
+}
+
+// CreateShelf creates a shelf, and returns the new Shelf.
+func (c *Client) CreateShelf(ctx context.Context, req *google_example_library_v1.CreateShelfRequest) (*google_example_library_v1.Shelf, error) {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    var resp *google_example_library_v1.Shelf
+    err := gax.Invoke(ctx, func (ctx context.Context) error {
+        var err error
+        resp, err = c.client.CreateShelf(ctx, req)
+        return err
+    }, c.callOptions["CreateShelf"]...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+
+// GetShelf gets a shelf.
+func (c *Client) GetShelf(ctx context.Context, req *google_example_library_v1.GetShelfRequest) (*google_example_library_v1.Shelf, error) {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    var resp *google_example_library_v1.Shelf
+    err := gax.Invoke(ctx, func (ctx context.Context) error {
+        var err error
+        resp, err = c.client.GetShelf(ctx, req)
+        return err
+    }, c.callOptions["GetShelf"]...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+
+// ListShelves lists shelves.
+func (c *Client) ListShelves(ctx context.Context, req *google_example_library_v1.ListShelvesRequest) *ShelfIterator {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    it := &ShelfIterator{}
+    it.apiCall = func() error {
+        var resp *google_example_library_v1.ListShelvesResponse
+        err := gax.Invoke(ctx, func (ctx context.Context) error {
+            var err error
+            req.PageToken = it.nextPageToken
+            resp, err = c.client.ListShelves(ctx, req)
+            return err
+        }, c.callOptions["ListShelves"]...)
+        if err != nil {
+            return err
+        }
+        if resp.NextPageToken == "" {
+            it.atLastPage = true
+        }
+        it.nextPageToken = resp.NextPageToken
+        it.items = resp.Shelves
+        return nil
+    }
+    return it
+}
+
+
+// DeleteShelf deletes a shelf.
+func (c *Client) DeleteShelf(ctx context.Context, req *google_example_library_v1.DeleteShelfRequest) error {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    err := gax.Invoke(ctx, func (ctx context.Context) error {
+        var err error
+        _, err = c.client.DeleteShelf(ctx, req)
+        return err
+    }, c.callOptions["DeleteShelf"]...)
+    return err
+}
+
+
+// MergeShelves merges two shelves by adding all books from the shelf named
+// `other_shelf_name` to shelf `name`, and deletes
+// `other_shelf_name`. Returns the updated shelf.
+func (c *Client) MergeShelves(ctx context.Context, req *google_example_library_v1.MergeShelvesRequest) (*google_example_library_v1.Shelf, error) {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    var resp *google_example_library_v1.Shelf
+    err := gax.Invoke(ctx, func (ctx context.Context) error {
+        var err error
+        resp, err = c.client.MergeShelves(ctx, req)
+        return err
+    }, c.callOptions["MergeShelves"]...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+
+// CreateBook creates a book.
+func (c *Client) CreateBook(ctx context.Context, req *google_example_library_v1.CreateBookRequest) (*google_example_library_v1.Book, error) {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    var resp *google_example_library_v1.Book
+    err := gax.Invoke(ctx, func (ctx context.Context) error {
+        var err error
+        resp, err = c.client.CreateBook(ctx, req)
+        return err
+    }, c.callOptions["CreateBook"]...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+
+// PublishSeries creates a series of books.
+func (c *Client) PublishSeries(ctx context.Context, req *google_example_library_v1.PublishSeriesRequest) (*google_example_library_v1.PublishSeriesResponse, error) {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    var resp *google_example_library_v1.PublishSeriesResponse
+    err := gax.Invoke(ctx, func (ctx context.Context) error {
+        var err error
+        resp, err = c.client.PublishSeries(ctx, req)
+        return err
+    }, c.callOptions["PublishSeries"]...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+
+// GetBook gets a book.
+func (c *Client) GetBook(ctx context.Context, req *google_example_library_v1.GetBookRequest) (*google_example_library_v1.Book, error) {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    var resp *google_example_library_v1.Book
+    err := gax.Invoke(ctx, func (ctx context.Context) error {
+        var err error
+        resp, err = c.client.GetBook(ctx, req)
+        return err
+    }, c.callOptions["GetBook"]...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+
+// ListBooks lists books in a shelf.
+func (c *Client) ListBooks(ctx context.Context, req *google_example_library_v1.ListBooksRequest) *BookIterator {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    it := &BookIterator{}
+    it.apiCall = func() error {
+        var resp *google_example_library_v1.ListBooksResponse
+        err := gax.Invoke(ctx, func (ctx context.Context) error {
+            var err error
+            req.PageToken = it.nextPageToken
+            req.PageSize = it.pageSize
+            resp, err = c.client.ListBooks(ctx, req)
+            return err
+        }, c.callOptions["ListBooks"]...)
+        if err != nil {
+            return err
+        }
+        if resp.NextPageToken == "" {
+            it.atLastPage = true
+        }
+        it.nextPageToken = resp.NextPageToken
+        it.items = resp.Books
+        return nil
+    }
+    return it
+}
+
+
+// DeleteBook deletes a book.
+func (c *Client) DeleteBook(ctx context.Context, req *google_example_library_v1.DeleteBookRequest) error {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    err := gax.Invoke(ctx, func (ctx context.Context) error {
+        var err error
+        _, err = c.client.DeleteBook(ctx, req)
+        return err
+    }, c.callOptions["DeleteBook"]...)
+    return err
+}
+
+
+// UpdateBook updates a book.
+func (c *Client) UpdateBook(ctx context.Context, req *google_example_library_v1.UpdateBookRequest) (*google_example_library_v1.Book, error) {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    var resp *google_example_library_v1.Book
+    err := gax.Invoke(ctx, func (ctx context.Context) error {
+        var err error
+        resp, err = c.client.UpdateBook(ctx, req)
+        return err
+    }, c.callOptions["UpdateBook"]...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+
+// MoveBook moves a book to another shelf, and returns the new book.
+func (c *Client) MoveBook(ctx context.Context, req *google_example_library_v1.MoveBookRequest) (*google_example_library_v1.Book, error) {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    var resp *google_example_library_v1.Book
+    err := gax.Invoke(ctx, func (ctx context.Context) error {
+        var err error
+        resp, err = c.client.MoveBook(ctx, req)
+        return err
+    }, c.callOptions["MoveBook"]...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+
+// ListStrings lists a primitive resource. To test go page streaming.
+func (c *Client) ListStrings(ctx context.Context, req *google_example_library_v1.ListStringsRequest) *StringIterator {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    it := &StringIterator{}
+    it.apiCall = func() error {
+        var resp *google_example_library_v1.ListStringsResponse
+        err := gax.Invoke(ctx, func (ctx context.Context) error {
+            var err error
+            req.PageToken = it.nextPageToken
+            req.PageSize = it.pageSize
+            resp, err = c.client.ListStrings(ctx, req)
+            return err
+        }, c.callOptions["ListStrings"]...)
+        if err != nil {
+            return err
+        }
+        if resp.NextPageToken == "" {
+            it.atLastPage = true
+        }
+        it.nextPageToken = resp.NextPageToken
+        it.items = resp.Strings
+        return nil
+    }
+    return it
+}
+
+
+// AddComments adds comments to a book
+func (c *Client) AddComments(ctx context.Context, req *google_example_library_v1.AddCommentsRequest) error {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    err := gax.Invoke(ctx, func (ctx context.Context) error {
+        var err error
+        _, err = c.client.AddComments(ctx, req)
+        return err
+    }, c.callOptions["AddComments"]...)
+    return err
+}
+
+
+// GetBookFromArchive gets a book from an archive.
+func (c *Client) GetBookFromArchive(ctx context.Context, req *google_example_library_v1.GetBookFromArchiveRequest) (*google_example_library_v1.Book, error) {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    var resp *google_example_library_v1.Book
+    err := gax.Invoke(ctx, func (ctx context.Context) error {
+        var err error
+        resp, err = c.client.GetBookFromArchive(ctx, req)
+        return err
+    }, c.callOptions["GetBookFromArchive"]...)
+    if err != nil {
+        return nil, err
+    }
+    return resp, nil
+}
+
+
+// Iterators.
+//
+
+// ShelfIterator manages a stream of *google_example_library_v1.Shelf.
+type ShelfIterator struct {
+    // The current page data.
+    items         []*google_example_library_v1.Shelf
+    atLastPage    bool
+    currentIndex  int
+    nextPageToken string
+    apiCall       func() error
+}
+
+// NextPage moves to the next page and updates its internal data.
+// On completion, the last page is returned with Done.
+func (it *ShelfIterator) NextPage() ([]*google_example_library_v1.Shelf, error) {
+    if it.atLastPage {
+        // We already returned Done with the last page of items. Continue to
+        // return Done, but with no items.
+        return nil, Done
+    }
+    if err := it.apiCall(); err != nil {
+        return nil, err
+    }
+    if it.atLastPage {
+        return it.items, Done
+    }
+    return it.items, nil
+}
+
+// Next returns the next element in the stream. It returns Done at
+// the end of the stream.
+func (it *ShelfIterator) Next() (*google_example_library_v1.Shelf, error) {
+    for it.currentIndex >= len(it.items) {
+        if it.atLastPage {
+            return nil, Done
+        }
+        if err := it.apiCall(); err != nil {
+            return nil, err
+        }
+        it.currentIndex = 0
+    }
+    result := it.items[it.currentIndex]
+    it.currentIndex++
+    return result, nil
+}
+
+// SetPageToken sets the next page token to be retrieved. Note, it
+// does not retrieve the next page, or modify the cached page. If
+// Next is called, there is no guarantee that the result returned
+// will be from the next page until NextPage is called.
+func (it *ShelfIterator) SetPageToken(token string) {
+    it.nextPageToken = token
+}
+
+// NextPageToken returns the next page token.
+func (it *ShelfIterator) NextPageToken() string {
+    return it.nextPageToken
+}
+
+// BookIterator manages a stream of *google_example_library_v1.Book.
+type BookIterator struct {
+    // The current page data.
+    items         []*google_example_library_v1.Book
+    atLastPage    bool
+    currentIndex  int
+    pageSize      int32
+    nextPageToken string
+    apiCall       func() error
+}
+
+// NextPage moves to the next page and updates its internal data.
+// On completion, the last page is returned with Done.
+func (it *BookIterator) NextPage() ([]*google_example_library_v1.Book, error) {
+    if it.atLastPage {
+        // We already returned Done with the last page of items. Continue to
+        // return Done, but with no items.
+        return nil, Done
+    }
+    if err := it.apiCall(); err != nil {
+        return nil, err
+    }
+    if it.atLastPage {
+        return it.items, Done
+    }
+    return it.items, nil
+}
+
+// Next returns the next element in the stream. It returns Done at
+// the end of the stream.
+func (it *BookIterator) Next() (*google_example_library_v1.Book, error) {
+    for it.currentIndex >= len(it.items) {
+        if it.atLastPage {
+            return nil, Done
+        }
+        if err := it.apiCall(); err != nil {
+            return nil, err
+        }
+        it.currentIndex = 0
+    }
+    result := it.items[it.currentIndex]
+    it.currentIndex++
+    return result, nil
+}
+
+// PageSize returns the maximum size of the next page to be
+// retrieved.
+func (it *BookIterator) PageSize() int32 {
+    return it.pageSize
+}
+
+// SetPageSize sets the maximum size of the next page to be
+// retrieved.
+func (it *BookIterator) SetPageSize(pageSize int32) {
+    it.pageSize = pageSize
+}
+
+// SetPageToken sets the next page token to be retrieved. Note, it
+// does not retrieve the next page, or modify the cached page. If
+// Next is called, there is no guarantee that the result returned
+// will be from the next page until NextPage is called.
+func (it *BookIterator) SetPageToken(token string) {
+    it.nextPageToken = token
+}
+
+// NextPageToken returns the next page token.
+func (it *BookIterator) NextPageToken() string {
+    return it.nextPageToken
+}
+
+// StringIterator manages a stream of string.
+type StringIterator struct {
+    // The current page data.
+    items         []string
+    atLastPage    bool
+    currentIndex  int
+    pageSize      int32
+    nextPageToken string
+    apiCall       func() error
+}
+
+// NextPage moves to the next page and updates its internal data.
+// On completion, the last page is returned with Done.
+func (it *StringIterator) NextPage() ([]string, error) {
+    if it.atLastPage {
+        // We already returned Done with the last page of items. Continue to
+        // return Done, but with no items.
+        return nil, Done
+    }
+    if err := it.apiCall(); err != nil {
+        return nil, err
+    }
+    if it.atLastPage {
+        return it.items, Done
+    }
+    return it.items, nil
+}
+
+// Next returns the next element in the stream. It returns Done at
+// the end of the stream.
+func (it *StringIterator) Next() (string, error) {
+    for it.currentIndex >= len(it.items) {
+        if it.atLastPage {
+            return nil, Done
+        }
+        if err := it.apiCall(); err != nil {
+            return "", err
+        }
+        it.currentIndex = 0
+    }
+    result := it.items[it.currentIndex]
+    it.currentIndex++
+    return result, nil
+}
+
+// PageSize returns the maximum size of the next page to be
+// retrieved.
+func (it *StringIterator) PageSize() int32 {
+    return it.pageSize
+}
+
+// SetPageSize sets the maximum size of the next page to be
+// retrieved.
+func (it *StringIterator) SetPageSize(pageSize int32) {
+    it.pageSize = pageSize
+}
+
+// SetPageToken sets the next page token to be retrieved. Note, it
+// does not retrieve the next page, or modify the cached page. If
+// Next is called, there is no guarantee that the result returned
+// will be from the next page until NextPage is called.
+func (it *StringIterator) SetPageToken(token string) {
+    it.nextPageToken = token
+}
+
+// NextPageToken returns the next page token.
+func (it *StringIterator) NextPageToken() string {
+    return it.nextPageToken
+}

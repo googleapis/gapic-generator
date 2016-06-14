@@ -14,16 +14,10 @@
  */
 package com.google.api.codegen.java;
 
-import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.LanguageUtil;
-import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Interface;
-import com.google.api.tools.framework.model.TypeRef;
-import com.google.auto.value.AutoValue;
 import com.google.common.base.Splitter;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.escape.Escaper;
@@ -33,8 +27,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.Nullable;
 
 /**
  * A class that provides helper methods for snippet files generating Java code to get data and
@@ -80,12 +72,6 @@ public class JavaContextCommon {
    * simple type name is not in the map, this information is unknown.
    */
   private final Map<String, Boolean> implicitImports = Maps.newHashMap();
-
-  private final String defaultPackagePrefix;
-
-  public JavaContextCommon(String defaultPackagePrefix) {
-    this.defaultPackagePrefix = defaultPackagePrefix;
-  }
 
   /**
    * Returns the Java representation of a basic type in boxed form.
@@ -153,194 +139,11 @@ public class JavaContextCommon {
     return result;
   }
 
-  @AutoValue
-  abstract static class Variable {
-    public abstract TypeRef getType();
-
-    public abstract String getName();
-
-    public abstract String getDescription();
-
-    @Nullable
-    public abstract CollectionConfig getFormattingConfig();
-
-    // This function is necessary for use in snippets
-    public boolean hasFormattingConfig() {
-      return getFormattingConfig() != null;
-    }
-  }
-
-  // This member function is necessary to provide access to snippets for
-  // the functionality, since snippets can't call static functions.
-  public Variable newVariable(TypeRef type, String name, String description) {
-    return s_newVariable(type, name, description);
-  }
-
-  // This function is necessary to provide a static entry point for the same-named
-  // member function.
-  public static Variable s_newVariable(TypeRef type, String name, String description) {
-    return s_newVariable(type, name, description, null);
-  }
-
-  public static Variable s_newVariable(
-      TypeRef type, String name, String description, CollectionConfig formattingConfig) {
-    return new AutoValue_JavaContextCommon_Variable(type, name, description, formattingConfig);
-  }
-
-  @AutoValue
-  abstract static class JavaDocConfig {
-    public abstract String getApiName();
-
-    public abstract String getMethodName();
-
-    public abstract String getReturnType();
-
-    public String getGenericAwareReturnType() {
-      String returnType = getReturnType();
-      if (returnType == null || returnType.isEmpty()) {
-        return "Void";
-      }
-      else {
-        return returnType;
-      }
-    }
-
-    public abstract ImmutableList<Variable> getParams();
-
-    public abstract ImmutableList<Variable> getRequiredParams();
-
-    public abstract boolean isPagedVariant();
-
-    public abstract boolean isCallableVariant();
-
-    @Nullable
-    public abstract Field getResourcesFieldForUnpagedListCallable();
-
-    public boolean isUnpagedListCallableVariant() {
-      return getResourcesFieldForUnpagedListCallable() != null;
-    }
-
-    @AutoValue.Builder
-    abstract static class Builder {
-      public abstract Builder setApiName(String serviceName);
-
-      public abstract Builder setMethodName(String methodName);
-
-      public abstract Builder setReturnType(String returnType);
-
-      public abstract Builder setParams(ImmutableList<Variable> params);
-
-      public Builder setParams(JavaGapicContext context, Iterable<Field> fields) {
-        return setParams(fieldsToParams(context, fields));
-      }
-
-      public Builder setParamsWithFormatting(
-          JavaGapicContext context,
-          Interface service,
-          Iterable<Field> fields,
-          ImmutableMap<String, String> fieldNamePatterns) {
-        return setParams(fieldsToParamsWithFormatting(context, service, fields, fieldNamePatterns));
-      }
-
-      public Builder setSingleParam(
-          JavaGapicContext context, TypeRef requestType, String name, String doc) {
-        return setParams(ImmutableList.of(s_newVariable(requestType, name, doc)));
-      }
-
-      public abstract Builder setRequiredParams(ImmutableList<Variable> params);
-
-      public Builder setRequiredParams(JavaGapicContext context, Iterable<Field> fields) {
-        return setRequiredParams(fieldsToParams(context, fields));
-      }
-
-      public Builder setRequiredParamsWithFormatting(
-          JavaGapicContext context,
-          Interface service,
-          Iterable<Field> fields,
-          ImmutableMap<String, String> fieldNamePatterns) {
-        return setRequiredParams(
-            fieldsToParamsWithFormatting(context, service, fields, fieldNamePatterns));
-      }
-
-      public Builder setRequiredParamsEmpty() {
-        return setRequiredParams(ImmutableList.<Variable>of());
-      }
-
-      public abstract Builder setPagedVariant(boolean paged);
-
-      public abstract Builder setCallableVariant(boolean callable);
-
-      public abstract Builder setResourcesFieldForUnpagedListCallable(Field field);
-
-      public abstract JavaDocConfig build();
-
-      private static ImmutableList<Variable> fieldsToParams(
-          JavaGapicContext context, Iterable<Field> fields) {
-        ImmutableList.Builder<Variable> params = ImmutableList.<Variable>builder();
-        for (Field field : fields) {
-          params.add(
-              s_newVariable(
-                  field.getType(),
-                  LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName()),
-                  context.getDescription(field)));
-        }
-        return params.build();
-      }
-
-      private static ImmutableList<Variable> fieldsToParamsWithFormatting(
-          JavaGapicContext context,
-          Interface service,
-          Iterable<Field> fields,
-          ImmutableMap<String, String> fieldNamePatterns) {
-        ImmutableList.Builder<Variable> params = ImmutableList.<Variable>builder();
-        for (Field field : fields) {
-          if (fieldNamePatterns.containsKey(field.getSimpleName())) {
-            params.add(
-                s_newVariable(
-                    field.getType(),
-                    LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName()),
-                    context.getDescription(field),
-                    context.getCollectionConfig(
-                        service, fieldNamePatterns.get(field.getSimpleName()))));
-          } else {
-            params.add(
-                s_newVariable(
-                    field.getType(),
-                    LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName()),
-                    context.getDescription(field)));
-          }
-        }
-        return params.build();
-      }
-    }
-  }
-
-  public JavaDocConfig.Builder newJavaDocConfigBuilder() {
-    return new AutoValue_JavaContextCommon_JavaDocConfig.Builder();
-  }
-
-  public boolean getTrue() {
-    return true;
-  }
-
-  public boolean getFalse() {
-    return false;
-  }
-
-  public String requestParamDoc() {
-    return "The request object containing all of the parameters for the API call.";
-  }
-
-  public String requestParam() {
-    return "request";
-  }
-
   public List<String> getImports() {
     // Clean up the imports.
     List<String> cleanedImports = new ArrayList<>();
     for (String imported : imports.keySet()) {
-      if (imported.startsWith(JAVA_LANG_TYPE_PREFIX)
-          || defaultPackagePrefix != null && imported.startsWith(defaultPackagePrefix)) {
+      if (imported.startsWith(JAVA_LANG_TYPE_PREFIX)) {
         // Imported type is in java.lang or in package, can be ignored.
         continue;
       }

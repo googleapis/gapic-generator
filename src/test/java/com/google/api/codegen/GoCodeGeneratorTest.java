@@ -14,66 +14,35 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.codegen.GeneratedResult;
-import com.google.api.tools.framework.snippet.Doc;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.truth.Truth;
+import com.google.api.codegen.gapic.MainGapicProviderFactory;
+
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.util.List;
-
 /**
  * Go code generator baseline tests.
  */
 @RunWith(Parameterized.class)
-public class GoCodeGeneratorTest extends CodeGeneratorTestBase {
+public class GoCodeGeneratorTest extends GapicTestBase {
 
-  public GoCodeGeneratorTest(String name, String[] gapicConfigFileNames) {
-    super(name, gapicConfigFileNames);
+  public GoCodeGeneratorTest(
+      String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
+    super(name, idForFactory, gapicConfigFileNames, snippetName);
+    getTestDataLocator().addTestDataSource(com.google.api.codegen.go.GoGapicContext.class, "");
   }
 
   /**
-   * Declares test parameters, each one an array of values passed to the constructor, with the first
-   * element a name, the second a config of this name.
+   * Declares test parameters, each one an array of values passed to the constructor, with the
+   * first element a name, the second a config of this name.
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
-    return ImmutableList.of(
-        new Object[] {
-          "go",
-          new String[] {
-            "com/google/api/codegen/go/go_gapic.yaml", "library_gapic.yaml",
-          }
-        });
-  }
-
-  @Override
-  protected Object run() {
-    // GoLanguageGenerator should generate two files -- one for the class, and
-    // the other for "doc.go" which holds package doc.
-    List<GeneratedResult> codeResult = generateForTemplate(0, 0);
-    List<GeneratedResult> exampleResult = generateForTemplate(0, 1);
-    List<GeneratedResult> docsResult = generateForTemplate(0, 2);
-    Truth.assertThat(codeResult).isNotNull();
-    Truth.assertThat(exampleResult).isNotNull();
-    Truth.assertThat(docsResult).isNotNull();
-
-    ImmutableMap.Builder<String, Doc> builder = new ImmutableMap.Builder<String, Doc>();
-    for (GeneratedResult result : codeResult) {
-      builder.put(result.getFilename(), result.getDoc());
-    }
-    for (GeneratedResult result : exampleResult) {
-      builder.put(result.getFilename(), result.getDoc());
-    }
-    for (GeneratedResult result : docsResult) {
-      builder.put(result.getFilename(), result.getDoc());
-    }
-    return builder.build();
+    return GapicTestBase.createTestedConfigs(
+        MainGapicProviderFactory.GO, new String[] {"go_gapic.yaml", "library_gapic.yaml"});
   }
 
   // Tests

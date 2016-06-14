@@ -18,6 +18,7 @@ import com.google.api.Documentation;
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.GapicContext;
+import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
@@ -30,6 +31,7 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -70,20 +72,14 @@ public class GoGapicContext extends GapicContext implements GoContext {
           .build();
 
   /**
-   * The import path for GAX. TODO(mukai): Change this address when it's decided to merge into
-   * gcloud-golang.
+   * The import path for GAX.
    */
-  private static final String GAX_PACKAGE_BASE = "github.com/googleapis/gax-golang";
+  private static final String GAX_PACKAGE_BASE = "github.com/googleapis/gax-go";
 
   /**
    * The import path for generated pb.go files for core-proto files.
-   *
-   * Right now this and CORE_PROTO_PACKAGES are not used, assumed they are placed inside of this
-   * package, which is recommended by gcloud-golang team.
-   *
-   * TODO(mukai): Set the proper location when the location is known.
    */
-  private static final String CORE_PROTO_BASE = "<TBD>";
+  private static final String CORE_PROTO_BASE = "github.com/googleapis/proto-client-go";
 
   /**
    * The set of the core protobuf packages.
@@ -107,15 +103,44 @@ public class GoGapicContext extends GapicContext implements GoContext {
   }
 
   /**
-   * Returns the package name symbol used for the package declaration.
+   * Returns the Go package name.
+   *
+   * Retrieved by splitting the package string on `/` and returning the second to last string if
+   * possible, and otherwise the last string in the resulting array.
+   *
+   * TODO(saicheems): Figure out how to reliably get the intended value...
    */
   public String getPackageName() {
-    String fullPackageName = getApiConfig().getPackageName();
-    int lastSlash = fullPackageName.lastIndexOf('/');
-    if (lastSlash < 0) {
-      return fullPackageName;
+    String split[] = getApiConfig().getPackageName().split("/");
+    if (split.length - 2 >= 0) {
+      return split[split.length - 2];
     }
-    return fullPackageName.substring(lastSlash + 1);
+    return split[split.length - 1];
+  }
+
+  /**
+   * Returns the name of the service's client.
+   */
+  public String getClientName(Interface service) {
+    String name = getReducedServiceName(service);
+    // If there's only one service, or the service name matches the package name, don't prefix with
+    // the service name.
+    if (getModel().getSymbolTable().getInterfaces().size() == 1 || name.equals(getPackageName())) {
+      return "Client";
+    }
+    return LanguageUtil.lowerUnderscoreToUpperCamel(name) + "Client";
+  }
+
+  /**
+   * Returns the service name with common suffixes removed.
+   *
+   * For example:
+   *  LoggingServiceV2 => logging
+   */
+  public String getReducedServiceName(Interface service) {
+    String name = service.getSimpleName().replaceAll("V[0-9]+$", "");
+    name = name.replaceAll("Service$", "");
+    return LanguageUtil.upperCamelToLowerUnderscore(name);
   }
 
   /**
@@ -168,24 +193,31 @@ public class GoGapicContext extends GapicContext implements GoContext {
    * Returns the (dereferenced) Go type name for the specificed message TypeRef.
    */
   public String messageTypeName(TypeRef type) {
-      if (!type.isMessage()) {
-        throw new IllegalArgumentException("Expected message type, got: " + type.toString());
-      }
-      MessageType messageType = type.getMessageType();
-      return localPackageName(messageType) + "." + messageType.getProto().getName();
+    if (!type.isMessage()) {
+      throw new IllegalArgumentException("Expected message type, got: " + type.toString());
+    }
+    MessageType messageType = type.getMessageType();
+    return localPackageName(messageType) + "." + messageType.getProto().getName();
   }
 
   /**
-   * Returns the Go type name for the resources field.
+   * Returns the Go type for the resources field.
    *
    * Note that this returns the individual element type of the resources in the message. For
    * example, if SomeResponse has 'repeated string contents' field, the return value should be
    * 'string', not '[]string', and that's why the snippet can't use typeName() directly.
    */
-  public String getResourceTypeName(Field field) {
+  public TypeRef getResourceType(Field field) {
     // Creating a copy with 'required' to extract the type name but isn't affected by
     // repeated cardinality.
-    return typeName(field.getType().makeRequired());
+    return field.getType().makeRequired();
+  }
+
+  /**
+   * Returns the Go type name for the resources field.
+   */
+  public String getResourceTypeName(Field field) {
+    return typeName(getResourceType(field));
   }
 
   /**
@@ -225,9 +257,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
   /**
    * Returns the upper camel prefix name for the resource field.
    *
-   * Specifically:
-   * `repeated float hellos`: `Float`
-   * `repeated World worlds`: `World`
+   * Specifically: `repeated float hellos`: `Float` `repeated World worlds`: `World`
    */
   private String getSimpleResourcesTypeName(PageStreamingConfig config) {
     TypeRef type = config.getResourcesField().getType();
@@ -236,13 +266,6 @@ public class GoGapicContext extends GapicContext implements GoContext {
     } else {
       return LanguageUtil.lowerCamelToUpperCamel(type.getPrimitiveTypeName());
     }
-  }
-
-  /**
-   * Returns the Go type name for the page struct in the page-streaming iterator.
-   */
-  public String getIteratorPageTypeName(PageStreamingConfig config) {
-    return getSimpleResourcesTypeName(config) + "Page";
   }
 
   /**
@@ -352,9 +375,15 @@ public class GoGapicContext extends GapicContext implements GoContext {
    * Creates a Go import from the message import.
    */
   private GoImport createMessageImport(MessageType messageType) {
-    String pkgName = messageType.getFile().getProto().getPackage().replace(".", "/");
+    String pkgName = messageType.getFile().getProto().getOptions().getGoPackage();
+    // If there's no `go_package` specified, we guess an import path based on the core proto base
+    // repo and the proto package.
+    if (Strings.isNullOrEmpty(pkgName)) {
+      pkgName =
+          CORE_PROTO_BASE + "/" + messageType.getFile().getProto().getPackage().replace(".", "/");
+    }
     String localName = localPackageName(messageType);
-    return GoImport.create(getApiConfig().getPackageName() + "/proto/" + pkgName, localName);
+    return GoImport.create(pkgName, localName);
   }
 
   private Set<GoImport> getStandardImports(Interface service) {
@@ -365,13 +394,6 @@ public class GoGapicContext extends GapicContext implements GoContext {
 
     if (!getApiConfig().getInterfaceConfig(service).getRetrySettingsDefinition().isEmpty()) {
       standardImports.add(GoImport.create("time"));
-    }
-    for (Method method : service.getMethods()) {
-      MethodConfig methodConfig =
-          getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
-      if (methodConfig.isPageStreaming()) {
-        standardImports.add(GoImport.create("io"));
-      }
     }
     return standardImports;
   }
@@ -418,8 +440,9 @@ public class GoGapicContext extends GapicContext implements GoContext {
 
   /**
    * Calculates the set of imports and returns a sorted set of Go import output strings. This
-   * imitates the same order which gofmt does, which means: - standard imports (Go standard libraries)
-   * in alphabetical order - a blank line (so an empty string) - other imports, alphabetical order
+   * imitates the same order which gofmt does, which means: - standard imports (Go standard
+   * libraries) in alphabetical order - a blank line (so an empty string) - other imports,
+   * alphabetical order
    *
    * Each of the lines (except for the blank line) starts with a tab character '\t' for the
    * indentation within the 'import' section in Go file.
@@ -445,6 +468,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
   public Iterable<String> getTestImports(Interface service) {
     TreeSet<GoImport> thirdParty = new TreeSet<>();
 
+    thirdParty.add(GoImport.create(getApiConfig().getPackageName()));
     thirdParty.add(GoImport.create("golang.org/x/net/context"));
     thirdParty.add(GoImport.create(GAX_PACKAGE_BASE, "gax"));
     thirdParty.addAll(getMessageImports(service));
@@ -453,9 +477,48 @@ public class GoGapicContext extends GapicContext implements GoContext {
   }
 
   /**
-   * Returns true if the speficied type is the Empty type.
+   * Returns true if the specified type is the Empty type.
    */
   public boolean isEmpty(TypeRef type) {
     return type.isMessage() && type.getMessageType().getFullName().equals("google.protobuf.Empty");
+  }
+
+  /**
+   * Returns true if the methodConfig's retry codes name refers to an empty list of retry codes.
+   */
+  public boolean hasEmptyRetryCodes(Interface service, MethodConfig methodConfig) {
+    InterfaceConfig config = getApiConfig().getInterfaceConfig(service);
+    for (String name : config.getRetryCodesDefinition().keySet()) {
+      if (name.equals(methodConfig.getRetryCodesConfigName())) {
+        return config.getRetryCodesDefinition().get(name).size() == 0;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Returns true if the API has a page streaming method.
+   */
+  public boolean hasPageStreamingMethod() {
+    for (Interface service : getModel().getSymbolTable().getInterfaces()) {
+      if (hasPageStreamingMethod(service)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Returns true if the service has a page streaming method.
+   */
+  public boolean hasPageStreamingMethod(Interface service) {
+    for (Method method : service.getMethods()) {
+      MethodConfig methodConfig =
+          getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
+      if (methodConfig.isPageStreaming()) {
+        return true;
+      }
+    }
+    return false;
   }
 }

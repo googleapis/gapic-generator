@@ -19,6 +19,7 @@ import "google/protobuf/field_mask.proto";
 option java_multiple_files = true;
 option java_outer_classname = "LibraryProto";
 option java_package = "com.google.example.library.v1";
+option go_package = "github.com/googleapis/proto-client-go/library/v1";
 
 // This API represents a simple digital library.  It lets you manage Shelf
 // resources and Book resources in the library. It defines the following
@@ -101,6 +102,17 @@ service LibraryService {
   rpc ListStrings(ListStringsRequest) returns (ListStringsResponse) {
     option (google.api.http) = { get: "/v1/strings" };
   }
+
+  // Adds comments to a book
+  rpc AddComments(AddCommentsRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = { post: "/v1/{name=shelves/*}/comments" body: "*" };
+  }
+
+  // Gets a book from an archive.
+  rpc GetBookFromArchive(GetBookFromArchiveRequest) returns (Book) {
+    option (google.api.http) = { get: "/v1/{name=archives/**/books/*}" };
+  }
+
 }
 
 // A single book in the library.
@@ -198,10 +210,6 @@ message StringBuilder {
 
 // Request message for LibraryService.ListShelves.
 message ListShelvesRequest {
-  // Requested page size. Server may return fewer shelves than requested.
-  // If unspecified, server will pick an appropriate default.
-  int32 page_size = 1;
-
   // A token identifying a page of results the server should return.
   // Typically, this is the value of
   // [ListShelvesResponse.next_page_token][google.example.library.v1.ListShelvesResponse.next_page_token]
@@ -343,4 +351,24 @@ message ListStringsRequest {
 message ListStringsResponse {
   repeated string strings = 1;
   string next_page_token = 2;
+}
+
+message AddCommentsRequest {
+  string name = 1;
+
+  repeated Comment comments = 2;
+}
+
+message Comment {
+  // won't be filled in by the sample generator
+  string user_name = 1;
+
+  // should be filled in by the sample generator
+  bytes comment = 2;
+}
+
+// Request message for LibraryService.GetBookFromArchive.
+message GetBookFromArchiveRequest {
+  // The name of the book to retrieve.
+  string name = 1;
 }

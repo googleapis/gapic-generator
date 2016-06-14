@@ -1,0 +1,237 @@
+
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/dns_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/dns_v1'
+
+service = Google::Apis::DnsV1::DnsService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'create_change' method:
+# Identifies the project addressed by this request.
+project = ''
+
+# Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+managed_zone = ''
+change_object = Google::Apis::DnsV1::Change.new
+
+
+# Perform the call
+response = service.create_change(project, managed_zone, change_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/dns_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/dns_v1'
+
+service = Google::Apis::DnsV1::DnsService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'get_change' method:
+# Identifies the project addressed by this request.
+project = ''
+
+# Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+managed_zone = ''
+
+# The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
+change_id = ''
+
+
+# Perform the call
+response = service.get_change(project, managed_zone, change_id)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/dns_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/dns_v1'
+
+service = Google::Apis::DnsV1::DnsService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'list_changes' method:
+# Identifies the project addressed by this request.
+project = ''
+
+# Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+managed_zone = ''
+
+
+# Perform the call
+result_list = service.fetch_all(items: :changes) { |token|
+  service.list_changes(project, managed_zone, page_token: token)
+}
+result_list.each { |element|
+  # doThingsWith(element)
+}
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/dns_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/dns_v1'
+
+service = Google::Apis::DnsV1::DnsService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'create_managed_zone' method:
+# Identifies the project addressed by this request.
+project = ''
+managed_zone_object = Google::Apis::DnsV1::ManagedZone.new
+
+
+# Perform the call
+response = service.create_managed_zone(project, managed_zone_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/dns_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/dns_v1'
+
+service = Google::Apis::DnsV1::DnsService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'delete_managed_zone' method:
+# Identifies the project addressed by this request.
+project = ''
+
+# Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+managed_zone = ''
+
+
+# Perform the call
+service.delete_managed_zone(project, managed_zone)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/dns_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/dns_v1'
+
+service = Google::Apis::DnsV1::DnsService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'get_managed_zone' method:
+# Identifies the project addressed by this request.
+project = ''
+
+# Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+managed_zone = ''
+
+
+# Perform the call
+response = service.get_managed_zone(project, managed_zone)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/dns_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/dns_v1'
+
+service = Google::Apis::DnsV1::DnsService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'list_managed_zones' method:
+# Identifies the project addressed by this request.
+project = ''
+
+
+# Perform the call
+result_list = service.fetch_all(items: :managedZones) { |token|
+  service.list_managed_zones(project, page_token: token)
+}
+result_list.each { |element|
+  # doThingsWith(element)
+}
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/dns_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/dns_v1'
+
+service = Google::Apis::DnsV1::DnsService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'get_project' method:
+# Identifies the project addressed by this request.
+project = ''
+
+
+# Perform the call
+response = service.get_project(project)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/dns_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/dns_v1'
+
+service = Google::Apis::DnsV1::DnsService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'list_resource_record_sets' method:
+# Identifies the project addressed by this request.
+project = ''
+
+# Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+managed_zone = ''
+
+
+# Perform the call
+result_list = service.fetch_all(items: :rrsets) { |token|
+  service.list_resource_record_sets(project, managed_zone, page_token: token)
+}
+result_list.each { |element|
+  # doThingsWith(element)
+}

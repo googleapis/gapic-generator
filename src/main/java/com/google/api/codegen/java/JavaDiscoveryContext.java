@@ -14,11 +14,12 @@
  */
 package com.google.api.codegen.java;
 
-import com.google.api.Service;
 import com.google.api.client.util.DateTime;
 import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.api.codegen.DiscoveryImporter;
+import com.google.api.Service;
 import com.google.common.base.Defaults;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -77,20 +78,6 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
           .put("double", double.class)
           .build();
 
-  /**
-   * A map from {@link ApiaryConfig#stringFormat} label (or null) to corresponding default value.
-   */
-  private static final ImmutableMap<String, String> STRING_DEFAULT_MAP =
-      ImmutableMap.<String, String>builder()
-          .put("byte", "\"\";"
-              + "  // base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648")
-          .put("date", "\"1969-12-31\";"
-              + "  // \"YYYY-MM-DD\": see java.text.SimpleDateFormat")
-          .put("date-time", "\"" + new DateTime(0L).toStringRfc3339() + "\";"
-              + "  // \"YYYY-MM-DDThh:mm:ss.fffZ\" (UTC): "
-              + "see com.google.api.client.util.DateTime.toStringRfc3339()")
-          .build();
-
   private static final ImmutableMap<String, String> RENAMED_METHOD_MAP =
       ImmutableMap.<String, String>builder()
           .put("sql.instances.import", "sql.instances.sqladminImport")
@@ -102,8 +89,10 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
    */
   private static final ImmutableMap<String, String> RENAMED_PACKAGE_MAP =
       ImmutableMap.<String, String>builder()
+          .put("Clouddebugger", "CloudDebugger")
           .put("Cloudmonitoring", "CloudMonitoring")
           .put("Cloudresourcemanager", "CloudResourceManager")
+          .put("Cloudtrace", "CloudTrace")
           .put("Clouduseraccounts", "CloudUserAccounts")
           .put("Deploymentmanager", "DeploymentManager")
           .put("Sqladmin", "SQLAdmin")
@@ -115,8 +104,9 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
   private static final ImmutableSet<String> VERSIONED_PACKAGE_SET =
       ImmutableSet.<String>builder()
           .add("clouddebugger")
-          .add("logging")
           .add("cloudtrace")
+          .add("logging")
+          .add("monitoring")
           .add("storagetransfer")
           .add("vision")
           .build();
@@ -131,7 +121,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
   }
 
   @Override
-  public void resetState(JavaSnippetSet<?> javaSnippetSet, JavaContextCommon javaCommon) {
+  public void resetState(JavaContextCommon javaCommon) {
     this.javaCommon = javaCommon;
   }
 
@@ -342,30 +332,22 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
             getTypeName("java.util.HashMap"),
             typeName(items, this.getField(items, "key")),
             typeName(items, this.getField(items, "value")));
-      } else {
-        return String.format(
-            "new %s<%s>();", getTypeName("java.util.ArrayList"), elementTypeName(field));
       }
-    } else {
-      String typeName = FIELD_TYPE_MAP.get(field.getKind());
-      if (typeName != null) {
-        Class<?> primitiveClass = PRIMITIVE_CLASS_MAP.get(typeName);
-        if (primitiveClass != null) {
-          return String.valueOf(Defaults.defaultValue(primitiveClass)) + ";";
-        }
-        if (typeName.equals("java.lang.String")) {
-          String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
-          if (stringFormat != null) {
-            String value = STRING_DEFAULT_MAP.get(stringFormat);
-            if (value != null) {
-              return value;
-            }
-          }
-          return "\"\";";
-        }
-      }
+      return String.format(
+          "new %s<%s>();", getTypeName("java.util.ArrayList"), elementTypeName(field));
+    }
+    String typeName = FIELD_TYPE_MAP.get(field.getKind());
+    if (typeName == null) {
       return "null;";
     }
+    Class<?> primitiveClass = PRIMITIVE_CLASS_MAP.get(typeName);
+    if (primitiveClass != null) {
+      return String.valueOf(Defaults.defaultValue(primitiveClass)) + ";";
+    }
+    if (typeName.equals("java.lang.String")) {
+      return getDefaultString(type, field);
+    }
+    return "null;";
   }
 
   // Handlers for Exceptional Inconsistencies

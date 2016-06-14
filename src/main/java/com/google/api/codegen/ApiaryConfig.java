@@ -65,12 +65,19 @@ public class ApiaryConfig {
       HashBasedTable.<String, String, Boolean>create();
 
   /**
-   * Specifies the format of the field. A pair (type name, field name) is in this table if the type
-   * of the field is "string" and specific format is given in the discovery doc. The format is one
-   * of {"int64", "uint64", "byte", "date", "date-time"}. Note: other string formats from the
+   * Specifies the format of each field. A pair (type name, field name) is in this table if the
+   * type of the field is "string" and specific format is given in the discovery doc. The format is
+   * one of {"int64", "uint64", "byte", "date", "date-time"}. Note: other string formats from the
    * discovery doc are encoded as types in the Service.
    */
   private final Table<String, String, String> stringFormat =
+      HashBasedTable.<String, String, String>create();
+
+  /**
+   * Specifies the pattern of each field. The pattern is expressed as a regular expression, like
+   * "^projects/[^/]*$". The table is indexed by (type name, field name).
+   */
+  private final Table<String, String, String> pattern =
       HashBasedTable.<String, String, String>create();
 
   /**
@@ -84,9 +91,25 @@ public class ApiaryConfig {
   private final Map<String, Type> types = new HashMap<>();
 
   /*
+   * Maps method name to set of auth scope URLs, eg https://www.googleapis.com/auth/cloud-platform.
+   */
+  private final ListMultimap<String, String> authScopes =
+      ArrayListMultimap.<String, String>create();
+
+  /*
    * Maps (type, field name) to field.
    */
   private final Table<Type, String, Field> fields = HashBasedTable.<Type, String, Field>create();
+
+  /*
+   * The service canonical name, or name if no canonical name
+   */
+  private String serviceCanonicalName;
+
+  /*
+   * The service version string
+   */
+  private String serviceVersion;
 
   public ListMultimap<String, String> getMethodParams() {
     return methodParams;
@@ -112,6 +135,10 @@ public class ApiaryConfig {
     return stringFormat;
   }
 
+  public Table<String, String, String> getFieldPattern() {
+    return pattern;
+  }
+
   public Map<String, Type> getTypes() {
     return types;
   }
@@ -122,6 +149,22 @@ public class ApiaryConfig {
 
   public Set<String> getMediaUpload() {
     return mediaUpload;
+  }
+
+  public String getServiceCanonicalName() {
+    return serviceCanonicalName;
+  }
+
+  public void setServiceCanonicalName(String serviceCanonicalName) {
+    this.serviceCanonicalName = serviceCanonicalName;
+  }
+
+  public String getServiceVersion() {
+    return serviceVersion;
+  }
+
+  public void setServiceVersion(String serviceVersion) {
+    this.serviceVersion = serviceVersion;
   }
 
   /**
@@ -179,5 +222,12 @@ public class ApiaryConfig {
    */
   public Field getField(Type type, String fieldName) {
     return fields.get(type, fieldName);
+  }
+
+  /*
+   * @return set of auth scopes
+   */
+  public ListMultimap<String, String> getAuthScopes() {
+    return authScopes;
   }
 }

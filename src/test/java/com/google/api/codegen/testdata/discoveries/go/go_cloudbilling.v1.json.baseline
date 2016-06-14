@@ -5,11 +5,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Billing API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudbilling_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/cloudbilling/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/cloudbilling/v1
 
 import (
   "golang.org/x/net/context"
@@ -20,30 +19,28 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := cloudbilling.New(httpClient)
+  client, err := cloudbilling.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-  var (
-    // The resource name of the billing account to retrieve. For example, `billingAccounts/012345-567890-ABCDEF`.
-    name = ""
-  )
+  // The resource name of the billing account to retrieve. For example,
+  // `billingAccounts/012345-567890-ABCDEF`.
+  name := "billingAccounts/{MY-BILLINGACCOUNT}" // TODO: Update placeholder value.
 
-  callResult, err := client.BillingAccounts.Get(name).Context(ctx).Do()
+  resp, err := client.BillingAccounts.Get(name).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -51,11 +48,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Billing API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudbilling_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/cloudbilling/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/cloudbilling/v1
 
 import (
   "golang.org/x/net/context"
@@ -66,29 +62,28 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := cloudbilling.New(httpClient)
+  client, err := cloudbilling.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  var (
-  )
 
-  fn := func(page *cloudbilling.ListBillingAccountsResponse) error {
-    // doThingsWith(page)
-    for i, element := range page.BillingAccounts {
-      // doThingsWith(element)
-      _, _ = i, element
+
+
+  call := client.BillingAccounts.List()
+  if err := call.Pages(ctx, func(page *cloudbilling.ListBillingAccountsResponse) error {
+    for _, v := range page.BillingAccounts {
+      // TODO: Use v.
+      _ = v
     }
-    return nil
-  }
-  if err = client.BillingAccounts.List().Pages(ctx, fn); err != nil {
+    return nil // NOTE: returning a non-nil error stops pagination.
+  }); err != nil {
     // TODO: Handle error.
     _ = err
   }
@@ -99,11 +94,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Billing API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudbilling_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/cloudbilling/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/cloudbilling/v1
 
 import (
   "golang.org/x/net/context"
@@ -114,32 +108,30 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := cloudbilling.New(httpClient)
+  client, err := cloudbilling.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-  var (
-    // The resource name of the billing account associated with the projects that you want to list. For example, `billingAccounts/012345-567890-ABCDEF`.
-    name = ""
-  )
+  // The resource name of the billing account associated with the projects that you want to list. For
+  // example, `billingAccounts/012345-567890-ABCDEF`.
+  name := "billingAccounts/{MY-BILLINGACCOUNT}" // TODO: Update placeholder value.
 
-  fn := func(page *cloudbilling.ListProjectBillingInfoResponse) error {
-    // doThingsWith(page)
-    for i, element := range page.ProjectBillingInfo {
-      // doThingsWith(element)
-      _, _ = i, element
+
+  call := client.BillingAccounts.Projects.List(name)
+  if err := call.Pages(ctx, func(page *cloudbilling.ListProjectBillingInfoResponse) error {
+    for _, v := range page.ProjectBillingInfo {
+      // TODO: Use v.
+      _ = v
     }
-    return nil
-  }
-  if err = client.BillingAccounts.Projects.List(name).Pages(ctx, fn); err != nil {
+    return nil // NOTE: returning a non-nil error stops pagination.
+  }); err != nil {
     // TODO: Handle error.
     _ = err
   }
@@ -150,11 +142,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Billing API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudbilling_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/cloudbilling/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/cloudbilling/v1
 
 import (
   "golang.org/x/net/context"
@@ -165,30 +156,28 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := cloudbilling.New(httpClient)
+  client, err := cloudbilling.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'getBillingInfo' method:
-  var (
-    // The resource name of the project for which billing information is retrieved. For example, `projects/tokyo-rain-123`.
-    name = ""
-  )
+  // The resource name of the project for which billing information is retrieved. For example,
+  // `projects/tokyo-rain-123`.
+  name := "projects/{MY-PROJECT}" // TODO: Update placeholder value.
 
-  callResult, err := client.Projects.GetBillingInfo(name).Context(ctx).Do()
+  resp, err := client.Projects.GetBillingInfo(name).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }
 package main
 
@@ -196,11 +185,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Billing API and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudbilling_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/cloudbilling/v1'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/cloudbilling/v1
 
 import (
   "golang.org/x/net/context"
@@ -211,30 +199,28 @@ import (
 
 func main() {
   ctx := context.Background()
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  client, err := cloudbilling.New(httpClient)
+  client, err := cloudbilling.New(hc)
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
 
-  // TODO: Change placeholders below to appropriate parameter values for the 'updateBillingInfo' method:
-  var (
-    // The resource name of the project associated with the billing information that you want to update. For example, `projects/tokyo-rain-123`.
-    name = ""
+  // The resource name of the project associated with the billing information that you want to update.
+  // For example, `projects/tokyo-rain-123`.
+  name := "projects/{MY-PROJECT}" // TODO: Update placeholder value.
 
-    requestBody = &cloudbilling.ProjectBillingInfo{}
-  )
-
-  callResult, err := client.Projects.UpdateBillingInfo(name, requestBody).Context(ctx).Do()
+  resp, err := client.Projects.UpdateBillingInfo(name, &cloudbilling.ProjectBillingInfo{
+                                                   // TODO: Fill required fields.
+                                                 }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
     _ = err
   }
-  // doThingsWith(callResult)
-  _ = callResult
+  // TODO: Use resp.
+  _ = resp
 }

@@ -16,14 +16,14 @@ package com.google.api.codegen.py;
 
 import com.google.api.Service;
 import com.google.api.client.util.DateTime;
+import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.DiscoveryContext;
+import com.google.api.codegen.DiscoveryImporter;
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
-
-import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.DiscoveryContext;
-import com.google.api.codegen.DiscoveryImporter;
 
 import java.util.List;
 
@@ -61,22 +61,8 @@ public class PythonDiscoveryContext extends DiscoveryContext {
           .put("float", "0.0")
           .build();
 
-  /**
-   * A map from {@link ApiaryConfig#stringFormat} label (or null) to corresponding default value.
-   */
-  private static final ImmutableMap<String, String> STRING_DEFAULT_MAP =
-      ImmutableMap.<String, String>builder()
-          .put("byte", "''"
-              + "  # base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648")
-          .put("date", "'1969-12-31'"
-              + "  # 'YYYY-MM-DD': see datetime.date.isoformat()")
-          .put("date-time", "'" + new DateTime(0L).toStringRfc3339() + "'"
-              + "  # 'YYYY-MM-DDThh:mm:ss.fffZ' (UTC): see datetime.datetime.isoformat()")
-          .build();
-
   private static final ImmutableMap<String, String> RENAMED_METHOD_MAP =
-      ImmutableMap.<String, String>builder()
-          .build();
+      ImmutableMap.<String, String>builder().build();
 
   private final PythonContextCommon pythonCommon;
 
@@ -109,8 +95,8 @@ public class PythonDiscoveryContext extends DiscoveryContext {
   }
 
   /**
-   * Returns a name for a type's field's type, substituting the given name when a native
-   * type is encountered.
+   * Returns a name for a type's field's type, substituting the given name when a native type is
+   * encountered.
    */
   public String typeName(Type type, Field field, String name) {
     String fieldName = field.getName();
@@ -182,8 +168,7 @@ public class PythonDiscoveryContext extends DiscoveryContext {
             typeDefaultValue(items, this.getField(items, "key")),
             typeDefaultValue(items, this.getField(items, "value")));
       } else {
-        return String.format(
-            "[ %s ]", elementDefaultValue(type, field));
+        return String.format("[ %s ]", elementDefaultValue(type, field));
       }
     }
     return nativeDefaultValue(type, field);
@@ -211,17 +196,25 @@ public class PythonDiscoveryContext extends DiscoveryContext {
         return nativeDefault;
       }
       if (typeName.equals("str")) {
-        String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
-        if (stringFormat != null) {
-          String value = STRING_DEFAULT_MAP.get(stringFormat);
-          if (value != null) {
-            return value;
-          }
-        }
-        return "''";
+        return getDefaultString(type, field);
       }
     }
     return "None";
+  }
+
+  @Override
+  public String stringLiteral(String value) {
+    return "'" + value + "'";
+  }
+
+  @Override
+  public String lineEnding(String value) {
+    return value;
+  }
+
+  @Override
+  public String lineComment(String line, String comment) {
+    return line + "  # " + comment;
   }
 
   // Handlers for Exceptional Inconsistencies

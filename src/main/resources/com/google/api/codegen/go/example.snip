@@ -1,9 +1,15 @@
+@extends "header.snip"
+
 @snippet generateFilename(service)
-    {@context.upperCamelToLowerUnderscore(service.getSimpleName)}/client_test.go
+    {@context.getApiConfig.getPackageName}/{@context.getReducedServiceName(service)}_client_example_test.go
 @end
 
 @snippet generateClass(service, body)
-    package {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
+    {@headerComment()}
+
+    // AUTO-GENERATED CODE. DO NOT EDIT.
+
+    package {@context.getPackageName}_test
 
     {@importSection(service)}
 
@@ -19,11 +25,11 @@
 @end
 
 @snippet generateBody(service)
-    func ExampleNewClient() {
+    func ExampleNew{@context.getClientName(service)}() {
         ctx := context.Background()
         opts := []gax.ClientOption{ /* Optional client parameters. */ }
-        client, err := NewClient(ctx, opts...)
-        _, _ = client, err
+        c, err := {@context.getPackageName}.New{@context.getClientName(service)}(ctx, opts...)
+        _, _ = c, err // Handle error.
     }
     @join method : service.getMethods
         @let methodName = method.getSimpleName, \
@@ -32,23 +38,23 @@
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              isPageStreaming = methodConfig.isPageStreaming
 
-            func ExampleClient_{@method.getSimpleName}() {
+            func Example{@context.getClientName(service)}_{@method.getSimpleName}() {
                 ctx := context.Background()
-                client, _ := NewClient(ctx)
+                c, err := {@context.getPackageName}.New{@context.getClientName(service)}(ctx)
+                _ = err // Handle error.
 
                 req := &{@inTypeName}{ /* Data... */ }
-                opts := []gax.CallOption{ /* Optional call parameters. */ }
                 @if {@context.isEmpty(method.getOutputType)}
-                    _ = client.{@method.getSimpleName}(ctx, req, opts...)
+                    err = c.{@method.getSimpleName}(ctx, req)
+                    _ = err // Handle error.
                 @else
                     @if {@isPageStreaming}
                         @let pageStreaming = methodConfig.getPageStreaming(), \
                              resourceFieldTypeName = context.getResourceTypeName(pageStreaming.getResourcesField())
-                            iter, _ := client.{@method.getSimpleName}(ctx, req, opts...)
+                            it := c.{@method.getSimpleName}(ctx, req)
                             var resp {@resourceFieldTypeName}
                             for {
-                                var err error
-                                resp, err = iter.Next()
+                                resp, err = it.Next()
                                 if err != nil {
                                     break
                                 }
@@ -57,8 +63,8 @@
                         @end
                     @else
                         var resp {@outTypeName}
-                        resp, _ = client.{@method.getSimpleName}(ctx, req, opts...)
-                        _ = resp
+                        resp, err = c.{@method.getSimpleName}(ctx, req)
+                        _, _ = resp, err // Handle error.
                     @end
                 @end
         }

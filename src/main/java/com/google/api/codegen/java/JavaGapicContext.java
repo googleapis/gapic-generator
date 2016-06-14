@@ -15,10 +15,8 @@
 package com.google.api.codegen.java;
 
 import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.GapicContext;
 import com.google.api.codegen.MethodConfig;
-import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.FieldSelector;
 import com.google.api.tools.framework.model.Interface;
@@ -34,6 +32,7 @@ import com.google.common.io.Files;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * A GapicContext specialized for Java.
@@ -86,19 +85,17 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
           .put(Type.TYPE_FIXED32, "0")
           .put(Type.TYPE_SFIXED32, "0")
           .put(Type.TYPE_STRING, "\"\"")
-          .put(Type.TYPE_BYTES, "ByteString.EMPTY")
+          .put(Type.TYPE_BYTES, "ByteString.copyFromUtf8(\"\")")
           .build();
 
   private JavaContextCommon javaCommon;
-  private JavaSnippetSet<?> javaSnippetSet;
 
   public JavaGapicContext(Model model, ApiConfig apiConfig) {
     super(model, apiConfig);
   }
 
   @Override
-  public void resetState(JavaSnippetSet<?> javaSnippetSet, JavaContextCommon javaCommon) {
-    this.javaSnippetSet = javaSnippetSet;
+  public void resetState(JavaContextCommon javaCommon) {
     this.javaCommon = javaCommon;
   }
 
@@ -281,17 +278,6 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
     return lowerUnderscoreToUpperCamel(baseName);
   }
 
-  /**
-   * Returns the description of the proto element, in markdown format.
-   */
-  public String getDescription(ProtoElement element) {
-    return DocumentationUtil.getDescription(element);
-  }
-
-  public String generateMethodSampleCode(JavaContextCommon.JavaDocConfig config) {
-    return javaSnippetSet.generateMethodSampleCode(config).prettyPrint();
-  }
-
   public String defaultTokenValue(Field field) {
     if (field.getType().getKind().equals(Type.TYPE_STRING)) {
       return "\"\"";
@@ -332,13 +318,18 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
     throw new RuntimeException("No flattened methods available.");
   }
 
-  public CollectionConfig getCollectionConfig(Interface service, String entityName) {
-    CollectionConfig result =
-        getApiConfig().getInterfaceConfig(service).getCollectionConfig(entityName);
-    if (result == null) {
-      throw new IllegalStateException(
-          "A collection config was not present for entity name " + entityName);
-    }
-    return result;
+  public String getTitle() {
+    return getModel().getServiceConfig().getTitle();
+  }
+
+  public String getMultilineHeading(String heading) {
+    final char[] array = new char[heading.length()];
+    Arrays.fill(array, '=');
+    String eqsString = new String(array);
+    return String.format("%s\n%s\n%s", eqsString, heading, eqsString);
+  }
+
+  public JavaDocConfig.Builder newJavaDocConfigBuilder() {
+    return JavaDocConfig.newBuilder();
   }
 }

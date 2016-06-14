@@ -1,0 +1,845 @@
+============== file: lib/library_service_api.js ==============
+/*
+ * Copyright 2016 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * EDITING INSTRUCTIONS
+ * This file was generated from the file
+ * https://github.com/googleapis/googleapis/blob/master/library.proto,
+ * and updates to that file get reflected here through a refresh process.
+ * For the short term, the refresh process will only be runnable by Google
+ * engineers.
+ *
+ * The only allowed edits are to method and file documentation. A 3-way
+ * merge preserves those additions if the generated source changes.
+ */
+'use strict';
+
+var arguejs = require('arguejs');
+var fsp = require('fs-promise');
+var gax = require('google-gax');
+var grpc = require('grpc');
+var path = require('path');
+var through2 = require('through2');
+
+var google = grpc.loadObject(require('./service')).google;
+
+/** The default address of the service. */
+var SERVICE_ADDRESS = 'library-example.googleapis.com';
+
+/** The default port of the service. */
+var DEFAULT_SERVICE_PORT = 443;
+
+var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
+
+var DEFAULT_TIMEOUT = 30;
+
+var PAGE_DESCRIPTORS = {
+  'listShelves': new gax.PageDescriptor(
+      'page_token',
+      'next_page_token',
+      'shelves'),
+  'listBooks': new gax.PageDescriptor(
+      'page_token',
+      'next_page_token',
+      'books'),
+  'listStrings': new gax.PageDescriptor(
+      'page_token',
+      'next_page_token',
+      'strings')
+};
+
+/**
+ * The scopes needed to make gRPC calls to all of the methods defined in
+ * this service.
+ */
+var ALL_SCOPES = [
+  'https://www.googleapis.com/auth/library',
+  'https://www.googleapis.com/auth/cloud-platform'
+];
+exports.ALL_SCOPES = ALL_SCOPES;
+
+/**
+ * This API represents a simple digital library.  It lets you manage Shelf
+ * resources and Book resources in the library. It defines the following
+ * resource model:
+ *
+ * - The API has a collection of {@link Shelf}
+ *   resources, named ``shelves/*``
+ *
+ * - Each Shelf has a collection of {@link Book}
+ *   resources, named `shelves/*/books/*`
+ *
+ * Check out [cloud docs!](https://cloud.google.com/library/example/link).
+ * This is [not a cloud link](http://www.google.com).
+ *
+ * @class
+ * @param {?Object} opts - The optional parameters.
+ * @param {String} opts.servicePath
+ *   The domain name of the API remote host.
+ * @param {number} opts.port
+ *   The port on which to connect to the remote host.
+ * @param {Function} opts.getCredentials
+ *   Custom function to obtain the credentials.
+ * @param {grpc.ClientCredentials} opts.sslCreds
+ *   A ClientCredentials for use with an SSL-enabled channel.
+ * @param {Object} opts.clientConfig
+ *   The customized config to build the call settings. See
+ *   {@link gax.constructSettings} for the format.
+ * @param {number} opts.timeout
+ *   The default timeout, in seconds, for calls made through this client.
+ * @param {number} opts.appName
+ *   The codename of the calling service.
+ * @param {String} opts.appVersion
+ *   The version of the calling service.
+ */
+function LibraryServiceApi(opts) {
+  opts = opts || {};
+  var servicePath = opts.servicePath || SERVICE_ADDRESS;
+  var port = opts.port || DEFAULT_SERVICE_PORT;
+  var getCredentials = opts.getCredentials || null;
+  var sslCreds = opts.sslCreds || null;
+  var scopes = opts.scopes || ALL_SCOPES;
+  var clientConfig = opts.clientConfig || {};
+  var timeout = opts.timeout || DEFAULT_TIMEOUT;
+  var appName = opts.appName || 'gax';
+  var appVersion = opts.appVersion || gax.Version;
+
+  var clientConfigFile = path.join(
+      __dirname, 'library_service_client_config.json');
+  this.defaults = fsp.readJson(clientConfigFile).then(function(data) {
+    return gax.constructSettings(
+        'google.example.library.v1.LibraryService',
+        data,
+        clientConfig,
+        grpc.status,
+        timeout,
+        PAGE_DESCRIPTORS);
+  });
+
+  var googleApiClient = [
+    appName + '/' + appVersion,
+    CODE_GEN_NAME_VERSION,
+    'nodejs/' + process.version].join(' ');
+  this.headers = new grpc.Metadata();
+  this.headers.set('x-goog-api-client', googleApiClient);
+  this.stub = gax.createStub(
+      servicePath,
+      port,
+      google.example.library.v1.LibraryService,
+      {'getCredentials': getCredentials,
+       'sslCreds': sslCreds,
+       'scopes': scopes});
+};
+exports.LibraryServiceApi = LibraryServiceApi;
+
+// Path templates
+
+var SHELF_PATH_TEMPLATE = new gax.PathTemplate(
+    'shelves/{shelf}');
+
+var BOOK_PATH_TEMPLATE = new gax.PathTemplate(
+    'shelves/{shelf}/books/{book}');
+
+var ARCHIVED_BOOK_PATH_TEMPLATE = new gax.PathTemplate(
+    'archives/{archive_path=**}/books/{book}');
+
+/**
+ * Returns a fully-qualified shelf resource name string.
+ * @param {String} shelf
+ * @returns {String}
+ */
+LibraryServiceApi.shelfPath = function shelfPath(shelf) {
+  return SHELF_PATH_TEMPLATE.render({
+    'shelf': shelf
+  });
+};
+
+/**
+ * Parses the shelfName from a shelf resource.
+ * @param {String} shelfName
+ *   A fully-qualified path representing a shelf resources.
+ * @returns {String} - A string representing the shelf.
+ */
+LibraryServiceApi.matchShelfFromShelfName =
+    function matchShelfFromShelfName(shelfName) {
+  return SHELF_PATH_TEMPLATE.match(shelfName).shelf;
+};
+
+/**
+ * Returns a fully-qualified book resource name string.
+ * @param {String} shelf
+ * @param {String} book
+ * @returns {String}
+ */
+LibraryServiceApi.bookPath = function bookPath(shelf, book) {
+  return BOOK_PATH_TEMPLATE.render({
+    'shelf': shelf,
+    'book': book
+  });
+};
+
+/**
+ * Parses the bookName from a book resource.
+ * @param {String} bookName
+ *   A fully-qualified path representing a book resources.
+ * @returns {String} - A string representing the shelf.
+ */
+LibraryServiceApi.matchShelfFromBookName =
+    function matchShelfFromBookName(bookName) {
+  return BOOK_PATH_TEMPLATE.match(bookName).shelf;
+};
+
+/**
+ * Parses the bookName from a book resource.
+ * @param {String} bookName
+ *   A fully-qualified path representing a book resources.
+ * @returns {String} - A string representing the book.
+ */
+LibraryServiceApi.matchBookFromBookName =
+    function matchBookFromBookName(bookName) {
+  return BOOK_PATH_TEMPLATE.match(bookName).book;
+};
+
+/**
+ * Returns a fully-qualified archived_book resource name string.
+ * @param {String} archive_path
+ * @param {String} book
+ * @returns {String}
+ */
+LibraryServiceApi.archived_bookPath = function archived_bookPath(archive_path, book) {
+  return ARCHIVED_BOOK_PATH_TEMPLATE.render({
+    'archive_path': archive_path,
+    'book': book
+  });
+};
+
+/**
+ * Parses the archivedBookName from a archived_book resource.
+ * @param {String} archivedBookName
+ *   A fully-qualified path representing a archived_book resources.
+ * @returns {String} - A string representing the archive_path.
+ */
+LibraryServiceApi.matchArchivePathFromArchivedBookName =
+    function matchArchivePathFromArchivedBookName(archivedBookName) {
+  return ARCHIVED_BOOK_PATH_TEMPLATE.match(archivedBookName).archive_path;
+};
+
+/**
+ * Parses the archivedBookName from a archived_book resource.
+ * @param {String} archivedBookName
+ *   A fully-qualified path representing a archived_book resources.
+ * @returns {String} - A string representing the book.
+ */
+LibraryServiceApi.matchBookFromArchivedBookName =
+    function matchBookFromArchivedBookName(archivedBookName) {
+  return ARCHIVED_BOOK_PATH_TEMPLATE.match(archivedBookName).book;
+};
+
+// Callback types
+
+/**
+ * @callback APICallback
+ * @param {?Error} error - the error object if something goes wrong.
+ *   Null if API succeeds.
+ * @param {?T} response
+ *   The response object when API succeeds.
+ * @template T
+ */
+
+/**
+ * @callback EmptyCallback
+ * @param {?Error} error - the error object if something goes wrong.
+ *   Null if API succeeds.
+ */
+
+// Service calls
+
+/**
+ * Creates a shelf, and returns the new Shelf.
+ *
+ * @param {google.example.library.v1.Shelf} shelf
+ *   The shelf to create.
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {?APICallback<google.example.library.v1.Shelf>} callback
+ *   The function which will be called with the result of the API call.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.createShelf = function createShelf() {
+  var args = arguejs({
+    'shelf': Object,
+    'options': [gax.CallOptions],
+    'callback': [Function]
+  });
+  var req = {
+    'shelf': args.shelf
+  };
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.createShelf.merge(args.options);
+    var apiCall = gax.createApiCall(stub.createShelf.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
+    if (args.callback) {
+      args.callback(err);
+    }
+  });
+};
+
+/**
+ * Gets a shelf.
+ *
+ * @param {String} name
+ *   The name of the shelf to retrieve.
+ * @param {?Object} otherArgs
+ * @param {google.example.library.v1.SomeMessage} otherArgs.message
+ *   Field to verify that message-type query parameter gets flattened.
+ * @param {google.example.library.v1.StringBuilder} otherArgs.stringBuilder
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {?APICallback<google.example.library.v1.Shelf>} callback
+ *   The function which will be called with the result of the API call.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.getShelf = function getShelf() {
+  var args = arguejs({
+    'name': String,
+    'otherArgs': [Object],
+    'options': [gax.CallOptions],
+    'callback': [Function]
+  });
+  var req = {
+    'name': args.name,
+    'message': args.otherArgs.message || {},
+    'string_builder': args.otherArgs.stringBuilder || {}
+  };
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.getShelf.merge(args.options);
+    var apiCall = gax.createApiCall(stub.getShelf.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
+    if (args.callback) {
+      args.callback(err);
+    }
+  });
+};
+
+/**
+ * Lists shelves.
+ *
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @returns {Stream<google.example.library.v1.Shelf>}
+ *   An object stream. By default, this emits google.example.library.v1.Shelf
+ *   instances on 'data' event. This object can also be configured to emit
+ *   pages of the responses through the options parameter.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.listShelves = function listShelves() {
+  var args = arguejs({
+    'options': [gax.CallOptions]
+  });
+  var req = {
+  };
+  var stream = through2.obj();
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.listShelves.merge(args.options);
+    var apiCall = gax.createApiCall(stub.listShelves.bind(stub), options);
+    var result = apiCall(req, args.callback, this.headers, {});
+    result.pipe(stream);
+    stream.on('end', function() { result.end(); });
+  }.bind(this))['catch'](function(err) {
+    stream.emit('error', err);
+  });
+  return stream;
+};
+
+/**
+ * Deletes a shelf.
+ *
+ * @param {String} name
+ *   The name of the shelf to delete.
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {?EmptyCallback} callback
+ *   The function which will be called with the result of the API call.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.deleteShelf = function deleteShelf() {
+  var args = arguejs({
+    'name': String,
+    'options': [gax.CallOptions],
+    'callback': [Function]
+  });
+  var req = {
+    'name': args.name
+  };
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.deleteShelf.merge(args.options);
+    var apiCall = gax.createApiCall(stub.deleteShelf.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
+    if (args.callback) {
+      args.callback(err);
+    }
+  });
+};
+
+/**
+ * Merges two shelves by adding all books from the shelf named
+ * `other_shelf_name` to shelf `name`, and deletes
+ * `other_shelf_name`. Returns the updated shelf.
+ *
+ * @param {String} name
+ *   The name of the shelf we're adding books to.
+ * @param {String} otherShelfName
+ *   The name of the shelf we're removing books from and deleting.
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {?APICallback<google.example.library.v1.Shelf>} callback
+ *   The function which will be called with the result of the API call.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.mergeShelves = function mergeShelves() {
+  var args = arguejs({
+    'name': String,
+    'otherShelfName': String,
+    'options': [gax.CallOptions],
+    'callback': [Function]
+  });
+  var req = {
+    'name': args.name,
+    'other_shelf_name': args.otherShelfName
+  };
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.mergeShelves.merge(args.options);
+    var apiCall = gax.createApiCall(stub.mergeShelves.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
+    if (args.callback) {
+      args.callback(err);
+    }
+  });
+};
+
+/**
+ * Creates a book.
+ *
+ * @param {String} name
+ *   The name of the shelf in which the book is created.
+ * @param {google.example.library.v1.Book} book
+ *   The book to create.
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {?APICallback<google.example.library.v1.Book>} callback
+ *   The function which will be called with the result of the API call.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.createBook = function createBook() {
+  var args = arguejs({
+    'name': String,
+    'book': Object,
+    'options': [gax.CallOptions],
+    'callback': [Function]
+  });
+  var req = {
+    'name': args.name,
+    'book': args.book
+  };
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.createBook.merge(args.options);
+    var apiCall = gax.createApiCall(stub.createBook.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
+    if (args.callback) {
+      args.callback(err);
+    }
+  });
+};
+
+/**
+ * Creates a series of books.
+ *
+ * @param {google.example.library.v1.Shelf} shelf
+ *   The shelf in which the series is created.
+ * @param {google.example.library.v1.Book[]} books
+ *   The books to publish in the series.
+ * @param {?Object} otherArgs
+ * @param {number} otherArgs.edition
+ *   The edition of the series
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {?APICallback<google.example.library.v1.PublishSeriesResponse>} callback
+ *   The function which will be called with the result of the API call.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.publishSeries = function publishSeries() {
+  var args = arguejs({
+    'shelf': Object,
+    'books': Array,
+    'otherArgs': [Object],
+    'options': [gax.CallOptions],
+    'callback': [Function]
+  });
+  var req = {
+    'shelf': args.shelf,
+    'books': args.books,
+    'edition': args.otherArgs.edition || 0
+  };
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.publishSeries.merge(args.options);
+    var apiCall = gax.createApiCall(stub.publishSeries.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
+    if (args.callback) {
+      args.callback(err);
+    }
+  });
+};
+
+/**
+ * Gets a book.
+ *
+ * @param {String} name
+ *   The name of the book to retrieve.
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {?APICallback<google.example.library.v1.Book>} callback
+ *   The function which will be called with the result of the API call.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.getBook = function getBook() {
+  var args = arguejs({
+    'name': String,
+    'options': [gax.CallOptions],
+    'callback': [Function]
+  });
+  var req = {
+    'name': args.name
+  };
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.getBook.merge(args.options);
+    var apiCall = gax.createApiCall(stub.getBook.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
+    if (args.callback) {
+      args.callback(err);
+    }
+  });
+};
+
+/**
+ * Lists books in a shelf.
+ *
+ * @param {String} name
+ *   The name of the shelf whose books we'd like to list.
+ * @param {?Object} otherArgs
+ * @param {number} otherArgs.pageSize
+ *   The maximum number of resources contained in the underlying API
+ *   response. If page streaming is performed per-resource, this
+ *   parameter does not affect the return value. If page streaming is
+ *   performed per-page, this determines the maximum number of
+ *   resources in a page.
+ * @param {String} otherArgs.filter
+ *   To test python built-in wrapping.
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @returns {Stream<google.example.library.v1.Book>}
+ *   An object stream. By default, this emits google.example.library.v1.Book
+ *   instances on 'data' event. This object can also be configured to emit
+ *   pages of the responses through the options parameter.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.listBooks = function listBooks() {
+  var args = arguejs({
+    'name': String,
+    'otherArgs': [Object],
+    'options': [gax.CallOptions]
+  });
+  var req = {
+    'name': args.name,
+    'page_size': args.otherArgs.pageSize || 0,
+    'filter': args.otherArgs.filter || ''
+  };
+  var stream = through2.obj();
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.listBooks.merge(args.options);
+    var apiCall = gax.createApiCall(stub.listBooks.bind(stub), options);
+    var result = apiCall(req, args.callback, this.headers, {});
+    result.pipe(stream);
+    stream.on('end', function() { result.end(); });
+  }.bind(this))['catch'](function(err) {
+    stream.emit('error', err);
+  });
+  return stream;
+};
+
+/**
+ * Deletes a book.
+ *
+ * @param {String} name
+ *   The name of the book to delete.
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {?EmptyCallback} callback
+ *   The function which will be called with the result of the API call.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.deleteBook = function deleteBook() {
+  var args = arguejs({
+    'name': String,
+    'options': [gax.CallOptions],
+    'callback': [Function]
+  });
+  var req = {
+    'name': args.name
+  };
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.deleteBook.merge(args.options);
+    var apiCall = gax.createApiCall(stub.deleteBook.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
+    if (args.callback) {
+      args.callback(err);
+    }
+  });
+};
+
+/**
+ * Updates a book.
+ *
+ * @param {String} name
+ *   The name of the book to update.
+ * @param {google.example.library.v1.Book} book
+ *   The book to update with.
+ * @param {?Object} otherArgs
+ * @param {google.protobuf.FieldMask} otherArgs.updateMask
+ *   A field mask to apply, rendered as an HTTP parameter.
+ * @param {google.example.library.v1.FieldMask} otherArgs.physicalMask
+ *   To test Python import clash resolution.
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {?APICallback<google.example.library.v1.Book>} callback
+ *   The function which will be called with the result of the API call.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.updateBook = function updateBook() {
+  var args = arguejs({
+    'name': String,
+    'book': Object,
+    'otherArgs': [Object],
+    'options': [gax.CallOptions],
+    'callback': [Function]
+  });
+  var req = {
+    'name': args.name,
+    'book': args.book,
+    'update_mask': args.otherArgs.updateMask || {},
+    'physical_mask': args.otherArgs.physicalMask || {}
+  };
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.updateBook.merge(args.options);
+    var apiCall = gax.createApiCall(stub.updateBook.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
+    if (args.callback) {
+      args.callback(err);
+    }
+  });
+};
+
+/**
+ * Moves a book to another shelf, and returns the new book.
+ *
+ * @param {String} name
+ *   The name of the book to move.
+ * @param {String} otherShelfName
+ *   The name of the destination shelf.
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {?APICallback<google.example.library.v1.Book>} callback
+ *   The function which will be called with the result of the API call.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.moveBook = function moveBook() {
+  var args = arguejs({
+    'name': String,
+    'otherShelfName': String,
+    'options': [gax.CallOptions],
+    'callback': [Function]
+  });
+  var req = {
+    'name': args.name,
+    'other_shelf_name': args.otherShelfName
+  };
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.moveBook.merge(args.options);
+    var apiCall = gax.createApiCall(stub.moveBook.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
+    if (args.callback) {
+      args.callback(err);
+    }
+  });
+};
+
+/**
+ * Lists a primitive resource. To test go page streaming.
+ *
+ * @param {?Object} otherArgs
+ * @param {String} otherArgs.name
+ * @param {number} otherArgs.pageSize
+ *   The maximum number of resources contained in the underlying API
+ *   response. If page streaming is performed per-resource, this
+ *   parameter does not affect the return value. If page streaming is
+ *   performed per-page, this determines the maximum number of
+ *   resources in a page.
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @returns {Stream<String>}
+ *   An object stream. By default, this emits String
+ *   instances on 'data' event. This object can also be configured to emit
+ *   pages of the responses through the options parameter.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.listStrings = function listStrings() {
+  var args = arguejs({
+    'otherArgs': [Object],
+    'options': [gax.CallOptions]
+  });
+  var req = {
+    'name': args.otherArgs.name || '',
+    'page_size': args.otherArgs.pageSize || 0
+  };
+  var stream = through2.obj();
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.listStrings.merge(args.options);
+    var apiCall = gax.createApiCall(stub.listStrings.bind(stub), options);
+    var result = apiCall(req, args.callback, this.headers, {});
+    result.pipe(stream);
+    stream.on('end', function() { result.end(); });
+  }.bind(this))['catch'](function(err) {
+    stream.emit('error', err);
+  });
+  return stream;
+};
+
+/**
+ * Adds comments to a book
+ *
+ * @param {String} name
+ * @param {google.example.library.v1.Comment[]} comments
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {?EmptyCallback} callback
+ *   The function which will be called with the result of the API call.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.addComments = function addComments() {
+  var args = arguejs({
+    'name': String,
+    'comments': Array,
+    'options': [gax.CallOptions],
+    'callback': [Function]
+  });
+  var req = {
+    'name': args.name,
+    'comments': args.comments
+  };
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.addComments.merge(args.options);
+    var apiCall = gax.createApiCall(stub.addComments.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
+    if (args.callback) {
+      args.callback(err);
+    }
+  });
+};
+
+/**
+ * Gets a book from an archive.
+ *
+ * @param {String} name
+ *   The name of the book to retrieve.
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {?APICallback<google.example.library.v1.Book>} callback
+ *   The function which will be called with the result of the API call.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.getBookFromArchive = function getBookFromArchive() {
+  var args = arguejs({
+    'name': String,
+    'options': [gax.CallOptions],
+    'callback': [Function]
+  });
+  var req = {
+    'name': args.name
+  };
+  Promise.all([this.defaults, this.stub]).then(function(vars) {
+    var defaults = vars[0];
+    var stub = vars[1];
+    var options = defaults.getBookFromArchive.merge(args.options);
+    var apiCall = gax.createApiCall(stub.getBookFromArchive.bind(stub), options);
+    apiCall(req, args.callback, this.headers, {});
+  }.bind(this))['catch'](function(err) {
+    if (args.callback) {
+      args.callback(err);
+    }
+  });
+};

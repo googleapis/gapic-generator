@@ -18,5 +18,5 @@ package com.google.api.codegen.php;
  * A PhpContext provides functionality specific to a context in PHP.
  */
 public interface PhpContext {
-  void resetState(PhpSnippetSet<?> phpSnippetSet, PhpContextCommon phpCommon);
+  void resetState(PhpContextCommon phpCommon);
 }

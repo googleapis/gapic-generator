@@ -14,50 +14,36 @@
  */
 package com.google.api.codegen;
 
-import com.google.common.collect.ImmutableList;
+import com.google.api.codegen.gapic.MainGapicProviderFactory;
+
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.util.List;
-
 /**
  * C# code generator baseline tests.
  */
 @RunWith(Parameterized.class)
-public class CSharpCodeGeneratorTest extends CodeGeneratorTestBase {
+public class CSharpCodeGeneratorTest extends GapicTestBase {
 
   public CSharpCodeGeneratorTest(
-      String name,
-      String[] gapicConfigFileNames,
-      String providerName,
-      String viewName,
-      String snippetName) {
-    super(name, gapicConfigFileNames, providerName, viewName, snippetName);
+      String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
+    super(name, idForFactory, gapicConfigFileNames, snippetName);
     getTestDataLocator()
         .addTestDataSource(com.google.api.codegen.csharp.CSharpGapicContext.class, "");
   }
 
   /**
-   * Declares test parameters, each one an array of values passed to the constructor, with the first
-   * element a name, the second a config of this name.
+   * Declares test parameters, each one an array of values passed to the constructor, with the
+   * first element a name, the second a config of this name.
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
-    // TODO(jonskeet): Remove the separate YAML files when we have a better way of overriding
-    // which snippets to use. (Ideally we should use csharp_gapic.yaml and only override which
-    // snippet we want to test. While additional YAML files can override single values, they
-    // append to list values.)
-    return ImmutableList.of(
-        new Object[] {
-          "csharp_wrapper",
-          new String[] {"library_gapic.yaml", "csharp_gapic.yaml"},
-          "com.google.api.codegen.csharp.CSharpGapicProvider",
-          "com.google.api.codegen.InterfaceView",
-          "wrapper.snip"
-        });
+    return GapicTestBase.createTestedConfigs(
+        MainGapicProviderFactory.CSHARP, new String[] {"csharp_gapic.yaml", "library_gapic.yaml"});
   }
 
   // Tests

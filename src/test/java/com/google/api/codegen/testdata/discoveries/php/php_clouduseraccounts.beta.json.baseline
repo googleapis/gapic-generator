@@ -23,13 +23,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudUserAccounts service
 $service = new Google_Service_CloudUserAccounts($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the Operations resource to delete.
 $operation = '';
 
-$response = $service->globalAccountsOperations->deleteGlobalAccountsOperations($project, $operation);
+$response = $service->globalAccountsOperations->delete($project, $operation);
 
 <?php
 /*
@@ -55,13 +54,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudUserAccounts service
 $service = new Google_Service_CloudUserAccounts($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the Operations resource to return.
 $operation = '';
 
-$response = $service->globalAccountsOperations->getGlobalAccountsOperations($project, $operation);
+$response = $service->globalAccountsOperations->get($project, $operation);
 
 <?php
 /*
@@ -87,7 +85,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudUserAccounts service
 $service = new Google_Service_CloudUserAccounts($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -121,13 +118,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudUserAccounts service
 $service = new Google_Service_CloudUserAccounts($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the group for this request.
 $groupName = '';
 
-$response = $service->groups->addMemberGroups($project, $groupName);
+$postBody = new Google_Service_CloudUserAccounts_GroupsAddMemberRequest($client);
+
+$response = $service->groups->addMember($project, $groupName, $postBody);
 
 <?php
 /*
@@ -153,13 +151,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudUserAccounts service
 $service = new Google_Service_CloudUserAccounts($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the Group resource to delete.
 $groupName = '';
 
-$response = $service->groups->deleteGroups($project, $groupName);
+$response = $service->groups->delete($project, $groupName);
 
 <?php
 /*
@@ -185,13 +182,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudUserAccounts service
 $service = new Google_Service_CloudUserAccounts($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the Group resource to return.
 $groupName = '';
 
-$response = $service->groups->getGroups($project, $groupName);
+$response = $service->groups->get($project, $groupName);
 
 <?php
 /*
@@ -217,11 +213,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudUserAccounts service
 $service = new Google_Service_CloudUserAccounts($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->groups->insertGroups($project);
+$postBody = new Google_Service_CloudUserAccounts_Group($client);
+
+$response = $service->groups->insert($project, $postBody);
 
 <?php
 /*
@@ -247,7 +244,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudUserAccounts service
 $service = new Google_Service_CloudUserAccounts($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -281,13 +277,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudUserAccounts service
 $service = new Google_Service_CloudUserAccounts($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the group for this request.
 $groupName = '';
 
-$response = $service->groups->removeMemberGroups($project, $groupName);
+$postBody = new Google_Service_CloudUserAccounts_GroupsRemoveMemberRequest($client);
+
+$response = $service->groups->removeMember($project, $groupName, $postBody);
 
 <?php
 /*
@@ -313,7 +310,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudUserAccounts service
 $service = new Google_Service_CloudUserAccounts($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the zone for this request.
@@ -323,7 +319,7 @@ $user = '';
 // The fully-qualified URL of the virtual machine requesting the view.
 $instance = '';
 
-$response = $service->linux->getAuthorizedKeysViewLinux($project, $zone, $user, $instance);
+$response = $service->linux->getAuthorizedKeysView($project, $zone, $user, $instance);
 
 <?php
 /*
@@ -349,7 +345,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudUserAccounts service
 $service = new Google_Service_CloudUserAccounts($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the zone for this request.
@@ -357,7 +352,7 @@ $zone = '';
 // The fully-qualified URL of the virtual machine requesting the views.
 $instance = '';
 
-$response = $service->linux->getLinuxAccountViewsLinux($project, $zone, $instance);
+$response = $service->linux->getLinuxAccountViews($project, $zone, $instance);
 
 <?php
 /*
@@ -383,13 +378,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudUserAccounts service
 $service = new Google_Service_CloudUserAccounts($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the user for this request.
 $user = '';
 
-$response = $service->users->addPublicKeyUsers($project, $user);
+$postBody = new Google_Service_CloudUserAccounts_PublicKey($client);
+
+$response = $service->users->addPublicKey($project, $user, $postBody);
 
 <?php
 /*
@@ -415,13 +411,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudUserAccounts service
 $service = new Google_Service_CloudUserAccounts($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the user resource to delete.
 $user = '';
 
-$response = $service->users->deleteUsers($project, $user);
+$response = $service->users->delete($project, $user);
 
 <?php
 /*
@@ -447,13 +442,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudUserAccounts service
 $service = new Google_Service_CloudUserAccounts($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the user resource to return.
 $user = '';
 
-$response = $service->users->getUsers($project, $user);
+$response = $service->users->get($project, $user);
 
 <?php
 /*
@@ -479,11 +473,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudUserAccounts service
 $service = new Google_Service_CloudUserAccounts($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->users->insertUsers($project);
+$postBody = new Google_Service_CloudUserAccounts_User($client);
+
+$response = $service->users->insert($project, $postBody);
 
 <?php
 /*
@@ -509,7 +504,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudUserAccounts service
 $service = new Google_Service_CloudUserAccounts($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -543,13 +537,13 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudUserAccounts service
 $service = new Google_Service_CloudUserAccounts($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the user for this request.
 $user = '';
-// The fingerprint of the public key to delete. Public keys are identified by their fingerprint, which is defined by RFC4716 to be the MD5 digest of the public key.
+// The fingerprint of the public key to delete. Public keys are identified by their fingerprint, which
+// is defined by RFC4716 to be the MD5 digest of the public key.
 $fingerprint = '';
 
-$response = $service->users->removePublicKeyUsers($project, $user, $fingerprint);
+$response = $service->users->removePublicKey($project, $user, $fingerprint);
 

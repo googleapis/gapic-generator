@@ -61,6 +61,14 @@ public abstract class ApiConfig {
     }
   }
 
+  /**
+   * Creates an ApiConfig with no content. Exposed for testing.
+   */
+  public static ApiConfig createDummyApiConfig() {
+    return new AutoValue_ApiConfig(
+        ImmutableMap.<String, InterfaceConfig>builder().build(), null, false);
+  }
+
   private static String getPackageName(ConfigProto configProto) {
     Map<String, LanguageSettingsProto> settingsMap = configProto.getLanguageSettings();
     String language = configProto.getLanguage();

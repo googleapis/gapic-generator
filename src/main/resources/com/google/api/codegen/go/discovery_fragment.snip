@@ -1,3 +1,5 @@
+@extends "../common.snip"
+
 @snippet generateFilename(method)
   {@method.getName}.frag.go
 @end
@@ -13,11 +15,10 @@ package main
 // ---------------
 // 1. If not already done, enable the {@context.getService.getTitle} and check the quota for your project at
 //    https://console.developers.google.com/apis/api/{@context.getApi.getName}_component/quotas
-// 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library and Application Default Credentials library, run:
-//    'go get google.golang.org/api/{@context.getApi.getName}/{@context.getApiVersion}'
-//    'go get golang.org/x/oauth2/google'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/{@context.getApi.getName}/{@context.getApiVersion}
 
 import (
   "golang.org/x/net/context"
@@ -29,14 +30,14 @@ import (
 func main() {
   ctx := context.Background()
   # TODO(pongad): Every API except autoscaler has the string as API.CloudPlatformScope, find out why
-  httpClient, err := google.DefaultClient(ctx, "https://www.googleapis.com/auth/cloud-platform")
+  hc, err := google.DefaultClient(ctx{@scopeArg(method)})
   if err != nil {
-    // TODO: Handle error.
+    // {@TODO()} Handle error.
     _ = err
   }
-  client, err := {@context.getApi.getName}.New(httpClient)
+  client, err := {@context.getApi.getName}.New(hc)
   if err != nil {
-    // TODO: Handle error.
+    // {@TODO()} Handle error.
     _ = err
   }
 
@@ -50,20 +51,37 @@ func main() {
 }
 @end
 
+@private scopeArg(method)
+  @let scopeList = context.getAuthScopes(method)
+    @if not(scopeList.isEmpty)
+    , {@context.getApi.getName}.{@scopeList.get(0)}Scope
+    @end
+  @end
+@end
+
 @private compactCall(method)
   @if context.isResponseEmpty(method)
-    if err = {@methodPath(method)}({@callArg(method)}).Context(ctx).Do(); err != nil {
-      // TODO: Handle error.
-      _ = err
-    }
+    @if context.hasRequestField(method)
+      call := {@methodPath(method)}({@callArg(method)}).Context(ctx)
+      if err := call.Do(); err != nil {
+        // {@TODO()} Handle error.
+        _ = err
+      }
+    @else
+      if err := {@methodPath(method)}({@callArg(method)}).Context(ctx).Do(); err != nil {
+        // {@TODO()} Handle error.
+        _ = err
+      }
+    @end
   @else
-    callResult, err := {@methodPath(method)}({@callArg(method)}).Context(ctx).Do()
+    # TODO(pongad): generate a better name for "resp"
+    resp, err := {@methodPath(method)}({@callArg(method)}).Context(ctx).Do()
     if err != nil {
-      // TODO: Handle error.
+      // {@TODO()} Handle error.
       _ = err
     }
-    // doThingsWith(callResult)
-    _ = callResult
+    // {@TODO()} Use resp.
+    _ = resp
   @end
 @end
 
@@ -72,20 +90,19 @@ func main() {
       responseTypeRef = context.getApiaryConfig.getType(responseType), \
       resourceField = context.getFirstRepeatedField(responseTypeRef), \
       resources = context.lowerCamelToUpperCamel(resourceField.getName)
-    fn := func(page *{@context.getApi.getName}.{@responseType}) error {
-      // doThingsWith(page)
-      for i, element := range page.{@resources} {
-        // doThingsWith(element)
-        _, _ = i, element
+
+    call := {@methodPath(method)}({@callArg(method)})
+    if err := call.Pages(ctx, func(page *{@context.getApi.getName}.{@responseType}) error {
+      for _, v := range page.{@resources} {
+        // {@TODO()} Use v.
+        _ = v
       }
-      return nil
+      return nil // NOTE: returning a non-nil error stops pagination.
+    }); err != nil {
+      // {@TODO()} Handle error.
+      _ = err
     }
   @end
-
-  if err = {@methodPath(method)}({@callArg(method)}).Pages(ctx, fn); err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
 @end
 
 @private methodPath(method)
@@ -99,36 +116,30 @@ func main() {
 @end
 
 @private initialize(method)
-  @if context.getMethodParams(method)
-    // TODO: Change placeholders below to appropriate parameter values for the '{@context.getMethodName(method)}' method:
-
-  @end
-  var (
-    @join param : context.getFlatMethodParams(method) on BREAK.add(BREAK)
-      @let signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
-          paramField = context.getField(signatureType, param), \
-          paramValue = context.typeDefaultValue(signatureType, paramField), \
-          paramDescription = context.getApiaryConfig.getDescription(signatureType.getName, param)
-        @if paramDescription
-          // {@paramDescription}
-        @end
-
-        {@unclashVar(param)} = {@paramValue}
+  @join param : context.getFlatMethodParams(method) on BREAK.add(BREAK)
+    @let signatureType = context.getApiaryConfig.getType(method.getRequestTypeUrl), \
+        paramField = context.getField(signatureType, param), \
+        paramValue = context.typeDefaultValue(signatureType, paramField), \
+        paramDescription = context.getApiaryConfig.getDescription(signatureType.getName, param)
+      @join line : context.lineWrapDoc(paramDescription, 100)
+        // {@line}
       @end
-    @end
-    @if context.hasRequestField(method)
 
-      requestBody = &{@context.getApi.getName}.{@context.getRequestField(method).getTypeUrl}{}
+      {@unclashVar(param)} := {@paramValue} // {@TODO()} Update placeholder value.
     @end
-  )
+  @end
 @end
 
 @private callArg(method)
   @if context.hasRequestField(method)
     @if context.getFlatMethodParams(method)
-      {@callArgNoBody(method)}, requestBody
+      {@callArgNoBody(method)}, &{@context.getApi.getName}.{@context.getRequestField(method).getTypeUrl}{
+        // {@TODO()} Fill required fields.
+      }
     @else
-      requestBody
+      &{@context.getApi.getName}.{@context.getRequestField(method).getTypeUrl}{
+        // {@TODO()} Fill required fields.
+      }
     @end
   @else
     {@callArgNoBody(method)}
@@ -143,7 +154,7 @@ func main() {
 
 @private unclashVar(var)
   @if context.getApi.getName.equals(var)
-    {@var}_
+    {@var}2
   @else
     {@var}
   @end

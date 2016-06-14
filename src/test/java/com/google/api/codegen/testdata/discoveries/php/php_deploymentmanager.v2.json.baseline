@@ -23,13 +23,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new DeploymentManager service
 $service = new Google_Service_DeploymentManager($client);
-
 // The project ID for this request.
 $project = '';
 // The name of the deployment for this request.
 $deployment = '';
 
-$response = $service->deployments->cancelPreviewDeployments($project, $deployment);
+$postBody = new Google_Service_DeploymentManager_DeploymentsCancelPreviewRequest($client);
+
+$response = $service->deployments->cancelPreview($project, $deployment, $postBody);
 
 <?php
 /*
@@ -55,13 +56,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new DeploymentManager service
 $service = new Google_Service_DeploymentManager($client);
-
 // The project ID for this request.
 $project = '';
 // The name of the deployment for this request.
 $deployment = '';
 
-$response = $service->deployments->deleteDeployments($project, $deployment);
+$response = $service->deployments->delete($project, $deployment);
 
 <?php
 /*
@@ -87,13 +87,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new DeploymentManager service
 $service = new Google_Service_DeploymentManager($client);
-
 // The project ID for this request.
 $project = '';
 // The name of the deployment for this request.
 $deployment = '';
 
-$response = $service->deployments->getDeployments($project, $deployment);
+$response = $service->deployments->get($project, $deployment);
 
 <?php
 /*
@@ -119,11 +118,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new DeploymentManager service
 $service = new Google_Service_DeploymentManager($client);
-
 // The project ID for this request.
 $project = '';
 
-$response = $service->deployments->insertDeployments($project);
+$postBody = new Google_Service_DeploymentManager_Deployment($client);
+
+$response = $service->deployments->insert($project, $postBody);
 
 <?php
 /*
@@ -149,7 +149,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new DeploymentManager service
 $service = new Google_Service_DeploymentManager($client);
-
 // The project ID for this request.
 $project = '';
 
@@ -183,13 +182,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new DeploymentManager service
 $service = new Google_Service_DeploymentManager($client);
-
 // The project ID for this request.
 $project = '';
 // The name of the deployment for this request.
 $deployment = '';
 
-$response = $service->deployments->patchDeployments($project, $deployment);
+$postBody = new Google_Service_DeploymentManager_Deployment($client);
+
+$response = $service->deployments->patch($project, $deployment, $postBody);
 
 <?php
 /*
@@ -215,13 +215,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new DeploymentManager service
 $service = new Google_Service_DeploymentManager($client);
-
 // The project ID for this request.
 $project = '';
 // The name of the deployment for this request.
 $deployment = '';
 
-$response = $service->deployments->stopDeployments($project, $deployment);
+$postBody = new Google_Service_DeploymentManager_DeploymentsStopRequest($client);
+
+$response = $service->deployments->stop($project, $deployment, $postBody);
 
 <?php
 /*
@@ -247,13 +248,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new DeploymentManager service
 $service = new Google_Service_DeploymentManager($client);
-
 // The project ID for this request.
 $project = '';
 // The name of the deployment for this request.
 $deployment = '';
 
-$response = $service->deployments->updateDeployments($project, $deployment);
+$postBody = new Google_Service_DeploymentManager_Deployment($client);
+
+$response = $service->deployments->update($project, $deployment, $postBody);
 
 <?php
 /*
@@ -279,7 +281,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new DeploymentManager service
 $service = new Google_Service_DeploymentManager($client);
-
 // The project ID for this request.
 $project = '';
 // The name of the deployment for this request.
@@ -287,7 +288,7 @@ $deployment = '';
 // The name of the manifest for this request.
 $manifest = '';
 
-$response = $service->manifests->getManifests($project, $deployment, $manifest);
+$response = $service->manifests->get($project, $deployment, $manifest);
 
 <?php
 /*
@@ -313,7 +314,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new DeploymentManager service
 $service = new Google_Service_DeploymentManager($client);
-
 // The project ID for this request.
 $project = '';
 // The name of the deployment for this request.
@@ -349,13 +349,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new DeploymentManager service
 $service = new Google_Service_DeploymentManager($client);
-
 // The project ID for this request.
 $project = '';
 // The name of the operation for this request.
 $operation = '';
 
-$response = $service->operations->getOperations($project, $operation);
+$response = $service->operations->get($project, $operation);
 
 <?php
 /*
@@ -381,7 +380,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new DeploymentManager service
 $service = new Google_Service_DeploymentManager($client);
-
 // The project ID for this request.
 $project = '';
 
@@ -415,7 +413,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new DeploymentManager service
 $service = new Google_Service_DeploymentManager($client);
-
 // The project ID for this request.
 $project = '';
 // The name of the deployment for this request.
@@ -423,7 +420,7 @@ $deployment = '';
 // The name of the resource for this request.
 $resource = '';
 
-$response = $service->resources->getResources($project, $deployment, $resource);
+$response = $service->resources->get($project, $deployment, $resource);
 
 <?php
 /*
@@ -449,7 +446,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new DeploymentManager service
 $service = new Google_Service_DeploymentManager($client);
-
 // The project ID for this request.
 $project = '';
 // The name of the deployment for this request.
@@ -485,7 +481,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new DeploymentManager service
 $service = new Google_Service_DeploymentManager($client);
-
 // The project ID for this request.
 $project = '';
 

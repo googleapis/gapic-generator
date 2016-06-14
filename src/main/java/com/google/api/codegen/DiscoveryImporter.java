@@ -150,6 +150,12 @@ public class DiscoveryImporter {
         importer.config.getFields().put(type, field.getName(), field);
       }
     }
+    if (disco.get("canonicalName") != null) {
+      importer.config.setServiceCanonicalName(disco.get("canonicalName").asText());
+    } else {
+      importer.config.setServiceCanonicalName(disco.get("name").asText());
+    }
+    importer.config.setServiceVersion(disco.get("version").asText());
 
     return importer;
   }
@@ -213,7 +219,8 @@ public class DiscoveryImporter {
     if (TYPE_TABLE.containsRow(typeText)) {
       return builder
           .setCardinality(Field.Cardinality.CARDINALITY_OPTIONAL)
-          .setKind(getFieldKind(typeName, fieldName, typeText, root.get("format")))
+          .setKind(
+              getFieldKind(typeName, fieldName, typeText, root.get("format"), root.get("pattern")))
           .build();
     }
 
@@ -251,7 +258,9 @@ public class DiscoveryImporter {
       String typeText = items.get("type").asText();
       if (TYPE_TABLE.containsRow(typeText)) {
         return builder
-            .setKind(getFieldKind(typeName, fieldName, typeText, items.get("format")))
+            .setKind(
+                getFieldKind(
+                    typeName, fieldName, typeText, items.get("format"), items.get("pattern")))
             .build();
       } else if (typeText.equals("object")) {
         String elementTypeName = typeName + "." + lowerCamelToUpperCamel(fieldName);
@@ -283,8 +292,9 @@ public class DiscoveryImporter {
    * Parses {@code root} as a member of "additionalProperties" of an object and adds it to
    * {@code types}.
    *
-   * Properties are expressed as types, but are not strictly types as defined by discovery. They are
-   * not to be instantiated. Rather they provide a "schema" describing how data should be laid out.
+   * Properties are expressed as types, but are not strictly types as defined by discovery. They
+   * are not to be instantiated. Rather they provide a "schema" describing how data should be laid
+   * out.
    */
   private String createSyntheticTypeForProperty(JsonNode root) {
     String typeName = getNewSyntheticName();
@@ -295,7 +305,9 @@ public class DiscoveryImporter {
     if (root.get("type") != null) {
       String valueTypeText = root.get("type").asText();
       if (TYPE_TABLE.containsRow(valueTypeText)) {
-        valueKind = getFieldKind(typeName, fieldName, valueTypeText, root.get("format"));
+        valueKind =
+            getFieldKind(
+                typeName, fieldName, valueTypeText, root.get("format"), root.get("pattern"));
         valueType = null;
       } else if (valueTypeText.equals("object") || valueTypeText.equals("array")) {
         valueKind = Field.Kind.TYPE_MESSAGE;
@@ -357,11 +369,11 @@ public class DiscoveryImporter {
   /**
    * Parses a single method.
    *
-   * In discovery, a method can take multiple parameters, but in Service they can only take one. For
-   * this reason, a synthetic type is created for each method to "pull together" the parameters. For
-   * example, if a discovery-doc method takes two parameters, a string {@code s} and a number
-   * {@code i}, it will be instead structured as having one parameter. The type of the parameter
-   * will be a message with two fields: a string {@code s} and a number {@code i}.
+   * In discovery, a method can take multiple parameters, but in Service they can only take one.
+   * For this reason, a synthetic type is created for each method to "pull together" the
+   * parameters. For example, if a discovery-doc method takes two parameters, a string {@code s}
+   * and a number {@code i}, it will be instead structured as having one parameter. The type of the
+   * parameter will be a message with two fields: a string {@code s} and a number {@code i}.
    */
   private Method methodFrom(JsonNode root) {
     String methodName = root.get("id").asText();
@@ -392,8 +404,12 @@ public class DiscoveryImporter {
     builder.setRequestTypeUrl(synthetic);
 
     if (root.get("supportsMediaUpload") != null && root.get("supportsMediaUpload").asBoolean()) {
-     config.getMediaUpload().add(methodName);
-   }
+      config.getMediaUpload().add(methodName);
+    }
+
+    for (JsonNode scope : elements(root.get("scopes"))) {
+      config.getAuthScopes().put(methodName, scope.asText());
+    }
 
     // TODO: add google.api.http
     return builder.build();
@@ -404,11 +420,7 @@ public class DiscoveryImporter {
     if (response == null) {
       return EMPTY_TYPE_NAME;
     }
-    String typeUrl = response.get("$ref").asText();
-    if (typeUrl.equals("Empty")) {
-      return EMPTY_TYPE_NAME;
-    }
-    return typeUrl;
+    return response.get("$ref").asText();
   }
 
   /**
@@ -424,7 +436,8 @@ public class DiscoveryImporter {
    * Otherwise, the returned {@link Field.Kind} is simply {@link Field.Kind.TYPE_STRING}, and its
    * format, if exists, is recorded in {@link ApiaryConfig#stringFormat}.
    */
-  private Field.Kind getFieldKind(String type, String field, String kindName, JsonNode formatNode) {
+  private Field.Kind getFieldKind(
+      String type, String field, String kindName, JsonNode formatNode, JsonNode patternNode) {
     String format = "";
     if (formatNode != null) {
       format = formatNode.asText();
@@ -440,6 +453,9 @@ public class DiscoveryImporter {
             config.getStringFormat().put(type, field, format);
             // fall through
         }
+      }
+      if (patternNode != null) {
+        config.getFieldPattern().put(type, field, patternNode.asText());
       }
       return Field.Kind.TYPE_STRING;
     }

@@ -24,7 +24,8 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 // Create a new Storagetransfer service
 $service = new Google_Service_Storagetransfer($client);
 
-$response = $service->v1->getGoogleServiceAccountV1();
+
+$response = $service->v1->getGoogleServiceAccount();
 
 <?php
 /*
@@ -50,11 +51,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storagetransfer service
 $service = new Google_Service_Storagetransfer($client);
-
-// The ID of the Google Developers Console project that the Google service account is associated with. Required.
+// The ID of the Google Developers Console project that the Google service account is associated with.
+// Required.
 $projectId = '';
 
-$response = $service->googleServiceAccounts->getGoogleServiceAccounts($projectId);
+$response = $service->googleServiceAccounts->get($projectId);
 
 <?php
 /*
@@ -81,7 +82,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 // Create a new Storagetransfer service
 $service = new Google_Service_Storagetransfer($client);
 
-$response = $service->transferJobs->createTransferJobs();
+
+$postBody = new Google_Service_Storagetransfer_TransferJob($client);
+
+$response = $service->transferJobs->create($postBody);
 
 <?php
 /*
@@ -107,11 +111,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storagetransfer service
 $service = new Google_Service_Storagetransfer($client);
-
 // The job to get. Required.
 $jobName = '';
 
-$response = $service->transferJobs->getTransferJobs($jobName);
+$response = $service->transferJobs->get($jobName);
 
 <?php
 /*
@@ -137,6 +140,7 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storagetransfer service
 $service = new Google_Service_Storagetransfer($client);
+
 
 $response = $service->transferJobs->listTransferJobs();
 
@@ -168,11 +172,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storagetransfer service
 $service = new Google_Service_Storagetransfer($client);
-
 // The name of job to update. Required.
 $jobName = '';
 
-$response = $service->transferJobs->patchTransferJobs($jobName);
+$postBody = new Google_Service_Storagetransfer_UpdateTransferJobRequest($client);
+
+$response = $service->transferJobs->patch($jobName, $postBody);
 
 <?php
 /*
@@ -198,11 +203,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storagetransfer service
 $service = new Google_Service_Storagetransfer($client);
-
 // The name of the operation resource to be cancelled.
 $name = '';
 
-$response = $service->transferOperations->cancelTransferOperations($name);
+$response = $service->transferOperations->cancel($name);
 
 <?php
 /*
@@ -228,11 +232,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storagetransfer service
 $service = new Google_Service_Storagetransfer($client);
-
 // The name of the operation resource to be deleted.
 $name = '';
 
-$response = $service->transferOperations->deleteTransferOperations($name);
+$response = $service->transferOperations->delete($name);
 
 <?php
 /*
@@ -258,11 +261,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storagetransfer service
 $service = new Google_Service_Storagetransfer($client);
-
 // The name of the operation resource.
 $name = '';
 
-$response = $service->transferOperations->getTransferOperations($name);
+$response = $service->transferOperations->get($name);
 
 <?php
 /*
@@ -288,7 +290,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storagetransfer service
 $service = new Google_Service_Storagetransfer($client);
-
 // The value `transferOperations`.
 $name = '';
 
@@ -322,11 +323,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storagetransfer service
 $service = new Google_Service_Storagetransfer($client);
-
 // The name of the transfer operation. Required.
 $name = '';
 
-$response = $service->transferOperations->pauseTransferOperations($name);
+$postBody = new Google_Service_Storagetransfer_PauseTransferOperationRequest($client);
+
+$response = $service->transferOperations->pause($name, $postBody);
 
 <?php
 /*
@@ -352,9 +354,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Storagetransfer service
 $service = new Google_Service_Storagetransfer($client);
-
 // The name of the transfer operation. Required.
 $name = '';
 
-$response = $service->transferOperations->resumeTransferOperations($name);
+$postBody = new Google_Service_Storagetransfer_ResumeTransferOperationRequest($client);
+
+$response = $service->transferOperations->resume($name, $postBody);
 

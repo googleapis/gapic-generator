@@ -1,0 +1,399 @@
+@snippet generateFilename(service)
+  {@context.upperCamelToLowerUnderscore(context.getApiWrapperName(service))}.js
+@end
+
+@snippet generateBody(service)
+  {@licenseSection(service)}
+  'use strict';
+
+  {@importSection(service)}
+
+  {@serviceClass(service)}
+@end
+
+@private licenseSection(service)
+  /*
+   * Copyright 2016 Google Inc. All rights reserved.
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   * http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   *
+   * EDITING INSTRUCTIONS
+   * This file was generated from the file
+   * https://github.com/googleapis/googleapis/blob/master/library.proto,
+   * and updates to that file get reflected here through a refresh process.
+   * For the short term, the refresh process will only be runnable by Google
+   * engineers.
+   *
+   * The only allowed edits are to method and file documentation. A 3-way
+   * merge preserves those additions if the generated source changes.
+   */
+@end
+
+@private importSection(service)
+  var arguejs = require('arguejs');
+  var fsp = require('fs-promise');
+  var gax = require('google-gax');
+  var grpc = require('grpc');
+  var path = require('path');
+  var through2 = require('through2');
+
+  var google = grpc.loadObject(require('./service')).google;
+@end
+
+@private serviceClass(service)
+  @let path_templates = {@pathTemplateSection(service)}, \
+       documentation = context.defaultComments(service)
+    {@constantSection(service)}
+
+    {@constructor(documentation, service)}
+    @if path_templates
+    
+      // Path templates
+      {@path_templates}
+    @end
+
+    // Callback types
+
+    /**
+     * @@callback APICallback
+     * @@param {?Error} error - the error object if something goes wrong.
+     *   Null if API succeeds.
+     * @@param {?T} response
+     *   The response object when API succeeds.
+     * @@template T
+     */
+
+    /**
+     * @@callback EmptyCallback
+     * @@param {?Error} error - the error object if something goes wrong.
+     *   Null if API succeeds.
+     */
+
+    {@serviceMethodsSection(service)}
+  @end
+@end
+
+@private constantSection(service)
+  @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
+    /** The default address of the service. */
+    var SERVICE_ADDRESS = '{@context.getServiceConfig.getServiceAddress(service)}';
+
+    /** The default port of the service. */
+    var DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()};
+
+    var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
+
+    var DEFAULT_TIMEOUT = 30;
+    @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
+
+      var PAGE_DESCRIPTORS = {
+        @join method : context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods) on {@", "}.add(BREAK)
+          @let pageStreaming = ifaceConfig.getMethodConfig(method).getPageStreaming(), \
+               requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
+               responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
+               resources = pageStreaming.getResourcesField().getSimpleName(), \
+               methodName = context.upperCamelToLowerCamel(method.getSimpleName)
+              '{@methodName}': new gax.PageDescriptor(
+                  '{@requestToken}',
+                  '{@responseToken}',
+                  '{@resources}')
+          @end
+        @end
+      };
+    @end
+
+    /**
+     * The scopes needed to make gRPC calls to all of the methods defined in
+     * this service.
+     */
+    var ALL_SCOPES = [
+      @join auth_scope : context.getServiceConfig.getAuthScopes(service) on ",".add(BREAK)
+        '{@auth_scope}'
+      @end
+    ];
+    exports.ALL_SCOPES = ALL_SCOPES;
+  @end
+@end
+
+@private constructDefaults(service)
+  @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
+       jsonBaseName = {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
+    var clientConfigFile = path.join(
+        __dirname, '{@jsonBaseName}_client_config.json');
+    this.defaults = fsp.readJson(clientConfigFile).then(function(data) {
+      @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
+        return gax.constructSettings(
+            '{@service.getFullName}',
+            data,
+            clientConfig,
+            grpc.status,
+            timeout,
+            PAGE_DESCRIPTORS);
+      @else
+        return gax.constructSettings(
+            '{@service.getFullName}',
+            data,
+            clientConfig,
+            grpc.status,
+            timeout);
+      @end
+    });
+  @end
+@end
+
+@private constructor(documentation, service)
+  @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
+       serviceName = context.getApiWrapperName(service)
+    /**
+     @if documentation
+       {@comments(documentation)}
+       *
+     @end
+     * @@class
+     * @@param {?Object} opts - The optional parameters.
+     * @@param {String} opts.servicePath
+     *   The domain name of the API remote host.
+     * @@param {number} opts.port
+     *   The port on which to connect to the remote host.
+     * @@param {Function} opts.getCredentials
+     *   Custom function to obtain the credentials.
+     * @@param {grpc.ClientCredentials} opts.sslCreds
+     *   A ClientCredentials for use with an SSL-enabled channel.
+     * @@param {Object} opts.clientConfig
+     *   The customized config to build the call settings. See
+     *   {@@link gax.constructSettings} for the format.
+     * @@param {number} opts.timeout
+     *   The default timeout, in seconds, for calls made through this client.
+     * @@param {number} opts.appName
+     *   The codename of the calling service.
+     * @@param {String} opts.appVersion
+     *   The version of the calling service.
+     */
+    function {@serviceName}(opts) {
+      opts = opts || {};
+      var servicePath = opts.servicePath || SERVICE_ADDRESS;
+      var port = opts.port || DEFAULT_SERVICE_PORT;
+      var getCredentials = opts.getCredentials || null;
+      var sslCreds = opts.sslCreds || null;
+      var scopes = opts.scopes || ALL_SCOPES;
+      var clientConfig = opts.clientConfig || {};
+      var timeout = opts.timeout || DEFAULT_TIMEOUT;
+      var appName = opts.appName || 'gax';
+      var appVersion = opts.appVersion || gax.Version;
+
+      {@constructDefaults(service)}
+
+      var googleApiClient = [
+        appName + '/' + appVersion,
+        CODE_GEN_NAME_VERSION,
+        'nodejs/' + process.version].join(' ');
+      this.headers = new grpc.Metadata();
+      this.headers.set('x-goog-api-client', googleApiClient);
+      this.stub = gax.createStub(
+          servicePath,
+          port,
+          google.example.library.v1.LibraryService,
+          {'getCredentials': getCredentials,
+           'sslCreds': sslCreds,
+           'scopes': scopes});
+    };
+    exports.{@serviceName} = {@serviceName};
+  @end
+@end
+
+@private pathTemplateName(collectionConfig)
+  {@context.lowerUnderscoreToUpperUnderscore(collectionConfig.getEntityName)}_PATH_TEMPLATE
+@end
+
+@private pathTemplateSection(service)
+  @if context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+
+      var {@pathTemplateName(collectionConfig)} = new gax.PathTemplate(
+          '{@collectionConfig.getNamePattern}');
+    @end
+
+    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+
+      {@createResourceFunction(service, collectionConfig)}
+
+      {@createMatchFunctions(service, collectionConfig)}
+    @end
+  @end
+@end
+
+@private createResourceFunction(service, collectionConfig)
+  /**
+   * Returns a fully-qualified {@collectionConfig.getEntityName} resource name string.
+   @join param : collectionConfig.getNameTemplate.vars()
+     * @@param {String} {@param}
+   @end
+   * @@returns {String}
+   */
+  {@context.getApiWrapperName(service)}.{@collectionConfig.getEntityName}Path = function {@collectionConfig.getEntityName}Path({@createResourceFunctionParams(collectionConfig)}) {
+    return {@pathTemplateName(collectionConfig)}.render({
+      {@createRenderDictionary(collectionConfig)}
+    });
+  };
+@end
+
+@private createMatchFunctions(service, collectionConfig)
+  @join subField : collectionConfig.getNameTemplate.vars() on BREAK.add(BREAK)
+    @let fieldPath = resourceName(collectionConfig), \
+         fieldParam = context.upperCamelToLowerCamel(fieldPath), \
+         subFieldUpper = context.lowerUnderscoreToUpperCamel(subField)
+      /**
+       * Parses the {@fieldParam} from a {@collectionConfig.getEntityName} resource.
+       * @@param {String} {@fieldParam}
+       *   A fully-qualified path representing a {@collectionConfig.getEntityName} resources.
+       * @@returns {String} - A string representing the {@subField}.
+       */
+      {@context.getApiWrapperName(service)}.match{@subFieldUpper}From{@fieldPath} =
+          function match{@subFieldUpper}From{@fieldPath}({@fieldParam}) {
+        return {@pathTemplateName(collectionConfig)}.match({@fieldParam}).{@subField};
+      };
+    @end
+  @end
+@end
+
+@private resourceName(collectionConfig)
+  {@context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName)}Name
+@end
+
+@private createResourceFunctionParams(collectionConfig)
+  @join param : collectionConfig.getNameTemplate.vars() on ", "
+    {@param}
+  @end
+@end
+
+@private createRenderDictionary(collectionConfig)
+  @join param: collectionConfig.getNameTemplate.vars() on {@","}.add(BREAK)
+    '{@param}': {@param}
+  @end
+@end
+
+@private comments(commentLines)
+  @join comment : commentLines
+    * {@comment}
+  @end
+@end
+
+@private serviceMethodsSection(service)
+  // Service calls
+  @join method : service.getMethods
+
+    {@flattenedMethod(service, method)}
+  @end
+@end
+
+@private callableConstructor(method)
+  api_call = Google::Gax.create_api_call(
+    @@stub.method(:{@context.upperCamelToLowerUnderscore(method.getSimpleName())}), settings)
+  api_call.call(req, **@@headers)
+@end
+
+@private flattenedMethod(service, method)
+  @let serviceName = context.getApiWrapperName(service), \
+       methodName = context.upperCamelToLowerCamel(method.getSimpleName()), \
+       documentation = comments(context.methodComments(method)), \
+       methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+       requiredParams = methodConfig.getRequiredFields(), \
+       optionalParams = methodConfig.getOptionalFields()
+    @if documentation
+      /**
+       {@documentation}
+       */
+    @end
+
+    {@serviceName}.prototype.{@methodName} = function {@methodName}() {
+      var args = arguejs({
+        @if requiredParams
+          {@requiredParameterDefs(requiredParams)},
+        @end
+        @if optionalParams
+          'otherArgs': [Object],
+        @end
+        @if methodConfig.isPageStreaming
+          'options': [gax.CallOptions]
+        @else
+          'options': [gax.CallOptions],
+          'callback': [Function]
+        @end
+      });
+      var req = {
+        @if requiredParams
+          @if optionalParams
+            {@namedParameters(requiredParams)},
+            {@namedOptionalParameters(optionalParams)}
+          @else
+            {@namedParameters(requiredParams)}
+          @end
+        @else
+          {@namedOptionalParameters(optionalParams)}
+        @end
+      };
+      @if methodConfig.isPageStreaming
+        var stream = through2.obj();
+        Promise.all([this.defaults, this.stub]).then(function(vars) {
+          var defaults = vars[0];
+          var stub = vars[1];
+          var options = defaults.{@methodName}.merge(args.options);
+          var apiCall = gax.createApiCall(stub.{@methodName}.bind(stub), options);
+          var result = apiCall(req, args.callback, this.headers, {});
+          result.pipe(stream);
+          stream.on('end', function() { result.end(); });
+        }.bind(this))['catch'](function(err) {
+          stream.emit('error', err);
+        });
+        return stream;
+      @else
+        Promise.all([this.defaults, this.stub]).then(function(vars) {
+          var defaults = vars[0];
+          var stub = vars[1];
+          var options = defaults.{@methodName}.merge(args.options);
+          var apiCall = gax.createApiCall(stub.{@methodName}.bind(stub), options);
+          apiCall(req, args.callback, this.headers, {});
+        }.bind(this))['catch'](function(err) {
+          if (args.callback) {
+            args.callback(err);
+          }
+        });
+      @end
+    };
+  @end
+@end
+
+@private fieldParameterName(field)
+  {@context.wrapIfKeywordOrBuiltIn(context.lowerUnderscoreToLowerCamel(field.getSimpleName))}
+@end
+
+@private requiredParameterDefs(params)
+  @join field : params on ",".add(BREAK)
+    '{@fieldParameterName(field)}': {@context.getFieldType(field)}
+  @end
+@end
+
+@private namedParameters(params)
+  @join field : params on ",".add(BREAK)
+    '{@field.getSimpleName()}': args.{@fieldParameterName(field)}
+  @end
+@end
+
+@private namedOptionalParameters(params)
+  @join field : params on ",".add(BREAK)
+    @let paramName = field.getSimpleName(), \
+         defaultValue = context.defaultValue(field)
+      '{@paramName}': args.otherArgs.{@fieldParameterName(field)} || {@defaultValue}
+    @end
+  @end
+@end

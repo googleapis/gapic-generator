@@ -23,11 +23,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudResourceManager service
 $service = new Google_Service_CloudResourceManager($client);
-
 // The id of the Organization resource to fetch.
 $organizationId = '';
 
-$response = $service->organizations->getOrganizations($organizationId);
+$response = $service->organizations->get($organizationId);
 
 <?php
 /*
@@ -53,11 +52,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudResourceManager service
 $service = new Google_Service_CloudResourceManager($client);
-
-// REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `getIamPolicy` documentation.
+// REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
+// path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
+// this value is resource specific and is specified in the `getIamPolicy` documentation.
 $resource = '';
 
-$response = $service->organizations->getIamPolicyOrganizations($resource);
+$postBody = new Google_Service_CloudResourceManager_GetIamPolicyRequest($client);
+
+$response = $service->organizations->getIamPolicy($resource, $postBody);
 
 <?php
 /*
@@ -83,6 +85,7 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudResourceManager service
 $service = new Google_Service_CloudResourceManager($client);
+
 
 $response = $service->organizations->listOrganizations();
 
@@ -114,11 +117,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudResourceManager service
 $service = new Google_Service_CloudResourceManager($client);
-
-// REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `setIamPolicy` documentation.
+// REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
+// path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
+// this value is resource specific and is specified in the `setIamPolicy` documentation.
 $resource = '';
 
-$response = $service->organizations->setIamPolicyOrganizations($resource);
+$postBody = new Google_Service_CloudResourceManager_SetIamPolicyRequest($client);
+
+$response = $service->organizations->setIamPolicy($resource, $postBody);
 
 <?php
 /*
@@ -144,11 +150,15 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudResourceManager service
 $service = new Google_Service_CloudResourceManager($client);
-
-// REQUIRED: The resource for which the policy detail is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `testIamPermissions` documentation.
+// REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
+// specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
+// specified in this value is resource specific and is specified in the `testIamPermissions`
+// documentation.
 $resource = '';
 
-$response = $service->organizations->testIamPermissionsOrganizations($resource);
+$postBody = new Google_Service_CloudResourceManager_TestIamPermissionsRequest($client);
+
+$response = $service->organizations->testIamPermissions($resource, $postBody);
 
 <?php
 /*
@@ -174,11 +184,13 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudResourceManager service
 $service = new Google_Service_CloudResourceManager($client);
-
-// An immutable id for the Organization that is assigned on creation. This should be omitted when creating a new Organization. This field is read-only.
+// An immutable id for the Organization that is assigned on creation. This should be omitted when
+// creating a new Organization. This field is read-only.
 $organizationId = '';
 
-$response = $service->organizations->updateOrganizations($organizationId);
+$postBody = new Google_Service_CloudResourceManager_Organization($client);
+
+$response = $service->organizations->update($organizationId, $postBody);
 
 <?php
 /*
@@ -205,7 +217,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 // Create a new CloudResourceManager service
 $service = new Google_Service_CloudResourceManager($client);
 
-$response = $service->projects->createProjects();
+
+$postBody = new Google_Service_CloudResourceManager_Project($client);
+
+$response = $service->projects->create($postBody);
 
 <?php
 /*
@@ -231,11 +246,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudResourceManager service
 $service = new Google_Service_CloudResourceManager($client);
-
 // The Project ID (for example, `foo-bar-123`). Required.
 $projectId = '';
 
-$response = $service->projects->deleteProjects($projectId);
+$response = $service->projects->delete($projectId);
 
 <?php
 /*
@@ -261,11 +275,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudResourceManager service
 $service = new Google_Service_CloudResourceManager($client);
-
 // The Project ID (for example, `my-project-123`). Required.
 $projectId = '';
 
-$response = $service->projects->getProjects($projectId);
+$response = $service->projects->get($projectId);
 
 <?php
 /*
@@ -291,11 +304,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudResourceManager service
 $service = new Google_Service_CloudResourceManager($client);
-
-// REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `getIamPolicy` documentation.
+// REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
+// path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
+// this value is resource specific and is specified in the `getIamPolicy` documentation.
 $resource = '';
 
-$response = $service->projects->getIamPolicyProjects($resource);
+$postBody = new Google_Service_CloudResourceManager_GetIamPolicyRequest($client);
+
+$response = $service->projects->getIamPolicy($resource, $postBody);
 
 <?php
 /*
@@ -321,6 +337,7 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudResourceManager service
 $service = new Google_Service_CloudResourceManager($client);
+
 
 $response = $service->projects->listProjects();
 
@@ -352,11 +369,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudResourceManager service
 $service = new Google_Service_CloudResourceManager($client);
-
-// REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `setIamPolicy` documentation.
+// REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
+// path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in
+// this value is resource specific and is specified in the `setIamPolicy` documentation.
 $resource = '';
 
-$response = $service->projects->setIamPolicyProjects($resource);
+$postBody = new Google_Service_CloudResourceManager_SetIamPolicyRequest($client);
+
+$response = $service->projects->setIamPolicy($resource, $postBody);
 
 <?php
 /*
@@ -382,11 +402,15 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudResourceManager service
 $service = new Google_Service_CloudResourceManager($client);
-
-// REQUIRED: The resource for which the policy detail is being requested. `resource` is usually specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path specified in this value is resource specific and is specified in the `testIamPermissions` documentation.
+// REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
+// specified as a path, such as `projects/*project*/zones/*zone*/disks/*disk*`. The format for the path
+// specified in this value is resource specific and is specified in the `testIamPermissions`
+// documentation.
 $resource = '';
 
-$response = $service->projects->testIamPermissionsProjects($resource);
+$postBody = new Google_Service_CloudResourceManager_TestIamPermissionsRequest($client);
+
+$response = $service->projects->testIamPermissions($resource, $postBody);
 
 <?php
 /*
@@ -412,11 +436,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudResourceManager service
 $service = new Google_Service_CloudResourceManager($client);
-
 // The project ID (for example, `foo-bar-123`). Required.
 $projectId = '';
 
-$response = $service->projects->undeleteProjects($projectId);
+$postBody = new Google_Service_CloudResourceManager_UndeleteProjectRequest($client);
+
+$response = $service->projects->undelete($projectId, $postBody);
 
 <?php
 /*
@@ -442,9 +467,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudResourceManager service
 $service = new Google_Service_CloudResourceManager($client);
-
 // The project ID (for example, `my-project-123`). Required.
 $projectId = '';
 
-$response = $service->projects->updateProjects($projectId);
+$postBody = new Google_Service_CloudResourceManager_Project($client);
+
+$response = $service->projects->update($projectId, $postBody);
 

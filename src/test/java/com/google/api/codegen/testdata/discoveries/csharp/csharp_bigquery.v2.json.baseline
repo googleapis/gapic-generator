@@ -1,0 +1,1110 @@
+
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Delete() method:
+            // Project ID of the dataset being deleted
+            string projectId = "";
+            // Dataset ID of dataset being deleted
+            string datasetId = "";
+
+            DatasetsResource.DeleteRequest request = bigqueryService.Datasets.Delete(projectId, datasetId);
+            request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // Project ID of the requested dataset
+            string projectId = "";
+            // Dataset ID of the requested dataset
+            string datasetId = "";
+
+            DatasetsResource.GetRequest request = bigqueryService.Datasets.Get(projectId, datasetId);
+            Dataset response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Dataset response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Insert() method:
+            // Project ID of the new dataset
+            string projectId = "";
+
+            DatasetsResource.InsertRequest request = bigqueryService.Datasets.Insert(projectId);
+            Dataset response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Dataset response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // Project ID of the datasets to be listed
+            string projectId = "";
+
+            DatasetsResource.ListRequest request = bigqueryService.Datasets.List(projectId);
+            DatasetList response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // DatasetList response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Patch() method:
+            // Project ID of the dataset being updated
+            string projectId = "";
+            // Dataset ID of the dataset being updated
+            string datasetId = "";
+
+            DatasetsResource.PatchRequest request = bigqueryService.Datasets.Patch(projectId, datasetId);
+            Dataset response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Dataset response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Update() method:
+            // Project ID of the dataset being updated
+            string projectId = "";
+            // Dataset ID of the dataset being updated
+            string datasetId = "";
+
+            DatasetsResource.UpdateRequest request = bigqueryService.Datasets.Update(projectId, datasetId);
+            Dataset response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Dataset response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Cancel() method:
+            // [Required] Project ID of the job to cancel
+            string projectId = "";
+            // [Required] Job ID of the job to cancel
+            string jobId = "";
+
+            JobsResource.CancelRequest request = bigqueryService.Jobs.Cancel(projectId, jobId);
+            JobCancelResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // JobCancelResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // [Required] Project ID of the requested job
+            string projectId = "";
+            // [Required] Job ID of the requested job
+            string jobId = "";
+
+            JobsResource.GetRequest request = bigqueryService.Jobs.Get(projectId, jobId);
+            Job response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Job response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the GetQueryResults() method:
+            // [Required] Project ID of the query job
+            string projectId = "";
+            // [Required] Job ID of the query job
+            string jobId = "";
+
+            JobsResource.GetQueryResultsRequest request = bigqueryService.Jobs.GetQueryResults(projectId, jobId);
+            GetQueryResultsResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // GetQueryResultsResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Insert() method:
+            // Project ID of the project that will be billed for the job
+            string projectId = "";
+
+            JobsResource.InsertRequest request = bigqueryService.Jobs.Insert(projectId);
+            Job response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Job response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // Project ID of the jobs to list
+            string projectId = "";
+
+            JobsResource.ListRequest request = bigqueryService.Jobs.List(projectId);
+            JobList response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // JobList response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Query() method:
+            // Project ID of the project billed for the query
+            string projectId = "";
+
+            JobsResource.QueryRequest request = bigqueryService.Jobs.Query(projectId);
+            QueryResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // QueryResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+
+            ProjectsResource.ListRequest request = bigqueryService.Projects.List();
+            ProjectList response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // ProjectList response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the InsertAll() method:
+            // Project ID of the destination table.
+            string projectId = "";
+            // Dataset ID of the destination table.
+            string datasetId = "";
+            // Table ID of the destination table.
+            string tableId = "";
+
+            TabledataResource.InsertAllRequest request = bigqueryService.Tabledata.InsertAll(projectId, datasetId, tableId);
+            TableDataInsertAllResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // TableDataInsertAllResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // Project ID of the table to read
+            string projectId = "";
+            // Dataset ID of the table to read
+            string datasetId = "";
+            // Table ID of the table to read
+            string tableId = "";
+
+            TabledataResource.ListRequest request = bigqueryService.Tabledata.List(projectId, datasetId, tableId);
+            TableDataList response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // TableDataList response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Delete() method:
+            // Project ID of the table to delete
+            string projectId = "";
+            // Dataset ID of the table to delete
+            string datasetId = "";
+            // Table ID of the table to delete
+            string tableId = "";
+
+            TablesResource.DeleteRequest request = bigqueryService.Tables.Delete(projectId, datasetId, tableId);
+            request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // Project ID of the requested table
+            string projectId = "";
+            // Dataset ID of the requested table
+            string datasetId = "";
+            // Table ID of the requested table
+            string tableId = "";
+
+            TablesResource.GetRequest request = bigqueryService.Tables.Get(projectId, datasetId, tableId);
+            Table response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Table response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Insert() method:
+            // Project ID of the new table
+            string projectId = "";
+            // Dataset ID of the new table
+            string datasetId = "";
+
+            TablesResource.InsertRequest request = bigqueryService.Tables.Insert(projectId, datasetId);
+            Table response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Table response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // Project ID of the tables to list
+            string projectId = "";
+            // Dataset ID of the tables to list
+            string datasetId = "";
+
+            TablesResource.ListRequest request = bigqueryService.Tables.List(projectId, datasetId);
+            TableList response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // TableList response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Patch() method:
+            // Project ID of the table to update
+            string projectId = "";
+            // Dataset ID of the table to update
+            string datasetId = "";
+            // Table ID of the table to update
+            string tableId = "";
+
+            TablesResource.PatchRequest request = bigqueryService.Tables.Patch(projectId, datasetId, tableId);
+            Table response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Table response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the BigQuery API and check quota for your project at
+//    https://console.developers.google.com/apis/api/bigquery_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Bigquery.v2;
+using Google.Apis.Bigquery.v2.Data;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace BigquerySample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            BigqueryService bigqueryService = new BigqueryService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Update() method:
+            // Project ID of the table to update
+            string projectId = "";
+            // Dataset ID of the table to update
+            string datasetId = "";
+            // Table ID of the table to update
+            string tableId = "";
+
+            TablesResource.UpdateRequest request = bigqueryService.Tables.Update(projectId, datasetId, tableId);
+            Table response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Table response = await request.ExecuteAsync();
+        }
+    }
+}

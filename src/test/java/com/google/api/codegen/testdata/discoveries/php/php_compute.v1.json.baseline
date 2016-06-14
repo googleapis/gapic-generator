@@ -23,11 +23,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->addresses->aggregatedListAddresses($project);
+$response = $service->addresses->aggregatedList($project);
 
 foreach ($response['items']  as $key => $value) {
   // TODO: Add code here to process $key => $value
@@ -57,7 +56,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region for this request.
@@ -65,7 +63,7 @@ $region = '';
 // Name of the address resource to delete.
 $address = '';
 
-$response = $service->addresses->deleteAddresses($project, $region, $address);
+$response = $service->addresses->delete($project, $region, $address);
 
 <?php
 /*
@@ -91,7 +89,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region for this request.
@@ -99,7 +96,7 @@ $region = '';
 // Name of the address resource to return.
 $address = '';
 
-$response = $service->addresses->getAddresses($project, $region, $address);
+$response = $service->addresses->get($project, $region, $address);
 
 <?php
 /*
@@ -125,13 +122,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region for this request.
 $region = '';
 
-$response = $service->addresses->insertAddresses($project, $region);
+$postBody = new Google_Service_Compute_Address($client);
+
+$response = $service->addresses->insert($project, $region, $postBody);
 
 <?php
 /*
@@ -157,7 +155,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region for this request.
@@ -193,11 +190,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->autoscalers->aggregatedListAutoscalers($project);
+$response = $service->autoscalers->aggregatedList($project);
 
 foreach ($response['items']  as $key => $value) {
   // TODO: Add code here to process $key => $value
@@ -227,7 +223,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the zone for this request.
@@ -235,7 +230,7 @@ $zone = '';
 // Name of the autoscaler to delete.
 $autoscaler = '';
 
-$response = $service->autoscalers->deleteAutoscalers($project, $zone, $autoscaler);
+$response = $service->autoscalers->delete($project, $zone, $autoscaler);
 
 <?php
 /*
@@ -261,7 +256,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the zone for this request.
@@ -269,7 +263,7 @@ $zone = '';
 // Name of the autoscaler to return.
 $autoscaler = '';
 
-$response = $service->autoscalers->getAutoscalers($project, $zone, $autoscaler);
+$response = $service->autoscalers->get($project, $zone, $autoscaler);
 
 <?php
 /*
@@ -295,13 +289,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the zone for this request.
 $zone = '';
 
-$response = $service->autoscalers->insertAutoscalers($project, $zone);
+$postBody = new Google_Service_Compute_Autoscaler($client);
+
+$response = $service->autoscalers->insert($project, $zone, $postBody);
 
 <?php
 /*
@@ -327,7 +322,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the zone for this request.
@@ -363,7 +357,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the zone for this request.
@@ -371,7 +364,9 @@ $zone = '';
 // Name of the autoscaler to update.
 $autoscaler = '';
 
-$response = $service->autoscalers->patchAutoscalers($project, $zone, $autoscaler);
+$postBody = new Google_Service_Compute_Autoscaler($client);
+
+$response = $service->autoscalers->patch($project, $zone, $autoscaler, $postBody);
 
 <?php
 /*
@@ -397,13 +392,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the zone for this request.
 $zone = '';
 
-$response = $service->autoscalers->updateAutoscalers($project, $zone);
+$postBody = new Google_Service_Compute_Autoscaler($client);
+
+$response = $service->autoscalers->update($project, $zone, $postBody);
 
 <?php
 /*
@@ -429,13 +425,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the BackendService resource to delete.
 $backendService = '';
 
-$response = $service->backendServices->deleteBackendServices($project, $backendService);
+$response = $service->backendServices->delete($project, $backendService);
 
 <?php
 /*
@@ -461,13 +456,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the BackendService resource to return.
 $backendService = '';
 
-$response = $service->backendServices->getBackendServices($project, $backendService);
+$response = $service->backendServices->get($project, $backendService);
 
 <?php
 /*
@@ -493,13 +487,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 
 $project = '';
 // Name of the BackendService resource to which the queried instance belongs.
 $backendService = '';
 
-$response = $service->backendServices->getHealthBackendServices($project, $backendService);
+$postBody = new Google_Service_Compute_ResourceGroupReference($client);
+
+$response = $service->backendServices->getHealth($project, $backendService, $postBody);
 
 <?php
 /*
@@ -525,11 +520,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->backendServices->insertBackendServices($project);
+$postBody = new Google_Service_Compute_BackendService($client);
+
+$response = $service->backendServices->insert($project, $postBody);
 
 <?php
 /*
@@ -555,7 +551,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -589,13 +584,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the BackendService resource to update.
 $backendService = '';
 
-$response = $service->backendServices->patchBackendServices($project, $backendService);
+$postBody = new Google_Service_Compute_BackendService($client);
+
+$response = $service->backendServices->patch($project, $backendService, $postBody);
 
 <?php
 /*
@@ -621,13 +617,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the BackendService resource to update.
 $backendService = '';
 
-$response = $service->backendServices->updateBackendServices($project, $backendService);
+$postBody = new Google_Service_Compute_BackendService($client);
+
+$response = $service->backendServices->update($project, $backendService, $postBody);
 
 <?php
 /*
@@ -653,11 +650,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->diskTypes->aggregatedListDiskTypes($project);
+$response = $service->diskTypes->aggregatedList($project);
 
 foreach ($response['items']  as $key => $value) {
   // TODO: Add code here to process $key => $value
@@ -687,7 +683,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -695,7 +690,7 @@ $zone = '';
 // Name of the disk type to return.
 $diskType = '';
 
-$response = $service->diskTypes->getDiskTypes($project, $zone, $diskType);
+$response = $service->diskTypes->get($project, $zone, $diskType);
 
 <?php
 /*
@@ -721,7 +716,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -757,11 +751,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->disks->aggregatedListDisks($project);
+$response = $service->disks->aggregatedList($project);
 
 foreach ($response['items']  as $key => $value) {
   // TODO: Add code here to process $key => $value
@@ -791,7 +784,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -799,7 +791,9 @@ $zone = '';
 // Name of the persistent disk to snapshot.
 $disk = '';
 
-$response = $service->disks->createSnapshotDisks($project, $zone, $disk);
+$postBody = new Google_Service_Compute_Snapshot($client);
+
+$response = $service->disks->createSnapshot($project, $zone, $disk, $postBody);
 
 <?php
 /*
@@ -825,7 +819,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -833,7 +826,7 @@ $zone = '';
 // Name of the persistent disk to delete.
 $disk = '';
 
-$response = $service->disks->deleteDisks($project, $zone, $disk);
+$response = $service->disks->delete($project, $zone, $disk);
 
 <?php
 /*
@@ -859,7 +852,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -867,7 +859,7 @@ $zone = '';
 // Name of the persistent disk to return.
 $disk = '';
 
-$response = $service->disks->getDisks($project, $zone, $disk);
+$response = $service->disks->get($project, $zone, $disk);
 
 <?php
 /*
@@ -893,13 +885,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
 $zone = '';
 
-$response = $service->disks->insertDisks($project, $zone);
+$postBody = new Google_Service_Compute_Disk($client);
+
+$response = $service->disks->insert($project, $zone, $postBody);
 
 <?php
 /*
@@ -925,7 +918,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -961,13 +953,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the firewall rule to delete.
 $firewall = '';
 
-$response = $service->firewalls->deleteFirewalls($project, $firewall);
+$response = $service->firewalls->delete($project, $firewall);
 
 <?php
 /*
@@ -993,13 +984,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the firewall rule to return.
 $firewall = '';
 
-$response = $service->firewalls->getFirewalls($project, $firewall);
+$response = $service->firewalls->get($project, $firewall);
 
 <?php
 /*
@@ -1025,11 +1015,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->firewalls->insertFirewalls($project);
+$postBody = new Google_Service_Compute_Firewall($client);
+
+$response = $service->firewalls->insert($project, $postBody);
 
 <?php
 /*
@@ -1055,7 +1046,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -1089,13 +1079,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the firewall rule to update.
 $firewall = '';
 
-$response = $service->firewalls->patchFirewalls($project, $firewall);
+$postBody = new Google_Service_Compute_Firewall($client);
+
+$response = $service->firewalls->patch($project, $firewall, $postBody);
 
 <?php
 /*
@@ -1121,13 +1112,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the firewall rule to update.
 $firewall = '';
 
-$response = $service->firewalls->updateFirewalls($project, $firewall);
+$postBody = new Google_Service_Compute_Firewall($client);
+
+$response = $service->firewalls->update($project, $firewall, $postBody);
 
 <?php
 /*
@@ -1153,11 +1145,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->forwardingRules->aggregatedListForwardingRules($project);
+$response = $service->forwardingRules->aggregatedList($project);
 
 foreach ($response['items']  as $key => $value) {
   // TODO: Add code here to process $key => $value
@@ -1187,7 +1178,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
@@ -1195,7 +1185,7 @@ $region = '';
 // Name of the ForwardingRule resource to delete.
 $forwardingRule = '';
 
-$response = $service->forwardingRules->deleteForwardingRules($project, $region, $forwardingRule);
+$response = $service->forwardingRules->delete($project, $region, $forwardingRule);
 
 <?php
 /*
@@ -1221,7 +1211,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
@@ -1229,7 +1218,7 @@ $region = '';
 // Name of the ForwardingRule resource to return.
 $forwardingRule = '';
 
-$response = $service->forwardingRules->getForwardingRules($project, $region, $forwardingRule);
+$response = $service->forwardingRules->get($project, $region, $forwardingRule);
 
 <?php
 /*
@@ -1255,13 +1244,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
 $region = '';
 
-$response = $service->forwardingRules->insertForwardingRules($project, $region);
+$postBody = new Google_Service_Compute_ForwardingRule($client);
+
+$response = $service->forwardingRules->insert($project, $region, $postBody);
 
 <?php
 /*
@@ -1287,7 +1277,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
@@ -1323,7 +1312,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
@@ -1331,7 +1319,9 @@ $region = '';
 // Name of the ForwardingRule resource in which target is to be set.
 $forwardingRule = '';
 
-$response = $service->forwardingRules->setTargetForwardingRules($project, $region, $forwardingRule);
+$postBody = new Google_Service_Compute_TargetReference($client);
+
+$response = $service->forwardingRules->setTarget($project, $region, $forwardingRule, $postBody);
 
 <?php
 /*
@@ -1357,13 +1347,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the address resource to delete.
 $address = '';
 
-$response = $service->globalAddresses->deleteGlobalAddresses($project, $address);
+$response = $service->globalAddresses->delete($project, $address);
 
 <?php
 /*
@@ -1389,13 +1378,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the address resource to return.
 $address = '';
 
-$response = $service->globalAddresses->getGlobalAddresses($project, $address);
+$response = $service->globalAddresses->get($project, $address);
 
 <?php
 /*
@@ -1421,11 +1409,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->globalAddresses->insertGlobalAddresses($project);
+$postBody = new Google_Service_Compute_Address($client);
+
+$response = $service->globalAddresses->insert($project, $postBody);
 
 <?php
 /*
@@ -1451,7 +1440,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -1485,13 +1473,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the ForwardingRule resource to delete.
 $forwardingRule = '';
 
-$response = $service->globalForwardingRules->deleteGlobalForwardingRules($project, $forwardingRule);
+$response = $service->globalForwardingRules->delete($project, $forwardingRule);
 
 <?php
 /*
@@ -1517,13 +1504,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the ForwardingRule resource to return.
 $forwardingRule = '';
 
-$response = $service->globalForwardingRules->getGlobalForwardingRules($project, $forwardingRule);
+$response = $service->globalForwardingRules->get($project, $forwardingRule);
 
 <?php
 /*
@@ -1549,11 +1535,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->globalForwardingRules->insertGlobalForwardingRules($project);
+$postBody = new Google_Service_Compute_ForwardingRule($client);
+
+$response = $service->globalForwardingRules->insert($project, $postBody);
 
 <?php
 /*
@@ -1579,7 +1566,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -1613,13 +1599,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the ForwardingRule resource in which target is to be set.
 $forwardingRule = '';
 
-$response = $service->globalForwardingRules->setTargetGlobalForwardingRules($project, $forwardingRule);
+$postBody = new Google_Service_Compute_TargetReference($client);
+
+$response = $service->globalForwardingRules->setTarget($project, $forwardingRule, $postBody);
 
 <?php
 /*
@@ -1645,11 +1632,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->globalOperations->aggregatedListGlobalOperations($project);
+$response = $service->globalOperations->aggregatedList($project);
 
 foreach ($response['items']  as $key => $value) {
   // TODO: Add code here to process $key => $value
@@ -1679,13 +1665,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the Operations resource to delete.
 $operation = '';
 
-$response = $service->globalOperations->deleteGlobalOperations($project, $operation);
+$response = $service->globalOperations->delete($project, $operation);
 
 <?php
 /*
@@ -1711,13 +1696,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the Operations resource to return.
 $operation = '';
 
-$response = $service->globalOperations->getGlobalOperations($project, $operation);
+$response = $service->globalOperations->get($project, $operation);
 
 <?php
 /*
@@ -1743,7 +1727,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -1777,13 +1760,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the HttpHealthCheck resource to delete.
 $httpHealthCheck = '';
 
-$response = $service->httpHealthChecks->deleteHttpHealthChecks($project, $httpHealthCheck);
+$response = $service->httpHealthChecks->delete($project, $httpHealthCheck);
 
 <?php
 /*
@@ -1809,13 +1791,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the HttpHealthCheck resource to return.
 $httpHealthCheck = '';
 
-$response = $service->httpHealthChecks->getHttpHealthChecks($project, $httpHealthCheck);
+$response = $service->httpHealthChecks->get($project, $httpHealthCheck);
 
 <?php
 /*
@@ -1841,11 +1822,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->httpHealthChecks->insertHttpHealthChecks($project);
+$postBody = new Google_Service_Compute_HttpHealthCheck($client);
+
+$response = $service->httpHealthChecks->insert($project, $postBody);
 
 <?php
 /*
@@ -1871,7 +1853,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -1905,13 +1886,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the HttpHealthCheck resource to update.
 $httpHealthCheck = '';
 
-$response = $service->httpHealthChecks->patchHttpHealthChecks($project, $httpHealthCheck);
+$postBody = new Google_Service_Compute_HttpHealthCheck($client);
+
+$response = $service->httpHealthChecks->patch($project, $httpHealthCheck, $postBody);
 
 <?php
 /*
@@ -1937,13 +1919,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the HttpHealthCheck resource to update.
 $httpHealthCheck = '';
 
-$response = $service->httpHealthChecks->updateHttpHealthChecks($project, $httpHealthCheck);
+$postBody = new Google_Service_Compute_HttpHealthCheck($client);
+
+$response = $service->httpHealthChecks->update($project, $httpHealthCheck, $postBody);
 
 <?php
 /*
@@ -1969,13 +1952,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the HttpsHealthCheck resource to delete.
 $httpsHealthCheck = '';
 
-$response = $service->httpsHealthChecks->deleteHttpsHealthChecks($project, $httpsHealthCheck);
+$response = $service->httpsHealthChecks->delete($project, $httpsHealthCheck);
 
 <?php
 /*
@@ -2001,13 +1983,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the HttpsHealthCheck resource to return.
 $httpsHealthCheck = '';
 
-$response = $service->httpsHealthChecks->getHttpsHealthChecks($project, $httpsHealthCheck);
+$response = $service->httpsHealthChecks->get($project, $httpsHealthCheck);
 
 <?php
 /*
@@ -2033,11 +2014,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->httpsHealthChecks->insertHttpsHealthChecks($project);
+$postBody = new Google_Service_Compute_HttpsHealthCheck($client);
+
+$response = $service->httpsHealthChecks->insert($project, $postBody);
 
 <?php
 /*
@@ -2063,7 +2045,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -2097,13 +2078,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the HttpsHealthCheck resource to update.
 $httpsHealthCheck = '';
 
-$response = $service->httpsHealthChecks->patchHttpsHealthChecks($project, $httpsHealthCheck);
+$postBody = new Google_Service_Compute_HttpsHealthCheck($client);
+
+$response = $service->httpsHealthChecks->patch($project, $httpsHealthCheck, $postBody);
 
 <?php
 /*
@@ -2129,13 +2111,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the HttpsHealthCheck resource to update.
 $httpsHealthCheck = '';
 
-$response = $service->httpsHealthChecks->updateHttpsHealthChecks($project, $httpsHealthCheck);
+$postBody = new Google_Service_Compute_HttpsHealthCheck($client);
+
+$response = $service->httpsHealthChecks->update($project, $httpsHealthCheck, $postBody);
 
 <?php
 /*
@@ -2161,13 +2144,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the image resource to delete.
 $image = '';
 
-$response = $service->images->deleteImages($project, $image);
+$response = $service->images->delete($project, $image);
 
 <?php
 /*
@@ -2193,13 +2175,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Image name.
 $image = '';
 
-$response = $service->images->deprecateImages($project, $image);
+$postBody = new Google_Service_Compute_DeprecationStatus($client);
+
+$response = $service->images->deprecate($project, $image, $postBody);
 
 <?php
 /*
@@ -2225,13 +2208,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the image resource to return.
 $image = '';
 
-$response = $service->images->getImages($project, $image);
+$response = $service->images->get($project, $image);
 
 <?php
 /*
@@ -2257,11 +2239,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->images->insertImages($project);
+$postBody = new Google_Service_Compute_Image($client);
+
+$response = $service->images->insert($project, $postBody);
 
 <?php
 /*
@@ -2287,7 +2270,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -2321,7 +2303,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where the managed instance group is located.
@@ -2329,7 +2310,9 @@ $zone = '';
 // The name of the managed instance group.
 $instanceGroupManager = '';
 
-$response = $service->instanceGroupManagers->abandonInstancesInstanceGroupManagers($project, $zone, $instanceGroupManager);
+$postBody = new Google_Service_Compute_InstanceGroupManagersAbandonInstancesRequest($client);
+
+$response = $service->instanceGroupManagers->abandonInstances($project, $zone, $instanceGroupManager, $postBody);
 
 <?php
 /*
@@ -2355,11 +2338,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->instanceGroupManagers->aggregatedListInstanceGroupManagers($project);
+$response = $service->instanceGroupManagers->aggregatedList($project);
 
 foreach ($response['items']  as $key => $value) {
   // TODO: Add code here to process $key => $value
@@ -2389,7 +2371,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where the managed instance group is located.
@@ -2397,7 +2378,7 @@ $zone = '';
 // The name of the managed instance group to delete.
 $instanceGroupManager = '';
 
-$response = $service->instanceGroupManagers->deleteInstanceGroupManagers($project, $zone, $instanceGroupManager);
+$response = $service->instanceGroupManagers->delete($project, $zone, $instanceGroupManager);
 
 <?php
 /*
@@ -2423,7 +2404,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where the managed instance group is located.
@@ -2431,7 +2411,9 @@ $zone = '';
 // The name of the managed instance group.
 $instanceGroupManager = '';
 
-$response = $service->instanceGroupManagers->deleteInstancesInstanceGroupManagers($project, $zone, $instanceGroupManager);
+$postBody = new Google_Service_Compute_InstanceGroupManagersDeleteInstancesRequest($client);
+
+$response = $service->instanceGroupManagers->deleteInstances($project, $zone, $instanceGroupManager, $postBody);
 
 <?php
 /*
@@ -2457,7 +2439,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where the managed instance group is located.
@@ -2465,7 +2446,7 @@ $zone = '';
 // The name of the managed instance group.
 $instanceGroupManager = '';
 
-$response = $service->instanceGroupManagers->getInstanceGroupManagers($project, $zone, $instanceGroupManager);
+$response = $service->instanceGroupManagers->get($project, $zone, $instanceGroupManager);
 
 <?php
 /*
@@ -2491,13 +2472,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where you want to create the managed instance group.
 $zone = '';
 
-$response = $service->instanceGroupManagers->insertInstanceGroupManagers($project, $zone);
+$postBody = new Google_Service_Compute_InstanceGroupManager($client);
+
+$response = $service->instanceGroupManagers->insert($project, $zone, $postBody);
 
 <?php
 /*
@@ -2523,7 +2505,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where the managed instance group is located.
@@ -2559,7 +2540,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where the managed instance group is located.
@@ -2567,7 +2547,7 @@ $zone = '';
 // The name of the managed instance group.
 $instanceGroupManager = '';
 
-$response = $service->instanceGroupManagers->listManagedInstancesInstanceGroupManagers($project, $zone, $instanceGroupManager);
+$response = $service->instanceGroupManagers->listManagedInstances($project, $zone, $instanceGroupManager);
 
 <?php
 /*
@@ -2593,7 +2573,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where the managed instance group is located.
@@ -2601,7 +2580,9 @@ $zone = '';
 // The name of the managed instance group.
 $instanceGroupManager = '';
 
-$response = $service->instanceGroupManagers->recreateInstancesInstanceGroupManagers($project, $zone, $instanceGroupManager);
+$postBody = new Google_Service_Compute_InstanceGroupManagersRecreateInstancesRequest($client);
+
+$response = $service->instanceGroupManagers->recreateInstances($project, $zone, $instanceGroupManager, $postBody);
 
 <?php
 /*
@@ -2627,17 +2608,18 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where the managed instance group is located.
 $zone = '';
 // The name of the managed instance group.
 $instanceGroupManager = '';
-// The number of running instances that the managed instance group should maintain at any given time. The group automatically adds or removes instances to maintain the number of instances specified by this parameter.
+// The number of running instances that the managed instance group should maintain at any given time.
+// The group automatically adds or removes instances to maintain the number of instances specified by
+// this parameter.
 $size = 0;
 
-$response = $service->instanceGroupManagers->resizeInstanceGroupManagers($project, $zone, $instanceGroupManager, $size);
+$response = $service->instanceGroupManagers->resize($project, $zone, $instanceGroupManager, $size);
 
 <?php
 /*
@@ -2663,7 +2645,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where the managed instance group is located.
@@ -2671,7 +2652,9 @@ $zone = '';
 // The name of the managed instance group.
 $instanceGroupManager = '';
 
-$response = $service->instanceGroupManagers->setInstanceTemplateInstanceGroupManagers($project, $zone, $instanceGroupManager);
+$postBody = new Google_Service_Compute_InstanceGroupManagersSetInstanceTemplateRequest($client);
+
+$response = $service->instanceGroupManagers->setInstanceTemplate($project, $zone, $instanceGroupManager, $postBody);
 
 <?php
 /*
@@ -2697,7 +2680,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where the managed instance group is located.
@@ -2705,7 +2687,9 @@ $zone = '';
 // The name of the managed instance group.
 $instanceGroupManager = '';
 
-$response = $service->instanceGroupManagers->setTargetPoolsInstanceGroupManagers($project, $zone, $instanceGroupManager);
+$postBody = new Google_Service_Compute_InstanceGroupManagersSetTargetPoolsRequest($client);
+
+$response = $service->instanceGroupManagers->setTargetPools($project, $zone, $instanceGroupManager, $postBody);
 
 <?php
 /*
@@ -2731,7 +2715,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where the instance group is located.
@@ -2739,7 +2722,9 @@ $zone = '';
 // The name of the instance group where you are adding instances.
 $instanceGroup = '';
 
-$response = $service->instanceGroups->addInstancesInstanceGroups($project, $zone, $instanceGroup);
+$postBody = new Google_Service_Compute_InstanceGroupsAddInstancesRequest($client);
+
+$response = $service->instanceGroups->addInstances($project, $zone, $instanceGroup, $postBody);
 
 <?php
 /*
@@ -2765,11 +2750,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->instanceGroups->aggregatedListInstanceGroups($project);
+$response = $service->instanceGroups->aggregatedList($project);
 
 foreach ($response['items']  as $key => $value) {
   // TODO: Add code here to process $key => $value
@@ -2799,7 +2783,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where the instance group is located.
@@ -2807,7 +2790,7 @@ $zone = '';
 // The name of the instance group to delete.
 $instanceGroup = '';
 
-$response = $service->instanceGroups->deleteInstanceGroups($project, $zone, $instanceGroup);
+$response = $service->instanceGroups->delete($project, $zone, $instanceGroup);
 
 <?php
 /*
@@ -2833,7 +2816,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where the instance group is located.
@@ -2841,7 +2823,7 @@ $zone = '';
 // The name of the instance group.
 $instanceGroup = '';
 
-$response = $service->instanceGroups->getInstanceGroups($project, $zone, $instanceGroup);
+$response = $service->instanceGroups->get($project, $zone, $instanceGroup);
 
 <?php
 /*
@@ -2867,13 +2849,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where you want to create the instance group.
 $zone = '';
 
-$response = $service->instanceGroups->insertInstanceGroups($project, $zone);
+$postBody = new Google_Service_Compute_InstanceGroup($client);
+
+$response = $service->instanceGroups->insert($project, $zone, $postBody);
 
 <?php
 /*
@@ -2899,7 +2882,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where the instance group is located.
@@ -2935,7 +2917,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where the instance group is located.
@@ -2943,7 +2924,9 @@ $zone = '';
 // The name of the instance group from which you want to generate a list of included instances.
 $instanceGroup = '';
 
-$response = $service->instanceGroups->listInstancesInstanceGroups($project, $zone, $instanceGroup);
+$postBody = new Google_Service_Compute_InstanceGroupsListInstancesRequest($client);
+
+$response = $service->instanceGroups->listInstances($project, $zone, $instanceGroup, $postBody);
 
 foreach ($response['items'] as $element) {
   // TODO: Add code here to process the elements.
@@ -2973,7 +2956,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where the instance group is located.
@@ -2981,7 +2963,9 @@ $zone = '';
 // The name of the instance group where the specified instances will be removed.
 $instanceGroup = '';
 
-$response = $service->instanceGroups->removeInstancesInstanceGroups($project, $zone, $instanceGroup);
+$postBody = new Google_Service_Compute_InstanceGroupsRemoveInstancesRequest($client);
+
+$response = $service->instanceGroups->removeInstances($project, $zone, $instanceGroup, $postBody);
 
 <?php
 /*
@@ -3007,7 +2991,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone where the instance group is located.
@@ -3015,7 +2998,9 @@ $zone = '';
 // The name of the instance group where the named ports are updated.
 $instanceGroup = '';
 
-$response = $service->instanceGroups->setNamedPortsInstanceGroups($project, $zone, $instanceGroup);
+$postBody = new Google_Service_Compute_InstanceGroupsSetNamedPortsRequest($client);
+
+$response = $service->instanceGroups->setNamedPorts($project, $zone, $instanceGroup, $postBody);
 
 <?php
 /*
@@ -3041,13 +3026,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the instance template to delete.
 $instanceTemplate = '';
 
-$response = $service->instanceTemplates->deleteInstanceTemplates($project, $instanceTemplate);
+$response = $service->instanceTemplates->delete($project, $instanceTemplate);
 
 <?php
 /*
@@ -3073,13 +3057,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the instance template.
 $instanceTemplate = '';
 
-$response = $service->instanceTemplates->getInstanceTemplates($project, $instanceTemplate);
+$response = $service->instanceTemplates->get($project, $instanceTemplate);
 
 <?php
 /*
@@ -3105,11 +3088,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->instanceTemplates->insertInstanceTemplates($project);
+$postBody = new Google_Service_Compute_InstanceTemplate($client);
+
+$response = $service->instanceTemplates->insert($project, $postBody);
 
 <?php
 /*
@@ -3135,7 +3119,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -3169,7 +3152,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3179,7 +3161,9 @@ $instance = '';
 // The name of the network interface to add to this instance.
 $networkInterface = '';
 
-$response = $service->instances->addAccessConfigInstances($project, $zone, $instance, $networkInterface);
+$postBody = new Google_Service_Compute_AccessConfig($client);
+
+$response = $service->instances->addAccessConfig($project, $zone, $instance, $networkInterface, $postBody);
 
 <?php
 /*
@@ -3205,11 +3189,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->instances->aggregatedListInstances($project);
+$response = $service->instances->aggregatedList($project);
 
 foreach ($response['items']  as $key => $value) {
   // TODO: Add code here to process $key => $value
@@ -3239,7 +3222,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3247,7 +3229,9 @@ $zone = '';
 // The instance name for this request.
 $instance = '';
 
-$response = $service->instances->attachDiskInstances($project, $zone, $instance);
+$postBody = new Google_Service_Compute_AttachedDisk($client);
+
+$response = $service->instances->attachDisk($project, $zone, $instance, $postBody);
 
 <?php
 /*
@@ -3273,7 +3257,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3281,7 +3264,7 @@ $zone = '';
 // Name of the instance resource to delete.
 $instance = '';
 
-$response = $service->instances->deleteInstances($project, $zone, $instance);
+$response = $service->instances->delete($project, $zone, $instance);
 
 <?php
 /*
@@ -3307,7 +3290,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3319,7 +3301,7 @@ $accessConfig = '';
 // The name of the network interface.
 $networkInterface = '';
 
-$response = $service->instances->deleteAccessConfigInstances($project, $zone, $instance, $accessConfig, $networkInterface);
+$response = $service->instances->deleteAccessConfig($project, $zone, $instance, $accessConfig, $networkInterface);
 
 <?php
 /*
@@ -3345,7 +3327,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3355,7 +3336,7 @@ $instance = '';
 // Disk device name to detach.
 $deviceName = '';
 
-$response = $service->instances->detachDiskInstances($project, $zone, $instance, $deviceName);
+$response = $service->instances->detachDisk($project, $zone, $instance, $deviceName);
 
 <?php
 /*
@@ -3381,7 +3362,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3389,7 +3369,7 @@ $zone = '';
 // Name of the instance resource to return.
 $instance = '';
 
-$response = $service->instances->getInstances($project, $zone, $instance);
+$response = $service->instances->get($project, $zone, $instance);
 
 <?php
 /*
@@ -3415,7 +3395,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3423,7 +3402,7 @@ $zone = '';
 // Name of the instance scoping this request.
 $instance = '';
 
-$response = $service->instances->getSerialPortOutputInstances($project, $zone, $instance);
+$response = $service->instances->getSerialPortOutput($project, $zone, $instance);
 
 <?php
 /*
@@ -3449,13 +3428,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
 $zone = '';
 
-$response = $service->instances->insertInstances($project, $zone);
+$postBody = new Google_Service_Compute_Instance($client);
+
+$response = $service->instances->insert($project, $zone, $postBody);
 
 <?php
 /*
@@ -3481,7 +3461,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3517,7 +3496,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3525,7 +3503,7 @@ $zone = '';
 // Name of the instance scoping this request.
 $instance = '';
 
-$response = $service->instances->resetInstances($project, $zone, $instance);
+$response = $service->instances->reset($project, $zone, $instance);
 
 <?php
 /*
@@ -3551,7 +3529,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3563,7 +3540,7 @@ $autoDelete = false;
 // The device name of the disk to modify.
 $deviceName = '';
 
-$response = $service->instances->setDiskAutoDeleteInstances($project, $zone, $instance, $autoDelete, $deviceName);
+$response = $service->instances->setDiskAutoDelete($project, $zone, $instance, $autoDelete, $deviceName);
 
 <?php
 /*
@@ -3589,7 +3566,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3597,7 +3573,9 @@ $zone = '';
 // Name of the instance scoping this request.
 $instance = '';
 
-$response = $service->instances->setMachineTypeInstances($project, $zone, $instance);
+$postBody = new Google_Service_Compute_InstancesSetMachineTypeRequest($client);
+
+$response = $service->instances->setMachineType($project, $zone, $instance, $postBody);
 
 <?php
 /*
@@ -3623,7 +3601,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3631,7 +3608,9 @@ $zone = '';
 // Name of the instance scoping this request.
 $instance = '';
 
-$response = $service->instances->setMetadataInstances($project, $zone, $instance);
+$postBody = new Google_Service_Compute_Metadata($client);
+
+$response = $service->instances->setMetadata($project, $zone, $instance, $postBody);
 
 <?php
 /*
@@ -3657,7 +3636,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3665,7 +3643,9 @@ $zone = '';
 // Instance name.
 $instance = '';
 
-$response = $service->instances->setSchedulingInstances($project, $zone, $instance);
+$postBody = new Google_Service_Compute_Scheduling($client);
+
+$response = $service->instances->setScheduling($project, $zone, $instance, $postBody);
 
 <?php
 /*
@@ -3691,7 +3671,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3699,7 +3678,9 @@ $zone = '';
 // Name of the instance scoping this request.
 $instance = '';
 
-$response = $service->instances->setTagsInstances($project, $zone, $instance);
+$postBody = new Google_Service_Compute_Tags($client);
+
+$response = $service->instances->setTags($project, $zone, $instance, $postBody);
 
 <?php
 /*
@@ -3725,7 +3706,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3733,7 +3713,7 @@ $zone = '';
 // Name of the instance resource to start.
 $instance = '';
 
-$response = $service->instances->startInstances($project, $zone, $instance);
+$response = $service->instances->start($project, $zone, $instance);
 
 <?php
 /*
@@ -3759,7 +3739,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3767,7 +3746,7 @@ $zone = '';
 // Name of the instance resource to stop.
 $instance = '';
 
-$response = $service->instances->stopInstances($project, $zone, $instance);
+$response = $service->instances->stop($project, $zone, $instance);
 
 <?php
 /*
@@ -3793,13 +3772,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the License resource to return.
 $license = '';
 
-$response = $service->licenses->getLicenses($project, $license);
+$response = $service->licenses->get($project, $license);
 
 <?php
 /*
@@ -3825,11 +3803,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->machineTypes->aggregatedListMachineTypes($project);
+$response = $service->machineTypes->aggregatedList($project);
 
 foreach ($response['items']  as $key => $value) {
   // TODO: Add code here to process $key => $value
@@ -3859,7 +3836,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3867,7 +3843,7 @@ $zone = '';
 // Name of the machine type to return.
 $machineType = '';
 
-$response = $service->machineTypes->getMachineTypes($project, $zone, $machineType);
+$response = $service->machineTypes->get($project, $zone, $machineType);
 
 <?php
 /*
@@ -3893,7 +3869,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // The name of the zone for this request.
@@ -3929,13 +3904,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the network to delete.
 $network = '';
 
-$response = $service->networks->deleteNetworks($project, $network);
+$response = $service->networks->delete($project, $network);
 
 <?php
 /*
@@ -3961,13 +3935,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the network to return.
 $network = '';
 
-$response = $service->networks->getNetworks($project, $network);
+$response = $service->networks->get($project, $network);
 
 <?php
 /*
@@ -3993,11 +3966,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->networks->insertNetworks($project);
+$postBody = new Google_Service_Compute_Network($client);
+
+$response = $service->networks->insert($project, $postBody);
 
 <?php
 /*
@@ -4023,7 +3997,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -4057,11 +4030,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->projects->getProjects($project);
+$response = $service->projects->get($project);
 
 <?php
 /*
@@ -4087,11 +4059,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->projects->moveDiskProjects($project);
+$postBody = new Google_Service_Compute_DiskMoveRequest($client);
+
+$response = $service->projects->moveDisk($project, $postBody);
 
 <?php
 /*
@@ -4117,11 +4090,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->projects->moveInstanceProjects($project);
+$postBody = new Google_Service_Compute_InstanceMoveRequest($client);
+
+$response = $service->projects->moveInstance($project, $postBody);
 
 <?php
 /*
@@ -4147,11 +4121,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->projects->setCommonInstanceMetadataProjects($project);
+$postBody = new Google_Service_Compute_Metadata($client);
+
+$response = $service->projects->setCommonInstanceMetadata($project, $postBody);
 
 <?php
 /*
@@ -4177,11 +4152,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->projects->setUsageExportBucketProjects($project);
+$postBody = new Google_Service_Compute_UsageExportLocation($client);
+
+$response = $service->projects->setUsageExportBucket($project, $postBody);
 
 <?php
 /*
@@ -4207,7 +4183,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region for this request.
@@ -4215,7 +4190,7 @@ $region = '';
 // Name of the Operations resource to delete.
 $operation = '';
 
-$response = $service->regionOperations->deleteRegionOperations($project, $region, $operation);
+$response = $service->regionOperations->delete($project, $region, $operation);
 
 <?php
 /*
@@ -4241,7 +4216,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region for this request.
@@ -4249,7 +4223,7 @@ $region = '';
 // Name of the Operations resource to return.
 $operation = '';
 
-$response = $service->regionOperations->getRegionOperations($project, $region, $operation);
+$response = $service->regionOperations->get($project, $region, $operation);
 
 <?php
 /*
@@ -4275,7 +4249,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region for this request.
@@ -4311,13 +4284,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region resource to return.
 $region = '';
 
-$response = $service->regions->getRegions($project, $region);
+$response = $service->regions->get($project, $region);
 
 <?php
 /*
@@ -4343,7 +4315,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -4377,13 +4348,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the Route resource to delete.
 $route = '';
 
-$response = $service->routes->deleteRoutes($project, $route);
+$response = $service->routes->delete($project, $route);
 
 <?php
 /*
@@ -4409,13 +4379,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the Route resource to return.
 $route = '';
 
-$response = $service->routes->getRoutes($project, $route);
+$response = $service->routes->get($project, $route);
 
 <?php
 /*
@@ -4441,11 +4410,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->routes->insertRoutes($project);
+$postBody = new Google_Service_Compute_Route($client);
+
+$response = $service->routes->insert($project, $postBody);
 
 <?php
 /*
@@ -4471,7 +4441,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -4505,13 +4474,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the Snapshot resource to delete.
 $snapshot = '';
 
-$response = $service->snapshots->deleteSnapshots($project, $snapshot);
+$response = $service->snapshots->delete($project, $snapshot);
 
 <?php
 /*
@@ -4537,13 +4505,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the Snapshot resource to return.
 $snapshot = '';
 
-$response = $service->snapshots->getSnapshots($project, $snapshot);
+$response = $service->snapshots->get($project, $snapshot);
 
 <?php
 /*
@@ -4569,7 +4536,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -4603,13 +4569,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the SslCertificate resource to delete.
 $sslCertificate = '';
 
-$response = $service->sslCertificates->deleteSslCertificates($project, $sslCertificate);
+$response = $service->sslCertificates->delete($project, $sslCertificate);
 
 <?php
 /*
@@ -4635,13 +4600,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the SslCertificate resource to return.
 $sslCertificate = '';
 
-$response = $service->sslCertificates->getSslCertificates($project, $sslCertificate);
+$response = $service->sslCertificates->get($project, $sslCertificate);
 
 <?php
 /*
@@ -4667,11 +4631,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->sslCertificates->insertSslCertificates($project);
+$postBody = new Google_Service_Compute_SslCertificate($client);
+
+$response = $service->sslCertificates->insert($project, $postBody);
 
 <?php
 /*
@@ -4697,7 +4662,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -4731,11 +4695,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->subnetworks->aggregatedListSubnetworks($project);
+$response = $service->subnetworks->aggregatedList($project);
 
 foreach ($response['items']  as $key => $value) {
   // TODO: Add code here to process $key => $value
@@ -4765,7 +4728,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
@@ -4773,7 +4735,7 @@ $region = '';
 // Name of the Subnetwork resource to delete.
 $subnetwork = '';
 
-$response = $service->subnetworks->deleteSubnetworks($project, $region, $subnetwork);
+$response = $service->subnetworks->delete($project, $region, $subnetwork);
 
 <?php
 /*
@@ -4799,7 +4761,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
@@ -4807,7 +4768,7 @@ $region = '';
 // Name of the Subnetwork resource to return.
 $subnetwork = '';
 
-$response = $service->subnetworks->getSubnetworks($project, $region, $subnetwork);
+$response = $service->subnetworks->get($project, $region, $subnetwork);
 
 <?php
 /*
@@ -4833,13 +4794,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
 $region = '';
 
-$response = $service->subnetworks->insertSubnetworks($project, $region);
+$postBody = new Google_Service_Compute_Subnetwork($client);
+
+$response = $service->subnetworks->insert($project, $region, $postBody);
 
 <?php
 /*
@@ -4865,7 +4827,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
@@ -4901,13 +4862,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the TargetHttpProxy resource to delete.
 $targetHttpProxy = '';
 
-$response = $service->targetHttpProxies->deleteTargetHttpProxies($project, $targetHttpProxy);
+$response = $service->targetHttpProxies->delete($project, $targetHttpProxy);
 
 <?php
 /*
@@ -4933,13 +4893,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the TargetHttpProxy resource to return.
 $targetHttpProxy = '';
 
-$response = $service->targetHttpProxies->getTargetHttpProxies($project, $targetHttpProxy);
+$response = $service->targetHttpProxies->get($project, $targetHttpProxy);
 
 <?php
 /*
@@ -4965,11 +4924,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->targetHttpProxies->insertTargetHttpProxies($project);
+$postBody = new Google_Service_Compute_TargetHttpProxy($client);
+
+$response = $service->targetHttpProxies->insert($project, $postBody);
 
 <?php
 /*
@@ -4995,7 +4955,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -5029,13 +4988,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the TargetHttpProxy to set a URL map for.
 $targetHttpProxy = '';
 
-$response = $service->targetHttpProxies->setUrlMapTargetHttpProxies($project, $targetHttpProxy);
+$postBody = new Google_Service_Compute_UrlMapReference($client);
+
+$response = $service->targetHttpProxies->setUrlMap($project, $targetHttpProxy, $postBody);
 
 <?php
 /*
@@ -5061,13 +5021,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the TargetHttpsProxy resource to delete.
 $targetHttpsProxy = '';
 
-$response = $service->targetHttpsProxies->deleteTargetHttpsProxies($project, $targetHttpsProxy);
+$response = $service->targetHttpsProxies->delete($project, $targetHttpsProxy);
 
 <?php
 /*
@@ -5093,13 +5052,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the TargetHttpsProxy resource to return.
 $targetHttpsProxy = '';
 
-$response = $service->targetHttpsProxies->getTargetHttpsProxies($project, $targetHttpsProxy);
+$response = $service->targetHttpsProxies->get($project, $targetHttpsProxy);
 
 <?php
 /*
@@ -5125,11 +5083,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->targetHttpsProxies->insertTargetHttpsProxies($project);
+$postBody = new Google_Service_Compute_TargetHttpsProxy($client);
+
+$response = $service->targetHttpsProxies->insert($project, $postBody);
 
 <?php
 /*
@@ -5155,7 +5114,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -5189,13 +5147,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the TargetHttpsProxy resource to set an SslCertificates resource for.
 $targetHttpsProxy = '';
 
-$response = $service->targetHttpsProxies->setSslCertificatesTargetHttpsProxies($project, $targetHttpsProxy);
+$postBody = new Google_Service_Compute_TargetHttpsProxiesSetSslCertificatesRequest($client);
+
+$response = $service->targetHttpsProxies->setSslCertificates($project, $targetHttpsProxy, $postBody);
 
 <?php
 /*
@@ -5221,13 +5180,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the TargetHttpsProxy resource whose URL map is to be set.
 $targetHttpsProxy = '';
 
-$response = $service->targetHttpsProxies->setUrlMapTargetHttpsProxies($project, $targetHttpsProxy);
+$postBody = new Google_Service_Compute_UrlMapReference($client);
+
+$response = $service->targetHttpsProxies->setUrlMap($project, $targetHttpsProxy, $postBody);
 
 <?php
 /*
@@ -5253,11 +5213,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->targetInstances->aggregatedListTargetInstances($project);
+$response = $service->targetInstances->aggregatedList($project);
 
 foreach ($response['items']  as $key => $value) {
   // TODO: Add code here to process $key => $value
@@ -5287,7 +5246,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the zone scoping this request.
@@ -5295,7 +5253,7 @@ $zone = '';
 // Name of the TargetInstance resource to delete.
 $targetInstance = '';
 
-$response = $service->targetInstances->deleteTargetInstances($project, $zone, $targetInstance);
+$response = $service->targetInstances->delete($project, $zone, $targetInstance);
 
 <?php
 /*
@@ -5321,7 +5279,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the zone scoping this request.
@@ -5329,7 +5286,7 @@ $zone = '';
 // Name of the TargetInstance resource to return.
 $targetInstance = '';
 
-$response = $service->targetInstances->getTargetInstances($project, $zone, $targetInstance);
+$response = $service->targetInstances->get($project, $zone, $targetInstance);
 
 <?php
 /*
@@ -5355,13 +5312,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the zone scoping this request.
 $zone = '';
 
-$response = $service->targetInstances->insertTargetInstances($project, $zone);
+$postBody = new Google_Service_Compute_TargetInstance($client);
+
+$response = $service->targetInstances->insert($project, $zone, $postBody);
 
 <?php
 /*
@@ -5387,7 +5345,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the zone scoping this request.
@@ -5423,7 +5380,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
@@ -5431,7 +5387,9 @@ $region = '';
 // Name of the target pool to add a health check to.
 $targetPool = '';
 
-$response = $service->targetPools->addHealthCheckTargetPools($project, $region, $targetPool);
+$postBody = new Google_Service_Compute_TargetPoolsAddHealthCheckRequest($client);
+
+$response = $service->targetPools->addHealthCheck($project, $region, $targetPool, $postBody);
 
 <?php
 /*
@@ -5457,7 +5415,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
@@ -5465,7 +5422,9 @@ $region = '';
 // Name of the TargetPool resource to add instances to.
 $targetPool = '';
 
-$response = $service->targetPools->addInstanceTargetPools($project, $region, $targetPool);
+$postBody = new Google_Service_Compute_TargetPoolsAddInstanceRequest($client);
+
+$response = $service->targetPools->addInstance($project, $region, $targetPool, $postBody);
 
 <?php
 /*
@@ -5491,11 +5450,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->targetPools->aggregatedListTargetPools($project);
+$response = $service->targetPools->aggregatedList($project);
 
 foreach ($response['items']  as $key => $value) {
   // TODO: Add code here to process $key => $value
@@ -5525,7 +5483,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
@@ -5533,7 +5490,7 @@ $region = '';
 // Name of the TargetPool resource to delete.
 $targetPool = '';
 
-$response = $service->targetPools->deleteTargetPools($project, $region, $targetPool);
+$response = $service->targetPools->delete($project, $region, $targetPool);
 
 <?php
 /*
@@ -5559,7 +5516,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
@@ -5567,7 +5523,7 @@ $region = '';
 // Name of the TargetPool resource to return.
 $targetPool = '';
 
-$response = $service->targetPools->getTargetPools($project, $region, $targetPool);
+$response = $service->targetPools->get($project, $region, $targetPool);
 
 <?php
 /*
@@ -5593,7 +5549,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
@@ -5601,7 +5556,9 @@ $region = '';
 // Name of the TargetPool resource to which the queried instance belongs.
 $targetPool = '';
 
-$response = $service->targetPools->getHealthTargetPools($project, $region, $targetPool);
+$postBody = new Google_Service_Compute_InstanceReference($client);
+
+$response = $service->targetPools->getHealth($project, $region, $targetPool, $postBody);
 
 <?php
 /*
@@ -5627,13 +5584,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
 $region = '';
 
-$response = $service->targetPools->insertTargetPools($project, $region);
+$postBody = new Google_Service_Compute_TargetPool($client);
+
+$response = $service->targetPools->insert($project, $region, $postBody);
 
 <?php
 /*
@@ -5659,7 +5617,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
@@ -5695,7 +5652,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region for this request.
@@ -5703,7 +5659,9 @@ $region = '';
 // Name of the target pool to remove health checks from.
 $targetPool = '';
 
-$response = $service->targetPools->removeHealthCheckTargetPools($project, $region, $targetPool);
+$postBody = new Google_Service_Compute_TargetPoolsRemoveHealthCheckRequest($client);
+
+$response = $service->targetPools->removeHealthCheck($project, $region, $targetPool, $postBody);
 
 <?php
 /*
@@ -5729,7 +5687,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
@@ -5737,7 +5694,9 @@ $region = '';
 // Name of the TargetPool resource to remove instances from.
 $targetPool = '';
 
-$response = $service->targetPools->removeInstanceTargetPools($project, $region, $targetPool);
+$postBody = new Google_Service_Compute_TargetPoolsRemoveInstanceRequest($client);
+
+$response = $service->targetPools->removeInstance($project, $region, $targetPool, $postBody);
 
 <?php
 /*
@@ -5763,7 +5722,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region scoping this request.
@@ -5771,7 +5729,9 @@ $region = '';
 // Name of the TargetPool resource to set a backup pool for.
 $targetPool = '';
 
-$response = $service->targetPools->setBackupTargetPools($project, $region, $targetPool);
+$postBody = new Google_Service_Compute_TargetReference($client);
+
+$response = $service->targetPools->setBackup($project, $region, $targetPool, $postBody);
 
 <?php
 /*
@@ -5797,11 +5757,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->targetVpnGateways->aggregatedListTargetVpnGateways($project);
+$response = $service->targetVpnGateways->aggregatedList($project);
 
 foreach ($response['items']  as $key => $value) {
   // TODO: Add code here to process $key => $value
@@ -5831,7 +5790,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region for this request.
@@ -5839,7 +5797,7 @@ $region = '';
 // Name of the target VPN gateway to delete.
 $targetVpnGateway = '';
 
-$response = $service->targetVpnGateways->deleteTargetVpnGateways($project, $region, $targetVpnGateway);
+$response = $service->targetVpnGateways->delete($project, $region, $targetVpnGateway);
 
 <?php
 /*
@@ -5865,7 +5823,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region for this request.
@@ -5873,7 +5830,7 @@ $region = '';
 // Name of the target VPN gateway to return.
 $targetVpnGateway = '';
 
-$response = $service->targetVpnGateways->getTargetVpnGateways($project, $region, $targetVpnGateway);
+$response = $service->targetVpnGateways->get($project, $region, $targetVpnGateway);
 
 <?php
 /*
@@ -5899,13 +5856,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region for this request.
 $region = '';
 
-$response = $service->targetVpnGateways->insertTargetVpnGateways($project, $region);
+$postBody = new Google_Service_Compute_TargetVpnGateway($client);
+
+$response = $service->targetVpnGateways->insert($project, $region, $postBody);
 
 <?php
 /*
@@ -5931,7 +5889,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region for this request.
@@ -5967,13 +5924,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the UrlMap resource to delete.
 $urlMap = '';
 
-$response = $service->urlMaps->deleteUrlMaps($project, $urlMap);
+$response = $service->urlMaps->delete($project, $urlMap);
 
 <?php
 /*
@@ -5999,13 +5955,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the UrlMap resource to return.
 $urlMap = '';
 
-$response = $service->urlMaps->getUrlMaps($project, $urlMap);
+$response = $service->urlMaps->get($project, $urlMap);
 
 <?php
 /*
@@ -6031,11 +5986,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->urlMaps->insertUrlMaps($project);
+$postBody = new Google_Service_Compute_UrlMap($client);
+
+$response = $service->urlMaps->insert($project, $postBody);
 
 <?php
 /*
@@ -6061,7 +6017,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
@@ -6095,13 +6050,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the UrlMap resource to update.
 $urlMap = '';
 
-$response = $service->urlMaps->patchUrlMaps($project, $urlMap);
+$postBody = new Google_Service_Compute_UrlMap($client);
+
+$response = $service->urlMaps->patch($project, $urlMap, $postBody);
 
 <?php
 /*
@@ -6127,13 +6083,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the UrlMap resource to update.
 $urlMap = '';
 
-$response = $service->urlMaps->updateUrlMaps($project, $urlMap);
+$postBody = new Google_Service_Compute_UrlMap($client);
+
+$response = $service->urlMaps->update($project, $urlMap, $postBody);
 
 <?php
 /*
@@ -6159,13 +6116,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the UrlMap resource to be validated as.
 $urlMap = '';
 
-$response = $service->urlMaps->validateUrlMaps($project, $urlMap);
+$postBody = new Google_Service_Compute_UrlMapsValidateRequest($client);
+
+$response = $service->urlMaps->validate($project, $urlMap, $postBody);
 
 <?php
 /*
@@ -6191,11 +6149,10 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 
-$response = $service->vpnTunnels->aggregatedListVpnTunnels($project);
+$response = $service->vpnTunnels->aggregatedList($project);
 
 foreach ($response['items']  as $key => $value) {
   // TODO: Add code here to process $key => $value
@@ -6225,7 +6182,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region for this request.
@@ -6233,7 +6189,7 @@ $region = '';
 // Name of the VpnTunnel resource to delete.
 $vpnTunnel = '';
 
-$response = $service->vpnTunnels->deleteVpnTunnels($project, $region, $vpnTunnel);
+$response = $service->vpnTunnels->delete($project, $region, $vpnTunnel);
 
 <?php
 /*
@@ -6259,7 +6215,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region for this request.
@@ -6267,7 +6222,7 @@ $region = '';
 // Name of the VpnTunnel resource to return.
 $vpnTunnel = '';
 
-$response = $service->vpnTunnels->getVpnTunnels($project, $region, $vpnTunnel);
+$response = $service->vpnTunnels->get($project, $region, $vpnTunnel);
 
 <?php
 /*
@@ -6293,13 +6248,14 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region for this request.
 $region = '';
 
-$response = $service->vpnTunnels->insertVpnTunnels($project, $region);
+$postBody = new Google_Service_Compute_VpnTunnel($client);
+
+$response = $service->vpnTunnels->insert($project, $region, $postBody);
 
 <?php
 /*
@@ -6325,7 +6281,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the region for this request.
@@ -6361,7 +6316,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the zone for this request.
@@ -6369,7 +6323,7 @@ $zone = '';
 // Name of the Operations resource to delete.
 $operation = '';
 
-$response = $service->zoneOperations->deleteZoneOperations($project, $zone, $operation);
+$response = $service->zoneOperations->delete($project, $zone, $operation);
 
 <?php
 /*
@@ -6395,7 +6349,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the zone for this request.
@@ -6403,7 +6356,7 @@ $zone = '';
 // Name of the Operations resource to return.
 $operation = '';
 
-$response = $service->zoneOperations->getZoneOperations($project, $zone, $operation);
+$response = $service->zoneOperations->get($project, $zone, $operation);
 
 <?php
 /*
@@ -6429,7 +6382,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the zone for request.
@@ -6465,13 +6417,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 // Name of the zone resource to return.
 $zone = '';
 
-$response = $service->zones->getZones($project, $zone);
+$response = $service->zones->get($project, $zone);
 
 <?php
 /*
@@ -6497,7 +6448,6 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new Compute service
 $service = new Google_Service_Compute($client);
-
 // Project ID for this request.
 $project = '';
 

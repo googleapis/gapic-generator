@@ -15,12 +15,11 @@
 package com.google.api.codegen;
 
 import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.ProtoElement;
 
 /**
  * An implementation of InputElementProvider is a strategy object, encapsulating a strategy for
- * retrieving a ProtoElement from a model.
+ * retrieving a sequence of items from a model.
  */
-public interface InputElementView<InputElementT extends ProtoElement> {
+public interface InputElementView<InputElementT> {
   public Iterable<InputElementT> getElementIterable(Model model);
 }

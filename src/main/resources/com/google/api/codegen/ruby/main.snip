@@ -130,15 +130,17 @@
 @end
 
 @private constructDefaults(service)
-  @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
-    @@defaults = client_config.open do |f|
+  @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
+       jsonBaseName = {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
+    client_config_file = Pathname.new(__dir__).join(
+      '{@jsonBaseName}_client_config.json')
+    @@defaults = client_config_file.open do |f|
       @if or(context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods), \
              context.messages.filterBundlingMethods(ifaceConfig, service.getMethods))
         Google::Gax.construct_settings(
           '{@service.getFullName}',
           JSON.parse(f.read),
-          bundling_override,
-          retrying_override,
+          client_config,
           Google::Gax::Grpc::STATUS_CODE_NAMES,
           timeout,
           @if context.messages.filterBundlingMethods(ifaceConfig, service.getMethods)
@@ -154,10 +156,9 @@
       @else
         Google::Gax.construct_settings(
           '{@service.getFullName}',
-          json.loads(client_config),
-          bundling_override,
-          retrying_override,
-          config.STATUS_CODE_NAMES,
+          JSON.parse(f.read),
+          client_config,
+          Google::Gax::Grpc::STATUS_CODE_NAMES,
           timeout)
       @end
     end
@@ -165,28 +166,20 @@
 @end
 
 @private initMethodSection(service)
-  @let jsonBaseName = {@context.upperCamelToLowerUnderscore(service.getSimpleName)}, \
-       ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
+  @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
     @# @@param service_path [String]
     @#   The domain name of the API remote host.
     @# @@param port [Integer]
     @#   The port on which to connect to the remote host.
     @# @@param channel [Channel]
     @#   A Channel object through which to make calls.
-    @# @@param ssl_creds [Grpc::ClientCredentials]
-    @#   A ClientCredentials for use with an SSL-enabled channel.
-    @# @@param retrying_override [Hash{String => RetryOptions}]
-    @#   A Hash that overrides default retrying settings.
-    @#   +retrying_override+ maps method names (e.g., +'list_foo'+) to
-    @#   custom RetryOptions objects, or to nil. A value of nil indicates
-    @#   that the method in question should not retry.
-    @# @@param bundling_override [Hash{String => BundleOptions}]
-    @#   A Hash that overrides default bundling settings.
-    @#   +bundling_override+ maps bundling method names (e.g.,
-    @#   +'publish_foo'+) to custom BundleOptions objects, or to nil. It is
-    @#   invalid to have a key for a method that is not bundling-enabled. A
-    @#   value of nil indicates that the method in question should not
-    @#   bundle.
+    @# @@param chan_creds [Grpc::ChannelCredentials]
+    @#   A ChannelCredentials for the setting up the RPC client.
+    @# @@param client_config[Hash]
+    @#   A Hash for call options for each method. See
+    @#   Google::Gax#construct_settings for the structure of
+    @#   this data. Falls back to the default config if not specified
+    @#   or the specified config is missing data points.
     @# @@param timeout [Numeric]
     @#   The default timeout, in seconds, for calls made through this client.
     @# @@param app_name [String]
@@ -197,15 +190,12 @@
       service_path: SERVICE_ADDRESS,
       port: DEFAULT_SERVICE_PORT,
       channel: nil,
-      ssl_creds: nil,
+      chan_creds: nil,
       scopes: ALL_SCOPES,
-      retrying_override: {},
-      bundling_override: {},
+      client_config: {},
       timeout: DEFAULT_TIMEOUT,
       app_name: 'gax',
       app_version: Google::Gax::VERSION)
-      client_config = Pathname.new(__dir__).join(
-        '{@jsonBaseName}_client_config.json')
       {@constructDefaults(service)}
       google_api_client = "#{app_name}/#{app_version} " @\
         "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze
@@ -213,7 +203,7 @@
       @@stub = Google::Gax::Grpc.create_stub(
         service_path,
         port,
-        chan_creds: ssl_creds,
+        chan_creds: chan_creds,
         channel: channel,
         scopes: scopes,
         &{@context.getApiConfig.getPackageName}::{@service.getSimpleName}::Stub.method(:new)
@@ -262,13 +252,17 @@
 
       {@createResourceFunction(collectionConfig)}
     @end
+    @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
+
+        {@createMatchFunctions(collectionConfig)}
+    @end
   @end
 @end
 
 @private createResourceFunction(collectionConfig)
   @# Returns a fully-qualified {@collectionConfig.getEntityName} resource name string.
   @join param : collectionConfig.getNameTemplate.vars()
-  @# @@param {@param} [String]
+    @# @@param {@param} [String]
   @end
   @# @@return [String]
   def self.{@collectionConfig.getEntityName}_path({@createResourceFunctionParams(collectionConfig)})
@@ -289,6 +283,22 @@
   @end
 @end
 
+@private createMatchFunctions(collectionConfig)
+  @join subField : collectionConfig.getNameTemplate.vars() on BREAK.add(BREAK)
+    @let fieldPath = resourceName(collectionConfig)
+      @# Parses the {@subField} from a {@collectionConfig.getEntityName} resource.
+      @# @@param {@fieldPath} [String]
+      @# @@return [String]
+      def self.match_{@subField}_from_{@fieldPath}({@fieldPath})
+        {@pathTemplateName(collectionConfig)}.match({@fieldPath})['{@subField}']
+      end
+    @end
+  @end
+@end
+
+@private resourceName(collectionConfig)
+  {@collectionConfig.getEntityName}_name
+@end
 @private comments(commentLines)
   @join comment : commentLines
     @# {@comment}

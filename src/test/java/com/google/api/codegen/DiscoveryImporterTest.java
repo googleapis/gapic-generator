@@ -84,6 +84,11 @@ public class DiscoveryImporterTest {
     Truth.assertThat(requestType.getFields(1).getName()).isEqualTo("request$");
     Truth.assertThat(requestType.getFields(1).getKind()).isEqualTo(Field.Kind.TYPE_MESSAGE);
     Truth.assertThat(requestType.getFields(1).getTypeUrl()).isEqualTo("SetIamPolicyRequest");
+
+    Truth.assertThat(imp.getConfig().getAuthScopes().get(method.getName()))
+        .containsExactly(
+            "https://www.googleapis.com/auth/cloud-platform",
+            "https://www.googleapis.com/auth/pubsub");
   }
 
   @Test

@@ -1,4 +1,11 @@
 @snippet fileHeader(service)
+  {@license()}
+
+  {@editingInstructions(service)}
+
+@end
+
+@snippet license()
   /*
    * Copyright 2016 Google Inc. All Rights Reserved.
    *
@@ -12,7 +19,9 @@
    * or implied. See the License for the specific language governing permissions and limitations under
    * the License.
    */
+@end
 
+@private editingInstructions(service)
   /*
    * EDITING INSTRUCTIONS
    * This file was generated from the file
@@ -31,7 +40,6 @@
    *
    * Happy editing!
    */
-
 @end
 
 @snippet autoGenClassWarning()
@@ -143,4 +151,16 @@
       1 #INVALID
     @end
   @end
+@end
+
+@snippet formatResourceFunctionName(collectionConfig)
+  format{@resourceName(collectionConfig)}
+@end
+
+@snippet resourceName(collectionConfig)
+  {@context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName)}Name
+@end
+
+@snippet elementTypeName(resourcesField)
+  {@context.basicTypeNameBoxed(resourcesField.getType())}
 @end

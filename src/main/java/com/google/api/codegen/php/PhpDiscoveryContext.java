@@ -14,11 +14,13 @@
  */
 package com.google.api.codegen.php;
 
-import com.google.api.Service;
 import com.google.api.client.util.DateTime;
 import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.DiscoveryContext;
+import com.google.api.Service;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
@@ -37,6 +39,8 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
    */
   private static final ImmutableMap<String, String> RENAMED_PACKAGE_MAP =
       ImmutableMap.<String, String>builder()
+          .put("Cloudtrace", "CloudTrace")
+          .put("Clouddebugger", "CloudDebugger")
           .put("Cloudmonitoring", "CloudMonitoring")
           .put("Cloudresourcemanager", "CloudResourceManager")
           .put("Clouduseraccounts", "CloudUserAccounts")
@@ -52,10 +56,29 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
           .put(Field.Kind.TYPE_BOOL, "false")
           .put(Field.Kind.TYPE_INT32, "0")
           .put(Field.Kind.TYPE_UINT32, "0")
-          .put(Field.Kind.TYPE_INT64, "0")
-          .put(Field.Kind.TYPE_UINT64, "0")
           .put(Field.Kind.TYPE_FLOAT, "0.0")
           .put(Field.Kind.TYPE_DOUBLE, "0.0")
+          // As a work-around in Javascript(Javascript uses string to hold 64bit integers)
+          // Disovery importer treats number format strings as TYPE_INT64 or TYPE_UINT64
+          // depending on the string format.
+          .put(Field.Kind.TYPE_INT64, "\'0\'")
+          .put(Field.Kind.TYPE_UINT64, "\'0\'")
+          .build();
+
+  /**
+   * A set that contains the method names that have extra suffix in the PHP client code. Some PHP
+   * methods appends resource path in camel case, e.g. list -> listAppResources
+   */
+  private static final ImmutableSet<String> RENAMED_METHODS =
+      ImmutableSet.<String>builder().add("list").add("clone").build();
+
+  /**
+   * A map that maps the original request class name to its renamed version used in PHP client
+   * code.
+   */
+  private static final ImmutableMap<String, String> RENAMED_REQUESTS =
+      ImmutableMap.<String, String>builder()
+          .put("Google_Service_Storage_Object", "Google_Service_Storage_StorageObject")
           .build();
 
   /**
@@ -66,7 +89,7 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
   }
 
   @Override
-  public void resetState(PhpSnippetSet<?> phpSnippetSet, PhpContextCommon phpCommon) {
+  public void resetState(PhpContextCommon phpCommon) {
     // TODO implement when necessary
   }
 
@@ -74,13 +97,29 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
   // ===============
 
   @Override
+  /**
+   * Returns the method names used in the PHP client code.
+   */
   public String getMethodName(Method method) {
-    String name = super.getMethodName(method);
-    List<String> resources = getApiaryConfig().getResources(method.getName());
-    if (resources != null && resources.size() > 0) {
-      name = name + lowerCamelToUpperCamel(resources.get(resources.size() -1));
+    StringBuilder builder = new StringBuilder(super.getMethodName(method));
+    if (RENAMED_METHODS.contains(super.getMethodName(method))) {
+      List<String> resources = getApiaryConfig().getResources(method.getName());
+      for (String resource : resources) {
+        builder.append(lowerCamelToUpperCamel(resource));
+      }
     }
-    return name;
+    return builder.toString();
+  }
+
+  /**
+   * Returns a list of parameters that includes "postBody" if the method has a request.
+   */
+  public List<String> getFlatMethodParamsWithRequest(Method method) {
+    List<String> params = getFlatMethodParams(method);
+    if (hasRequestField(method)) {
+      params.add("postBody");
+    }
+    return params;
   }
 
   /**
@@ -91,6 +130,22 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
   }
 
   /**
+   * Returns the request class name of the given method in PHP. If the method does not have a
+   * request returns an empty string.
+   */
+  public String getRequestClassName(Method method) {
+    if (hasRequestField(method)) {
+      String baseType = getRequestField(method).getTypeUrl();
+      String requestName = getServiceClassName() + "_" + baseType;
+      if (RENAMED_REQUESTS.containsKey(requestName)) {
+        requestName = RENAMED_REQUESTS.get(requestName);
+      }
+      return requestName;
+    }
+    return "";
+  }
+
+  /**
    * Returns the service class name in PHP.
    */
   public String getServiceClassName() {
@@ -98,8 +153,8 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
   }
 
   /**
-   * Generates placeholder value for field of type based on field kind and,
-   * for explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.
+   * Generates placeholder value for field of type based on field kind and, for
+   * explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.
    */
   public String typeDefaultValue(Type type, Field field) {
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
@@ -110,22 +165,19 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
       if (defaultPrimitiveValue != null) {
         return defaultPrimitiveValue;
       } else if (kind.equals(Field.Kind.TYPE_STRING)) {
-        String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
-        if (stringFormat != null) {
-          switch (stringFormat) {
-            case "date":
-              return "\'1969-12-31\'";
-            case "date-time":
-              return "\'"
-                  + new DateTime(0L).toStringRfc3339()
-                  + "\'";
-            default:
-              // Fall through
-          }
-        }
-        return "\'\'";
+        return getDefaultString(type, field);
       }
     }
     return "null";
+  }
+
+  @Override
+  public String stringLiteral(String value) {
+    return "'" + value + "'";
+  }
+
+  @Override
+  public String lineEnding(String value) {
+    return value;
   }
 }

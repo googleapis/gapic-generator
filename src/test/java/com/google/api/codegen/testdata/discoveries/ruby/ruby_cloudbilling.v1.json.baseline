@@ -1,0 +1,123 @@
+
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Billing API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudbilling_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudbilling_v1'
+
+service = Google::Apis::CloudbillingV1::CloudbillingService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'get_billing_account' method:
+# The resource name of the billing account to retrieve. For example,
+# `billingAccounts/012345-567890-ABCDEF`.
+name = 'billingAccounts/{MY-BILLINGACCOUNT}'
+
+
+# Perform the call
+response = service.get_billing_account(name)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Billing API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudbilling_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudbilling_v1'
+
+service = Google::Apis::CloudbillingV1::CloudbillingService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+
+
+# Perform the call
+result_list = service.fetch_all(items: :billingAccounts) { |token|
+  service.list_billing_accounts(, page_token: token)
+}
+result_list.each { |element|
+  # doThingsWith(element)
+}
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Billing API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudbilling_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudbilling_v1'
+
+service = Google::Apis::CloudbillingV1::CloudbillingService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'list_billing_account_projects' method:
+# The resource name of the billing account associated with the projects that you want to list. For
+# example, `billingAccounts/012345-567890-ABCDEF`.
+name = 'billingAccounts/{MY-BILLINGACCOUNT}'
+
+
+# Perform the call
+result_list = service.fetch_all(items: :projectBillingInfo) { |token|
+  service.list_billing_account_projects(name, page_token: token)
+}
+result_list.each { |element|
+  # doThingsWith(element)
+}
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Billing API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudbilling_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudbilling_v1'
+
+service = Google::Apis::CloudbillingV1::CloudbillingService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'get_project_billing_info' method:
+# The resource name of the project for which billing information is retrieved. For example,
+# `projects/tokyo-rain-123`.
+name = 'projects/{MY-PROJECT}'
+
+
+# Perform the call
+response = service.get_project_billing_info(name)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Google Cloud Billing API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/cloudbilling_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/cloudbilling_v1'
+
+service = Google::Apis::CloudbillingV1::CloudbillingService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'update_project_billing_info' method:
+# The resource name of the project associated with the billing information that you want to update.
+# For example, `projects/tokyo-rain-123`.
+name = 'projects/{MY-PROJECT}'
+project_billing_info_object = Google::Apis::CloudbillingV1::ProjectBillingInfo.new
+
+
+# Perform the call
+response = service.update_project_billing_info(name, project_billing_info_object)

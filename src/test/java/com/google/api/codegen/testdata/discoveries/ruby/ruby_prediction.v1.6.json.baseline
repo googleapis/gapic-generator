@@ -1,0 +1,204 @@
+
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Prediction API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/prediction_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/prediction_v1_6'
+
+service = Google::Apis::PredictionV1_6::PredictionService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'predict_hosted_model' method:
+# The project associated with the model.
+project = ''
+
+# The name of a hosted model.
+hosted_model_name = ''
+input_object = Google::Apis::PredictionV1_6::Input.new
+
+
+# Perform the call
+response = service.predict_hosted_model(project, hosted_model_name, input_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Prediction API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/prediction_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/prediction_v1_6'
+
+service = Google::Apis::PredictionV1_6::PredictionService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'analyze_trained_model' method:
+# The project associated with the model.
+project = ''
+
+# The unique name for the predictive model.
+id = ''
+
+
+# Perform the call
+response = service.analyze_trained_model(project, id)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Prediction API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/prediction_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/prediction_v1_6'
+
+service = Google::Apis::PredictionV1_6::PredictionService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'delete_trained_model' method:
+# The project associated with the model.
+project = ''
+
+# The unique name for the predictive model.
+id = ''
+
+
+# Perform the call
+service.delete_trained_model(project, id)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Prediction API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/prediction_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/prediction_v1_6'
+
+service = Google::Apis::PredictionV1_6::PredictionService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'get_trained_model' method:
+# The project associated with the model.
+project = ''
+
+# The unique name for the predictive model.
+id = ''
+
+
+# Perform the call
+response = service.get_trained_model(project, id)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Prediction API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/prediction_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/prediction_v1_6'
+
+service = Google::Apis::PredictionV1_6::PredictionService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'insert_trained_model' method:
+# The project associated with the model.
+project = ''
+insert_object = Google::Apis::PredictionV1_6::Insert.new
+
+
+# Perform the call
+response = service.insert_trained_model(project, insert_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Prediction API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/prediction_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/prediction_v1_6'
+
+service = Google::Apis::PredictionV1_6::PredictionService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'list_trained_models' method:
+# The project associated with the model.
+project = ''
+
+
+# Perform the call
+result_list = service.fetch_all(items: :items) { |token|
+  service.list_trained_models(project, page_token: token)
+}
+result_list.each { |element|
+  # doThingsWith(element)
+}
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Prediction API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/prediction_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/prediction_v1_6'
+
+service = Google::Apis::PredictionV1_6::PredictionService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'predict_trained_model' method:
+# The project associated with the model.
+project = ''
+
+# The unique name for the predictive model.
+id = ''
+input_object = Google::Apis::PredictionV1_6::Input.new
+
+
+# Perform the call
+response = service.predict_trained_model(project, id, input_object)
+# PRE-REQUISITES:
+# ---------------
+# 1. If not already done, enable the Prediction API and check the quota for your project at
+#    https://console.developers.google.com/apis/api/prediction_component/quotas
+# 2. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+# 3. To install the client library and Application Default Credentials library, run:
+#    'gem install google-api-client'
+#    'gem install googleauth'
+require 'googleauth'
+require 'google/apis/prediction_v1_6'
+
+service = Google::Apis::PredictionV1_6::PredictionService.new
+service.authorization = Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
+
+# TODO: Change placeholders below to appropriate parameter values for the 'update_trained_model' method:
+# The project associated with the model.
+project = ''
+
+# The unique name for the predictive model.
+id = ''
+update_object = Google::Apis::PredictionV1_6::Update.new
+
+
+# Perform the call
+response = service.update_trained_model(project, id, update_object)

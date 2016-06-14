@@ -20,8 +20,8 @@ import java.util.Map;
 
 /**
  * A CodegenContext or a derived class of it provides helper methods for snippet files to get data
- * and perform data transformations that are difficult or messy to do in the snippets themselves. At
- * this level, functions are provided that are not specific to any language or use case. The
+ * and perform data transformations that are difficult or messy to do in the snippets themselves.
+ * At this level, functions are provided that are not specific to any language or use case. The
  * CodegenContext hierarchy specializes first by use case (e.g. Gapic vs Discovery), and
  * secondarily by language.
  */
@@ -76,6 +76,10 @@ public class CodegenContext {
 
   public String lowerCamelToUpperCamel(String name) {
     return LanguageUtil.lowerCamelToUpperCamel(name);
+  }
+
+  public String lowerCamelToLowerUnderscore(String name) {
+    return LanguageUtil.lowerCamelToLowerUnderscore(name);
   }
 
   /*
