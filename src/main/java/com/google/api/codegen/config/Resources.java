@@ -89,18 +89,22 @@ public class Resources {
     Set<String> usedNameSet = new HashSet<>();
     Map<String, String> nameMap = new LinkedHashMap<>();
     for (FieldSegment segment : segments) {
-      String resourceNameString = Resources.templatize(segment);
-      String entityNameStringBase = Resources.getEntityName(segment);
-      String entityNameString = entityNameStringBase;
-      int index = 1;
-      while (usedNameSet.contains(entityNameString)) {
-        index += 1;
-        entityNameString = entityNameStringBase + "_" + Integer.toString(index);
-      }
+      String resourceNameString = templatize(segment);
+      String entityNameString = getUniqueName(getEntityName(segment), usedNameSet);
       usedNameSet.add(entityNameString);
       nameMap.put(resourceNameString, entityNameString);
     }
     return nameMap;
+  }
+
+  private static String getUniqueName(String desiredName, Set<String> usedNameSet) {
+    String actualName = desiredName;
+    int i = 2;
+    while (usedNameSet.contains(actualName)) {
+      actualName = desiredName + "_" + i;
+      i += 1;
+    }
+    return actualName;
   }
 
   /**
