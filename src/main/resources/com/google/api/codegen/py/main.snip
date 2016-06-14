@@ -165,7 +165,7 @@
                 client_config,
                 config.STATUS_CODE_NAMES,
                 timeout,
-                metadata=metadata,
+                kwargs={'metadata': metadata},
                 @if context.messages.filterBundlingMethods(ifaceConfig, service.getMethods)
                     @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
                         bundle_descriptors=self._BUNDLE_DESCRIPTORS,
@@ -182,8 +182,8 @@
                 default_client_config,
                 client_config,
                 config.STATUS_CODE_NAMES,
-                timeout
-                metadata=metadata)
+                timeout,
+                kwargs={'metadata': metadata})
         @end
     @end
 @end
