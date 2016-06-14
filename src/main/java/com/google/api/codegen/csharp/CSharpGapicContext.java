@@ -739,7 +739,8 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
                 new Function<Field, Iterable<String>>() {
                   @Override
                   public Iterable<String> apply(Field param) {
-                    String paramName = CSharpContextCommon.s_underscoresToCamelCase(param.getSimpleName());
+                    String paramName =
+                        CSharpContextCommon.s_underscoresToCamelCase(param.getSimpleName());
                     String header = "/// <param name=\"" + paramName + "\">";
                     List<String> lines = docLines(param, "");
                     if (lines.size() > 1) {
