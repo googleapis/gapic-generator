@@ -170,7 +170,19 @@ public class MainGapicProviderFactory
               .setSnippetFileNames(Arrays.asList("main.snip"))
               .setCodePathMapper(phpPathMapper)
               .build();
-      return Arrays.<GapicProvider<? extends Object>>asList(provider);
+
+      GapicCodePathMapper phpClientConfigPathMapper =
+          CommonGapicCodePathMapper.newBuilder().setPrefix("resources").build();
+      GapicProvider<? extends Object> clientConfigProvider =
+          CommonGapicProvider.<Interface>newBuilder()
+              .setModel(model)
+              .setView(new InterfaceView())
+              .setContext(new ClientConfigGapicContext(model, apiConfig))
+              .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
+              .setSnippetFileNames(Arrays.asList("json.snip"))
+              .setCodePathMapper(phpClientConfigPathMapper)
+              .build();
+      return Arrays.<GapicProvider<? extends Object>>asList(provider, clientConfigProvider);
 
     } else if (id.equals(PYTHON)) {
       GapicCodePathMapper pythonPathMapper =
