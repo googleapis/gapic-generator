@@ -81,9 +81,8 @@ public class Resources {
 
   public static String getEntityName(FieldSegment segment) {
     Preconditions.checkArgument(isTemplateFieldSegment(segment));
-    List<LiteralWildcardSegment> literalWildcardSegments =
-        getWildcardCollectionMapFieldSegment(segment);
-    return literalWildcardSegments.get(literalWildcardSegments.size() - 1).paramName();
+    List<NamedWildcard> namedWildcardList = getNamedWildcards(segment);
+    return namedWildcardList.get(namedWildcardList.size() - 1).paramName();
   }
 
   public static Map<String, String> getResourceToEntityNameMap(Iterable<FieldSegment> segments) {
@@ -120,9 +119,8 @@ public class Resources {
   public static String templatize(FieldSegment fieldSegment) {
     List<String> componentStrings = new ArrayList<String>();
 
-    for (LiteralWildcardSegment literalWildcardSegment :
-        getWildcardCollectionMapFieldSegment(fieldSegment)) {
-      componentStrings.add(literalWildcardSegment.resourcePathString());
+    for (NamedWildcard namedWildcard : getNamedWildcards(fieldSegment)) {
+      componentStrings.add(namedWildcard.resourcePathString());
     }
 
     return Joiner.on("/").join(componentStrings);
@@ -145,22 +143,20 @@ public class Resources {
     return true;
   }
 
-  private static List<LiteralWildcardSegment> getWildcardCollectionMapFieldSegment(
-      FieldSegment fieldSegment) {
-    List<LiteralWildcardSegment> wildcardCollectionSegments = new ArrayList<>();
+  private static List<NamedWildcard> getNamedWildcards(FieldSegment fieldSegment) {
+    List<NamedWildcard> namedWildcardList = new ArrayList<>();
 
     PathSegment lastSegment = null;
     for (PathSegment pathSegment : fieldSegment.getSubPath()) {
       if (pathSegment instanceof WildcardSegment
           && lastSegment != null
           && lastSegment instanceof LiteralSegment) {
-        wildcardCollectionSegments.add(
-            LiteralWildcardSegment.create(
-                (LiteralSegment) lastSegment, (WildcardSegment) pathSegment));
+        namedWildcardList.add(
+            NamedWildcard.create((LiteralSegment) lastSegment, (WildcardSegment) pathSegment));
       }
       lastSegment = pathSegment;
     }
 
-    return wildcardCollectionSegments;
+    return namedWildcardList;
   }
 }

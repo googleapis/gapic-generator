@@ -23,11 +23,11 @@ import com.google.auto.value.AutoValue;
  * Class to hold a LiteralSegment and WildcardSegment pair
  */
 @AutoValue
-public abstract class LiteralWildcardSegment {
+public abstract class NamedWildcard {
 
-  public static LiteralWildcardSegment create(
+  public static NamedWildcard create(
       LiteralSegment literalSegment, WildcardSegment wildcardSegment) {
-    return new AutoValue_LiteralWildcardSegment(literalSegment, wildcardSegment);
+    return new AutoValue_NamedWildcard(literalSegment, wildcardSegment);
   }
 
   public abstract LiteralSegment literalSegment();
