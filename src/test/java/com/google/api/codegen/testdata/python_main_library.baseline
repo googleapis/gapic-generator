@@ -387,6 +387,7 @@ class LibraryServiceApi(object):
 
     def list_shelves(
             self,
+            page_token='',
             options=None):
         """
         Lists shelves.
@@ -408,6 +409,10 @@ class LibraryServiceApi(object):
           >>>     pass
 
         Args:
+          page_token (string): A token identifying a page of results the server should return.
+            Typically, this is the value of
+            ``ListShelvesResponse.next_page_token``
+            returned from the previous call to ``ListShelves`` method.
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
 
@@ -420,7 +425,8 @@ class LibraryServiceApi(object):
         Raises:
           :exc:`google.gax.errors.GaxError` if the RPC is aborted.
         """
-        request = library_pb2.ListShelvesRequest()
+        request = library_pb2.ListShelvesRequest(
+            page_token=page_token)
         return self._list_shelves(request, options)
 
     def delete_shelf(
@@ -583,6 +589,7 @@ class LibraryServiceApi(object):
             self,
             name,
             page_size=0,
+            page_token='',
             filter_='',
             options=None):
         """
@@ -612,6 +619,10 @@ class LibraryServiceApi(object):
             resource, this parameter does not affect the return value. If page
             streaming is performed per-page, this determines the maximum number
             of resources in a page.
+          page_token (string): A token identifying a page of results the server should return.
+            Typically, this is the value of
+            ``ListBooksResponse.next_page_token``.
+            returned from the previous call to ``ListBooks`` method.
           filter (string): To test python built-in wrapping.
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
@@ -628,6 +639,7 @@ class LibraryServiceApi(object):
         request = library_pb2.ListBooksRequest(
             name=name,
             page_size=page_size,
+            page_token=page_token,
             filter=filter_)
         return self._list_books(request, options)
 
@@ -735,6 +747,7 @@ class LibraryServiceApi(object):
             self,
             name='',
             page_size=0,
+            page_token='',
             options=None):
         """
         Lists a primitive resource. To test go page streaming.
@@ -762,6 +775,7 @@ class LibraryServiceApi(object):
             resource, this parameter does not affect the return value. If page
             streaming is performed per-page, this determines the maximum number
             of resources in a page.
+          page_token (string)
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
 
@@ -776,7 +790,8 @@ class LibraryServiceApi(object):
         """
         request = library_pb2.ListStringsRequest(
             name=name,
-            page_size=page_size)
+            page_size=page_size,
+            page_token=page_token)
         return self._list_strings(request, options)
 
     def add_comments(

@@ -344,6 +344,12 @@ LibraryServiceApi.prototype.getShelf = function getShelf() {
 /**
  * Lists shelves.
  *
+ * @param {?Object} otherArgs
+ * @param {String} otherArgs.pageToken
+ *   A token identifying a page of results the server should return.
+ *   Typically, this is the value of
+ *   {@link ListShelvesResponse.next_page_token}
+ *   returned from the previous call to `ListShelves` method.
  * @param {?gax.CallOptions} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
@@ -355,9 +361,11 @@ LibraryServiceApi.prototype.getShelf = function getShelf() {
  */
 LibraryServiceApi.prototype.listShelves = function listShelves() {
   var args = arguejs({
+    'otherArgs': [Object],
     'options': [gax.CallOptions]
   });
   var req = {
+    'page_token': args.otherArgs.pageToken || ''
   };
   var stream = through2.obj();
   Promise.all([this.defaults, this.stub]).then(function(vars) {
@@ -575,6 +583,11 @@ LibraryServiceApi.prototype.getBook = function getBook() {
  *   parameter does not affect the return value. If page streaming is
  *   performed per-page, this determines the maximum number of
  *   resources in a page.
+ * @param {String} otherArgs.pageToken
+ *   A token identifying a page of results the server should return.
+ *   Typically, this is the value of
+ *   {@link ListBooksResponse.next_page_token}.
+ *   returned from the previous call to `ListBooks` method.
  * @param {String} otherArgs.filter
  *   To test python built-in wrapping.
  * @param {?gax.CallOptions} options
@@ -595,6 +608,7 @@ LibraryServiceApi.prototype.listBooks = function listBooks() {
   var req = {
     'name': args.name,
     'page_size': args.otherArgs.pageSize || 0,
+    'page_token': args.otherArgs.pageToken || '',
     'filter': args.otherArgs.filter || ''
   };
   var stream = through2.obj();
@@ -741,6 +755,7 @@ LibraryServiceApi.prototype.moveBook = function moveBook() {
  *   parameter does not affect the return value. If page streaming is
  *   performed per-page, this determines the maximum number of
  *   resources in a page.
+ * @param {String} otherArgs.pageToken
  * @param {?gax.CallOptions} options
  *   Overrides the default settings for this call, e.g, timeout,
  *   retries, etc.
@@ -757,7 +772,8 @@ LibraryServiceApi.prototype.listStrings = function listStrings() {
   });
   var req = {
     'name': args.otherArgs.name || '',
-    'page_size': args.otherArgs.pageSize || 0
+    'page_size': args.otherArgs.pageSize || 0,
+    'page_token': args.otherArgs.pageToken || ''
   };
   var stream = through2.obj();
   Promise.all([this.defaults, this.stub]).then(function(vars) {

@@ -275,6 +275,11 @@ module Google
 
           # Lists shelves.
           #
+          # @param page_token [String]
+          #   A token identifying a page of results the server should return.
+          #   Typically, this is the value of
+          #   ListShelvesResponse#next_page_token
+          #   returned from the previous call to +ListShelves+ method.
           # @param options [Google::Gax::CallOptions]
           #   Overrides the default settings for this call, e.g, timeout,
           #   retries, etc.
@@ -285,8 +290,10 @@ module Google
           #   object.
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           def list_shelves(
+            page_token: '',
             options: nil)
-            req = Google::Example::Library::V1::ListShelvesRequest.new
+            req = Google::Example::Library::V1::ListShelvesRequest.new(
+              page_token: page_token)
             settings = @defaults['list_shelves'].merge(options)
             api_call = Google::Gax.create_api_call(
               @stub.method(:list_shelves), settings)
@@ -420,6 +427,11 @@ module Google
           #   parameter does not affect the return value. If page streaming is
           #   performed per-page, this determines the maximum number of
           #   resources in a page.
+          # @param page_token [String]
+          #   A token identifying a page of results the server should return.
+          #   Typically, this is the value of
+          #   ListBooksResponse#next_page_token.
+          #   returned from the previous call to +ListBooks+ method.
           # @param filter [String]
           #   To test python built-in wrapping.
           # @param options [Google::Gax::CallOptions]
@@ -434,11 +446,13 @@ module Google
           def list_books(
             name,
             page_size: 0,
+            page_token: '',
             filter: '',
             options: nil)
             req = Google::Example::Library::V1::ListBooksRequest.new(
               name: name,
               page_size: page_size,
+              page_token: page_token,
               filter: filter)
             settings = @defaults['list_books'].merge(options)
             api_call = Google::Gax.create_api_call(
@@ -530,6 +544,7 @@ module Google
           #   parameter does not affect the return value. If page streaming is
           #   performed per-page, this determines the maximum number of
           #   resources in a page.
+          # @param page_token [String]
           # @param options [Google::Gax::CallOptions]
           #   Overrides the default settings for this call, e.g, timeout,
           #   retries, etc.
@@ -542,10 +557,12 @@ module Google
           def list_strings(
             name: '',
             page_size: 0,
+            page_token: '',
             options: nil)
             req = Google::Example::Library::V1::ListStringsRequest.new(
               name: name,
-              page_size: page_size)
+              page_size: page_size,
+              page_token: page_token)
             settings = @defaults['list_strings'].merge(options)
             api_call = Google::Gax.create_api_call(
               @stub.method(:list_strings), settings)
