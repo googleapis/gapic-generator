@@ -118,9 +118,8 @@
                     @let pageStreaming = ifaceConfig.getMethodConfig(method).getPageStreaming(), \
                             requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
                             responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
-                            resources = pageStreaming.getResourcesField().getSimpleName(), \
-                            methodName = context.upperCamelToLowerUnderscore(method.getSimpleName)
-                        '{@methodName}': _PageDesc(
+                            resources = pageStreaming.getResourcesField().getSimpleName()
+                        '{@methodName(method)}': _PageDesc(
                             '{@requestToken}',
                             '{@responseToken}',
                             '{@resources}'
@@ -134,9 +133,8 @@
             _BUNDLE_DESCRIPTORS = {
                 @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
                     @join method : context.messages.filterBundlingMethods(ifaceConfig, service.getMethods) on {@", "}.add(BREAK)
-                        @let bundling = ifaceConfig.getMethodConfig(method).getBundling(), \
-                                methodName = context.upperCamelToLowerUnderscore(method.getSimpleName)
-                            '{@methodName}': _BundleDesc(
+                        @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
+                            '{@methodName(method)}': _BundleDesc(
                                 {@bundleDescriptorBody(bundling, method)}
                             )
                         @end
@@ -162,12 +160,13 @@
             __name__, '{@jsonBaseName}_client_config.json'))
         @if or(context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods), \
                context.messages.filterBundlingMethods(ifaceConfig, service.getMethods))
-            self._defaults = api_callable.construct_settings(
+            defaults = api_callable.construct_settings(
                 '{@service.getFullName}',
                 default_client_config,
                 client_config,
                 config.STATUS_CODE_NAMES,
                 timeout,
+                kwargs={'metadata': metadata},
                 @if context.messages.filterBundlingMethods(ifaceConfig, service.getMethods)
                     @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
                         bundle_descriptors=self._BUNDLE_DESCRIPTORS,
@@ -179,12 +178,13 @@
                     page_descriptors=self._PAGE_DESCRIPTORS)
                 @end
         @else
-            self._defaults = api_callable.construct_settings(
+            defaults = api_callable.construct_settings(
                 '{@service.getFullName}',
                 default_client_config,
                 client_config,
                 config.STATUS_CODE_NAMES,
-                timeout)
+                timeout,
+                kwargs={'metadata': metadata})
         @end
     @end
 @end
@@ -233,7 +233,6 @@
                 scopes = self._ALL_SCOPES
             if client_config is None:
                 client_config = {}
-            {@constructDefaults(service)}
             goog_api_client = '{}/{} {} gax/{} python/{}'.format(
                 app_name,
                 app_version,
@@ -241,7 +240,8 @@
                 self._GAX_VERSION,
                 platform.python_version()
             )
-            self._headers = [('x-goog-api-client', goog_api_client)]
+            metadata = [('x-goog-api-client', goog_api_client)]
+            {@constructDefaults(service)}
             self.stub = config.create_stub(
                 {@stubModule}.beta_create_{@stubService}_stub,
                 service_path,
@@ -250,6 +250,11 @@
                 channel=channel,
                 metadata_transformer=metadata_transformer,
                 scopes=scopes)
+            @join method : service.getMethods
+                self._{@methodName(method)} = api_callable.create_api_call(
+                    self.stub.{@method.getSimpleName()},
+                    settings=defaults['{@methodName(method)}'])
+            @end
     @end
 @end
 
@@ -398,26 +403,27 @@
     @end
 @end
 
-@private callableConstructor(method)
-    api_call = api_callable.create_api_call(
-        self.stub.{@method.getSimpleName()}, settings=settings)
+@private callLine(method)
     @if pyproto.isEmptyMessage(method.getOutputMessage)
-        api_call(req, metadata=self._headers)
+        self._{@methodName(method)}(request, options)
     @else
-        return api_call(req, metadata=self._headers)
+        return self._{@methodName(method)}(request, options)
     @end
 @end
 
+@private methodName(method)
+    {@context.upperCamelToLowerUnderscore(method.getSimpleName())}
+@end
+
 @private flattenedMethod(service, method)
-    @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
-             methodInputModule = pyproto.getPbFileName(method.getInputMessage()), \
+    @let methodInputModule = pyproto.getPbFileName(method.getInputMessage()), \
              inputTypeName = method.getInputMessage().getSimpleName(), \
              documentation = methodComments(method), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              requiredParams = methodConfig.getRequiredFields(), \
              optionalParams = methodConfig.getOptionalFields()
         @if or(requiredParams, optionalParams)
-            def {@methodName}(
+            def {@methodName(method)}(
                     self,
                     @if requiredParams
                         @if optionalParams
@@ -438,29 +444,27 @@
                 @end
                 @if requiredParams
                     @if optionalParams
-                        req = {@methodInputModule}.{@inputTypeName}(
+                        request = {@methodInputModule}.{@inputTypeName}(
                             {@namedParameters(requiredParams)},
                             {@namedParameters(optionalParams)})
                     @else
-                        req = {@methodInputModule}.{@inputTypeName}(
+                        request = {@methodInputModule}.{@inputTypeName}(
                             {@namedParameters(requiredParams)})
                     @end
                 @else
-                    req = {@methodInputModule}.{@inputTypeName}(
+                    request = {@methodInputModule}.{@inputTypeName}(
                         {@namedParameters(optionalParams)})
                 @end
-                settings = self._defaults['{@methodName}'].merge(options)
-                {@callableConstructor(method)}
+                {@callLine(method)}
         @else
-            def {@methodName}(
+            def {@methodName(method)}(
                     self,
                     options=None):
                 @if documentation
                     {@documentation}
                 @end
-                req = {@methodInputModule}.{@inputTypeName}()
-                settings = self._defaults['{@methodName}'].merge(options)
-                {@callableConstructor(method)}
+                request = {@methodInputModule}.{@inputTypeName}()
+                {@callLine(method)}
         @end
     @end
 @end
