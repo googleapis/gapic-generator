@@ -481,7 +481,7 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
       syncReturnTypeName = "void";
     } else {
       if (pageStreamingConfig != null) {
-        methodName = method.getSimpleName() + "PageStream";
+        methodName = method.getSimpleName();
         TypeRef resourceType = pageStreamingConfig.getResourcesField().getType();
         String elementTypeName = basicTypeName(resourceType);
         asyncReturnTypeName =
