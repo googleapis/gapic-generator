@@ -132,8 +132,10 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
    * Returns the PHP representation of a reference to a type.
    */
   public String typeName(TypeRef type) {
-    if (type.isMap() || type.isRepeated()) {
+    if (type.isMap()) {
       return "array";
+    } else if (type.isRepeated()) {
+      return basicTypeName(type) + "[]";
     } else {
       return basicTypeName(type);
     }
