@@ -71,7 +71,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    * The package name of the grpc module for the API.
    */
   public String grpcClientName(Interface service) {
-    return "grpc-" + service.getParent().getFullName().replace('.', '-');
+    return "grpc-" + service.getFile().getFullName().replace('.', '-');
   }
 
   /**
