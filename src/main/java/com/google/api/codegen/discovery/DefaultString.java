@@ -15,8 +15,12 @@
 package com.google.api.codegen.discovery;
 
 import com.google.api.codegen.Inflector;
+import com.google.api.codegen.LanguageUtil;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.protobuf.Field;
+import com.google.protobuf.Type;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +32,58 @@ import javax.annotation.Nullable;
  */
 public class DefaultString {
 
+  @AutoValue
+  abstract static class SampleKey {
+    abstract String getApiName();
+
+    abstract String getFieldName();
+
+    abstract String getRegexp();
+
+    static SampleKey create(String apiName, String fieldName, String regexp) {
+      return new AutoValue_DefaultString_SampleKey(apiName, fieldName, regexp);
+    }
+  }
+
+  private static final ImmutableMap<SampleKey, String> sampleStrings =
+      ImmutableMap.<SampleKey, String>builder()
+          .put(
+              SampleKey.create("compute", "zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"),
+              "us-central1-f")
+          .put(
+              SampleKey.create("autoscaler", "zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"),
+              "us-central1-f")
+          .put(
+              SampleKey.create("clouduseraccounts", "zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"),
+              "us-central1-f")
+          .build();
+
+  public static String of(String apiName, String fieldName, String pattern) {
+    if (pattern != null) {
+      String ret = sampleStrings.get(SampleKey.create(apiName, fieldName, pattern));
+      if (ret != null) {
+        return ret;
+      }
+
+      ret = forPattern(pattern);
+      if (ret != null) {
+        return ret;
+      }
+    }
+    return String.format(
+        "{MY-%s}", LanguageUtil.lowerCamelToUpperUnderscore(fieldName).replace('_', '-'));
+  }
+
+  static String getSample(String apiName, String fieldName, String pattern) {
+    return sampleStrings.get(SampleKey.create(apiName, fieldName, pattern));
+  }
+
   private static final String WILDCARD_PATTERN = "[^/]*";
 
   /**
    * Returns a default string from `pattern`, or null if the pattern is not supported.
    */
-  public static String forPattern(String pattern) {
+  static String forPattern(String pattern) {
     // We only care about patterns that has alternating literal and wildcard like
     //  ^foo/[^/]*/bar/[^/]*$
     // Ignore if what we get looks nothing like this.
