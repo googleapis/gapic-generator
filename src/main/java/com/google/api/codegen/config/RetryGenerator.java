@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.config;
 
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute.MethodKind;
 import com.google.api.tools.framework.model.Method;
 
 import io.grpc.Status;
@@ -86,12 +88,21 @@ public class RetryGenerator implements MethodConfigGenerator {
   @Override
   public Map<String, Object> generate(Method method) {
     Map<String, Object> result = new LinkedHashMap<String, Object>();
-    if (Resources.isIdempotent(method)) {
+    if (isIdempotent(method)) {
       result.put(CONFIG_KEY_RETRY_CODES_NAME, RETRY_CODES_IDEMPOTENT_NAME);
     } else {
       result.put(CONFIG_KEY_RETRY_CODES_NAME, RETRY_CODES_NON_IDEMPOTENT_NAME);
     }
     result.put(CONFIG_KEY_RETRY_PARAMS_NAME, RETRY_PARAMS_DEFAULT_NAME);
     return result;
+  }
+
+  /**
+   * Returns true if the method is idempotent according to the http method kind (GET, PUT, DELETE).
+   */
+  private static boolean isIdempotent(Method method) {
+    HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);
+    MethodKind methodKind = httpAttr.getMethodKind();
+    return methodKind.isIdempotent();
   }
 }

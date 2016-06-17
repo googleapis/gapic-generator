@@ -94,18 +94,14 @@ public class ConfigGeneratorApi extends ToolDriverBase {
     dump(output);
   }
 
-  private List<Object> generateCollectionConfigs(Interface service) {
-    CollectionConfigGenerator configGen = new CollectionConfigGenerator();
-    return configGen.generate(service);
-  }
-
-  private List<Object> generateMethodConfigs(Interface service) {
+  private List<Object> generateMethodConfigs(
+      Interface service, CollectionPatternsGenerator collectionsGenerator) {
     List<MethodConfigGenerator> methodConfigGenerators =
         Arrays.asList(
             new FieldConfigGenerator(),
             new PageStreamingConfigGenerator(),
             new RetryGenerator(),
-            new FieldNamePatternConfigGenerator(service));
+            collectionsGenerator);
     List<Object> methods = new LinkedList<Object>();
     for (Method method : service.getMethods()) {
       Map<String, Object> methodConfig = new LinkedHashMap<String, Object>();
@@ -125,10 +121,11 @@ public class ConfigGeneratorApi extends ToolDriverBase {
     List<Object> services = new LinkedList<Object>();
     for (Interface service : model.getSymbolTable().getInterfaces()) {
       Map<String, Object> serviceConfig = new LinkedHashMap<String, Object>();
+      CollectionPatternsGenerator collectionsGenerator = new CollectionPatternsGenerator(service);
       serviceConfig.put(CONFIG_KEY_SERVICE_NAME, service.getFullName());
-      serviceConfig.put(CONFIG_KEY_COLLECTIONS, generateCollectionConfigs(service));
+      serviceConfig.put(CONFIG_KEY_COLLECTIONS, collectionsGenerator.generateCollectionConfigs());
       serviceConfig.putAll(RetryGenerator.generateRetryDefinitions());
-      serviceConfig.put(CONFIG_KEY_METHODS, generateMethodConfigs(service));
+      serviceConfig.put(CONFIG_KEY_METHODS, generateMethodConfigs(service, collectionsGenerator));
       services.add(serviceConfig);
     }
     return services;
