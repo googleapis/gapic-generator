@@ -44,7 +44,10 @@ namespace DnsSample
             // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
             string managedZone = "";
 
-            ChangesResource.CreateRequest request = dnsService.Changes.Create(project, managedZone);
+            // TODO Add code to assign values to fields of 'content'.
+            Change content = new Change();
+
+            ChangesResource.CreateRequest request = dnsService.Changes.Create(content, project, managedZone);
             Change response = request.Execute();
 
             // To execute asynchronously in an async method, use
@@ -203,7 +206,10 @@ namespace DnsSample
             // Identifies the project addressed by this request.
             string project = "";
 
-            ManagedZonesResource.CreateRequest request = dnsService.ManagedZones.Create(project);
+            // TODO Add code to assign values to fields of 'content'.
+            ManagedZone content = new ManagedZone();
+
+            ManagedZonesResource.CreateRequest request = dnsService.ManagedZones.Create(content, project);
             ManagedZone response = request.Execute();
 
             // To execute asynchronously in an async method, use

@@ -95,7 +95,10 @@ namespace ClouddebuggerSample
             // Breakpoint identifier, unique in the scope of the debuggee.
             string id = "";
 
-            ControllerResource.DebuggeesResource.BreakpointsResource.UpdateRequest request = clouddebuggerService.Controller.Debuggees.Breakpoints.Update(debuggeeId, id);
+            // TODO Add code to assign values to fields of 'content'.
+            UpdateActiveBreakpointRequest content = new UpdateActiveBreakpointRequest();
+
+            ControllerResource.DebuggeesResource.BreakpointsResource.UpdateRequest request = clouddebuggerService.Controller.Debuggees.Breakpoints.Update(content, debuggeeId, id);
             UpdateActiveBreakpointResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
@@ -144,7 +147,10 @@ namespace ClouddebuggerSample
 
             // TODO: Change placeholders below to values for parameters to the Register() method:
 
-            ControllerResource.DebuggeesResource.RegisterRequest request = clouddebuggerService.Controller.Debuggees.Register();
+            // TODO Add code to assign values to fields of 'content'.
+            RegisterDebuggeeRequest content = new RegisterDebuggeeRequest();
+
+            ControllerResource.DebuggeesResource.RegisterRequest request = clouddebuggerService.Controller.Debuggees.Register(content);
             RegisterDebuggeeResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
@@ -352,7 +358,10 @@ namespace ClouddebuggerSample
             // ID of the debuggee where the breakpoint is to be set.
             string debuggeeId = "";
 
-            DebuggerResource.DebuggeesResource.BreakpointsResource.SetRequest request = clouddebuggerService.Debugger.Debuggees.Breakpoints.Set(debuggeeId);
+            // TODO Add code to assign values to fields of 'content'.
+            Breakpoint content = new Breakpoint();
+
+            DebuggerResource.DebuggeesResource.BreakpointsResource.SetRequest request = clouddebuggerService.Debugger.Debuggees.Breakpoints.Set(content, debuggeeId);
             SetBreakpointResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
