@@ -32,14 +32,19 @@ import com.google.common.io.Files;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
+import autovalue.shaded.com.google.common.common.collect.ImmutableMap;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Main class for the config generator.
@@ -59,6 +64,9 @@ public class ConfigGeneratorApi extends ToolDriverBase {
   private static final String CONFIG_KEY_METHOD_NAME = "name";
   private static final String CONFIG_KEY_METHODS = "methods";
   private static final String CONFIG_KEY_COLLECTIONS = "collections";
+
+  private static final String CONFIG_KEY_NAME_PATTERN = "name_pattern";
+  private static final String CONFIG_KEY_ENTITY_NAME = "entity_name";
 
   private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
 
@@ -95,13 +103,13 @@ public class ConfigGeneratorApi extends ToolDriverBase {
   }
 
   private List<Object> generateMethodConfigs(
-      Interface service, CollectionPatternsGenerator collectionsGenerator) {
+      Interface service, Map<String, String> collectionConfigNameMap) {
     List<MethodConfigGenerator> methodConfigGenerators =
         Arrays.asList(
             new FieldConfigGenerator(),
             new PageStreamingConfigGenerator(),
             new RetryGenerator(),
-            collectionsGenerator);
+            new FieldNamePatternGenerator(collectionConfigNameMap));
     List<Object> methods = new LinkedList<Object>();
     for (Method method : service.getMethods()) {
       Map<String, Object> methodConfig = new LinkedHashMap<String, Object>();
@@ -121,11 +129,11 @@ public class ConfigGeneratorApi extends ToolDriverBase {
     List<Object> services = new LinkedList<Object>();
     for (Interface service : model.getSymbolTable().getInterfaces()) {
       Map<String, Object> serviceConfig = new LinkedHashMap<String, Object>();
-      CollectionPatternsGenerator collectionsGenerator = new CollectionPatternsGenerator(service);
+      Map<String, String> collectionNameMap = getResourceToEntityNameMap(service.getMethods());
       serviceConfig.put(CONFIG_KEY_SERVICE_NAME, service.getFullName());
-      serviceConfig.put(CONFIG_KEY_COLLECTIONS, collectionsGenerator.generateCollectionConfigs());
+      serviceConfig.put(CONFIG_KEY_COLLECTIONS, generateCollectionConfigs(collectionNameMap));
       serviceConfig.putAll(RetryGenerator.generateRetryDefinitions());
-      serviceConfig.put(CONFIG_KEY_METHODS, generateMethodConfigs(service, collectionsGenerator));
+      serviceConfig.put(CONFIG_KEY_METHODS, generateMethodConfigs(service, collectionNameMap));
       services.add(serviceConfig);
     }
     return services;
@@ -136,6 +144,53 @@ public class ConfigGeneratorApi extends ToolDriverBase {
         Preconditions.checkPositionIndex(model.getFiles().size() - 1, model.getFiles().size());
     String packageName = model.getFiles().get(index).getFullName();
     return LanguageGenerator.generate(packageName);
+  }
+
+  /**
+   * Generates a collection configurations section.
+   */
+  private static List<Object> generateCollectionConfigs(Map<String, String> nameMap) {
+    List<Object> output = new LinkedList<Object>();
+    for (String resourceNameString : nameMap.keySet()) {
+      Map<String, Object> collectionMap = new LinkedHashMap<String, Object>();
+      collectionMap.put(CONFIG_KEY_NAME_PATTERN, resourceNameString);
+      collectionMap.put(CONFIG_KEY_ENTITY_NAME, nameMap.get(resourceNameString));
+      output.add(collectionMap);
+    }
+    return output;
+  }
+
+  /**
+   * Examines all of the resource paths used by the methods, and returns a map from each unique
+   * resource paths to a short name used by the collection configuration.
+   */
+  public static ImmutableMap<String, String> getResourceToEntityNameMap(List<Method> methods) {
+    // Using a map with the string representation of the resource path to avoid duplication
+    // of equivalent paths.
+    // Using a TreeMap in particular so that the ordering is deterministic
+    // (useful for testability).
+    Map<String, CollectionPattern> specs = new TreeMap<>();
+    for (Method method : methods) {
+      for (CollectionPattern collectionPattern :
+          CollectionPattern.getCollectionPatternsFromMethod(method)) {
+        String resourcePath = collectionPattern.getTemplatizedResourcePath();
+        // If there are multiple field segments with the same resource path, the last
+        // one will be used, making the output deterministic. Also, the first field path
+        // encountered tends to be simply "name" because it is the corresponding create
+        // API method for the type.
+        specs.put(resourcePath, collectionPattern);
+      }
+    }
+
+    Set<String> usedNameSet = new HashSet<>();
+    ImmutableMap.Builder<String, String> nameMapBuilder = ImmutableMap.<String, String>builder();
+    for (CollectionPattern collectionPattern : specs.values()) {
+      String resourceNameString = collectionPattern.getTemplatizedResourcePath();
+      String entityNameString = collectionPattern.getUniqueName(usedNameSet);
+      usedNameSet.add(entityNameString);
+      nameMapBuilder.put(resourceNameString, entityNameString);
+    }
+    return nameMapBuilder.build();
   }
 
   private void dump(Map<String, Object> data) throws IOException {

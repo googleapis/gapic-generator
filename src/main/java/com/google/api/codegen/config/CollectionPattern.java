@@ -15,12 +15,15 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.Inflector;
+import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.FieldSegment;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.LiteralSegment;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.PathSegment;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.WildcardSegment;
+import com.google.api.tools.framework.model.Method;
 import com.google.common.collect.ImmutableList;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -98,6 +101,20 @@ public class CollectionPattern {
    */
   public String getTemplatizedResourcePath() {
     return PathSegment.toSyntax(templatizedSubpath).substring(1);
+  }
+
+  /**
+   * Returns a list of CollectionPattern objects.
+   */
+  public static List<CollectionPattern> getCollectionPatternsFromMethod(Method method) {
+    List<CollectionPattern> collectionPatterns = new LinkedList<CollectionPattern>();
+    HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);
+    for (PathSegment pathSegment : httpAttr.getPath()) {
+      if (CollectionPattern.isValidCollectionPattern(pathSegment)) {
+        collectionPatterns.add(CollectionPattern.create((FieldSegment) pathSegment));
+      }
+    }
+    return collectionPatterns;
   }
 
   public static boolean isValidCollectionPattern(PathSegment pathSegment) {
