@@ -14,39 +14,38 @@
  */
 package com.google.api.codegen.config;
 
-import com.google.api.tools.framework.aspects.http.model.HttpAttribute.FieldSegment;
-import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
- * Config generator for field name patterns.
+ * Class for collection config generator.
  */
 public class FieldNamePatternConfigGenerator implements MethodConfigGenerator {
 
   private static final String CONFIG_KEY_FIELD_NAME_PATTERNS = "field_name_patterns";
 
-  private final Map<String, String> resourceToEntityNameMap;
+  private final Map<String, String> nameMap;
 
-  public FieldNamePatternConfigGenerator(Interface service) {
-    Iterable<FieldSegment> segments = Resources.getFieldSegmentsFromHttpPaths(service.getMethods());
-    resourceToEntityNameMap = Resources.getResourceToEntityNameMap(segments);
+  public FieldNamePatternConfigGenerator(Map<String, String> nameMap) {
+    this.nameMap = nameMap;
   }
 
+  /**
+   * Generates the field_name_pattern configuration for a method.
+   */
   @Override
   public Map<String, Object> generate(Method method) {
-    List<FieldSegment> fieldSegments = Resources.getFieldSegmentsFromMethodHttpPath(method);
-    if (fieldSegments.size() > 0) {
+    Map<String, Object> fieldPatternMap = new LinkedHashMap<String, Object>();
+    for (CollectionPattern collectionPattern :
+        CollectionPattern.getCollectionPatternsFromMethod(method)) {
+      String resourceNameString = collectionPattern.getTemplatizedResourcePath();
+      fieldPatternMap.put(collectionPattern.getFieldPath(), nameMap.get(resourceNameString));
+    }
+    if (fieldPatternMap.size() > 0) {
       Map<String, Object> result = new LinkedHashMap<String, Object>();
-      Map<String, Object> nameMap = new LinkedHashMap<String, Object>();
-      for (FieldSegment fieldSegment : fieldSegments) {
-        String resourceNameString = Resources.templatize(fieldSegment);
-        nameMap.put(fieldSegment.getFieldPath(), resourceToEntityNameMap.get(resourceNameString));
-      }
-      result.put(CONFIG_KEY_FIELD_NAME_PATTERNS, nameMap);
+      result.put(CONFIG_KEY_FIELD_NAME_PATTERNS, fieldPatternMap);
       return result;
     } else {
       return null;
