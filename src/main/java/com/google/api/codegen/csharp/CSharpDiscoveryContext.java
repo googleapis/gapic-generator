@@ -22,13 +22,17 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Field;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpContext {
 
@@ -57,6 +61,98 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
           .put(Field.Kind.TYPE_DOUBLE, "0.0")
           .put(Field.Kind.TYPE_STRING, "\"\"")
           .build();
+
+  private static final ImmutableSet<String> RESERVED_WORDS =
+      ImmutableSet.<String>builder()
+          .add("abstract")
+          .add("as")
+          .add("base")
+          .add("bool")
+          .add("break")
+          .add("by")
+          .add("byte")
+          .add("case")
+          .add("catch")
+          .add("char")
+          .add("checked")
+          .add("class")
+          .add("const")
+          .add("continue")
+          .add("decimal")
+          .add("default")
+          .add("delegate")
+          .add("descending")
+          .add("do")
+          .add("double")
+          .add("else")
+          .add("enum")
+          .add("event")
+          .add("explicit")
+          .add("extern")
+          .add("finally")
+          .add("fixed")
+          .add("float")
+          .add("for")
+          .add("foreach")
+          .add("from")
+          .add("goto")
+          .add("group")
+          .add("if")
+          .add("implicit")
+          .add("in")
+          .add("int")
+          .add("interface")
+          .add("internal")
+          .add("into")
+          .add("is")
+          .add("lock")
+          .add("long")
+          .add("namespace")
+          .add("new")
+          .add("null")
+          .add("object")
+          .add("operator")
+          .add("orderby")
+          .add("out")
+          .add("override")
+          .add("params")
+          .add("private")
+          .add("public")
+          .add("readonly")
+          .add("ref")
+          .add("return")
+          .add("sbyte")
+          .add("sealed")
+          .add("select")
+          .add("short")
+          .add("sizeof")
+          .add("stackalloc")
+          .add("static")
+          .add("string")
+          .add("struct")
+          .add("switch")
+          .add("this")
+          .add("throw")
+          .add("try")
+          .add("typeof")
+          .add("unit")
+          .add("ulong")
+          .add("unchecked")
+          .add("unsafe")
+          .add("ushort")
+          .add("using")
+          .add("var")
+          .add("virtual")
+          .add("void")
+          .add("volatile")
+          .add("where")
+          .add("while")
+          .add("yield")
+          .add("FALSE")
+          .add("TRUE")
+          .build();
+
+  private static final String REQUEST_FIELD_NAME = "content";
 
   private CSharpContextCommon csharpCommon;
 
@@ -149,7 +245,10 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
         String paramList,
         String resourcePath,
         String requestTypeName,
-        String responseTypeName) {
+        String responseTypeName,
+        boolean hasRequestField,
+        String requestFieldTypeName,
+        String requestFieldName) {
       return new AutoValue_CSharpDiscoveryContext_SampleInfo(
           namespace,
           serviceTypeName,
@@ -159,7 +258,10 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
           paramList,
           resourcePath,
           requestTypeName,
-          responseTypeName);
+          responseTypeName,
+          hasRequestField,
+          requestFieldTypeName,
+          requestFieldName);
     }
 
     public abstract String namespace();
@@ -179,6 +281,21 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     public abstract String requestTypeName();
 
     public abstract String responseTypeName();
+
+    public abstract boolean hasRequestField();
+
+    @Nullable
+    public abstract String requestFieldTypeName();
+
+    @Nullable
+    public abstract String requestFieldName();
+  }
+
+  private String fixReservedWordVar(String s) {
+    if (RESERVED_WORDS.contains(s)) {
+      return s + "_";
+    }
+    return s;
   }
 
   public SampleInfo getSampleInfo(Method method) {
@@ -188,6 +305,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     String serviceTypeName = packageName + "Service";
     String serviceVarName = CSharpContextCommon.s_underscoresToCamelCase(packageName) + "Service";
     String methodName = CSharpContextCommon.s_underscoresToPascalCase(getSimpleName(rawMethodName));
+    boolean hasRequestField = hasRequestField(method);
 
     final ApiaryConfig apiary = getApiaryConfig();
     final Type methodType = apiary.getType(method.getRequestTypeUrl());
@@ -199,7 +317,8 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
                   public ParamInfo apply(String paramName) {
                     Field field = getField(methodType, paramName);
                     String typeName = FIELD_TYPE_MAP.get(field.getKind());
-                    String name = CSharpContextCommon.s_underscoresToCamelCase(paramName);
+                    String name =
+                        fixReservedWordVar(CSharpContextCommon.s_underscoresToCamelCase(paramName));
                     String defaultValue = DEFAULTVALUE_MAP.get(field.getKind());
                     List<String> description =
                         buildDescription(apiary.getDescription(methodType.getName(), paramName));
@@ -207,15 +326,19 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
                   }
                 })
             .toList();
+    Iterable<String> requestFieldParam =
+        hasRequestField ? ImmutableList.of(REQUEST_FIELD_NAME) : ImmutableList.<String>of();
     String paramList =
-        FluentIterable.from(params)
-            .transform(
-                new Function<ParamInfo, String>() {
-                  @Override
-                  public String apply(ParamInfo paramInfo) {
-                    return paramInfo.name();
-                  }
-                })
+        FluentIterable.from(requestFieldParam)
+            .append(
+                FluentIterable.from(params)
+                    .transform(
+                        new Function<ParamInfo, String>() {
+                          @Override
+                          public String apply(ParamInfo paramInfo) {
+                            return paramInfo.name();
+                          }
+                        }))
             .join(Joiner.on(", "));
 
     String resourcePath =
@@ -248,6 +371,10 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
       // Use side-effect of adding the namespace to imports
       packageNameAndImport(".Data");
     }
+    String requestFieldTypeName = null;
+    if (hasRequestField) {
+      requestFieldTypeName = getRequestField(method).getTypeUrl();
+    }
     return SampleInfo.create(
         namespace,
         serviceTypeName,
@@ -257,6 +384,9 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
         paramList,
         resourcePath,
         requestTypeName,
-        responseTypeName);
+        responseTypeName,
+        hasRequestField,
+        requestFieldTypeName,
+        REQUEST_FIELD_NAME);
   }
 }
