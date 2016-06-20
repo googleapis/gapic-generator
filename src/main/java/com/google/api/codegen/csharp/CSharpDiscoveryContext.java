@@ -62,7 +62,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
           .put(Field.Kind.TYPE_STRING, "\"\"")
           .build();
 
-  static ImmutableSet<String> reservedWords =
+  private static final ImmutableSet<String> RESERVED_WORDS =
       ImmutableSet.<String>builder()
           .add("abstract")
           .add("as")
@@ -151,6 +151,8 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
           .add("FALSE")
           .add("TRUE")
           .build();
+
+  private static final String REQUEST_FIELD_NAME = "content";
 
   private CSharpContextCommon csharpCommon;
 
@@ -290,7 +292,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
   }
 
   private String fixReservedWordVar(String s) {
-    if (reservedWords.contains(s)) {
+    if (RESERVED_WORDS.contains(s)) {
       return s + "_";
     }
     return s;
@@ -304,7 +306,6 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     String serviceVarName = CSharpContextCommon.s_underscoresToCamelCase(packageName) + "Service";
     String methodName = CSharpContextCommon.s_underscoresToPascalCase(getSimpleName(rawMethodName));
     boolean hasRequestField = hasRequestField(method);
-    String requestFieldName = "content";
 
     final ApiaryConfig apiary = getApiaryConfig();
     final Type methodType = apiary.getType(method.getRequestTypeUrl());
@@ -326,7 +327,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
                 })
             .toList();
     Iterable<String> requestFieldParam =
-        hasRequestField ? ImmutableList.of(requestFieldName) : ImmutableList.<String>of();
+        hasRequestField ? ImmutableList.of(REQUEST_FIELD_NAME) : ImmutableList.<String>of();
     String paramList =
         FluentIterable.from(requestFieldParam)
             .append(
@@ -386,6 +387,6 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
         responseTypeName,
         hasRequestField,
         requestFieldTypeName,
-        requestFieldName);
+        REQUEST_FIELD_NAME);
   }
 }
