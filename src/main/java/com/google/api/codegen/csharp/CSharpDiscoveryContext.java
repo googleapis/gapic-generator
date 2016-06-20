@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Field;
+import com.google.protobuf.Field.Kind;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
 
@@ -306,9 +307,21 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     String serviceVarName = CSharpContextCommon.s_underscoresToCamelCase(packageName) + "Service";
     String methodName = CSharpContextCommon.s_underscoresToPascalCase(getSimpleName(rawMethodName));
     boolean hasRequestField = hasRequestField(method);
-
     final ApiaryConfig apiary = getApiaryConfig();
     final Type methodType = apiary.getType(method.getRequestTypeUrl());
+
+    final String requestTypeName =
+        FluentIterable.from(apiary.getResources(rawMethodName))
+            .transform(
+                new Function<String, String>() {
+                  @Override
+                  public String apply(String resourceName) {
+                    return CSharpContextCommon.s_underscoresToPascalCase(resourceName) + "Resource";
+                  }
+                })
+            .append(methodName + "Request")
+            .join(Joiner.on('.'));
+
     List<ParamInfo> params =
         FluentIterable.from(getFlatMethodParams(method))
             .transform(
@@ -316,10 +329,21 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
                   @Override
                   public ParamInfo apply(String paramName) {
                     Field field = getField(methodType, paramName);
-                    String typeName = FIELD_TYPE_MAP.get(field.getKind());
+                    String typeName;
+                    String defaultValue;
+                    if (field.getKind() == Kind.TYPE_ENUM) {
+                      typeName =
+                          requestTypeName
+                              + "."
+                              + CSharpContextCommon.s_underscoresToPascalCase(field.getName())
+                              + "Enum";
+                      defaultValue = "(" + typeName + ") 0";
+                    } else {
+                      typeName = FIELD_TYPE_MAP.get(field.getKind());
+                      defaultValue = DEFAULTVALUE_MAP.get(field.getKind());
+                    }
                     String name =
                         fixReservedWordVar(CSharpContextCommon.s_underscoresToCamelCase(paramName));
-                    String defaultValue = DEFAULTVALUE_MAP.get(field.getKind());
                     List<String> description =
                         buildDescription(apiary.getDescription(methodType.getName(), paramName));
                     return ParamInfo.create(typeName, name, defaultValue, description);
@@ -352,17 +376,6 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
                 })
             .join(Joiner.on('.'));
 
-    String requestTypeName =
-        FluentIterable.from(apiary.getResources(rawMethodName))
-            .transform(
-                new Function<String, String>() {
-                  @Override
-                  public String apply(String resourceName) {
-                    return CSharpContextCommon.s_underscoresToPascalCase(resourceName) + "Resource";
-                  }
-                })
-            .append(methodName + "Request")
-            .join(Joiner.on('.'));
     String responseTypeName = method.getResponseTypeUrl();
     // TODO: Use a better way of determining if the response type is void
     if (responseTypeName.equals("empty$")) {
@@ -373,6 +386,8 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     }
     String requestFieldTypeName = null;
     if (hasRequestField) {
+      // Use side-effect of adding the namespace to imports
+      packageNameAndImport(".Data");
       requestFieldTypeName = getRequestField(method).getTypeUrl();
     }
     return SampleInfo.create(

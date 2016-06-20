@@ -20,6 +20,7 @@ import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableTable;
 import com.google.protobuf.Api;
 import com.google.protobuf.Field;
+import com.google.protobuf.Field.Kind;
 import com.google.protobuf.Method;
 import com.google.protobuf.Type;
 
@@ -216,6 +217,14 @@ public class DiscoveryImporter {
     }
 
     String typeText = root.get("type").asText();
+    if (root.get("enum") != null) {
+      return builder
+          .setCardinality(Field.Cardinality.CARDINALITY_OPTIONAL)
+          .setKind(Kind.TYPE_ENUM)
+          .setTypeUrl(typeText)
+          .build();
+    }
+
     if (TYPE_TABLE.containsRow(typeText)) {
       return builder
           .setCardinality(Field.Cardinality.CARDINALITY_OPTIONAL)
