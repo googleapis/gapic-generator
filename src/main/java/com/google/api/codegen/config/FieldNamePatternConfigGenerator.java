@@ -22,13 +22,13 @@ import java.util.Map;
 /**
  * Class for collection config generator.
  */
-public class FieldNamePatternGenerator implements MethodConfigGenerator {
+public class FieldNamePatternConfigGenerator implements MethodConfigGenerator {
 
   private static final String CONFIG_KEY_FIELD_NAME_PATTERNS = "field_name_patterns";
 
   private final Map<String, String> nameMap;
 
-  public FieldNamePatternGenerator(Map<String, String> nameMap) {
+  public FieldNamePatternConfigGenerator(Map<String, String> nameMap) {
     this.nameMap = nameMap;
   }
 

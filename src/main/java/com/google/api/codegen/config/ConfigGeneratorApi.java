@@ -27,12 +27,11 @@ import com.google.api.tools.framework.tools.ToolDriverBase;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
-
-import autovalue.shaded.com.google.common.common.collect.ImmutableMap;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -102,6 +101,20 @@ public class ConfigGeneratorApi extends ToolDriverBase {
     dump(output);
   }
 
+  /**
+   * Generates a collection configurations section.
+   */
+  private static List<Object> generateCollectionConfigs(Map<String, String> nameMap) {
+    List<Object> output = new LinkedList<Object>();
+    for (String resourceNameString : nameMap.keySet()) {
+      Map<String, Object> collectionMap = new LinkedHashMap<String, Object>();
+      collectionMap.put(CONFIG_KEY_NAME_PATTERN, resourceNameString);
+      collectionMap.put(CONFIG_KEY_ENTITY_NAME, nameMap.get(resourceNameString));
+      output.add(collectionMap);
+    }
+    return output;
+  }
+
   private List<Object> generateMethodConfigs(
       Interface service, Map<String, String> collectionConfigNameMap) {
     List<MethodConfigGenerator> methodConfigGenerators =
@@ -109,7 +122,7 @@ public class ConfigGeneratorApi extends ToolDriverBase {
             new FieldConfigGenerator(),
             new PageStreamingConfigGenerator(),
             new RetryGenerator(),
-            new FieldNamePatternGenerator(collectionConfigNameMap));
+            new FieldNamePatternConfigGenerator(collectionConfigNameMap));
     List<Object> methods = new LinkedList<Object>();
     for (Method method : service.getMethods()) {
       Map<String, Object> methodConfig = new LinkedHashMap<String, Object>();
@@ -144,20 +157,6 @@ public class ConfigGeneratorApi extends ToolDriverBase {
         Preconditions.checkPositionIndex(model.getFiles().size() - 1, model.getFiles().size());
     String packageName = model.getFiles().get(index).getFullName();
     return LanguageGenerator.generate(packageName);
-  }
-
-  /**
-   * Generates a collection configurations section.
-   */
-  private static List<Object> generateCollectionConfigs(Map<String, String> nameMap) {
-    List<Object> output = new LinkedList<Object>();
-    for (String resourceNameString : nameMap.keySet()) {
-      Map<String, Object> collectionMap = new LinkedHashMap<String, Object>();
-      collectionMap.put(CONFIG_KEY_NAME_PATTERN, resourceNameString);
-      collectionMap.put(CONFIG_KEY_ENTITY_NAME, nameMap.get(resourceNameString));
-      output.add(collectionMap);
-    }
-    return output;
   }
 
   /**
