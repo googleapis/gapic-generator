@@ -62,46 +62,52 @@ public class CollectionPatternTest {
   @Test
   public void collectionPattern() {
     CollectionPattern collectionPattern = constructCollectionPattern("name", "shelves/*/books/*");
-    Truth.assertThat(collectionPattern.getSimpleName().equals("book"));
+    Truth.assertThat(collectionPattern.getSimpleName().equals("book")).isTrue();
     Truth.assertThat(
-        collectionPattern.getTemplatizedResourcePath().equals("shelves/{shelf}/books/{book}"));
+            collectionPattern.getTemplatizedResourcePath().equals("shelves/{shelf}/books/{book}"))
+        .isTrue();
   }
 
   @Test
   public void collectionPatternPathWildcard() {
     CollectionPattern collectionPattern = constructCollectionPattern("name", "shelves/*/books/**");
-    Truth.assertThat(collectionPattern.getSimpleName().equals("book_path"));
+    Truth.assertThat(collectionPattern.getSimpleName().equals("book_path")).isTrue();
     Truth.assertThat(
-        collectionPattern.getTemplatizedResourcePath().equals("shelves/{shelf}/books/{book_path}"));
+            collectionPattern
+                .getTemplatizedResourcePath()
+                .equals("shelves/{shelf}/books/{book_path=**}"))
+        .isTrue();
   }
 
   @Test
   public void collectionPatternStartWithWildcard() {
     CollectionPattern collectionPattern = constructCollectionPattern("name", "*/shelves/*/books/*");
-    Truth.assertThat(collectionPattern.getSimpleName().equals("book"));
+    Truth.assertThat(collectionPattern.getSimpleName().equals("book")).isTrue();
     Truth.assertThat(
-        collectionPattern
-            .getTemplatizedResourcePath()
-            .equals("{unknown}/shelves/{shelf}/books/{book}"));
+            collectionPattern
+                .getTemplatizedResourcePath()
+                .equals("{unknown}/shelves/{shelf}/books/{book}"))
+        .isTrue();
   }
 
   @Test
   public void collectionPatternEndWithLiteral() {
     CollectionPattern collectionPattern = constructCollectionPattern("name", "shelves/*/books");
-    Truth.assertThat(collectionPattern.getSimpleName().equals("shelf"));
-    Truth.assertThat(
-        collectionPattern.getTemplatizedResourcePath().equals("shelves/{shelf}/books"));
+    Truth.assertThat(collectionPattern.getSimpleName().equals("shelf")).isTrue();
+    Truth.assertThat(collectionPattern.getTemplatizedResourcePath().equals("shelves/{shelf}/books"))
+        .isTrue();
   }
 
   @Test
   public void collectionPatternCustomVerb() {
     CollectionPattern collectionPattern =
         constructCollectionPattern("name", "shelves/*/books/*", "reader");
-    Truth.assertThat(collectionPattern.getSimpleName().equals("book"));
+    Truth.assertThat(collectionPattern.getSimpleName().equals("book")).isTrue();
     Truth.assertThat(
-        collectionPattern
-            .getTemplatizedResourcePath()
-            .equals("shelves/{shelf}/books/{book}:reader"));
+            collectionPattern
+                .getTemplatizedResourcePath()
+                .equals("shelves/{shelf}/books/{book}:reader"))
+        .isTrue();
   }
 
   @Test
