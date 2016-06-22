@@ -162,7 +162,7 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
       String defaultPrimitiveValue = DEFAULT_PRIMITIVE_VALUE.get(kind);
       if (defaultPrimitiveValue != null) {
         return defaultPrimitiveValue;
-      } else if (kind.equals(Field.Kind.TYPE_STRING)) {
+      } else if (kind.equals(Field.Kind.TYPE_STRING) || kind.equals(Field.Kind.TYPE_ENUM)) {
         return String.format("'%s'", getDefaultString(type, field));
       }
     }

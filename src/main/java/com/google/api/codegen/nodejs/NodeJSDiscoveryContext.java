@@ -63,7 +63,7 @@ public class NodeJSDiscoveryContext extends DiscoveryContext implements NodeJSCo
     if (DEFAULT_VALUES.containsKey(field.getKind())) {
       return DEFAULT_VALUES.get(field.getKind()) + ",";
     }
-    if (field.getKind() == Field.Kind.TYPE_STRING) {
+    if (field.getKind() == Field.Kind.TYPE_STRING || field.getKind() == Field.Kind.TYPE_ENUM) {
       return String.format("\"%s\",", getDefaultString(type, field));
     }
     return "null,";

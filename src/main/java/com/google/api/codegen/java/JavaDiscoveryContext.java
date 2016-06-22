@@ -53,6 +53,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
           .put(Field.Kind.TYPE_FLOAT, "float")
           .put(Field.Kind.TYPE_DOUBLE, "double")
           .put(Field.Kind.TYPE_STRING, "java.lang.String")
+          .put(Field.Kind.TYPE_ENUM, "java.lang.String")
           .build();
 
   /**
