@@ -60,6 +60,8 @@
       {@initLineStructure(line)}
     @case "ListInitLine"
       {@initLineList(line)}
+    @case "MapInitLine"
+      {@initLineMap(line)}
     @case "SimpleInitLine"
       {@initLineSimple(line)}
     @default
@@ -82,6 +84,16 @@
 # Generate a List argument
 @private initLineList(line)
   List<{@context.basicTypeNameBoxed(line.getElementType)}> {@formattedIdentifier(line)} = Arrays.asList({@initList(line)});
+@end
+
+# Generate a Map argument
+@private initLineMap(line)
+  Map<{@context.basicTypeNameBoxed(line.getKeyType)}, {@context.basicTypeNameBoxed(line.getElementType)}> {@formattedIdentifier(line)} = new HashMap<>();
+  @join key : line.getElementIdentifierKeys vertical
+    @let identifierValue = line.getElementIdentifierValue(key)
+      {@formattedIdentifier(line)}.put({@key}, {@context.lowerUnderscoreToLowerCamel(identifierValue)});
+    @end
+  @end
 @end
 
 # Helper method for initLineList()
@@ -111,7 +123,11 @@
     @if metadata.hasFormattingConfig()
       {@metadata.getApiWrapperName}.{@formatResourceFunctionName(metadata.getCollectionConfig)}({@formatResourceFunctionArgs(metadata.getCollectionConfig)})
     @else
-      {@context.zeroValue(line.getType)}
+      @if metadata.hasInitialValue()
+        {@context.renderPrimitiveValue(line.getType, metadata.getInitialValue)}
+      @else
+        {@context.zeroValue(line.getType)}
+      @end
     @end
   @end
 @end

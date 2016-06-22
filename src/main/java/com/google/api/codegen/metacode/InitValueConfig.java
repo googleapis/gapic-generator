@@ -25,11 +25,15 @@ import javax.annotation.Nullable;
 @AutoValue
 public abstract class InitValueConfig {
   public static InitValueConfig create() {
-    return new AutoValue_InitValueConfig(null, null);
+    return new AutoValue_InitValueConfig(null, null, null);
+  }
+
+  public static InitValueConfig createWithValue(String value) {
+    return new AutoValue_InitValueConfig(null, null, value);
   }
 
   public static InitValueConfig create(String apiWrapperName, CollectionConfig collectionConfig) {
-    return new AutoValue_InitValueConfig(apiWrapperName, collectionConfig);
+    return new AutoValue_InitValueConfig(apiWrapperName, collectionConfig, null);
   }
 
   @Nullable
@@ -38,11 +42,18 @@ public abstract class InitValueConfig {
   @Nullable
   public abstract CollectionConfig getCollectionConfig();
 
+  @Nullable
+  public abstract String getInitialValue();
+
   public boolean isEmpty() {
     return getCollectionConfig() == null;
   }
 
   public boolean hasFormattingConfig() {
     return getCollectionConfig() != null;
+  }
+
+  public boolean hasInitialValue() {
+    return getInitialValue() != null;
   }
 }

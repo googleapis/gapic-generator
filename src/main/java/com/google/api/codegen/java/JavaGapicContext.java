@@ -332,4 +332,34 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
   public JavaDocConfig.Builder newJavaDocConfigBuilder() {
     return JavaDocConfig.newBuilder();
   }
+
+  /**
+   * Get a Java formatted primitive value, given a primitive type and a string representation of
+   * that value. The value must be a valid example of that type. Values of type String and Bytes
+   * must contain quote characters. Values of type Bool must be either the string 'true' or 'false'
+   * (other capitalizations are permitted).
+   */
+  public String renderPrimitiveValue(TypeRef type, String value) {
+    Type primitiveType = type.getKind();
+    if (!PRIMITIVE_TYPE_MAP.containsKey(primitiveType)) {
+      throw new IllegalArgumentException(
+          "Initial values are only supported for primitive types, got type "
+              + type
+              + ", with value "
+              + value);
+    }
+    switch (primitiveType) {
+      case TYPE_BOOL:
+        return value.toLowerCase();
+      case TYPE_FLOAT:
+        return value + "F";
+      case TYPE_INT64:
+      case TYPE_UINT64:
+        return value + "L";
+      case TYPE_BYTES:
+        return "ByteString.copyFromUtf8(" + value + ")";
+      default:
+        return value;
+    }
+  }
 }

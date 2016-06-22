@@ -110,7 +110,7 @@ service LibraryService {
 
   // Gets a book from an archive.
   rpc GetBookFromArchive(GetBookFromArchiveRequest) returns (Book) {
-    option (google.api.http) = { get: "/v1/{name=archives/**/books/*}" };
+    option (google.api.http) = { post: "/v1/{name=archives/**/books/*}" body: "*" };
   }
 
 }
@@ -371,4 +371,7 @@ message Comment {
 message GetBookFromArchiveRequest {
   // The name of the book to retrieve.
   string name = 1;
+
+  // Test map initialization
+  map<string, Comment> comment_map = 2;
 }

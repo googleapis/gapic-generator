@@ -45,6 +45,7 @@ import com.google.example.library.v1.CreateShelfRequest;
 import com.google.example.library.v1.DeleteBookRequest;
 import com.google.example.library.v1.DeleteShelfRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
+import com.google.example.library.v1.GetBookFromArchiveRequest.CommentMapEntry;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
 import com.google.example.library.v1.ListBooksRequest;
@@ -1764,8 +1765,15 @@ public class LibraryServiceApi implements AutoCloseable {
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
    *   String formattedName = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
+   *   ByteString comment = ByteString.copyFromUtf8("default comment");
+   *   Comment commentMapItem = Comment.newBuilder()
+   *     .setComment(comment)
+   *     .build();
+   *   Map&lt;String, GetBookFromArchiveRequest.CommentMapEntry&gt; commentMap = new HashMap&lt;&gt;();
+   *   commentMap.put("comment_key", commentMapItem);
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setName(formattedName)
+   *     .putAllCommentMap(commentMap)
    *     .build();
    *   Book response = libraryServiceApi.getBookFromArchive(request);
    * }
@@ -1789,8 +1797,15 @@ public class LibraryServiceApi implements AutoCloseable {
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
    *   String formattedName = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
+   *   ByteString comment = ByteString.copyFromUtf8("default comment");
+   *   Comment commentMapItem = Comment.newBuilder()
+   *     .setComment(comment)
+   *     .build();
+   *   Map&lt;String, GetBookFromArchiveRequest.CommentMapEntry&gt; commentMap = new HashMap&lt;&gt;();
+   *   commentMap.put("comment_key", commentMapItem);
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setName(formattedName)
+   *     .putAllCommentMap(commentMap)
    *     .build();
    *   ListenableFuture&lt;Book&gt; future = libraryServiceApi.getBookFromArchiveCallable().futureCall(request);
    *   // Do something
