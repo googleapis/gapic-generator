@@ -214,7 +214,7 @@
       ];
       methods.forEach(function(methodName) {
         this['_' + methodName] = Promise.all([defaults, this.stub]).then(function(vars) {
-          var options = vars[0];
+          var options = vars[0][methodName];
           var stub = vars[1];
           return gax.createApiCall(stub[methodName].bind(stub), options);
         }.bind(this));
