@@ -38,7 +38,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
   private final Model model;
   private final InputElementView<ElementT> view;
   private final GapicContext context;
-  private final SnippetSetRunner<ElementT> snippetSetRunner;
+  private final SnippetSetRunner.Generator<ElementT> snippetSetRunner;
   private final List<String> snippetFileNames;
   private final GapicCodePathMapper pathMapper;
 
@@ -46,7 +46,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
       Model model,
       InputElementView<ElementT> view,
       GapicContext context,
-      SnippetSetRunner<ElementT> snippetSetRunner,
+      SnippetSetRunner.Generator<ElementT> snippetSetRunner,
       List<String> snippetFileNames,
       GapicCodePathMapper pathMapper) {
     this.model = model;
@@ -99,7 +99,9 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
     // Run the generator for each service.
     List<GeneratedResult> generated = new ArrayList<>();
     for (ElementT element : view.getElementIterable(model)) {
-      GeneratedResult result = snippetSetRunner.generate(element, snippetFileName, context);
+      GeneratedResult result =
+          snippetSetRunner.generate(
+              element, SnippetSetRunner.SNIPPET_RESOURCE_ROOT, snippetFileName, context);
 
       String subPath;
       // Note on usage of instanceof: there is one case (as of this writing)
@@ -136,7 +138,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
     private Model model;
     private InputElementView<ElementT> view;
     private GapicContext context;
-    private SnippetSetRunner<ElementT> snippetSetRunner;
+    private SnippetSetRunner.Generator<ElementT> snippetSetRunner;
     private List<String> snippetFileNames;
     private GapicCodePathMapper pathMapper;
 
@@ -157,7 +159,8 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
       return this;
     }
 
-    public Builder<ElementT> setSnippetSetRunner(SnippetSetRunner<ElementT> snippetSetRunner) {
+    public Builder<ElementT> setSnippetSetRunner(
+        SnippetSetRunner.Generator<ElementT> snippetSetRunner) {
       this.snippetSetRunner = snippetSetRunner;
       return this;
     }

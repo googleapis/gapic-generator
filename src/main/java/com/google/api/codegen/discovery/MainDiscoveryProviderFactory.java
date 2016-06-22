@@ -56,49 +56,49 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new CSharpDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(new CSharpSnippetSetRunner<Method>())
-          .setSnippetFileName(DEFAULT_SNIPPET_FILE)
+          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
 
     } else if (id.equals(GO)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new GoDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(new GoSnippetSetRunner<Method>())
-          .setSnippetFileName(DEFAULT_SNIPPET_FILE)
+          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
 
     } else if (id.equals(JAVA)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new JavaDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(new JavaSnippetSetRunner<Method>())
-          .setSnippetFileName(DEFAULT_SNIPPET_FILE)
+          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
 
     } else if (id.equals(NODEJS)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new NodeJSDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(new NodeJSSnippetSetRunner<Method>())
-          .setSnippetFileName(DEFAULT_SNIPPET_FILE)
+          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
 
     } else if (id.equals(PHP)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new PhpDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(new PhpSnippetSetRunner<Method>())
-          .setSnippetFileName(DEFAULT_SNIPPET_FILE)
+          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
 
     } else if (id.equals(PYTHON)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new PythonDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(new PythonSnippetSetRunner<Method>(new PythonDiscoveryInitializer()))
-          .setSnippetFileName(DEFAULT_SNIPPET_FILE)
+          .setSnippetFileName("py/" + DEFAULT_SNIPPET_FILE)
           .build();
 
     } else if (id.equals(RUBY)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new RubyDiscoveryContext(service, apiaryConfig))
           .setSnippetSetRunner(new RubySnippetSetRunner<Method>())
-          .setSnippetFileName(DEFAULT_SNIPPET_FILE)
+          .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
 
     } else {

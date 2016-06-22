@@ -26,7 +26,7 @@ import java.util.TreeSet;
 /**
  * A CSharpProvider provides general CSharp code generation logic.
  */
-public class CSharpSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
+public class CSharpSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
   /**
    * The path to the root of snippet resources.
@@ -37,11 +37,11 @@ public class CSharpSnippetSetRunner<ElementT> implements SnippetSetRunner<Elemen
   @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      ElementT element, String snippetFileName, CodegenContext context) {
+      ElementT element, String resourceRoot, String snippetFileName, CodegenContext context) {
     CSharpSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             CSharpSnippetSet.class,
-            SNIPPET_RESOURCE_ROOT,
+            resourceRoot,
             snippetFileName,
             ImmutableMap.<String, Object>of("context", context));
 

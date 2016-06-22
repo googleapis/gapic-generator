@@ -24,23 +24,17 @@ import com.google.common.collect.ImmutableMap;
 /**
  * A RubyProvider provides general Ruby code generation logic.
  */
-public class RubySnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
-
-  /**
-   * The path to the root of snippet resources.
-   */
-  static final String SNIPPET_RESOURCE_ROOT =
-      RubySnippetSetRunner.class.getPackage().getName().replace('.', '/');
+public class RubySnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
   @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      ElementT element, String snippetFileName, CodegenContext context) {
+      ElementT element, String resourceRoot, String snippetFileName, CodegenContext context) {
     ImmutableMap<String, Object> globalMap =
         ImmutableMap.<String, Object>builder().put("context", context).build();
     RubySnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
-            RubySnippetSet.class, SNIPPET_RESOURCE_ROOT, snippetFileName, globalMap);
+            RubySnippetSet.class, resourceRoot, snippetFileName, globalMap);
 
     Doc filenameDoc = snippets.generateFilename(element);
     String outputFilename = filenameDoc.prettyPrint();

@@ -30,22 +30,19 @@ import java.util.List;
  * subclass of JavaContext.
  */
 public class JavaIterableSnippetSetRunner<ElementT>
-    implements SnippetSetRunner<Iterable<ElementT>> {
-
-  /**
-   * The path to the root of snippet resources.
-   */
-  private final String SNIPPET_RESOURCE_ROOT =
-      JavaContextCommon.class.getPackage().getName().replace('.', '/');
+    implements SnippetSetRunner.Generator<Iterable<ElementT>> {
 
   @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      Iterable<ElementT> elementList, String snippetFileName, CodegenContext context) {
+      Iterable<ElementT> elementList,
+      String resourceRoot,
+      String snippetFileName,
+      CodegenContext context) {
     JavaIterableSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             JavaIterableSnippetSet.class,
-            SNIPPET_RESOURCE_ROOT,
+            resourceRoot,
             snippetFileName,
             ImmutableMap.<String, Object>of("context", context));
 

@@ -77,7 +77,7 @@ public class MainGapicProviderFactory
               .setView(new InterfaceView())
               .setContext(new ClientConfigGapicContext(model, apiConfig))
               .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("json.snip"))
+              .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
               .setCodePathMapper(CommonGapicCodePathMapper.defaultInstance())
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
@@ -89,7 +89,7 @@ public class MainGapicProviderFactory
               .setView(new InterfaceView())
               .setContext(new CSharpGapicContext(model, apiConfig))
               .setSnippetSetRunner(new CSharpSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("wrapper.snip"))
+              .setSnippetFileNames(Arrays.asList("csharp/wrapper.snip"))
               .setCodePathMapper(new CSharpCodePathMapper())
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
@@ -102,7 +102,7 @@ public class MainGapicProviderFactory
               .setContext(new GoGapicContext(model, apiConfig))
               .setSnippetSetRunner(new GoSnippetSetRunner<Interface>())
               .setSnippetFileNames(
-                  Arrays.asList("main.snip", "example.snip", "doc.snip", "common.snip"))
+                  Arrays.asList("go/main.snip", "go/example.snip", "go/doc.snip", "go/common.snip"))
               .setCodePathMapper(CommonGapicCodePathMapper.defaultInstance())
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
@@ -119,7 +119,7 @@ public class MainGapicProviderFactory
               .setView(new InterfaceView())
               .setContext(new JavaGapicContext(model, apiConfig))
               .setSnippetSetRunner(new JavaSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("main.snip", "settings.snip"))
+              .setSnippetFileNames(Arrays.asList("java/main.snip", "java/settings.snip"))
               .setCodePathMapper(javaPathMapper)
               .build();
       GapicProvider<? extends Object> packageInfoProvider =
@@ -128,7 +128,7 @@ public class MainGapicProviderFactory
               .setView(new InterfaceListView())
               .setContext(new JavaGapicContext(model, apiConfig))
               .setSnippetSetRunner(new JavaIterableSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("package-info.snip"))
+              .setSnippetFileNames(Arrays.asList("java/package-info.snip"))
               .setCodePathMapper(javaPathMapper)
               .build();
 
@@ -143,7 +143,7 @@ public class MainGapicProviderFactory
               .setView(new InterfaceView())
               .setContext(new NodeJSGapicContext(model, apiConfig))
               .setSnippetSetRunner(new NodeJSSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("main.snip"))
+              .setSnippetFileNames(Arrays.asList("nodejs/main.snip"))
               .setCodePathMapper(nodeJSPathMapper)
               .build();
       GapicProvider<? extends Object> clientConfigProvider =
@@ -152,7 +152,7 @@ public class MainGapicProviderFactory
               .setView(new InterfaceView())
               .setContext(new ClientConfigGapicContext(model, apiConfig))
               .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("json.snip"))
+              .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
               .setCodePathMapper(nodeJSPathMapper)
               .build();
 
@@ -167,7 +167,7 @@ public class MainGapicProviderFactory
               .setView(new InterfaceView())
               .setContext(new PhpGapicContext(model, apiConfig))
               .setSnippetSetRunner(new PhpSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("main.snip"))
+              .setSnippetFileNames(Arrays.asList("php/main.snip"))
               .setCodePathMapper(phpPathMapper)
               .build();
 
@@ -179,7 +179,7 @@ public class MainGapicProviderFactory
               .setView(new InterfaceView())
               .setContext(new ClientConfigGapicContext(model, apiConfig))
               .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("json.snip"))
+              .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
               .setCodePathMapper(phpClientConfigPathMapper)
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider, clientConfigProvider);
@@ -194,7 +194,7 @@ public class MainGapicProviderFactory
               .setContext(new PythonGapicContext(model, apiConfig))
               .setSnippetSetRunner(
                   new PythonSnippetSetRunner<Interface>(new PythonInterfaceInitializer()))
-              .setSnippetFileNames(Arrays.asList("main.snip"))
+              .setSnippetFileNames(Arrays.asList("py/main.snip"))
               .setCodePathMapper(pythonPathMapper)
               .build();
       GapicProvider<? extends Object> messageProvider =
@@ -204,7 +204,7 @@ public class MainGapicProviderFactory
               .setContext(new PythonGapicContext(model, apiConfig))
               .setSnippetSetRunner(
                   new PythonSnippetSetRunner<ProtoFile>(new PythonProtoFileInitializer()))
-              .setSnippetFileNames(Arrays.asList("message.snip"))
+              .setSnippetFileNames(Arrays.asList("py/message.snip"))
               .setCodePathMapper(CommonGapicCodePathMapper.defaultInstance())
               .build();
       GapicProvider<? extends Object> clientConfigProvider =
@@ -213,7 +213,7 @@ public class MainGapicProviderFactory
               .setView(new InterfaceView())
               .setContext(new ClientConfigGapicContext(model, apiConfig))
               .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("json.snip"))
+              .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
               .setCodePathMapper(pythonPathMapper)
               .build();
 
@@ -232,7 +232,7 @@ public class MainGapicProviderFactory
               .setView(new InterfaceView())
               .setContext(new RubyGapicContext(model, apiConfig))
               .setSnippetSetRunner(new RubySnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("main.snip"))
+              .setSnippetFileNames(Arrays.asList("ruby/main.snip"))
               .setCodePathMapper(rubyPathMapper)
               .build();
       GapicProvider<? extends Object> messageProvider =
@@ -241,7 +241,7 @@ public class MainGapicProviderFactory
               .setView(new ProtoFileView())
               .setContext(new RubyGapicContext(model, apiConfig))
               .setSnippetSetRunner(new RubySnippetSetRunner<ProtoFile>())
-              .setSnippetFileNames(Arrays.asList("message.snip"))
+              .setSnippetFileNames(Arrays.asList("ruby/message.snip"))
               .setCodePathMapper(rubyPathMapper)
               .build();
       GapicProvider<? extends Object> clientConfigProvider =
@@ -250,7 +250,7 @@ public class MainGapicProviderFactory
               .setView(new InterfaceView())
               .setContext(new ClientConfigGapicContext(model, apiConfig))
               .setSnippetSetRunner(new ClientConfigSnippetSetRunner<Interface>())
-              .setSnippetFileNames(Arrays.asList("json.snip"))
+              .setSnippetFileNames(Arrays.asList("clientconfig/json.snip"))
               .setCodePathMapper(rubyPathMapper)
               .build();
 

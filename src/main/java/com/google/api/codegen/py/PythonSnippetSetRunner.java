@@ -26,15 +26,9 @@ import java.util.List;
 /**
  * A PythonProvider provides general Python code generation logic.
  */
-public class PythonSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
+public class PythonSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
   private PythonSnippetSetInputInitializer<ElementT> initializer;
-
-  /**
-   * The path to the root of snippet resources.
-   */
-  static final String SNIPPET_RESOURCE_ROOT =
-      PythonContextCommon.class.getPackage().getName().replace('.', '/');
 
   public PythonSnippetSetRunner(PythonSnippetSetInputInitializer<ElementT> initializer) {
     this.initializer = initializer;
@@ -43,7 +37,7 @@ public class PythonSnippetSetRunner<ElementT> implements SnippetSetRunner<Elemen
   @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      ElementT element, String snippetFileName, CodegenContext context) {
+      ElementT element, String resourceRoot, String snippetFileName, CodegenContext context) {
     PythonImportHandler importHandler = initializer.getImportHandler(element);
     ImmutableMap<String, Object> globalMap = initializer.getGlobalMap(element);
     globalMap =
@@ -55,7 +49,7 @@ public class PythonSnippetSetRunner<ElementT> implements SnippetSetRunner<Elemen
 
     PythonSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
-            PythonSnippetSet.class, SNIPPET_RESOURCE_ROOT, snippetFileName, globalMap);
+            PythonSnippetSet.class, resourceRoot, snippetFileName, globalMap);
 
     Doc body = snippets.generateBody(element);
     List<String> importList = importHandler.calculateImports();

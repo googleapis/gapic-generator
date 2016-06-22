@@ -29,11 +29,13 @@ import java.util.Map;
  */
 public class CommonDiscoveryProvider implements DiscoveryProvider {
   private final DiscoveryContext context;
-  private final SnippetSetRunner<Method> snippetSetRunner;
+  private final SnippetSetRunner.Generator<Method> snippetSetRunner;
   private final String snippetFileName;
 
   public CommonDiscoveryProvider(
-      DiscoveryContext context, SnippetSetRunner<Method> snippetSetRunner, String snippetFileName) {
+      DiscoveryContext context,
+      SnippetSetRunner.Generator<Method> snippetSetRunner,
+      String snippetFileName) {
     this.context = context;
     this.snippetSetRunner = snippetSetRunner;
     this.snippetFileName = snippetFileName;
@@ -41,7 +43,9 @@ public class CommonDiscoveryProvider implements DiscoveryProvider {
 
   @Override
   public Map<String, Doc> generate(Method method) {
-    GeneratedResult result = snippetSetRunner.generate(method, snippetFileName, context);
+    GeneratedResult result =
+        snippetSetRunner.generate(
+            method, SnippetSetRunner.SNIPPET_RESOURCE_ROOT, snippetFileName, context);
 
     Api api = context.getApi();
     String outputRoot =
@@ -62,7 +66,7 @@ public class CommonDiscoveryProvider implements DiscoveryProvider {
 
   public static class Builder {
     private DiscoveryContext context;
-    private SnippetSetRunner<Method> snippetSetRunner;
+    private SnippetSetRunner.Generator<Method> snippetSetRunner;
     private String snippetFileName;
 
     private Builder() {}
@@ -72,7 +76,7 @@ public class CommonDiscoveryProvider implements DiscoveryProvider {
       return this;
     }
 
-    public Builder setSnippetSetRunner(SnippetSetRunner<Method> snippetSetRunner) {
+    public Builder setSnippetSetRunner(SnippetSetRunner.Generator<Method> snippetSetRunner) {
       this.snippetSetRunner = snippetSetRunner;
       return this;
     }
