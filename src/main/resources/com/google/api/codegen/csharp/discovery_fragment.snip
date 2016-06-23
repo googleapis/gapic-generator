@@ -17,8 +17,8 @@
         // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
         //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
         {@imports()}
-        @join import : imports
-            using {@import};
+        @join import : context.sortUsings(imports)
+            {@import}
         @end
 
         {@body}
@@ -80,14 +80,33 @@
     @end
 
     {@sample.requestTypeName} request = {@sample.serviceVarName}.{@sample.resourcePath}.{@sample.methodName}({@sample.paramList});
-    @if sample.responseTypeName == ""
+    @if sample.responseTypeName == "void"
         request.Execute();
     @else
-        {@sample.responseTypeName} response = request.Execute();
+        @if sample.isPageStreaming
+            @let ps = sample.pageStreaming
+                {@sample.responseTypeName} response;
+                do
+                {
+                    response = request.Execute();
+                    if (response.{@ps.resourceFieldName} == null)
+                    {
+                        continue;
+                    }
+                    foreach ({@ps.resourceTypeName} item in response.{@ps.resourceFieldName})
+                    {
+                        // TODO: Add code here to process each item.
+                    }
+                    request.PageToken = response.NextPageToken;
+                } while (response.NextPageToken != null);
+            @end
+        @else
+            {@sample.responseTypeName} response = request.Execute();
+        @end
     @end
 
     // To execute asynchronously in an async method, use
-    @if sample.responseTypeName == ""
+    @if sample.responseTypeName == "void"
         // await request.ExecuteAsync();
     @else
         // {@sample.responseTypeName} response = await request.ExecuteAsync();

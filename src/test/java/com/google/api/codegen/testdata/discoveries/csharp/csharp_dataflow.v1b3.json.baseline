@@ -11,9 +11,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -44,13 +45,13 @@ namespace DataflowSample
             string projectId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Job content = new Job();
+            Data.Job content = new Data.Job();
 
             ProjectsResource.JobsResource.CreateRequest request = dataflowService.Projects.Jobs.Create(content, projectId);
-            Job response = request.Execute();
+            Data.Job response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Job response = await request.ExecuteAsync();
+            // Data.Job response = await request.ExecuteAsync();
         }
     }
 }
@@ -66,9 +67,10 @@ namespace DataflowSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -101,10 +103,10 @@ namespace DataflowSample
             string jobId = "";
 
             ProjectsResource.JobsResource.GetRequest request = dataflowService.Projects.Jobs.Get(projectId, jobId);
-            Job response = request.Execute();
+            Data.Job response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Job response = await request.ExecuteAsync();
+            // Data.Job response = await request.ExecuteAsync();
         }
     }
 }
@@ -120,9 +122,10 @@ namespace DataflowSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -155,10 +158,10 @@ namespace DataflowSample
             string jobId = "";
 
             ProjectsResource.JobsResource.GetMetricsRequest request = dataflowService.Projects.Jobs.GetMetrics(projectId, jobId);
-            JobMetrics response = request.Execute();
+            Data.JobMetrics response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // JobMetrics response = await request.ExecuteAsync();
+            // Data.JobMetrics response = await request.ExecuteAsync();
         }
     }
 }
@@ -174,9 +177,10 @@ namespace DataflowSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -207,10 +211,23 @@ namespace DataflowSample
             string projectId = "";
 
             ProjectsResource.JobsResource.ListRequest request = dataflowService.Projects.Jobs.List(projectId);
-            ListJobsResponse response = request.Execute();
+            Data.ListJobsResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Jobs == null)
+                {
+                    continue;
+                }
+                foreach (Data.Job item in response.Jobs)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListJobsResponse response = await request.ExecuteAsync();
+            // Data.ListJobsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -226,9 +243,10 @@ namespace DataflowSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -261,10 +279,23 @@ namespace DataflowSample
             string jobId = "";
 
             ProjectsResource.JobsResource.MessagesResource.ListRequest request = dataflowService.Projects.Jobs.Messages.List(projectId, jobId);
-            ListJobMessagesResponse response = request.Execute();
+            Data.ListJobMessagesResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.JobMessages == null)
+                {
+                    continue;
+                }
+                foreach (Data.JobMessage item in response.JobMessages)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListJobMessagesResponse response = await request.ExecuteAsync();
+            // Data.ListJobMessagesResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -280,9 +311,10 @@ namespace DataflowSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -315,13 +347,13 @@ namespace DataflowSample
             string jobId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Job content = new Job();
+            Data.Job content = new Data.Job();
 
             ProjectsResource.JobsResource.UpdateRequest request = dataflowService.Projects.Jobs.Update(content, projectId, jobId);
-            Job response = request.Execute();
+            Data.Job response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Job response = await request.ExecuteAsync();
+            // Data.Job response = await request.ExecuteAsync();
         }
     }
 }
@@ -337,9 +369,10 @@ namespace DataflowSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -372,13 +405,13 @@ namespace DataflowSample
             string jobId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            LeaseWorkItemRequest content = new LeaseWorkItemRequest();
+            Data.LeaseWorkItemRequest content = new Data.LeaseWorkItemRequest();
 
             ProjectsResource.JobsResource.WorkItemsResource.LeaseRequest request = dataflowService.Projects.Jobs.WorkItems.Lease(content, projectId, jobId);
-            LeaseWorkItemResponse response = request.Execute();
+            Data.LeaseWorkItemResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // LeaseWorkItemResponse response = await request.ExecuteAsync();
+            // Data.LeaseWorkItemResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -394,9 +427,10 @@ namespace DataflowSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -429,13 +463,13 @@ namespace DataflowSample
             string jobId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            ReportWorkItemStatusRequest content = new ReportWorkItemStatusRequest();
+            Data.ReportWorkItemStatusRequest content = new Data.ReportWorkItemStatusRequest();
 
             ProjectsResource.JobsResource.WorkItemsResource.ReportStatusRequest request = dataflowService.Projects.Jobs.WorkItems.ReportStatus(content, projectId, jobId);
-            ReportWorkItemStatusResponse response = request.Execute();
+            Data.ReportWorkItemStatusResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // ReportWorkItemStatusResponse response = await request.ExecuteAsync();
+            // Data.ReportWorkItemStatusResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -451,9 +485,10 @@ namespace DataflowSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -484,13 +519,13 @@ namespace DataflowSample
             string projectId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            SendWorkerMessagesRequest content = new SendWorkerMessagesRequest();
+            Data.SendWorkerMessagesRequest content = new Data.SendWorkerMessagesRequest();
 
             ProjectsResource.WorkerMessagesRequest request = dataflowService.Projects.WorkerMessages(content, projectId);
-            SendWorkerMessagesResponse response = request.Execute();
+            Data.SendWorkerMessagesResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // SendWorkerMessagesResponse response = await request.ExecuteAsync();
+            // Data.SendWorkerMessagesResponse response = await request.ExecuteAsync();
         }
     }
 }

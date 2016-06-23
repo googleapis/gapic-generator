@@ -17,9 +17,12 @@ package com.google.api.codegen.csharp;
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryContext;
+import com.google.api.codegen.DiscoveryImporter;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.base.Splitter;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
@@ -31,6 +34,7 @@ import com.google.protobuf.Method;
 import com.google.protobuf.Type;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -60,7 +64,6 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
           .put(Field.Kind.TYPE_UINT64, "0UL")
           .put(Field.Kind.TYPE_FLOAT, "0.0f")
           .put(Field.Kind.TYPE_DOUBLE, "0.0")
-          .put(Field.Kind.TYPE_STRING, "\"\"")
           .build();
 
   private static final ImmutableSet<String> RESERVED_WORDS =
@@ -156,9 +159,15 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
   private static final String REQUEST_FIELD_NAME = "content";
 
   private CSharpContextCommon csharpCommon;
+  private String serviceNamespace;
 
   public CSharpDiscoveryContext(Service service, ApiaryConfig apiaryConfig) {
     super(service, apiaryConfig);
+    serviceNamespace =
+        "Google.Apis."
+            + CSharpContextCommon.s_underscoresToPascalCase(apiaryConfig.getServiceCanonicalName())
+            + "."
+            + apiaryConfig.getServiceVersion().replace('.', '_');
   }
 
   @Override
@@ -170,13 +179,58 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     return csharpCommon.addImport(namespace);
   }
 
-  private String packageNameAndImport(String suffix) {
-    String packageName =
-        CSharpContextCommon.s_underscoresToPascalCase(getApiaryConfig().getServiceCanonicalName());
-    String versionName = getApiaryConfig().getServiceVersion().replace('.', '_');
-    String namespace = "Google.Apis." + packageName + "." + versionName + suffix;
-    addImport(namespace);
-    return packageName;
+  // Put any using aliases at the end of other usings, with a line gap.
+  public Iterable<String> sortUsings(Iterable<String> usings) {
+    Predicate<String> isAlias =
+        new Predicate<String>() {
+          @Override
+          public boolean apply(String using) {
+            return using.contains("=");
+          }
+        };
+    FluentIterable<String> fluentUsings =
+        FluentIterable.from(usings)
+            .transform(
+                new Function<String, String>() {
+                  @Override
+                  public String apply(String using) {
+                    return "using " + using + ";";
+                  }
+                });
+    Iterable<String> aliases =
+        fluentUsings.anyMatch(isAlias)
+            ? FluentIterable.of(new String[] {""}).append(fluentUsings.filter(isAlias))
+            : Collections.<String>emptyList();
+    return fluentUsings.filter(Predicates.<String>not(isAlias)).append(aliases);
+  }
+
+  private String using(String fullTypeName) {
+    if (fullTypeName.startsWith(serviceNamespace)) {
+      // Special handling of nested types within the service class, except .Data classes.
+      // Return the full nested name to place in generated source code.
+      if (fullTypeName.startsWith(serviceNamespace + ".Data")) {
+        // Add an alias for Data, required due to class name clashes in some libraries.
+        addImport("Data = " + serviceNamespace + ".Data");
+      }
+      addImport(serviceNamespace);
+      return fullTypeName.substring(serviceNamespace.length() + 1);
+    }
+    // Remove any generic information, if present.
+    int genericIndex = fullTypeName.indexOf('<');
+    String nonGenericTypeName =
+        genericIndex >= 0 ? fullTypeName.substring(0, genericIndex) : fullTypeName;
+    int typeIndex = nonGenericTypeName.lastIndexOf('.');
+    if (typeIndex < 0) {
+      throw new IllegalArgumentException("fullTypeName must be fully specified.");
+    }
+    addImport(nonGenericTypeName.substring(0, typeIndex));
+    return fullTypeName.substring(typeIndex + 1);
+  }
+
+  private String usingData(String dataRelativeTypeName) {
+    return "empty$".equals(dataRelativeTypeName)
+        ? "void"
+        : using(serviceNamespace + ".Data." + dataRelativeTypeName);
   }
 
   private List<String> buildDescription(String raw) {
@@ -236,6 +290,21 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
   }
 
   @AutoValue
+  public abstract static class PageStreamingInfo {
+    public static PageStreamingInfo create(
+        String resourceFieldName, String resourceTypeName, boolean isMap) {
+      return new AutoValue_CSharpDiscoveryContext_PageStreamingInfo(
+          resourceFieldName, resourceTypeName, isMap);
+    }
+
+    public abstract String resourceFieldName();
+
+    public abstract String resourceTypeName();
+
+    public abstract boolean isMap();
+  }
+
+  @AutoValue
   public abstract static class SampleInfo {
     public static SampleInfo create(
         String namespace,
@@ -249,7 +318,9 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
         String responseTypeName,
         boolean hasRequestField,
         String requestFieldTypeName,
-        String requestFieldName) {
+        String requestFieldName,
+        boolean isPageStreaming,
+        PageStreamingInfo pageStreamingInfo) {
       return new AutoValue_CSharpDiscoveryContext_SampleInfo(
           namespace,
           serviceTypeName,
@@ -262,7 +333,9 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
           responseTypeName,
           hasRequestField,
           requestFieldTypeName,
-          requestFieldName);
+          requestFieldName,
+          isPageStreaming,
+          pageStreamingInfo);
     }
 
     public abstract String namespace();
@@ -290,6 +363,11 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
 
     @Nullable
     public abstract String requestFieldName();
+
+    public abstract boolean isPageStreaming();
+
+    @Nullable
+    public abstract PageStreamingInfo pageStreaming();
   }
 
   private String fixReservedWordVar(String s) {
@@ -300,14 +378,24 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
   }
 
   public SampleInfo getSampleInfo(Method method) {
+    try {
+      return getSampleInfo0(method);
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+
+  public SampleInfo getSampleInfo0(Method method) {
+    final ApiaryConfig apiary = getApiaryConfig();
     String rawMethodName = method.getName();
-    String packageName = packageNameAndImport("");
+    String packageName =
+        CSharpContextCommon.s_underscoresToPascalCase(apiary.getServiceCanonicalName());
     String namespace = packageName + "Sample";
-    String serviceTypeName = packageName + "Service";
+    String serviceTypeName = using(serviceNamespace + "." + packageName + "Service");
     String serviceVarName = CSharpContextCommon.s_underscoresToCamelCase(packageName) + "Service";
     String methodName = CSharpContextCommon.s_underscoresToPascalCase(getSimpleName(rawMethodName));
     boolean hasRequestField = hasRequestField(method);
-    final ApiaryConfig apiary = getApiaryConfig();
     final Type methodType = apiary.getType(method.getRequestTypeUrl());
 
     final String requestTypeName =
@@ -329,19 +417,8 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
                   @Override
                   public ParamInfo apply(String paramName) {
                     Field field = getField(methodType, paramName);
-                    String typeName;
-                    String defaultValue;
-                    if (field.getKind() == Kind.TYPE_ENUM) {
-                      typeName =
-                          requestTypeName
-                              + "."
-                              + CSharpContextCommon.s_underscoresToPascalCase(field.getName())
-                              + "Enum";
-                      defaultValue = "(" + typeName + ") 0";
-                    } else {
-                      typeName = FIELD_TYPE_MAP.get(field.getKind());
-                      defaultValue = DEFAULTVALUE_MAP.get(field.getKind());
-                    }
+                    String typeName = typeName(methodType, field, requestTypeName);
+                    String defaultValue = defaultValue(methodType, field, typeName);
                     String name =
                         fixReservedWordVar(CSharpContextCommon.s_underscoresToCamelCase(paramName));
                     List<String> description =
@@ -376,19 +453,31 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
                 })
             .join(Joiner.on('.'));
 
-    String responseTypeName = method.getResponseTypeUrl();
-    // TODO: Use a better way of determining if the response type is void
-    if (responseTypeName.equals("empty$")) {
-      responseTypeName = "";
-    } else {
-      // Use side-effect of adding the namespace to imports
-      packageNameAndImport(".Data");
-    }
+    String responseTypeName = usingData(method.getResponseTypeUrl());
     String requestFieldTypeName = null;
     if (hasRequestField) {
-      // Use side-effect of adding the namespace to imports
-      packageNameAndImport(".Data");
-      requestFieldTypeName = getRequestField(method).getTypeUrl();
+      requestFieldTypeName = usingData(getRequestField(method).getTypeUrl());
+    }
+    boolean isPageStreaming = isPageStreaming(method);
+    PageStreamingInfo pageStreamingInfo;
+    if (isPageStreaming) {
+      Type responseType = apiary.getType(method.getResponseTypeUrl());
+      Field resourceField = getFirstRepeatedField(responseType);
+      String resourceFieldTypeName = usingData(resourceField.getTypeUrl());
+      boolean isMap = isMapField(responseType, resourceField.getName());
+      String resourceTypeName;
+      if (isMap) {
+        resourceTypeName = typeName(responseType, resourceField, requestTypeName);
+      } else {
+        resourceTypeName = resourceFieldTypeName;
+      }
+      pageStreamingInfo =
+          PageStreamingInfo.create(
+              CSharpContextCommon.s_underscoresToPascalCase(resourceField.getName()),
+              resourceTypeName,
+              isMap);
+    } else {
+      pageStreamingInfo = null;
     }
     return SampleInfo.create(
         namespace,
@@ -402,6 +491,65 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
         responseTypeName,
         hasRequestField,
         requestFieldTypeName,
-        REQUEST_FIELD_NAME);
+        REQUEST_FIELD_NAME,
+        isPageStreaming,
+        pageStreamingInfo);
+  }
+
+  private String defaultValue(Type parentType, Field field, String typeName) {
+    if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
+      return "new " + typeName + "()";
+    } else if (field.getKind() == Kind.TYPE_ENUM) {
+      return "(" + typeName + ") 0";
+    } else if (field.getKind() == Kind.TYPE_STRING) {
+      return "\"" + getDefaultString(parentType, field) + "\"";
+    } else {
+      return DEFAULTVALUE_MAP.get(field.getKind());
+    }
+  }
+
+  private String typeName(Type parentType, Field field, String requestTypeName) {
+    ApiaryConfig apiary = getApiaryConfig();
+    String fieldName = field.getName();
+    String fieldTypeName = field.getTypeUrl();
+    Type fieldType = apiary.getType(fieldTypeName);
+    if (isMapField(parentType, fieldName)) {
+      Field keyField = apiary.getField(fieldType, "key");
+      Field valueField = apiary.getField(fieldType, "value");
+      String keyTypeName = typeName(fieldType, keyField, requestTypeName);
+      String valueTypeName = typeName(fieldType, valueField, requestTypeName);
+      return using(
+          "System.Collections.Generic.KeyValuePair<" + keyTypeName + ", " + valueTypeName + ">");
+    }
+    if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
+      Field elementField =
+          field.toBuilder().setCardinality(Field.Cardinality.CARDINALITY_REQUIRED).build();
+      String elementTypeName = typeName(parentType, elementField, requestTypeName);
+      return using("System.Collections.Generic.List<" + elementTypeName + ">");
+    }
+    Kind kind = field.getKind();
+    if (kind == Kind.TYPE_ENUM) {
+      return using(
+          serviceNamespace
+              + "."
+              + requestTypeName
+              + "."
+              + CSharpContextCommon.s_underscoresToPascalCase(field.getName())
+              + "Enum");
+    }
+    if (kind == Kind.TYPE_MESSAGE) {
+      Field elementsField = apiary.getField(fieldType, DiscoveryImporter.ELEMENTS_FIELD_NAME);
+      if (elementsField != null) {
+        return typeName(fieldType, elementsField, requestTypeName);
+      } else {
+        return using(serviceNamespace + ".Data." + fieldTypeName);
+      }
+    }
+    String result = FIELD_TYPE_MAP.get(kind);
+    if (result != null) {
+      // No need to use using(), all primitive types are always in scope.
+      return result;
+    }
+    throw new IllegalArgumentException("Unknown type kind: " + kind);
   }
 }

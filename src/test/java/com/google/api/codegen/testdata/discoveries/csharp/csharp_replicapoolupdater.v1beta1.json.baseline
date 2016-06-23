@@ -11,9 +11,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -48,10 +49,10 @@ namespace ReplicapoolupdaterSample
             string rollingUpdate = "";
 
             RollingUpdatesResource.CancelRequest request = replicapoolupdaterService.RollingUpdates.Cancel(project, zone, rollingUpdate);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -67,9 +68,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -104,10 +106,10 @@ namespace ReplicapoolupdaterSample
             string rollingUpdate = "";
 
             RollingUpdatesResource.GetRequest request = replicapoolupdaterService.RollingUpdates.Get(project, zone, rollingUpdate);
-            RollingUpdate response = request.Execute();
+            Data.RollingUpdate response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // RollingUpdate response = await request.ExecuteAsync();
+            // Data.RollingUpdate response = await request.ExecuteAsync();
         }
     }
 }
@@ -123,9 +125,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -158,13 +161,13 @@ namespace ReplicapoolupdaterSample
             string zone = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            RollingUpdate content = new RollingUpdate();
+            Data.RollingUpdate content = new Data.RollingUpdate();
 
             RollingUpdatesResource.InsertRequest request = replicapoolupdaterService.RollingUpdates.Insert(content, project, zone);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -180,9 +183,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -215,10 +219,23 @@ namespace ReplicapoolupdaterSample
             string zone = "";
 
             RollingUpdatesResource.ListRequest request = replicapoolupdaterService.RollingUpdates.List(project, zone);
-            RollingUpdateList response = request.Execute();
+            Data.RollingUpdateList response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.RollingUpdate item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // RollingUpdateList response = await request.ExecuteAsync();
+            // Data.RollingUpdateList response = await request.ExecuteAsync();
         }
     }
 }
@@ -234,9 +251,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -271,10 +289,23 @@ namespace ReplicapoolupdaterSample
             string rollingUpdate = "";
 
             RollingUpdatesResource.ListInstanceUpdatesRequest request = replicapoolupdaterService.RollingUpdates.ListInstanceUpdates(project, zone, rollingUpdate);
-            InstanceUpdateList response = request.Execute();
+            Data.InstanceUpdateList response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.InstanceUpdate item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // InstanceUpdateList response = await request.ExecuteAsync();
+            // Data.InstanceUpdateList response = await request.ExecuteAsync();
         }
     }
 }
@@ -290,9 +321,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -327,10 +359,10 @@ namespace ReplicapoolupdaterSample
             string rollingUpdate = "";
 
             RollingUpdatesResource.PauseRequest request = replicapoolupdaterService.RollingUpdates.Pause(project, zone, rollingUpdate);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -346,9 +378,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -383,10 +416,10 @@ namespace ReplicapoolupdaterSample
             string rollingUpdate = "";
 
             RollingUpdatesResource.ResumeRequest request = replicapoolupdaterService.RollingUpdates.Resume(project, zone, rollingUpdate);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -402,9 +435,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -439,10 +473,10 @@ namespace ReplicapoolupdaterSample
             string rollingUpdate = "";
 
             RollingUpdatesResource.RollbackRequest request = replicapoolupdaterService.RollingUpdates.Rollback(project, zone, rollingUpdate);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -458,9 +492,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -495,10 +530,10 @@ namespace ReplicapoolupdaterSample
             string operation = "";
 
             ZoneOperationsResource.GetRequest request = replicapoolupdaterService.ZoneOperations.Get(project, zone, operation);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -514,9 +549,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -549,10 +585,23 @@ namespace ReplicapoolupdaterSample
             string zone = "";
 
             ZoneOperationsResource.ListRequest request = replicapoolupdaterService.ZoneOperations.List(project, zone);
-            OperationList response = request.Execute();
+            Data.OperationList response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.Operation item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // OperationList response = await request.ExecuteAsync();
+            // Data.OperationList response = await request.ExecuteAsync();
         }
     }
 }

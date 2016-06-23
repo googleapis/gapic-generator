@@ -64,9 +64,10 @@ namespace CloudUserAccountsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
-using Google.Apis.CloudUserAccounts.beta.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
 namespace CloudUserAccountsSample
 {
@@ -99,10 +100,10 @@ namespace CloudUserAccountsSample
             string operation = "";
 
             GlobalAccountsOperationsResource.GetRequest request = cloudUserAccountsService.GlobalAccountsOperations.Get(project, operation);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -118,9 +119,10 @@ namespace CloudUserAccountsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
-using Google.Apis.CloudUserAccounts.beta.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
 namespace CloudUserAccountsSample
 {
@@ -151,10 +153,23 @@ namespace CloudUserAccountsSample
             string project = "";
 
             GlobalAccountsOperationsResource.ListRequest request = cloudUserAccountsService.GlobalAccountsOperations.List(project);
-            OperationList response = request.Execute();
+            Data.OperationList response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.Operation item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // OperationList response = await request.ExecuteAsync();
+            // Data.OperationList response = await request.ExecuteAsync();
         }
     }
 }
@@ -170,9 +185,10 @@ namespace CloudUserAccountsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
-using Google.Apis.CloudUserAccounts.beta.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
 namespace CloudUserAccountsSample
 {
@@ -205,13 +221,13 @@ namespace CloudUserAccountsSample
             string groupName = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            GroupsAddMemberRequest content = new GroupsAddMemberRequest();
+            Data.GroupsAddMemberRequest content = new Data.GroupsAddMemberRequest();
 
             GroupsResource.AddMemberRequest request = cloudUserAccountsService.Groups.AddMember(content, project, groupName);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -227,9 +243,10 @@ namespace CloudUserAccountsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
-using Google.Apis.CloudUserAccounts.beta.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
 namespace CloudUserAccountsSample
 {
@@ -262,10 +279,10 @@ namespace CloudUserAccountsSample
             string groupName = "";
 
             GroupsResource.DeleteRequest request = cloudUserAccountsService.Groups.Delete(project, groupName);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -281,9 +298,10 @@ namespace CloudUserAccountsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
-using Google.Apis.CloudUserAccounts.beta.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
 namespace CloudUserAccountsSample
 {
@@ -316,10 +334,10 @@ namespace CloudUserAccountsSample
             string groupName = "";
 
             GroupsResource.GetRequest request = cloudUserAccountsService.Groups.Get(project, groupName);
-            Group response = request.Execute();
+            Data.Group response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Group response = await request.ExecuteAsync();
+            // Data.Group response = await request.ExecuteAsync();
         }
     }
 }
@@ -335,9 +353,10 @@ namespace CloudUserAccountsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
-using Google.Apis.CloudUserAccounts.beta.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
 namespace CloudUserAccountsSample
 {
@@ -368,13 +387,13 @@ namespace CloudUserAccountsSample
             string project = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Group content = new Group();
+            Data.Group content = new Data.Group();
 
             GroupsResource.InsertRequest request = cloudUserAccountsService.Groups.Insert(content, project);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -390,9 +409,10 @@ namespace CloudUserAccountsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
-using Google.Apis.CloudUserAccounts.beta.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
 namespace CloudUserAccountsSample
 {
@@ -423,10 +443,23 @@ namespace CloudUserAccountsSample
             string project = "";
 
             GroupsResource.ListRequest request = cloudUserAccountsService.Groups.List(project);
-            GroupList response = request.Execute();
+            Data.GroupList response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.Group item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // GroupList response = await request.ExecuteAsync();
+            // Data.GroupList response = await request.ExecuteAsync();
         }
     }
 }
@@ -442,9 +475,10 @@ namespace CloudUserAccountsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
-using Google.Apis.CloudUserAccounts.beta.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
 namespace CloudUserAccountsSample
 {
@@ -477,13 +511,13 @@ namespace CloudUserAccountsSample
             string groupName = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            GroupsRemoveMemberRequest content = new GroupsRemoveMemberRequest();
+            Data.GroupsRemoveMemberRequest content = new Data.GroupsRemoveMemberRequest();
 
             GroupsResource.RemoveMemberRequest request = cloudUserAccountsService.Groups.RemoveMember(content, project, groupName);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -499,9 +533,10 @@ namespace CloudUserAccountsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
-using Google.Apis.CloudUserAccounts.beta.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
 namespace CloudUserAccountsSample
 {
@@ -538,10 +573,10 @@ namespace CloudUserAccountsSample
             string instance = "";
 
             LinuxResource.GetAuthorizedKeysViewRequest request = cloudUserAccountsService.Linux.GetAuthorizedKeysView(project, zone, user, instance);
-            LinuxGetAuthorizedKeysViewResponse response = request.Execute();
+            Data.LinuxGetAuthorizedKeysViewResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // LinuxGetAuthorizedKeysViewResponse response = await request.ExecuteAsync();
+            // Data.LinuxGetAuthorizedKeysViewResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -557,9 +592,10 @@ namespace CloudUserAccountsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
-using Google.Apis.CloudUserAccounts.beta.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
 namespace CloudUserAccountsSample
 {
@@ -594,10 +630,10 @@ namespace CloudUserAccountsSample
             string instance = "";
 
             LinuxResource.GetLinuxAccountViewsRequest request = cloudUserAccountsService.Linux.GetLinuxAccountViews(project, zone, instance);
-            LinuxGetLinuxAccountViewsResponse response = request.Execute();
+            Data.LinuxGetLinuxAccountViewsResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // LinuxGetLinuxAccountViewsResponse response = await request.ExecuteAsync();
+            // Data.LinuxGetLinuxAccountViewsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -613,9 +649,10 @@ namespace CloudUserAccountsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
-using Google.Apis.CloudUserAccounts.beta.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
 namespace CloudUserAccountsSample
 {
@@ -648,13 +685,13 @@ namespace CloudUserAccountsSample
             string user = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            PublicKey content = new PublicKey();
+            Data.PublicKey content = new Data.PublicKey();
 
             UsersResource.AddPublicKeyRequest request = cloudUserAccountsService.Users.AddPublicKey(content, project, user);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -670,9 +707,10 @@ namespace CloudUserAccountsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
-using Google.Apis.CloudUserAccounts.beta.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
 namespace CloudUserAccountsSample
 {
@@ -705,10 +743,10 @@ namespace CloudUserAccountsSample
             string user = "";
 
             UsersResource.DeleteRequest request = cloudUserAccountsService.Users.Delete(project, user);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -724,9 +762,10 @@ namespace CloudUserAccountsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
-using Google.Apis.CloudUserAccounts.beta.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
 namespace CloudUserAccountsSample
 {
@@ -759,10 +798,10 @@ namespace CloudUserAccountsSample
             string user = "";
 
             UsersResource.GetRequest request = cloudUserAccountsService.Users.Get(project, user);
-            User response = request.Execute();
+            Data.User response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // User response = await request.ExecuteAsync();
+            // Data.User response = await request.ExecuteAsync();
         }
     }
 }
@@ -778,9 +817,10 @@ namespace CloudUserAccountsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
-using Google.Apis.CloudUserAccounts.beta.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
 namespace CloudUserAccountsSample
 {
@@ -811,13 +851,13 @@ namespace CloudUserAccountsSample
             string project = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            User content = new User();
+            Data.User content = new Data.User();
 
             UsersResource.InsertRequest request = cloudUserAccountsService.Users.Insert(content, project);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -833,9 +873,10 @@ namespace CloudUserAccountsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
-using Google.Apis.CloudUserAccounts.beta.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
 namespace CloudUserAccountsSample
 {
@@ -866,10 +907,23 @@ namespace CloudUserAccountsSample
             string project = "";
 
             UsersResource.ListRequest request = cloudUserAccountsService.Users.List(project);
-            UserList response = request.Execute();
+            Data.UserList response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.User item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // UserList response = await request.ExecuteAsync();
+            // Data.UserList response = await request.ExecuteAsync();
         }
     }
 }
@@ -885,9 +939,10 @@ namespace CloudUserAccountsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudUserAccounts.beta;
-using Google.Apis.CloudUserAccounts.beta.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudUserAccounts.beta.Data;
 
 namespace CloudUserAccountsSample
 {
@@ -923,10 +978,10 @@ namespace CloudUserAccountsSample
             string fingerprint = "";
 
             UsersResource.RemovePublicKeyRequest request = cloudUserAccountsService.Users.RemovePublicKey(project, user, fingerprint);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }

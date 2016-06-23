@@ -11,9 +11,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
-using Google.Apis.Autoscaler.v1beta2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
 namespace AutoscalerSample
 {
@@ -48,10 +49,10 @@ namespace AutoscalerSample
             string autoscaler = "";
 
             AutoscalersResource.DeleteRequest request = autoscalerService.Autoscalers.Delete(project, zone, autoscaler);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -67,9 +68,10 @@ namespace AutoscalerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
-using Google.Apis.Autoscaler.v1beta2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
 namespace AutoscalerSample
 {
@@ -104,10 +106,10 @@ namespace AutoscalerSample
             string autoscaler = "";
 
             AutoscalersResource.GetRequest request = autoscalerService.Autoscalers.Get(project, zone, autoscaler);
-            Autoscaler response = request.Execute();
+            Data.Autoscaler response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Autoscaler response = await request.ExecuteAsync();
+            // Data.Autoscaler response = await request.ExecuteAsync();
         }
     }
 }
@@ -123,9 +125,10 @@ namespace AutoscalerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
-using Google.Apis.Autoscaler.v1beta2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
 namespace AutoscalerSample
 {
@@ -158,13 +161,13 @@ namespace AutoscalerSample
             string zone = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Autoscaler content = new Autoscaler();
+            Data.Autoscaler content = new Data.Autoscaler();
 
             AutoscalersResource.InsertRequest request = autoscalerService.Autoscalers.Insert(content, project, zone);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -180,9 +183,10 @@ namespace AutoscalerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
-using Google.Apis.Autoscaler.v1beta2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
 namespace AutoscalerSample
 {
@@ -215,10 +219,23 @@ namespace AutoscalerSample
             string zone = "";
 
             AutoscalersResource.ListRequest request = autoscalerService.Autoscalers.List(project, zone);
-            AutoscalerListResponse response = request.Execute();
+            Data.AutoscalerListResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.Autoscaler item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // AutoscalerListResponse response = await request.ExecuteAsync();
+            // Data.AutoscalerListResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -234,9 +251,10 @@ namespace AutoscalerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
-using Google.Apis.Autoscaler.v1beta2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
 namespace AutoscalerSample
 {
@@ -271,13 +289,13 @@ namespace AutoscalerSample
             string autoscaler = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Autoscaler content = new Autoscaler();
+            Data.Autoscaler content = new Data.Autoscaler();
 
             AutoscalersResource.PatchRequest request = autoscalerService.Autoscalers.Patch(content, project, zone, autoscaler);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -293,9 +311,10 @@ namespace AutoscalerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
-using Google.Apis.Autoscaler.v1beta2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
 namespace AutoscalerSample
 {
@@ -330,13 +349,13 @@ namespace AutoscalerSample
             string autoscaler = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Autoscaler content = new Autoscaler();
+            Data.Autoscaler content = new Data.Autoscaler();
 
             AutoscalersResource.UpdateRequest request = autoscalerService.Autoscalers.Update(content, project, zone, autoscaler);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -407,9 +426,10 @@ namespace AutoscalerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
-using Google.Apis.Autoscaler.v1beta2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
 namespace AutoscalerSample
 {
@@ -444,10 +464,10 @@ namespace AutoscalerSample
             string operation = "";
 
             ZoneOperationsResource.GetRequest request = autoscalerService.ZoneOperations.Get(project, zone, operation);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -463,9 +483,10 @@ namespace AutoscalerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
-using Google.Apis.Autoscaler.v1beta2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
 namespace AutoscalerSample
 {
@@ -498,10 +519,23 @@ namespace AutoscalerSample
             string zone = "";
 
             ZoneOperationsResource.ListRequest request = autoscalerService.ZoneOperations.List(project, zone);
-            OperationList response = request.Execute();
+            Data.OperationList response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.Operation item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // OperationList response = await request.ExecuteAsync();
+            // Data.OperationList response = await request.ExecuteAsync();
         }
     }
 }
@@ -517,9 +551,10 @@ namespace AutoscalerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Autoscaler.v1beta2;
-using Google.Apis.Autoscaler.v1beta2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Autoscaler.v1beta2.Data;
 
 namespace AutoscalerSample
 {
@@ -550,10 +585,23 @@ namespace AutoscalerSample
             string project = "";
 
             ZonesResource.ListRequest request = autoscalerService.Zones.List(project);
-            ZoneList response = request.Execute();
+            Data.ZoneList response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.Zone item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ZoneList response = await request.ExecuteAsync();
+            // Data.ZoneList response = await request.ExecuteAsync();
         }
     }
 }

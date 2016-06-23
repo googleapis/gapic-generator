@@ -11,9 +11,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -41,16 +42,16 @@ namespace PubsubSample
 
             // TODO: Change placeholders below to values for parameters to the Acknowledge() method:
             // The subscription whose message is being acknowledged.
-            string subscription = "";
+            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
             // TODO Add code to assign values to fields of 'content'.
-            AcknowledgeRequest content = new AcknowledgeRequest();
+            Data.AcknowledgeRequest content = new Data.AcknowledgeRequest();
 
             ProjectsResource.SubscriptionsResource.AcknowledgeRequest request = pubsubService.Projects.Subscriptions.Acknowledge(content, subscription);
-            Empty response = request.Execute();
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
@@ -66,9 +67,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -100,16 +102,16 @@ namespace PubsubSample
             // contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`), underscores (`_`), periods
             // (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be between 3 and 255 characters in
             // length, and it must not start with `"goog"`.
-            string name = "";
+            string name = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
             // TODO Add code to assign values to fields of 'content'.
-            Subscription content = new Subscription();
+            Data.Subscription content = new Data.Subscription();
 
             ProjectsResource.SubscriptionsResource.CreateRequest request = pubsubService.Projects.Subscriptions.Create(content, name);
-            Subscription response = request.Execute();
+            Data.Subscription response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Subscription response = await request.ExecuteAsync();
+            // Data.Subscription response = await request.ExecuteAsync();
         }
     }
 }
@@ -125,9 +127,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -155,13 +158,13 @@ namespace PubsubSample
 
             // TODO: Change placeholders below to values for parameters to the Delete() method:
             // The subscription to delete.
-            string subscription = "";
+            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
             ProjectsResource.SubscriptionsResource.DeleteRequest request = pubsubService.Projects.Subscriptions.Delete(subscription);
-            Empty response = request.Execute();
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
@@ -177,9 +180,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -207,13 +211,13 @@ namespace PubsubSample
 
             // TODO: Change placeholders below to values for parameters to the Get() method:
             // The name of the subscription to get.
-            string subscription = "";
+            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
             ProjectsResource.SubscriptionsResource.GetRequest request = pubsubService.Projects.Subscriptions.Get(subscription);
-            Subscription response = request.Execute();
+            Data.Subscription response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Subscription response = await request.ExecuteAsync();
+            // Data.Subscription response = await request.ExecuteAsync();
         }
     }
 }
@@ -229,9 +233,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -262,13 +267,13 @@ namespace PubsubSample
             // path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in
             // this value is resource specific and is specified in the documentation for the respective
             // GetIamPolicy rpc.
-            string resource = "";
+            string resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
             ProjectsResource.SubscriptionsResource.GetIamPolicyRequest request = pubsubService.Projects.Subscriptions.GetIamPolicy(resource);
-            Policy response = request.Execute();
+            Data.Policy response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Policy response = await request.ExecuteAsync();
+            // Data.Policy response = await request.ExecuteAsync();
         }
     }
 }
@@ -284,9 +289,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -314,13 +320,26 @@ namespace PubsubSample
 
             // TODO: Change placeholders below to values for parameters to the List() method:
             // The name of the cloud project that subscriptions belong to.
-            string project = "";
+            string project = "projects/{MY-PROJECT}";
 
             ProjectsResource.SubscriptionsResource.ListRequest request = pubsubService.Projects.Subscriptions.List(project);
-            ListSubscriptionsResponse response = request.Execute();
+            Data.ListSubscriptionsResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Subscriptions == null)
+                {
+                    continue;
+                }
+                foreach (Data.Subscription item in response.Subscriptions)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListSubscriptionsResponse response = await request.ExecuteAsync();
+            // Data.ListSubscriptionsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -336,9 +355,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -366,16 +386,16 @@ namespace PubsubSample
 
             // TODO: Change placeholders below to values for parameters to the ModifyAckDeadline() method:
             // The name of the subscription.
-            string subscription = "";
+            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
             // TODO Add code to assign values to fields of 'content'.
-            ModifyAckDeadlineRequest content = new ModifyAckDeadlineRequest();
+            Data.ModifyAckDeadlineRequest content = new Data.ModifyAckDeadlineRequest();
 
             ProjectsResource.SubscriptionsResource.ModifyAckDeadlineRequest request = pubsubService.Projects.Subscriptions.ModifyAckDeadline(content, subscription);
-            Empty response = request.Execute();
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
@@ -391,9 +411,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -421,16 +442,16 @@ namespace PubsubSample
 
             // TODO: Change placeholders below to values for parameters to the ModifyPushConfig() method:
             // The name of the subscription.
-            string subscription = "";
+            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
             // TODO Add code to assign values to fields of 'content'.
-            ModifyPushConfigRequest content = new ModifyPushConfigRequest();
+            Data.ModifyPushConfigRequest content = new Data.ModifyPushConfigRequest();
 
             ProjectsResource.SubscriptionsResource.ModifyPushConfigRequest request = pubsubService.Projects.Subscriptions.ModifyPushConfig(content, subscription);
-            Empty response = request.Execute();
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
@@ -446,9 +467,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -476,16 +498,16 @@ namespace PubsubSample
 
             // TODO: Change placeholders below to values for parameters to the Pull() method:
             // The subscription from which messages should be pulled.
-            string subscription = "";
+            string subscription = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
             // TODO Add code to assign values to fields of 'content'.
-            PullRequest content = new PullRequest();
+            Data.PullRequest content = new Data.PullRequest();
 
             ProjectsResource.SubscriptionsResource.PullRequest request = pubsubService.Projects.Subscriptions.Pull(content, subscription);
-            PullResponse response = request.Execute();
+            Data.PullResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // PullResponse response = await request.ExecuteAsync();
+            // Data.PullResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -501,9 +523,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -534,16 +557,16 @@ namespace PubsubSample
             // path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in
             // this value is resource specific and is specified in the documentation for the respective
             // SetIamPolicy rpc.
-            string resource = "";
+            string resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
             // TODO Add code to assign values to fields of 'content'.
-            SetIamPolicyRequest content = new SetIamPolicyRequest();
+            Data.SetIamPolicyRequest content = new Data.SetIamPolicyRequest();
 
             ProjectsResource.SubscriptionsResource.SetIamPolicyRequest request = pubsubService.Projects.Subscriptions.SetIamPolicy(content, resource);
-            Policy response = request.Execute();
+            Data.Policy response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Policy response = await request.ExecuteAsync();
+            // Data.Policy response = await request.ExecuteAsync();
         }
     }
 }
@@ -559,9 +582,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -592,16 +616,16 @@ namespace PubsubSample
             // as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path
             // specified in this value is resource specific and is specified in the documentation for the
             // respective TestIamPermissions rpc.
-            string resource = "";
+            string resource = "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}";
 
             // TODO Add code to assign values to fields of 'content'.
-            TestIamPermissionsRequest content = new TestIamPermissionsRequest();
+            Data.TestIamPermissionsRequest content = new Data.TestIamPermissionsRequest();
 
             ProjectsResource.SubscriptionsResource.TestIamPermissionsRequest request = pubsubService.Projects.Subscriptions.TestIamPermissions(content, resource);
-            TestIamPermissionsResponse response = request.Execute();
+            Data.TestIamPermissionsResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // TestIamPermissionsResponse response = await request.ExecuteAsync();
+            // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -617,9 +641,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -650,16 +675,16 @@ namespace PubsubSample
             // start with a letter, and contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`),
             // underscores (`_`), periods (`.`), tildes (`~`), plus (`+`) or percent signs (`%`). It must be
             // between 3 and 255 characters in length, and it must not start with `"goog"`.
-            string name = "";
+            string name = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
             // TODO Add code to assign values to fields of 'content'.
-            Topic content = new Topic();
+            Data.Topic content = new Data.Topic();
 
             ProjectsResource.TopicsResource.CreateRequest request = pubsubService.Projects.Topics.Create(content, name);
-            Topic response = request.Execute();
+            Data.Topic response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Topic response = await request.ExecuteAsync();
+            // Data.Topic response = await request.ExecuteAsync();
         }
     }
 }
@@ -675,9 +700,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -705,13 +731,13 @@ namespace PubsubSample
 
             // TODO: Change placeholders below to values for parameters to the Delete() method:
             // Name of the topic to delete.
-            string topic = "";
+            string topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
             ProjectsResource.TopicsResource.DeleteRequest request = pubsubService.Projects.Topics.Delete(topic);
-            Empty response = request.Execute();
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
@@ -727,9 +753,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -757,13 +784,13 @@ namespace PubsubSample
 
             // TODO: Change placeholders below to values for parameters to the Get() method:
             // The name of the topic to get.
-            string topic = "";
+            string topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
             ProjectsResource.TopicsResource.GetRequest request = pubsubService.Projects.Topics.Get(topic);
-            Topic response = request.Execute();
+            Data.Topic response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Topic response = await request.ExecuteAsync();
+            // Data.Topic response = await request.ExecuteAsync();
         }
     }
 }
@@ -779,9 +806,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -812,13 +840,13 @@ namespace PubsubSample
             // path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in
             // this value is resource specific and is specified in the documentation for the respective
             // GetIamPolicy rpc.
-            string resource = "";
+            string resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
             ProjectsResource.TopicsResource.GetIamPolicyRequest request = pubsubService.Projects.Topics.GetIamPolicy(resource);
-            Policy response = request.Execute();
+            Data.Policy response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Policy response = await request.ExecuteAsync();
+            // Data.Policy response = await request.ExecuteAsync();
         }
     }
 }
@@ -834,9 +862,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -864,13 +893,26 @@ namespace PubsubSample
 
             // TODO: Change placeholders below to values for parameters to the List() method:
             // The name of the cloud project that topics belong to.
-            string project = "";
+            string project = "projects/{MY-PROJECT}";
 
             ProjectsResource.TopicsResource.ListRequest request = pubsubService.Projects.Topics.List(project);
-            ListTopicsResponse response = request.Execute();
+            Data.ListTopicsResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Topics == null)
+                {
+                    continue;
+                }
+                foreach (Data.Topic item in response.Topics)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListTopicsResponse response = await request.ExecuteAsync();
+            // Data.ListTopicsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -886,9 +928,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -916,16 +959,16 @@ namespace PubsubSample
 
             // TODO: Change placeholders below to values for parameters to the Publish() method:
             // The messages in the request will be published on this topic.
-            string topic = "";
+            string topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
             // TODO Add code to assign values to fields of 'content'.
-            PublishRequest content = new PublishRequest();
+            Data.PublishRequest content = new Data.PublishRequest();
 
             ProjectsResource.TopicsResource.PublishRequest request = pubsubService.Projects.Topics.Publish(content, topic);
-            PublishResponse response = request.Execute();
+            Data.PublishResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // PublishResponse response = await request.ExecuteAsync();
+            // Data.PublishResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -941,9 +984,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -974,16 +1018,16 @@ namespace PubsubSample
             // path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path specified in
             // this value is resource specific and is specified in the documentation for the respective
             // SetIamPolicy rpc.
-            string resource = "";
+            string resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
             // TODO Add code to assign values to fields of 'content'.
-            SetIamPolicyRequest content = new SetIamPolicyRequest();
+            Data.SetIamPolicyRequest content = new Data.SetIamPolicyRequest();
 
             ProjectsResource.TopicsResource.SetIamPolicyRequest request = pubsubService.Projects.Topics.SetIamPolicy(content, resource);
-            Policy response = request.Execute();
+            Data.Policy response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Policy response = await request.ExecuteAsync();
+            // Data.Policy response = await request.ExecuteAsync();
         }
     }
 }
@@ -999,9 +1043,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -1029,13 +1074,26 @@ namespace PubsubSample
 
             // TODO: Change placeholders below to values for parameters to the List() method:
             // The name of the topic that subscriptions are attached to.
-            string topic = "";
+            string topic = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
             ProjectsResource.TopicsResource.SubscriptionsResource.ListRequest request = pubsubService.Projects.Topics.Subscriptions.List(topic);
-            ListTopicSubscriptionsResponse response = request.Execute();
+            Data.ListTopicSubscriptionsResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Subscriptions == null)
+                {
+                    continue;
+                }
+                foreach (Data. item in response.Subscriptions)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListTopicSubscriptionsResponse response = await request.ExecuteAsync();
+            // Data.ListTopicSubscriptionsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -1051,9 +1109,10 @@ namespace PubsubSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
-using Google.Apis.Pubsub.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Pubsub.v1.Data;
 
 namespace PubsubSample
 {
@@ -1084,16 +1143,16 @@ namespace PubsubSample
             // as a path, such as, `projects/{project}/zones/{zone}/disks/{disk}`. The format for the path
             // specified in this value is resource specific and is specified in the documentation for the
             // respective TestIamPermissions rpc.
-            string resource = "";
+            string resource = "projects/{MY-PROJECT}/topics/{MY-TOPIC}";
 
             // TODO Add code to assign values to fields of 'content'.
-            TestIamPermissionsRequest content = new TestIamPermissionsRequest();
+            Data.TestIamPermissionsRequest content = new Data.TestIamPermissionsRequest();
 
             ProjectsResource.TopicsResource.TestIamPermissionsRequest request = pubsubService.Projects.Topics.TestIamPermissions(content, resource);
-            TestIamPermissionsResponse response = request.Execute();
+            Data.TestIamPermissionsResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // TestIamPermissionsResponse response = await request.ExecuteAsync();
+            // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
         }
     }
 }
