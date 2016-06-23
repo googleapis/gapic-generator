@@ -64,9 +64,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -99,10 +100,10 @@ namespace BigquerySample
             string datasetId = "";
 
             DatasetsResource.GetRequest request = bigqueryService.Datasets.Get(projectId, datasetId);
-            Dataset response = request.Execute();
+            Data.Dataset response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Dataset response = await request.ExecuteAsync();
+            // Data.Dataset response = await request.ExecuteAsync();
         }
     }
 }
@@ -118,9 +119,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -151,13 +153,13 @@ namespace BigquerySample
             string projectId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Dataset content = new Dataset();
+            Data.Dataset content = new Data.Dataset();
 
             DatasetsResource.InsertRequest request = bigqueryService.Datasets.Insert(content, projectId);
-            Dataset response = request.Execute();
+            Data.Dataset response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Dataset response = await request.ExecuteAsync();
+            // Data.Dataset response = await request.ExecuteAsync();
         }
     }
 }
@@ -173,9 +175,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -206,10 +209,23 @@ namespace BigquerySample
             string projectId = "";
 
             DatasetsResource.ListRequest request = bigqueryService.Datasets.List(projectId);
-            DatasetList response = request.Execute();
+            Data.DatasetList response;
+            do
+            {
+                response = request.Execute();
+                if (response.Datasets == null)
+                {
+                    continue;
+                }
+                foreach (Data.DatasetList.Datasets item in response.Datasets)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // DatasetList response = await request.ExecuteAsync();
+            // Data.DatasetList response = await request.ExecuteAsync();
         }
     }
 }
@@ -225,9 +241,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -260,13 +277,13 @@ namespace BigquerySample
             string datasetId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Dataset content = new Dataset();
+            Data.Dataset content = new Data.Dataset();
 
             DatasetsResource.PatchRequest request = bigqueryService.Datasets.Patch(content, projectId, datasetId);
-            Dataset response = request.Execute();
+            Data.Dataset response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Dataset response = await request.ExecuteAsync();
+            // Data.Dataset response = await request.ExecuteAsync();
         }
     }
 }
@@ -282,9 +299,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -317,13 +335,13 @@ namespace BigquerySample
             string datasetId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Dataset content = new Dataset();
+            Data.Dataset content = new Data.Dataset();
 
             DatasetsResource.UpdateRequest request = bigqueryService.Datasets.Update(content, projectId, datasetId);
-            Dataset response = request.Execute();
+            Data.Dataset response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Dataset response = await request.ExecuteAsync();
+            // Data.Dataset response = await request.ExecuteAsync();
         }
     }
 }
@@ -339,9 +357,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -374,10 +393,10 @@ namespace BigquerySample
             string jobId = "";
 
             JobsResource.CancelRequest request = bigqueryService.Jobs.Cancel(projectId, jobId);
-            JobCancelResponse response = request.Execute();
+            Data.JobCancelResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // JobCancelResponse response = await request.ExecuteAsync();
+            // Data.JobCancelResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -393,9 +412,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -428,10 +448,10 @@ namespace BigquerySample
             string jobId = "";
 
             JobsResource.GetRequest request = bigqueryService.Jobs.Get(projectId, jobId);
-            Job response = request.Execute();
+            Data.Job response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Job response = await request.ExecuteAsync();
+            // Data.Job response = await request.ExecuteAsync();
         }
     }
 }
@@ -447,9 +467,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -482,10 +503,10 @@ namespace BigquerySample
             string jobId = "";
 
             JobsResource.GetQueryResultsRequest request = bigqueryService.Jobs.GetQueryResults(projectId, jobId);
-            GetQueryResultsResponse response = request.Execute();
+            Data.GetQueryResultsResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // GetQueryResultsResponse response = await request.ExecuteAsync();
+            // Data.GetQueryResultsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -501,9 +522,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -534,13 +556,13 @@ namespace BigquerySample
             string projectId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Job content = new Job();
+            Data.Job content = new Data.Job();
 
             JobsResource.InsertRequest request = bigqueryService.Jobs.Insert(content, projectId);
-            Job response = request.Execute();
+            Data.Job response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Job response = await request.ExecuteAsync();
+            // Data.Job response = await request.ExecuteAsync();
         }
     }
 }
@@ -556,9 +578,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -589,10 +612,23 @@ namespace BigquerySample
             string projectId = "";
 
             JobsResource.ListRequest request = bigqueryService.Jobs.List(projectId);
-            JobList response = request.Execute();
+            Data.JobList response;
+            do
+            {
+                response = request.Execute();
+                if (response.Jobs == null)
+                {
+                    continue;
+                }
+                foreach (Data.JobList.Jobs item in response.Jobs)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // JobList response = await request.ExecuteAsync();
+            // Data.JobList response = await request.ExecuteAsync();
         }
     }
 }
@@ -608,9 +644,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -641,13 +678,13 @@ namespace BigquerySample
             string projectId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            QueryRequest content = new QueryRequest();
+            Data.QueryRequest content = new Data.QueryRequest();
 
             JobsResource.QueryRequest request = bigqueryService.Jobs.Query(content, projectId);
-            QueryResponse response = request.Execute();
+            Data.QueryResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // QueryResponse response = await request.ExecuteAsync();
+            // Data.QueryResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -663,9 +700,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -694,10 +732,23 @@ namespace BigquerySample
             // TODO: Change placeholders below to values for parameters to the List() method:
 
             ProjectsResource.ListRequest request = bigqueryService.Projects.List();
-            ProjectList response = request.Execute();
+            Data.ProjectList response;
+            do
+            {
+                response = request.Execute();
+                if (response.Projects == null)
+                {
+                    continue;
+                }
+                foreach (Data.ProjectList.Projects item in response.Projects)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ProjectList response = await request.ExecuteAsync();
+            // Data.ProjectList response = await request.ExecuteAsync();
         }
     }
 }
@@ -713,9 +764,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -750,13 +802,13 @@ namespace BigquerySample
             string tableId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            TableDataInsertAllRequest content = new TableDataInsertAllRequest();
+            Data.TableDataInsertAllRequest content = new Data.TableDataInsertAllRequest();
 
             TabledataResource.InsertAllRequest request = bigqueryService.Tabledata.InsertAll(content, projectId, datasetId, tableId);
-            TableDataInsertAllResponse response = request.Execute();
+            Data.TableDataInsertAllResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // TableDataInsertAllResponse response = await request.ExecuteAsync();
+            // Data.TableDataInsertAllResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -772,9 +824,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -809,10 +862,10 @@ namespace BigquerySample
             string tableId = "";
 
             TabledataResource.ListRequest request = bigqueryService.Tabledata.List(projectId, datasetId, tableId);
-            TableDataList response = request.Execute();
+            Data.TableDataList response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // TableDataList response = await request.ExecuteAsync();
+            // Data.TableDataList response = await request.ExecuteAsync();
         }
     }
 }
@@ -883,9 +936,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -920,10 +974,10 @@ namespace BigquerySample
             string tableId = "";
 
             TablesResource.GetRequest request = bigqueryService.Tables.Get(projectId, datasetId, tableId);
-            Table response = request.Execute();
+            Data.Table response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Table response = await request.ExecuteAsync();
+            // Data.Table response = await request.ExecuteAsync();
         }
     }
 }
@@ -939,9 +993,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -974,13 +1029,13 @@ namespace BigquerySample
             string datasetId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Table content = new Table();
+            Data.Table content = new Data.Table();
 
             TablesResource.InsertRequest request = bigqueryService.Tables.Insert(content, projectId, datasetId);
-            Table response = request.Execute();
+            Data.Table response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Table response = await request.ExecuteAsync();
+            // Data.Table response = await request.ExecuteAsync();
         }
     }
 }
@@ -996,9 +1051,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -1031,10 +1087,23 @@ namespace BigquerySample
             string datasetId = "";
 
             TablesResource.ListRequest request = bigqueryService.Tables.List(projectId, datasetId);
-            TableList response = request.Execute();
+            Data.TableList response;
+            do
+            {
+                response = request.Execute();
+                if (response.Tables == null)
+                {
+                    continue;
+                }
+                foreach (Data.TableList.Tables item in response.Tables)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // TableList response = await request.ExecuteAsync();
+            // Data.TableList response = await request.ExecuteAsync();
         }
     }
 }
@@ -1050,9 +1119,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -1087,13 +1157,13 @@ namespace BigquerySample
             string tableId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Table content = new Table();
+            Data.Table content = new Data.Table();
 
             TablesResource.PatchRequest request = bigqueryService.Tables.Patch(content, projectId, datasetId, tableId);
-            Table response = request.Execute();
+            Data.Table response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Table response = await request.ExecuteAsync();
+            // Data.Table response = await request.ExecuteAsync();
         }
     }
 }
@@ -1109,9 +1179,10 @@ namespace BigquerySample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Bigquery.v2;
-using Google.Apis.Bigquery.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Bigquery.v2.Data;
 
 namespace BigquerySample
 {
@@ -1146,13 +1217,13 @@ namespace BigquerySample
             string tableId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Table content = new Table();
+            Data.Table content = new Data.Table();
 
             TablesResource.UpdateRequest request = bigqueryService.Tables.Update(content, projectId, datasetId, tableId);
-            Table response = request.Execute();
+            Data.Table response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Table response = await request.ExecuteAsync();
+            // Data.Table response = await request.ExecuteAsync();
         }
     }
 }

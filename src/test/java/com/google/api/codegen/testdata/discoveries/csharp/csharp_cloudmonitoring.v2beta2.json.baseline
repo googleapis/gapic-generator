@@ -11,9 +11,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
-using Google.Apis.CloudMonitoring.v2beta2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudMonitoring.v2beta2.Data;
 
 namespace CloudMonitoringSample
 {
@@ -44,13 +45,13 @@ namespace CloudMonitoringSample
             string project = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            MetricDescriptor content = new MetricDescriptor();
+            Data.MetricDescriptor content = new Data.MetricDescriptor();
 
             MetricDescriptorsResource.CreateRequest request = cloudMonitoringService.MetricDescriptors.Create(content, project);
-            MetricDescriptor response = request.Execute();
+            Data.MetricDescriptor response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // MetricDescriptor response = await request.ExecuteAsync();
+            // Data.MetricDescriptor response = await request.ExecuteAsync();
         }
     }
 }
@@ -66,9 +67,10 @@ namespace CloudMonitoringSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
-using Google.Apis.CloudMonitoring.v2beta2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudMonitoring.v2beta2.Data;
 
 namespace CloudMonitoringSample
 {
@@ -101,10 +103,10 @@ namespace CloudMonitoringSample
             string metric = "";
 
             MetricDescriptorsResource.DeleteRequest request = cloudMonitoringService.MetricDescriptors.Delete(project, metric);
-            DeleteMetricDescriptorResponse response = request.Execute();
+            Data.DeleteMetricDescriptorResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // DeleteMetricDescriptorResponse response = await request.ExecuteAsync();
+            // Data.DeleteMetricDescriptorResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -120,9 +122,10 @@ namespace CloudMonitoringSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
-using Google.Apis.CloudMonitoring.v2beta2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudMonitoring.v2beta2.Data;
 
 namespace CloudMonitoringSample
 {
@@ -153,13 +156,26 @@ namespace CloudMonitoringSample
             string project = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            ListMetricDescriptorsRequest content = new ListMetricDescriptorsRequest();
+            Data.ListMetricDescriptorsRequest content = new Data.ListMetricDescriptorsRequest();
 
             MetricDescriptorsResource.ListRequest request = cloudMonitoringService.MetricDescriptors.List(content, project);
-            ListMetricDescriptorsResponse response = request.Execute();
+            Data.ListMetricDescriptorsResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Metrics == null)
+                {
+                    continue;
+                }
+                foreach (Data.MetricDescriptor item in response.Metrics)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListMetricDescriptorsResponse response = await request.ExecuteAsync();
+            // Data.ListMetricDescriptorsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -175,9 +191,10 @@ namespace CloudMonitoringSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
-using Google.Apis.CloudMonitoring.v2beta2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudMonitoring.v2beta2.Data;
 
 namespace CloudMonitoringSample
 {
@@ -214,13 +231,26 @@ namespace CloudMonitoringSample
             string youngest = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            ListTimeseriesRequest content = new ListTimeseriesRequest();
+            Data.ListTimeseriesRequest content = new Data.ListTimeseriesRequest();
 
             TimeseriesResource.ListRequest request = cloudMonitoringService.Timeseries.List(content, project, metric, youngest);
-            ListTimeseriesResponse response = request.Execute();
+            Data.ListTimeseriesResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Timeseries == null)
+                {
+                    continue;
+                }
+                foreach (Data.Timeseries item in response.Timeseries)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListTimeseriesResponse response = await request.ExecuteAsync();
+            // Data.ListTimeseriesResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -236,9 +266,10 @@ namespace CloudMonitoringSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
-using Google.Apis.CloudMonitoring.v2beta2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudMonitoring.v2beta2.Data;
 
 namespace CloudMonitoringSample
 {
@@ -269,13 +300,13 @@ namespace CloudMonitoringSample
             string project = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            WriteTimeseriesRequest content = new WriteTimeseriesRequest();
+            Data.WriteTimeseriesRequest content = new Data.WriteTimeseriesRequest();
 
             TimeseriesResource.WriteRequest request = cloudMonitoringService.Timeseries.Write(content, project);
-            WriteTimeseriesResponse response = request.Execute();
+            Data.WriteTimeseriesResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // WriteTimeseriesResponse response = await request.ExecuteAsync();
+            // Data.WriteTimeseriesResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -291,9 +322,10 @@ namespace CloudMonitoringSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudMonitoring.v2beta2;
-using Google.Apis.CloudMonitoring.v2beta2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.CloudMonitoring.v2beta2.Data;
 
 namespace CloudMonitoringSample
 {
@@ -330,13 +362,26 @@ namespace CloudMonitoringSample
             string youngest = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            ListTimeseriesDescriptorsRequest content = new ListTimeseriesDescriptorsRequest();
+            Data.ListTimeseriesDescriptorsRequest content = new Data.ListTimeseriesDescriptorsRequest();
 
             TimeseriesDescriptorsResource.ListRequest request = cloudMonitoringService.TimeseriesDescriptors.List(content, project, metric, youngest);
-            ListTimeseriesDescriptorsResponse response = request.Execute();
+            Data.ListTimeseriesDescriptorsResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Timeseries == null)
+                {
+                    continue;
+                }
+                foreach (Data.TimeseriesDescriptor item in response.Timeseries)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListTimeseriesDescriptorsResponse response = await request.ExecuteAsync();
+            // Data.ListTimeseriesDescriptorsResponse response = await request.ExecuteAsync();
         }
     }
 }

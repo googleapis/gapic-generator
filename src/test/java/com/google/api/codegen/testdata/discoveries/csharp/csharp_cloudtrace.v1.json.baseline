@@ -11,9 +11,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudtrace.v1;
-using Google.Apis.Cloudtrace.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudtrace.v1.Data;
 
 namespace CloudtraceSample
 {
@@ -44,13 +45,13 @@ namespace CloudtraceSample
             string projectId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Traces content = new Traces();
+            Data.Traces content = new Data.Traces();
 
             ProjectsResource.PatchTracesRequest request = cloudtraceService.Projects.PatchTraces(content, projectId);
-            Empty response = request.Execute();
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
@@ -66,9 +67,10 @@ namespace CloudtraceSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudtrace.v1;
-using Google.Apis.Cloudtrace.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudtrace.v1.Data;
 
 namespace CloudtraceSample
 {
@@ -101,10 +103,10 @@ namespace CloudtraceSample
             string traceId = "";
 
             ProjectsResource.TracesResource.GetRequest request = cloudtraceService.Projects.Traces.Get(projectId, traceId);
-            Trace response = request.Execute();
+            Data.Trace response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Trace response = await request.ExecuteAsync();
+            // Data.Trace response = await request.ExecuteAsync();
         }
     }
 }
@@ -120,9 +122,10 @@ namespace CloudtraceSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudtrace.v1;
-using Google.Apis.Cloudtrace.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudtrace.v1.Data;
 
 namespace CloudtraceSample
 {
@@ -153,10 +156,23 @@ namespace CloudtraceSample
             string projectId = "";
 
             ProjectsResource.TracesResource.ListRequest request = cloudtraceService.Projects.Traces.List(projectId);
-            ListTracesResponse response = request.Execute();
+            Data.ListTracesResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Traces == null)
+                {
+                    continue;
+                }
+                foreach (Data.Trace item in response.Traces)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListTracesResponse response = await request.ExecuteAsync();
+            // Data.ListTracesResponse response = await request.ExecuteAsync();
         }
     }
 }

@@ -11,9 +11,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -44,10 +45,10 @@ namespace CloudresourcemanagerSample
             string organizationId = "";
 
             OrganizationsResource.GetRequest request = cloudresourcemanagerService.Organizations.Get(organizationId);
-            Organization response = request.Execute();
+            Data.Organization response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Organization response = await request.ExecuteAsync();
+            // Data.Organization response = await request.ExecuteAsync();
         }
     }
 }
@@ -63,9 +64,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -98,13 +100,13 @@ namespace CloudresourcemanagerSample
             string resource = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            GetIamPolicyRequest content = new GetIamPolicyRequest();
+            Data.GetIamPolicyRequest content = new Data.GetIamPolicyRequest();
 
             OrganizationsResource.GetIamPolicyRequest request = cloudresourcemanagerService.Organizations.GetIamPolicy(content, resource);
-            Policy response = request.Execute();
+            Data.Policy response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Policy response = await request.ExecuteAsync();
+            // Data.Policy response = await request.ExecuteAsync();
         }
     }
 }
@@ -120,9 +122,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -151,10 +154,23 @@ namespace CloudresourcemanagerSample
             // TODO: Change placeholders below to values for parameters to the List() method:
 
             OrganizationsResource.ListRequest request = cloudresourcemanagerService.Organizations.List();
-            ListOrganizationsResponse response = request.Execute();
+            Data.ListOrganizationsResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Organizations == null)
+                {
+                    continue;
+                }
+                foreach (Data.Organization item in response.Organizations)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListOrganizationsResponse response = await request.ExecuteAsync();
+            // Data.ListOrganizationsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -170,9 +186,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -205,13 +222,13 @@ namespace CloudresourcemanagerSample
             string resource = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            SetIamPolicyRequest content = new SetIamPolicyRequest();
+            Data.SetIamPolicyRequest content = new Data.SetIamPolicyRequest();
 
             OrganizationsResource.SetIamPolicyRequest request = cloudresourcemanagerService.Organizations.SetIamPolicy(content, resource);
-            Policy response = request.Execute();
+            Data.Policy response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Policy response = await request.ExecuteAsync();
+            // Data.Policy response = await request.ExecuteAsync();
         }
     }
 }
@@ -227,9 +244,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -263,13 +281,13 @@ namespace CloudresourcemanagerSample
             string resource = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            TestIamPermissionsRequest content = new TestIamPermissionsRequest();
+            Data.TestIamPermissionsRequest content = new Data.TestIamPermissionsRequest();
 
             OrganizationsResource.TestIamPermissionsRequest request = cloudresourcemanagerService.Organizations.TestIamPermissions(content, resource);
-            TestIamPermissionsResponse response = request.Execute();
+            Data.TestIamPermissionsResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // TestIamPermissionsResponse response = await request.ExecuteAsync();
+            // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -285,9 +303,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -319,13 +338,13 @@ namespace CloudresourcemanagerSample
             string organizationId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Organization content = new Organization();
+            Data.Organization content = new Data.Organization();
 
             OrganizationsResource.UpdateRequest request = cloudresourcemanagerService.Organizations.Update(content, organizationId);
-            Organization response = request.Execute();
+            Data.Organization response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Organization response = await request.ExecuteAsync();
+            // Data.Organization response = await request.ExecuteAsync();
         }
     }
 }
@@ -341,9 +360,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -372,13 +392,13 @@ namespace CloudresourcemanagerSample
             // TODO: Change placeholders below to values for parameters to the Create() method:
 
             // TODO Add code to assign values to fields of 'content'.
-            Project content = new Project();
+            Data.Project content = new Data.Project();
 
             ProjectsResource.CreateRequest request = cloudresourcemanagerService.Projects.Create(content);
-            Project response = request.Execute();
+            Data.Project response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Project response = await request.ExecuteAsync();
+            // Data.Project response = await request.ExecuteAsync();
         }
     }
 }
@@ -394,9 +414,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -427,10 +448,10 @@ namespace CloudresourcemanagerSample
             string projectId = "";
 
             ProjectsResource.DeleteRequest request = cloudresourcemanagerService.Projects.Delete(projectId);
-            Empty response = request.Execute();
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
@@ -446,9 +467,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -479,10 +501,10 @@ namespace CloudresourcemanagerSample
             string projectId = "";
 
             ProjectsResource.GetRequest request = cloudresourcemanagerService.Projects.Get(projectId);
-            Project response = request.Execute();
+            Data.Project response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Project response = await request.ExecuteAsync();
+            // Data.Project response = await request.ExecuteAsync();
         }
     }
 }
@@ -498,9 +520,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -533,13 +556,13 @@ namespace CloudresourcemanagerSample
             string resource = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            GetIamPolicyRequest content = new GetIamPolicyRequest();
+            Data.GetIamPolicyRequest content = new Data.GetIamPolicyRequest();
 
             ProjectsResource.GetIamPolicyRequest request = cloudresourcemanagerService.Projects.GetIamPolicy(content, resource);
-            Policy response = request.Execute();
+            Data.Policy response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Policy response = await request.ExecuteAsync();
+            // Data.Policy response = await request.ExecuteAsync();
         }
     }
 }
@@ -555,9 +578,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -586,10 +610,23 @@ namespace CloudresourcemanagerSample
             // TODO: Change placeholders below to values for parameters to the List() method:
 
             ProjectsResource.ListRequest request = cloudresourcemanagerService.Projects.List();
-            ListProjectsResponse response = request.Execute();
+            Data.ListProjectsResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Projects == null)
+                {
+                    continue;
+                }
+                foreach (Data.Project item in response.Projects)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListProjectsResponse response = await request.ExecuteAsync();
+            // Data.ListProjectsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -605,9 +642,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -640,13 +678,13 @@ namespace CloudresourcemanagerSample
             string resource = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            SetIamPolicyRequest content = new SetIamPolicyRequest();
+            Data.SetIamPolicyRequest content = new Data.SetIamPolicyRequest();
 
             ProjectsResource.SetIamPolicyRequest request = cloudresourcemanagerService.Projects.SetIamPolicy(content, resource);
-            Policy response = request.Execute();
+            Data.Policy response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Policy response = await request.ExecuteAsync();
+            // Data.Policy response = await request.ExecuteAsync();
         }
     }
 }
@@ -662,9 +700,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -698,13 +737,13 @@ namespace CloudresourcemanagerSample
             string resource = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            TestIamPermissionsRequest content = new TestIamPermissionsRequest();
+            Data.TestIamPermissionsRequest content = new Data.TestIamPermissionsRequest();
 
             ProjectsResource.TestIamPermissionsRequest request = cloudresourcemanagerService.Projects.TestIamPermissions(content, resource);
-            TestIamPermissionsResponse response = request.Execute();
+            Data.TestIamPermissionsResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // TestIamPermissionsResponse response = await request.ExecuteAsync();
+            // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -720,9 +759,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -753,13 +793,13 @@ namespace CloudresourcemanagerSample
             string projectId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            UndeleteProjectRequest content = new UndeleteProjectRequest();
+            Data.UndeleteProjectRequest content = new Data.UndeleteProjectRequest();
 
             ProjectsResource.UndeleteRequest request = cloudresourcemanagerService.Projects.Undelete(content, projectId);
-            Empty response = request.Execute();
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
@@ -775,9 +815,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -808,13 +849,13 @@ namespace CloudresourcemanagerSample
             string projectId = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Project content = new Project();
+            Data.Project content = new Data.Project();
 
             ProjectsResource.UpdateRequest request = cloudresourcemanagerService.Projects.Update(content, projectId);
-            Project response = request.Execute();
+            Data.Project response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Project response = await request.ExecuteAsync();
+            // Data.Project response = await request.ExecuteAsync();
         }
     }
 }

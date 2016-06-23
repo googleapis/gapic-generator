@@ -11,9 +11,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Prediction.v1_6;
-using Google.Apis.Prediction.v1_6.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Prediction.v1_6.Data;
 
 namespace PredictionSample
 {
@@ -46,13 +47,13 @@ namespace PredictionSample
             string hostedModelName = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Input content = new Input();
+            Data.Input content = new Data.Input();
 
             HostedmodelsResource.PredictRequest request = predictionService.Hostedmodels.Predict(content, project, hostedModelName);
-            Output response = request.Execute();
+            Data.Output response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Output response = await request.ExecuteAsync();
+            // Data.Output response = await request.ExecuteAsync();
         }
     }
 }
@@ -68,9 +69,10 @@ namespace PredictionSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Prediction.v1_6;
-using Google.Apis.Prediction.v1_6.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Prediction.v1_6.Data;
 
 namespace PredictionSample
 {
@@ -103,10 +105,10 @@ namespace PredictionSample
             string id = "";
 
             TrainedmodelsResource.AnalyzeRequest request = predictionService.Trainedmodels.Analyze(project, id);
-            Analyze response = request.Execute();
+            Data.Analyze response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Analyze response = await request.ExecuteAsync();
+            // Data.Analyze response = await request.ExecuteAsync();
         }
     }
 }
@@ -175,9 +177,10 @@ namespace PredictionSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Prediction.v1_6;
-using Google.Apis.Prediction.v1_6.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Prediction.v1_6.Data;
 
 namespace PredictionSample
 {
@@ -210,10 +213,10 @@ namespace PredictionSample
             string id = "";
 
             TrainedmodelsResource.GetRequest request = predictionService.Trainedmodels.Get(project, id);
-            Insert2 response = request.Execute();
+            Data.Insert2 response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Insert2 response = await request.ExecuteAsync();
+            // Data.Insert2 response = await request.ExecuteAsync();
         }
     }
 }
@@ -229,9 +232,10 @@ namespace PredictionSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Prediction.v1_6;
-using Google.Apis.Prediction.v1_6.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Prediction.v1_6.Data;
 
 namespace PredictionSample
 {
@@ -262,13 +266,13 @@ namespace PredictionSample
             string project = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Insert content = new Insert();
+            Data.Insert content = new Data.Insert();
 
             TrainedmodelsResource.InsertRequest request = predictionService.Trainedmodels.Insert(content, project);
-            Insert2 response = request.Execute();
+            Data.Insert2 response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Insert2 response = await request.ExecuteAsync();
+            // Data.Insert2 response = await request.ExecuteAsync();
         }
     }
 }
@@ -284,9 +288,10 @@ namespace PredictionSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Prediction.v1_6;
-using Google.Apis.Prediction.v1_6.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Prediction.v1_6.Data;
 
 namespace PredictionSample
 {
@@ -317,10 +322,23 @@ namespace PredictionSample
             string project = "";
 
             TrainedmodelsResource.ListRequest request = predictionService.Trainedmodels.List(project);
-            List response = request.Execute();
+            Data.List response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.Insert2 item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // List response = await request.ExecuteAsync();
+            // Data.List response = await request.ExecuteAsync();
         }
     }
 }
@@ -336,9 +354,10 @@ namespace PredictionSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Prediction.v1_6;
-using Google.Apis.Prediction.v1_6.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Prediction.v1_6.Data;
 
 namespace PredictionSample
 {
@@ -371,13 +390,13 @@ namespace PredictionSample
             string id = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Input content = new Input();
+            Data.Input content = new Data.Input();
 
             TrainedmodelsResource.PredictRequest request = predictionService.Trainedmodels.Predict(content, project, id);
-            Output response = request.Execute();
+            Data.Output response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Output response = await request.ExecuteAsync();
+            // Data.Output response = await request.ExecuteAsync();
         }
     }
 }
@@ -393,9 +412,10 @@ namespace PredictionSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Prediction.v1_6;
-using Google.Apis.Prediction.v1_6.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Prediction.v1_6.Data;
 
 namespace PredictionSample
 {
@@ -428,13 +448,13 @@ namespace PredictionSample
             string id = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Update content = new Update();
+            Data.Update content = new Data.Update();
 
             TrainedmodelsResource.UpdateRequest request = predictionService.Trainedmodels.Update(content, project, id);
-            Insert2 response = request.Execute();
+            Data.Insert2 response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Insert2 response = await request.ExecuteAsync();
+            // Data.Insert2 response = await request.ExecuteAsync();
         }
     }
 }

@@ -11,9 +11,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dns.v1;
-using Google.Apis.Dns.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dns.v1.Data;
 
 namespace DnsSample
 {
@@ -46,13 +47,13 @@ namespace DnsSample
             string managedZone = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            Change content = new Change();
+            Data.Change content = new Data.Change();
 
             ChangesResource.CreateRequest request = dnsService.Changes.Create(content, project, managedZone);
-            Change response = request.Execute();
+            Data.Change response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Change response = await request.ExecuteAsync();
+            // Data.Change response = await request.ExecuteAsync();
         }
     }
 }
@@ -68,9 +69,10 @@ namespace DnsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dns.v1;
-using Google.Apis.Dns.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dns.v1.Data;
 
 namespace DnsSample
 {
@@ -105,10 +107,10 @@ namespace DnsSample
             string changeId = "";
 
             ChangesResource.GetRequest request = dnsService.Changes.Get(project, managedZone, changeId);
-            Change response = request.Execute();
+            Data.Change response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Change response = await request.ExecuteAsync();
+            // Data.Change response = await request.ExecuteAsync();
         }
     }
 }
@@ -124,9 +126,10 @@ namespace DnsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dns.v1;
-using Google.Apis.Dns.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dns.v1.Data;
 
 namespace DnsSample
 {
@@ -159,10 +162,23 @@ namespace DnsSample
             string managedZone = "";
 
             ChangesResource.ListRequest request = dnsService.Changes.List(project, managedZone);
-            ChangesListResponse response = request.Execute();
+            Data.ChangesListResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Changes == null)
+                {
+                    continue;
+                }
+                foreach (Data.Change item in response.Changes)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ChangesListResponse response = await request.ExecuteAsync();
+            // Data.ChangesListResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -178,9 +194,10 @@ namespace DnsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dns.v1;
-using Google.Apis.Dns.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dns.v1.Data;
 
 namespace DnsSample
 {
@@ -211,13 +228,13 @@ namespace DnsSample
             string project = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            ManagedZone content = new ManagedZone();
+            Data.ManagedZone content = new Data.ManagedZone();
 
             ManagedZonesResource.CreateRequest request = dnsService.ManagedZones.Create(content, project);
-            ManagedZone response = request.Execute();
+            Data.ManagedZone response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // ManagedZone response = await request.ExecuteAsync();
+            // Data.ManagedZone response = await request.ExecuteAsync();
         }
     }
 }
@@ -286,9 +303,10 @@ namespace DnsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dns.v1;
-using Google.Apis.Dns.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dns.v1.Data;
 
 namespace DnsSample
 {
@@ -321,10 +339,10 @@ namespace DnsSample
             string managedZone = "";
 
             ManagedZonesResource.GetRequest request = dnsService.ManagedZones.Get(project, managedZone);
-            ManagedZone response = request.Execute();
+            Data.ManagedZone response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // ManagedZone response = await request.ExecuteAsync();
+            // Data.ManagedZone response = await request.ExecuteAsync();
         }
     }
 }
@@ -340,9 +358,10 @@ namespace DnsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dns.v1;
-using Google.Apis.Dns.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dns.v1.Data;
 
 namespace DnsSample
 {
@@ -373,10 +392,23 @@ namespace DnsSample
             string project = "";
 
             ManagedZonesResource.ListRequest request = dnsService.ManagedZones.List(project);
-            ManagedZonesListResponse response = request.Execute();
+            Data.ManagedZonesListResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.ManagedZones == null)
+                {
+                    continue;
+                }
+                foreach (Data.ManagedZone item in response.ManagedZones)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ManagedZonesListResponse response = await request.ExecuteAsync();
+            // Data.ManagedZonesListResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -392,9 +424,10 @@ namespace DnsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dns.v1;
-using Google.Apis.Dns.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dns.v1.Data;
 
 namespace DnsSample
 {
@@ -425,10 +458,10 @@ namespace DnsSample
             string project = "";
 
             ProjectsResource.GetRequest request = dnsService.Projects.Get(project);
-            Project response = request.Execute();
+            Data.Project response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Project response = await request.ExecuteAsync();
+            // Data.Project response = await request.ExecuteAsync();
         }
     }
 }
@@ -444,9 +477,10 @@ namespace DnsSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dns.v1;
-using Google.Apis.Dns.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dns.v1.Data;
 
 namespace DnsSample
 {
@@ -479,10 +513,23 @@ namespace DnsSample
             string managedZone = "";
 
             ResourceRecordSetsResource.ListRequest request = dnsService.ResourceRecordSets.List(project, managedZone);
-            ResourceRecordSetsListResponse response = request.Execute();
+            Data.ResourceRecordSetsListResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Rrsets == null)
+                {
+                    continue;
+                }
+                foreach (Data.ResourceRecordSet item in response.Rrsets)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ResourceRecordSetsListResponse response = await request.ExecuteAsync();
+            // Data.ResourceRecordSetsListResponse response = await request.ExecuteAsync();
         }
     }
 }

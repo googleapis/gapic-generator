@@ -12,8 +12,10 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Translate.v2;
-using Google.Apis.Translate.v2.Data;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Translate.v2.Data;
 
 namespace TranslateSample
 {
@@ -41,13 +43,13 @@ namespace TranslateSample
 
             // TODO: Change placeholders below to values for parameters to the List() method:
             // The text to detect
-            string q = "";
+            List<string> q = new List<string>();
 
             DetectionsResource.ListRequest request = translateService.Detections.List(q);
-            DetectionsListResponse response = request.Execute();
+            Data.DetectionsListResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // DetectionsListResponse response = await request.ExecuteAsync();
+            // Data.DetectionsListResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -64,8 +66,9 @@ namespace TranslateSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Translate.v2;
-using Google.Apis.Translate.v2.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Translate.v2.Data;
 
 namespace TranslateSample
 {
@@ -94,10 +97,10 @@ namespace TranslateSample
             // TODO: Change placeholders below to values for parameters to the List() method:
 
             LanguagesResource.ListRequest request = translateService.Languages.List();
-            LanguagesListResponse response = request.Execute();
+            Data.LanguagesListResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // LanguagesListResponse response = await request.ExecuteAsync();
+            // Data.LanguagesListResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -114,8 +117,10 @@ namespace TranslateSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Translate.v2;
-using Google.Apis.Translate.v2.Data;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Translate.v2.Data;
 
 namespace TranslateSample
 {
@@ -143,15 +148,15 @@ namespace TranslateSample
 
             // TODO: Change placeholders below to values for parameters to the List() method:
             // The text to translate
-            string q = "";
+            List<string> q = new List<string>();
             // The target language into which the text should be translated
             string target = "";
 
             TranslationsResource.ListRequest request = translateService.Translations.List(q, target);
-            TranslationsListResponse response = request.Execute();
+            Data.TranslationsListResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // TranslationsListResponse response = await request.ExecuteAsync();
+            // Data.TranslationsListResponse response = await request.ExecuteAsync();
         }
     }
 }

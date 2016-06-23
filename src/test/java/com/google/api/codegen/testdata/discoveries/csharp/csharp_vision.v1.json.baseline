@@ -12,8 +12,9 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Vision.v1;
-using Google.Apis.Vision.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Vision.v1.Data;
 
 namespace VisionSample
 {
@@ -42,13 +43,13 @@ namespace VisionSample
             // TODO: Change placeholders below to values for parameters to the Annotate() method:
 
             // TODO Add code to assign values to fields of 'content'.
-            BatchAnnotateImagesRequest content = new BatchAnnotateImagesRequest();
+            Data.BatchAnnotateImagesRequest content = new Data.BatchAnnotateImagesRequest();
 
             ImagesResource.AnnotateRequest request = visionService.Images.Annotate(content);
-            BatchAnnotateImagesResponse response = request.Execute();
+            Data.BatchAnnotateImagesResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // BatchAnnotateImagesResponse response = await request.ExecuteAsync();
+            // Data.BatchAnnotateImagesResponse response = await request.ExecuteAsync();
         }
     }
 }

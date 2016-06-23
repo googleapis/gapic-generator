@@ -12,8 +12,9 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
-using Google.Apis.Storagetransfer.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storagetransfer.v1.Data;
 
 namespace StoragetransferSample
 {
@@ -42,10 +43,10 @@ namespace StoragetransferSample
             // TODO: Change placeholders below to values for parameters to the GetGoogleServiceAccount() method:
 
             V1Resource.GetGoogleServiceAccountRequest request = storagetransferService.V1.GetGoogleServiceAccount();
-            GoogleServiceAccount response = request.Execute();
+            Data.GoogleServiceAccount response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // GoogleServiceAccount response = await request.ExecuteAsync();
+            // Data.GoogleServiceAccount response = await request.ExecuteAsync();
         }
     }
 }
@@ -62,8 +63,9 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
-using Google.Apis.Storagetransfer.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storagetransfer.v1.Data;
 
 namespace StoragetransferSample
 {
@@ -95,10 +97,10 @@ namespace StoragetransferSample
             string projectId = "";
 
             GoogleServiceAccountsResource.GetRequest request = storagetransferService.GoogleServiceAccounts.Get(projectId);
-            GoogleServiceAccount response = request.Execute();
+            Data.GoogleServiceAccount response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // GoogleServiceAccount response = await request.ExecuteAsync();
+            // Data.GoogleServiceAccount response = await request.ExecuteAsync();
         }
     }
 }
@@ -115,8 +117,9 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
-using Google.Apis.Storagetransfer.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storagetransfer.v1.Data;
 
 namespace StoragetransferSample
 {
@@ -145,13 +148,13 @@ namespace StoragetransferSample
             // TODO: Change placeholders below to values for parameters to the Create() method:
 
             // TODO Add code to assign values to fields of 'content'.
-            TransferJob content = new TransferJob();
+            Data.TransferJob content = new Data.TransferJob();
 
             TransferJobsResource.CreateRequest request = storagetransferService.TransferJobs.Create(content);
-            TransferJob response = request.Execute();
+            Data.TransferJob response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // TransferJob response = await request.ExecuteAsync();
+            // Data.TransferJob response = await request.ExecuteAsync();
         }
     }
 }
@@ -168,8 +171,9 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
-using Google.Apis.Storagetransfer.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storagetransfer.v1.Data;
 
 namespace StoragetransferSample
 {
@@ -200,10 +204,10 @@ namespace StoragetransferSample
             string jobName = "";
 
             TransferJobsResource.GetRequest request = storagetransferService.TransferJobs.Get(jobName);
-            TransferJob response = request.Execute();
+            Data.TransferJob response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // TransferJob response = await request.ExecuteAsync();
+            // Data.TransferJob response = await request.ExecuteAsync();
         }
     }
 }
@@ -220,8 +224,9 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
-using Google.Apis.Storagetransfer.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storagetransfer.v1.Data;
 
 namespace StoragetransferSample
 {
@@ -250,10 +255,23 @@ namespace StoragetransferSample
             // TODO: Change placeholders below to values for parameters to the List() method:
 
             TransferJobsResource.ListRequest request = storagetransferService.TransferJobs.List();
-            ListTransferJobsResponse response = request.Execute();
+            Data.ListTransferJobsResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.TransferJobs == null)
+                {
+                    continue;
+                }
+                foreach (Data.TransferJob item in response.TransferJobs)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListTransferJobsResponse response = await request.ExecuteAsync();
+            // Data.ListTransferJobsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -270,8 +288,9 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
-using Google.Apis.Storagetransfer.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storagetransfer.v1.Data;
 
 namespace StoragetransferSample
 {
@@ -302,13 +321,13 @@ namespace StoragetransferSample
             string jobName = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            UpdateTransferJobRequest content = new UpdateTransferJobRequest();
+            Data.UpdateTransferJobRequest content = new Data.UpdateTransferJobRequest();
 
             TransferJobsResource.PatchRequest request = storagetransferService.TransferJobs.Patch(content, jobName);
-            TransferJob response = request.Execute();
+            Data.TransferJob response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // TransferJob response = await request.ExecuteAsync();
+            // Data.TransferJob response = await request.ExecuteAsync();
         }
     }
 }
@@ -325,8 +344,9 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
-using Google.Apis.Storagetransfer.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storagetransfer.v1.Data;
 
 namespace StoragetransferSample
 {
@@ -357,10 +377,10 @@ namespace StoragetransferSample
             string name = "";
 
             TransferOperationsResource.CancelRequest request = storagetransferService.TransferOperations.Cancel(name);
-            Empty response = request.Execute();
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
@@ -377,8 +397,9 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
-using Google.Apis.Storagetransfer.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storagetransfer.v1.Data;
 
 namespace StoragetransferSample
 {
@@ -409,10 +430,10 @@ namespace StoragetransferSample
             string name = "";
 
             TransferOperationsResource.DeleteRequest request = storagetransferService.TransferOperations.Delete(name);
-            Empty response = request.Execute();
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
@@ -429,8 +450,9 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
-using Google.Apis.Storagetransfer.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storagetransfer.v1.Data;
 
 namespace StoragetransferSample
 {
@@ -461,10 +483,10 @@ namespace StoragetransferSample
             string name = "";
 
             TransferOperationsResource.GetRequest request = storagetransferService.TransferOperations.Get(name);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
@@ -481,8 +503,9 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
-using Google.Apis.Storagetransfer.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storagetransfer.v1.Data;
 
 namespace StoragetransferSample
 {
@@ -513,10 +536,23 @@ namespace StoragetransferSample
             string name = "";
 
             TransferOperationsResource.ListRequest request = storagetransferService.TransferOperations.List(name);
-            ListOperationsResponse response = request.Execute();
+            Data.ListOperationsResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Operations == null)
+                {
+                    continue;
+                }
+                foreach (Data.Operation item in response.Operations)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListOperationsResponse response = await request.ExecuteAsync();
+            // Data.ListOperationsResponse response = await request.ExecuteAsync();
         }
     }
 }
@@ -533,8 +569,9 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
-using Google.Apis.Storagetransfer.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storagetransfer.v1.Data;
 
 namespace StoragetransferSample
 {
@@ -565,13 +602,13 @@ namespace StoragetransferSample
             string name = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            PauseTransferOperationRequest content = new PauseTransferOperationRequest();
+            Data.PauseTransferOperationRequest content = new Data.PauseTransferOperationRequest();
 
             TransferOperationsResource.PauseRequest request = storagetransferService.TransferOperations.Pause(content, name);
-            Empty response = request.Execute();
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
@@ -588,8 +625,9 @@ namespace StoragetransferSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storagetransfer.v1;
-using Google.Apis.Storagetransfer.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storagetransfer.v1.Data;
 
 namespace StoragetransferSample
 {
@@ -620,13 +658,13 @@ namespace StoragetransferSample
             string name = "";
 
             // TODO Add code to assign values to fields of 'content'.
-            ResumeTransferOperationRequest content = new ResumeTransferOperationRequest();
+            Data.ResumeTransferOperationRequest content = new Data.ResumeTransferOperationRequest();
 
             TransferOperationsResource.ResumeRequest request = storagetransferService.TransferOperations.Resume(content, name);
-            Empty response = request.Execute();
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
