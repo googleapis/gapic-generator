@@ -188,21 +188,20 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
             return using.contains("=");
           }
         };
-    FluentIterable<String> fluentUsings = FluentIterable.from(usings);
+    FluentIterable<String> fluentUsings =
+        FluentIterable.from(usings)
+            .transform(
+                new Function<String, String>() {
+                  @Override
+                  public String apply(String using) {
+                    return "using " + using + ";";
+                  }
+                });
     Iterable<String> aliases =
         fluentUsings.anyMatch(isAlias)
             ? FluentIterable.of(new String[] {""}).append(fluentUsings.filter(isAlias))
             : Collections.<String>emptyList();
-    return fluentUsings
-        .filter(Predicates.<String>not(isAlias))
-        .append(aliases)
-        .transform(
-            new Function<String, String>() {
-              @Override
-              public String apply(String using) {
-                return using == "" ? "" : ("using " + using + ";");
-              }
-            });
+    return fluentUsings.filter(Predicates.<String>not(isAlias)).append(aliases);
   }
 
   private String using(String fullTypeName) {
@@ -218,12 +217,8 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     }
     // Remove any generic information, if present.
     int genericIndex = fullTypeName.indexOf('<');
-    String nonGenericTypeName;
-    if (genericIndex >= 0) {
-      nonGenericTypeName = fullTypeName.substring(0, genericIndex);
-    } else {
-      nonGenericTypeName = fullTypeName;
-    }
+    String nonGenericTypeName =
+        genericIndex >= 0 ? fullTypeName.substring(0, genericIndex) : fullTypeName;
     int typeIndex = nonGenericTypeName.lastIndexOf('.');
     if (typeIndex < 0) {
       throw new IllegalArgumentException("fullTypeName must be fully specified.");
@@ -233,11 +228,9 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
   }
 
   private String usingData(String dataRelativeTypeName) {
-    if ("empty$".equals(dataRelativeTypeName)) {
-      return "void";
-    } else {
-      return using(serviceNamespace + ".Data." + dataRelativeTypeName);
-    }
+    return "empty$".equals(dataRelativeTypeName)
+        ? "void"
+        : using(serviceNamespace + ".Data." + dataRelativeTypeName);
   }
 
   private List<String> buildDescription(String raw) {
