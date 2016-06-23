@@ -29,15 +29,18 @@ import java.util.List;
 public class PythonSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
   private PythonSnippetSetInputInitializer<ElementT> initializer;
+  private final String resourceRoot;
 
-  public PythonSnippetSetRunner(PythonSnippetSetInputInitializer<ElementT> initializer) {
+  public PythonSnippetSetRunner(
+      PythonSnippetSetInputInitializer<ElementT> initializer, String resourceRoot) {
     this.initializer = initializer;
+    this.resourceRoot = resourceRoot;
   }
 
   @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      ElementT element, String resourceRoot, String snippetFileName, CodegenContext context) {
+      ElementT element, String snippetFileName, CodegenContext context) {
     PythonImportHandler importHandler = initializer.getImportHandler(element);
     ImmutableMap<String, Object> globalMap = initializer.getGlobalMap(element);
     globalMap =

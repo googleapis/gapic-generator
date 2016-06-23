@@ -28,16 +28,16 @@ import java.util.TreeSet;
  */
 public class CSharpSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
-  /**
-   * The path to the root of snippet resources.
-   */
-  private static final String SNIPPET_RESOURCE_ROOT =
-      CSharpContextCommon.class.getPackage().getName().replace('.', '/');
+  private final String resourceRoot;
+
+  public CSharpSnippetSetRunner(String resourceRoot) {
+    this.resourceRoot = resourceRoot;
+  }
 
   @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      ElementT element, String resourceRoot, String snippetFileName, CodegenContext context) {
+      ElementT element, String snippetFileName, CodegenContext context) {
     CSharpSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             CSharpSnippetSet.class,

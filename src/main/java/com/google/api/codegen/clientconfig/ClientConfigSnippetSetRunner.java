@@ -24,10 +24,16 @@ import com.google.common.collect.ImmutableMap;
 public class ClientConfigSnippetSetRunner<ElementT>
     implements SnippetSetRunner.Generator<ElementT> {
 
+  private final String resourceRoot;
+
+  public ClientConfigSnippetSetRunner(String resourceRoot) {
+    this.resourceRoot = resourceRoot;
+  }
+
   @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      ElementT element, String resourceRoot, String snippetFileName, CodegenContext context) {
+      ElementT element, String snippetFileName, CodegenContext context) {
     ClientConfigSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             ClientConfigSnippetSet.class,

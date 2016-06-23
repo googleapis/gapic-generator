@@ -16,6 +16,7 @@ package com.google.api.codegen.discovery;
 
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
+import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.csharp.CSharpDiscoveryContext;
 import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
 import com.google.api.codegen.go.GoDiscoveryContext;
@@ -55,49 +56,57 @@ public class MainDiscoveryProviderFactory implements DiscoveryProviderFactory {
     if (id.equals(CSHARP)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new CSharpDiscoveryContext(service, apiaryConfig))
-          .setSnippetSetRunner(new CSharpSnippetSetRunner<Method>())
+          .setSnippetSetRunner(
+              new CSharpSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
           .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
 
     } else if (id.equals(GO)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new GoDiscoveryContext(service, apiaryConfig))
-          .setSnippetSetRunner(new GoSnippetSetRunner<Method>())
+          .setSnippetSetRunner(
+              new GoSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
           .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
 
     } else if (id.equals(JAVA)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new JavaDiscoveryContext(service, apiaryConfig))
-          .setSnippetSetRunner(new JavaSnippetSetRunner<Method>())
+          .setSnippetSetRunner(
+              new JavaSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
           .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
 
     } else if (id.equals(NODEJS)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new NodeJSDiscoveryContext(service, apiaryConfig))
-          .setSnippetSetRunner(new NodeJSSnippetSetRunner<Method>())
+          .setSnippetSetRunner(
+              new NodeJSSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
           .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
 
     } else if (id.equals(PHP)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new PhpDiscoveryContext(service, apiaryConfig))
-          .setSnippetSetRunner(new PhpSnippetSetRunner<Method>())
+          .setSnippetSetRunner(
+              new PhpSnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
           .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
 
     } else if (id.equals(PYTHON)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new PythonDiscoveryContext(service, apiaryConfig))
-          .setSnippetSetRunner(new PythonSnippetSetRunner<Method>(new PythonDiscoveryInitializer()))
+          .setSnippetSetRunner(
+              new PythonSnippetSetRunner<Method>(
+                  new PythonDiscoveryInitializer(), SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
           .setSnippetFileName("py/" + DEFAULT_SNIPPET_FILE)
           .build();
 
     } else if (id.equals(RUBY)) {
       return CommonDiscoveryProvider.newBuilder()
           .setContext(new RubyDiscoveryContext(service, apiaryConfig))
-          .setSnippetSetRunner(new RubySnippetSetRunner<Method>())
+          .setSnippetSetRunner(
+              new RubySnippetSetRunner<Method>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
           .setSnippetFileName(id + "/" + DEFAULT_SNIPPET_FILE)
           .build();
 

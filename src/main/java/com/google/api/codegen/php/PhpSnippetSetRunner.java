@@ -30,10 +30,16 @@ import java.util.List;
  */
 public class PhpSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
+  private final String resourceRoot;
+
+  public PhpSnippetSetRunner(String resourceRoot) {
+    this.resourceRoot = resourceRoot;
+  }
+
   @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      ElementT element, String resourceRoot, String snippetFileName, CodegenContext context) {
+      ElementT element, String snippetFileName, CodegenContext context) {
     PhpSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             PhpSnippetSet.class,

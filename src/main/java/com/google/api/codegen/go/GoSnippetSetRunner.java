@@ -26,10 +26,16 @@ import com.google.common.collect.ImmutableMap;
  */
 public class GoSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
+  private final String resourceRoot;
+
+  public GoSnippetSetRunner(String resourceRoot) {
+    this.resourceRoot = resourceRoot;
+  }
+
   @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      ElementT element, String resourceRoot, String snippetFileName, CodegenContext context) {
+      ElementT element, String snippetFileName, CodegenContext context) {
     GoSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             GoSnippetSet.class,

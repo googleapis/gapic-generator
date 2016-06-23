@@ -30,7 +30,6 @@ public final class SnippetSetRunner {
     /**
      * Runs the code generation.
      */
-    GeneratedResult generate(
-        Element element, String resourceRoot, String snippetFileName, CodegenContext context);
+    GeneratedResult generate(Element element, String snippetFileName, CodegenContext context);
   }
 }

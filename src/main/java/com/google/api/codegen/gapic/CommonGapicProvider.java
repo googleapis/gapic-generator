@@ -99,9 +99,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
     // Run the generator for each service.
     List<GeneratedResult> generated = new ArrayList<>();
     for (ElementT element : view.getElementIterable(model)) {
-      GeneratedResult result =
-          generator.generate(
-              element, SnippetSetRunner.SNIPPET_RESOURCE_ROOT, snippetFileName, context);
+      GeneratedResult result = generator.generate(element, snippetFileName, context);
 
       String subPath;
       // Note on usage of instanceof: there is one case (as of this writing)

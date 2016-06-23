@@ -30,16 +30,16 @@ import java.util.List;
  */
 public class JavaSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
-  /**
-   * The path to the root of snippet resources.
-   */
-  private static final String SNIPPET_RESOURCE_ROOT =
-      JavaContextCommon.class.getPackage().getName().replace('.', '/');
+  private final String resourceRoot;
+
+  public JavaSnippetSetRunner(String resourceRoot) {
+    this.resourceRoot = resourceRoot;
+  }
 
   @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      ElementT element, String resourceRoot, String snippetFileName, CodegenContext context) {
+      ElementT element, String snippetFileName, CodegenContext context) {
     JavaSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             JavaSnippetSet.class,

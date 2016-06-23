@@ -43,9 +43,7 @@ public class CommonDiscoveryProvider implements DiscoveryProvider {
 
   @Override
   public Map<String, Doc> generate(Method method) {
-    GeneratedResult result =
-        generator.generate(
-            method, SnippetSetRunner.SNIPPET_RESOURCE_ROOT, snippetFileName, context);
+    GeneratedResult result = generator.generate(method, snippetFileName, context);
 
     Api api = context.getApi();
     String outputRoot =

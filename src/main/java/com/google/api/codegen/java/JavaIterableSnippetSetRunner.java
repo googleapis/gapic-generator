@@ -32,13 +32,16 @@ import java.util.List;
 public class JavaIterableSnippetSetRunner<ElementT>
     implements SnippetSetRunner.Generator<Iterable<ElementT>> {
 
+  private final String resourceRoot;
+
+  public JavaIterableSnippetSetRunner(String resourceRoot) {
+    this.resourceRoot = resourceRoot;
+  }
+
   @Override
   @SuppressWarnings("unchecked")
   public GeneratedResult generate(
-      Iterable<ElementT> elementList,
-      String resourceRoot,
-      String snippetFileName,
-      CodegenContext context) {
+      Iterable<ElementT> elementList, String snippetFileName, CodegenContext context) {
     JavaIterableSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             JavaIterableSnippetSet.class,
