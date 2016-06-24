@@ -56,22 +56,22 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
   }
 
   protected void setupDiscovery() {
-    try {
-      discoveryImporter =
-          DiscoveryImporter.parse(
-              new StringReader(
-                  getTestDataLocator()
-                      .readTestData(getTestDataLocator().findTestData(discoveryDocFileName))));
-    } catch (IOException e) {
-      throw new IllegalArgumentException("Problem creating Generator", e);
-    }
-
-    config =
-        CodegenTestUtil.readConfig(
-            new SimpleDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
-    if (config == null) {
-      return;
-    }
+    //    try {
+    //      discoveryImporter =
+    //          DiscoveryImporter.parse(
+    //              new StringReader(
+    //                  getTestDataLocator()
+    //                      .readTestData(getTestDataLocator().findTestData(discoveryDocFileName))));
+    //    } catch (IOException e) {
+    //      throw new IllegalArgumentException("Problem creating Generator", e);
+    //    }
+    //
+    //    config =
+    //        CodegenTestUtil.readConfig(
+    //            new SimpleDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
+    //    if (config == null) {
+    //      return;
+    //    }
   }
 
   @Override
