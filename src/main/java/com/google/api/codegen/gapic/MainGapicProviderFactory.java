@@ -28,6 +28,8 @@ import com.google.api.codegen.go.GoSnippetSetRunner;
 import com.google.api.codegen.java.JavaGapicContext;
 import com.google.api.codegen.java.JavaIterableSnippetSetRunner;
 import com.google.api.codegen.java.JavaSnippetSetRunner;
+import com.google.api.codegen.java.direct.JavaViewModelSnippetSetRunner;
+import com.google.api.codegen.java.surface.JavaSurfaceSnippetSetRunner;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
 import com.google.api.codegen.php.PhpGapicContext;
@@ -42,10 +44,10 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
 
-import org.apache.commons.lang3.NotImplementedException;
-
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.lang3.NotImplementedException;
 
 /**
  * MainGapicProviderFactory creates GapicProvider instances based on an id.
@@ -61,6 +63,9 @@ public class MainGapicProviderFactory
   public static final String PHP = "php";
   public static final String PYTHON = "python";
   public static final String RUBY = "ruby";
+
+  public static final String JAVA_DIRECT = "java_direct";
+  public static final String JAVA_SURFACE = "java_surface";
 
   /**
    * Create the GapicProviders based on the given id
@@ -133,6 +138,42 @@ public class MainGapicProviderFactory
               .build();
 
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, packageInfoProvider);
+
+    } else if (id.equals(JAVA_DIRECT)) {
+      GapicCodePathMapper javaPathMapper =
+          CommonGapicCodePathMapper.newBuilder()
+              .setPrefix("src/main/java")
+              .setShouldAppendPackage(true)
+              .build();
+      GapicProvider<? extends Object> mainProvider =
+          LanguageDirectGapicProvider.newBuilder()
+              .setModel(model)
+              .setView(new InterfaceView())
+              .setApiConfig(apiConfig)
+              .setSnippetSetRunner(new JavaViewModelSnippetSetRunner())
+              .setSnippetFileNames(Arrays.asList("class.snip"))
+              .setCodePathMapper(javaPathMapper)
+              .build();
+
+      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
+
+    } else if (id.equals(JAVA_SURFACE)) {
+      GapicCodePathMapper javaPathMapper =
+          CommonGapicCodePathMapper.newBuilder()
+              .setPrefix("src/main/java")
+              .setShouldAppendPackage(true)
+              .build();
+      GapicProvider<? extends Object> mainProvider =
+          SurfaceGapicProvider.newBuilder()
+              .setModel(model)
+              .setView(new InterfaceView())
+              .setApiConfig(apiConfig)
+              .setSnippetSetRunner(new JavaSurfaceSnippetSetRunner())
+              .setSnippetFileNames(Arrays.asList("xapi.snip"))
+              .setCodePathMapper(javaPathMapper)
+              .build();
+
+      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
 
     } else if (id.equals(NODEJS)) {
       GapicCodePathMapper nodeJSPathMapper =
