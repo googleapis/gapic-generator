@@ -32,11 +32,11 @@ project = ''
 # * The name of a hosted model.
 hostedModelName = ''
 
-input_ = {
-# TODO: Add desired entries of the 'input_' dict
+input__body = {
+# TODO: Add desired entries of the 'input__body' dict
 }
 
-request = service.hostedmodels().predict(project, hostedModelName, input_)
+request = service.hostedmodels().predict(project=project, hostedModelName=hostedModelName, body=input__body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -74,7 +74,7 @@ project = ''
 # * The unique name for the predictive model.
 id = ''
 
-request = service.trainedmodels().analyze(project, id)
+request = service.trainedmodels().analyze(project=project, id=id)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -109,7 +109,7 @@ project = ''
 # * The unique name for the predictive model.
 id = ''
 
-request = service.trainedmodels().delete(project, id)
+request = service.trainedmodels().delete(project=project, id=id)
 request.execute()
 """
 PRE-REQUISITES:
@@ -144,7 +144,7 @@ project = ''
 # * The unique name for the predictive model.
 id = ''
 
-request = service.trainedmodels().get(project, id)
+request = service.trainedmodels().get(project=project, id=id)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -180,11 +180,11 @@ service = discovery.build('prediction', 'v1.6', credentials=credentials)
 # * The project associated with the model.
 project = ''
 
-insert = {
-# TODO: Add desired entries of the 'insert' dict
+insert_body = {
+# TODO: Add desired entries of the 'insert_body' dict
 }
 
-request = service.trainedmodels().insert(project, insert)
+request = service.trainedmodels().insert(project=project, body=insert_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -218,14 +218,14 @@ service = discovery.build('prediction', 'v1.6', credentials=credentials)
 project = ''
 
 trainedmodels = service.trainedmodels()
-request = trainedmodels.list(project)
+request = trainedmodels.list(project=project)
 while request is not None:
     response = request.execute()
 
     for insert2 in response['items']:
         # TODO: Add code here to process each 'insert2' resource
 
-    request = trainedmodels.list_next(request, response)
+    request = trainedmodels.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -259,11 +259,11 @@ project = ''
 # * The unique name for the predictive model.
 id = ''
 
-input_ = {
-# TODO: Add desired entries of the 'input_' dict
+input__body = {
+# TODO: Add desired entries of the 'input__body' dict
 }
 
-request = service.trainedmodels().predict(project, id, input_)
+request = service.trainedmodels().predict(project=project, id=id, body=input__body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -301,11 +301,11 @@ project = ''
 # * The unique name for the predictive model.
 id = ''
 
-update = {
-# TODO: Add desired entries of the 'update' dict
+update_body = {
+# TODO: Add desired entries of the 'update_body' dict
 }
 
-request = service.trainedmodels().update(project, id, update)
+request = service.trainedmodels().update(project=project, id=id, body=update_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:

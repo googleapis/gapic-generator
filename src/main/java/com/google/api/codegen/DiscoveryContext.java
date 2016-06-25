@@ -286,4 +286,18 @@ public abstract class DiscoveryContext extends CodegenContext {
         && api.getVersion().equals("v1beta4")
         && method.getName().equals("sql.users.list");
   }
+
+  // used to handle inconsistency in language detections and translations methods for Translate API
+  // remove if inconsistency is resolved
+  protected boolean isTranslateLanguageDetectionsOrTranslationsField(Method method, Field field) {
+    if (method == null) {
+      return false;
+    }
+    Api api = getApi();
+    return (api.getName().equals("translate")
+        && api.getVersion().equals("v2")
+        && (method.getName().equals("language.detections.list")
+            || method.getName().equals("language.translations.list"))
+        && field.getName().equals("q"));
+  }
 }

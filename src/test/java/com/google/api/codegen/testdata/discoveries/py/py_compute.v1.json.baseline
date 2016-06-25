@@ -28,14 +28,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 addresses = service.addresses()
-request = addresses.aggregatedList(project)
+request = addresses.aggregatedList(project=project)
 while request is not None:
     response = request.execute()
 
     for name, addresses_scoped_list in response['items'].items():
         # TODO: Add code here to process each (name, addresses_scoped_list) entry
 
-    request = addresses.aggregatedList_next(request, response)
+    request = addresses.aggregatedList_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -71,7 +71,7 @@ region = ''
 # * Name of the address resource to delete.
 address = ''
 
-request = service.addresses().delete(project, region, address)
+request = service.addresses().delete(project=project, region=region, address=address)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -111,7 +111,7 @@ region = ''
 # * Name of the address resource to return.
 address = ''
 
-request = service.addresses().get(project, region, address)
+request = service.addresses().get(project=project, region=region, address=address)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -149,11 +149,11 @@ project = ''
 # * Name of the region for this request.
 region = ''
 
-address = {
-# TODO: Add desired entries of the 'address' dict
+address_body = {
+# TODO: Add desired entries of the 'address_body' dict
 }
 
-request = service.addresses().insert(project, region, address)
+request = service.addresses().insert(project=project, region=region, body=address_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -189,14 +189,14 @@ project = ''
 region = ''
 
 addresses = service.addresses()
-request = addresses.list(project, region)
+request = addresses.list(project=project, region=region)
 while request is not None:
     response = request.execute()
 
     for address in response['items']:
         # TODO: Add code here to process each 'address' resource
 
-    request = addresses.list_next(request, response)
+    request = addresses.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -226,14 +226,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 autoscalers = service.autoscalers()
-request = autoscalers.aggregatedList(project)
+request = autoscalers.aggregatedList(project=project)
 while request is not None:
     response = request.execute()
 
     for name, autoscalers_scoped_list in response['items'].items():
         # TODO: Add code here to process each (name, autoscalers_scoped_list) entry
 
-    request = autoscalers.aggregatedList_next(request, response)
+    request = autoscalers.aggregatedList_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -269,7 +269,7 @@ zone = ''
 # * Name of the autoscaler to delete.
 autoscaler = ''
 
-request = service.autoscalers().delete(project, zone, autoscaler)
+request = service.autoscalers().delete(project=project, zone=zone, autoscaler=autoscaler)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -309,7 +309,7 @@ zone = ''
 # * Name of the autoscaler to return.
 autoscaler = ''
 
-request = service.autoscalers().get(project, zone, autoscaler)
+request = service.autoscalers().get(project=project, zone=zone, autoscaler=autoscaler)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -347,11 +347,11 @@ project = ''
 # * Name of the zone for this request.
 zone = ''
 
-autoscaler = {
-# TODO: Add desired entries of the 'autoscaler' dict
+autoscaler_body = {
+# TODO: Add desired entries of the 'autoscaler_body' dict
 }
 
-request = service.autoscalers().insert(project, zone, autoscaler)
+request = service.autoscalers().insert(project=project, zone=zone, body=autoscaler_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -387,14 +387,14 @@ project = ''
 zone = ''
 
 autoscalers = service.autoscalers()
-request = autoscalers.list(project, zone)
+request = autoscalers.list(project=project, zone=zone)
 while request is not None:
     response = request.execute()
 
     for autoscaler in response['items']:
         # TODO: Add code here to process each 'autoscaler' resource
 
-    request = autoscalers.list_next(request, response)
+    request = autoscalers.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -430,11 +430,11 @@ zone = ''
 # * Name of the autoscaler to update.
 autoscaler = ''
 
-autoscaler = {
-# TODO: Add desired entries of the 'autoscaler' dict to be changed
+autoscaler_body = {
+# TODO: Add desired entries of the 'autoscaler_body' dict to be changed
 }
 
-request = service.autoscalers().patch(project, zone, autoscaler, autoscaler)
+request = service.autoscalers().patch(project=project, zone=zone, autoscaler=autoscaler, body=autoscaler_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -472,11 +472,11 @@ project = ''
 # * Name of the zone for this request.
 zone = ''
 
-autoscaler = {
-# TODO: Add desired entries of the 'autoscaler' dict
+autoscaler_body = {
+# TODO: Add desired entries of the 'autoscaler_body' dict
 }
 
-request = service.autoscalers().update(project, zone, autoscaler)
+request = service.autoscalers().update(project=project, zone=zone, body=autoscaler_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -514,7 +514,7 @@ project = ''
 # * Name of the BackendService resource to delete.
 backendService = ''
 
-request = service.backendServices().delete(project, backendService)
+request = service.backendServices().delete(project=project, backendService=backendService)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -552,7 +552,7 @@ project = ''
 # * Name of the BackendService resource to return.
 backendService = ''
 
-request = service.backendServices().get(project, backendService)
+request = service.backendServices().get(project=project, backendService=backendService)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -590,11 +590,11 @@ project = ''
 # * Name of the BackendService resource to which the queried instance belongs.
 backendService = ''
 
-resource_group_reference = {
-# TODO: Add desired entries of the 'resource_group_reference' dict
+resource_group_reference_body = {
+# TODO: Add desired entries of the 'resource_group_reference_body' dict
 }
 
-request = service.backendServices().getHealth(project, backendService, resource_group_reference)
+request = service.backendServices().getHealth(project=project, backendService=backendService, body=resource_group_reference_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -630,11 +630,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-backend_service = {
-# TODO: Add desired entries of the 'backend_service' dict
+backend_service_body = {
+# TODO: Add desired entries of the 'backend_service_body' dict
 }
 
-request = service.backendServices().insert(project, backend_service)
+request = service.backendServices().insert(project=project, body=backend_service_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -668,14 +668,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 backendServices = service.backendServices()
-request = backendServices.list(project)
+request = backendServices.list(project=project)
 while request is not None:
     response = request.execute()
 
     for backend_service in response['items']:
         # TODO: Add code here to process each 'backend_service' resource
 
-    request = backendServices.list_next(request, response)
+    request = backendServices.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -709,11 +709,11 @@ project = ''
 # * Name of the BackendService resource to update.
 backendService = ''
 
-backend_service = {
-# TODO: Add desired entries of the 'backend_service' dict to be changed
+backend_service_body = {
+# TODO: Add desired entries of the 'backend_service_body' dict to be changed
 }
 
-request = service.backendServices().patch(project, backendService, backend_service)
+request = service.backendServices().patch(project=project, backendService=backendService, body=backend_service_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -751,11 +751,11 @@ project = ''
 # * Name of the BackendService resource to update.
 backendService = ''
 
-backend_service = {
-# TODO: Add desired entries of the 'backend_service' dict
+backend_service_body = {
+# TODO: Add desired entries of the 'backend_service_body' dict
 }
 
-request = service.backendServices().update(project, backendService, backend_service)
+request = service.backendServices().update(project=project, backendService=backendService, body=backend_service_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -789,14 +789,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 diskTypes = service.diskTypes()
-request = diskTypes.aggregatedList(project)
+request = diskTypes.aggregatedList(project=project)
 while request is not None:
     response = request.execute()
 
     for name, disk_types_scoped_list in response['items'].items():
         # TODO: Add code here to process each (name, disk_types_scoped_list) entry
 
-    request = diskTypes.aggregatedList_next(request, response)
+    request = diskTypes.aggregatedList_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -832,7 +832,7 @@ zone = ''
 # * Name of the disk type to return.
 diskType = ''
 
-request = service.diskTypes().get(project, zone, diskType)
+request = service.diskTypes().get(project=project, zone=zone, diskType=diskType)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -868,14 +868,14 @@ project = ''
 zone = ''
 
 diskTypes = service.diskTypes()
-request = diskTypes.list(project, zone)
+request = diskTypes.list(project=project, zone=zone)
 while request is not None:
     response = request.execute()
 
     for disk_type in response['items']:
         # TODO: Add code here to process each 'disk_type' resource
 
-    request = diskTypes.list_next(request, response)
+    request = diskTypes.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -905,14 +905,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 disks = service.disks()
-request = disks.aggregatedList(project)
+request = disks.aggregatedList(project=project)
 while request is not None:
     response = request.execute()
 
     for name, disks_scoped_list in response['items'].items():
         # TODO: Add code here to process each (name, disks_scoped_list) entry
 
-    request = disks.aggregatedList_next(request, response)
+    request = disks.aggregatedList_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -948,11 +948,11 @@ zone = ''
 # * Name of the persistent disk to snapshot.
 disk = ''
 
-snapshot = {
-# TODO: Add desired entries of the 'snapshot' dict
+snapshot_body = {
+# TODO: Add desired entries of the 'snapshot_body' dict
 }
 
-request = service.disks().createSnapshot(project, zone, disk, snapshot)
+request = service.disks().createSnapshot(project=project, zone=zone, disk=disk, body=snapshot_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -992,7 +992,7 @@ zone = ''
 # * Name of the persistent disk to delete.
 disk = ''
 
-request = service.disks().delete(project, zone, disk)
+request = service.disks().delete(project=project, zone=zone, disk=disk)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1032,7 +1032,7 @@ zone = ''
 # * Name of the persistent disk to return.
 disk = ''
 
-request = service.disks().get(project, zone, disk)
+request = service.disks().get(project=project, zone=zone, disk=disk)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1070,11 +1070,11 @@ project = ''
 # * The name of the zone for this request.
 zone = ''
 
-disk = {
-# TODO: Add desired entries of the 'disk' dict
+disk_body = {
+# TODO: Add desired entries of the 'disk_body' dict
 }
 
-request = service.disks().insert(project, zone, disk)
+request = service.disks().insert(project=project, zone=zone, body=disk_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1110,14 +1110,14 @@ project = ''
 zone = ''
 
 disks = service.disks()
-request = disks.list(project, zone)
+request = disks.list(project=project, zone=zone)
 while request is not None:
     response = request.execute()
 
     for disk in response['items']:
         # TODO: Add code here to process each 'disk' resource
 
-    request = disks.list_next(request, response)
+    request = disks.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -1151,7 +1151,7 @@ project = ''
 # * Name of the firewall rule to delete.
 firewall = ''
 
-request = service.firewalls().delete(project, firewall)
+request = service.firewalls().delete(project=project, firewall=firewall)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1189,7 +1189,7 @@ project = ''
 # * Name of the firewall rule to return.
 firewall = ''
 
-request = service.firewalls().get(project, firewall)
+request = service.firewalls().get(project=project, firewall=firewall)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1225,11 +1225,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-firewall = {
-# TODO: Add desired entries of the 'firewall' dict
+firewall_body = {
+# TODO: Add desired entries of the 'firewall_body' dict
 }
 
-request = service.firewalls().insert(project, firewall)
+request = service.firewalls().insert(project=project, body=firewall_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1263,14 +1263,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 firewalls = service.firewalls()
-request = firewalls.list(project)
+request = firewalls.list(project=project)
 while request is not None:
     response = request.execute()
 
     for firewall in response['items']:
         # TODO: Add code here to process each 'firewall' resource
 
-    request = firewalls.list_next(request, response)
+    request = firewalls.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -1304,11 +1304,11 @@ project = ''
 # * Name of the firewall rule to update.
 firewall = ''
 
-firewall = {
-# TODO: Add desired entries of the 'firewall' dict to be changed
+firewall_body = {
+# TODO: Add desired entries of the 'firewall_body' dict to be changed
 }
 
-request = service.firewalls().patch(project, firewall, firewall)
+request = service.firewalls().patch(project=project, firewall=firewall, body=firewall_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1346,11 +1346,11 @@ project = ''
 # * Name of the firewall rule to update.
 firewall = ''
 
-firewall = {
-# TODO: Add desired entries of the 'firewall' dict
+firewall_body = {
+# TODO: Add desired entries of the 'firewall_body' dict
 }
 
-request = service.firewalls().update(project, firewall, firewall)
+request = service.firewalls().update(project=project, firewall=firewall, body=firewall_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1384,14 +1384,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 forwardingRules = service.forwardingRules()
-request = forwardingRules.aggregatedList(project)
+request = forwardingRules.aggregatedList(project=project)
 while request is not None:
     response = request.execute()
 
     for name, forwarding_rules_scoped_list in response['items'].items():
         # TODO: Add code here to process each (name, forwarding_rules_scoped_list) entry
 
-    request = forwardingRules.aggregatedList_next(request, response)
+    request = forwardingRules.aggregatedList_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -1427,7 +1427,7 @@ region = ''
 # * Name of the ForwardingRule resource to delete.
 forwardingRule = ''
 
-request = service.forwardingRules().delete(project, region, forwardingRule)
+request = service.forwardingRules().delete(project=project, region=region, forwardingRule=forwardingRule)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1467,7 +1467,7 @@ region = ''
 # * Name of the ForwardingRule resource to return.
 forwardingRule = ''
 
-request = service.forwardingRules().get(project, region, forwardingRule)
+request = service.forwardingRules().get(project=project, region=region, forwardingRule=forwardingRule)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1505,11 +1505,11 @@ project = ''
 # * Name of the region scoping this request.
 region = ''
 
-forwarding_rule = {
-# TODO: Add desired entries of the 'forwarding_rule' dict
+forwarding_rule_body = {
+# TODO: Add desired entries of the 'forwarding_rule_body' dict
 }
 
-request = service.forwardingRules().insert(project, region, forwarding_rule)
+request = service.forwardingRules().insert(project=project, region=region, body=forwarding_rule_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1545,14 +1545,14 @@ project = ''
 region = ''
 
 forwardingRules = service.forwardingRules()
-request = forwardingRules.list(project, region)
+request = forwardingRules.list(project=project, region=region)
 while request is not None:
     response = request.execute()
 
     for forwarding_rule in response['items']:
         # TODO: Add code here to process each 'forwarding_rule' resource
 
-    request = forwardingRules.list_next(request, response)
+    request = forwardingRules.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -1588,11 +1588,11 @@ region = ''
 # * Name of the ForwardingRule resource in which target is to be set.
 forwardingRule = ''
 
-target_reference = {
-# TODO: Add desired entries of the 'target_reference' dict
+target_reference_body = {
+# TODO: Add desired entries of the 'target_reference_body' dict
 }
 
-request = service.forwardingRules().setTarget(project, region, forwardingRule, target_reference)
+request = service.forwardingRules().setTarget(project=project, region=region, forwardingRule=forwardingRule, body=target_reference_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1630,7 +1630,7 @@ project = ''
 # * Name of the address resource to delete.
 address = ''
 
-request = service.globalAddresses().delete(project, address)
+request = service.globalAddresses().delete(project=project, address=address)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1668,7 +1668,7 @@ project = ''
 # * Name of the address resource to return.
 address = ''
 
-request = service.globalAddresses().get(project, address)
+request = service.globalAddresses().get(project=project, address=address)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1704,11 +1704,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-address = {
-# TODO: Add desired entries of the 'address' dict
+address_body = {
+# TODO: Add desired entries of the 'address_body' dict
 }
 
-request = service.globalAddresses().insert(project, address)
+request = service.globalAddresses().insert(project=project, body=address_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1742,14 +1742,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 globalAddresses = service.globalAddresses()
-request = globalAddresses.list(project)
+request = globalAddresses.list(project=project)
 while request is not None:
     response = request.execute()
 
     for address in response['items']:
         # TODO: Add code here to process each 'address' resource
 
-    request = globalAddresses.list_next(request, response)
+    request = globalAddresses.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -1783,7 +1783,7 @@ project = ''
 # * Name of the ForwardingRule resource to delete.
 forwardingRule = ''
 
-request = service.globalForwardingRules().delete(project, forwardingRule)
+request = service.globalForwardingRules().delete(project=project, forwardingRule=forwardingRule)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1821,7 +1821,7 @@ project = ''
 # * Name of the ForwardingRule resource to return.
 forwardingRule = ''
 
-request = service.globalForwardingRules().get(project, forwardingRule)
+request = service.globalForwardingRules().get(project=project, forwardingRule=forwardingRule)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1857,11 +1857,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-forwarding_rule = {
-# TODO: Add desired entries of the 'forwarding_rule' dict
+forwarding_rule_body = {
+# TODO: Add desired entries of the 'forwarding_rule_body' dict
 }
 
-request = service.globalForwardingRules().insert(project, forwarding_rule)
+request = service.globalForwardingRules().insert(project=project, body=forwarding_rule_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1895,14 +1895,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 globalForwardingRules = service.globalForwardingRules()
-request = globalForwardingRules.list(project)
+request = globalForwardingRules.list(project=project)
 while request is not None:
     response = request.execute()
 
     for forwarding_rule in response['items']:
         # TODO: Add code here to process each 'forwarding_rule' resource
 
-    request = globalForwardingRules.list_next(request, response)
+    request = globalForwardingRules.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -1936,11 +1936,11 @@ project = ''
 # * Name of the ForwardingRule resource in which target is to be set.
 forwardingRule = ''
 
-target_reference = {
-# TODO: Add desired entries of the 'target_reference' dict
+target_reference_body = {
+# TODO: Add desired entries of the 'target_reference_body' dict
 }
 
-request = service.globalForwardingRules().setTarget(project, forwardingRule, target_reference)
+request = service.globalForwardingRules().setTarget(project=project, forwardingRule=forwardingRule, body=target_reference_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1974,14 +1974,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 globalOperations = service.globalOperations()
-request = globalOperations.aggregatedList(project)
+request = globalOperations.aggregatedList(project=project)
 while request is not None:
     response = request.execute()
 
     for name, operations_scoped_list in response['items'].items():
         # TODO: Add code here to process each (name, operations_scoped_list) entry
 
-    request = globalOperations.aggregatedList_next(request, response)
+    request = globalOperations.aggregatedList_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -2012,7 +2012,7 @@ project = ''
 # * Name of the Operations resource to delete.
 operation = ''
 
-request = service.globalOperations().delete(project, operation)
+request = service.globalOperations().delete(project=project, operation=operation)
 request.execute()
 """
 PRE-REQUISITES:
@@ -2047,7 +2047,7 @@ project = ''
 # * Name of the Operations resource to return.
 operation = ''
 
-request = service.globalOperations().get(project, operation)
+request = service.globalOperations().get(project=project, operation=operation)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2081,14 +2081,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 globalOperations = service.globalOperations()
-request = globalOperations.list(project)
+request = globalOperations.list(project=project)
 while request is not None:
     response = request.execute()
 
     for operation in response['items']:
         # TODO: Add code here to process each 'operation' resource
 
-    request = globalOperations.list_next(request, response)
+    request = globalOperations.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -2122,7 +2122,7 @@ project = ''
 # * Name of the HttpHealthCheck resource to delete.
 httpHealthCheck = ''
 
-request = service.httpHealthChecks().delete(project, httpHealthCheck)
+request = service.httpHealthChecks().delete(project=project, httpHealthCheck=httpHealthCheck)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2160,7 +2160,7 @@ project = ''
 # * Name of the HttpHealthCheck resource to return.
 httpHealthCheck = ''
 
-request = service.httpHealthChecks().get(project, httpHealthCheck)
+request = service.httpHealthChecks().get(project=project, httpHealthCheck=httpHealthCheck)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2196,11 +2196,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-http_health_check = {
-# TODO: Add desired entries of the 'http_health_check' dict
+http_health_check_body = {
+# TODO: Add desired entries of the 'http_health_check_body' dict
 }
 
-request = service.httpHealthChecks().insert(project, http_health_check)
+request = service.httpHealthChecks().insert(project=project, body=http_health_check_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2234,14 +2234,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 httpHealthChecks = service.httpHealthChecks()
-request = httpHealthChecks.list(project)
+request = httpHealthChecks.list(project=project)
 while request is not None:
     response = request.execute()
 
     for http_health_check in response['items']:
         # TODO: Add code here to process each 'http_health_check' resource
 
-    request = httpHealthChecks.list_next(request, response)
+    request = httpHealthChecks.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -2275,11 +2275,11 @@ project = ''
 # * Name of the HttpHealthCheck resource to update.
 httpHealthCheck = ''
 
-http_health_check = {
-# TODO: Add desired entries of the 'http_health_check' dict to be changed
+http_health_check_body = {
+# TODO: Add desired entries of the 'http_health_check_body' dict to be changed
 }
 
-request = service.httpHealthChecks().patch(project, httpHealthCheck, http_health_check)
+request = service.httpHealthChecks().patch(project=project, httpHealthCheck=httpHealthCheck, body=http_health_check_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2317,11 +2317,11 @@ project = ''
 # * Name of the HttpHealthCheck resource to update.
 httpHealthCheck = ''
 
-http_health_check = {
-# TODO: Add desired entries of the 'http_health_check' dict
+http_health_check_body = {
+# TODO: Add desired entries of the 'http_health_check_body' dict
 }
 
-request = service.httpHealthChecks().update(project, httpHealthCheck, http_health_check)
+request = service.httpHealthChecks().update(project=project, httpHealthCheck=httpHealthCheck, body=http_health_check_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2359,7 +2359,7 @@ project = ''
 # * Name of the HttpsHealthCheck resource to delete.
 httpsHealthCheck = ''
 
-request = service.httpsHealthChecks().delete(project, httpsHealthCheck)
+request = service.httpsHealthChecks().delete(project=project, httpsHealthCheck=httpsHealthCheck)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2397,7 +2397,7 @@ project = ''
 # * Name of the HttpsHealthCheck resource to return.
 httpsHealthCheck = ''
 
-request = service.httpsHealthChecks().get(project, httpsHealthCheck)
+request = service.httpsHealthChecks().get(project=project, httpsHealthCheck=httpsHealthCheck)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2433,11 +2433,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-https_health_check = {
-# TODO: Add desired entries of the 'https_health_check' dict
+https_health_check_body = {
+# TODO: Add desired entries of the 'https_health_check_body' dict
 }
 
-request = service.httpsHealthChecks().insert(project, https_health_check)
+request = service.httpsHealthChecks().insert(project=project, body=https_health_check_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2471,14 +2471,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 httpsHealthChecks = service.httpsHealthChecks()
-request = httpsHealthChecks.list(project)
+request = httpsHealthChecks.list(project=project)
 while request is not None:
     response = request.execute()
 
     for https_health_check in response['items']:
         # TODO: Add code here to process each 'https_health_check' resource
 
-    request = httpsHealthChecks.list_next(request, response)
+    request = httpsHealthChecks.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -2512,11 +2512,11 @@ project = ''
 # * Name of the HttpsHealthCheck resource to update.
 httpsHealthCheck = ''
 
-https_health_check = {
-# TODO: Add desired entries of the 'https_health_check' dict to be changed
+https_health_check_body = {
+# TODO: Add desired entries of the 'https_health_check_body' dict to be changed
 }
 
-request = service.httpsHealthChecks().patch(project, httpsHealthCheck, https_health_check)
+request = service.httpsHealthChecks().patch(project=project, httpsHealthCheck=httpsHealthCheck, body=https_health_check_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2554,11 +2554,11 @@ project = ''
 # * Name of the HttpsHealthCheck resource to update.
 httpsHealthCheck = ''
 
-https_health_check = {
-# TODO: Add desired entries of the 'https_health_check' dict
+https_health_check_body = {
+# TODO: Add desired entries of the 'https_health_check_body' dict
 }
 
-request = service.httpsHealthChecks().update(project, httpsHealthCheck, https_health_check)
+request = service.httpsHealthChecks().update(project=project, httpsHealthCheck=httpsHealthCheck, body=https_health_check_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2596,7 +2596,7 @@ project = ''
 # * Name of the image resource to delete.
 image = ''
 
-request = service.images().delete(project, image)
+request = service.images().delete(project=project, image=image)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2634,11 +2634,11 @@ project = ''
 # * Image name.
 image = ''
 
-deprecation_status = {
-# TODO: Add desired entries of the 'deprecation_status' dict
+deprecation_status_body = {
+# TODO: Add desired entries of the 'deprecation_status_body' dict
 }
 
-request = service.images().deprecate(project, image, deprecation_status)
+request = service.images().deprecate(project=project, image=image, body=deprecation_status_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2676,7 +2676,7 @@ project = ''
 # * Name of the image resource to return.
 image = ''
 
-request = service.images().get(project, image)
+request = service.images().get(project=project, image=image)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2712,11 +2712,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-image = {
-# TODO: Add desired entries of the 'image' dict
+image_body = {
+# TODO: Add desired entries of the 'image_body' dict
 }
 
-request = service.images().insert(project, image)
+request = service.images().insert(project=project, body=image_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2750,14 +2750,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 images = service.images()
-request = images.list(project)
+request = images.list(project=project)
 while request is not None:
     response = request.execute()
 
     for image in response['items']:
         # TODO: Add code here to process each 'image' resource
 
-    request = images.list_next(request, response)
+    request = images.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -2793,11 +2793,11 @@ zone = ''
 # * The name of the managed instance group.
 instanceGroupManager = ''
 
-instance_group_managers_abandon_instances_request = {
-# TODO: Add desired entries of the 'instance_group_managers_abandon_instances_request' dict
+instance_group_managers_abandon_instances_request_body = {
+# TODO: Add desired entries of the 'instance_group_managers_abandon_instances_request_body' dict
 }
 
-request = service.instanceGroupManagers().abandonInstances(project, zone, instanceGroupManager, instance_group_managers_abandon_instances_request)
+request = service.instanceGroupManagers().abandonInstances(project=project, zone=zone, instanceGroupManager=instanceGroupManager, body=instance_group_managers_abandon_instances_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2831,14 +2831,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 instanceGroupManagers = service.instanceGroupManagers()
-request = instanceGroupManagers.aggregatedList(project)
+request = instanceGroupManagers.aggregatedList(project=project)
 while request is not None:
     response = request.execute()
 
     for name, instance_group_managers_scoped_list in response['items'].items():
         # TODO: Add code here to process each (name, instance_group_managers_scoped_list) entry
 
-    request = instanceGroupManagers.aggregatedList_next(request, response)
+    request = instanceGroupManagers.aggregatedList_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -2874,7 +2874,7 @@ zone = ''
 # * The name of the managed instance group to delete.
 instanceGroupManager = ''
 
-request = service.instanceGroupManagers().delete(project, zone, instanceGroupManager)
+request = service.instanceGroupManagers().delete(project=project, zone=zone, instanceGroupManager=instanceGroupManager)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2914,11 +2914,11 @@ zone = ''
 # * The name of the managed instance group.
 instanceGroupManager = ''
 
-instance_group_managers_delete_instances_request = {
-# TODO: Add desired entries of the 'instance_group_managers_delete_instances_request' dict
+instance_group_managers_delete_instances_request_body = {
+# TODO: Add desired entries of the 'instance_group_managers_delete_instances_request_body' dict
 }
 
-request = service.instanceGroupManagers().deleteInstances(project, zone, instanceGroupManager, instance_group_managers_delete_instances_request)
+request = service.instanceGroupManagers().deleteInstances(project=project, zone=zone, instanceGroupManager=instanceGroupManager, body=instance_group_managers_delete_instances_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2958,7 +2958,7 @@ zone = ''
 # * The name of the managed instance group.
 instanceGroupManager = ''
 
-request = service.instanceGroupManagers().get(project, zone, instanceGroupManager)
+request = service.instanceGroupManagers().get(project=project, zone=zone, instanceGroupManager=instanceGroupManager)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -2996,11 +2996,11 @@ project = ''
 # * The name of the zone where you want to create the managed instance group.
 zone = ''
 
-instance_group_manager = {
-# TODO: Add desired entries of the 'instance_group_manager' dict
+instance_group_manager_body = {
+# TODO: Add desired entries of the 'instance_group_manager_body' dict
 }
 
-request = service.instanceGroupManagers().insert(project, zone, instance_group_manager)
+request = service.instanceGroupManagers().insert(project=project, zone=zone, body=instance_group_manager_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3036,14 +3036,14 @@ project = ''
 zone = ''
 
 instanceGroupManagers = service.instanceGroupManagers()
-request = instanceGroupManagers.list(project, zone)
+request = instanceGroupManagers.list(project=project, zone=zone)
 while request is not None:
     response = request.execute()
 
     for instance_group_manager in response['items']:
         # TODO: Add code here to process each 'instance_group_manager' resource
 
-    request = instanceGroupManagers.list_next(request, response)
+    request = instanceGroupManagers.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -3079,7 +3079,7 @@ zone = ''
 # * The name of the managed instance group.
 instanceGroupManager = ''
 
-request = service.instanceGroupManagers().listManagedInstances(project, zone, instanceGroupManager)
+request = service.instanceGroupManagers().listManagedInstances(project=project, zone=zone, instanceGroupManager=instanceGroupManager)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3119,11 +3119,11 @@ zone = ''
 # * The name of the managed instance group.
 instanceGroupManager = ''
 
-instance_group_managers_recreate_instances_request = {
-# TODO: Add desired entries of the 'instance_group_managers_recreate_instances_request' dict
+instance_group_managers_recreate_instances_request_body = {
+# TODO: Add desired entries of the 'instance_group_managers_recreate_instances_request_body' dict
 }
 
-request = service.instanceGroupManagers().recreateInstances(project, zone, instanceGroupManager, instance_group_managers_recreate_instances_request)
+request = service.instanceGroupManagers().recreateInstances(project=project, zone=zone, instanceGroupManager=instanceGroupManager, body=instance_group_managers_recreate_instances_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3165,7 +3165,7 @@ instanceGroupManager = ''
 # * The number of running instances that the managed instance group should maintain at any given time. The group automatically adds or removes instances to maintain the number of instances specified by this parameter.
 size = 0
 
-request = service.instanceGroupManagers().resize(project, zone, instanceGroupManager, size)
+request = service.instanceGroupManagers().resize(project=project, zone=zone, instanceGroupManager=instanceGroupManager, size=size)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3205,11 +3205,11 @@ zone = ''
 # * The name of the managed instance group.
 instanceGroupManager = ''
 
-instance_group_managers_set_instance_template_request = {
-# TODO: Add desired entries of the 'instance_group_managers_set_instance_template_request' dict
+instance_group_managers_set_instance_template_request_body = {
+# TODO: Add desired entries of the 'instance_group_managers_set_instance_template_request_body' dict
 }
 
-request = service.instanceGroupManagers().setInstanceTemplate(project, zone, instanceGroupManager, instance_group_managers_set_instance_template_request)
+request = service.instanceGroupManagers().setInstanceTemplate(project=project, zone=zone, instanceGroupManager=instanceGroupManager, body=instance_group_managers_set_instance_template_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3249,11 +3249,11 @@ zone = ''
 # * The name of the managed instance group.
 instanceGroupManager = ''
 
-instance_group_managers_set_target_pools_request = {
-# TODO: Add desired entries of the 'instance_group_managers_set_target_pools_request' dict
+instance_group_managers_set_target_pools_request_body = {
+# TODO: Add desired entries of the 'instance_group_managers_set_target_pools_request_body' dict
 }
 
-request = service.instanceGroupManagers().setTargetPools(project, zone, instanceGroupManager, instance_group_managers_set_target_pools_request)
+request = service.instanceGroupManagers().setTargetPools(project=project, zone=zone, instanceGroupManager=instanceGroupManager, body=instance_group_managers_set_target_pools_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3293,11 +3293,11 @@ zone = ''
 # * The name of the instance group where you are adding instances.
 instanceGroup = ''
 
-instance_groups_add_instances_request = {
-# TODO: Add desired entries of the 'instance_groups_add_instances_request' dict
+instance_groups_add_instances_request_body = {
+# TODO: Add desired entries of the 'instance_groups_add_instances_request_body' dict
 }
 
-request = service.instanceGroups().addInstances(project, zone, instanceGroup, instance_groups_add_instances_request)
+request = service.instanceGroups().addInstances(project=project, zone=zone, instanceGroup=instanceGroup, body=instance_groups_add_instances_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3331,14 +3331,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 instanceGroups = service.instanceGroups()
-request = instanceGroups.aggregatedList(project)
+request = instanceGroups.aggregatedList(project=project)
 while request is not None:
     response = request.execute()
 
     for name, instance_groups_scoped_list in response['items'].items():
         # TODO: Add code here to process each (name, instance_groups_scoped_list) entry
 
-    request = instanceGroups.aggregatedList_next(request, response)
+    request = instanceGroups.aggregatedList_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -3374,7 +3374,7 @@ zone = ''
 # * The name of the instance group to delete.
 instanceGroup = ''
 
-request = service.instanceGroups().delete(project, zone, instanceGroup)
+request = service.instanceGroups().delete(project=project, zone=zone, instanceGroup=instanceGroup)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3414,7 +3414,7 @@ zone = ''
 # * The name of the instance group.
 instanceGroup = ''
 
-request = service.instanceGroups().get(project, zone, instanceGroup)
+request = service.instanceGroups().get(project=project, zone=zone, instanceGroup=instanceGroup)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3452,11 +3452,11 @@ project = ''
 # * The name of the zone where you want to create the instance group.
 zone = ''
 
-instance_group = {
-# TODO: Add desired entries of the 'instance_group' dict
+instance_group_body = {
+# TODO: Add desired entries of the 'instance_group_body' dict
 }
 
-request = service.instanceGroups().insert(project, zone, instance_group)
+request = service.instanceGroups().insert(project=project, zone=zone, body=instance_group_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3492,14 +3492,14 @@ project = ''
 zone = ''
 
 instanceGroups = service.instanceGroups()
-request = instanceGroups.list(project, zone)
+request = instanceGroups.list(project=project, zone=zone)
 while request is not None:
     response = request.execute()
 
     for instance_group in response['items']:
         # TODO: Add code here to process each 'instance_group' resource
 
-    request = instanceGroups.list_next(request, response)
+    request = instanceGroups.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -3532,19 +3532,19 @@ zone = ''
 # * The name of the instance group from which you want to generate a list of included instances.
 instanceGroup = ''
 
-instance_groups_list_instances_request = {
-# TODO: Add desired entries of the 'instance_groups_list_instances_request' dict
+instance_groups_list_instances_request_body = {
+# TODO: Add desired entries of the 'instance_groups_list_instances_request_body' dict
 }
 
 instanceGroups = service.instanceGroups()
-request = instanceGroups.listInstances(project, zone, instanceGroup, instance_groups_list_instances_request)
+request = instanceGroups.listInstances(project=project, zone=zone, instanceGroup=instanceGroup, body=instance_groups_list_instances_request_body)
 while request is not None:
     response = request.execute()
 
     for instance_with_named_ports in response['items']:
         # TODO: Add code here to process each 'instance_with_named_ports' resource
 
-    request = instanceGroups.listInstances_next(request, response)
+    request = instanceGroups.listInstances_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -3580,11 +3580,11 @@ zone = ''
 # * The name of the instance group where the specified instances will be removed.
 instanceGroup = ''
 
-instance_groups_remove_instances_request = {
-# TODO: Add desired entries of the 'instance_groups_remove_instances_request' dict
+instance_groups_remove_instances_request_body = {
+# TODO: Add desired entries of the 'instance_groups_remove_instances_request_body' dict
 }
 
-request = service.instanceGroups().removeInstances(project, zone, instanceGroup, instance_groups_remove_instances_request)
+request = service.instanceGroups().removeInstances(project=project, zone=zone, instanceGroup=instanceGroup, body=instance_groups_remove_instances_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3624,11 +3624,11 @@ zone = ''
 # * The name of the instance group where the named ports are updated.
 instanceGroup = ''
 
-instance_groups_set_named_ports_request = {
-# TODO: Add desired entries of the 'instance_groups_set_named_ports_request' dict
+instance_groups_set_named_ports_request_body = {
+# TODO: Add desired entries of the 'instance_groups_set_named_ports_request_body' dict
 }
 
-request = service.instanceGroups().setNamedPorts(project, zone, instanceGroup, instance_groups_set_named_ports_request)
+request = service.instanceGroups().setNamedPorts(project=project, zone=zone, instanceGroup=instanceGroup, body=instance_groups_set_named_ports_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3666,7 +3666,7 @@ project = ''
 # * The name of the instance template to delete.
 instanceTemplate = ''
 
-request = service.instanceTemplates().delete(project, instanceTemplate)
+request = service.instanceTemplates().delete(project=project, instanceTemplate=instanceTemplate)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3704,7 +3704,7 @@ project = ''
 # * The name of the instance template.
 instanceTemplate = ''
 
-request = service.instanceTemplates().get(project, instanceTemplate)
+request = service.instanceTemplates().get(project=project, instanceTemplate=instanceTemplate)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3740,11 +3740,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-instance_template = {
-# TODO: Add desired entries of the 'instance_template' dict
+instance_template_body = {
+# TODO: Add desired entries of the 'instance_template_body' dict
 }
 
-request = service.instanceTemplates().insert(project, instance_template)
+request = service.instanceTemplates().insert(project=project, body=instance_template_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3778,14 +3778,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 instanceTemplates = service.instanceTemplates()
-request = instanceTemplates.list(project)
+request = instanceTemplates.list(project=project)
 while request is not None:
     response = request.execute()
 
     for instance_template in response['items']:
         # TODO: Add code here to process each 'instance_template' resource
 
-    request = instanceTemplates.list_next(request, response)
+    request = instanceTemplates.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -3823,11 +3823,11 @@ instance = ''
 # * The name of the network interface to add to this instance.
 networkInterface = ''
 
-access_config = {
-# TODO: Add desired entries of the 'access_config' dict
+access_config_body = {
+# TODO: Add desired entries of the 'access_config_body' dict
 }
 
-request = service.instances().addAccessConfig(project, zone, instance, networkInterface, access_config)
+request = service.instances().addAccessConfig(project=project, zone=zone, instance=instance, networkInterface=networkInterface, body=access_config_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3861,14 +3861,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 instances = service.instances()
-request = instances.aggregatedList(project)
+request = instances.aggregatedList(project=project)
 while request is not None:
     response = request.execute()
 
     for name, instances_scoped_list in response['items'].items():
         # TODO: Add code here to process each (name, instances_scoped_list) entry
 
-    request = instances.aggregatedList_next(request, response)
+    request = instances.aggregatedList_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -3904,11 +3904,11 @@ zone = ''
 # * The instance name for this request.
 instance = ''
 
-attached_disk = {
-# TODO: Add desired entries of the 'attached_disk' dict
+attached_disk_body = {
+# TODO: Add desired entries of the 'attached_disk_body' dict
 }
 
-request = service.instances().attachDisk(project, zone, instance, attached_disk)
+request = service.instances().attachDisk(project=project, zone=zone, instance=instance, body=attached_disk_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3948,7 +3948,7 @@ zone = ''
 # * Name of the instance resource to delete.
 instance = ''
 
-request = service.instances().delete(project, zone, instance)
+request = service.instances().delete(project=project, zone=zone, instance=instance)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -3992,7 +3992,7 @@ accessConfig = ''
 # * The name of the network interface.
 networkInterface = ''
 
-request = service.instances().deleteAccessConfig(project, zone, instance, accessConfig, networkInterface)
+request = service.instances().deleteAccessConfig(project=project, zone=zone, instance=instance, accessConfig=accessConfig, networkInterface=networkInterface)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4034,7 +4034,7 @@ instance = ''
 # * Disk device name to detach.
 deviceName = ''
 
-request = service.instances().detachDisk(project, zone, instance, deviceName)
+request = service.instances().detachDisk(project=project, zone=zone, instance=instance, deviceName=deviceName)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4074,7 +4074,7 @@ zone = ''
 # * Name of the instance resource to return.
 instance = ''
 
-request = service.instances().get(project, zone, instance)
+request = service.instances().get(project=project, zone=zone, instance=instance)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4114,7 +4114,7 @@ zone = ''
 # * Name of the instance scoping this request.
 instance = ''
 
-request = service.instances().getSerialPortOutput(project, zone, instance)
+request = service.instances().getSerialPortOutput(project=project, zone=zone, instance=instance)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4152,11 +4152,11 @@ project = ''
 # * The name of the zone for this request.
 zone = ''
 
-instance = {
-# TODO: Add desired entries of the 'instance' dict
+instance_body = {
+# TODO: Add desired entries of the 'instance_body' dict
 }
 
-request = service.instances().insert(project, zone, instance)
+request = service.instances().insert(project=project, zone=zone, body=instance_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4192,14 +4192,14 @@ project = ''
 zone = ''
 
 instances = service.instances()
-request = instances.list(project, zone)
+request = instances.list(project=project, zone=zone)
 while request is not None:
     response = request.execute()
 
     for instance in response['items']:
         # TODO: Add code here to process each 'instance' resource
 
-    request = instances.list_next(request, response)
+    request = instances.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -4235,7 +4235,7 @@ zone = ''
 # * Name of the instance scoping this request.
 instance = ''
 
-request = service.instances().reset(project, zone, instance)
+request = service.instances().reset(project=project, zone=zone, instance=instance)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4279,7 +4279,7 @@ autoDelete = False
 # * The device name of the disk to modify.
 deviceName = ''
 
-request = service.instances().setDiskAutoDelete(project, zone, instance, autoDelete, deviceName)
+request = service.instances().setDiskAutoDelete(project=project, zone=zone, instance=instance, autoDelete=autoDelete, deviceName=deviceName)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4319,11 +4319,11 @@ zone = ''
 # * Name of the instance scoping this request.
 instance = ''
 
-instances_set_machine_type_request = {
-# TODO: Add desired entries of the 'instances_set_machine_type_request' dict
+instances_set_machine_type_request_body = {
+# TODO: Add desired entries of the 'instances_set_machine_type_request_body' dict
 }
 
-request = service.instances().setMachineType(project, zone, instance, instances_set_machine_type_request)
+request = service.instances().setMachineType(project=project, zone=zone, instance=instance, body=instances_set_machine_type_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4363,11 +4363,11 @@ zone = ''
 # * Name of the instance scoping this request.
 instance = ''
 
-metadata = {
-# TODO: Add desired entries of the 'metadata' dict
+metadata_body = {
+# TODO: Add desired entries of the 'metadata_body' dict
 }
 
-request = service.instances().setMetadata(project, zone, instance, metadata)
+request = service.instances().setMetadata(project=project, zone=zone, instance=instance, body=metadata_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4407,11 +4407,11 @@ zone = ''
 # * Instance name.
 instance = ''
 
-scheduling = {
-# TODO: Add desired entries of the 'scheduling' dict
+scheduling_body = {
+# TODO: Add desired entries of the 'scheduling_body' dict
 }
 
-request = service.instances().setScheduling(project, zone, instance, scheduling)
+request = service.instances().setScheduling(project=project, zone=zone, instance=instance, body=scheduling_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4451,11 +4451,11 @@ zone = ''
 # * Name of the instance scoping this request.
 instance = ''
 
-tags = {
-# TODO: Add desired entries of the 'tags' dict
+tags_body = {
+# TODO: Add desired entries of the 'tags_body' dict
 }
 
-request = service.instances().setTags(project, zone, instance, tags)
+request = service.instances().setTags(project=project, zone=zone, instance=instance, body=tags_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4495,7 +4495,7 @@ zone = ''
 # * Name of the instance resource to start.
 instance = ''
 
-request = service.instances().start(project, zone, instance)
+request = service.instances().start(project=project, zone=zone, instance=instance)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4535,7 +4535,7 @@ zone = ''
 # * Name of the instance resource to stop.
 instance = ''
 
-request = service.instances().stop(project, zone, instance)
+request = service.instances().stop(project=project, zone=zone, instance=instance)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4573,7 +4573,7 @@ project = ''
 # * Name of the License resource to return.
 license = ''
 
-request = service.licenses().get(project, license)
+request = service.licenses().get(project=project, license=license)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4607,14 +4607,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 machineTypes = service.machineTypes()
-request = machineTypes.aggregatedList(project)
+request = machineTypes.aggregatedList(project=project)
 while request is not None:
     response = request.execute()
 
     for name, machine_types_scoped_list in response['items'].items():
         # TODO: Add code here to process each (name, machine_types_scoped_list) entry
 
-    request = machineTypes.aggregatedList_next(request, response)
+    request = machineTypes.aggregatedList_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -4650,7 +4650,7 @@ zone = ''
 # * Name of the machine type to return.
 machineType = ''
 
-request = service.machineTypes().get(project, zone, machineType)
+request = service.machineTypes().get(project=project, zone=zone, machineType=machineType)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4686,14 +4686,14 @@ project = ''
 zone = ''
 
 machineTypes = service.machineTypes()
-request = machineTypes.list(project, zone)
+request = machineTypes.list(project=project, zone=zone)
 while request is not None:
     response = request.execute()
 
     for machine_type in response['items']:
         # TODO: Add code here to process each 'machine_type' resource
 
-    request = machineTypes.list_next(request, response)
+    request = machineTypes.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -4727,7 +4727,7 @@ project = ''
 # * Name of the network to delete.
 network = ''
 
-request = service.networks().delete(project, network)
+request = service.networks().delete(project=project, network=network)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4765,7 +4765,7 @@ project = ''
 # * Name of the network to return.
 network = ''
 
-request = service.networks().get(project, network)
+request = service.networks().get(project=project, network=network)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4801,11 +4801,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-network = {
-# TODO: Add desired entries of the 'network' dict
+network_body = {
+# TODO: Add desired entries of the 'network_body' dict
 }
 
-request = service.networks().insert(project, network)
+request = service.networks().insert(project=project, body=network_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4839,14 +4839,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 networks = service.networks()
-request = networks.list(project)
+request = networks.list(project=project)
 while request is not None:
     response = request.execute()
 
     for network in response['items']:
         # TODO: Add code here to process each 'network' resource
 
-    request = networks.list_next(request, response)
+    request = networks.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -4878,7 +4878,7 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-request = service.projects().get(project)
+request = service.projects().get(project=project)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4914,11 +4914,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-disk_move_request = {
-# TODO: Add desired entries of the 'disk_move_request' dict
+disk_move_request_body = {
+# TODO: Add desired entries of the 'disk_move_request_body' dict
 }
 
-request = service.projects().moveDisk(project, disk_move_request)
+request = service.projects().moveDisk(project=project, body=disk_move_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4954,11 +4954,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-instance_move_request = {
-# TODO: Add desired entries of the 'instance_move_request' dict
+instance_move_request_body = {
+# TODO: Add desired entries of the 'instance_move_request_body' dict
 }
 
-request = service.projects().moveInstance(project, instance_move_request)
+request = service.projects().moveInstance(project=project, body=instance_move_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -4994,11 +4994,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-metadata = {
-# TODO: Add desired entries of the 'metadata' dict
+metadata_body = {
+# TODO: Add desired entries of the 'metadata_body' dict
 }
 
-request = service.projects().setCommonInstanceMetadata(project, metadata)
+request = service.projects().setCommonInstanceMetadata(project=project, body=metadata_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5034,11 +5034,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-usage_export_location = {
-# TODO: Add desired entries of the 'usage_export_location' dict
+usage_export_location_body = {
+# TODO: Add desired entries of the 'usage_export_location_body' dict
 }
 
-request = service.projects().setUsageExportBucket(project, usage_export_location)
+request = service.projects().setUsageExportBucket(project=project, body=usage_export_location_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5075,7 +5075,7 @@ region = ''
 # * Name of the Operations resource to delete.
 operation = ''
 
-request = service.regionOperations().delete(project, region, operation)
+request = service.regionOperations().delete(project=project, region=region, operation=operation)
 request.execute()
 """
 PRE-REQUISITES:
@@ -5112,7 +5112,7 @@ region = ''
 # * Name of the Operations resource to return.
 operation = ''
 
-request = service.regionOperations().get(project, region, operation)
+request = service.regionOperations().get(project=project, region=region, operation=operation)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5148,14 +5148,14 @@ project = ''
 region = ''
 
 regionOperations = service.regionOperations()
-request = regionOperations.list(project, region)
+request = regionOperations.list(project=project, region=region)
 while request is not None:
     response = request.execute()
 
     for operation in response['items']:
         # TODO: Add code here to process each 'operation' resource
 
-    request = regionOperations.list_next(request, response)
+    request = regionOperations.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -5189,7 +5189,7 @@ project = ''
 # * Name of the region resource to return.
 region = ''
 
-request = service.regions().get(project, region)
+request = service.regions().get(project=project, region=region)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5223,14 +5223,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 regions = service.regions()
-request = regions.list(project)
+request = regions.list(project=project)
 while request is not None:
     response = request.execute()
 
     for region in response['items']:
         # TODO: Add code here to process each 'region' resource
 
-    request = regions.list_next(request, response)
+    request = regions.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -5264,7 +5264,7 @@ project = ''
 # * Name of the Route resource to delete.
 route = ''
 
-request = service.routes().delete(project, route)
+request = service.routes().delete(project=project, route=route)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5302,7 +5302,7 @@ project = ''
 # * Name of the Route resource to return.
 route = ''
 
-request = service.routes().get(project, route)
+request = service.routes().get(project=project, route=route)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5338,11 +5338,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-route = {
-# TODO: Add desired entries of the 'route' dict
+route_body = {
+# TODO: Add desired entries of the 'route_body' dict
 }
 
-request = service.routes().insert(project, route)
+request = service.routes().insert(project=project, body=route_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5376,14 +5376,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 routes = service.routes()
-request = routes.list(project)
+request = routes.list(project=project)
 while request is not None:
     response = request.execute()
 
     for route in response['items']:
         # TODO: Add code here to process each 'route' resource
 
-    request = routes.list_next(request, response)
+    request = routes.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -5417,7 +5417,7 @@ project = ''
 # * Name of the Snapshot resource to delete.
 snapshot = ''
 
-request = service.snapshots().delete(project, snapshot)
+request = service.snapshots().delete(project=project, snapshot=snapshot)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5455,7 +5455,7 @@ project = ''
 # * Name of the Snapshot resource to return.
 snapshot = ''
 
-request = service.snapshots().get(project, snapshot)
+request = service.snapshots().get(project=project, snapshot=snapshot)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5489,14 +5489,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 snapshots = service.snapshots()
-request = snapshots.list(project)
+request = snapshots.list(project=project)
 while request is not None:
     response = request.execute()
 
     for snapshot in response['items']:
         # TODO: Add code here to process each 'snapshot' resource
 
-    request = snapshots.list_next(request, response)
+    request = snapshots.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -5530,7 +5530,7 @@ project = ''
 # * Name of the SslCertificate resource to delete.
 sslCertificate = ''
 
-request = service.sslCertificates().delete(project, sslCertificate)
+request = service.sslCertificates().delete(project=project, sslCertificate=sslCertificate)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5568,7 +5568,7 @@ project = ''
 # * Name of the SslCertificate resource to return.
 sslCertificate = ''
 
-request = service.sslCertificates().get(project, sslCertificate)
+request = service.sslCertificates().get(project=project, sslCertificate=sslCertificate)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5604,11 +5604,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-ssl_certificate = {
-# TODO: Add desired entries of the 'ssl_certificate' dict
+ssl_certificate_body = {
+# TODO: Add desired entries of the 'ssl_certificate_body' dict
 }
 
-request = service.sslCertificates().insert(project, ssl_certificate)
+request = service.sslCertificates().insert(project=project, body=ssl_certificate_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5642,14 +5642,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 sslCertificates = service.sslCertificates()
-request = sslCertificates.list(project)
+request = sslCertificates.list(project=project)
 while request is not None:
     response = request.execute()
 
     for ssl_certificate in response['items']:
         # TODO: Add code here to process each 'ssl_certificate' resource
 
-    request = sslCertificates.list_next(request, response)
+    request = sslCertificates.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -5679,14 +5679,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 subnetworks = service.subnetworks()
-request = subnetworks.aggregatedList(project)
+request = subnetworks.aggregatedList(project=project)
 while request is not None:
     response = request.execute()
 
     for name, subnetworks_scoped_list in response['items'].items():
         # TODO: Add code here to process each (name, subnetworks_scoped_list) entry
 
-    request = subnetworks.aggregatedList_next(request, response)
+    request = subnetworks.aggregatedList_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -5722,7 +5722,7 @@ region = ''
 # * Name of the Subnetwork resource to delete.
 subnetwork = ''
 
-request = service.subnetworks().delete(project, region, subnetwork)
+request = service.subnetworks().delete(project=project, region=region, subnetwork=subnetwork)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5762,7 +5762,7 @@ region = ''
 # * Name of the Subnetwork resource to return.
 subnetwork = ''
 
-request = service.subnetworks().get(project, region, subnetwork)
+request = service.subnetworks().get(project=project, region=region, subnetwork=subnetwork)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5800,11 +5800,11 @@ project = ''
 # * Name of the region scoping this request.
 region = ''
 
-subnetwork = {
-# TODO: Add desired entries of the 'subnetwork' dict
+subnetwork_body = {
+# TODO: Add desired entries of the 'subnetwork_body' dict
 }
 
-request = service.subnetworks().insert(project, region, subnetwork)
+request = service.subnetworks().insert(project=project, region=region, body=subnetwork_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5840,14 +5840,14 @@ project = ''
 region = ''
 
 subnetworks = service.subnetworks()
-request = subnetworks.list(project, region)
+request = subnetworks.list(project=project, region=region)
 while request is not None:
     response = request.execute()
 
     for subnetwork in response['items']:
         # TODO: Add code here to process each 'subnetwork' resource
 
-    request = subnetworks.list_next(request, response)
+    request = subnetworks.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -5881,7 +5881,7 @@ project = ''
 # * Name of the TargetHttpProxy resource to delete.
 targetHttpProxy = ''
 
-request = service.targetHttpProxies().delete(project, targetHttpProxy)
+request = service.targetHttpProxies().delete(project=project, targetHttpProxy=targetHttpProxy)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5919,7 +5919,7 @@ project = ''
 # * Name of the TargetHttpProxy resource to return.
 targetHttpProxy = ''
 
-request = service.targetHttpProxies().get(project, targetHttpProxy)
+request = service.targetHttpProxies().get(project=project, targetHttpProxy=targetHttpProxy)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5955,11 +5955,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-target_http_proxy = {
-# TODO: Add desired entries of the 'target_http_proxy' dict
+target_http_proxy_body = {
+# TODO: Add desired entries of the 'target_http_proxy_body' dict
 }
 
-request = service.targetHttpProxies().insert(project, target_http_proxy)
+request = service.targetHttpProxies().insert(project=project, body=target_http_proxy_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -5993,14 +5993,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 targetHttpProxies = service.targetHttpProxies()
-request = targetHttpProxies.list(project)
+request = targetHttpProxies.list(project=project)
 while request is not None:
     response = request.execute()
 
     for target_http_proxy in response['items']:
         # TODO: Add code here to process each 'target_http_proxy' resource
 
-    request = targetHttpProxies.list_next(request, response)
+    request = targetHttpProxies.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -6034,11 +6034,11 @@ project = ''
 # * Name of the TargetHttpProxy to set a URL map for.
 targetHttpProxy = ''
 
-url_map_reference = {
-# TODO: Add desired entries of the 'url_map_reference' dict
+url_map_reference_body = {
+# TODO: Add desired entries of the 'url_map_reference_body' dict
 }
 
-request = service.targetHttpProxies().setUrlMap(project, targetHttpProxy, url_map_reference)
+request = service.targetHttpProxies().setUrlMap(project=project, targetHttpProxy=targetHttpProxy, body=url_map_reference_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6076,7 +6076,7 @@ project = ''
 # * Name of the TargetHttpsProxy resource to delete.
 targetHttpsProxy = ''
 
-request = service.targetHttpsProxies().delete(project, targetHttpsProxy)
+request = service.targetHttpsProxies().delete(project=project, targetHttpsProxy=targetHttpsProxy)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6114,7 +6114,7 @@ project = ''
 # * Name of the TargetHttpsProxy resource to return.
 targetHttpsProxy = ''
 
-request = service.targetHttpsProxies().get(project, targetHttpsProxy)
+request = service.targetHttpsProxies().get(project=project, targetHttpsProxy=targetHttpsProxy)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6150,11 +6150,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-target_https_proxy = {
-# TODO: Add desired entries of the 'target_https_proxy' dict
+target_https_proxy_body = {
+# TODO: Add desired entries of the 'target_https_proxy_body' dict
 }
 
-request = service.targetHttpsProxies().insert(project, target_https_proxy)
+request = service.targetHttpsProxies().insert(project=project, body=target_https_proxy_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6188,14 +6188,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 targetHttpsProxies = service.targetHttpsProxies()
-request = targetHttpsProxies.list(project)
+request = targetHttpsProxies.list(project=project)
 while request is not None:
     response = request.execute()
 
     for target_https_proxy in response['items']:
         # TODO: Add code here to process each 'target_https_proxy' resource
 
-    request = targetHttpsProxies.list_next(request, response)
+    request = targetHttpsProxies.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -6229,11 +6229,11 @@ project = ''
 # * Name of the TargetHttpsProxy resource to set an SslCertificates resource for.
 targetHttpsProxy = ''
 
-target_https_proxies_set_ssl_certificates_request = {
-# TODO: Add desired entries of the 'target_https_proxies_set_ssl_certificates_request' dict
+target_https_proxies_set_ssl_certificates_request_body = {
+# TODO: Add desired entries of the 'target_https_proxies_set_ssl_certificates_request_body' dict
 }
 
-request = service.targetHttpsProxies().setSslCertificates(project, targetHttpsProxy, target_https_proxies_set_ssl_certificates_request)
+request = service.targetHttpsProxies().setSslCertificates(project=project, targetHttpsProxy=targetHttpsProxy, body=target_https_proxies_set_ssl_certificates_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6271,11 +6271,11 @@ project = ''
 # * Name of the TargetHttpsProxy resource whose URL map is to be set.
 targetHttpsProxy = ''
 
-url_map_reference = {
-# TODO: Add desired entries of the 'url_map_reference' dict
+url_map_reference_body = {
+# TODO: Add desired entries of the 'url_map_reference_body' dict
 }
 
-request = service.targetHttpsProxies().setUrlMap(project, targetHttpsProxy, url_map_reference)
+request = service.targetHttpsProxies().setUrlMap(project=project, targetHttpsProxy=targetHttpsProxy, body=url_map_reference_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6309,14 +6309,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 targetInstances = service.targetInstances()
-request = targetInstances.aggregatedList(project)
+request = targetInstances.aggregatedList(project=project)
 while request is not None:
     response = request.execute()
 
     for name, target_instances_scoped_list in response['items'].items():
         # TODO: Add code here to process each (name, target_instances_scoped_list) entry
 
-    request = targetInstances.aggregatedList_next(request, response)
+    request = targetInstances.aggregatedList_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -6352,7 +6352,7 @@ zone = ''
 # * Name of the TargetInstance resource to delete.
 targetInstance = ''
 
-request = service.targetInstances().delete(project, zone, targetInstance)
+request = service.targetInstances().delete(project=project, zone=zone, targetInstance=targetInstance)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6392,7 +6392,7 @@ zone = ''
 # * Name of the TargetInstance resource to return.
 targetInstance = ''
 
-request = service.targetInstances().get(project, zone, targetInstance)
+request = service.targetInstances().get(project=project, zone=zone, targetInstance=targetInstance)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6430,11 +6430,11 @@ project = ''
 # * Name of the zone scoping this request.
 zone = ''
 
-target_instance = {
-# TODO: Add desired entries of the 'target_instance' dict
+target_instance_body = {
+# TODO: Add desired entries of the 'target_instance_body' dict
 }
 
-request = service.targetInstances().insert(project, zone, target_instance)
+request = service.targetInstances().insert(project=project, zone=zone, body=target_instance_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6470,14 +6470,14 @@ project = ''
 zone = ''
 
 targetInstances = service.targetInstances()
-request = targetInstances.list(project, zone)
+request = targetInstances.list(project=project, zone=zone)
 while request is not None:
     response = request.execute()
 
     for target_instance in response['items']:
         # TODO: Add code here to process each 'target_instance' resource
 
-    request = targetInstances.list_next(request, response)
+    request = targetInstances.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -6513,11 +6513,11 @@ region = ''
 # * Name of the target pool to add a health check to.
 targetPool = ''
 
-target_pools_add_health_check_request = {
-# TODO: Add desired entries of the 'target_pools_add_health_check_request' dict
+target_pools_add_health_check_request_body = {
+# TODO: Add desired entries of the 'target_pools_add_health_check_request_body' dict
 }
 
-request = service.targetPools().addHealthCheck(project, region, targetPool, target_pools_add_health_check_request)
+request = service.targetPools().addHealthCheck(project=project, region=region, targetPool=targetPool, body=target_pools_add_health_check_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6557,11 +6557,11 @@ region = ''
 # * Name of the TargetPool resource to add instances to.
 targetPool = ''
 
-target_pools_add_instance_request = {
-# TODO: Add desired entries of the 'target_pools_add_instance_request' dict
+target_pools_add_instance_request_body = {
+# TODO: Add desired entries of the 'target_pools_add_instance_request_body' dict
 }
 
-request = service.targetPools().addInstance(project, region, targetPool, target_pools_add_instance_request)
+request = service.targetPools().addInstance(project=project, region=region, targetPool=targetPool, body=target_pools_add_instance_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6595,14 +6595,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 targetPools = service.targetPools()
-request = targetPools.aggregatedList(project)
+request = targetPools.aggregatedList(project=project)
 while request is not None:
     response = request.execute()
 
     for name, target_pools_scoped_list in response['items'].items():
         # TODO: Add code here to process each (name, target_pools_scoped_list) entry
 
-    request = targetPools.aggregatedList_next(request, response)
+    request = targetPools.aggregatedList_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -6638,7 +6638,7 @@ region = ''
 # * Name of the TargetPool resource to delete.
 targetPool = ''
 
-request = service.targetPools().delete(project, region, targetPool)
+request = service.targetPools().delete(project=project, region=region, targetPool=targetPool)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6678,7 +6678,7 @@ region = ''
 # * Name of the TargetPool resource to return.
 targetPool = ''
 
-request = service.targetPools().get(project, region, targetPool)
+request = service.targetPools().get(project=project, region=region, targetPool=targetPool)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6718,11 +6718,11 @@ region = ''
 # * Name of the TargetPool resource to which the queried instance belongs.
 targetPool = ''
 
-instance_reference = {
-# TODO: Add desired entries of the 'instance_reference' dict
+instance_reference_body = {
+# TODO: Add desired entries of the 'instance_reference_body' dict
 }
 
-request = service.targetPools().getHealth(project, region, targetPool, instance_reference)
+request = service.targetPools().getHealth(project=project, region=region, targetPool=targetPool, body=instance_reference_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6760,11 +6760,11 @@ project = ''
 # * Name of the region scoping this request.
 region = ''
 
-target_pool = {
-# TODO: Add desired entries of the 'target_pool' dict
+target_pool_body = {
+# TODO: Add desired entries of the 'target_pool_body' dict
 }
 
-request = service.targetPools().insert(project, region, target_pool)
+request = service.targetPools().insert(project=project, region=region, body=target_pool_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6800,14 +6800,14 @@ project = ''
 region = ''
 
 targetPools = service.targetPools()
-request = targetPools.list(project, region)
+request = targetPools.list(project=project, region=region)
 while request is not None:
     response = request.execute()
 
     for target_pool in response['items']:
         # TODO: Add code here to process each 'target_pool' resource
 
-    request = targetPools.list_next(request, response)
+    request = targetPools.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -6843,11 +6843,11 @@ region = ''
 # * Name of the target pool to remove health checks from.
 targetPool = ''
 
-target_pools_remove_health_check_request = {
-# TODO: Add desired entries of the 'target_pools_remove_health_check_request' dict
+target_pools_remove_health_check_request_body = {
+# TODO: Add desired entries of the 'target_pools_remove_health_check_request_body' dict
 }
 
-request = service.targetPools().removeHealthCheck(project, region, targetPool, target_pools_remove_health_check_request)
+request = service.targetPools().removeHealthCheck(project=project, region=region, targetPool=targetPool, body=target_pools_remove_health_check_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6887,11 +6887,11 @@ region = ''
 # * Name of the TargetPool resource to remove instances from.
 targetPool = ''
 
-target_pools_remove_instance_request = {
-# TODO: Add desired entries of the 'target_pools_remove_instance_request' dict
+target_pools_remove_instance_request_body = {
+# TODO: Add desired entries of the 'target_pools_remove_instance_request_body' dict
 }
 
-request = service.targetPools().removeInstance(project, region, targetPool, target_pools_remove_instance_request)
+request = service.targetPools().removeInstance(project=project, region=region, targetPool=targetPool, body=target_pools_remove_instance_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6931,11 +6931,11 @@ region = ''
 # * Name of the TargetPool resource to set a backup pool for.
 targetPool = ''
 
-target_reference = {
-# TODO: Add desired entries of the 'target_reference' dict
+target_reference_body = {
+# TODO: Add desired entries of the 'target_reference_body' dict
 }
 
-request = service.targetPools().setBackup(project, region, targetPool, target_reference)
+request = service.targetPools().setBackup(project=project, region=region, targetPool=targetPool, body=target_reference_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -6969,14 +6969,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 targetVpnGateways = service.targetVpnGateways()
-request = targetVpnGateways.aggregatedList(project)
+request = targetVpnGateways.aggregatedList(project=project)
 while request is not None:
     response = request.execute()
 
     for name, target_vpn_gateways_scoped_list in response['items'].items():
         # TODO: Add code here to process each (name, target_vpn_gateways_scoped_list) entry
 
-    request = targetVpnGateways.aggregatedList_next(request, response)
+    request = targetVpnGateways.aggregatedList_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -7012,7 +7012,7 @@ region = ''
 # * Name of the target VPN gateway to delete.
 targetVpnGateway = ''
 
-request = service.targetVpnGateways().delete(project, region, targetVpnGateway)
+request = service.targetVpnGateways().delete(project=project, region=region, targetVpnGateway=targetVpnGateway)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -7052,7 +7052,7 @@ region = ''
 # * Name of the target VPN gateway to return.
 targetVpnGateway = ''
 
-request = service.targetVpnGateways().get(project, region, targetVpnGateway)
+request = service.targetVpnGateways().get(project=project, region=region, targetVpnGateway=targetVpnGateway)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -7090,11 +7090,11 @@ project = ''
 # * Name of the region for this request.
 region = ''
 
-target_vpn_gateway = {
-# TODO: Add desired entries of the 'target_vpn_gateway' dict
+target_vpn_gateway_body = {
+# TODO: Add desired entries of the 'target_vpn_gateway_body' dict
 }
 
-request = service.targetVpnGateways().insert(project, region, target_vpn_gateway)
+request = service.targetVpnGateways().insert(project=project, region=region, body=target_vpn_gateway_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -7130,14 +7130,14 @@ project = ''
 region = ''
 
 targetVpnGateways = service.targetVpnGateways()
-request = targetVpnGateways.list(project, region)
+request = targetVpnGateways.list(project=project, region=region)
 while request is not None:
     response = request.execute()
 
     for target_vpn_gateway in response['items']:
         # TODO: Add code here to process each 'target_vpn_gateway' resource
 
-    request = targetVpnGateways.list_next(request, response)
+    request = targetVpnGateways.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -7171,7 +7171,7 @@ project = ''
 # * Name of the UrlMap resource to delete.
 urlMap = ''
 
-request = service.urlMaps().delete(project, urlMap)
+request = service.urlMaps().delete(project=project, urlMap=urlMap)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -7209,7 +7209,7 @@ project = ''
 # * Name of the UrlMap resource to return.
 urlMap = ''
 
-request = service.urlMaps().get(project, urlMap)
+request = service.urlMaps().get(project=project, urlMap=urlMap)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -7245,11 +7245,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-url_map = {
-# TODO: Add desired entries of the 'url_map' dict
+url_map_body = {
+# TODO: Add desired entries of the 'url_map_body' dict
 }
 
-request = service.urlMaps().insert(project, url_map)
+request = service.urlMaps().insert(project=project, body=url_map_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -7283,14 +7283,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 urlMaps = service.urlMaps()
-request = urlMaps.list(project)
+request = urlMaps.list(project=project)
 while request is not None:
     response = request.execute()
 
     for url_map in response['items']:
         # TODO: Add code here to process each 'url_map' resource
 
-    request = urlMaps.list_next(request, response)
+    request = urlMaps.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -7324,11 +7324,11 @@ project = ''
 # * Name of the UrlMap resource to update.
 urlMap = ''
 
-url_map = {
-# TODO: Add desired entries of the 'url_map' dict to be changed
+url_map_body = {
+# TODO: Add desired entries of the 'url_map_body' dict to be changed
 }
 
-request = service.urlMaps().patch(project, urlMap, url_map)
+request = service.urlMaps().patch(project=project, urlMap=urlMap, body=url_map_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -7366,11 +7366,11 @@ project = ''
 # * Name of the UrlMap resource to update.
 urlMap = ''
 
-url_map = {
-# TODO: Add desired entries of the 'url_map' dict
+url_map_body = {
+# TODO: Add desired entries of the 'url_map_body' dict
 }
 
-request = service.urlMaps().update(project, urlMap, url_map)
+request = service.urlMaps().update(project=project, urlMap=urlMap, body=url_map_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -7408,11 +7408,11 @@ project = ''
 # * Name of the UrlMap resource to be validated as.
 urlMap = ''
 
-url_maps_validate_request = {
-# TODO: Add desired entries of the 'url_maps_validate_request' dict
+url_maps_validate_request_body = {
+# TODO: Add desired entries of the 'url_maps_validate_request_body' dict
 }
 
-request = service.urlMaps().validate(project, urlMap, url_maps_validate_request)
+request = service.urlMaps().validate(project=project, urlMap=urlMap, body=url_maps_validate_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -7446,14 +7446,14 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 vpnTunnels = service.vpnTunnels()
-request = vpnTunnels.aggregatedList(project)
+request = vpnTunnels.aggregatedList(project=project)
 while request is not None:
     response = request.execute()
 
     for name, vpn_tunnels_scoped_list in response['items'].items():
         # TODO: Add code here to process each (name, vpn_tunnels_scoped_list) entry
 
-    request = vpnTunnels.aggregatedList_next(request, response)
+    request = vpnTunnels.aggregatedList_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -7489,7 +7489,7 @@ region = ''
 # * Name of the VpnTunnel resource to delete.
 vpnTunnel = ''
 
-request = service.vpnTunnels().delete(project, region, vpnTunnel)
+request = service.vpnTunnels().delete(project=project, region=region, vpnTunnel=vpnTunnel)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -7529,7 +7529,7 @@ region = ''
 # * Name of the VpnTunnel resource to return.
 vpnTunnel = ''
 
-request = service.vpnTunnels().get(project, region, vpnTunnel)
+request = service.vpnTunnels().get(project=project, region=region, vpnTunnel=vpnTunnel)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -7567,11 +7567,11 @@ project = ''
 # * Name of the region for this request.
 region = ''
 
-vpn_tunnel = {
-# TODO: Add desired entries of the 'vpn_tunnel' dict
+vpn_tunnel_body = {
+# TODO: Add desired entries of the 'vpn_tunnel_body' dict
 }
 
-request = service.vpnTunnels().insert(project, region, vpn_tunnel)
+request = service.vpnTunnels().insert(project=project, region=region, body=vpn_tunnel_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -7607,14 +7607,14 @@ project = ''
 region = ''
 
 vpnTunnels = service.vpnTunnels()
-request = vpnTunnels.list(project, region)
+request = vpnTunnels.list(project=project, region=region)
 while request is not None:
     response = request.execute()
 
     for vpn_tunnel in response['items']:
         # TODO: Add code here to process each 'vpn_tunnel' resource
 
-    request = vpnTunnels.list_next(request, response)
+    request = vpnTunnels.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -7647,7 +7647,7 @@ zone = ''
 # * Name of the Operations resource to delete.
 operation = ''
 
-request = service.zoneOperations().delete(project, zone, operation)
+request = service.zoneOperations().delete(project=project, zone=zone, operation=operation)
 request.execute()
 """
 PRE-REQUISITES:
@@ -7684,7 +7684,7 @@ zone = ''
 # * Name of the Operations resource to return.
 operation = ''
 
-request = service.zoneOperations().get(project, zone, operation)
+request = service.zoneOperations().get(project=project, zone=zone, operation=operation)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -7720,14 +7720,14 @@ project = ''
 zone = ''
 
 zoneOperations = service.zoneOperations()
-request = zoneOperations.list(project, zone)
+request = zoneOperations.list(project=project, zone=zone)
 while request is not None:
     response = request.execute()
 
     for operation in response['items']:
         # TODO: Add code here to process each 'operation' resource
 
-    request = zoneOperations.list_next(request, response)
+    request = zoneOperations.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -7761,7 +7761,7 @@ project = ''
 # * Name of the zone resource to return.
 zone = ''
 
-request = service.zones().get(project, zone)
+request = service.zones().get(project=project, zone=zone)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -7795,11 +7795,11 @@ service = discovery.build('compute', 'v1', credentials=credentials)
 project = ''
 
 zones = service.zones()
-request = zones.list(project)
+request = zones.list(project=project)
 while request is not None:
     response = request.execute()
 
     for zone in response['items']:
         # TODO: Add code here to process each 'zone' resource
 
-    request = zones.list_next(request, response)
+    request = zones.list_next(previous_request=request, previous_response=response)

@@ -29,7 +29,7 @@ project = ''
 # * Name of the Operations resource to delete.
 operation = ''
 
-request = service.globalAccountsOperations().delete(project, operation)
+request = service.globalAccountsOperations().delete(project=project, operation=operation)
 request.execute()
 """
 PRE-REQUISITES:
@@ -64,7 +64,7 @@ project = ''
 # * Name of the Operations resource to return.
 operation = ''
 
-request = service.globalAccountsOperations().get(project, operation)
+request = service.globalAccountsOperations().get(project=project, operation=operation)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -98,14 +98,14 @@ service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 project = ''
 
 globalAccountsOperations = service.globalAccountsOperations()
-request = globalAccountsOperations.list(project)
+request = globalAccountsOperations.list(project=project)
 while request is not None:
     response = request.execute()
 
     for operation in response['items']:
         # TODO: Add code here to process each 'operation' resource
 
-    request = globalAccountsOperations.list_next(request, response)
+    request = globalAccountsOperations.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -139,11 +139,11 @@ project = ''
 # * Name of the group for this request.
 groupName = ''
 
-groups_add_member_request = {
-# TODO: Add desired entries of the 'groups_add_member_request' dict
+groups_add_member_request_body = {
+# TODO: Add desired entries of the 'groups_add_member_request_body' dict
 }
 
-request = service.groups().addMember(project, groupName, groups_add_member_request)
+request = service.groups().addMember(project=project, groupName=groupName, body=groups_add_member_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -181,7 +181,7 @@ project = ''
 # * Name of the Group resource to delete.
 groupName = ''
 
-request = service.groups().delete(project, groupName)
+request = service.groups().delete(project=project, groupName=groupName)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -219,7 +219,7 @@ project = ''
 # * Name of the Group resource to return.
 groupName = ''
 
-request = service.groups().get(project, groupName)
+request = service.groups().get(project=project, groupName=groupName)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -255,11 +255,11 @@ service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-group = {
-# TODO: Add desired entries of the 'group' dict
+group_body = {
+# TODO: Add desired entries of the 'group_body' dict
 }
 
-request = service.groups().insert(project, group)
+request = service.groups().insert(project=project, body=group_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -293,14 +293,14 @@ service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 project = ''
 
 groups = service.groups()
-request = groups.list(project)
+request = groups.list(project=project)
 while request is not None:
     response = request.execute()
 
     for group in response['items']:
         # TODO: Add code here to process each 'group' resource
 
-    request = groups.list_next(request, response)
+    request = groups.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -334,11 +334,11 @@ project = ''
 # * Name of the group for this request.
 groupName = ''
 
-groups_remove_member_request = {
-# TODO: Add desired entries of the 'groups_remove_member_request' dict
+groups_remove_member_request_body = {
+# TODO: Add desired entries of the 'groups_remove_member_request_body' dict
 }
 
-request = service.groups().removeMember(project, groupName, groups_remove_member_request)
+request = service.groups().removeMember(project=project, groupName=groupName, body=groups_remove_member_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -380,7 +380,7 @@ user = ''
 # * The fully-qualified URL of the virtual machine requesting the view.
 instance = ''
 
-request = service.linux().getAuthorizedKeysView(project, zone, user, instance)
+request = service.linux().getAuthorizedKeysView(project=project, zone=zone, user=user, instance=instance)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -420,7 +420,7 @@ zone = ''
 # * The fully-qualified URL of the virtual machine requesting the views.
 instance = ''
 
-request = service.linux().getLinuxAccountViews(project, zone, instance)
+request = service.linux().getLinuxAccountViews(project=project, zone=zone, instance=instance)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -458,11 +458,11 @@ project = ''
 # * Name of the user for this request.
 user = ''
 
-public_key = {
-# TODO: Add desired entries of the 'public_key' dict
+public_key_body = {
+# TODO: Add desired entries of the 'public_key_body' dict
 }
 
-request = service.users().addPublicKey(project, user, public_key)
+request = service.users().addPublicKey(project=project, user=user, body=public_key_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -500,7 +500,7 @@ project = ''
 # * Name of the user resource to delete.
 user = ''
 
-request = service.users().delete(project, user)
+request = service.users().delete(project=project, user=user)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -538,7 +538,7 @@ project = ''
 # * Name of the user resource to return.
 user = ''
 
-request = service.users().get(project, user)
+request = service.users().get(project=project, user=user)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -574,11 +574,11 @@ service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 # * Project ID for this request.
 project = ''
 
-user = {
-# TODO: Add desired entries of the 'user' dict
+user_body = {
+# TODO: Add desired entries of the 'user_body' dict
 }
 
-request = service.users().insert(project, user)
+request = service.users().insert(project=project, body=user_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -612,14 +612,14 @@ service = discovery.build('clouduseraccounts', 'beta', credentials=credentials)
 project = ''
 
 users = service.users()
-request = users.list(project)
+request = users.list(project=project)
 while request is not None:
     response = request.execute()
 
     for user in response['items']:
         # TODO: Add code here to process each 'user' resource
 
-    request = users.list_next(request, response)
+    request = users.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -655,7 +655,7 @@ user = ''
 # * The fingerprint of the public key to delete. Public keys are identified by their fingerprint, which is defined by RFC4716 to be the MD5 digest of the public key.
 fingerprint = ''
 
-request = service.users().removePublicKey(project, user, fingerprint)
+request = service.users().removePublicKey(project=project, user=user, fingerprint=fingerprint)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:

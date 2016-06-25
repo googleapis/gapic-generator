@@ -32,11 +32,11 @@ projectId = ''
 # * [Required] The Cloud Dataproc region in which to handle the request.
 region = ''
 
-cluster = {
-# TODO: Add desired entries of the 'cluster' dict
+cluster_body = {
+# TODO: Add desired entries of the 'cluster_body' dict
 }
 
-request = service.projects().regions().clusters().create(projectId, region, cluster)
+request = service.projects().regions().clusters().create(projectId=projectId, region=region, body=cluster_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -76,7 +76,7 @@ region = ''
 # * [Required] The cluster name.
 clusterName = ''
 
-request = service.projects().regions().clusters().delete(projectId, region, clusterName)
+request = service.projects().regions().clusters().delete(projectId=projectId, region=region, clusterName=clusterName)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -116,11 +116,11 @@ region = ''
 # * [Required] The cluster name.
 clusterName = ''
 
-diagnose_cluster_request = {
-# TODO: Add desired entries of the 'diagnose_cluster_request' dict
+diagnose_cluster_request_body = {
+# TODO: Add desired entries of the 'diagnose_cluster_request_body' dict
 }
 
-request = service.projects().regions().clusters().diagnose(projectId, region, clusterName, diagnose_cluster_request)
+request = service.projects().regions().clusters().diagnose(projectId=projectId, region=region, clusterName=clusterName, body=diagnose_cluster_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -160,7 +160,7 @@ region = ''
 # * [Required] The cluster name.
 clusterName = ''
 
-request = service.projects().regions().clusters().get(projectId, region, clusterName)
+request = service.projects().regions().clusters().get(projectId=projectId, region=region, clusterName=clusterName)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -196,14 +196,14 @@ projectId = ''
 region = ''
 
 clusters = service.projects().regions().clusters()
-request = clusters.list(projectId, region)
+request = clusters.list(projectId=projectId, region=region)
 while request is not None:
     response = request.execute()
 
     for cluster in response['clusters']:
         # TODO: Add code here to process each 'cluster' resource
 
-    request = clusters.list_next(request, response)
+    request = clusters.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -239,11 +239,11 @@ region = ''
 # * [Required] The cluster name.
 clusterName = ''
 
-cluster = {
-# TODO: Add desired entries of the 'cluster' dict to be changed
+cluster_body = {
+# TODO: Add desired entries of the 'cluster_body' dict to be changed
 }
 
-request = service.projects().regions().clusters().patch(projectId, region, clusterName, cluster)
+request = service.projects().regions().clusters().patch(projectId=projectId, region=region, clusterName=clusterName, body=cluster_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -283,11 +283,11 @@ region = ''
 # * [Required] The job ID.
 jobId = ''
 
-cancel_job_request = {
-# TODO: Add desired entries of the 'cancel_job_request' dict
+cancel_job_request_body = {
+# TODO: Add desired entries of the 'cancel_job_request_body' dict
 }
 
-request = service.projects().regions().jobs().cancel(projectId, region, jobId, cancel_job_request)
+request = service.projects().regions().jobs().cancel(projectId=projectId, region=region, jobId=jobId, body=cancel_job_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -324,7 +324,7 @@ region = ''
 # * [Required] The job ID.
 jobId = ''
 
-request = service.projects().regions().jobs().delete(projectId, region, jobId)
+request = service.projects().regions().jobs().delete(projectId=projectId, region=region, jobId=jobId)
 request.execute()
 """
 PRE-REQUISITES:
@@ -361,7 +361,7 @@ region = ''
 # * [Required] The job ID.
 jobId = ''
 
-request = service.projects().regions().jobs().get(projectId, region, jobId)
+request = service.projects().regions().jobs().get(projectId=projectId, region=region, jobId=jobId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -397,14 +397,14 @@ projectId = ''
 region = ''
 
 jobs = service.projects().regions().jobs()
-request = jobs.list(projectId, region)
+request = jobs.list(projectId=projectId, region=region)
 while request is not None:
     response = request.execute()
 
     for job in response['jobs']:
         # TODO: Add code here to process each 'job' resource
 
-    request = jobs.list_next(request, response)
+    request = jobs.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -438,11 +438,11 @@ projectId = ''
 # * [Required] The Cloud Dataproc region in which to handle the request.
 region = ''
 
-submit_job_request = {
-# TODO: Add desired entries of the 'submit_job_request' dict
+submit_job_request_body = {
+# TODO: Add desired entries of the 'submit_job_request_body' dict
 }
 
-request = service.projects().regions().jobs().submit(projectId, region, submit_job_request)
+request = service.projects().regions().jobs().submit(projectId=projectId, region=region, body=submit_job_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -475,7 +475,7 @@ service = discovery.build('dataproc', 'v1', credentials=credentials)
 # * The name of the operation resource to be cancelled.
 name = 'projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}'
 
-request = service.projects().regions().operations().cancel(name)
+request = service.projects().regions().operations().cancel(name=name)
 request.execute()
 """
 PRE-REQUISITES:
@@ -505,7 +505,7 @@ service = discovery.build('dataproc', 'v1', credentials=credentials)
 # * The name of the operation resource to be deleted.
 name = 'projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}'
 
-request = service.projects().regions().operations().delete(name)
+request = service.projects().regions().operations().delete(name=name)
 request.execute()
 """
 PRE-REQUISITES:
@@ -538,7 +538,7 @@ service = discovery.build('dataproc', 'v1', credentials=credentials)
 # * The name of the operation resource.
 name = 'projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}'
 
-request = service.projects().regions().operations().get(name)
+request = service.projects().regions().operations().get(name=name)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -572,11 +572,11 @@ service = discovery.build('dataproc', 'v1', credentials=credentials)
 name = ''
 
 operations = service.projects().regions().operations()
-request = operations.list(name)
+request = operations.list(name=name)
 while request is not None:
     response = request.execute()
 
     for operation in response['operations']:
         # TODO: Add code here to process each 'operation' resource
 
-    request = operations.list_next(request, response)
+    request = operations.list_next(previous_request=request, previous_response=response)

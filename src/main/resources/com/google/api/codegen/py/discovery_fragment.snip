@@ -84,7 +84,7 @@
             @if context.isLogEntriesListMethod(method)
                 {@requestName(method)}.pageToken = response.nextPageToken
             @else
-                request = {@resourcesObject}.{@methodName}_next(request, response)
+                request = {@resourcesObject}.{@methodName}_next(previous_request=request, previous_response=response)
             @end
     @end
 @end
@@ -112,9 +112,9 @@
     @if context.hasRequestField(method)
         @let params = context.getFlatMethodParams(method)
             @if params
-                {@argumentList(params)}, {@requestName(method)}
+                {@argumentList(params)}, body={@requestName(method)}
             @else
-                {@requestName(method)}
+                body={@requestName(method)}
             @end
         @end
     @else
@@ -135,7 +135,7 @@
         @end
         @join param : params
             @let paramField = context.getField(signatureType, param), \
-                 paramValue = context.typeDefaultValue(signatureType, paramField), \
+                 paramValue = context.typeDefaultValue(signatureType, paramField, method), \
                  paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
                 {@item(paramDescription)}
                 {@param} = {@paramValue}
@@ -161,7 +161,7 @@
 @end
 
 @private requestName(method)
-    {@context.getSampleVarName(context.getRequestField(method).getTypeUrl)}
+    {@context.getSampleVarName(context.getRequestField(method).getTypeUrl)}_body
 @end
 
 @private item(description)
@@ -178,7 +178,7 @@
 
 @private argumentList(arguments)
     @join argument : arguments on ", "
-        {@argument}
+        {@argument}={@argument}
     @end
 @end
 

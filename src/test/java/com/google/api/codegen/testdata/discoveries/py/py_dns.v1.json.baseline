@@ -32,11 +32,11 @@ project = ''
 # * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
 managedZone = ''
 
-change = {
-# TODO: Add desired entries of the 'change' dict
+change_body = {
+# TODO: Add desired entries of the 'change_body' dict
 }
 
-request = service.changes().create(project, managedZone, change)
+request = service.changes().create(project=project, managedZone=managedZone, body=change_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -76,7 +76,7 @@ managedZone = ''
 # * The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
 changeId = ''
 
-request = service.changes().get(project, managedZone, changeId)
+request = service.changes().get(project=project, managedZone=managedZone, changeId=changeId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -112,14 +112,14 @@ project = ''
 managedZone = ''
 
 changes = service.changes()
-request = changes.list(project, managedZone)
+request = changes.list(project=project, managedZone=managedZone)
 while request is not None:
     response = request.execute()
 
     for change in response['changes']:
         # TODO: Add code here to process each 'change' resource
 
-    request = changes.list_next(request, response)
+    request = changes.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -151,11 +151,11 @@ service = discovery.build('dns', 'v1', credentials=credentials)
 # * Identifies the project addressed by this request.
 project = ''
 
-managed_zone = {
-# TODO: Add desired entries of the 'managed_zone' dict
+managed_zone_body = {
+# TODO: Add desired entries of the 'managed_zone_body' dict
 }
 
-request = service.managedZones().create(project, managed_zone)
+request = service.managedZones().create(project=project, body=managed_zone_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -190,7 +190,7 @@ project = ''
 # * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
 managedZone = ''
 
-request = service.managedZones().delete(project, managedZone)
+request = service.managedZones().delete(project=project, managedZone=managedZone)
 request.execute()
 """
 PRE-REQUISITES:
@@ -225,7 +225,7 @@ project = ''
 # * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
 managedZone = ''
 
-request = service.managedZones().get(project, managedZone)
+request = service.managedZones().get(project=project, managedZone=managedZone)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -259,14 +259,14 @@ service = discovery.build('dns', 'v1', credentials=credentials)
 project = ''
 
 managedZones = service.managedZones()
-request = managedZones.list(project)
+request = managedZones.list(project=project)
 while request is not None:
     response = request.execute()
 
     for managed_zone in response['managedZones']:
         # TODO: Add code here to process each 'managed_zone' resource
 
-    request = managedZones.list_next(request, response)
+    request = managedZones.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -298,7 +298,7 @@ service = discovery.build('dns', 'v1', credentials=credentials)
 # * Identifies the project addressed by this request.
 project = ''
 
-request = service.projects().get(project)
+request = service.projects().get(project=project)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -334,11 +334,11 @@ project = ''
 managedZone = ''
 
 resourceRecordSets = service.resourceRecordSets()
-request = resourceRecordSets.list(project, managedZone)
+request = resourceRecordSets.list(project=project, managedZone=managedZone)
 while request is not None:
     response = request.execute()
 
     for resource_record_set in response['rrsets']:
         # TODO: Add code here to process each 'resource_record_set' resource
 
-    request = resourceRecordSets.list_next(request, response)
+    request = resourceRecordSets.list_next(previous_request=request, previous_response=response)

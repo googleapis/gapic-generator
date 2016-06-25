@@ -34,7 +34,7 @@ zone = ''
 # * The name of the update.
 rollingUpdate = ''
 
-request = service.rollingUpdates().cancel(project, zone, rollingUpdate)
+request = service.rollingUpdates().cancel(project=project, zone=zone, rollingUpdate=rollingUpdate)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -74,7 +74,7 @@ zone = ''
 # * The name of the update.
 rollingUpdate = ''
 
-request = service.rollingUpdates().get(project, zone, rollingUpdate)
+request = service.rollingUpdates().get(project=project, zone=zone, rollingUpdate=rollingUpdate)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -112,11 +112,11 @@ project = ''
 # * The name of the zone in which the update's target resides.
 zone = ''
 
-rolling_update = {
-# TODO: Add desired entries of the 'rolling_update' dict
+rolling_update_body = {
+# TODO: Add desired entries of the 'rolling_update_body' dict
 }
 
-request = service.rollingUpdates().insert(project, zone, rolling_update)
+request = service.rollingUpdates().insert(project=project, zone=zone, body=rolling_update_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -152,14 +152,14 @@ project = ''
 zone = ''
 
 rollingUpdates = service.rollingUpdates()
-request = rollingUpdates.list(project, zone)
+request = rollingUpdates.list(project=project, zone=zone)
 while request is not None:
     response = request.execute()
 
     for rolling_update in response['items']:
         # TODO: Add code here to process each 'rolling_update' resource
 
-    request = rollingUpdates.list_next(request, response)
+    request = rollingUpdates.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -193,14 +193,14 @@ zone = ''
 rollingUpdate = ''
 
 rollingUpdates = service.rollingUpdates()
-request = rollingUpdates.listInstanceUpdates(project, zone, rollingUpdate)
+request = rollingUpdates.listInstanceUpdates(project=project, zone=zone, rollingUpdate=rollingUpdate)
 while request is not None:
     response = request.execute()
 
     for instance_update in response['items']:
         # TODO: Add code here to process each 'instance_update' resource
 
-    request = rollingUpdates.listInstanceUpdates_next(request, response)
+    request = rollingUpdates.listInstanceUpdates_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -236,7 +236,7 @@ zone = ''
 # * The name of the update.
 rollingUpdate = ''
 
-request = service.rollingUpdates().pause(project, zone, rollingUpdate)
+request = service.rollingUpdates().pause(project=project, zone=zone, rollingUpdate=rollingUpdate)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -276,7 +276,7 @@ zone = ''
 # * The name of the update.
 rollingUpdate = ''
 
-request = service.rollingUpdates().resume(project, zone, rollingUpdate)
+request = service.rollingUpdates().resume(project=project, zone=zone, rollingUpdate=rollingUpdate)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -316,7 +316,7 @@ zone = ''
 # * The name of the update.
 rollingUpdate = ''
 
-request = service.rollingUpdates().rollback(project, zone, rollingUpdate)
+request = service.rollingUpdates().rollback(project=project, zone=zone, rollingUpdate=rollingUpdate)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -356,7 +356,7 @@ zone = ''
 # * Name of the operation resource to return.
 operation = ''
 
-request = service.zoneOperations().get(project, zone, operation)
+request = service.zoneOperations().get(project=project, zone=zone, operation=operation)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -392,11 +392,11 @@ project = ''
 zone = ''
 
 zoneOperations = service.zoneOperations()
-request = zoneOperations.list(project, zone)
+request = zoneOperations.list(project=project, zone=zone)
 while request is not None:
     response = request.execute()
 
     for operation in response['items']:
         # TODO: Add code here to process each 'operation' resource
 
-    request = zoneOperations.list_next(request, response)
+    request = zoneOperations.list_next(previous_request=request, previous_response=response)

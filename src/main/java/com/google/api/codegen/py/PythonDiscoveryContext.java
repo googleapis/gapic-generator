@@ -57,7 +57,7 @@ public class PythonDiscoveryContext extends DiscoveryContext {
           .put("dict", "{}")
           .put("bool", "False")
           .put("int", "0")
-          .put("long", "0L")
+          .put("long", "str(0L)")
           .put("float", "0.0")
           .build();
 
@@ -158,7 +158,14 @@ public class PythonDiscoveryContext extends DiscoveryContext {
    * Generates placeholder assignment (to end of line) for a type's field based on field kind and,
    * for explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.
    */
-  public String typeDefaultValue(Type type, Field field) {
+  public String typeDefaultValue(Type type, Field field, Method method) {
+    // used to handle inconsistency in language detections and translations methods for Translate
+    // API
+    // remove if inconsistency is resolved in discovery docs
+    if (isTranslateLanguageDetectionsOrTranslationsField(method, field)) {
+      return lineEnding(stringLiteral(""));
+    }
+
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
       String fieldTypeName = field.getTypeUrl();
       Type items = this.getApiaryConfig().getType(fieldTypeName);
@@ -172,6 +179,10 @@ public class PythonDiscoveryContext extends DiscoveryContext {
       }
     }
     return nativeDefaultValue(type, field);
+  }
+
+  public String typeDefaultValue(Type type, Field field) {
+    return typeDefaultValue(type, field, null);
   }
 
   private String elementDefaultValue(Type type, Field field) {
