@@ -1,7 +1,8 @@
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Dataflow API and check quota for your project at
+// 1. If not already done, enable the Google Dataflow API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -10,9 +11,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -42,17 +44,21 @@ namespace DataflowSample
             // The project which owns the job.
             string projectId = "";
 
-            ProjectsResource.JobsResource.CreateRequest request = dataflowService.Projects.Jobs.Create(projectId);
-            Job response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.Job content = new Data.Job();
+
+            ProjectsResource.JobsResource.CreateRequest request = dataflowService.Projects.Jobs.Create(content, projectId);
+            Data.Job response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Job response = await request.ExecuteAsync();
+            // Data.Job response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Dataflow API and check quota for your project at
+// 1. If not already done, enable the Google Dataflow API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -61,9 +67,10 @@ namespace DataflowSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -96,16 +103,17 @@ namespace DataflowSample
             string jobId = "";
 
             ProjectsResource.JobsResource.GetRequest request = dataflowService.Projects.Jobs.Get(projectId, jobId);
-            Job response = request.Execute();
+            Data.Job response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Job response = await request.ExecuteAsync();
+            // Data.Job response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Dataflow API and check quota for your project at
+// 1. If not already done, enable the Google Dataflow API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -114,9 +122,10 @@ namespace DataflowSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -149,16 +158,17 @@ namespace DataflowSample
             string jobId = "";
 
             ProjectsResource.JobsResource.GetMetricsRequest request = dataflowService.Projects.Jobs.GetMetrics(projectId, jobId);
-            JobMetrics response = request.Execute();
+            Data.JobMetrics response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // JobMetrics response = await request.ExecuteAsync();
+            // Data.JobMetrics response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Dataflow API and check quota for your project at
+// 1. If not already done, enable the Google Dataflow API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -167,9 +177,10 @@ namespace DataflowSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -200,16 +211,30 @@ namespace DataflowSample
             string projectId = "";
 
             ProjectsResource.JobsResource.ListRequest request = dataflowService.Projects.Jobs.List(projectId);
-            ListJobsResponse response = request.Execute();
+            Data.ListJobsResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Jobs == null)
+                {
+                    continue;
+                }
+                foreach (Data.Job item in response.Jobs)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListJobsResponse response = await request.ExecuteAsync();
+            // Data.ListJobsResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Dataflow API and check quota for your project at
+// 1. If not already done, enable the Google Dataflow API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -218,9 +243,10 @@ namespace DataflowSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -253,16 +279,30 @@ namespace DataflowSample
             string jobId = "";
 
             ProjectsResource.JobsResource.MessagesResource.ListRequest request = dataflowService.Projects.Jobs.Messages.List(projectId, jobId);
-            ListJobMessagesResponse response = request.Execute();
+            Data.ListJobMessagesResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.JobMessages == null)
+                {
+                    continue;
+                }
+                foreach (Data.JobMessage item in response.JobMessages)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListJobMessagesResponse response = await request.ExecuteAsync();
+            // Data.ListJobMessagesResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Dataflow API and check quota for your project at
+// 1. If not already done, enable the Google Dataflow API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -271,9 +311,10 @@ namespace DataflowSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -305,17 +346,21 @@ namespace DataflowSample
             // Identifies a single job.
             string jobId = "";
 
-            ProjectsResource.JobsResource.UpdateRequest request = dataflowService.Projects.Jobs.Update(projectId, jobId);
-            Job response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.Job content = new Data.Job();
+
+            ProjectsResource.JobsResource.UpdateRequest request = dataflowService.Projects.Jobs.Update(content, projectId, jobId);
+            Data.Job response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Job response = await request.ExecuteAsync();
+            // Data.Job response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Dataflow API and check quota for your project at
+// 1. If not already done, enable the Google Dataflow API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -324,9 +369,10 @@ namespace DataflowSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -358,17 +404,21 @@ namespace DataflowSample
             // Identifies the workflow job this worker belongs to.
             string jobId = "";
 
-            ProjectsResource.JobsResource.WorkItemsResource.LeaseRequest request = dataflowService.Projects.Jobs.WorkItems.Lease(projectId, jobId);
-            LeaseWorkItemResponse response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.LeaseWorkItemRequest content = new Data.LeaseWorkItemRequest();
+
+            ProjectsResource.JobsResource.WorkItemsResource.LeaseRequest request = dataflowService.Projects.Jobs.WorkItems.Lease(content, projectId, jobId);
+            Data.LeaseWorkItemResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // LeaseWorkItemResponse response = await request.ExecuteAsync();
+            // Data.LeaseWorkItemResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Dataflow API and check quota for your project at
+// 1. If not already done, enable the Google Dataflow API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -377,9 +427,10 @@ namespace DataflowSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -411,17 +462,21 @@ namespace DataflowSample
             // The job which the WorkItem is part of.
             string jobId = "";
 
-            ProjectsResource.JobsResource.WorkItemsResource.ReportStatusRequest request = dataflowService.Projects.Jobs.WorkItems.ReportStatus(projectId, jobId);
-            ReportWorkItemStatusResponse response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.ReportWorkItemStatusRequest content = new Data.ReportWorkItemStatusRequest();
+
+            ProjectsResource.JobsResource.WorkItemsResource.ReportStatusRequest request = dataflowService.Projects.Jobs.WorkItems.ReportStatus(content, projectId, jobId);
+            Data.ReportWorkItemStatusResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // ReportWorkItemStatusResponse response = await request.ExecuteAsync();
+            // Data.ReportWorkItemStatusResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Dataflow API and check quota for your project at
+// 1. If not already done, enable the Google Dataflow API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -430,9 +485,10 @@ namespace DataflowSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Dataflow.v1b3;
-using Google.Apis.Dataflow.v1b3.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Dataflow.v1b3.Data;
 
 namespace DataflowSample
 {
@@ -462,11 +518,14 @@ namespace DataflowSample
             // The project to send the WorkerMessages to.
             string projectId = "";
 
-            ProjectsResource.WorkerMessagesRequest request = dataflowService.Projects.WorkerMessages(projectId);
-            SendWorkerMessagesResponse response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.SendWorkerMessagesRequest content = new Data.SendWorkerMessagesRequest();
+
+            ProjectsResource.WorkerMessagesRequest request = dataflowService.Projects.WorkerMessages(content, projectId);
+            Data.SendWorkerMessagesResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // SendWorkerMessagesResponse response = await request.ExecuteAsync();
+            // Data.SendWorkerMessagesResponse response = await request.ExecuteAsync();
         }
     }
 }

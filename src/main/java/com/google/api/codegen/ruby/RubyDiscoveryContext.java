@@ -14,8 +14,6 @@
  */
 package com.google.api.codegen.ruby;
 
-import com.google.api.client.util.DateTime;
-import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.Service;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
@@ -59,7 +57,7 @@ public class RubyDiscoveryContext extends DiscoveryContext implements RubyContex
     if (DEFAULT_VALUES.containsKey(field.getKind())) {
       return DEFAULT_VALUES.get(field.getKind());
     }
-    if (field.getKind() == Field.Kind.TYPE_STRING) {
+    if (field.getKind() == Field.Kind.TYPE_STRING || field.getKind() == Field.Kind.TYPE_ENUM) {
       return getDefaultString(type, field);
     }
     return "nil";

@@ -1,0 +1,2042 @@
+
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // The account id
+            int id = 0;
+
+            AccountsResource.GetRequest request = adExchangeBuyerService.Accounts.Get(id);
+            Data.Account response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.Account response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+
+            AccountsResource.ListRequest request = adExchangeBuyerService.Accounts.List();
+            Data.AccountsList response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.AccountsList response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Patch() method:
+            // The account id
+            int id = 0;
+
+            // TODO Add code to assign values to fields of 'content'.
+            Data.Account content = new Data.Account();
+
+            AccountsResource.PatchRequest request = adExchangeBuyerService.Accounts.Patch(content, id);
+            Data.Account response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.Account response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Update() method:
+            // The account id
+            int id = 0;
+
+            // TODO Add code to assign values to fields of 'content'.
+            Data.Account content = new Data.Account();
+
+            AccountsResource.UpdateRequest request = adExchangeBuyerService.Accounts.Update(content, id);
+            Data.Account response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.Account response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // The account id.
+            int accountId = 0;
+
+            BillingInfoResource.GetRequest request = adExchangeBuyerService.BillingInfo.Get(accountId);
+            Data.BillingInfo response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.BillingInfo response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+
+            BillingInfoResource.ListRequest request = adExchangeBuyerService.BillingInfo.List();
+            Data.BillingInfoList response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.BillingInfoList response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // The account id to get the budget information for.
+            long accountId = 0L;
+            // The billing id to get the budget information for.
+            long billingId = 0L;
+
+            BudgetResource.GetRequest request = adExchangeBuyerService.Budget.Get(accountId, billingId);
+            Data.Budget response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.Budget response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Patch() method:
+            // The account id associated with the budget being updated.
+            long accountId = 0L;
+            // The billing id associated with the budget being updated.
+            long billingId = 0L;
+
+            // TODO Add code to assign values to fields of 'content'.
+            Data.Budget content = new Data.Budget();
+
+            BudgetResource.PatchRequest request = adExchangeBuyerService.Budget.Patch(content, accountId, billingId);
+            Data.Budget response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.Budget response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Update() method:
+            // The account id associated with the budget being updated.
+            long accountId = 0L;
+            // The billing id associated with the budget being updated.
+            long billingId = 0L;
+
+            // TODO Add code to assign values to fields of 'content'.
+            Data.Budget content = new Data.Budget();
+
+            BudgetResource.UpdateRequest request = adExchangeBuyerService.Budget.Update(content, accountId, billingId);
+            Data.Budget response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.Budget response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the AddDeal() method:
+            // The id for the account that will serve this creative.
+            int accountId = 0;
+            // The buyer-specific id for this creative.
+            string buyerCreativeId = "";
+            // The id of the deal id to associate with this creative.
+            long dealId = 0L;
+
+            CreativesResource.AddDealRequest request = adExchangeBuyerService.Creatives.AddDeal(accountId, buyerCreativeId, dealId);
+            request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // The id for the account that will serve this creative.
+            int accountId = 0;
+            // The buyer-specific id for this creative.
+            string buyerCreativeId = "";
+
+            CreativesResource.GetRequest request = adExchangeBuyerService.Creatives.Get(accountId, buyerCreativeId);
+            Data.Creative response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.Creative response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Insert() method:
+
+            // TODO Add code to assign values to fields of 'content'.
+            Data.Creative content = new Data.Creative();
+
+            CreativesResource.InsertRequest request = adExchangeBuyerService.Creatives.Insert(content);
+            Data.Creative response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.Creative response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+
+            CreativesResource.ListRequest request = adExchangeBuyerService.Creatives.List();
+            Data.CreativesList response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.Creative item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
+
+            // To execute asynchronously in an async method, use
+            // Data.CreativesList response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the RemoveDeal() method:
+            // The id for the account that will serve this creative.
+            int accountId = 0;
+            // The buyer-specific id for this creative.
+            string buyerCreativeId = "";
+            // The id of the deal id to disassociate with this creative.
+            long dealId = 0L;
+
+            CreativesResource.RemoveDealRequest request = adExchangeBuyerService.Creatives.RemoveDeal(accountId, buyerCreativeId, dealId);
+            request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Delete() method:
+            // The proposalId to delete deals from.
+            string proposalId = "";
+
+            // TODO Add code to assign values to fields of 'content'.
+            Data.DeleteOrderDealsRequest content = new Data.DeleteOrderDealsRequest();
+
+            MarketplacedealsResource.DeleteRequest request = adExchangeBuyerService.Marketplacedeals.Delete(content, proposalId);
+            Data.DeleteOrderDealsResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.DeleteOrderDealsResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Insert() method:
+            // proposalId for which deals need to be added.
+            string proposalId = "";
+
+            // TODO Add code to assign values to fields of 'content'.
+            Data.AddOrderDealsRequest content = new Data.AddOrderDealsRequest();
+
+            MarketplacedealsResource.InsertRequest request = adExchangeBuyerService.Marketplacedeals.Insert(content, proposalId);
+            Data.AddOrderDealsResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.AddOrderDealsResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // The proposalId to get deals for. To search across proposals specify order_id = '-' as part of the
+            // URL.
+            string proposalId = "";
+
+            MarketplacedealsResource.ListRequest request = adExchangeBuyerService.Marketplacedeals.List(proposalId);
+            Data.GetOrderDealsResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.GetOrderDealsResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Update() method:
+            // The proposalId to edit deals on.
+            string proposalId = "";
+
+            // TODO Add code to assign values to fields of 'content'.
+            Data.EditAllOrderDealsRequest content = new Data.EditAllOrderDealsRequest();
+
+            MarketplacedealsResource.UpdateRequest request = adExchangeBuyerService.Marketplacedeals.Update(content, proposalId);
+            Data.EditAllOrderDealsResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.EditAllOrderDealsResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Insert() method:
+            // The proposalId to add notes for.
+            string proposalId = "";
+
+            // TODO Add code to assign values to fields of 'content'.
+            Data.AddOrderNotesRequest content = new Data.AddOrderNotesRequest();
+
+            MarketplacenotesResource.InsertRequest request = adExchangeBuyerService.Marketplacenotes.Insert(content, proposalId);
+            Data.AddOrderNotesResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.AddOrderNotesResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // The proposalId to get notes for.
+            string proposalId = "";
+
+            MarketplacenotesResource.ListRequest request = adExchangeBuyerService.Marketplacenotes.List(proposalId);
+            Data.GetOrderNotesResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.GetOrderNotesResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Updateproposal() method:
+            // The private auction id to be updated.
+            string privateAuctionId = "";
+
+            // TODO Add code to assign values to fields of 'content'.
+            Data.UpdatePrivateAuctionProposalRequest content = new Data.UpdatePrivateAuctionProposalRequest();
+
+            MarketplaceprivateauctionResource.UpdateproposalRequest request = adExchangeBuyerService.Marketplaceprivateauction.Updateproposal(content, privateAuctionId);
+            request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // The account id to get the reports.
+            long accountId = 0L;
+            // The end time of the report in ISO 8601 timestamp format using UTC.
+            string endDateTime = "";
+            // The start time of the report in ISO 8601 timestamp format using UTC.
+            string startDateTime = "";
+
+            PerformanceReportResource.ListRequest request = adExchangeBuyerService.PerformanceReport.List(accountId, endDateTime, startDateTime);
+            Data.PerformanceReportList response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.PerformanceReportList response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Delete() method:
+            // The account id to delete the pretargeting config for.
+            long accountId = 0L;
+            // The specific id of the configuration to delete.
+            long configId = 0L;
+
+            PretargetingConfigResource.DeleteRequest request = adExchangeBuyerService.PretargetingConfig.Delete(accountId, configId);
+            request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // The account id to get the pretargeting config for.
+            long accountId = 0L;
+            // The specific id of the configuration to retrieve.
+            long configId = 0L;
+
+            PretargetingConfigResource.GetRequest request = adExchangeBuyerService.PretargetingConfig.Get(accountId, configId);
+            Data.PretargetingConfig response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.PretargetingConfig response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Insert() method:
+            // The account id to insert the pretargeting config for.
+            long accountId = 0L;
+
+            // TODO Add code to assign values to fields of 'content'.
+            Data.PretargetingConfig content = new Data.PretargetingConfig();
+
+            PretargetingConfigResource.InsertRequest request = adExchangeBuyerService.PretargetingConfig.Insert(content, accountId);
+            Data.PretargetingConfig response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.PretargetingConfig response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // The account id to get the pretargeting configs for.
+            long accountId = 0L;
+
+            PretargetingConfigResource.ListRequest request = adExchangeBuyerService.PretargetingConfig.List(accountId);
+            Data.PretargetingConfigList response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.PretargetingConfigList response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Patch() method:
+            // The account id to update the pretargeting config for.
+            long accountId = 0L;
+            // The specific id of the configuration to update.
+            long configId = 0L;
+
+            // TODO Add code to assign values to fields of 'content'.
+            Data.PretargetingConfig content = new Data.PretargetingConfig();
+
+            PretargetingConfigResource.PatchRequest request = adExchangeBuyerService.PretargetingConfig.Patch(content, accountId, configId);
+            Data.PretargetingConfig response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.PretargetingConfig response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Update() method:
+            // The account id to update the pretargeting config for.
+            long accountId = 0L;
+            // The specific id of the configuration to update.
+            long configId = 0L;
+
+            // TODO Add code to assign values to fields of 'content'.
+            Data.PretargetingConfig content = new Data.PretargetingConfig();
+
+            PretargetingConfigResource.UpdateRequest request = adExchangeBuyerService.PretargetingConfig.Update(content, accountId, configId);
+            Data.PretargetingConfig response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.PretargetingConfig response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // The id for the product to get the head revision for.
+            string productId = "";
+
+            ProductsResource.GetRequest request = adExchangeBuyerService.Products.Get(productId);
+            Data.Product response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.Product response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Search() method:
+
+            ProductsResource.SearchRequest request = adExchangeBuyerService.Products.Search();
+            Data.GetOffersResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.GetOffersResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Get() method:
+            // Id of the proposal to retrieve.
+            string proposalId = "";
+
+            ProposalsResource.GetRequest request = adExchangeBuyerService.Proposals.Get(proposalId);
+            Data.Proposal response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.Proposal response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Insert() method:
+
+            // TODO Add code to assign values to fields of 'content'.
+            Data.CreateOrdersRequest content = new Data.CreateOrdersRequest();
+
+            ProposalsResource.InsertRequest request = adExchangeBuyerService.Proposals.Insert(content);
+            Data.CreateOrdersResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.CreateOrdersResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Patch() method:
+            // The proposal id to update.
+            string proposalId = "";
+            // The last known revision number to update. If the head revision in the marketplace database has since
+            // changed, an error will be thrown. The caller should then fetch the latest proposal at head revision
+            // and retry the update at that revision.
+            long revisionNumber = 0L;
+            // The proposed action to take on the proposal.
+            ProposalsResource.PatchRequest.UpdateActionEnum updateAction = (ProposalsResource.PatchRequest.UpdateActionEnum) 0;
+
+            // TODO Add code to assign values to fields of 'content'.
+            Data.Proposal content = new Data.Proposal();
+
+            ProposalsResource.PatchRequest request = adExchangeBuyerService.Proposals.Patch(content, proposalId, revisionNumber, updateAction);
+            Data.Proposal response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.Proposal response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Search() method:
+
+            ProposalsResource.SearchRequest request = adExchangeBuyerService.Proposals.Search();
+            Data.GetOrdersResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.GetOrdersResponse response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Setupcomplete() method:
+            // The proposal id for which the setup is complete
+            string proposalId = "";
+
+            ProposalsResource.SetupcompleteRequest request = adExchangeBuyerService.Proposals.Setupcomplete(proposalId);
+            request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the Update() method:
+            // The proposal id to update.
+            string proposalId = "";
+            // The last known revision number to update. If the head revision in the marketplace database has since
+            // changed, an error will be thrown. The caller should then fetch the latest proposal at head revision
+            // and retry the update at that revision.
+            long revisionNumber = 0L;
+            // The proposed action to take on the proposal.
+            ProposalsResource.UpdateRequest.UpdateActionEnum updateAction = (ProposalsResource.UpdateRequest.UpdateActionEnum) 0;
+
+            // TODO Add code to assign values to fields of 'content'.
+            Data.Proposal content = new Data.Proposal();
+
+            ProposalsResource.UpdateRequest request = adExchangeBuyerService.Proposals.Update(content, proposalId, revisionNumber, updateAction);
+            Data.Proposal response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.Proposal response = await request.ExecuteAsync();
+        }
+    }
+}
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Ad Exchange Buyer API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/adexchangebuyer_component/quotas
+// 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
+//    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
+// 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+
+using Google.Apis.AdExchangeBuyer.v1_4;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Services;
+using System.Threading.Tasks;
+
+using Data = Google.Apis.AdExchangeBuyer.v1_4.Data;
+
+namespace AdExchangeBuyerSample
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            // Authentication is provided by the 'gcloud' tool when running locally
+            // and by built-in service accounts when runing on GCE.
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
+
+            // Running locally requires scopes to be passed in manually.
+            // GCE automatically pulls the scopes from the GCE metadata server.
+            // See https://developers.google.com/identity/protocols/application-default-credentials for more information.
+            if (credential.IsCreateScopedRequired)
+            {
+                credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
+            }
+
+            AdExchangeBuyerService adExchangeBuyerService = new AdExchangeBuyerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "Google Cloud Platform Sample",
+            });
+
+            // TODO: Change placeholders below to values for parameters to the List() method:
+            // The accountId of the publisher to get profiles for.
+            int accountId = 0;
+
+            PubprofilesResource.ListRequest request = adExchangeBuyerService.Pubprofiles.List(accountId);
+            Data.GetPublisherProfilesByAccountIdResponse response = request.Execute();
+
+            // To execute asynchronously in an async method, use
+            // Data.GetPublisherProfilesByAccountIdResponse response = await request.ExecuteAsync();
+        }
+    }
+}

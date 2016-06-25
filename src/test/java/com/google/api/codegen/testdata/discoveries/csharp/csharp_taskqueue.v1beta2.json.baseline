@@ -1,7 +1,8 @@
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the TaskQueue API and check quota for your project at
+// 1. If not already done, enable the TaskQueue API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/taskqueue_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -11,8 +12,9 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Taskqueue.v1beta2;
-using Google.Apis.Taskqueue.v1beta2.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Taskqueue.v1beta2.Data;
 
 namespace TaskqueueSample
 {
@@ -45,16 +47,17 @@ namespace TaskqueueSample
             string taskqueue = "";
 
             TaskqueuesResource.GetRequest request = taskqueueService.Taskqueues.Get(project, taskqueue);
-            TaskQueue response = request.Execute();
+            Data.TaskQueue response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // TaskQueue response = await request.ExecuteAsync();
+            // Data.TaskQueue response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the TaskQueue API and check quota for your project at
+// 1. If not already done, enable the TaskQueue API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/taskqueue_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -108,7 +111,8 @@ namespace TaskqueueSample
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the TaskQueue API and check quota for your project at
+// 1. If not already done, enable the TaskQueue API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/taskqueue_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -118,8 +122,9 @@ namespace TaskqueueSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Taskqueue.v1beta2;
-using Google.Apis.Taskqueue.v1beta2.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Taskqueue.v1beta2.Data;
 
 namespace TaskqueueSample
 {
@@ -154,16 +159,17 @@ namespace TaskqueueSample
             string task = "";
 
             TasksResource.GetRequest request = taskqueueService.Tasks.Get(project, taskqueue, task);
-            Task response = request.Execute();
+            Data.Task response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Task response = await request.ExecuteAsync();
+            // Data.Task response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the TaskQueue API and check quota for your project at
+// 1. If not already done, enable the TaskQueue API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/taskqueue_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -173,8 +179,9 @@ namespace TaskqueueSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Taskqueue.v1beta2;
-using Google.Apis.Taskqueue.v1beta2.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Taskqueue.v1beta2.Data;
 
 namespace TaskqueueSample
 {
@@ -206,17 +213,21 @@ namespace TaskqueueSample
             // The taskqueue to insert the task into
             string taskqueue = "";
 
-            TasksResource.InsertRequest request = taskqueueService.Tasks.Insert(project, taskqueue);
-            Task response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.Task content = new Data.Task();
+
+            TasksResource.InsertRequest request = taskqueueService.Tasks.Insert(content, project, taskqueue);
+            Data.Task response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Task response = await request.ExecuteAsync();
+            // Data.Task response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the TaskQueue API and check quota for your project at
+// 1. If not already done, enable the TaskQueue API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/taskqueue_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -226,8 +237,9 @@ namespace TaskqueueSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Taskqueue.v1beta2;
-using Google.Apis.Taskqueue.v1beta2.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Taskqueue.v1beta2.Data;
 
 namespace TaskqueueSample
 {
@@ -264,16 +276,17 @@ namespace TaskqueueSample
             int leaseSecs = 0;
 
             TasksResource.LeaseRequest request = taskqueueService.Tasks.Lease(project, taskqueue, numTasks, leaseSecs);
-            Tasks response = request.Execute();
+            Data.Tasks response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Tasks response = await request.ExecuteAsync();
+            // Data.Tasks response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the TaskQueue API and check quota for your project at
+// 1. If not already done, enable the TaskQueue API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/taskqueue_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -283,8 +296,9 @@ namespace TaskqueueSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Taskqueue.v1beta2;
-using Google.Apis.Taskqueue.v1beta2.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Taskqueue.v1beta2.Data;
 
 namespace TaskqueueSample
 {
@@ -317,16 +331,17 @@ namespace TaskqueueSample
             string taskqueue = "";
 
             TasksResource.ListRequest request = taskqueueService.Tasks.List(project, taskqueue);
-            Tasks2 response = request.Execute();
+            Data.Tasks2 response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Tasks2 response = await request.ExecuteAsync();
+            // Data.Tasks2 response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the TaskQueue API and check quota for your project at
+// 1. If not already done, enable the TaskQueue API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/taskqueue_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -336,8 +351,9 @@ namespace TaskqueueSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Taskqueue.v1beta2;
-using Google.Apis.Taskqueue.v1beta2.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Taskqueue.v1beta2.Data;
 
 namespace TaskqueueSample
 {
@@ -373,17 +389,21 @@ namespace TaskqueueSample
             // The new lease in seconds.
             int newLeaseSeconds = 0;
 
-            TasksResource.PatchRequest request = taskqueueService.Tasks.Patch(project, taskqueue, task, newLeaseSeconds);
-            Task response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.Task content = new Data.Task();
+
+            TasksResource.PatchRequest request = taskqueueService.Tasks.Patch(content, project, taskqueue, task, newLeaseSeconds);
+            Data.Task response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Task response = await request.ExecuteAsync();
+            // Data.Task response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the TaskQueue API and check quota for your project at
+// 1. If not already done, enable the TaskQueue API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/taskqueue_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -393,8 +413,9 @@ namespace TaskqueueSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Taskqueue.v1beta2;
-using Google.Apis.Taskqueue.v1beta2.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Taskqueue.v1beta2.Data;
 
 namespace TaskqueueSample
 {
@@ -430,11 +451,14 @@ namespace TaskqueueSample
             // The new lease in seconds.
             int newLeaseSeconds = 0;
 
-            TasksResource.UpdateRequest request = taskqueueService.Tasks.Update(project, taskqueue, task, newLeaseSeconds);
-            Task response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.Task content = new Data.Task();
+
+            TasksResource.UpdateRequest request = taskqueueService.Tasks.Update(content, project, taskqueue, task, newLeaseSeconds);
+            Data.Task response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Task response = await request.ExecuteAsync();
+            // Data.Task response = await request.ExecuteAsync();
         }
     }
 }

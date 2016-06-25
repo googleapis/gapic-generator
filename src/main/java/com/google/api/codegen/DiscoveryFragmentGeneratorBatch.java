@@ -17,7 +17,7 @@ package com.google.api.codegen;
 import com.google.api.codegen.discoverybatch.DiscoveryBatch;
 import com.google.api.codegen.discoverybatch.DiscoverySet;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.testing.SimpleDiag;
+import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
@@ -39,7 +39,7 @@ public class DiscoveryFragmentGeneratorBatch {
     ImmutableMap<String, Message> supportedConfigTypes =
         ImmutableMap.<String, Message>of(
             DiscoveryBatch.getDescriptor().getFullName(), DiscoveryBatch.getDefaultInstance());
-    DiagCollector diagCollector = new SimpleDiag();
+    DiagCollector diagCollector = new SimpleDiagCollector();
     DiscoveryBatch batchConfig =
         (DiscoveryBatch) MultiYamlReader.read(diagCollector, configFile, supportedConfigTypes);
     if (diagCollector.getErrorCount() > 0) {

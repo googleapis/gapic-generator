@@ -1,7 +1,8 @@
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Vision API and check quota for your project at
+// 1. If not already done, enable the Cloud Vision API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/vision_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -11,8 +12,9 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Vision.v1;
-using Google.Apis.Vision.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Vision.v1.Data;
 
 namespace VisionSample
 {
@@ -40,11 +42,14 @@ namespace VisionSample
 
             // TODO: Change placeholders below to values for parameters to the Annotate() method:
 
-            ImagesResource.AnnotateRequest request = visionService.Images.Annotate();
-            BatchAnnotateImagesResponse response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.BatchAnnotateImagesRequest content = new Data.BatchAnnotateImagesRequest();
+
+            ImagesResource.AnnotateRequest request = visionService.Images.Annotate(content);
+            Data.BatchAnnotateImagesResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // BatchAnnotateImagesResponse response = await request.ExecuteAsync();
+            // Data.BatchAnnotateImagesResponse response = await request.ExecuteAsync();
         }
     }
 }

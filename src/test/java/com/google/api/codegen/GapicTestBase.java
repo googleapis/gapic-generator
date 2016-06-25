@@ -15,28 +15,19 @@
 package com.google.api.codegen;
 
 import com.google.api.Service;
-import com.google.api.codegen.MultiYamlReader;
 import com.google.api.codegen.gapic.GapicProvider;
 import com.google.api.codegen.gapic.MainGapicProviderFactory;
 import com.google.api.tools.framework.model.Diag;
-import com.google.api.tools.framework.model.DiagCollector;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.snippet.Doc;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.truth.Truth;
-import com.google.protobuf.Message;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.annotation.Nullable;
 
 /**
  * Base class for code generator baseline tests.
@@ -68,10 +59,12 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
   protected void setupModel() {
     super.setupModel();
 
-    config = CodegenTestUtil.readConfig(model, getTestDataLocator(), gapicConfigFileNames);
+    config =
+        CodegenTestUtil.readConfig(
+            model.getDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
     // TODO (garrettjones) depend on the framework to take care of this.
-    if (model.getErrorCount() > 0) {
-      for (Diag diag : model.getDiags()) {
+    if (model.getDiagCollector().getErrorCount() > 0) {
+      for (Diag diag : model.getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
       }
       throw new IllegalArgumentException("Problem creating Generator");
@@ -123,8 +116,8 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
   @Override
   public Map<String, Doc> run() {
     model.establishStage(Merged.KEY);
-    if (model.getErrorCount() > 0) {
-      for (Diag diag : model.getDiags()) {
+    if (model.getDiagCollector().getErrorCount() > 0) {
+      for (Diag diag : model.getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
       }
       return null;
@@ -153,7 +146,7 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
     Map<String, Doc> output = testedProvider.generate(snippetName);
     if (output == null) {
       // Report diagnosis to baseline file.
-      for (Diag diag : model.getDiags()) {
+      for (Diag diag : model.getDiagCollector().getDiags()) {
         testOutput().println(diag.toString());
       }
     }

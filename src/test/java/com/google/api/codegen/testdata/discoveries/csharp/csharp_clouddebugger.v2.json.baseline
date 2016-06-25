@@ -1,7 +1,8 @@
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Debugger API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -10,9 +11,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Clouddebugger.v2;
-using Google.Apis.Clouddebugger.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Clouddebugger.v2.Data;
 
 namespace ClouddebuggerSample
 {
@@ -43,16 +45,17 @@ namespace ClouddebuggerSample
             string debuggeeId = "";
 
             ControllerResource.DebuggeesResource.BreakpointsResource.ListRequest request = clouddebuggerService.Controller.Debuggees.Breakpoints.List(debuggeeId);
-            ListActiveBreakpointsResponse response = request.Execute();
+            Data.ListActiveBreakpointsResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // ListActiveBreakpointsResponse response = await request.ExecuteAsync();
+            // Data.ListActiveBreakpointsResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Debugger API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -61,9 +64,10 @@ namespace ClouddebuggerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Clouddebugger.v2;
-using Google.Apis.Clouddebugger.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Clouddebugger.v2.Data;
 
 namespace ClouddebuggerSample
 {
@@ -95,17 +99,21 @@ namespace ClouddebuggerSample
             // Breakpoint identifier, unique in the scope of the debuggee.
             string id = "";
 
-            ControllerResource.DebuggeesResource.BreakpointsResource.UpdateRequest request = clouddebuggerService.Controller.Debuggees.Breakpoints.Update(debuggeeId, id);
-            UpdateActiveBreakpointResponse response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.UpdateActiveBreakpointRequest content = new Data.UpdateActiveBreakpointRequest();
+
+            ControllerResource.DebuggeesResource.BreakpointsResource.UpdateRequest request = clouddebuggerService.Controller.Debuggees.Breakpoints.Update(content, debuggeeId, id);
+            Data.UpdateActiveBreakpointResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // UpdateActiveBreakpointResponse response = await request.ExecuteAsync();
+            // Data.UpdateActiveBreakpointResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Debugger API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -114,9 +122,10 @@ namespace ClouddebuggerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Clouddebugger.v2;
-using Google.Apis.Clouddebugger.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Clouddebugger.v2.Data;
 
 namespace ClouddebuggerSample
 {
@@ -144,17 +153,21 @@ namespace ClouddebuggerSample
 
             // TODO: Change placeholders below to values for parameters to the Register() method:
 
-            ControllerResource.DebuggeesResource.RegisterRequest request = clouddebuggerService.Controller.Debuggees.Register();
-            RegisterDebuggeeResponse response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.RegisterDebuggeeRequest content = new Data.RegisterDebuggeeRequest();
+
+            ControllerResource.DebuggeesResource.RegisterRequest request = clouddebuggerService.Controller.Debuggees.Register(content);
+            Data.RegisterDebuggeeResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // RegisterDebuggeeResponse response = await request.ExecuteAsync();
+            // Data.RegisterDebuggeeResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Debugger API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -163,9 +176,10 @@ namespace ClouddebuggerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Clouddebugger.v2;
-using Google.Apis.Clouddebugger.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Clouddebugger.v2.Data;
 
 namespace ClouddebuggerSample
 {
@@ -198,16 +212,17 @@ namespace ClouddebuggerSample
             string breakpointId = "";
 
             DebuggerResource.DebuggeesResource.BreakpointsResource.DeleteRequest request = clouddebuggerService.Debugger.Debuggees.Breakpoints.Delete(debuggeeId, breakpointId);
-            Empty response = request.Execute();
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Debugger API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -216,9 +231,10 @@ namespace ClouddebuggerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Clouddebugger.v2;
-using Google.Apis.Clouddebugger.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Clouddebugger.v2.Data;
 
 namespace ClouddebuggerSample
 {
@@ -251,16 +267,17 @@ namespace ClouddebuggerSample
             string breakpointId = "";
 
             DebuggerResource.DebuggeesResource.BreakpointsResource.GetRequest request = clouddebuggerService.Debugger.Debuggees.Breakpoints.Get(debuggeeId, breakpointId);
-            GetBreakpointResponse response = request.Execute();
+            Data.GetBreakpointResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // GetBreakpointResponse response = await request.ExecuteAsync();
+            // Data.GetBreakpointResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Debugger API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -269,9 +286,10 @@ namespace ClouddebuggerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Clouddebugger.v2;
-using Google.Apis.Clouddebugger.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Clouddebugger.v2.Data;
 
 namespace ClouddebuggerSample
 {
@@ -302,16 +320,17 @@ namespace ClouddebuggerSample
             string debuggeeId = "";
 
             DebuggerResource.DebuggeesResource.BreakpointsResource.ListRequest request = clouddebuggerService.Debugger.Debuggees.Breakpoints.List(debuggeeId);
-            ListBreakpointsResponse response = request.Execute();
+            Data.ListBreakpointsResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // ListBreakpointsResponse response = await request.ExecuteAsync();
+            // Data.ListBreakpointsResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Debugger API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -320,9 +339,10 @@ namespace ClouddebuggerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Clouddebugger.v2;
-using Google.Apis.Clouddebugger.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Clouddebugger.v2.Data;
 
 namespace ClouddebuggerSample
 {
@@ -352,17 +372,21 @@ namespace ClouddebuggerSample
             // ID of the debuggee where the breakpoint is to be set.
             string debuggeeId = "";
 
-            DebuggerResource.DebuggeesResource.BreakpointsResource.SetRequest request = clouddebuggerService.Debugger.Debuggees.Breakpoints.Set(debuggeeId);
-            SetBreakpointResponse response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.Breakpoint content = new Data.Breakpoint();
+
+            DebuggerResource.DebuggeesResource.BreakpointsResource.SetRequest request = clouddebuggerService.Debugger.Debuggees.Breakpoints.Set(content, debuggeeId);
+            Data.SetBreakpointResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // SetBreakpointResponse response = await request.ExecuteAsync();
+            // Data.SetBreakpointResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Debugger API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -371,9 +395,10 @@ namespace ClouddebuggerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Clouddebugger.v2;
-using Google.Apis.Clouddebugger.v2.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Clouddebugger.v2.Data;
 
 namespace ClouddebuggerSample
 {
@@ -402,10 +427,10 @@ namespace ClouddebuggerSample
             // TODO: Change placeholders below to values for parameters to the List() method:
 
             DebuggerResource.DebuggeesResource.ListRequest request = clouddebuggerService.Debugger.Debuggees.List();
-            ListDebuggeesResponse response = request.Execute();
+            Data.ListDebuggeesResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // ListDebuggeesResponse response = await request.ExecuteAsync();
+            // Data.ListDebuggeesResponse response = await request.ExecuteAsync();
         }
     }
 }

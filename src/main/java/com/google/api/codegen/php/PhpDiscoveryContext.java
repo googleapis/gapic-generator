@@ -14,9 +14,7 @@
  */
 package com.google.api.codegen.php;
 
-import com.google.api.client.util.DateTime;
 import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.api.Service;
 import com.google.common.collect.ImmutableMap;
@@ -164,7 +162,7 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
       String defaultPrimitiveValue = DEFAULT_PRIMITIVE_VALUE.get(kind);
       if (defaultPrimitiveValue != null) {
         return defaultPrimitiveValue;
-      } else if (kind.equals(Field.Kind.TYPE_STRING)) {
+      } else if (kind.equals(Field.Kind.TYPE_STRING) || kind.equals(Field.Kind.TYPE_ENUM)) {
         return getDefaultString(type, field);
       }
     }

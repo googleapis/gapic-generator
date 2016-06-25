@@ -1,7 +1,8 @@
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Trace API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Trace API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudtrace_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -10,9 +11,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudtrace.v1;
-using Google.Apis.Cloudtrace.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudtrace.v1.Data;
 
 namespace CloudtraceSample
 {
@@ -42,17 +44,21 @@ namespace CloudtraceSample
             // ID of the Cloud project where the trace data is stored.
             string projectId = "";
 
-            ProjectsResource.PatchTracesRequest request = cloudtraceService.Projects.PatchTraces(projectId);
-            Empty response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.Traces content = new Data.Traces();
+
+            ProjectsResource.PatchTracesRequest request = cloudtraceService.Projects.PatchTraces(content, projectId);
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Trace API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Trace API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudtrace_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -61,9 +67,10 @@ namespace CloudtraceSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudtrace.v1;
-using Google.Apis.Cloudtrace.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudtrace.v1.Data;
 
 namespace CloudtraceSample
 {
@@ -96,16 +103,17 @@ namespace CloudtraceSample
             string traceId = "";
 
             ProjectsResource.TracesResource.GetRequest request = cloudtraceService.Projects.Traces.Get(projectId, traceId);
-            Trace response = request.Execute();
+            Data.Trace response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Trace response = await request.ExecuteAsync();
+            // Data.Trace response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Trace API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Trace API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudtrace_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -114,9 +122,10 @@ namespace CloudtraceSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudtrace.v1;
-using Google.Apis.Cloudtrace.v1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudtrace.v1.Data;
 
 namespace CloudtraceSample
 {
@@ -147,10 +156,23 @@ namespace CloudtraceSample
             string projectId = "";
 
             ProjectsResource.TracesResource.ListRequest request = cloudtraceService.Projects.Traces.List(projectId);
-            ListTracesResponse response = request.Execute();
+            Data.ListTracesResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Traces == null)
+                {
+                    continue;
+                }
+                foreach (Data.Trace item in response.Traces)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListTracesResponse response = await request.ExecuteAsync();
+            // Data.ListTracesResponse response = await request.ExecuteAsync();
         }
     }
 }

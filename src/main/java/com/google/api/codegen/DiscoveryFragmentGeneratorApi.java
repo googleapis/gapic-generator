@@ -18,7 +18,7 @@ import com.google.api.codegen.discovery.DiscoveryProvider;
 import com.google.api.codegen.discovery.DiscoveryProviderFactory;
 import com.google.api.codegen.util.ClassInstantiator;
 import com.google.api.tools.framework.model.DiagCollector;
-import com.google.api.tools.framework.model.testing.SimpleDiag;
+import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.tools.ToolOptions;
 import com.google.api.tools.framework.tools.ToolOptions.Option;
@@ -143,7 +143,7 @@ public class DiscoveryFragmentGeneratorApi {
         ImmutableMap.<String, Message>of(
             ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
     // Use DiagCollector to collect errors from config read since user errors may arise here
-    DiagCollector diagCollector = new SimpleDiag();
+    DiagCollector diagCollector = new SimpleDiagCollector();
     ConfigProto configProto =
         (ConfigProto) MultiYamlReader.read(diagCollector, configFiles, supportedConfigTypes);
     if (diagCollector.getErrorCount() > 0) {

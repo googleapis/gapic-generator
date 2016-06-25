@@ -1,7 +1,8 @@
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -10,9 +11,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -43,16 +45,17 @@ namespace CloudresourcemanagerSample
             string organizationId = "";
 
             OrganizationsResource.GetRequest request = cloudresourcemanagerService.Organizations.Get(organizationId);
-            Organization response = request.Execute();
+            Data.Organization response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Organization response = await request.ExecuteAsync();
+            // Data.Organization response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -61,9 +64,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -95,17 +99,21 @@ namespace CloudresourcemanagerSample
             // this value is resource specific and is specified in the `getIamPolicy` documentation.
             string resource = "";
 
-            OrganizationsResource.GetIamPolicyRequest request = cloudresourcemanagerService.Organizations.GetIamPolicy(resource);
-            Policy response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.GetIamPolicyRequest content = new Data.GetIamPolicyRequest();
+
+            OrganizationsResource.GetIamPolicyRequest request = cloudresourcemanagerService.Organizations.GetIamPolicy(content, resource);
+            Data.Policy response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Policy response = await request.ExecuteAsync();
+            // Data.Policy response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -114,9 +122,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -145,16 +154,30 @@ namespace CloudresourcemanagerSample
             // TODO: Change placeholders below to values for parameters to the List() method:
 
             OrganizationsResource.ListRequest request = cloudresourcemanagerService.Organizations.List();
-            ListOrganizationsResponse response = request.Execute();
+            Data.ListOrganizationsResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Organizations == null)
+                {
+                    continue;
+                }
+                foreach (Data.Organization item in response.Organizations)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListOrganizationsResponse response = await request.ExecuteAsync();
+            // Data.ListOrganizationsResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -163,9 +186,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -197,17 +221,21 @@ namespace CloudresourcemanagerSample
             // this value is resource specific and is specified in the `setIamPolicy` documentation.
             string resource = "";
 
-            OrganizationsResource.SetIamPolicyRequest request = cloudresourcemanagerService.Organizations.SetIamPolicy(resource);
-            Policy response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.SetIamPolicyRequest content = new Data.SetIamPolicyRequest();
+
+            OrganizationsResource.SetIamPolicyRequest request = cloudresourcemanagerService.Organizations.SetIamPolicy(content, resource);
+            Data.Policy response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Policy response = await request.ExecuteAsync();
+            // Data.Policy response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -216,9 +244,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -251,17 +280,21 @@ namespace CloudresourcemanagerSample
             // documentation.
             string resource = "";
 
-            OrganizationsResource.TestIamPermissionsRequest request = cloudresourcemanagerService.Organizations.TestIamPermissions(resource);
-            TestIamPermissionsResponse response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.TestIamPermissionsRequest content = new Data.TestIamPermissionsRequest();
+
+            OrganizationsResource.TestIamPermissionsRequest request = cloudresourcemanagerService.Organizations.TestIamPermissions(content, resource);
+            Data.TestIamPermissionsResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // TestIamPermissionsResponse response = await request.ExecuteAsync();
+            // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -270,9 +303,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -303,17 +337,21 @@ namespace CloudresourcemanagerSample
             // creating a new Organization. This field is read-only.
             string organizationId = "";
 
-            OrganizationsResource.UpdateRequest request = cloudresourcemanagerService.Organizations.Update(organizationId);
-            Organization response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.Organization content = new Data.Organization();
+
+            OrganizationsResource.UpdateRequest request = cloudresourcemanagerService.Organizations.Update(content, organizationId);
+            Data.Organization response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Organization response = await request.ExecuteAsync();
+            // Data.Organization response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -322,9 +360,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -352,17 +391,21 @@ namespace CloudresourcemanagerSample
 
             // TODO: Change placeholders below to values for parameters to the Create() method:
 
-            ProjectsResource.CreateRequest request = cloudresourcemanagerService.Projects.Create();
-            Project response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.Project content = new Data.Project();
+
+            ProjectsResource.CreateRequest request = cloudresourcemanagerService.Projects.Create(content);
+            Data.Project response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Project response = await request.ExecuteAsync();
+            // Data.Project response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -371,9 +414,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -404,16 +448,17 @@ namespace CloudresourcemanagerSample
             string projectId = "";
 
             ProjectsResource.DeleteRequest request = cloudresourcemanagerService.Projects.Delete(projectId);
-            Empty response = request.Execute();
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -422,9 +467,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -455,16 +501,17 @@ namespace CloudresourcemanagerSample
             string projectId = "";
 
             ProjectsResource.GetRequest request = cloudresourcemanagerService.Projects.Get(projectId);
-            Project response = request.Execute();
+            Data.Project response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Project response = await request.ExecuteAsync();
+            // Data.Project response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -473,9 +520,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -507,17 +555,21 @@ namespace CloudresourcemanagerSample
             // this value is resource specific and is specified in the `getIamPolicy` documentation.
             string resource = "";
 
-            ProjectsResource.GetIamPolicyRequest request = cloudresourcemanagerService.Projects.GetIamPolicy(resource);
-            Policy response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.GetIamPolicyRequest content = new Data.GetIamPolicyRequest();
+
+            ProjectsResource.GetIamPolicyRequest request = cloudresourcemanagerService.Projects.GetIamPolicy(content, resource);
+            Data.Policy response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Policy response = await request.ExecuteAsync();
+            // Data.Policy response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -526,9 +578,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -557,16 +610,30 @@ namespace CloudresourcemanagerSample
             // TODO: Change placeholders below to values for parameters to the List() method:
 
             ProjectsResource.ListRequest request = cloudresourcemanagerService.Projects.List();
-            ListProjectsResponse response = request.Execute();
+            Data.ListProjectsResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Projects == null)
+                {
+                    continue;
+                }
+                foreach (Data.Project item in response.Projects)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListProjectsResponse response = await request.ExecuteAsync();
+            // Data.ListProjectsResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -575,9 +642,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -609,17 +677,21 @@ namespace CloudresourcemanagerSample
             // this value is resource specific and is specified in the `setIamPolicy` documentation.
             string resource = "";
 
-            ProjectsResource.SetIamPolicyRequest request = cloudresourcemanagerService.Projects.SetIamPolicy(resource);
-            Policy response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.SetIamPolicyRequest content = new Data.SetIamPolicyRequest();
+
+            ProjectsResource.SetIamPolicyRequest request = cloudresourcemanagerService.Projects.SetIamPolicy(content, resource);
+            Data.Policy response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Policy response = await request.ExecuteAsync();
+            // Data.Policy response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -628,9 +700,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -663,17 +736,21 @@ namespace CloudresourcemanagerSample
             // documentation.
             string resource = "";
 
-            ProjectsResource.TestIamPermissionsRequest request = cloudresourcemanagerService.Projects.TestIamPermissions(resource);
-            TestIamPermissionsResponse response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.TestIamPermissionsRequest content = new Data.TestIamPermissionsRequest();
+
+            ProjectsResource.TestIamPermissionsRequest request = cloudresourcemanagerService.Projects.TestIamPermissions(content, resource);
+            Data.TestIamPermissionsResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // TestIamPermissionsResponse response = await request.ExecuteAsync();
+            // Data.TestIamPermissionsResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -682,9 +759,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -714,17 +792,21 @@ namespace CloudresourcemanagerSample
             // The project ID (for example, `foo-bar-123`). Required.
             string projectId = "";
 
-            ProjectsResource.UndeleteRequest request = cloudresourcemanagerService.Projects.Undelete(projectId);
-            Empty response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.UndeleteProjectRequest content = new Data.UndeleteProjectRequest();
+
+            ProjectsResource.UndeleteRequest request = cloudresourcemanagerService.Projects.Undelete(content, projectId);
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check quota for your project at
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
@@ -733,9 +815,10 @@ namespace CloudresourcemanagerSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Cloudresourcemanager.v1beta1;
-using Google.Apis.Cloudresourcemanager.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Cloudresourcemanager.v1beta1.Data;
 
 namespace CloudresourcemanagerSample
 {
@@ -765,11 +848,14 @@ namespace CloudresourcemanagerSample
             // The project ID (for example, `my-project-123`). Required.
             string projectId = "";
 
-            ProjectsResource.UpdateRequest request = cloudresourcemanagerService.Projects.Update(projectId);
-            Project response = request.Execute();
+            // TODO Add code to assign values to fields of 'content'.
+            Data.Project content = new Data.Project();
+
+            ProjectsResource.UpdateRequest request = cloudresourcemanagerService.Projects.Update(content, projectId);
+            Data.Project response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Project response = await request.ExecuteAsync();
+            // Data.Project response = await request.ExecuteAsync();
         }
     }
 }

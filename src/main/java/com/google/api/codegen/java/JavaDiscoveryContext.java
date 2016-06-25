@@ -14,9 +14,7 @@
  */
 package com.google.api.codegen.java;
 
-import com.google.api.client.util.DateTime;
 import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.Service;
@@ -55,6 +53,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
           .put(Field.Kind.TYPE_FLOAT, "float")
           .put(Field.Kind.TYPE_DOUBLE, "double")
           .put(Field.Kind.TYPE_STRING, "java.lang.String")
+          .put(Field.Kind.TYPE_ENUM, "java.lang.String")
           .build();
 
   /**

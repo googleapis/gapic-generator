@@ -14,9 +14,7 @@
  */
 package com.google.api.codegen.nodejs;
 
-import com.google.api.client.util.DateTime;
 import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.api.Service;
 import com.google.common.collect.ImmutableMap;
@@ -63,7 +61,7 @@ public class NodeJSDiscoveryContext extends DiscoveryContext implements NodeJSCo
     if (DEFAULT_VALUES.containsKey(field.getKind())) {
       return DEFAULT_VALUES.get(field.getKind()) + ",";
     }
-    if (field.getKind() == Field.Kind.TYPE_STRING) {
+    if (field.getKind() == Field.Kind.TYPE_STRING || field.getKind() == Field.Kind.TYPE_ENUM) {
       return getDefaultString(type, field);
     }
     return "null,";

@@ -15,7 +15,6 @@
 package com.google.api.codegen.go;
 
 import com.google.api.codegen.ApiaryConfig;
-import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.codegen.DiscoveryContext;
 import com.google.api.codegen.DiscoveryImporter;
 import com.google.api.Service;
@@ -49,7 +48,7 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
     if (DEFAULT_VALUES.containsKey(field.getKind())) {
       return DEFAULT_VALUES.get(field.getKind());
     }
-    if (field.getKind() == Field.Kind.TYPE_STRING) {
+    if (field.getKind() == Field.Kind.TYPE_STRING || field.getKind() == Field.Kind.TYPE_ENUM) {
       return getDefaultString(type, field);
     }
     throw new IllegalArgumentException(
@@ -71,6 +70,7 @@ public class GoDiscoveryContext extends DiscoveryContext implements GoContext {
           .put(Field.Kind.TYPE_FLOAT, "float32")
           .put(Field.Kind.TYPE_DOUBLE, "float64")
           .put(Field.Kind.TYPE_STRING, "string")
+          .put(Field.Kind.TYPE_ENUM, "string")
           .build();
 
   /**

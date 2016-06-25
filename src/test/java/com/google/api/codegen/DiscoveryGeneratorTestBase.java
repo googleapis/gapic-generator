@@ -16,8 +16,8 @@ package com.google.api.codegen;
 
 import com.google.api.codegen.discovery.DiscoveryProvider;
 import com.google.api.codegen.discovery.MainDiscoveryProviderFactory;
+import com.google.api.tools.framework.model.SimpleDiagCollector;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
-import com.google.api.tools.framework.model.testing.SimpleDiag;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.io.Files;
 import com.google.protobuf.Api;
@@ -67,7 +67,8 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
     }
 
     config =
-        CodegenTestUtil.readConfig(new SimpleDiag(), getTestDataLocator(), gapicConfigFileNames);
+        CodegenTestUtil.readConfig(
+            new SimpleDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
     if (config == null) {
       return;
     }

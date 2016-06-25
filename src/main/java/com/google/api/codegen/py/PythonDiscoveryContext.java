@@ -47,6 +47,7 @@ public class PythonDiscoveryContext extends DiscoveryContext {
           .put(Field.Kind.TYPE_FLOAT, "float")
           .put(Field.Kind.TYPE_DOUBLE, "float")
           .put(Field.Kind.TYPE_STRING, "str")
+          .put(Field.Kind.TYPE_ENUM, "str")
           .build();
 
   /**
