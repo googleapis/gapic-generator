@@ -6,8 +6,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -23,12 +24,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
@@ -38,9 +37,9 @@ func main() {
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
   entity := "" // TODO: Update placeholder value.
 
-  if err := client.BucketAccessControls.Delete(bucket, entity).Context(ctx).Do(); err != nil {
+  err := c.BucketAccessControls.Delete(bucket, entity).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -50,8 +49,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -67,12 +67,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
@@ -82,10 +80,9 @@ func main() {
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
   entity := "" // TODO: Update placeholder value.
 
-  resp, err := client.BucketAccessControls.Get(bucket, entity).Context(ctx).Do()
+  resp, err := c.BucketAccessControls.Get(bucket, entity).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -97,8 +94,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -114,23 +112,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
   bucket := "" // TODO: Update placeholder value.
 
-  resp, err := client.BucketAccessControls.Insert(bucket, &storage.BucketAccessControl{
-                                                    // TODO: Fill required fields.
-                                                  }).Context(ctx).Do()
+  resp, err := c.BucketAccessControls.Insert(bucket, &storage.BucketAccessControl{
+                                               // TODO: Fill required fields.
+                                             }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -142,8 +137,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -159,21 +155,18 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
   bucket := "" // TODO: Update placeholder value.
 
-  resp, err := client.BucketAccessControls.List(bucket).Context(ctx).Do()
+  resp, err := c.BucketAccessControls.List(bucket).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -185,8 +178,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -202,12 +196,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
@@ -217,12 +209,11 @@ func main() {
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
   entity := "" // TODO: Update placeholder value.
 
-  resp, err := client.BucketAccessControls.Patch(bucket, entity, &storage.BucketAccessControl{
-                                                   // TODO: Fill required fields.
-                                                 }).Context(ctx).Do()
+  resp, err := c.BucketAccessControls.Patch(bucket, entity, &storage.BucketAccessControl{
+                                              // TODO: Fill required fields.
+                                            }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -234,8 +225,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -251,12 +243,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
@@ -266,12 +256,11 @@ func main() {
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
   entity := "" // TODO: Update placeholder value.
 
-  resp, err := client.BucketAccessControls.Update(bucket, entity, &storage.BucketAccessControl{
-                                                    // TODO: Fill required fields.
-                                                  }).Context(ctx).Do()
+  resp, err := c.BucketAccessControls.Update(bucket, entity, &storage.BucketAccessControl{
+                                               // TODO: Fill required fields.
+                                             }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -283,8 +272,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -300,20 +290,18 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
   bucket := "" // TODO: Update placeholder value.
 
-  if err := client.Buckets.Delete(bucket).Context(ctx).Do(); err != nil {
+  err := c.Buckets.Delete(bucket).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -323,8 +311,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -340,21 +329,18 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
   bucket := "" // TODO: Update placeholder value.
 
-  resp, err := client.Buckets.Get(bucket).Context(ctx).Do()
+  resp, err := c.Buckets.Get(bucket).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -366,8 +352,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -383,23 +370,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // A valid API project identifier.
   project := "" // TODO: Update placeholder value.
 
-  resp, err := client.Buckets.Insert(project, &storage.Bucket{
-                                       // TODO: Fill required fields.
-                                     }).Context(ctx).Do()
+  resp, err := c.Buckets.Insert(project, &storage.Bucket{
+                                  // TODO: Fill required fields.
+                                }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -411,8 +395,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -428,19 +413,17 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // A valid API project identifier.
   project := "" // TODO: Update placeholder value.
 
 
-  call := client.Buckets.List(project)
+  call := c.Buckets.List(project)
   if err := call.Pages(ctx, func(page *storage.Buckets) error {
     for _, v := range page.Items {
       // TODO: Use v.
@@ -449,7 +432,6 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -459,8 +441,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -476,112 +459,105 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
   bucket := "" // TODO: Update placeholder value.
 
-  resp, err := client.Buckets.Patch(bucket, &storage.Bucket{
-                                      // TODO: Fill required fields.
-                                    }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-  // TODO: Use resp.
-  _ = resp
-}
-package main
-
-// PRE-REQUISITES:
-// ---------------
-// 1. If not already done, enable the Cloud Storage JSON API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library, run:
-//    go get -u google.golang.org/api/storage/v1
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/storage/v1"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-  client, err := storage.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-
-  // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
-
-  resp, err := client.Buckets.Update(bucket, &storage.Bucket{
-                                       // TODO: Fill required fields.
-                                     }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-  // TODO: Use resp.
-  _ = resp
-}
-package main
-
-// PRE-REQUISITES:
-// ---------------
-// 1. If not already done, enable the Cloud Storage JSON API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library, run:
-//    go get -u google.golang.org/api/storage/v1
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/storage/v1"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-  client, err := storage.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-
-
-
-  call := client.Channels.Stop(&storage.Channel{
+  resp, err := c.Buckets.Patch(bucket, &storage.Bucket{
                                  // TODO: Fill required fields.
-                               }).Context(ctx)
+                               }).Context(ctx).Do()
+  if err != nil {
+    // TODO: Handle error.
+  }
+  // TODO: Use resp.
+  _ = resp
+}
+package main
+
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/storage/v1
+
+import (
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storage/v1"
+)
+
+func main() {
+  ctx := context.Background()
+  hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
+  if err != nil {
+    // TODO: Handle error.
+  }
+  c, err := storage.New(hc)
+  if err != nil {
+    // TODO: Handle error.
+  }
+
+  // Name of a bucket.
+  bucket := "" // TODO: Update placeholder value.
+
+  resp, err := c.Buckets.Update(bucket, &storage.Bucket{
+                                  // TODO: Fill required fields.
+                                }).Context(ctx).Do()
+  if err != nil {
+    // TODO: Handle error.
+  }
+  // TODO: Use resp.
+  _ = resp
+}
+package main
+
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/storage/v1
+
+import (
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storage/v1"
+)
+
+func main() {
+  ctx := context.Background()
+  hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
+  if err != nil {
+    // TODO: Handle error.
+  }
+  c, err := storage.New(hc)
+  if err != nil {
+    // TODO: Handle error.
+  }
+
+
+
+  call := c.Channels.Stop(&storage.Channel{
+                            // TODO: Fill required fields.
+                          }).Context(ctx)
   if err := call.Do(); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -591,8 +567,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -608,12 +585,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
@@ -623,9 +598,9 @@ func main() {
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
   entity := "" // TODO: Update placeholder value.
 
-  if err := client.DefaultObjectAccessControls.Delete(bucket, entity).Context(ctx).Do(); err != nil {
+  err := c.DefaultObjectAccessControls.Delete(bucket, entity).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -635,8 +610,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -652,12 +628,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
@@ -667,10 +641,9 @@ func main() {
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
   entity := "" // TODO: Update placeholder value.
 
-  resp, err := client.DefaultObjectAccessControls.Get(bucket, entity).Context(ctx).Do()
+  resp, err := c.DefaultObjectAccessControls.Get(bucket, entity).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -682,8 +655,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -699,23 +673,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
   bucket := "" // TODO: Update placeholder value.
 
-  resp, err := client.DefaultObjectAccessControls.Insert(bucket, &storage.ObjectAccessControl{
-                                                           // TODO: Fill required fields.
-                                                         }).Context(ctx).Do()
+  resp, err := c.DefaultObjectAccessControls.Insert(bucket, &storage.ObjectAccessControl{
+                                                      // TODO: Fill required fields.
+                                                    }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -727,8 +698,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -744,21 +716,18 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
   bucket := "" // TODO: Update placeholder value.
 
-  resp, err := client.DefaultObjectAccessControls.List(bucket).Context(ctx).Do()
+  resp, err := c.DefaultObjectAccessControls.List(bucket).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -770,8 +739,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -787,12 +757,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
@@ -802,12 +770,11 @@ func main() {
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
   entity := "" // TODO: Update placeholder value.
 
-  resp, err := client.DefaultObjectAccessControls.Patch(bucket, entity, &storage.ObjectAccessControl{
-                                                          // TODO: Fill required fields.
-                                                        }).Context(ctx).Do()
+  resp, err := c.DefaultObjectAccessControls.Patch(bucket, entity, &storage.ObjectAccessControl{
+                                                     // TODO: Fill required fields.
+                                                   }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -819,8 +786,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -836,12 +804,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
@@ -851,12 +817,11 @@ func main() {
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
   entity := "" // TODO: Update placeholder value.
 
-  resp, err := client.DefaultObjectAccessControls.Update(bucket, entity, &storage.ObjectAccessControl{
-                                                           // TODO: Fill required fields.
-                                                         }).Context(ctx).Do()
+  resp, err := c.DefaultObjectAccessControls.Update(bucket, entity, &storage.ObjectAccessControl{
+                                                      // TODO: Fill required fields.
+                                                    }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -868,8 +833,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -885,12 +851,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
@@ -904,9 +868,9 @@ func main() {
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
   entity := "" // TODO: Update placeholder value.
 
-  if err := client.ObjectAccessControls.Delete(bucket, object, entity).Context(ctx).Do(); err != nil {
+  err := c.ObjectAccessControls.Delete(bucket, object, entity).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -916,8 +880,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -933,12 +898,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
@@ -952,10 +915,9 @@ func main() {
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
   entity := "" // TODO: Update placeholder value.
 
-  resp, err := client.ObjectAccessControls.Get(bucket, object, entity).Context(ctx).Do()
+  resp, err := c.ObjectAccessControls.Get(bucket, object, entity).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -967,8 +929,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -984,12 +947,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
@@ -999,12 +960,11 @@ func main() {
   // Encoding URI Path Parts.
   object := "" // TODO: Update placeholder value.
 
-  resp, err := client.ObjectAccessControls.Insert(bucket, object, &storage.ObjectAccessControl{
-                                                    // TODO: Fill required fields.
-                                                  }).Context(ctx).Do()
+  resp, err := c.ObjectAccessControls.Insert(bucket, object, &storage.ObjectAccessControl{
+                                               // TODO: Fill required fields.
+                                             }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -1016,8 +976,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -1033,12 +994,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
@@ -1048,10 +1007,9 @@ func main() {
   // Encoding URI Path Parts.
   object := "" // TODO: Update placeholder value.
 
-  resp, err := client.ObjectAccessControls.List(bucket, object).Context(ctx).Do()
+  resp, err := c.ObjectAccessControls.List(bucket, object).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -1063,8 +1021,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -1080,65 +1039,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
-  }
-
-  // Name of a bucket.
-  bucket := "" // TODO: Update placeholder value.
-
-  // Name of the object. For information about how to URL encode object names to be path safe, see
-  // Encoding URI Path Parts.
-  object := "" // TODO: Update placeholder value.
-
-  // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-  // group-emailAddress, allUsers, or allAuthenticatedUsers.
-  entity := "" // TODO: Update placeholder value.
-
-  resp, err := client.ObjectAccessControls.Patch(bucket, object, entity, &storage.ObjectAccessControl{
-                                                   // TODO: Fill required fields.
-                                                 }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-  // TODO: Use resp.
-  _ = resp
-}
-package main
-
-// PRE-REQUISITES:
-// ---------------
-// 1. If not already done, enable the Cloud Storage JSON API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library, run:
-//    go get -u google.golang.org/api/storage/v1
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/storage/v1"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-  client, err := storage.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
   }
 
   // Name of a bucket.
@@ -1152,12 +1056,11 @@ func main() {
   // group-emailAddress, allUsers, or allAuthenticatedUsers.
   entity := "" // TODO: Update placeholder value.
 
-  resp, err := client.ObjectAccessControls.Update(bucket, object, entity, &storage.ObjectAccessControl{
-                                                    // TODO: Fill required fields.
-                                                  }).Context(ctx).Do()
+  resp, err := c.ObjectAccessControls.Patch(bucket, object, entity, &storage.ObjectAccessControl{
+                                              // TODO: Fill required fields.
+                                            }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -1169,8 +1072,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -1186,12 +1090,61 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
+  }
+
+  // Name of a bucket.
+  bucket := "" // TODO: Update placeholder value.
+
+  // Name of the object. For information about how to URL encode object names to be path safe, see
+  // Encoding URI Path Parts.
+  object := "" // TODO: Update placeholder value.
+
+  // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+  // group-emailAddress, allUsers, or allAuthenticatedUsers.
+  entity := "" // TODO: Update placeholder value.
+
+  resp, err := c.ObjectAccessControls.Update(bucket, object, entity, &storage.ObjectAccessControl{
+                                               // TODO: Fill required fields.
+                                             }).Context(ctx).Do()
+  if err != nil {
+    // TODO: Handle error.
+  }
+  // TODO: Use resp.
+  _ = resp
+}
+package main
+
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/storage/v1
+
+import (
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/storage/v1"
+)
+
+func main() {
+  ctx := context.Background()
+  hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
+  if err != nil {
+    // TODO: Handle error.
+  }
+  c, err := storage.New(hc)
+  if err != nil {
+    // TODO: Handle error.
   }
 
   // Name of the bucket in which to store the new object.
@@ -1201,12 +1154,11 @@ func main() {
   // Encoding URI Path Parts.
   destinationObject := "" // TODO: Update placeholder value.
 
-  resp, err := client.Objects.Compose(destinationBucket, destinationObject, &storage.ComposeRequest{
-                                        // TODO: Fill required fields.
-                                      }).Context(ctx).Do()
+  resp, err := c.Objects.Compose(destinationBucket, destinationObject, &storage.ComposeRequest{
+                                   // TODO: Fill required fields.
+                                 }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -1218,8 +1170,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -1235,12 +1188,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of the bucket in which to find the source object.
@@ -1259,12 +1210,11 @@ func main() {
   // object metadata's name value, if any.
   destinationObject := "" // TODO: Update placeholder value.
 
-  resp, err := client.Objects.Copy(sourceBucket, sourceObject, destinationBucket, destinationObject, &storage.Object{
-                                     // TODO: Fill required fields.
-                                   }).Context(ctx).Do()
+  resp, err := c.Objects.Copy(sourceBucket, sourceObject, destinationBucket, destinationObject, &storage.Object{
+                                // TODO: Fill required fields.
+                              }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -1276,8 +1226,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -1293,12 +1244,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of the bucket in which the object resides.
@@ -1308,9 +1257,9 @@ func main() {
   // Encoding URI Path Parts.
   object := "" // TODO: Update placeholder value.
 
-  if err := client.Objects.Delete(bucket, object).Context(ctx).Do(); err != nil {
+  err := c.Objects.Delete(bucket, object).Context(ctx).Do()
+  if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -1320,8 +1269,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -1337,12 +1287,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of the bucket in which the object resides.
@@ -1352,10 +1300,9 @@ func main() {
   // Encoding URI Path Parts.
   object := "" // TODO: Update placeholder value.
 
-  resp, err := client.Objects.Get(bucket, object).Context(ctx).Do()
+  resp, err := c.Objects.Get(bucket, object).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -1367,8 +1314,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -1384,24 +1332,21 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
   // value, if any.
   bucket := "" // TODO: Update placeholder value.
 
-  resp, err := client.Objects.Insert(bucket, &storage.Object{
-                                       // TODO: Fill required fields.
-                                     }).Context(ctx).Do()
+  resp, err := c.Objects.Insert(bucket, &storage.Object{
+                                  // TODO: Fill required fields.
+                                }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -1413,8 +1358,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -1430,19 +1376,17 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of the bucket in which to look for objects.
   bucket := "" // TODO: Update placeholder value.
 
 
-  call := client.Objects.List(bucket)
+  call := c.Objects.List(bucket)
   if err := call.Pages(ctx, func(page *storage.Objects) error {
     for _, v := range page.Items {
       // TODO: Use v.
@@ -1451,7 +1395,6 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -1461,8 +1404,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -1478,12 +1422,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of the bucket in which the object resides.
@@ -1493,12 +1435,11 @@ func main() {
   // Encoding URI Path Parts.
   object := "" // TODO: Update placeholder value.
 
-  resp, err := client.Objects.Patch(bucket, object, &storage.Object{
-                                      // TODO: Fill required fields.
-                                    }).Context(ctx).Do()
+  resp, err := c.Objects.Patch(bucket, object, &storage.Object{
+                                 // TODO: Fill required fields.
+                               }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -1510,8 +1451,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -1527,12 +1469,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of the bucket in which to find the source object.
@@ -1551,12 +1491,11 @@ func main() {
   // path safe, see Encoding URI Path Parts.
   destinationObject := "" // TODO: Update placeholder value.
 
-  resp, err := client.Objects.Rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, &storage.Object{
-                                        // TODO: Fill required fields.
-                                      }).Context(ctx).Do()
+  resp, err := c.Objects.Rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, &storage.Object{
+                                   // TODO: Fill required fields.
+                                 }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -1568,8 +1507,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -1585,12 +1525,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of the bucket in which the object resides.
@@ -1600,12 +1538,11 @@ func main() {
   // Encoding URI Path Parts.
   object := "" // TODO: Update placeholder value.
 
-  resp, err := client.Objects.Update(bucket, object, &storage.Object{
-                                       // TODO: Fill required fields.
-                                     }).Context(ctx).Do()
+  resp, err := c.Objects.Update(bucket, object, &storage.Object{
+                                  // TODO: Fill required fields.
+                                }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -1617,8 +1554,9 @@ package main
 // 1. If not already done, enable the Cloud Storage JSON API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/storage_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/storage/v1
 
@@ -1634,23 +1572,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, storage.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := storage.New(hc)
+  c, err := storage.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of the bucket in which to look for objects.
   bucket := "" // TODO: Update placeholder value.
 
-  resp, err := client.Objects.WatchAll(bucket, &storage.Channel{
-                                         // TODO: Fill required fields.
-                                       }).Context(ctx).Do()
+  resp, err := c.Objects.WatchAll(bucket, &storage.Channel{
+                                    // TODO: Fill required fields.
+                                  }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
