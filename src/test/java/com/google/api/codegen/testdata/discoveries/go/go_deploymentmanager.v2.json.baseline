@@ -6,8 +6,9 @@ package main
 // 1. If not already done, enable the Google Cloud Deployment Manager API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/deploymentmanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/deploymentmanager/v2
 
@@ -23,12 +24,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := deploymentmanager.New(hc)
+  c, err := deploymentmanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project ID for this request.
@@ -37,12 +36,11 @@ func main() {
   // The name of the deployment for this request.
   deployment := "" // TODO: Update placeholder value.
 
-  resp, err := client.Deployments.CancelPreview(project, deployment, &deploymentmanager.DeploymentsCancelPreviewRequest{
-                                                  // TODO: Fill required fields.
-                                                }).Context(ctx).Do()
+  resp, err := c.Deployments.CancelPreview(project, deployment, &deploymentmanager.DeploymentsCancelPreviewRequest{
+                                             // TODO: Fill required fields.
+                                           }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -54,8 +52,9 @@ package main
 // 1. If not already done, enable the Google Cloud Deployment Manager API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/deploymentmanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/deploymentmanager/v2
 
@@ -71,12 +70,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := deploymentmanager.New(hc)
+  c, err := deploymentmanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project ID for this request.
@@ -85,10 +82,9 @@ func main() {
   // The name of the deployment for this request.
   deployment := "" // TODO: Update placeholder value.
 
-  resp, err := client.Deployments.Delete(project, deployment).Context(ctx).Do()
+  resp, err := c.Deployments.Delete(project, deployment).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -100,8 +96,9 @@ package main
 // 1. If not already done, enable the Google Cloud Deployment Manager API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/deploymentmanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/deploymentmanager/v2
 
@@ -117,12 +114,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := deploymentmanager.New(hc)
+  c, err := deploymentmanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project ID for this request.
@@ -131,10 +126,9 @@ func main() {
   // The name of the deployment for this request.
   deployment := "" // TODO: Update placeholder value.
 
-  resp, err := client.Deployments.Get(project, deployment).Context(ctx).Do()
+  resp, err := c.Deployments.Get(project, deployment).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -146,8 +140,9 @@ package main
 // 1. If not already done, enable the Google Cloud Deployment Manager API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/deploymentmanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/deploymentmanager/v2
 
@@ -163,23 +158,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := deploymentmanager.New(hc)
+  c, err := deploymentmanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project ID for this request.
   project := "" // TODO: Update placeholder value.
 
-  resp, err := client.Deployments.Insert(project, &deploymentmanager.Deployment{
-                                           // TODO: Fill required fields.
-                                         }).Context(ctx).Do()
+  resp, err := c.Deployments.Insert(project, &deploymentmanager.Deployment{
+                                      // TODO: Fill required fields.
+                                    }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -191,8 +183,9 @@ package main
 // 1. If not already done, enable the Google Cloud Deployment Manager API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/deploymentmanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/deploymentmanager/v2
 
@@ -208,19 +201,17 @@ func main() {
   hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := deploymentmanager.New(hc)
+  c, err := deploymentmanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project ID for this request.
   project := "" // TODO: Update placeholder value.
 
 
-  call := client.Deployments.List(project)
+  call := c.Deployments.List(project)
   if err := call.Pages(ctx, func(page *deploymentmanager.DeploymentsListResponse) error {
     for _, v := range page.Deployments {
       // TODO: Use v.
@@ -229,7 +220,6 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -239,8 +229,9 @@ package main
 // 1. If not already done, enable the Google Cloud Deployment Manager API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/deploymentmanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/deploymentmanager/v2
 
@@ -256,12 +247,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := deploymentmanager.New(hc)
+  c, err := deploymentmanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project ID for this request.
@@ -270,12 +259,11 @@ func main() {
   // The name of the deployment for this request.
   deployment := "" // TODO: Update placeholder value.
 
-  resp, err := client.Deployments.Patch(project, deployment, &deploymentmanager.Deployment{
-                                          // TODO: Fill required fields.
-                                        }).Context(ctx).Do()
+  resp, err := c.Deployments.Patch(project, deployment, &deploymentmanager.Deployment{
+                                     // TODO: Fill required fields.
+                                   }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -287,8 +275,9 @@ package main
 // 1. If not already done, enable the Google Cloud Deployment Manager API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/deploymentmanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/deploymentmanager/v2
 
@@ -304,12 +293,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := deploymentmanager.New(hc)
+  c, err := deploymentmanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project ID for this request.
@@ -318,12 +305,11 @@ func main() {
   // The name of the deployment for this request.
   deployment := "" // TODO: Update placeholder value.
 
-  resp, err := client.Deployments.Stop(project, deployment, &deploymentmanager.DeploymentsStopRequest{
-                                         // TODO: Fill required fields.
-                                       }).Context(ctx).Do()
+  resp, err := c.Deployments.Stop(project, deployment, &deploymentmanager.DeploymentsStopRequest{
+                                    // TODO: Fill required fields.
+                                  }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -335,8 +321,9 @@ package main
 // 1. If not already done, enable the Google Cloud Deployment Manager API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/deploymentmanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/deploymentmanager/v2
 
@@ -352,12 +339,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := deploymentmanager.New(hc)
+  c, err := deploymentmanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project ID for this request.
@@ -366,12 +351,11 @@ func main() {
   // The name of the deployment for this request.
   deployment := "" // TODO: Update placeholder value.
 
-  resp, err := client.Deployments.Update(project, deployment, &deploymentmanager.Deployment{
-                                           // TODO: Fill required fields.
-                                         }).Context(ctx).Do()
+  resp, err := c.Deployments.Update(project, deployment, &deploymentmanager.Deployment{
+                                      // TODO: Fill required fields.
+                                    }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -383,8 +367,9 @@ package main
 // 1. If not already done, enable the Google Cloud Deployment Manager API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/deploymentmanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/deploymentmanager/v2
 
@@ -400,12 +385,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := deploymentmanager.New(hc)
+  c, err := deploymentmanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project ID for this request.
@@ -417,10 +400,9 @@ func main() {
   // The name of the manifest for this request.
   manifest := "" // TODO: Update placeholder value.
 
-  resp, err := client.Manifests.Get(project, deployment, manifest).Context(ctx).Do()
+  resp, err := c.Manifests.Get(project, deployment, manifest).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -432,8 +414,9 @@ package main
 // 1. If not already done, enable the Google Cloud Deployment Manager API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/deploymentmanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/deploymentmanager/v2
 
@@ -449,12 +432,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := deploymentmanager.New(hc)
+  c, err := deploymentmanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project ID for this request.
@@ -464,7 +445,7 @@ func main() {
   deployment := "" // TODO: Update placeholder value.
 
 
-  call := client.Manifests.List(project, deployment)
+  call := c.Manifests.List(project, deployment)
   if err := call.Pages(ctx, func(page *deploymentmanager.ManifestsListResponse) error {
     for _, v := range page.Manifests {
       // TODO: Use v.
@@ -473,7 +454,6 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -483,8 +463,9 @@ package main
 // 1. If not already done, enable the Google Cloud Deployment Manager API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/deploymentmanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/deploymentmanager/v2
 
@@ -500,12 +481,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := deploymentmanager.New(hc)
+  c, err := deploymentmanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project ID for this request.
@@ -514,10 +493,9 @@ func main() {
   // The name of the operation for this request.
   operation := "" // TODO: Update placeholder value.
 
-  resp, err := client.Operations.Get(project, operation).Context(ctx).Do()
+  resp, err := c.Operations.Get(project, operation).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -529,8 +507,9 @@ package main
 // 1. If not already done, enable the Google Cloud Deployment Manager API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/deploymentmanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/deploymentmanager/v2
 
@@ -546,19 +525,17 @@ func main() {
   hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := deploymentmanager.New(hc)
+  c, err := deploymentmanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project ID for this request.
   project := "" // TODO: Update placeholder value.
 
 
-  call := client.Operations.List(project)
+  call := c.Operations.List(project)
   if err := call.Pages(ctx, func(page *deploymentmanager.OperationsListResponse) error {
     for _, v := range page.Operations {
       // TODO: Use v.
@@ -567,7 +544,6 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -577,8 +553,9 @@ package main
 // 1. If not already done, enable the Google Cloud Deployment Manager API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/deploymentmanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/deploymentmanager/v2
 
@@ -594,12 +571,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := deploymentmanager.New(hc)
+  c, err := deploymentmanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project ID for this request.
@@ -611,10 +586,9 @@ func main() {
   // The name of the resource for this request.
   resource := "" // TODO: Update placeholder value.
 
-  resp, err := client.Resources.Get(project, deployment, resource).Context(ctx).Do()
+  resp, err := c.Resources.Get(project, deployment, resource).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -626,8 +600,9 @@ package main
 // 1. If not already done, enable the Google Cloud Deployment Manager API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/deploymentmanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/deploymentmanager/v2
 
@@ -643,12 +618,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := deploymentmanager.New(hc)
+  c, err := deploymentmanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project ID for this request.
@@ -658,7 +631,7 @@ func main() {
   deployment := "" // TODO: Update placeholder value.
 
 
-  call := client.Resources.List(project, deployment)
+  call := c.Resources.List(project, deployment)
   if err := call.Pages(ctx, func(page *deploymentmanager.ResourcesListResponse) error {
     for _, v := range page.Resources {
       // TODO: Use v.
@@ -667,7 +640,6 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -677,8 +649,9 @@ package main
 // 1. If not already done, enable the Google Cloud Deployment Manager API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/deploymentmanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/deploymentmanager/v2
 
@@ -694,19 +667,17 @@ func main() {
   hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := deploymentmanager.New(hc)
+  c, err := deploymentmanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project ID for this request.
   project := "" // TODO: Update placeholder value.
 
 
-  call := client.Types.List(project)
+  call := c.Types.List(project)
   if err := call.Pages(ctx, func(page *deploymentmanager.TypesListResponse) error {
     for _, v := range page.Types {
       // TODO: Use v.
@@ -715,6 +686,5 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
