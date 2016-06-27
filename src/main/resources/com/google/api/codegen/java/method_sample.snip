@@ -91,7 +91,7 @@
   Map<{@context.basicTypeNameBoxed(line.getKeyType)}, {@context.basicTypeNameBoxed(line.getElementType)}> {@formattedIdentifier(line)} = new HashMap<>();
   @join key : line.getElementIdentifierKeys vertical
     @let identifierValue = line.getElementIdentifierValue(key)
-      {@formattedIdentifier(line)}.put({@key}, {@context.lowerUnderscoreToLowerCamel(identifierValue)});
+      {@formattedIdentifier(line)}.put({@context.renderPrimitiveValue(line.getKeyType, key)}, {@context.lowerUnderscoreToLowerCamel(identifierValue)});
     @end
   @end
 @end

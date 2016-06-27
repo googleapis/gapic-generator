@@ -30,8 +30,10 @@ public class FieldStructureTest {
 
   @Test
   public void testRegex() throws Exception {
+    Pattern fieldPattern = FieldStructureParser.getFieldStructurePattern();
     Pattern listPattern = FieldStructureParser.getFieldListPattern();
     Pattern mapPattern = FieldStructureParser.getFieldMapPattern();
+
     Matcher matcher = listPattern.matcher("mylist[0][0]");
     Truth.assertThat(matcher.matches()).isTrue();
     Truth.assertThat(matcher.group(1)).isEqualTo("mylist[0]");
@@ -44,6 +46,13 @@ public class FieldStructureTest {
     Truth.assertThat(matcher.matches()).isTrue();
     Truth.assertThat(matcher.group(1)).isEqualTo("mymap[0]");
     Truth.assertThat(matcher.group(2)).isEqualTo("key");
+
+    Matcher fieldMatcher = fieldPattern.matcher("myfield.mynextfield");
+    Truth.assertThat(fieldMatcher.matches()).isTrue();
+    Truth.assertThat(fieldMatcher.group(1)).isEqualTo("myfield");
+    Truth.assertThat(fieldMatcher.group(2)).isEqualTo("mynextfield");
+
+    Truth.assertThat(fieldPattern.matcher("singlefield").matches()).isFalse();
   }
 
   @Test
@@ -113,6 +122,18 @@ public class FieldStructureTest {
         Collections.singletonMap("key", (Object) InitValueConfig.create());
     List<Object> innerList = Collections.singletonList((Object) innerMap);
     Map<String, Object> expectedStructure = Collections.singletonMap("mylist", (Object) innerList);
+
+    Map<String, Object> actualStructure = FieldStructureParser.parseFields(fieldSpecs);
+    Truth.assertThat(actualStructure).isEqualTo(expectedStructure);
+  }
+
+  @Test
+  public void testAssignment() throws Exception {
+    List<String> fieldSpecs = Arrays.asList("myfield=\"default\"");
+
+    Map<String, Object> expectedStructure =
+        Collections.singletonMap(
+            "myfield", (Object) InitValueConfig.createWithValue("\"default\""));
 
     Map<String, Object> actualStructure = FieldStructureParser.parseFields(fieldSpecs);
     Truth.assertThat(actualStructure).isEqualTo(expectedStructure);

@@ -39,6 +39,8 @@
       {@initLineList(line)}
     @case "SimpleInitLine"
       {@initLineSimple(line)}
+    @case "MapInitLine"
+      {@initLineMap(line)}
     @default
       {@unhandledCase()}
     @end
@@ -58,9 +60,21 @@
   {@formattedIdentifier(line)} = [{@initList(line)}];
 @end
 
+@private initLineMap(line)
+  {@formattedIdentifier(line)} = [{@initMap(line)}];
+@end
+
 @private initList(line)
   @join identifier : line.getElementIdentifiers on ", "
     {@unformattedIdentifier(identifier)}
+  @end
+@end
+
+@private initMap(line)
+  @join key : line.getElementIdentifierKeys vertical
+    @let identifierValue = line.getElementIdentifierValue(key)
+      {@context.renderPrimitiveValue(line.getKeyType, key)}, {@identifierValue},
+    @end
   @end
 @end
 

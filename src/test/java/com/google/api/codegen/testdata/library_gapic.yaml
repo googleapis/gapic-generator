@@ -267,5 +267,23 @@ interfaces:
     request_object_method: false
     field_name_patterns:
       name: archived_book
+  - name: UpdateBookIndex
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - index_name
+        - index_map
+    required_fields:
+    - name
+    - index_name
+    - index_map
+    request_object_method: true
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: book
     sample_code_init_fields:
-      - comment_map{"comment_key"}.comment="default comment"
+      - index_name="default index"
+      - index_map{"default_key"}
+      

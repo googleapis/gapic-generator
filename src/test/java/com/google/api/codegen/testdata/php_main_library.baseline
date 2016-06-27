@@ -54,6 +54,7 @@ use google\example\library\v1\PublishSeriesResponse;
 use google\example\library\v1\Shelf;
 use google\example\library\v1\SomeMessage;
 use google\example\library\v1\StringBuilder;
+use google\example\library\v1\UpdateBookIndexRequest;
 use google\example\library\v1\UpdateBookRequest;
 use google\protobuf\FieldMask;
 
@@ -331,6 +332,7 @@ class LibraryServiceApi
             'listStrings' => $defaultDescriptors,
             'addComments' => $defaultDescriptors,
             'getBookFromArchive' => $defaultDescriptors,
+            'updateBookIndex' => $defaultDescriptors,
         ];
         $pageStreamingDescriptors = self::getPageStreamingDescriptors();
         foreach ($pageStreamingDescriptors as $method => $pageStreamingDescriptor) {
@@ -1186,6 +1188,63 @@ class LibraryServiceApi
             new CallSettings($callSettings));
         $callable = ApiCallable::createApiCall(
             $this->stub, 'GetBookFromArchive', $mergedSettings, $this->descriptors['getBookFromArchive']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    /**
+     * Updates the index of a book.
+     *
+     * Sample code:
+     * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF]", "[BOOK]");
+     *     $indexName = "";
+     *     $indexMapItem = "";
+     *     $indexMap = ["default_key", index_map_item,];
+     *     $libraryServiceApi->updateBookIndex($formattedName, $indexName, $indexMap);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
+     * ```
+     *
+     * @param string $name The name of the book to update.
+     * @param string $indexName The name of the index for the book
+     * @param array $indexMap The index to update the book with
+     * @param array $optionalArgs {
+     *     Optional. There are no optional parameters for this method yet;
+     *               this $optionalArgs parameter reserves a spot for future ones.
+     * }
+     * @param array $callSettings {
+     *    Optional.
+     *    @var Google\GAX\RetrySettings $retrySettings
+     *          Retry settings to use for this call. If present, then
+     *          $timeout is ignored.
+     *    @var int $timeoutMillis
+     *          Timeout to use for this call. Only used if $retrySettings
+     *          is not set.
+     * }
+     *
+     * @throws Google\GAX\ApiException if the remote call fails
+     */
+    public function updateBookIndex($name, $indexName, $indexMap, $optionalArgs = [], $callSettings = [])
+    {
+        $request = new UpdateBookIndexRequest();
+        $request->setName($name);
+        $request->setIndexName($indexName);
+        // TODO make this work
+        putAll...
+
+        $mergedSettings = $this->defaultCallSettings['updateBookIndex']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'UpdateBookIndex', $mergedSettings, $this->descriptors['updateBookIndex']);
 
         return $callable(
             $request,

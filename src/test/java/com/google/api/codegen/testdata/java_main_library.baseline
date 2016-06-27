@@ -45,7 +45,6 @@ import com.google.example.library.v1.CreateShelfRequest;
 import com.google.example.library.v1.DeleteBookRequest;
 import com.google.example.library.v1.DeleteShelfRequest;
 import com.google.example.library.v1.GetBookFromArchiveRequest;
-import com.google.example.library.v1.GetBookFromArchiveRequest.CommentMapEntry;
 import com.google.example.library.v1.GetBookRequest;
 import com.google.example.library.v1.GetShelfRequest;
 import com.google.example.library.v1.ListBooksRequest;
@@ -60,6 +59,8 @@ import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.Shelf;
 import com.google.example.library.v1.SomeMessage;
+import com.google.example.library.v1.UpdateBookIndexRequest;
+import com.google.example.library.v1.UpdateBookIndexRequest.IndexMapEntry;
 import com.google.example.library.v1.UpdateBookRequest;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
@@ -69,6 +70,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 
 // Manually-added imports: add custom (non-generated) imports after this point.
@@ -169,6 +171,7 @@ public class LibraryServiceApi implements AutoCloseable {
       listStringsPagedCallable;
   private final ApiCallable<AddCommentsRequest, Empty> addCommentsCallable;
   private final ApiCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable;
+  private final ApiCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable;
 
   public final LibraryServiceSettings getSettings() {
     return settings;
@@ -334,6 +337,7 @@ public class LibraryServiceApi implements AutoCloseable {
         ApiCallable.createPagedVariant(settings.listStringsSettings(), this.channel, this.executor);
     this.addCommentsCallable = ApiCallable.create(settings.addCommentsSettings(), this.channel, this.executor);
     this.getBookFromArchiveCallable = ApiCallable.create(settings.getBookFromArchiveSettings(), this.channel, this.executor);
+    this.updateBookIndexCallable = ApiCallable.create(settings.updateBookIndexSettings(), this.channel, this.executor);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -1765,15 +1769,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
    *   String formattedName = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
-   *   ByteString comment = ByteString.copyFromUtf8("default comment");
-   *   Comment commentMapItem = Comment.newBuilder()
-   *     .setComment(comment)
-   *     .build();
-   *   Map&lt;String, GetBookFromArchiveRequest.CommentMapEntry&gt; commentMap = new HashMap&lt;&gt;();
-   *   commentMap.put("comment_key", commentMapItem);
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setName(formattedName)
-   *     .putAllCommentMap(commentMap)
    *     .build();
    *   Book response = libraryServiceApi.getBookFromArchive(request);
    * }
@@ -1797,15 +1794,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * <pre><code>
    * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
    *   String formattedName = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
-   *   ByteString comment = ByteString.copyFromUtf8("default comment");
-   *   Comment commentMapItem = Comment.newBuilder()
-   *     .setComment(comment)
-   *     .build();
-   *   Map&lt;String, GetBookFromArchiveRequest.CommentMapEntry&gt; commentMap = new HashMap&lt;&gt;();
-   *   commentMap.put("comment_key", commentMapItem);
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setName(formattedName)
-   *     .putAllCommentMap(commentMap)
    *     .build();
    *   ListenableFuture&lt;Book&gt; future = libraryServiceApi.getBookFromArchiveCallable().futureCall(request);
    *   // Do something
@@ -1818,6 +1808,106 @@ public class LibraryServiceApi implements AutoCloseable {
    */
   public final ApiCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable() {
     return getBookFromArchiveCallable;
+  }
+
+  // ----- updateBookIndex -----
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Updates the index of a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String indexName = "default index";
+   *   String indexMapItem = "";
+   *   Map&lt;String, UpdateBookIndexRequest.IndexMapEntry&gt; indexMap = new HashMap&lt;&gt;();
+   *   indexMap.put("default_key", indexMapItem);
+   *   libraryServiceApi.updateBookIndex(formattedName, indexName, indexMap);
+   * }
+   * </code></pre>
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   *
+   * @param name The name of the book to update.
+   * @param indexName The name of the index for the book
+   * @param indexMap The index to update the book with
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final void updateBookIndex(String name, String indexName, Map<String, String> indexMap) {
+    BOOK_PATH_TEMPLATE.validate(name);
+
+
+    UpdateBookIndexRequest request =
+        UpdateBookIndexRequest.newBuilder()
+        .setName(name)
+        .setIndexName(indexName)
+        .putAllIndexMap(indexMap)
+        .build();
+    updateBookIndex(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Updates the index of a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String indexName = "default index";
+   *   String indexMapItem = "";
+   *   Map&lt;String, UpdateBookIndexRequest.IndexMapEntry&gt; indexMap = new HashMap&lt;&gt;();
+   *   indexMap.put("default_key", indexMapItem);
+   *   UpdateBookIndexRequest request = UpdateBookIndexRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setIndexName(indexName)
+   *     .putAllIndexMap(indexMap)
+   *     .build();
+   *   libraryServiceApi.updateBookIndex(request);
+   * }
+   * </code></pre>
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public void updateBookIndex(UpdateBookIndexRequest request) {
+    updateBookIndexCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  /**
+   * Updates the index of a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String indexName = "default index";
+   *   String indexMapItem = "";
+   *   Map&lt;String, UpdateBookIndexRequest.IndexMapEntry&gt; indexMap = new HashMap&lt;&gt;();
+   *   indexMap.put("default_key", indexMapItem);
+   *   UpdateBookIndexRequest request = UpdateBookIndexRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setIndexName(indexName)
+   *     .putAllIndexMap(indexMap)
+   *     .build();
+   *   ListenableFuture&lt;Void&gt; future = libraryServiceApi.updateBookIndexCallable().futureCall(request);
+   *   // Do something
+   *   future.get();
+   * }
+   * </code></pre>
+   *
+   * <!-- manual edit -->
+   * <!-- end manual edit -->
+   */
+  public final ApiCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable() {
+    return updateBookIndexCallable;
   }
 
 

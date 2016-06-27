@@ -47,6 +47,8 @@
       {@prompt} {@initLineList(line)}
     @case "SimpleInitLine"
       {@prompt} {@initLineSimple(line)}
+    @case "MapInitLine"
+      {@prompt} {@initLineMap(line)}
     @default
       {@unhandledCase()}
     @end
@@ -75,10 +77,24 @@
   {@formattedIdentifier(line)} = [{@initList(line)}]
 @end
 
+# Generate a Map argument
+@private initLineMap(line)
+  {@formattedIdentifier(line)} = {{@initMap(line)}}
+@end
+
 # Helper method for initLineList()
 @private initList(line)
   @join identifier : line.getElementIdentifiers on ", "
     {@identifier}
+  @end
+@end
+
+# Helper method for initLineMap()
+@private initMap(line)
+  @join key : line.getElementIdentifierKeys vertical
+    @let identifierValue = line.getElementIdentifierValue(key)
+      {@context.renderPrimitiveValue(line.getKeyType, key)}, {@identifierValue},
+    @end
   @end
 @end
 

@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
  */
 @AutoValue
 public abstract class InitValueConfig {
+
   public static InitValueConfig create() {
     return new AutoValue_InitValueConfig(null, null, null);
   }
@@ -44,6 +45,13 @@ public abstract class InitValueConfig {
 
   @Nullable
   public abstract String getInitialValue();
+
+  /**
+   * Creates an updated InitValueConfig with the provided value.
+   */
+  public InitValueConfig withInitialValue(String string) {
+    return new AutoValue_InitValueConfig(getApiWrapperName(), getCollectionConfig(), string);
+  }
 
   public boolean isEmpty() {
     return getCollectionConfig() == null;

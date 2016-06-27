@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.metacode;
 
+import com.google.auto.value.AutoValue;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
@@ -29,14 +31,22 @@ import java.util.regex.Pattern;
  * InitValueConfig.
  */
 public class FieldStructureParser {
-  // example: "messages[0]"
+
+  private static Pattern fieldStructurePattern = Pattern.compile("(.+)[.]([^.]+)");
   private static Pattern fieldListPattern = Pattern.compile("(.+)\\[([^\\]]+)\\]");
   private static Pattern fieldMapPattern = Pattern.compile("(.+)\\{([^\\}]+)\\}");
 
+  @VisibleForTesting
+  static Pattern getFieldStructurePattern() {
+    return fieldStructurePattern;
+  }
+
+  @VisibleForTesting
   static Pattern getFieldListPattern() {
     return fieldListPattern;
   }
 
+  @VisibleForTesting
   static Pattern getFieldMapPattern() {
     return fieldMapPattern;
   }
@@ -72,28 +82,28 @@ public class FieldStructureParser {
       } else if (initValueConfigMap.containsKey(fieldSpec)) {
         topLevel = initValueConfigMap.get(fieldSpec);
       }
-      String[] stringParts = equalsParts[0].split("[.]");
-      for (int i = stringParts.length - 1; i >= 0; i--) {
-        String toMatch = stringParts[i];
-        while (true) {
-          Matcher listMatcher = fieldListPattern.matcher(toMatch);
-          if (listMatcher.matches()) {
-            String index = listMatcher.group(2);
-            topLevel = new ListElementSpec(index, topLevel);
-            toMatch = listMatcher.group(1);
-            continue;
-          }
 
-          Matcher mapMatcher = fieldMapPattern.matcher(toMatch);
-          if (mapMatcher.matches()) {
-            String key = mapMatcher.group(2);
-            topLevel = new MapElementSpec(key, topLevel);
-            toMatch = mapMatcher.group(1);
-            continue;
-          }
-
-          topLevel = new FieldSpec(toMatch, topLevel);
-          break;
+      String toMatch = equalsParts[0];
+      while (toMatch != null) {
+        Matcher structureMatcher = fieldStructurePattern.matcher(toMatch);
+        Matcher listMatcher = fieldListPattern.matcher(toMatch);
+        Matcher mapMatcher = fieldMapPattern.matcher(toMatch);
+        if (structureMatcher.matches()) {
+          String key = structureMatcher.group(2);
+          topLevel = new AutoValue_FieldStructureParser_FieldSpec(key, topLevel);
+          toMatch = structureMatcher.group(1);
+        } else if (listMatcher.matches()) {
+          String index = listMatcher.group(2);
+          topLevel = new AutoValue_FieldStructureParser_ListElementSpec(index, topLevel);
+          toMatch = listMatcher.group(1);
+        } else if (mapMatcher.matches()) {
+          String key = mapMatcher.group(2);
+          topLevel = new AutoValue_FieldStructureParser_MapElementSpec(key, topLevel);
+          toMatch = mapMatcher.group(1);
+        } else {
+          // No pattern match implies toMatch contains simple field (with no "." separators)
+          topLevel = new AutoValue_FieldStructureParser_FieldSpec(toMatch, topLevel);
+          toMatch = null;
         }
       }
       unmergedFields.add(topLevel);
@@ -110,8 +120,54 @@ public class FieldStructureParser {
   }
 
   private static Object merge(Object mergedStructure, Object unmergedStructure) {
-    if (unmergedStructure instanceof FieldSpec) {
-      FieldSpec fieldSpec = (FieldSpec) unmergedStructure;
+    if (unmergedStructure instanceof Spec) {
+      return ((Spec) unmergedStructure).merge(mergedStructure);
+    } else if (unmergedStructure instanceof InitValueConfig) {
+      // Only valid to merge an InitValueConfig if the existing merged structure is
+      // an empty InitValueConfig
+      if (mergedStructure instanceof InitValueConfig) {
+        InitValueConfig metadata = (InitValueConfig) mergedStructure;
+        if (metadata.isEmpty()) {
+          // Replace empty structure with unmergedStructure
+          return unmergedStructure;
+        }
+      }
+      throw new IllegalArgumentException(
+          "Inconsistent: found both substructure and initialization metadata");
+    } else {
+      throw new IllegalArgumentException(
+          "merge: didn't expect "
+              + unmergedStructure.getClass().getName()
+              + "; mergedStructure: "
+              + mergedStructure
+              + "; unmergeredStructure: "
+              + unmergedStructure);
+    }
+  }
+
+  private static Object populate(Object unmergedStructure) {
+    if (unmergedStructure instanceof Spec) {
+      return ((Spec) unmergedStructure).populate();
+    } else {
+      return unmergedStructure;
+    }
+  }
+
+  interface Spec {
+    Object merge(Object mergedStructure);
+
+    Object populate();
+  }
+
+  @AutoValue
+  abstract static class FieldSpec implements Spec {
+
+    public abstract String getName();
+
+    public abstract Object getSubStructure();
+
+    @Override
+    public Object merge(Object mergedStructure) {
       if (mergedStructure instanceof InitValueConfig) {
         InitValueConfig metadata = (InitValueConfig) mergedStructure;
         if (!metadata.isEmpty()) {
@@ -133,15 +189,32 @@ public class FieldStructureParser {
       @SuppressWarnings("unchecked")
       Map<String, Object> mergedMap = (Map<String, Object>) mergedStructure;
 
-      if (mergedMap.containsKey(fieldSpec.name)) {
-        Object mergedSubStructure = mergedMap.get(fieldSpec.name);
-        Object newSubStructure = merge(mergedSubStructure, fieldSpec.subStructure);
-        mergedMap.put(fieldSpec.name, newSubStructure);
+      if (mergedMap.containsKey(getName())) {
+        Object mergedSubStructure = mergedMap.get(getName());
+        Object newSubStructure = FieldStructureParser.merge(mergedSubStructure, getSubStructure());
+        mergedMap.put(getName(), newSubStructure);
       } else {
-        mergedMap.put(fieldSpec.name, populate(fieldSpec.subStructure));
+        mergedMap.put(getName(), FieldStructureParser.populate(getSubStructure()));
       }
-    } else if (unmergedStructure instanceof ListElementSpec) {
-      ListElementSpec listElementSpec = (ListElementSpec) unmergedStructure;
+      return mergedStructure;
+    }
+
+    @Override
+    public Object populate() {
+      Map<String, Object> mergedMap = new HashMap<>();
+      mergedMap.put(getName(), FieldStructureParser.populate(getSubStructure()));
+      return mergedMap;
+    }
+  }
+
+  @AutoValue
+  abstract static class ListElementSpec implements Spec {
+    public abstract String getIndex();
+
+    public abstract Object getSubStructure();
+
+    @Override
+    public Object merge(Object mergedStructure) {
       if (mergedStructure instanceof InitValueConfig) {
         InitValueConfig metadata = (InitValueConfig) mergedStructure;
         if (!metadata.isEmpty()) {
@@ -163,13 +236,13 @@ public class FieldStructureParser {
       @SuppressWarnings("unchecked")
       List<Object> mergedList = (List<Object>) mergedStructure;
 
-      int index = Integer.valueOf(listElementSpec.index);
+      int index = Integer.valueOf(getIndex());
       if (index < mergedList.size()) {
         Object mergedSubStructure = mergedList.get(index);
-        Object newSubStructure = merge(mergedSubStructure, listElementSpec.subStructure);
+        Object newSubStructure = FieldStructureParser.merge(mergedSubStructure, getSubStructure());
         mergedList.set(index, newSubStructure);
       } else if (index == mergedList.size()) {
-        mergedList.add(populate(listElementSpec.subStructure));
+        mergedList.add(FieldStructureParser.populate(getSubStructure()));
       } else {
         throw new IllegalArgumentException(
             "Index leaves gap: last index = "
@@ -177,8 +250,30 @@ public class FieldStructureParser {
                 + ", this index = "
                 + index);
       }
-    } else if (unmergedStructure instanceof MapElementSpec) {
-      MapElementSpec mapElementSpec = (MapElementSpec) unmergedStructure;
+      return mergedStructure;
+    }
+
+    @Override
+    public Object populate() {
+      int index = Integer.valueOf(getIndex());
+      if (index != 0) {
+        throw new IllegalArgumentException("First element in list must have index 0");
+      }
+      List<Object> list = new ArrayList<>();
+      list.add(FieldStructureParser.populate(getSubStructure()));
+      return list;
+    }
+  }
+
+  @AutoValue
+  abstract static class MapElementSpec implements Spec {
+
+    public abstract String getKey();
+
+    public abstract Object getSubStructure();
+
+    @Override
+    public Object merge(Object mergedStructure) {
       if (mergedStructure instanceof InitValueConfig) {
         InitValueConfig metadata = (InitValueConfig) mergedStructure;
         if (!metadata.isEmpty()) {
@@ -200,74 +295,21 @@ public class FieldStructureParser {
       @SuppressWarnings("unchecked")
       HashMap<String, Object> mergedMap = (HashMap<String, Object>) mergedStructure;
 
-      String key = mapElementSpec.key;
-      if (mergedMap.containsKey(key)) {
-        Object mergedSubStructure = mergedMap.get(key);
-        Object newSubStructure = merge(mergedSubStructure, mapElementSpec.subStructure);
-        mergedMap.put(key, newSubStructure);
+      if (mergedMap.containsKey(getKey())) {
+        Object mergedSubStructure = mergedMap.get(getKey());
+        Object newSubStructure = FieldStructureParser.merge(mergedSubStructure, getSubStructure());
+        mergedMap.put(getKey(), newSubStructure);
       } else {
-        mergedMap.put(key, populate(mapElementSpec.subStructure));
+        mergedMap.put(getKey(), FieldStructureParser.populate(getSubStructure()));
       }
-    } else {
-      throw new IllegalArgumentException(
-          "merge: didn't expect " + unmergedStructure.getClass().getName());
+      return mergedStructure;
     }
-    return mergedStructure;
-  }
 
-  private static Object populate(Object unmergedStructure) {
-    if (unmergedStructure instanceof FieldSpec) {
-      FieldSpec fieldSpec = (FieldSpec) unmergedStructure;
-      Map<String, Object> mergedMap = new HashMap<>();
-      mergedMap.put(fieldSpec.name, populate(fieldSpec.subStructure));
-      return mergedMap;
-    } else if (unmergedStructure instanceof ListElementSpec) {
-      ListElementSpec listElementSpec = (ListElementSpec) unmergedStructure;
-      int index = Integer.valueOf(listElementSpec.index);
-      if (index != 0) {
-        throw new IllegalArgumentException("First element in list must have index 0");
-      }
-      List<Object> list = new ArrayList<>();
-      list.add(populate(listElementSpec.subStructure));
-      return list;
-    } else if (unmergedStructure instanceof MapElementSpec) {
-      MapElementSpec mapElementSpec = (MapElementSpec) unmergedStructure;
-      String key = mapElementSpec.key;
+    @Override
+    public Object populate() {
       Map<String, Object> map = new HashMap<String, Object>();
-      map.put(key, populate(mapElementSpec.subStructure));
+      map.put(getKey(), FieldStructureParser.populate(getSubStructure()));
       return map;
-    } else {
-      return unmergedStructure;
-    }
-  }
-
-  private static class FieldSpec {
-    public String name;
-    public Object subStructure;
-
-    public FieldSpec(String name, Object subStructure) {
-      this.name = name;
-      this.subStructure = subStructure;
-    }
-  }
-
-  private static class ListElementSpec {
-    public String index;
-    public Object subStructure;
-
-    public ListElementSpec(String index, Object subStructure) {
-      this.index = index;
-      this.subStructure = subStructure;
-    }
-  }
-
-  private static class MapElementSpec {
-    public String key;
-    public Object subStructure;
-
-    public MapElementSpec(String key, Object subStructure) {
-      this.key = key;
-      this.subStructure = subStructure;
     }
   }
 }

@@ -156,7 +156,8 @@ function LibraryServiceApi(opts) {
     'moveBook',
     'listStrings',
     'addComments',
-    'getBookFromArchive'
+    'getBookFromArchive',
+    'updateBookIndex'
   ];
   methods.forEach(function(methodName) {
     this['_' + methodName] = Promise.all([defaults, this.stub]).then(function(vars) {
@@ -800,6 +801,44 @@ LibraryServiceApi.prototype.getBookFromArchive = function getBookFromArchive() {
     'name': args.name
   };
   this._getBookFromArchive.then(function(apiCall) {
+    apiCall(req, args.options, args.callback);
+  })['catch'](function(err) {
+    if (args.callback) {
+      args.callback(err);
+    }
+  });
+};
+
+/**
+ * Updates the index of a book.
+ *
+ * @param {String} name
+ *   The name of the book to update.
+ * @param {String} indexName
+ *   The name of the index for the book
+ * @param {Object} indexMap
+ *   The index to update the book with
+ * @param {?gax.CallOptions} options
+ *   Overrides the default settings for this call, e.g, timeout,
+ *   retries, etc.
+ * @param {?EmptyCallback} callback
+ *   The function which will be called with the result of the API call.
+ * @throws an error if the RPC is aborted.
+ */
+LibraryServiceApi.prototype.updateBookIndex = function updateBookIndex() {
+  var args = arguejs({
+    'name': String,
+    'indexName': String,
+    'indexMap': Object,
+    'options': [gax.CallOptions],
+    'callback': [Function]
+  }, arguments);
+  var req = {
+    'name': args.name,
+    'index_name': args.indexName,
+    'index_map': args.indexMap
+  };
+  this._updateBookIndex.then(function(apiCall) {
     apiCall(req, args.options, args.callback);
   })['catch'](function(err) {
     if (args.callback) {

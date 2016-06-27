@@ -72,6 +72,7 @@ func defaultClientSettings() gax.ClientSettings {
             "ListStrings": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
             "AddComments": defaultRetryOptions,
             "GetBookFromArchive": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
+            "UpdateBookIndex": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
         },
     }
 }
@@ -431,6 +432,18 @@ func (c *Client) GetBookFromArchive(ctx context.Context, req *google_example_lib
         return nil, err
     }
     return resp, nil
+}
+
+
+// UpdateBookIndex updates the index of a book.
+func (c *Client) UpdateBookIndex(ctx context.Context, req *google_example_library_v1.UpdateBookIndexRequest) error {
+    ctx = metadata.NewContext(ctx, c.metadata)
+    err := gax.Invoke(ctx, func (ctx context.Context) error {
+        var err error
+        _, err = c.client.UpdateBookIndex(ctx, req)
+        return err
+    }, c.callOptions["UpdateBookIndex"]...)
+    return err
 }
 
 

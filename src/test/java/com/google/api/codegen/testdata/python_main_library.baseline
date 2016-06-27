@@ -316,6 +316,9 @@ class LibraryServiceApi(object):
         self._get_book_from_archive = api_callable.create_api_call(
             self.stub.GetBookFromArchive,
             settings=defaults['get_book_from_archive'])
+        self._update_book_index = api_callable.create_api_call(
+            self.stub.UpdateBookIndex,
+            settings=defaults['update_book_index'])
 
     # Service calls
     def create_shelf(
@@ -838,4 +841,38 @@ class LibraryServiceApi(object):
         request = library_pb2.GetBookFromArchiveRequest(
             name=name)
         return self._get_book_from_archive(request, options)
+
+    def update_book_index(
+            self,
+            name,
+            index_name,
+            index_map,
+            options=None):
+        """
+        Updates the index of a book.
+
+        Example:
+          >>> from library.library_service_api import LibraryServiceApi
+          >>> api = LibraryServiceApi()
+          >>> name = api.book_path('[SHELF]', '[BOOK]')
+          >>> index_name = ''
+          >>> index_map_item = ''
+          >>> index_map = {'default_key', index_map_item,}
+          >>> api.update_book_index(name, index_name, index_map)
+
+        Args:
+          name (string): The name of the book to update.
+          index_name (string): The name of the index for the book
+          index_map (dict[string -> :class:`google.example.library.v1.library_pb2.UpdateBookIndexRequest.IndexMapEntry`]): The index to update the book with
+          options (:class:`google.gax.CallOptions`): Overrides the default
+            settings for this call, e.g, timeout, retries etc.
+
+        Raises:
+          :exc:`google.gax.errors.GaxError` if the RPC is aborted.
+        """
+        request = library_pb2.UpdateBookIndexRequest(
+            name=name,
+            index_name=index_name,
+            index_map=index_map)
+        self._update_book_index(request, options)
 
