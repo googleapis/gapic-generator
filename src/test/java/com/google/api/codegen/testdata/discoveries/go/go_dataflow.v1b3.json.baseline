@@ -6,8 +6,9 @@ package main
 // 1. If not already done, enable the Google Dataflow API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dataflow/v1b3
 
@@ -23,23 +24,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dataflow.New(hc)
+  c, err := dataflow.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project which owns the job.
   projectId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Jobs.Create(projectId, &dataflow.Job{
-                                             // TODO: Fill required fields.
-                                           }).Context(ctx).Do()
+  resp, err := c.Projects.Jobs.Create(projectId, &dataflow.Job{
+                                        // TODO: Fill required fields.
+                                      }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -51,8 +49,9 @@ package main
 // 1. If not already done, enable the Google Dataflow API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dataflow/v1b3
 
@@ -68,12 +67,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dataflow.New(hc)
+  c, err := dataflow.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project which owns the job.
@@ -82,10 +79,9 @@ func main() {
   // Identifies a single job.
   jobId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Jobs.Get(projectId, jobId).Context(ctx).Do()
+  resp, err := c.Projects.Jobs.Get(projectId, jobId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -97,8 +93,9 @@ package main
 // 1. If not already done, enable the Google Dataflow API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dataflow/v1b3
 
@@ -114,12 +111,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dataflow.New(hc)
+  c, err := dataflow.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // A project id.
@@ -128,10 +123,9 @@ func main() {
   // The job to get messages for.
   jobId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Jobs.GetMetrics(projectId, jobId).Context(ctx).Do()
+  resp, err := c.Projects.Jobs.GetMetrics(projectId, jobId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -143,8 +137,9 @@ package main
 // 1. If not already done, enable the Google Dataflow API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dataflow/v1b3
 
@@ -160,19 +155,17 @@ func main() {
   hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dataflow.New(hc)
+  c, err := dataflow.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project which owns the jobs.
   projectId := "" // TODO: Update placeholder value.
 
 
-  call := client.Projects.Jobs.List(projectId)
+  call := c.Projects.Jobs.List(projectId)
   if err := call.Pages(ctx, func(page *dataflow.ListJobsResponse) error {
     for _, v := range page.Jobs {
       // TODO: Use v.
@@ -181,7 +174,6 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -191,8 +183,9 @@ package main
 // 1. If not already done, enable the Google Dataflow API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dataflow/v1b3
 
@@ -208,12 +201,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dataflow.New(hc)
+  c, err := dataflow.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // A project id.
@@ -223,7 +214,7 @@ func main() {
   jobId := "" // TODO: Update placeholder value.
 
 
-  call := client.Projects.Jobs.Messages.List(projectId, jobId)
+  call := c.Projects.Jobs.Messages.List(projectId, jobId)
   if err := call.Pages(ctx, func(page *dataflow.ListJobMessagesResponse) error {
     for _, v := range page.JobMessages {
       // TODO: Use v.
@@ -232,7 +223,6 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -242,8 +232,9 @@ package main
 // 1. If not already done, enable the Google Dataflow API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dataflow/v1b3
 
@@ -259,12 +250,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dataflow.New(hc)
+  c, err := dataflow.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project which owns the job.
@@ -273,12 +262,11 @@ func main() {
   // Identifies a single job.
   jobId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Jobs.Update(projectId, jobId, &dataflow.Job{
-                                             // TODO: Fill required fields.
-                                           }).Context(ctx).Do()
+  resp, err := c.Projects.Jobs.Update(projectId, jobId, &dataflow.Job{
+                                        // TODO: Fill required fields.
+                                      }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -290,8 +278,9 @@ package main
 // 1. If not already done, enable the Google Dataflow API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dataflow/v1b3
 
@@ -307,12 +296,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dataflow.New(hc)
+  c, err := dataflow.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Identifies the project this worker belongs to.
@@ -321,12 +308,11 @@ func main() {
   // Identifies the workflow job this worker belongs to.
   jobId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Jobs.WorkItems.Lease(projectId, jobId, &dataflow.LeaseWorkItemRequest{
-                                                      // TODO: Fill required fields.
-                                                    }).Context(ctx).Do()
+  resp, err := c.Projects.Jobs.WorkItems.Lease(projectId, jobId, &dataflow.LeaseWorkItemRequest{
+                                                 // TODO: Fill required fields.
+                                               }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -338,8 +324,9 @@ package main
 // 1. If not already done, enable the Google Dataflow API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dataflow/v1b3
 
@@ -355,12 +342,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dataflow.New(hc)
+  c, err := dataflow.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project which owns the WorkItem's job.
@@ -369,12 +354,11 @@ func main() {
   // The job which the WorkItem is part of.
   jobId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Jobs.WorkItems.ReportStatus(projectId, jobId, &dataflow.ReportWorkItemStatusRequest{
-                                                             // TODO: Fill required fields.
-                                                           }).Context(ctx).Do()
+  resp, err := c.Projects.Jobs.WorkItems.ReportStatus(projectId, jobId, &dataflow.ReportWorkItemStatusRequest{
+                                                        // TODO: Fill required fields.
+                                                      }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -386,8 +370,9 @@ package main
 // 1. If not already done, enable the Google Dataflow API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/dataflow_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dataflow/v1b3
 
@@ -403,23 +388,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, dataflow.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dataflow.New(hc)
+  c, err := dataflow.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project to send the WorkerMessages to.
   projectId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.WorkerMessages(projectId, &dataflow.SendWorkerMessagesRequest{
-                                                // TODO: Fill required fields.
-                                              }).Context(ctx).Do()
+  resp, err := c.Projects.WorkerMessages(projectId, &dataflow.SendWorkerMessagesRequest{
+                                           // TODO: Fill required fields.
+                                         }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
