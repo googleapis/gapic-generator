@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  */
 public class FieldStructureParser {
 
-  private static Pattern fieldStructurePattern = Pattern.compile("(.+)[.]([^.]+)");
+  private static Pattern fieldStructurePattern = Pattern.compile("(.+)[.]([^.\\{\\[]+)");
   private static Pattern fieldListPattern = Pattern.compile("(.+)\\[([^\\]]+)\\]");
   private static Pattern fieldMapPattern = Pattern.compile("(.+)\\{([^\\}]+)\\}");
 
@@ -90,15 +90,15 @@ public class FieldStructureParser {
         Matcher mapMatcher = fieldMapPattern.matcher(toMatch);
         if (structureMatcher.matches()) {
           String key = structureMatcher.group(2);
-          topLevel = new AutoValue_FieldStructureParser_FieldSpec(key, topLevel);
+          topLevel = FieldSpec.create(key, topLevel);
           toMatch = structureMatcher.group(1);
         } else if (listMatcher.matches()) {
           String index = listMatcher.group(2);
-          topLevel = new AutoValue_FieldStructureParser_ListElementSpec(index, topLevel);
+          topLevel = ListElementSpec.create(index, topLevel);
           toMatch = listMatcher.group(1);
         } else if (mapMatcher.matches()) {
           String key = mapMatcher.group(2);
-          topLevel = new AutoValue_FieldStructureParser_MapElementSpec(key, topLevel);
+          topLevel = MapElementSpec.create(key, topLevel);
           toMatch = mapMatcher.group(1);
         } else {
           // No pattern match implies toMatch contains simple field (with no "." separators)
@@ -162,6 +162,10 @@ public class FieldStructureParser {
   @AutoValue
   abstract static class FieldSpec implements Spec {
 
+    public static FieldSpec create(String name, Object subStructure) {
+      return new AutoValue_FieldStructureParser_FieldSpec(name, subStructure);
+    }
+
     public abstract String getName();
 
     public abstract Object getSubStructure();
@@ -209,6 +213,11 @@ public class FieldStructureParser {
 
   @AutoValue
   abstract static class ListElementSpec implements Spec {
+
+    public static ListElementSpec create(String index, Object subStructure) {
+      return new AutoValue_FieldStructureParser_ListElementSpec(index, subStructure);
+    }
+
     public abstract String getIndex();
 
     public abstract Object getSubStructure();
@@ -267,6 +276,10 @@ public class FieldStructureParser {
 
   @AutoValue
   abstract static class MapElementSpec implements Spec {
+
+    public static MapElementSpec create(String key, Object subStructure) {
+      return new AutoValue_FieldStructureParser_MapElementSpec(key, subStructure);
+    }
 
     public abstract String getKey();
 

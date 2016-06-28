@@ -53,6 +53,8 @@ public class FieldStructureTest {
     Truth.assertThat(fieldMatcher.group(2)).isEqualTo("mynextfield");
 
     Truth.assertThat(fieldPattern.matcher("singlefield").matches()).isFalse();
+    Truth.assertThat(fieldPattern.matcher("myfield.mylist[0]").matches()).isFalse();
+    Truth.assertThat(fieldPattern.matcher("myfield.mymap{key}").matches()).isFalse();
   }
 
   @Test
@@ -171,6 +173,20 @@ public class FieldStructureTest {
         Collections.singletonMap("myfield", (Object) InitValueConfig.create());
     List<Object> innerList = Collections.singletonList((Object) innerStructure);
     Map<String, Object> expectedStructure = Collections.singletonMap("mylist", (Object) innerList);
+
+    Map<String, Object> actualStructure = FieldStructureParser.parseFields(fieldSpecs);
+    Truth.assertThat(actualStructure).isEqualTo(expectedStructure);
+  }
+
+  @Test
+  public void testEmbeddedFieldList() throws Exception {
+    List<String> fieldSpecs = Arrays.asList("myfield.mylist[0]");
+
+    List<Object> innerList = Collections.singletonList((Object) InitValueConfig.create());
+    Map<String, Object> innerStructure = Collections.singletonMap("mylist", (Object) innerList);
+
+    Map<String, Object> expectedStructure =
+        Collections.singletonMap("myfield", (Object) innerStructure);
 
     Map<String, Object> actualStructure = FieldStructureParser.parseFields(fieldSpecs);
     Truth.assertThat(actualStructure).isEqualTo(expectedStructure);
