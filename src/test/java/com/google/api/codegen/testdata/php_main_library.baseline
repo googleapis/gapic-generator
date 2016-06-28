@@ -55,6 +55,7 @@ use google\example\library\v1\Shelf;
 use google\example\library\v1\SomeMessage;
 use google\example\library\v1\StringBuilder;
 use google\example\library\v1\UpdateBookIndexRequest;
+use google\example\library\v1\UpdateBookIndexRequest\IndexMapEntry;
 use google\example\library\v1\UpdateBookRequest;
 use google\protobuf\FieldMask;
 
@@ -1205,7 +1206,7 @@ class LibraryServiceApi
      *     $formattedName = LibraryServiceApi::formatBookName("[SHELF]", "[BOOK]");
      *     $indexName = "";
      *     $indexMapItem = "";
-     *     $indexMap = ["default_key", index_map_item,];
+     *     $indexMap = ["default_key" => $indexMapItem,];
      *     $libraryServiceApi->updateBookIndex($formattedName, $indexName, $indexMap);
      * } finally {
      *     if (isset($libraryServiceApi)) {
@@ -1238,8 +1239,9 @@ class LibraryServiceApi
         $request = new UpdateBookIndexRequest();
         $request->setName($name);
         $request->setIndexName($indexName);
-        // TODO make this work
-        putAll...
+        foreach ($indexMap as $key => $value) {
+            $request->addIndexMap((new IndexMapEntry())->setKey($key)->setValue($value));
+        }
 
         $mergedSettings = $this->defaultCallSettings['updateBookIndex']->merge(
             new CallSettings($callSettings));

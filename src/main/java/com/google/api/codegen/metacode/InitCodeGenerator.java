@@ -146,6 +146,7 @@ public class InitCodeGenerator {
   private InitCodeLine generateSampleCodeInitMap(
       String suggestedName, TypeRef typeRef, Map<String, Object> thisFieldInitMap) {
     TypeRef keyTypeRef = typeRef.getMapKeyField().getType();
+    TypeRef elementType = typeRef.getMapValueField().getType();
     Map<String, String> elementIdentifierMap = new HashMap<String, String>();
     for (String keyString : thisFieldInitMap.keySet()) {
       String validatedKeyString = validateValue(keyTypeRef, keyString);
@@ -163,7 +164,6 @@ public class InitCodeGenerator {
 
       Object elementInitStructure = thisFieldInitMap.get(keyString);
       String suggestedElementName = suggestedName + "_item";
-      TypeRef elementType = typeRef.getMapValueField().getType();
       InitCodeLine subFieldInit =
           generateSampleCodeInit(suggestedElementName, elementType, elementInitStructure);
       initLineSpecs.add(subFieldInit);
@@ -174,7 +174,8 @@ public class InitCodeGenerator {
     // get a new symbol for this object after elements, in order to preserve
     // numerical ordering in the case of conflicts
     String identifier = getNewSymbol(suggestedName);
-    return MapInitCodeLine.create(keyTypeRef, typeRef, identifier, elementIdentifierMap);
+    return MapInitCodeLine.create(
+        keyTypeRef, elementType, typeRef, identifier, elementIdentifierMap);
   }
 
   private InitCodeLine generateSampleCodeInit(

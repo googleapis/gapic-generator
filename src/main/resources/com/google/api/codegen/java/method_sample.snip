@@ -88,7 +88,7 @@
 
 # Generate a Map argument
 @private initLineMap(line)
-  Map<{@context.basicTypeNameBoxed(line.getKeyType)}, {@context.basicTypeNameBoxed(line.getElementType)}> {@formattedIdentifier(line)} = new HashMap<>();
+  Map<{@context.basicTypeNameBoxed(line.getKeyType)}, {@context.basicTypeNameBoxed(line.getValueType)}> {@formattedIdentifier(line)} = new HashMap<>();
   @join key : line.getElementIdentifierKeys vertical
     @let identifierValue = line.getElementIdentifierValue(key)
       {@formattedIdentifier(line)}.put({@context.renderPrimitiveValue(line.getKeyType, key)}, {@context.lowerUnderscoreToLowerCamel(identifierValue)});

@@ -40,7 +40,7 @@
     @case "SimpleInitLine"
       {@initLineSimple(line)}
     @case "MapInitLine"
-      {@initLineMap(line)}
+      {@initLineMap(initCodeSpec, line)}
     @default
       {@unhandledCase()}
     @end
@@ -60,26 +60,46 @@
   {@formattedIdentifier(line)} = [{@initList(line)}];
 @end
 
-@private initLineMap(line)
-  {@formattedIdentifier(line)} = [{@initMap(line)}];
-@end
-
 @private initList(line)
   @join identifier : line.getElementIdentifiers on ", "
     {@unformattedIdentifier(identifier)}
   @end
 @end
 
+@private initLineMap(initCodeSpec, line)
+  @if context.initLineIsParameter(initCodeSpec, line)
+    {@formattedIdentifier(line)} = [{@initMap(line)}];
+  @else
+    {@formattedIdentifier(line)} = [];
+    @join key : line.getElementIdentifierKeys vertical
+      @let identifierValue = line.getElementIdentifierValue(key),\
+          entryIdentifier = getEntryIdentifier(line), \
+          fullyQualifiedEntryName = context.fullyQualifiedName(line.getElementType), \
+          entryName = context.getTypeName(fullyQualifiedEntryName)
+        {@entryIdentifier} = new {@entryName}();
+        {@entryIdentifier}->setKey({@context.renderPrimitiveValue(line.getKeyType, key)});
+        {@entryIdentifier}->setValue({@unformattedIdentifier(identifierValue)});
+        array_push({@formattedIdentifier(line)}, {@entryIdentifier});
+      @end
+    @end
+  @end
+@end
+
 @private initMap(line)
   @join key : line.getElementIdentifierKeys vertical
-    @let identifierValue = line.getElementIdentifierValue(key)
-      {@context.renderPrimitiveValue(line.getKeyType, key)}, {@identifierValue},
+    @let identifierValue = line.getElementIdentifierValue(key),\
+        entryIdentifier = getEntryIdentifier(line)
+      {@context.renderPrimitiveValue(line.getKeyType, key)} => {@unformattedIdentifier(identifierValue)},
     @end
   @end
 @end
 
 @private initLineSimple(line)
   {@formattedIdentifier(line)} = {@initValue(line)};
+@end
+
+@private getEntryIdentifier(lineOrFieldSetting)
+  {@unformattedIdentifier(lineOrFieldSetting.getIdentifier)}Entry
 @end
 
 @private formattedIdentifier(lineOrFieldSetting)

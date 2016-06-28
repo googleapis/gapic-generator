@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.metacode;
 
-import com.google.auto.value.AutoValue;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 
@@ -102,7 +101,7 @@ public class FieldStructureParser {
           toMatch = mapMatcher.group(1);
         } else {
           // No pattern match implies toMatch contains simple field (with no "." separators)
-          topLevel = new AutoValue_FieldStructureParser_FieldSpec(toMatch, topLevel);
+          topLevel = FieldSpec.create(toMatch, topLevel);
           toMatch = null;
         }
       }
@@ -119,7 +118,7 @@ public class FieldStructureParser {
     return mergedFields;
   }
 
-  private static Object merge(Object mergedStructure, Object unmergedStructure) {
+  public static Object merge(Object mergedStructure, Object unmergedStructure) {
     if (unmergedStructure instanceof Spec) {
       return ((Spec) unmergedStructure).merge(mergedStructure);
     } else if (unmergedStructure instanceof InitValueConfig) {
@@ -145,184 +144,11 @@ public class FieldStructureParser {
     }
   }
 
-  private static Object populate(Object unmergedStructure) {
+  public static Object populate(Object unmergedStructure) {
     if (unmergedStructure instanceof Spec) {
       return ((Spec) unmergedStructure).populate();
     } else {
       return unmergedStructure;
-    }
-  }
-
-  interface Spec {
-    Object merge(Object mergedStructure);
-
-    Object populate();
-  }
-
-  @AutoValue
-  abstract static class FieldSpec implements Spec {
-
-    public static FieldSpec create(String name, Object subStructure) {
-      return new AutoValue_FieldStructureParser_FieldSpec(name, subStructure);
-    }
-
-    public abstract String getName();
-
-    public abstract Object getSubStructure();
-
-    @Override
-    public Object merge(Object mergedStructure) {
-      if (mergedStructure instanceof InitValueConfig) {
-        InitValueConfig metadata = (InitValueConfig) mergedStructure;
-        if (!metadata.isEmpty()) {
-          throw new IllegalArgumentException(
-              "Inconsistent: found both substructure and initialization metadata");
-        }
-        // we encountered a partially-specified structure, so replace it with a
-        // map
-        mergedStructure = new HashMap<>();
-      } else if (!(mergedStructure instanceof Map)) {
-        String mergedTypeName = mergedStructure.getClass().getName();
-        if (mergedStructure instanceof List) {
-          mergedTypeName = "list";
-        }
-        throw new IllegalArgumentException(
-            "Inconsistent structure: " + mergedTypeName + " encountered first, then field");
-      }
-
-      @SuppressWarnings("unchecked")
-      Map<String, Object> mergedMap = (Map<String, Object>) mergedStructure;
-
-      if (mergedMap.containsKey(getName())) {
-        Object mergedSubStructure = mergedMap.get(getName());
-        Object newSubStructure = FieldStructureParser.merge(mergedSubStructure, getSubStructure());
-        mergedMap.put(getName(), newSubStructure);
-      } else {
-        mergedMap.put(getName(), FieldStructureParser.populate(getSubStructure()));
-      }
-      return mergedStructure;
-    }
-
-    @Override
-    public Object populate() {
-      Map<String, Object> mergedMap = new HashMap<>();
-      mergedMap.put(getName(), FieldStructureParser.populate(getSubStructure()));
-      return mergedMap;
-    }
-  }
-
-  @AutoValue
-  abstract static class ListElementSpec implements Spec {
-
-    public static ListElementSpec create(String index, Object subStructure) {
-      return new AutoValue_FieldStructureParser_ListElementSpec(index, subStructure);
-    }
-
-    public abstract String getIndex();
-
-    public abstract Object getSubStructure();
-
-    @Override
-    public Object merge(Object mergedStructure) {
-      if (mergedStructure instanceof InitValueConfig) {
-        InitValueConfig metadata = (InitValueConfig) mergedStructure;
-        if (!metadata.isEmpty()) {
-          throw new IllegalArgumentException(
-              "Inconsistent: found both substructure and initialization metadata");
-        }
-        // we encountered a partially-specified structure, so replace it with a
-        // list
-        mergedStructure = new ArrayList<>();
-      } else if (!(mergedStructure instanceof List)) {
-        String mergedTypeName = mergedStructure.getClass().getName();
-        if (mergedStructure instanceof Map) {
-          mergedTypeName = "field";
-        }
-        throw new IllegalArgumentException(
-            "Inconsistent structure: " + mergedTypeName + " encountered first, then list");
-      }
-
-      @SuppressWarnings("unchecked")
-      List<Object> mergedList = (List<Object>) mergedStructure;
-
-      int index = Integer.valueOf(getIndex());
-      if (index < mergedList.size()) {
-        Object mergedSubStructure = mergedList.get(index);
-        Object newSubStructure = FieldStructureParser.merge(mergedSubStructure, getSubStructure());
-        mergedList.set(index, newSubStructure);
-      } else if (index == mergedList.size()) {
-        mergedList.add(FieldStructureParser.populate(getSubStructure()));
-      } else {
-        throw new IllegalArgumentException(
-            "Index leaves gap: last index = "
-                + (mergedList.size() - 1)
-                + ", this index = "
-                + index);
-      }
-      return mergedStructure;
-    }
-
-    @Override
-    public Object populate() {
-      int index = Integer.valueOf(getIndex());
-      if (index != 0) {
-        throw new IllegalArgumentException("First element in list must have index 0");
-      }
-      List<Object> list = new ArrayList<>();
-      list.add(FieldStructureParser.populate(getSubStructure()));
-      return list;
-    }
-  }
-
-  @AutoValue
-  abstract static class MapElementSpec implements Spec {
-
-    public static MapElementSpec create(String key, Object subStructure) {
-      return new AutoValue_FieldStructureParser_MapElementSpec(key, subStructure);
-    }
-
-    public abstract String getKey();
-
-    public abstract Object getSubStructure();
-
-    @Override
-    public Object merge(Object mergedStructure) {
-      if (mergedStructure instanceof InitValueConfig) {
-        InitValueConfig metadata = (InitValueConfig) mergedStructure;
-        if (!metadata.isEmpty()) {
-          throw new IllegalArgumentException(
-              "Inconsistent: found both substructure and initialization metadata");
-        }
-        // we encountered a partially-specified structure, so replace it with a
-        // map
-        mergedStructure = new HashMap<>();
-      } else if (!(mergedStructure instanceof Map)) {
-        String mergedTypeName = mergedStructure.getClass().getName();
-        if (mergedStructure instanceof List) {
-          mergedTypeName = "list";
-        }
-        throw new IllegalArgumentException(
-            "Inconsistent structure: " + mergedTypeName + " encountered first, then map");
-      }
-
-      @SuppressWarnings("unchecked")
-      HashMap<String, Object> mergedMap = (HashMap<String, Object>) mergedStructure;
-
-      if (mergedMap.containsKey(getKey())) {
-        Object mergedSubStructure = mergedMap.get(getKey());
-        Object newSubStructure = FieldStructureParser.merge(mergedSubStructure, getSubStructure());
-        mergedMap.put(getKey(), newSubStructure);
-      } else {
-        mergedMap.put(getKey(), FieldStructureParser.populate(getSubStructure()));
-      }
-      return mergedStructure;
-    }
-
-    @Override
-    public Object populate() {
-      Map<String, Object> map = new HashMap<String, Object>();
-      map.put(getKey(), FieldStructureParser.populate(getSubStructure()));
-      return map;
     }
   }
 }

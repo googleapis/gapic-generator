@@ -28,13 +28,17 @@ public abstract class MapInitCodeLine implements InitCodeLine {
 
   public static MapInitCodeLine create(
       TypeRef keyType,
+      TypeRef valueType,
       TypeRef elementType,
       String identifier,
       Map<String, String> elementIdentifierMap) {
-    return new AutoValue_MapInitCodeLine(keyType, elementType, identifier, elementIdentifierMap);
+    return new AutoValue_MapInitCodeLine(
+        keyType, valueType, elementType, identifier, elementIdentifierMap);
   }
 
   public abstract TypeRef getKeyType();
+
+  public abstract TypeRef getValueType();
 
   public abstract TypeRef getElementType();
 
