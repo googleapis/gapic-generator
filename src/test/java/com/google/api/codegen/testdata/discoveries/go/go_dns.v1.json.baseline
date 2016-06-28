@@ -221,8 +221,7 @@ func main() {
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
   managedZone := "" // TODO: Update placeholder value.
 
-  err := c.ManagedZones.Delete(project, managedZone).Context(ctx).Do()
-  if err != nil {
+  if err := c.ManagedZones.Delete(project, managedZone).Context(ctx).Do(); err != nil {
     // TODO: Handle error.
   }
 }
