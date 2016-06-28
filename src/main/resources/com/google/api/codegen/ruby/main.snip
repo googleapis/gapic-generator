@@ -147,19 +147,21 @@
             @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
               bundle_descriptors: BUNDLE_DESCRIPTORS,
             @else
-              bundle_descriptors: BUNDLE_DESCRIPTORS)
+              bundle_descriptors: BUNDLE_DESCRIPTORS,
             @end
           @end
           @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
-            page_descriptors: PAGE_DESCRIPTORS)
+            page_descriptors: PAGE_DESCRIPTORS,
           @end
+          errors: Google::Gax::Grpc::API_ERRORS)
       @else
         Google::Gax.construct_settings(
           '{@service.getFullName}',
           JSON.parse(f.read),
           client_config,
           Google::Gax::Grpc::STATUS_CODE_NAMES,
-          timeout)
+          timeout,
+          errors: Google::Gax::Grpc::API_ERRORS)
       @end
     end
   @end
