@@ -21,9 +21,9 @@ import com.google.api.codegen.java.direct.JavaClass;
 import com.google.api.codegen.java.surface.JavaSurface;
 import com.google.api.codegen.java.surface.JavaXApi;
 import com.google.api.codegen.languagedirect.LanguageDirectSnippetSetRunner;
-import com.google.api.codegen.proto3.Proto3ToJavaDirectTransformer;
-import com.google.api.codegen.proto3.Proto3ToJavaSurfaceTransformer;
 import com.google.api.codegen.surface.SurfaceSnippetSetRunner;
+import com.google.api.codegen.transformer.ModelToJavaDirectTransformer;
+import com.google.api.codegen.transformer.ModelToJavaSurfaceTransformer;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
@@ -102,7 +102,7 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
     // Run the generator for each service.
     List<GeneratedResult> generated = new ArrayList<>();
     for (Interface interfaze : view.getElementIterable(model)) {
-      JavaSurface surface = Proto3ToJavaSurfaceTransformer.defaultTransform(interfaze, apiConfig);
+      JavaSurface surface = ModelToJavaSurfaceTransformer.defaultTransform(interfaze, apiConfig);
       GeneratedResult result = snippetSetRunner.generate(surface.xapiClass, snippetFileName);
 
       String subPath = pathMapper.getOutputPath(interfaze, apiConfig);

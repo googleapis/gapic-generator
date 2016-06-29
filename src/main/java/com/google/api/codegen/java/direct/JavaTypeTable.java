@@ -20,6 +20,9 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class JavaTypeTable {
@@ -77,6 +80,20 @@ public class JavaTypeTable {
    */
   public static String getBoxedTypeName(String typeName) {
     return LanguageUtil.getRename(typeName, BOXED_TYPE_MAP);
+  }
+
+  public List<String> getImports() {
+    // Clean up the imports.
+    List<String> cleanedImports = new ArrayList<>();
+    for (String imported : imports.keySet()) {
+      if (imported.startsWith(JAVA_LANG_TYPE_PREFIX)) {
+        // Imported type is in java.lang or in package, can be ignored.
+        continue;
+      }
+      cleanedImports.add(imported);
+    }
+    Collections.sort(cleanedImports);
+    return cleanedImports;
   }
 
   /**

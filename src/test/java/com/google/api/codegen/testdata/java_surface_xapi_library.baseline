@@ -1,4 +1,38 @@
 ============== file: src/main/java/com/google/gcloud/pubsub/spi/LibraryServiceApi.java ==============
+package com.google.gcloud.pubsub.spi;
+
+import com.google.api.gax.core.PageAccessor;
+import com.google.api.gax.grpc.ApiCallable;
+import com.google.api.gax.protobuf.PathTemplate;
+import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.CreateBookRequest;
+import com.google.example.library.v1.CreateShelfRequest;
+import com.google.example.library.v1.DeleteBookRequest;
+import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.GetBookFromArchiveRequest;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.GetShelfRequest;
+import com.google.example.library.v1.ListBooksRequest;
+import com.google.example.library.v1.ListBooksResponse;
+import com.google.example.library.v1.ListShelvesRequest;
+import com.google.example.library.v1.ListShelvesResponse;
+import com.google.example.library.v1.ListStringsRequest;
+import com.google.example.library.v1.ListStringsResponse;
+import com.google.example.library.v1.MergeShelvesRequest;
+import com.google.example.library.v1.MoveBookRequest;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.UpdateBookRequest;
+import com.google.protobuf.Empty;
+import io.grpc.ManagedChannel;
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+
 @javax.annotation.Generated("by GAPIC")
 public class LibraryServiceApi implements AutoCloseable {
   private final LibraryServiceSettings settings;
@@ -65,6 +99,46 @@ public class LibraryServiceApi implements AutoCloseable {
     return ARCHIVED_BOOK_PATH_TEMPLATE.instantiate(
         "archive_path", archivePath,
         "book", book);
+  }
+
+  /**
+   * Parses the shelf from the given fully-qualified path which
+   * represents a shelf resource.
+   */
+  public static final String parseShelfFromShelfName(String shelfName) {
+    return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf");
+  }
+
+  /**
+   * Parses the shelf from the given fully-qualified path which
+   * represents a book resource.
+   */
+  public static final String parseShelfFromBookName(String bookName) {
+    return BOOK_PATH_TEMPLATE.parse(bookName).get("shelf");
+  }
+
+  /**
+   * Parses the book from the given fully-qualified path which
+   * represents a book resource.
+   */
+  public static final String parseBookFromBookName(String bookName) {
+    return BOOK_PATH_TEMPLATE.parse(bookName).get("book");
+  }
+
+  /**
+   * Parses the archive_path from the given fully-qualified path which
+   * represents a archivedBook resource.
+   */
+  public static final String parseArchivePathFromArchivedBookName(String archivedBookName) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("archive_path");
+  }
+
+  /**
+   * Parses the book from the given fully-qualified path which
+   * represents a archivedBook resource.
+   */
+  public static final String parseBookFromArchivedBookName(String archivedBookName) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("book");
   }
 
 }
