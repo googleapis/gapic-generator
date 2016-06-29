@@ -128,7 +128,7 @@ public class ConfigGeneratorApi extends ToolDriverBase {
       Map<String, Object> methodConfig = new LinkedHashMap<String, Object>();
       methodConfig.put(CONFIG_KEY_METHOD_NAME, method.getSimpleName());
       for (MethodConfigGenerator generator : methodConfigGenerators) {
-        Map<String, ? extends Object> config = generator.generate(method);
+        Map<String, Object> config = generator.generate(method);
         if (config != null) {
           methodConfig.putAll(config);
         }
