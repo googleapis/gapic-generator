@@ -22,9 +22,11 @@
 
     // Autoload Composer.
     require_once __DIR__ . '/vendor/autoload.php';
+    @if context.php.hasImports
 
-    @join import : imports
-      use {@import};
+      @join import : imports
+        use {@import};
+      @end
     @end
 
     {@body}
