@@ -408,8 +408,12 @@
     @let paramUpperCamel = context.lowerUnderscoreToUpperCamel(field.getSimpleName), \
          paramLowerCamel = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
         @if field.getType.isMap
-            // TODO make this work
-            putAll...
+            @let fullyQualifiedEntryName = context.fullyQualifiedName(field.getType), \
+                  entryName = context.getTypeName(fullyQualifiedEntryName)
+                foreach (${@paramLowerCamel} as $key => $value) {
+                    $request->add{@paramUpperCamel}((new {@entryName}())->setKey($key)->setValue($value));
+                }
+            @end
         @else
             @if field.isRepeated
                 foreach (${@paramLowerCamel} as $elem) {
