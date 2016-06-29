@@ -53,6 +53,10 @@ public class PhpContextCommon {
     return cleanedImports;
   }
 
+  public boolean hasImports() {
+    return getImports().isEmpty();
+  }
+
   public Iterable<String> getDocLines(String text) {
     return getDocLinesWithPrefix(text, "");
   }
