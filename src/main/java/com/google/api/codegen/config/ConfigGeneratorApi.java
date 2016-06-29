@@ -45,9 +45,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-/**
- * Main class for the config generator.
- */
+/** Main class for the config generator. */
 public class ConfigGeneratorApi extends ToolDriverBase {
 
   public static final Option<String> OUTPUT_FILE =
@@ -69,9 +67,7 @@ public class ConfigGeneratorApi extends ToolDriverBase {
 
   private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
 
-  /**
-   * Constructs a config generator api based on given options.
-   */
+  /** Constructs a config generator api based on given options. */
   public ConfigGeneratorApi(ToolOptions options) {
     super(options);
   }
@@ -101,9 +97,7 @@ public class ConfigGeneratorApi extends ToolDriverBase {
     dump(output);
   }
 
-  /**
-   * Generates a collection configurations section.
-   */
+  /** Generates a collection configurations section. */
   private static List<Object> generateCollectionConfigs(Map<String, String> nameMap) {
     List<Object> output = new LinkedList<Object>();
     for (String resourceNameString : nameMap.keySet()) {
@@ -122,13 +116,19 @@ public class ConfigGeneratorApi extends ToolDriverBase {
             new FieldConfigGenerator(),
             new PageStreamingConfigGenerator(),
             new RetryGenerator(),
-            new FieldNamePatternConfigGenerator(collectionConfigNameMap));
+            new FieldNamePatternConfigGenerator(collectionConfigNameMap),
+            new MethodConfigGenerator() {
+              @Override
+              public Map<String, Object> generate(Method method) {
+                return ImmutableMap.of("timeout_millis", (Object) 30000);
+              }
+            });
     List<Object> methods = new LinkedList<Object>();
     for (Method method : service.getMethods()) {
       Map<String, Object> methodConfig = new LinkedHashMap<String, Object>();
       methodConfig.put(CONFIG_KEY_METHOD_NAME, method.getSimpleName());
       for (MethodConfigGenerator generator : methodConfigGenerators) {
-        Map<String, Object> config = generator.generate(method);
+        Map<String, ? extends Object> config = generator.generate(method);
         if (config != null) {
           methodConfig.putAll(config);
         }
