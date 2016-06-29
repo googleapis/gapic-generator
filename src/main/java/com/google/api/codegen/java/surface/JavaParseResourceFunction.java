@@ -14,7 +14,10 @@
  */
 package com.google.api.codegen.java.surface;
 
-public class JavaResourceParam {
+public class JavaParseResourceFunction {
+  public String entityName;
   public String name;
-  public String templateKey;
+  public String pathTemplateName;
+  public String entityNameParamName;
+  public String outputResourceId;
 }

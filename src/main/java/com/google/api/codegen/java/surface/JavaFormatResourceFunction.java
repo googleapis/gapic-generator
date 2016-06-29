@@ -19,6 +19,6 @@ import java.util.List;
 public class JavaFormatResourceFunction {
   public String entityName;
   public String name;
-  public List<JavaResourceParam> resourceParams;
+  public List<JavaResourceIdParam> resourceIdParams;
   public String pathTemplateName;
 }

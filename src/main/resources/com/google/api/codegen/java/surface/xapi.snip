@@ -1,5 +1,11 @@
 
 @snippet generateClass(xapiClass)
+  package {@xapiClass.packageName};
+
+  @join import : xapiClass.imports
+    import {@import};
+  @end
+
   @@javax.annotation.Generated("by GAPIC")
   public class {@xapiClass.name} implements AutoCloseable {
     {@members(xapiClass)}
@@ -25,6 +31,10 @@
   @join function : xapiClass.formatResourceFunctions
     {@formatResourceFunction(function)}
   @end
+  
+  @join function : xapiClass.parseResourceFunctions
+    {@parseResourceFunctions(function)}
+  @end
 @end
 
 @private formatResourceFunction(function)
@@ -33,23 +43,35 @@
    * a {@function.entityName} resource.
    */
   public static final String {@function.name}(\
-      {@formatResourceFunctionParams(function.resourceParams)}) {
+      {@formatResourceFunctionParams(function.resourceIdParams)}) {
     return {@function.pathTemplateName}.instantiate(
-        {@pathTemplateArgs(function.resourceParams)});
+        {@pathTemplateArgs(function.resourceIdParams)});
   }
 
 @end
 
-@private formatResourceFunctionParams(resourceParams)
-  @join param : resourceParams on ", "
+@private formatResourceFunctionParams(resourceIdParams)
+  @join param : resourceIdParams on ", "
     String {@param.name}
   @end
 @end
 
-@private pathTemplateArgs(resourceParams)
-  @join param : resourceParams on ",".add(BREAK)
+@private pathTemplateArgs(resourceIdParams)
+  @join param : resourceIdParams on ",".add(BREAK)
     "{@param.templateKey}", {@param.name}
   @end
+@end
+
+@private parseResourceFunctions(function)
+  /**
+   * Parses the {@function.outputResourceId} from the given fully-qualified path which
+   * represents a {@function.entityName} resource.
+   */
+  public static final String {@function.name}(String {@function.entityNameParamName}) {
+    return {@function.pathTemplateName}.parse({@function.entityNameParamName})\
+      .get("{@function.outputResourceId}");
+  }
+
 @end
 
 @private members(xapiClass)

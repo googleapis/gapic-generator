@@ -19,7 +19,7 @@ import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.InputElementView;
 import com.google.api.codegen.java.direct.JavaClass;
 import com.google.api.codegen.languagedirect.LanguageDirectSnippetSetRunner;
-import com.google.api.codegen.proto3.Proto3ToJavaDirectTransformer;
+import com.google.api.codegen.transformer.ModelToJavaDirectTransformer;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
@@ -98,8 +98,7 @@ public class LanguageDirectGapicProvider implements GapicProvider<Interface> {
     // Run the generator for each service.
     List<GeneratedResult> generated = new ArrayList<>();
     for (Interface interfaze : view.getElementIterable(model)) {
-      List<JavaClass> classes =
-          Proto3ToJavaDirectTransformer.defaultTransform(interfaze, apiConfig);
+      List<JavaClass> classes = ModelToJavaDirectTransformer.defaultTransform(interfaze, apiConfig);
       for (JavaClass javaClass : classes) {
         GeneratedResult result = snippetSetRunner.generate(javaClass, snippetFileName);
 

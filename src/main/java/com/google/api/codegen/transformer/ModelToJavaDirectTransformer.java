@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.proto3;
+package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.LanguageUtil;
@@ -31,16 +31,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public class Proto3ToJavaDirectTransformer {
+public class ModelToJavaDirectTransformer {
   private Interface service;
   private ApiConfig apiConfig;
-  private Proto3JavaTypeTable typeTable = new Proto3JavaTypeTable();
+  private ModelToJavaTypeTable typeTable = new ModelToJavaTypeTable();
 
   public static List<JavaClass> defaultTransform(Interface service, ApiConfig apiConfig) {
-    return new Proto3ToJavaDirectTransformer(service, apiConfig).transform();
+    return new ModelToJavaDirectTransformer(service, apiConfig).transform();
   }
 
-  public Proto3ToJavaDirectTransformer(Interface service, ApiConfig apiConfig) {
+  public ModelToJavaDirectTransformer(Interface service, ApiConfig apiConfig) {
     this.service = service;
     this.apiConfig = apiConfig;
   }

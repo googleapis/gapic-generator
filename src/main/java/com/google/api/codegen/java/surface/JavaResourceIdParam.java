@@ -14,20 +14,7 @@
  */
 package com.google.api.codegen.java.surface;
 
-import java.util.List;
-
-public class JavaXApi {
-  public String packageName;
+public class JavaResourceIdParam {
   public String name;
-  public String settingsClassName;
-  public List<JavaApiCallable> apiCallableMembers;
-  public List<JavaPathTemplate> pathTemplates;
-  public List<JavaFormatResourceFunction> formatResourceFunctions;
-  public List<JavaParseResourceFunction> parseResourceFunctions;
-
-  public List<String> imports;
-
-  public String getFileName() {
-    return name + ".java";
-  }
+  public String templateKey;
 }

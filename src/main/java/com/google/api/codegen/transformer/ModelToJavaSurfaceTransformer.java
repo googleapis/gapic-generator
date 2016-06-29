@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.proto3;
+package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.CollectionConfig;
@@ -22,8 +22,9 @@ import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.java.surface.JavaApiCallable;
 import com.google.api.codegen.java.surface.JavaFormatResourceFunction;
 import com.google.api.codegen.java.surface.JavaPagedApiCallable;
+import com.google.api.codegen.java.surface.JavaParseResourceFunction;
 import com.google.api.codegen.java.surface.JavaPathTemplate;
-import com.google.api.codegen.java.surface.JavaResourceParam;
+import com.google.api.codegen.java.surface.JavaResourceIdParam;
 import com.google.api.codegen.java.surface.JavaSimpleApiCallable;
 import com.google.api.codegen.java.surface.JavaSurface;
 import com.google.api.codegen.java.surface.JavaXApi;
@@ -33,16 +34,16 @@ import com.google.api.tools.framework.model.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Proto3ToJavaSurfaceTransformer {
+public class ModelToJavaSurfaceTransformer {
   private Interface service;
   private ApiConfig apiConfig;
-  private Proto3JavaTypeTable typeTable = new Proto3JavaTypeTable();
+  private ModelToJavaTypeTable typeTable;
 
   public static JavaSurface defaultTransform(Interface service, ApiConfig apiConfig) {
-    return new Proto3ToJavaSurfaceTransformer(service, apiConfig).transform();
+    return new ModelToJavaSurfaceTransformer(service, apiConfig).transform();
   }
 
-  public Proto3ToJavaSurfaceTransformer(Interface service, ApiConfig apiConfig) {
+  public ModelToJavaSurfaceTransformer(Interface service, ApiConfig apiConfig) {
     this.service = service;
     this.apiConfig = apiConfig;
   }
@@ -50,19 +51,40 @@ public class Proto3ToJavaSurfaceTransformer {
   public JavaSurface transform() {
     JavaSurface surface = new JavaSurface();
 
+    typeTable = new ModelToJavaTypeTable();
+    addAlwaysImports();
+
     JavaXApi xapiClass = new JavaXApi();
+    xapiClass.packageName = apiConfig.getPackageName();
     xapiClass.name = getApiWrapperClassName();
     xapiClass.settingsClassName = getSettingsClassName();
     xapiClass.apiCallableMembers = generateApiCallables();
     xapiClass.pathTemplates = generatePathTemplates();
     xapiClass.formatResourceFunctions = generateFormatResourceFunctions();
+    xapiClass.parseResourceFunctions = generateParseResourceFunctions();
+
+    // must be done as the last step to catch all imports
+    xapiClass.imports = typeTable.getImports();
 
     surface.xapiClass = xapiClass;
+
+    typeTable = new ModelToJavaTypeTable();
 
     return surface;
   }
 
-  public List<JavaApiCallable> generateApiCallables() {
+  private void addAlwaysImports() {
+    typeTable.addImport("com.google.api.gax.grpc.ApiCallable");
+    typeTable.addImport("com.google.api.gax.protobuf.PathTemplate");
+    typeTable.addImport("io.grpc.ManagedChannel");
+    typeTable.addImport("java.io.Closeable");
+    typeTable.addImport("java.io.IOException");
+    typeTable.addImport("java.util.ArrayList");
+    typeTable.addImport("java.util.List");
+    typeTable.addImport("java.util.concurrent.ScheduledExecutorService");
+  }
+
+  private List<JavaApiCallable> generateApiCallables() {
     List<JavaApiCallable> callableMembers = new ArrayList<>();
 
     for (Method method : service.getMethods()) {
@@ -73,7 +95,7 @@ public class Proto3ToJavaSurfaceTransformer {
     return callableMembers;
   }
 
-  public List<JavaApiCallable> generateApiCallables(Method method, MethodConfig methodConfig) {
+  private List<JavaApiCallable> generateApiCallables(Method method, MethodConfig methodConfig) {
     String methodNameLowCml = LanguageUtil.upperCamelToLowerCamel(method.getSimpleName());
 
     List<JavaApiCallable> apiCallables = new ArrayList<>();
@@ -104,7 +126,7 @@ public class Proto3ToJavaSurfaceTransformer {
     return apiCallables;
   }
 
-  public List<JavaPathTemplate> generatePathTemplates() {
+  private List<JavaPathTemplate> generatePathTemplates() {
     List<JavaPathTemplate> pathTemplates = new ArrayList<>();
 
     for (CollectionConfig collectionConfig :
@@ -118,7 +140,7 @@ public class Proto3ToJavaSurfaceTransformer {
     return pathTemplates;
   }
 
-  public List<JavaFormatResourceFunction> generateFormatResourceFunctions() {
+  private List<JavaFormatResourceFunction> generateFormatResourceFunctions() {
     List<JavaFormatResourceFunction> functions = new ArrayList<>();
 
     for (CollectionConfig collectionConfig :
@@ -130,14 +152,14 @@ public class Proto3ToJavaSurfaceTransformer {
               + LanguageUtil.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName())
               + "Name";
       function.pathTemplateName = getPathTemplateName(collectionConfig);
-      List<JavaResourceParam> resourceParams = new ArrayList<>();
+      List<JavaResourceIdParam> resourceIdParams = new ArrayList<>();
       for (String var : collectionConfig.getNameTemplate().vars()) {
-        JavaResourceParam param = new JavaResourceParam();
+        JavaResourceIdParam param = new JavaResourceIdParam();
         param.name = LanguageUtil.lowerUnderscoreToLowerCamel(var);
         param.templateKey = var;
-        resourceParams.add(param);
+        resourceIdParams.add(param);
       }
-      function.resourceParams = resourceParams;
+      function.resourceIdParams = resourceIdParams;
 
       functions.add(function);
     }
@@ -145,16 +167,42 @@ public class Proto3ToJavaSurfaceTransformer {
     return functions;
   }
 
-  public String getPathTemplateName(CollectionConfig collectionConfig) {
+  private List<JavaParseResourceFunction> generateParseResourceFunctions() {
+    List<JavaParseResourceFunction> functions = new ArrayList<>();
+
+    for (CollectionConfig collectionConfig :
+        apiConfig.getInterfaceConfig(service).getCollectionConfigs()) {
+      for (String var : collectionConfig.getNameTemplate().vars()) {
+        JavaParseResourceFunction function = new JavaParseResourceFunction();
+        function.entityName =
+            LanguageUtil.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName());
+        function.name =
+            "parse"
+                + LanguageUtil.lowerUnderscoreToUpperCamel(var)
+                + "From"
+                + LanguageUtil.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName())
+                + "Name";
+        function.pathTemplateName = getPathTemplateName(collectionConfig);
+        function.entityNameParamName = function.entityName + "Name";
+        function.outputResourceId = var;
+
+        functions.add(function);
+      }
+    }
+
+    return functions;
+  }
+
+  private String getPathTemplateName(CollectionConfig collectionConfig) {
     return LanguageUtil.lowerUnderscoreToUpperUnderscore(collectionConfig.getEntityName())
         + "_PATH_TEMPLATE";
   }
 
-  public String getApiWrapperClassName() {
+  private String getApiWrapperClassName() {
     return service.getSimpleName() + "Api";
   }
 
-  public String getSettingsClassName() {
+  private String getSettingsClassName() {
     return service.getSimpleName() + "Settings";
   }
 }

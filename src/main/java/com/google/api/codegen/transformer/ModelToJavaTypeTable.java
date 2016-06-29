@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.proto3;
+package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.java.direct.JavaTypeTable;
@@ -25,8 +25,9 @@ import com.google.common.io.Files;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import java.io.File;
+import java.util.List;
 
-public class Proto3JavaTypeTable {
+public class ModelToJavaTypeTable {
   private JavaTypeTable javaTypeTable;
 
   /**
@@ -56,8 +57,12 @@ public class Proto3JavaTypeTable {
           .put(Type.TYPE_BYTES, "com.google.protobuf.ByteString")
           .build();
 
-  public Proto3JavaTypeTable() {
+  public ModelToJavaTypeTable() {
     javaTypeTable = new JavaTypeTable();
+  }
+
+  public void addImport(String longName) {
+    importAndGetShortestName(longName);
   }
 
   public String importAndGetShortestName(String longName) {
@@ -125,6 +130,10 @@ public class Proto3JavaTypeTable {
       default:
         throw new IllegalArgumentException("unknown type kind: " + type.getKind());
     }
+  }
+
+  public List<String> getImports() {
+    return javaTypeTable.getImports();
   }
 
   private static String getJavaPackage(ProtoFile file) {
