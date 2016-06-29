@@ -15,11 +15,10 @@
 package com.google.api.codegen.metacode;
 
 /**
- * InitCodeLineType represents one of the types of InitCodeLine.
+ * Interface for components of a dotted path specification
  */
-public enum InitCodeLineType {
-  StructureInitLine,
-  ListInitLine,
-  SimpleInitLine,
-  MapInitLine
+public interface PathSpec {
+  Object merge(Object mergedStructure);
+
+  Object populate();
 }

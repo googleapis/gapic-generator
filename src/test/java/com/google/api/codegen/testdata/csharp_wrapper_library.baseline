@@ -82,6 +82,7 @@ namespace Google.Example.Library.V1
             ListStringsSettings = existing.ListStringsSettings?.Clone();
             AddCommentsSettings = existing.AddCommentsSettings?.Clone();
             GetBookFromArchiveSettings = existing.GetBookFromArchiveSettings?.Clone();
+            UpdateBookIndexSettings = existing.UpdateBookIndexSettings?.Clone();
         }
 
         /// <summary>
@@ -625,6 +626,39 @@ namespace Google.Example.Library.V1
         /// Default RPC expiration is 30000 milliseconds.
         /// </remarks>
         public CallSettings GetBookFromArchiveSettings { get; set; } = new CallSettings
+        {
+            Timing = CallTiming.FromRetry(new RetrySettings
+            {
+                RetryBackoff = GetDefaultRetryBackoff(),
+                TimeoutBackoff = GetDefaultTimeoutBackoff(),
+                RetryFilter = IdempotentRetryFilter,
+                TotalExpiration = Expiration.FromTimeout(TimeSpan.FromMilliseconds(30000)),
+            }),
+        };
+
+        /// <summary>
+        /// <see cref="CallSettings"/> for synchronous and asynchronous calls to
+        /// <see cref="LibraryServiceClient.UpdateBookIndex"/> and <see cref="LibraryServiceClient.UpdateBookIndexAsync"/>.
+        /// </summary>
+        /// <remarks>
+        /// The default <see cref="LibraryServiceClient.UpdateBookIndex"/> and
+        /// <see cref="LibraryServiceClient.UpdateBookIndexAsync"/> <see cref="RetrySettings"/> are:
+        /// <list type="bullet">
+        /// <item><description>Initial retry delay: 100 milliseconds</description></item>
+        /// <item><description>Retry delay multiplier: 1.2</description></item>
+        /// <item><description>Retry maximum delay: 1000 milliseconds</description></item>
+        /// <item><description>Initial timeout: 300 milliseconds</description></item>
+        /// <item><description>Timeout multiplier: 1.3</description></item>
+        /// <item><description>Timeout maximum delay: 3000 milliseconds</description></item>
+        /// </list>
+        /// Retry will be attempted on the following response status codes:
+        /// <list>
+        /// <item><description><see cref="StatusCode.DeadlineExceeded"/></description></item>
+        /// <item><description><see cref="StatusCode.Unavailable"/></description></item>
+        /// </list>
+        /// Default RPC expiration is 30000 milliseconds.
+        /// </remarks>
+        public CallSettings UpdateBookIndexSettings { get; set; } = new CallSettings
         {
             Timing = CallTiming.FromRetry(new RetrySettings
             {
@@ -1569,6 +1603,58 @@ namespace Google.Example.Library.V1
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Updates the index of a book.
+        /// </summary>
+        /// <param name="name">The name of the book to update.</param>
+        /// <param name="indexName">The name of the index for the book</param>
+        /// <param name="indexMap">The index to update the book with</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task UpdateBookIndexAsync(
+            string name,
+            string indexName,
+            IDictionary<string, string> indexMap,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Updates the index of a book.
+        /// </summary>
+        /// <param name="name">The name of the book to update.</param>
+        /// <param name="indexName">The name of the index for the book</param>
+        /// <param name="indexMap">The index to update the book with</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> to use for this RPC.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public virtual Task UpdateBookIndexAsync(
+            string name,
+            string indexName,
+            IDictionary<string, string> indexMap,
+            CancellationToken cancellationToken) => UpdateBookIndexAsync(
+                name,
+                indexName,
+                indexMap,
+                new CallSettings { CancellationToken = cancellationToken });
+
+        /// <summary>
+        /// Updates the index of a book.
+        /// </summary>
+        /// <param name="name">The name of the book to update.</param>
+        /// <param name="indexName">The name of the index for the book</param>
+        /// <param name="indexMap">The index to update the book with</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public virtual void UpdateBookIndex(
+            string name,
+            string indexName,
+            IDictionary<string, string> indexMap,
+            CallSettings callSettings = null)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 
     public sealed partial class LibraryServiceClientImpl : LibraryServiceClient
@@ -1589,6 +1675,7 @@ namespace Google.Example.Library.V1
         private readonly ApiCall<ListStringsRequest, ListStringsResponse> _callListStrings;
         private readonly ApiCall<AddCommentsRequest, Empty> _callAddComments;
         private readonly ApiCall<GetBookFromArchiveRequest, Book> _callGetBookFromArchive;
+        private readonly ApiCall<UpdateBookIndexRequest, Empty> _callUpdateBookIndex;
 
         public LibraryServiceClientImpl(LibraryService.LibraryServiceClient grpcClient, LibraryServiceSettings settings)
         {
@@ -1625,6 +1712,8 @@ namespace Google.Example.Library.V1
                 GrpcClient.AddCommentsAsync, GrpcClient.AddComments, effectiveSettings.AddCommentsSettings);
             _callGetBookFromArchive = _clientHelper.BuildApiCall<GetBookFromArchiveRequest, Book>(
                 GrpcClient.GetBookFromArchiveAsync, GrpcClient.GetBookFromArchive, effectiveSettings.GetBookFromArchiveSettings);
+            _callUpdateBookIndex = _clientHelper.BuildApiCall<UpdateBookIndexRequest, Empty>(
+                GrpcClient.UpdateBookIndexAsync, GrpcClient.UpdateBookIndex, effectiveSettings.UpdateBookIndexSettings);
         }
 
         public override LibraryService.LibraryServiceClient GrpcClient { get; }
@@ -2302,6 +2391,48 @@ namespace Google.Example.Library.V1
                 new GetBookFromArchiveRequest
                 {
                     Name = name,
+                },
+                callSettings);
+
+        /// <summary>
+        /// Updates the index of a book.
+        /// </summary>
+        /// <param name="name">The name of the book to update.</param>
+        /// <param name="indexName">The name of the index for the book</param>
+        /// <param name="indexMap">The index to update the book with</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>A Task containing the RPC response.</returns>
+        public override Task UpdateBookIndexAsync(
+            string name,
+            string indexName,
+            IDictionary<string, string> indexMap,
+            CallSettings callSettings = null) => _callUpdateBookIndex.Async(
+                new UpdateBookIndexRequest
+                {
+                    Name = name,
+                    IndexName = indexName,
+                    IndexMap = { indexMap },
+                },
+                callSettings);
+
+        /// <summary>
+        /// Updates the index of a book.
+        /// </summary>
+        /// <param name="name">The name of the book to update.</param>
+        /// <param name="indexName">The name of the index for the book</param>
+        /// <param name="indexMap">The index to update the book with</param>
+        /// <param name="callSettings">If not null, applies overrides to this RPC call.</param>
+        /// <returns>The RPC response.</returns>
+        public override void UpdateBookIndex(
+            string name,
+            string indexName,
+            IDictionary<string, string> indexMap,
+            CallSettings callSettings = null) => _callUpdateBookIndex.Sync(
+                new UpdateBookIndexRequest
+                {
+                    Name = name,
+                    IndexName = indexName,
+                    IndexMap = { indexMap },
                 },
                 callSettings);
 

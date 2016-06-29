@@ -16,6 +16,9 @@ package com.google.api.codegen.php;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
+import com.google.api.codegen.metacode.FieldSetting;
+import com.google.api.codegen.metacode.InitCode;
+import com.google.api.codegen.metacode.InitCodeLine;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -229,6 +232,46 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
 
   public PhpDocConfig.Builder newPhpDocConfigBuilder() {
     return PhpDocConfig.newBuilder();
+  }
+
+  /**
+   * Get a Php formatted primitive value, given a primitive type and a string representation of that
+   * value. The value must be a valid example of that type. Values of type Bool must be either the
+   * string 'true' or 'false' (other capitalizations are permitted).
+   */
+  public String renderPrimitiveValue(TypeRef type, String value) {
+    Type primitiveType = type.getKind();
+    if (!PRIMITIVE_TYPE_MAP.containsKey(primitiveType)) {
+      throw new IllegalArgumentException(
+          "Initial values are only supported for primitive types, got type "
+              + type
+              + ", with value "
+              + value);
+    }
+    switch (primitiveType) {
+      case TYPE_BOOL:
+        return value.toLowerCase();
+      case TYPE_STRING:
+      case TYPE_BYTES:
+        return "\"" + value + "\"";
+      default:
+        // Types that do not need to be modified (e.g. TYPE_INT32) are handled here
+        return value;
+    }
+  }
+
+  /**
+   * Determine whether a given InitCodeLine is a method parameter. This is important for map fields
+   * because flattened map parameters accept an associative array, while map fields on a request
+   * object must be a sequential array of MapEntry objects.
+   */
+  public boolean initLineIsParameter(InitCode initCode, InitCodeLine initCodeLine) {
+    for (FieldSetting fieldSetting : initCode.getArgFields()) {
+      if (initCodeLine.getIdentifier().equals(fieldSetting.getIdentifier())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   // Constants
