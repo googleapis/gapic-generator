@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @AutoValue
-public abstract class FieldSpec implements Spec {
+public abstract class FieldSpec implements PathSpec {
 
   public static FieldSpec create(String name, Object subStructure) {
     return new AutoValue_FieldSpec(name, subStructure);

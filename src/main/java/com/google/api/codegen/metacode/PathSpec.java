@@ -14,7 +14,10 @@
  */
 package com.google.api.codegen.metacode;
 
-public interface Spec {
+/**
+ * Interface for components of a dotted path specification
+ */
+public interface PathSpec {
   Object merge(Object mergedStructure);
 
   Object populate();

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @AutoValue
-public abstract class ListElementSpec implements Spec {
+public abstract class ListElementSpec implements PathSpec {
 
   public static ListElementSpec create(String index, Object subStructure) {
     return new AutoValue_ListElementSpec(index, subStructure);

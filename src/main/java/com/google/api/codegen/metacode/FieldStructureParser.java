@@ -119,8 +119,8 @@ public class FieldStructureParser {
   }
 
   public static Object merge(Object mergedStructure, Object unmergedStructure) {
-    if (unmergedStructure instanceof Spec) {
-      return ((Spec) unmergedStructure).merge(mergedStructure);
+    if (unmergedStructure instanceof PathSpec) {
+      return ((PathSpec) unmergedStructure).merge(mergedStructure);
     } else if (unmergedStructure instanceof InitValueConfig) {
       // Only valid to merge an InitValueConfig if the existing merged structure is
       // an empty InitValueConfig
@@ -145,8 +145,8 @@ public class FieldStructureParser {
   }
 
   public static Object populate(Object unmergedStructure) {
-    if (unmergedStructure instanceof Spec) {
-      return ((Spec) unmergedStructure).populate();
+    if (unmergedStructure instanceof PathSpec) {
+      return ((PathSpec) unmergedStructure).populate();
     } else {
       return unmergedStructure;
     }
