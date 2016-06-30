@@ -41,6 +41,27 @@ import com.google.api.codegen.java.surface.JavaSimpleApiCallable;
 import com.google.api.codegen.java.surface.JavaSurface;
 import com.google.api.codegen.java.surface.JavaUnpagedListCallableMethod;
 import com.google.api.codegen.java.surface.JavaXApi;
+import com.google.api.codegen.metacode.FieldSetting;
+import com.google.api.codegen.metacode.FieldStructureParser;
+import com.google.api.codegen.metacode.InitCode;
+import com.google.api.codegen.metacode.InitCodeGenerator;
+import com.google.api.codegen.metacode.InitCodeLine;
+import com.google.api.codegen.metacode.InitValueConfig;
+import com.google.api.codegen.metacode.ListInitCodeLine;
+import com.google.api.codegen.metacode.MapInitCodeLine;
+import com.google.api.codegen.metacode.SimpleInitCodeLine;
+import com.google.api.codegen.metacode.StructureInitCodeLine;
+import com.google.api.codegen.surface.SurfaceFieldSetting;
+import com.google.api.codegen.surface.SurfaceFormattedInitValue;
+import com.google.api.codegen.surface.SurfaceInitCode;
+import com.google.api.codegen.surface.SurfaceInitCodeLine;
+import com.google.api.codegen.surface.SurfaceInitValue;
+import com.google.api.codegen.surface.SurfaceListInitCodeLine;
+import com.google.api.codegen.surface.SurfaceMapEntry;
+import com.google.api.codegen.surface.SurfaceMapInitCodeLine;
+import com.google.api.codegen.surface.SurfaceSimpleInitCodeLine;
+import com.google.api.codegen.surface.SurfaceSimpleInitValue;
+import com.google.api.codegen.surface.SurfaceStructureInitCodeLine;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -53,11 +74,13 @@ import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class ModelToJavaSurfaceTransformer {
   private Interface service;
   private ApiConfig apiConfig;
   private ModelToJavaTypeTable typeTable;
+  private IdentifierNamer namer;
 
   public static JavaSurface defaultTransform(Interface service, ApiConfig apiConfig) {
     return new ModelToJavaSurfaceTransformer(service, apiConfig).transform();
@@ -66,6 +89,7 @@ public class ModelToJavaSurfaceTransformer {
   public ModelToJavaSurfaceTransformer(Interface service, ApiConfig apiConfig) {
     this.service = service;
     this.apiConfig = apiConfig;
+    this.namer = new JavaIdentifierNamer();
   }
 
   public JavaSurface transform() {
@@ -182,10 +206,7 @@ public class ModelToJavaSurfaceTransformer {
         apiConfig.getInterfaceConfig(service).getCollectionConfigs()) {
       JavaFormatResourceFunction function = new JavaFormatResourceFunction();
       function.entityName = collectionConfig.getEntityName();
-      function.name =
-          "format"
-              + LanguageUtil.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName())
-              + "Name";
+      function.name = getFormatFunctionName(collectionConfig);
       function.pathTemplateName = getPathTemplateName(collectionConfig);
       List<JavaResourceIdParam> resourceIdParams = new ArrayList<>();
       for (String var : collectionConfig.getNameTemplate().vars()) {
@@ -263,6 +284,8 @@ public class ModelToJavaSurfaceTransformer {
       Method method, MethodConfig methodConfig, ImmutableList<Field> fields) {
     JavaPagedFlattenedMethod apiMethod = new JavaPagedFlattenedMethod();
 
+    apiMethod.initCode = generateInitCode(method, methodConfig, fields);
+
     JavaApiMethodDoc doc = new JavaApiMethodDoc();
 
     doc.mainDocLines = getJavaDocLines(method);
@@ -301,7 +324,162 @@ public class ModelToJavaSurfaceTransformer {
 
     apiMethod.requestTypeName = typeTable.importAndGetShortestName(method.getInputType());
 
+    apiMethod.apiClassName = getApiWrapperClassName();
+    apiMethod.apiVariableName = getApiWrapperVariableName();
+
     return apiMethod;
+  }
+
+  public SurfaceInitCode generateInitCode(
+      Method method, MethodConfig methodConfig, Iterable<Field> fields) {
+    Map<String, Object> initFieldStructure = createInitFieldStructure(methodConfig);
+    InitCodeGenerator generator = new InitCodeGenerator();
+    InitCode initCode = generator.generateRequestFieldInitCode(method, initFieldStructure, fields);
+
+    SurfaceInitCode surfaceInitCode = new SurfaceInitCode();
+    surfaceInitCode.lines = generateSurfaceInitCodeLines(initCode);
+    surfaceInitCode.fieldSettings = getFieldSettings(initCode.getArgFields());
+    return surfaceInitCode;
+  }
+
+  private Map<String, Object> createInitFieldStructure(MethodConfig methodConfig) {
+    Map<String, String> fieldNamePatterns = methodConfig.getFieldNamePatterns();
+
+    ImmutableMap.Builder<String, InitValueConfig> initValueConfigMap = ImmutableMap.builder();
+    for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
+      CollectionConfig collectionConfig = getCollectionConfig(fieldNamePattern.getValue());
+      InitValueConfig initValueConfig =
+          InitValueConfig.create(getApiWrapperClassName(), collectionConfig);
+      initValueConfigMap.put(fieldNamePattern.getKey(), initValueConfig);
+    }
+    Map<String, Object> initFieldStructure =
+        FieldStructureParser.parseFields(
+            methodConfig.getSampleCodeInitFields(), initValueConfigMap.build());
+    return initFieldStructure;
+  }
+
+  private CollectionConfig getCollectionConfig(String entityName) {
+    return apiConfig.getInterfaceConfig(service).getCollectionConfig(entityName);
+  }
+
+  public List<SurfaceInitCodeLine> generateSurfaceInitCodeLines(InitCode initCode) {
+    List<SurfaceInitCodeLine> surfaceLines = new ArrayList<>();
+    for (InitCodeLine line : initCode.getLines()) {
+      switch (line.getLineType()) {
+        case StructureInitLine:
+          surfaceLines.add(generateStructureInitCodeLine((StructureInitCodeLine) line));
+          continue;
+        case ListInitLine:
+          surfaceLines.add(generateListInitCodeLine((ListInitCodeLine) line));
+          continue;
+        case SimpleInitLine:
+          surfaceLines.add(generateSimpleInitCodeLine((SimpleInitCodeLine) line));
+          continue;
+        case MapInitLine:
+          surfaceLines.add(generateMapInitCodeLine((MapInitCodeLine) line));
+          continue;
+        default:
+          throw new RuntimeException("unhandled line type: " + line.getLineType());
+      }
+    }
+    return surfaceLines;
+  }
+
+  private SurfaceStructureInitCodeLine generateStructureInitCodeLine(StructureInitCodeLine line) {
+    SurfaceStructureInitCodeLine surfaceLine = new SurfaceStructureInitCodeLine();
+
+    surfaceLine.lineType = line.getLineType();
+    surfaceLine.typeName = namer.getTypeName(line.getType());
+    surfaceLine.identifier = namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
+    surfaceLine.fieldSettings = getFieldSettings(line.getFieldSettings());
+    surfaceLine.initValue = getInitValue(line.getType(), line.getInitValueConfig());
+
+    return surfaceLine;
+  }
+
+  private SurfaceListInitCodeLine generateListInitCodeLine(ListInitCodeLine line) {
+    SurfaceListInitCodeLine surfaceLine = new SurfaceListInitCodeLine();
+
+    surfaceLine.lineType = line.getLineType();
+    surfaceLine.elementTypeName = namer.getElementTypeName(line.getElementType());
+    surfaceLine.identifier = namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
+    List<String> elementIdentifiers = new ArrayList<>();
+    for (String identifier : line.getElementIdentifiers()) {
+      elementIdentifiers.add(namer.getVariableName(identifier, null));
+    }
+    surfaceLine.elementIdentifiers = elementIdentifiers;
+
+    return surfaceLine;
+  }
+
+  private SurfaceSimpleInitCodeLine generateSimpleInitCodeLine(SimpleInitCodeLine line) {
+    SurfaceSimpleInitCodeLine surfaceLine = new SurfaceSimpleInitCodeLine();
+
+    surfaceLine.lineType = line.getLineType();
+    surfaceLine.typeName = namer.getTypeName(line.getType());
+    surfaceLine.identifier = namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
+    surfaceLine.initValue = getInitValue(line.getType(), line.getInitValueConfig());
+
+    return surfaceLine;
+  }
+
+  private SurfaceInitCodeLine generateMapInitCodeLine(MapInitCodeLine line) {
+    SurfaceMapInitCodeLine surfaceLine = new SurfaceMapInitCodeLine();
+
+    surfaceLine.lineType = line.getLineType();
+    surfaceLine.keyTypeName = namer.getTypeName(line.getKeyType());
+    surfaceLine.valueTypeName = namer.getTypeName(line.getValueType());
+    surfaceLine.identifier = namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
+    List<SurfaceMapEntry> entries = new ArrayList<>();
+    for (Map.Entry<String, String> entry : line.getElementIdentifierMap().entrySet()) {
+      SurfaceMapEntry mapEntry = new SurfaceMapEntry();
+      mapEntry.key = namer.renderPrimitiveValue(line.getKeyType(), entry.getKey());
+      mapEntry.value = namer.renderPrimitiveValue(line.getElementType(), entry.getValue());
+      entries.add(mapEntry);
+    }
+    surfaceLine.initEntries = entries;
+
+    return surfaceLine;
+  }
+
+  private SurfaceInitValue getInitValue(TypeRef type, InitValueConfig initValueConfig) {
+    if (initValueConfig.hasFormattingConfig()) {
+      SurfaceFormattedInitValue initValue = new SurfaceFormattedInitValue();
+
+      initValue.apiWrapperName = getApiWrapperClassName();
+      initValue.formatFunctionName = getFormatFunctionName(initValueConfig.getCollectionConfig());
+      List<String> formatFunctionArgs = new ArrayList<>();
+      for (String var : initValueConfig.getCollectionConfig().getNameTemplate().vars()) {
+        formatFunctionArgs.add("\"[" + LanguageUtil.lowerUnderscoreToUpperUnderscore(var) + "]\"");
+      }
+      initValue.formatArgs = formatFunctionArgs;
+
+      return initValue;
+    } else {
+      SurfaceSimpleInitValue initValue = new SurfaceSimpleInitValue();
+
+      if (initValueConfig.hasInitialValue()) {
+        initValue.initialValue =
+            namer.renderPrimitiveValue(type, initValueConfig.getInitialValue());
+      } else {
+        initValue.initialValue = namer.zeroValue(type);
+      }
+
+      return initValue;
+    }
+  }
+
+  public List<SurfaceFieldSetting> getFieldSettings(Iterable<FieldSetting> fieldSettings) {
+    List<SurfaceFieldSetting> allSettings = new ArrayList<>();
+    for (FieldSetting setting : fieldSettings) {
+      SurfaceFieldSetting fieldSetting = new SurfaceFieldSetting();
+      fieldSetting.setFunctionCallName =
+          namer.getSetFunctionCallName(setting.getType(), setting.getFieldName());
+      fieldSetting.identifier =
+          namer.getVariableName(setting.getIdentifier(), setting.getInitValueConfig());
+      allSettings.add(fieldSetting);
+    }
+    return allSettings;
   }
 
   private JavaPagedRequestObjectMethod generatePagedRequestObjectMethod(
@@ -336,18 +514,19 @@ public class ModelToJavaSurfaceTransformer {
     JavaRequestObjectParam param = new JavaRequestObjectParam();
     param.name = getVariableNameForField(field);
     param.typeName = typeTable.importAndGetShortestName(field.getType());
-
-    TypeRef fieldType = field.getType();
-    String fieldSuffix = LanguageUtil.lowerUnderscoreToUpperCamel(field.getSimpleName());
-    if (fieldType.isMap()) {
-      param.setCallName = "putAll" + fieldSuffix;
-    } else if (fieldType.isRepeated()) {
-      param.setCallName = "addAll" + fieldSuffix;
-    } else {
-      param.setCallName = "set" + fieldSuffix;
-    }
-
+    param.setCallName = getSetFunctionCallName(field.getType(), field.getSimpleName());
     return param;
+  }
+
+  public static String getSetFunctionCallName(TypeRef type, String identifier) {
+    String fieldSuffix = LanguageUtil.lowerUnderscoreToUpperCamel(identifier);
+    if (type.isMap()) {
+      return "putAll" + fieldSuffix;
+    } else if (type.isRepeated()) {
+      return "addAll" + fieldSuffix;
+    } else {
+      return "set" + fieldSuffix;
+    }
   }
 
   private List<String> getJavaDocLines(ProtoElement element) {
@@ -393,7 +572,17 @@ public class ModelToJavaSurfaceTransformer {
     return service.getSimpleName() + "Api";
   }
 
+  private String getApiWrapperVariableName() {
+    return LanguageUtil.upperCamelToLowerCamel(getApiWrapperClassName());
+  }
+
   private String getSettingsClassName() {
     return service.getSimpleName() + "Settings";
+  }
+
+  private String getFormatFunctionName(CollectionConfig collectionConfig) {
+    return "format"
+        + LanguageUtil.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName())
+        + "Name";
   }
 }

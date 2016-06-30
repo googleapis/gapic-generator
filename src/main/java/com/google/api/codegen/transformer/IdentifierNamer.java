@@ -12,21 +12,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.java.surface;
+package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.surface.SurfaceInitCode;
+import com.google.api.codegen.metacode.InitValueConfig;
+import com.google.api.tools.framework.model.TypeRef;
 
-import java.util.List;
+public interface IdentifierNamer {
 
-public class JavaPagedFlattenedMethod implements JavaApiMethod {
+  String getVariableName(String identifier, InitValueConfig initValueConfig);
 
-  public SurfaceInitCode initCode;
-  public JavaApiMethodDoc doc;
-  public String resourceTypeName;
-  public String name;
-  public List<JavaRequestObjectParam> requestObjectParams;
-  public String requestTypeName;
-  public List<JavaPathTemplateCheck> pathTemplateChecks;
-  public String apiClassName;
-  public String apiVariableName;
+  String getTypeName(TypeRef elementType);
+
+  String getElementTypeName(TypeRef elementType);
+
+  String getSetFunctionCallName(TypeRef type, String fieldName);
+
+  String renderPrimitiveValue(TypeRef keyType, String value);
+
+  String zeroValue(TypeRef type);
 }

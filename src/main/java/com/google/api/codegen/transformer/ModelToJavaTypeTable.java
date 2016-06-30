@@ -57,6 +57,28 @@ public class ModelToJavaTypeTable {
           .put(Type.TYPE_BYTES, "com.google.protobuf.ByteString")
           .build();
 
+  /**
+   * A map from primitive types in proto to zero value in Java
+   */
+  private static final ImmutableMap<Type, String> PRIMITIVE_ZERO_VALUE =
+      ImmutableMap.<Type, String>builder()
+          .put(Type.TYPE_BOOL, "false")
+          .put(Type.TYPE_DOUBLE, "0.0")
+          .put(Type.TYPE_FLOAT, "0.0F")
+          .put(Type.TYPE_INT64, "0L")
+          .put(Type.TYPE_UINT64, "0L")
+          .put(Type.TYPE_SINT64, "0L")
+          .put(Type.TYPE_FIXED64, "0L")
+          .put(Type.TYPE_SFIXED64, "0L")
+          .put(Type.TYPE_INT32, "0")
+          .put(Type.TYPE_UINT32, "0")
+          .put(Type.TYPE_SINT32, "0")
+          .put(Type.TYPE_FIXED32, "0")
+          .put(Type.TYPE_SFIXED32, "0")
+          .put(Type.TYPE_STRING, "\"\"")
+          .put(Type.TYPE_BYTES, "ByteString.copyFromUtf8(\"\")")
+          .build();
+
   public ModelToJavaTypeTable() {
     javaTypeTable = new JavaTypeTable();
   }
@@ -134,6 +156,56 @@ public class ModelToJavaTypeTable {
 
   public List<String> getImports() {
     return javaTypeTable.getImports();
+  }
+
+  public static String renderPrimitiveValue(TypeRef type, String value) {
+    Type primitiveType = type.getKind();
+    if (!PRIMITIVE_TYPE_MAP.containsKey(primitiveType)) {
+      throw new IllegalArgumentException(
+          "Initial values are only supported for primitive types, got type "
+              + type
+              + ", with value "
+              + value);
+    }
+    switch (primitiveType) {
+      case TYPE_BOOL:
+        return value.toLowerCase();
+      case TYPE_FLOAT:
+        return value + "F";
+      case TYPE_INT64:
+      case TYPE_UINT64:
+        return value + "L";
+      case TYPE_STRING:
+        return "\"" + value + "\"";
+      case TYPE_BYTES:
+        return "ByteString.copyFromUtf8(\"" + value + "\")";
+      default:
+        // Types that do not need to be modified (e.g. TYPE_INT32) are handled here
+        return value;
+    }
+  }
+
+  /**
+   * Returns the Java representation of a zero value for that type, to be used in code sample doc.
+   *
+   * Parametric types may use the diamond operator, since the return value will be used only in
+   * initialization.
+   */
+  public String importAndGetZeroValue(TypeRef type) {
+    // Don't call getTypeName; we don't need to import these.
+    if (type.isMap()) {
+      return "new HashMap<>()";
+    }
+    if (type.isRepeated()) {
+      return "new ArrayList<>()";
+    }
+    if (PRIMITIVE_ZERO_VALUE.containsKey(type.getKind())) {
+      return PRIMITIVE_ZERO_VALUE.get(type.getKind());
+    }
+    if (type.isMessage()) {
+      return importAndGetShortestName(type) + ".newBuilder().build()";
+    }
+    return "null";
   }
 
   private static String getJavaPackage(ProtoFile file) {

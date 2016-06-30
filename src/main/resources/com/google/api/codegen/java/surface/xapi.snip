@@ -1,4 +1,3 @@
-
 @snippet generateClass(xapiClass)
   package {@xapiClass.packageName};
 
@@ -82,7 +81,7 @@
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
   @join apiCallable : xapiClass.apiCallableMembers
-    @switch apiCallable.getClass().getSimpleName()
+    @switch apiCallable.getClass.getSimpleName
     @case "JavaSimpleApiCallable"
       private final ApiCallable<{@apiCallable.inTypeName}, {@apiCallable.outTypeName}> {@apiCallable.name};
     @case "JavaPagedApiCallable"
@@ -130,7 +129,7 @@
     this.channel = settings.getChannelProvider().getOrBuildChannel(this.executor);
 
     @join apiCallable : xapiClass.apiCallableMembers
-      @switch apiCallable.getClass().getSimpleName()
+      @switch apiCallable.getClass.getSimpleName
       @case "JavaSimpleApiCallable"
         this.{@apiCallable.name} = ApiCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
       @case "JavaPagedApiCallable"
@@ -170,7 +169,7 @@
 
 @private apiMethods(xapiClass)
   @join apiMethod : xapiClass.apiMethods
-    @switch apiMethod.getClass().getSimpleName()
+    @switch apiMethod.getClass.getSimpleName
     @case "JavaPagedFlattenedMethod"
       {@pagedFlattenedMethod(apiMethod)}
     @case "JavaPagedRequestObjectMethod"
@@ -193,7 +192,9 @@
 @end
 
 @private pagedFlattenedMethod(apiMethod)
-  {@methodJavaDoc(apiMethod.doc)}
+  @let coreSampleCode = pagedFlattenedMethodSampleCode(apiMethod)
+    {@methodJavaDoc(apiMethod.doc, decoratedSampleCode(apiMethod, coreSampleCode))}
+  @end
   public final PageAccessor<{@apiMethod.resourceTypeName}> \
       {@apiMethod.name}({@paramList(apiMethod.requestObjectParams)}) {
     @join pathTemplateCheck : apiMethod.pathTemplateChecks
@@ -207,8 +208,17 @@
   }
 @end
 
+@snippet pagedFlattenedMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  for ({@apiMethod.resourceTypeName} element : \
+      {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+      {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})) {
+    // doThingsWith(element);
+  }
+@end
+
 @private pagedRequestObjectMethod(apiMethod)
-  {@methodJavaDoc(apiMethod.doc)}
+  {@methodJavaDoc(apiMethod.doc, "")}
   {@apiMethod.accessModifier} final PageAccessor<{@apiMethod.resourceTypeName}> \
       {@apiMethod.name}({@apiMethod.requestTypeName} request) {
     return {@apiMethod.name}PagedCallable()
@@ -231,7 +241,20 @@
 @private callableMethod(apiMethod)
 @end
 
-@private methodJavaDoc(apiMethodDoc)
+@snippet decoratedSampleCode(apiMethod, coreSampleCode)
+  try ({@apiMethod.apiClassName} {@apiMethod.apiVariableName} = \
+      {@apiMethod.apiClassName}.createWithDefaults()) {
+    {@coreSampleCode}
+  }
+@end
+
+@private sampleMethodCallArgList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+@end
+
+@private methodJavaDoc(apiMethodDoc, methodSampleCode)
   /**
   @join commentLine : apiMethodDoc.mainDocLines
     {@""} * {@commentLine} 
@@ -239,10 +262,9 @@
    *
    * Sample code:
    * <pre><code>
-  #@join sampleLine : generateMethodSampleCode(apiMethodDoc)
-  #  {@""} * {@sampleLine}
-  #@end
-  {@dummySample()}
+  @join sampleLine : util.getJavaDocLines(methodSampleCode)
+    {@""} * {@sampleLine}
+  @end
    * </code></pre>
   @if apiMethodDoc.paramDocLines
     {@""} *
@@ -257,12 +279,7 @@
     @end
   @end
    */
-@end
-
-@private paramList(params)
-  @join param : params on ", "
-    {@param.typeName} {@param.name}
-  @end
+  {@EMPTY}
 @end
 
 @private builderSetCalls(requestObjectParams)
@@ -275,8 +292,66 @@
   {@pathTemplateCheck.pathTemplateName}.validate({@pathTemplateCheck.paramName});
 @end
 
-@private dummySample()
-  {@""} * try {
-   *
-   * }
+@private initCode(initCodeSpec)
+  @join line : initCodeSpec.lines
+    @switch line.lineType.toString
+    @case "StructureInitLine"
+      {@initLineStructure(line)}
+    @case "ListInitLine"
+      {@initLineList(line)}
+    @case "MapInitLine"
+      {@initLineMap(line)}
+    @case "SimpleInitLine"
+      {@initLineSimple(line)}
+    @default
+      {@unhandledCase()}
+    @end
+  @end
+@end
+
+@private initLineStructure(line)
+  {@line.typeName} {@line.identifier} = {@line.typeName}.newBuilder()
+  @join fieldSetting : line.getFieldSettings
+    {@EMPTY}  .{@line.setFunctionCallName}({@fieldSetting.identifier})
+  @end
+  {@EMPTY}  .build();
+@end
+
+@private initLineList(line)
+  List<{@line.elementTypeName}> {@line.identifier} = \
+      Arrays.asList({@argList(line.elementIdentifiers)});
+@end
+
+@private initLineMap(line)
+  Map<{@line.keyTypeName}, {@line.valueTypeName}> {@line.identifier} = new HashMap<>();
+  @join mapEntry : line.initEntries vertical
+    {@line.identifier}.put({@mapEntry.key}, {@mapEntry.value});
+  @end
+@end
+
+@private initLineSimple(line)
+  {@line.typeName} {@line.identifier} = {@renderInitValue(line.initValue)};
+@end
+
+@private renderInitValue(initValue)
+  @switch initValue.getClass.getSimpleName
+  @case "SurfaceSimpleInitValue"
+    {@initValue.initialValue}
+  @case "SurfaceFormattedInitValue"
+    {@initValue.apiWrapperName}.{@initValue.formatFunctionName}({@initValue.formatArgs})
+  @default
+    {@unhandledCase()}
+  @end
+@end
+
+@private paramList(params)
+  @join param : params on ", "
+    {@param.typeName} {@param.name}
+  @end
+@end
+
+@private argList(args)
+  @join arg : args on ", "
+    {@arg}
+  @end
 @end

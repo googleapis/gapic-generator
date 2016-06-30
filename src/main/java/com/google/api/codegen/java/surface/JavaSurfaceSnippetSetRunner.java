@@ -12,10 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.google.api.codegen.java.surface;
 
 import com.google.api.codegen.GeneratedResult;
+import com.google.api.codegen.java.JavaSnippetUtil;
 import com.google.api.codegen.surface.SurfaceSnippetSetRunner;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
@@ -41,7 +41,7 @@ public class JavaSurfaceSnippetSetRunner implements SurfaceSnippetSetRunner<Java
             JavaViewModelSnippetSet.class,
             SNIPPET_RESOURCE_ROOT,
             snippetFileName,
-            ImmutableMap.<String, Object>of());
+            ImmutableMap.<String, Object>of("util", new JavaSnippetUtil()));
 
     String outputFilename = xapi.getFileName();
     Doc result = snippets.generateClass(xapi);

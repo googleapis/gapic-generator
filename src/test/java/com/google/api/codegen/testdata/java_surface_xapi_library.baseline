@@ -24,6 +24,7 @@ import com.google.example.library.v1.MoveBookRequest;
 import com.google.example.library.v1.PublishSeriesRequest;
 import com.google.example.library.v1.PublishSeriesResponse;
 import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.UpdateBookIndexRequest;
 import com.google.example.library.v1.UpdateBookRequest;
 import com.google.protobuf.Empty;
 import io.grpc.ManagedChannel;
@@ -58,6 +59,7 @@ public class LibraryServiceApi implements AutoCloseable {
   private final ApiCallable<ListStringsRequest, PageAccessor<String>> listStringsPagedCallable;
   private final ApiCallable<AddCommentsRequest, Empty> addCommentsCallable;
   private final ApiCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable;
+  private final ApiCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable;
 
   public final LibraryServiceSettings getSettings() {
     return settings;
@@ -191,6 +193,7 @@ public class LibraryServiceApi implements AutoCloseable {
         ApiCallable.createPagedVariant(settings.listStringsSettings(), this.channel, this.executor);
     this.addCommentsCallable = ApiCallable.create(settings.addCommentsSettings(), this.channel, this.executor);
     this.getBookFromArchiveCallable = ApiCallable.create(settings.getBookFromArchiveSettings(), this.channel, this.executor);
+    this.updateBookIndexCallable = ApiCallable.create(settings.updateBookIndexSettings(), this.channel, this.executor);
 
     if (settings.getChannelProvider().shouldAutoClose()) {
       closeables.add(
@@ -233,8 +236,11 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
    *
+   *   for (Shelf element : libraryServiceApi.listShelves()) {
+   *     // doThingsWith(element);
+   *   }
    * }
    * </code></pre>
    *
@@ -253,15 +259,14 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try {
    *
-   * }
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    *
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
+
   private final PageAccessor<Shelf> listShelves(ListShelvesRequest request) {
     return listShelvesPagedCallable()
         .call(request);
@@ -306,8 +311,12 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try {
-   *
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName(["[SHELF]"]);
+   *   String filter = "";
+   *   for (Book element : libraryServiceApi.listBooks(formattedName, filter)) {
+   *     // doThingsWith(element);
+   *   }
    * }
    * </code></pre>
    *
@@ -331,15 +340,14 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try {
    *
-   * }
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    *
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
+
   public final PageAccessor<Book> listBooks(ListBooksRequest request) {
     return listBooksPagedCallable()
         .call(request);
@@ -374,8 +382,11 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
    *
+   *   for (String element : libraryServiceApi.listStrings()) {
+   *     // doThingsWith(element);
+   *   }
    * }
    * </code></pre>
    *
@@ -394,19 +405,24 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try {
    *
-   * }
    * </code></pre>
    *
    * @param request The request object containing all of the parameters for the API call.
    *
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
+
   private final PageAccessor<String> listStrings(ListStringsRequest request) {
     return listStringsPagedCallable()
         .call(request);
   }
+
+
+
+
+
+
 
 
 
