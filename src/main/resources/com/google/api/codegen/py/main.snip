@@ -281,7 +281,7 @@
 @end
 
 @private pathTemplateName(collectionConfig)
-    _{@context.lowerUnderscoreToUpperUnderscore(collectionConfig.getEntityName)}_PATH_TEMPLATE
+    _{@context.lowerUnderscoreToUpperUnderscore(entityName(collectionConfig))}_PATH_TEMPLATE
 @end
 
 @private pathTemplateSection(service)
@@ -305,7 +305,7 @@
 @private createResourceFunction(collectionConfig)
     @@classmethod
     def {@formatResourceFunctionName(collectionConfig)}(cls, {@createResourceFunctionParams(collectionConfig)}):
-        """Returns a fully-qualified {@collectionConfig.getEntityName} resource name string."""
+        """Returns a fully-qualified {@entityName(collectionConfig)} resource name string."""
         return cls.{@pathTemplateName(collectionConfig)}.render({
             {@createRenderDictionary(collectionConfig)}
         })
@@ -316,10 +316,10 @@
     @let fieldPath = resourceName(collectionConfig)
       @@classmethod
       def match_{@subField}_from_{@fieldPath}(cls, {@fieldPath}):
-          """Parses the {@subField} from a {@collectionConfig.getEntityName} resource.
+          """Parses the {@subField} from a {@entityName(collectionConfig)} resource.
 
           Args:
-            {@fieldPath} (string): A fully-qualified path representing a {@collectionConfig.getEntityName}
+            {@fieldPath} (string): A fully-qualified path representing a {@entityName(collectionConfig)}
               resource.
 
           Returns:
@@ -331,7 +331,7 @@
 @end
 
 @private resourceName(collectionConfig)
-  {@collectionConfig.getEntityName}_name
+  {@entityName(collectionConfig)}_name
 @end
 
 @private createResourceFunctionParams(collectionConfig)
