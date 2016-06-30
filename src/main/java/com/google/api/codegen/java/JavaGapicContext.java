@@ -120,6 +120,13 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
   }
 
   /**
+   * Returns the resource name from the entity name.
+   */
+  public String getResourceName(String entityName) {
+    return lowerUnderscoreToUpperCamel(lowerCamelToLowerUnderscore(entityName)) + "Name";
+  }
+
+  /**
    * Adds the given type name to the import list. Returns an empty string so that the output is not
    * affected in snippets.
    */
