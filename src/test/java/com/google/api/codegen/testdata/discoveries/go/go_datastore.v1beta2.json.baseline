@@ -5,9 +5,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Datastore API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/datastore_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/datastore
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/datastore/v1beta2
 
@@ -23,23 +24,63 @@ func main() {
   hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := datastore.New(hc)
+  c, err := datastore.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Identifies the dataset.
   datasetId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Datasets.AllocateIds(datasetId, &datastore.AllocateIdsRequest{
+  resp, err := c.Datasets.AllocateIds(datasetId, &datastore.AllocateIdsRequest{
+                                        // TODO: Fill required fields.
+                                      }).Context(ctx).Do()
+  if err != nil {
+    // TODO: Handle error.
+  }
+  // TODO: Use resp.
+  _ = resp
+}
+package main
+
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Google Cloud Datastore API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/datastore
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/datastore/v1beta2
+
+import (
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/datastore/v1beta2"
+)
+
+func main() {
+  ctx := context.Background()
+  hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
+  if err != nil {
+    // TODO: Handle error.
+  }
+  c, err := datastore.New(hc)
+  if err != nil {
+    // TODO: Handle error.
+  }
+
+  // Identifies the dataset.
+  datasetId := "" // TODO: Update placeholder value.
+
+  resp, err := c.Datasets.BeginTransaction(datasetId, &datastore.BeginTransactionRequest{
                                              // TODO: Fill required fields.
                                            }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -50,9 +91,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Datastore API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/datastore_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/datastore
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/datastore/v1beta2
 
@@ -68,23 +110,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := datastore.New(hc)
+  c, err := datastore.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Identifies the dataset.
   datasetId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Datasets.BeginTransaction(datasetId, &datastore.BeginTransactionRequest{
-                                                  // TODO: Fill required fields.
-                                                }).Context(ctx).Do()
+  resp, err := c.Datasets.Commit(datasetId, &datastore.CommitRequest{
+                                   // TODO: Fill required fields.
+                                 }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -95,9 +134,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Datastore API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/datastore_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/datastore
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/datastore/v1beta2
 
@@ -113,23 +153,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := datastore.New(hc)
+  c, err := datastore.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Identifies the dataset.
   datasetId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Datasets.Commit(datasetId, &datastore.CommitRequest{
-                                        // TODO: Fill required fields.
-                                      }).Context(ctx).Do()
+  resp, err := c.Datasets.Lookup(datasetId, &datastore.LookupRequest{
+                                   // TODO: Fill required fields.
+                                 }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -140,9 +177,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Datastore API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/datastore_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/datastore
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/datastore/v1beta2
 
@@ -158,23 +196,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := datastore.New(hc)
+  c, err := datastore.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Identifies the dataset.
   datasetId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Datasets.Lookup(datasetId, &datastore.LookupRequest{
-                                        // TODO: Fill required fields.
-                                      }).Context(ctx).Do()
+  resp, err := c.Datasets.Rollback(datasetId, &datastore.RollbackRequest{
+                                     // TODO: Fill required fields.
+                                   }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -185,9 +220,10 @@ package main
 // ---------------
 // 1. If not already done, enable the Google Cloud Datastore API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/datastore_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/datastore
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/datastore/v1beta2
 
@@ -203,68 +239,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := datastore.New(hc)
+  c, err := datastore.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Identifies the dataset.
   datasetId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Datasets.Rollback(datasetId, &datastore.RollbackRequest{
-                                          // TODO: Fill required fields.
-                                        }).Context(ctx).Do()
+  resp, err := c.Datasets.RunQuery(datasetId, &datastore.RunQueryRequest{
+                                     // TODO: Fill required fields.
+                                   }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
-  }
-  // TODO: Use resp.
-  _ = resp
-}
-package main
-
-// PRE-REQUISITES:
-// ---------------
-// 1. If not already done, enable the Google Cloud Datastore API
-//    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/datastore_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library, run:
-//    go get -u google.golang.org/api/datastore/v1beta2
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/datastore/v1beta2"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, datastore.CloudPlatformScope)
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-  client, err := datastore.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-
-  // Identifies the dataset.
-  datasetId := "" // TODO: Update placeholder value.
-
-  resp, err := client.Datasets.RunQuery(datasetId, &datastore.RunQueryRequest{
-                                          // TODO: Fill required fields.
-                                        }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp

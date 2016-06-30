@@ -5,9 +5,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -23,12 +24,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID of the dataset being deleted
@@ -37,9 +36,8 @@ func main() {
   // Dataset ID of dataset being deleted
   datasetId := "" // TODO: Update placeholder value.
 
-  if err := client.Datasets.Delete(projectId, datasetId).Context(ctx).Do(); err != nil {
+  if err := c.Datasets.Delete(projectId, datasetId).Context(ctx).Do(); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -48,9 +46,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -66,12 +65,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID of the requested dataset
@@ -80,10 +77,9 @@ func main() {
   // Dataset ID of the requested dataset
   datasetId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Datasets.Get(projectId, datasetId).Context(ctx).Do()
+  resp, err := c.Datasets.Get(projectId, datasetId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -94,9 +90,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -112,23 +109,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID of the new dataset
   projectId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Datasets.Insert(projectId, &bigquery.Dataset{
-                                        // TODO: Fill required fields.
-                                      }).Context(ctx).Do()
+  resp, err := c.Datasets.Insert(projectId, &bigquery.Dataset{
+                                   // TODO: Fill required fields.
+                                 }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -139,9 +133,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -157,19 +152,17 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID of the datasets to be listed
   projectId := "" // TODO: Update placeholder value.
 
 
-  call := client.Datasets.List(projectId)
+  call := c.Datasets.List(projectId)
   if err := call.Pages(ctx, func(page *bigquery.DatasetList) error {
     for _, v := range page.Datasets {
       // TODO: Use v.
@@ -178,7 +171,6 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -187,9 +179,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -205,12 +198,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID of the dataset being updated
@@ -219,12 +210,11 @@ func main() {
   // Dataset ID of the dataset being updated
   datasetId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Datasets.Patch(projectId, datasetId, &bigquery.Dataset{
-                                       // TODO: Fill required fields.
-                                     }).Context(ctx).Do()
+  resp, err := c.Datasets.Patch(projectId, datasetId, &bigquery.Dataset{
+                                  // TODO: Fill required fields.
+                                }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -235,9 +225,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -253,12 +244,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID of the dataset being updated
@@ -267,12 +256,11 @@ func main() {
   // Dataset ID of the dataset being updated
   datasetId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Datasets.Update(projectId, datasetId, &bigquery.Dataset{
-                                        // TODO: Fill required fields.
-                                      }).Context(ctx).Do()
+  resp, err := c.Datasets.Update(projectId, datasetId, &bigquery.Dataset{
+                                   // TODO: Fill required fields.
+                                 }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -283,9 +271,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -301,12 +290,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // [Required] Project ID of the job to cancel
@@ -315,10 +302,9 @@ func main() {
   // [Required] Job ID of the job to cancel
   jobId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Jobs.Cancel(projectId, jobId).Context(ctx).Do()
+  resp, err := c.Jobs.Cancel(projectId, jobId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -329,9 +315,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -347,12 +334,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // [Required] Project ID of the requested job
@@ -361,10 +346,9 @@ func main() {
   // [Required] Job ID of the requested job
   jobId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Jobs.Get(projectId, jobId).Context(ctx).Do()
+  resp, err := c.Jobs.Get(projectId, jobId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -375,9 +359,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -393,12 +378,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // [Required] Project ID of the query job
@@ -407,10 +390,9 @@ func main() {
   // [Required] Job ID of the query job
   jobId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Jobs.GetQueryResults(projectId, jobId).Context(ctx).Do()
+  resp, err := c.Jobs.GetQueryResults(projectId, jobId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -421,9 +403,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -439,23 +422,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID of the project that will be billed for the job
   projectId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Jobs.Insert(projectId, &bigquery.Job{
-                                    // TODO: Fill required fields.
-                                  }).Context(ctx).Do()
+  resp, err := c.Jobs.Insert(projectId, &bigquery.Job{
+                               // TODO: Fill required fields.
+                             }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -466,9 +446,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -484,19 +465,17 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID of the jobs to list
   projectId := "" // TODO: Update placeholder value.
 
 
-  call := client.Jobs.List(projectId)
+  call := c.Jobs.List(projectId)
   if err := call.Pages(ctx, func(page *bigquery.JobList) error {
     for _, v := range page.Jobs {
       // TODO: Use v.
@@ -505,7 +484,6 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -514,9 +492,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -532,23 +511,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID of the project billed for the query
   projectId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Jobs.Query(projectId, &bigquery.QueryRequest{
-                                   // TODO: Fill required fields.
-                                 }).Context(ctx).Do()
+  resp, err := c.Jobs.Query(projectId, &bigquery.QueryRequest{
+                              // TODO: Fill required fields.
+                            }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -559,9 +535,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -577,18 +554,16 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
 
 
 
-  call := client.Projects.List()
+  call := c.Projects.List()
   if err := call.Pages(ctx, func(page *bigquery.ProjectList) error {
     for _, v := range page.Projects {
       // TODO: Use v.
@@ -597,7 +572,6 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -606,9 +580,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -624,12 +599,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID of the destination table.
@@ -641,12 +614,11 @@ func main() {
   // Table ID of the destination table.
   tableId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Tabledata.InsertAll(projectId, datasetId, tableId, &bigquery.TableDataInsertAllRequest{
-                                            // TODO: Fill required fields.
-                                          }).Context(ctx).Do()
+  resp, err := c.Tabledata.InsertAll(projectId, datasetId, tableId, &bigquery.TableDataInsertAllRequest{
+                                       // TODO: Fill required fields.
+                                     }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -657,9 +629,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -675,12 +648,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID of the table to read
@@ -692,10 +663,9 @@ func main() {
   // Table ID of the table to read
   tableId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Tabledata.List(projectId, datasetId, tableId).Context(ctx).Do()
+  resp, err := c.Tabledata.List(projectId, datasetId, tableId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -706,9 +676,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -724,12 +695,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID of the table to delete
@@ -741,9 +710,8 @@ func main() {
   // Table ID of the table to delete
   tableId := "" // TODO: Update placeholder value.
 
-  if err := client.Tables.Delete(projectId, datasetId, tableId).Context(ctx).Do(); err != nil {
+  if err := c.Tables.Delete(projectId, datasetId, tableId).Context(ctx).Do(); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -752,9 +720,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -770,12 +739,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID of the requested table
@@ -787,10 +754,9 @@ func main() {
   // Table ID of the requested table
   tableId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Tables.Get(projectId, datasetId, tableId).Context(ctx).Do()
+  resp, err := c.Tables.Get(projectId, datasetId, tableId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -801,9 +767,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -819,12 +786,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID of the new table
@@ -833,12 +798,11 @@ func main() {
   // Dataset ID of the new table
   datasetId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Tables.Insert(projectId, datasetId, &bigquery.Table{
-                                      // TODO: Fill required fields.
-                                    }).Context(ctx).Do()
+  resp, err := c.Tables.Insert(projectId, datasetId, &bigquery.Table{
+                                 // TODO: Fill required fields.
+                               }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -849,9 +813,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -867,12 +832,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID of the tables to list
@@ -882,7 +845,7 @@ func main() {
   datasetId := "" // TODO: Update placeholder value.
 
 
-  call := client.Tables.List(projectId, datasetId)
+  call := c.Tables.List(projectId, datasetId)
   if err := call.Pages(ctx, func(page *bigquery.TableList) error {
     for _, v := range page.Tables {
       // TODO: Use v.
@@ -891,7 +854,6 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
@@ -900,9 +862,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -918,12 +881,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID of the table to update
@@ -935,12 +896,11 @@ func main() {
   // Table ID of the table to update
   tableId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Tables.Patch(projectId, datasetId, tableId, &bigquery.Table{
-                                     // TODO: Fill required fields.
-                                   }).Context(ctx).Do()
+  resp, err := c.Tables.Patch(projectId, datasetId, tableId, &bigquery.Table{
+                                // TODO: Fill required fields.
+                              }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -951,9 +911,10 @@ package main
 // ---------------
 // 1. If not already done, enable the BigQuery API
 //    and check the quota for your project at
-//    https://console.developers.google.com/apis/api/bigquery_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+//    https://console.developers.google.com/apis/api/bigquery
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/bigquery/v2
 
@@ -969,12 +930,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, bigquery.BigqueryScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := bigquery.New(hc)
+  c, err := bigquery.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID of the table to update
@@ -986,12 +945,11 @@ func main() {
   // Table ID of the table to update
   tableId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Tables.Update(projectId, datasetId, tableId, &bigquery.Table{
-                                      // TODO: Fill required fields.
-                                    }).Context(ctx).Do()
+  resp, err := c.Tables.Update(projectId, datasetId, tableId, &bigquery.Table{
+                                 // TODO: Fill required fields.
+                               }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp

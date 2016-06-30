@@ -209,7 +209,8 @@ module Google
                 Google::Gax::Grpc::STATUS_CODE_NAMES,
                 timeout,
                 bundle_descriptors: BUNDLE_DESCRIPTORS,
-                page_descriptors: PAGE_DESCRIPTORS)
+                page_descriptors: PAGE_DESCRIPTORS,
+                errors: Google::Gax::Grpc::API_ERRORS)
             end
             google_api_client = "#{app_name}/#{app_version} " \
               "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze
@@ -590,6 +591,33 @@ module Google
             settings = @defaults['get_book_from_archive'].merge(options)
             api_call = Google::Gax.create_api_call(
               @stub.method(:get_book_from_archive), settings)
+            api_call.call(req, **@headers)
+          end
+
+          # Updates the index of a book.
+          #
+          # @param name [String]
+          #   The name of the book to update.
+          # @param index_name [String]
+          #   The name of the index for the book
+          # @param index_map [Hash{String => String}]
+          #   The index to update the book with
+          # @param options [Google::Gax::CallOptions]
+          #   Overrides the default settings for this call, e.g, timeout,
+          #   retries, etc.
+          # @raise [Google::Gax::GaxError] if the RPC is aborted.
+          def update_book_index(
+            name,
+            index_name,
+            index_map,
+            options: nil)
+            req = Google::Example::Library::V1::UpdateBookIndexRequest.new(
+              name: name,
+              index_name: index_name,
+              index_map: index_map)
+            settings = @defaults['update_book_index'].merge(options)
+            api_call = Google::Gax.create_api_call(
+              @stub.method(:update_book_index), settings)
             api_call.call(req, **@headers)
           end
         end

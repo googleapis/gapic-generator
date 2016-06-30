@@ -368,4 +368,31 @@ public class PythonGapicContext extends GapicContext {
   private String getSphinxifiedScopedDescription(ProtoElement element) {
     return PythonSphinxCommentFixer.sphinxify(DocumentationUtil.getScopedDescription(element));
   }
+
+  /**
+   * Get a Python formatted primitive value, given a primitive type and a string representation of
+   * that value. The value must be a valid example of that type. Values of type Bool must be either
+   * the string 'true' or 'false' (other capitalizations are permitted).
+   */
+  public String renderPrimitiveValue(TypeRef type, String value) {
+    Type primitiveType = type.getKind();
+    if (!PRIMITIVE_TYPE_NAMES.containsKey(primitiveType)) {
+      throw new IllegalArgumentException(
+          "Initial values are only supported for primitive types, got type "
+              + type
+              + ", with value "
+              + value);
+    }
+    switch (primitiveType) {
+      case TYPE_BOOL:
+        // Capitalize first letter
+        return lowerCamelToUpperCamel(value.toLowerCase());
+      case TYPE_STRING:
+      case TYPE_BYTES:
+        return "'" + value + "'";
+      default:
+        // Types that do not need to be modified (e.g. TYPE_INT32) are handled here
+        return value;
+    }
+  }
 }

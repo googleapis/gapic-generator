@@ -27,9 +27,12 @@
 @snippet generateBody(service)
     func ExampleNew{@context.getClientName(service)}() {
         ctx := context.Background()
-        opts := []gax.ClientOption{ /* Optional client parameters. */ }
-        c, err := {@context.getPackageName}.New{@context.getClientName(service)}(ctx, opts...)
-        _, _ = c, err // Handle error.
+        c, err := {@context.getPackageName}.New{@context.getClientName(service)}(ctx)
+        if err != nil {
+            // TODO: Handle error.
+        }
+        // TODO: Use client.
+        _ = c
     }
     @join method : service.getMethods
         @let methodName = method.getSimpleName, \
@@ -41,30 +44,40 @@
             func Example{@context.getClientName(service)}_{@method.getSimpleName}() {
                 ctx := context.Background()
                 c, err := {@context.getPackageName}.New{@context.getClientName(service)}(ctx)
-                _ = err // Handle error.
+                if err != nil {
+                    // TODO: Handle error.
+                }
 
-                req := &{@inTypeName}{ /* Data... */ }
+                req := &{@inTypeName}{
+                    // TODO: Fill request struct fields.
+                }
                 @if {@context.isEmpty(method.getOutputType)}
                     err = c.{@method.getSimpleName}(ctx, req)
-                    _ = err // Handle error.
+                    if err != nil {
+                        // TODO: Handle error.
+                    }
                 @else
                     @if {@isPageStreaming}
                         @let pageStreaming = methodConfig.getPageStreaming(), \
                              resourceFieldTypeName = context.getResourceTypeName(pageStreaming.getResourcesField())
                             it := c.{@method.getSimpleName}(ctx, req)
-                            var resp {@resourceFieldTypeName}
                             for {
-                                resp, err = it.Next()
+                                resp, err := it.Next()
                                 if err != nil {
+                                    // TODO: Handle error.
                                     break
                                 }
+                                // TODO: Use resp.
+                                _ = resp
                             }
-                            _ = resp
                         @end
                     @else
-                        var resp {@outTypeName}
-                        resp, err = c.{@method.getSimpleName}(ctx, req)
-                        _, _ = resp, err // Handle error.
+                        resp, err := c.{@method.getSimpleName}(ctx, req)
+                        if err != nil {
+                            // TODO: Handle error.
+                        }
+                        // TODO: Use resp.
+                        _ = resp
                     @end
                 @end
         }

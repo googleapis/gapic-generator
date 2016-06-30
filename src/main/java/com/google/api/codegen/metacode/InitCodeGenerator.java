@@ -17,6 +17,7 @@ package com.google.api.codegen.metacode;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
+import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,8 +26,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.lang3.NotImplementedException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * InitCodeGenerator generates an InitCode object for a given method and initialization field
@@ -91,6 +92,92 @@ public class InitCodeGenerator {
     return actualName;
   }
 
+  private InitCodeLine generateSampleCodeInitStructure(
+      String suggestedName, TypeRef typeRef, Map<String, Object> initFieldMap) {
+    List<FieldSetting> fieldSettings = new ArrayList<>();
+    for (Field field : typeRef.getMessageType().getFields()) {
+      Object thisFieldInitStructure = initFieldMap.get(field.getSimpleName());
+      if (thisFieldInitStructure == null) {
+        continue;
+      }
+
+      InitCodeLine subFieldInit =
+          generateSampleCodeInit(field.getSimpleName(), field.getType(), thisFieldInitStructure);
+      initLineSpecs.add(subFieldInit);
+
+      FieldSetting fieldSetting =
+          FieldSetting.create(
+              field.getType(),
+              field.getSimpleName(),
+              subFieldInit.getIdentifier(),
+              subFieldInit.getInitValueConfig());
+      fieldSettings.add(fieldSetting);
+    }
+
+    // TODO check each field in initFieldMap and make sure it exists in
+    // typeRef.getMessageType().getFields()
+
+    // get a new symbol for this object after subfields, in order to preserve
+    // numerical ordering in the case of conflicts
+    String identifier = getNewSymbol(suggestedName);
+    return StructureInitCodeLine.create(typeRef, identifier, fieldSettings);
+  }
+
+  private InitCodeLine generateSampleCodeInitList(
+      String suggestedName, TypeRef typeRef, List<Object> thisFieldInitList) {
+    List<String> elementIdentifiers = new ArrayList<>();
+    for (Object elementInitStructure : thisFieldInitList) {
+      String suggestedElementName = suggestedName + "_element";
+      // Using the Optional cardinality replaces the Repeated cardinality
+      TypeRef elementType = typeRef.makeOptional();
+      InitCodeLine subFieldInit =
+          generateSampleCodeInit(suggestedElementName, elementType, elementInitStructure);
+      initLineSpecs.add(subFieldInit);
+
+      elementIdentifiers.add(subFieldInit.getIdentifier());
+    }
+
+    // get a new symbol for this object after elements, in order to preserve
+    // numerical ordering in the case of conflicts
+    String identifier = getNewSymbol(suggestedName);
+    return ListInitCodeLine.create(typeRef, identifier, elementIdentifiers);
+  }
+
+  private InitCodeLine generateSampleCodeInitMap(
+      String suggestedName, TypeRef typeRef, Map<String, Object> thisFieldInitMap) {
+    TypeRef keyTypeRef = typeRef.getMapKeyField().getType();
+    TypeRef elementType = typeRef.getMapValueField().getType();
+    Map<String, String> elementIdentifierMap = new HashMap<String, String>();
+    for (String keyString : thisFieldInitMap.keySet()) {
+      String validatedKeyString = validateValue(keyTypeRef, keyString);
+      if (validatedKeyString == null) {
+        throw new IllegalArgumentException(
+            "Inconsistent key type found for map, expected key of type "
+                + keyTypeRef
+                + ", got key "
+                + keyString
+                + "; suggestedName = "
+                + suggestedName
+                + ", initFieldStructure = "
+                + thisFieldInitMap);
+      }
+
+      Object elementInitStructure = thisFieldInitMap.get(keyString);
+      String suggestedElementName = suggestedName + "_item";
+      InitCodeLine subFieldInit =
+          generateSampleCodeInit(suggestedElementName, elementType, elementInitStructure);
+      initLineSpecs.add(subFieldInit);
+
+      elementIdentifierMap.put(validatedKeyString, subFieldInit.getIdentifier());
+    }
+
+    // get a new symbol for this object after elements, in order to preserve
+    // numerical ordering in the case of conflicts
+    String identifier = getNewSymbol(suggestedName);
+    return MapInitCodeLine.create(
+        keyTypeRef, elementType, typeRef, identifier, elementIdentifierMap);
+  }
+
   private InitCodeLine generateSampleCodeInit(
       String suggestedName, TypeRef typeRef, Object initFieldStructure) {
     // No matter what the type in the model is, we want to stop here, because we
@@ -99,6 +186,21 @@ public class InitCodeGenerator {
     if (initFieldStructure instanceof InitValueConfig) {
       InitValueConfig initValueConfig = (InitValueConfig) initFieldStructure;
       String identifier = getNewSymbol(suggestedName);
+      if (initValueConfig.hasInitialValue()) {
+        String validatedValue = validateValue(typeRef, initValueConfig.getInitialValue());
+        if (validatedValue == null) {
+          throw new IllegalArgumentException(
+              "Inconsistent initial value found, expected value of type "
+                  + typeRef
+                  + ", got value "
+                  + initValueConfig.getInitialValue()
+                  + "; suggestedName = "
+                  + suggestedName
+                  + ", initFieldStructure = "
+                  + initFieldStructure);
+        }
+        initValueConfig = initValueConfig.withInitialValue(validatedValue);
+      }
       return SimpleInitCodeLine.create(typeRef, identifier, initValueConfig);
     }
 
@@ -117,36 +219,9 @@ public class InitCodeGenerator {
 
       @SuppressWarnings("unchecked")
       Map<String, Object> initFieldMap = (Map<String, Object>) initFieldStructure;
+      return generateSampleCodeInitStructure(suggestedName, typeRef, initFieldMap);
 
-      List<FieldSetting> fieldSettings = new ArrayList<>();
-      for (Field field : typeRef.getMessageType().getFields()) {
-        Object thisFieldInitStructure = initFieldMap.get(field.getSimpleName());
-        if (thisFieldInitStructure == null) {
-          continue;
-        }
-
-        InitCodeLine subFieldInit =
-            generateSampleCodeInit(field.getSimpleName(), field.getType(), thisFieldInitStructure);
-        initLineSpecs.add(subFieldInit);
-
-        FieldSetting fieldSetting =
-            FieldSetting.create(
-                field.getType(),
-                field.getSimpleName(),
-                subFieldInit.getIdentifier(),
-                subFieldInit.getInitValueConfig());
-        fieldSettings.add(fieldSetting);
-      }
-
-      // TODO check each field in initFieldMap and make sure it exists in
-      // typeRef.getMessageType().getFields()
-
-      // get a new symbol for this object after subfields, in order to preserve
-      // numerical ordering in the case of conflicts
-      String identifier = getNewSymbol(suggestedName);
-      return StructureInitCodeLine.create(typeRef, identifier, fieldSettings);
-
-    } else if (typeRef.isRepeated()) {
+    } else if (typeRef.isRepeated() && !typeRef.isMap()) {
       if (!(initFieldStructure instanceof List)) {
         throw new IllegalArgumentException(
             "Repeated typeRef needs a List, found "
@@ -160,29 +235,77 @@ public class InitCodeGenerator {
       }
       @SuppressWarnings("unchecked")
       List<Object> thisFieldInitList = (List<Object>) initFieldStructure;
-
-      List<String> elementIdentifiers = new ArrayList<>();
-      for (Object elementInitStructure : thisFieldInitList) {
-        String suggestedElementName = suggestedName + "_element";
-        // Using the Optional cardinality replaces the Repeated cardinality
-        TypeRef elementType = typeRef.makeOptional();
-        InitCodeLine subFieldInit =
-            generateSampleCodeInit(suggestedElementName, elementType, elementInitStructure);
-        initLineSpecs.add(subFieldInit);
-
-        elementIdentifiers.add(subFieldInit.getIdentifier());
-      }
-
-      // get a new symbol for this object after elements, in order to preserve
-      // numerical ordering in the case of conflicts
-      String identifier = getNewSymbol(suggestedName);
-      return ListInitCodeLine.create(typeRef, identifier, elementIdentifiers);
+      return generateSampleCodeInitList(suggestedName, typeRef, thisFieldInitList);
 
     } else if (typeRef.isMap()) {
-      throw new NotImplementedException("map not supported yet");
+      if (!(initFieldStructure instanceof Map)) {
+        throw new IllegalArgumentException(
+            "Map typeRef needs a Map, found "
+                + initFieldStructure.getClass().getName()
+                + "; typeRef = "
+                + typeRef
+                + ", suggestedName = "
+                + suggestedName
+                + ", initFieldStructure = "
+                + initFieldStructure);
+      }
+      @SuppressWarnings("unchecked")
+      Map<String, Object> thisFieldInitMap = (Map<String, Object>) initFieldStructure;
+
+      return generateSampleCodeInitMap(suggestedName, typeRef, thisFieldInitMap);
 
     } else {
       throw new IllegalArgumentException("Unexpected type: " + typeRef);
     }
+  }
+
+  /**
+   * Validates that the provided value matches the provided type, and returns the validated value.
+   * For string and byte types, the returned value has quote characters removed. Returns null if
+   * the value does not match. Throws an IllegalArgumentException is the provided type is not
+   * supported.
+   */
+  private static String validateValue(TypeRef type, String value) {
+    Type descType = type.getKind();
+    switch (descType) {
+      case TYPE_BOOL:
+        String lowerCaseValue = value.toLowerCase();
+        if (lowerCaseValue.equals("true") || lowerCaseValue.equals("false")) {
+          return lowerCaseValue;
+        }
+        break;
+      case TYPE_DOUBLE:
+      case TYPE_FLOAT:
+        if (Pattern.matches("[+-]?([0-9]*[.])?[0-9]+", value)) {
+          return value;
+        }
+        break;
+      case TYPE_INT64:
+      case TYPE_UINT64:
+      case TYPE_SINT64:
+      case TYPE_FIXED64:
+      case TYPE_SFIXED64:
+      case TYPE_INT32:
+      case TYPE_UINT32:
+      case TYPE_SINT32:
+      case TYPE_FIXED32:
+      case TYPE_SFIXED32:
+        if (Pattern.matches("[+-]?[0-9]+", value)) {
+          return value;
+        }
+        break;
+      case TYPE_STRING:
+      case TYPE_BYTES:
+        Matcher matcher = Pattern.compile("\"([^\\\"]+)\"").matcher(value);
+        if (matcher.matches()) {
+          return matcher.group(1);
+        }
+        break;
+      default:
+        // Throw an exception if a value is unsupported for the given type.
+        throw new IllegalArgumentException(
+            "Tried to assign value for unsupported type " + type + "; value " + value);
+    }
+    return null;
   }
 }

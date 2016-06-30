@@ -20,5 +20,6 @@ package com.google.api.codegen.metacode;
 public enum InitCodeLineType {
   StructureInitLine,
   ListInitLine,
-  SimpleInitLine
+  SimpleInitLine,
+  MapInitLine
 }
