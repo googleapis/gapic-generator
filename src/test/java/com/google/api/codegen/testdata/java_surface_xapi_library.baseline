@@ -141,4 +141,149 @@ public class LibraryServiceApi implements AutoCloseable {
     return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("book");
   }
 
+  /**
+   * Constructs an instance of LibraryServiceApi with default settings.
+   */
+  public static final LibraryServiceApi createWithDefaults() throws IOException {
+    return create(LibraryServiceSettings.defaultBuilder().build());
+  }
+
+  /**
+   * Constructs an instance of LibraryServiceApi, using the given settings.
+   * The channels are created based on the settings passed in, or defaults for any
+   * settings that are not set.
+   */
+  public static final LibraryServiceApi create(LibraryServiceSettings settings) throws IOException {
+    return new LibraryServiceApi(settings);
+  }
+
+  /**
+   * Constructs an instance of LibraryServiceApi, using the given settings.
+   * This is protected so that it easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected LibraryServiceApi(LibraryServiceSettings settings) throws IOException {
+    this.settings = settings;
+    this.executor = settings.getExecutorProvider().getOrBuildExecutor();
+    this.channel = settings.getChannelProvider().getOrBuildChannel(this.executor);
+
+    this.createShelfCallable = ApiCallable.create(settings.createShelfSettings(), this.channel, this.executor);
+    this.getShelfCallable = ApiCallable.create(settings.getShelfSettings(), this.channel, this.executor);
+    this.listShelvesCallable = ApiCallable.create(settings.listShelvesSettings(), this.channel, this.executor);
+    this.listShelvesPagedCallable =
+        ApiCallable.createPagedVariant(settings.listShelvesSettings(), this.channel, this.executor);
+    this.deleteShelfCallable = ApiCallable.create(settings.deleteShelfSettings(), this.channel, this.executor);
+    this.mergeShelvesCallable = ApiCallable.create(settings.mergeShelvesSettings(), this.channel, this.executor);
+    this.createBookCallable = ApiCallable.create(settings.createBookSettings(), this.channel, this.executor);
+    this.publishSeriesCallable = ApiCallable.create(settings.publishSeriesSettings(), this.channel, this.executor);
+    if (settings.publishSeriesSettings().getBundlerFactory() != null) {
+      closeables.add(settings.publishSeriesSettings().getBundlerFactory());
+    }
+    this.getBookCallable = ApiCallable.create(settings.getBookSettings(), this.channel, this.executor);
+    this.listBooksCallable = ApiCallable.create(settings.listBooksSettings(), this.channel, this.executor);
+    this.listBooksPagedCallable =
+        ApiCallable.createPagedVariant(settings.listBooksSettings(), this.channel, this.executor);
+    this.deleteBookCallable = ApiCallable.create(settings.deleteBookSettings(), this.channel, this.executor);
+    this.updateBookCallable = ApiCallable.create(settings.updateBookSettings(), this.channel, this.executor);
+    this.moveBookCallable = ApiCallable.create(settings.moveBookSettings(), this.channel, this.executor);
+    this.listStringsCallable = ApiCallable.create(settings.listStringsSettings(), this.channel, this.executor);
+    this.listStringsPagedCallable =
+        ApiCallable.createPagedVariant(settings.listStringsSettings(), this.channel, this.executor);
+    this.addCommentsCallable = ApiCallable.create(settings.addCommentsSettings(), this.channel, this.executor);
+    this.getBookFromArchiveCallable = ApiCallable.create(settings.getBookFromArchiveSettings(), this.channel, this.executor);
+
+    if (settings.getChannelProvider().shouldAutoClose()) {
+      closeables.add(
+        new Closeable() {
+          @Override
+          public void close() throws IOException {
+            channel.shutdown();
+          }
+        });
+    }
+    if (settings.getExecutorProvider().shouldAutoClose()) {
+      closeables.add(
+        new Closeable() {
+          @Override
+          public void close() throws IOException {
+            executor.shutdown();
+          }
+        });
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+  public final PageAccessor<Shelf> listShelves() {
+    ListShelvesRequest request =
+        ListShelvesRequest.newBuilder()
+
+        .build();
+    return listShelves(request);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  public final PageAccessor<Book> listBooks(String name, String filter) {
+    SHELF_PATH_TEMPLATE.validate(name);
+    ListBooksRequest request =
+        ListBooksRequest.newBuilder()
+        .setName(name)
+        .setFilter(filter)
+        .build();
+    return listBooks(request);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  public final PageAccessor<String> listStrings() {
+    ListStringsRequest request =
+        ListStringsRequest.newBuilder()
+
+        .build();
+    return listStrings(request);
+  }
+
+
+
+
+
+
+
+
+
 }

@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.java.surface;
 
-public class JavaPagedApiCallable implements JavaApiCallable {
-  public String inTypeName;
-  public String pageAccessorTypeName;
-  public String resourceTypeName;
-  public String name;
-  public String settingsFunctionName;
+import com.google.api.tools.framework.model.Field;
+import com.google.common.collect.ImmutableList;
+
+public class JavaFlattenedMethod implements JavaApiMethod {
+
+  public ImmutableList<Field> fields;
 }

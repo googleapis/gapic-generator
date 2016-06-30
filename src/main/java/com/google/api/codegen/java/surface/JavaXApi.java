@@ -24,6 +24,7 @@ public class JavaXApi {
   public List<JavaPathTemplate> pathTemplates;
   public List<JavaFormatResourceFunction> formatResourceFunctions;
   public List<JavaParseResourceFunction> parseResourceFunctions;
+  public List<JavaApiMethod> apiMethods;
 
   public List<String> imports;
 

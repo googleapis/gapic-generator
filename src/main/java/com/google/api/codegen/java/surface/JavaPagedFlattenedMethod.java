@@ -14,10 +14,13 @@
  */
 package com.google.api.codegen.java.surface;
 
-public class JavaPagedApiCallable implements JavaApiCallable {
-  public String inTypeName;
-  public String pageAccessorTypeName;
+import java.util.List;
+
+public class JavaPagedFlattenedMethod implements JavaApiMethod {
+
   public String resourceTypeName;
   public String name;
-  public String settingsFunctionName;
+  public List<JavaRequestObjectParam> requestObjectParams;
+  public String requestTypeName;
+  public List<JavaPathTemplateCheck> pathTemplateChecks;
 }

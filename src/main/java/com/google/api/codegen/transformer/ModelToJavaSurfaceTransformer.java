@@ -20,16 +20,31 @@ import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.java.surface.JavaApiCallable;
+import com.google.api.codegen.java.surface.JavaApiMethod;
+import com.google.api.codegen.java.surface.JavaRequestObjectParam;
+import com.google.api.codegen.java.surface.JavaBundlingApiCallable;
+import com.google.api.codegen.java.surface.JavaCallableMethod;
+import com.google.api.codegen.java.surface.JavaFlattenedMethod;
 import com.google.api.codegen.java.surface.JavaFormatResourceFunction;
 import com.google.api.codegen.java.surface.JavaPagedApiCallable;
+import com.google.api.codegen.java.surface.JavaPagedCallableMethod;
+import com.google.api.codegen.java.surface.JavaPagedFlattenedMethod;
+import com.google.api.codegen.java.surface.JavaPagedRequestObjectMethod;
 import com.google.api.codegen.java.surface.JavaParseResourceFunction;
 import com.google.api.codegen.java.surface.JavaPathTemplate;
+import com.google.api.codegen.java.surface.JavaPathTemplateCheck;
+import com.google.api.codegen.java.surface.JavaRequestObjectMethod;
 import com.google.api.codegen.java.surface.JavaResourceIdParam;
 import com.google.api.codegen.java.surface.JavaSimpleApiCallable;
 import com.google.api.codegen.java.surface.JavaSurface;
+import com.google.api.codegen.java.surface.JavaUnpagedListCallableMethod;
 import com.google.api.codegen.java.surface.JavaXApi;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.TypeRef;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +77,7 @@ public class ModelToJavaSurfaceTransformer {
     xapiClass.pathTemplates = generatePathTemplates();
     xapiClass.formatResourceFunctions = generateFormatResourceFunctions();
     xapiClass.parseResourceFunctions = generateParseResourceFunctions();
+    xapiClass.apiMethods = generateApiMethods();
 
     // must be done as the last step to catch all imports
     xapiClass.imports = typeTable.getImports();
@@ -100,27 +116,41 @@ public class ModelToJavaSurfaceTransformer {
 
     List<JavaApiCallable> apiCallables = new ArrayList<>();
 
-    JavaSimpleApiCallable apiCallable = new JavaSimpleApiCallable();
+    if (methodConfig.isBundling()) {
+      JavaBundlingApiCallable apiCallable = new JavaBundlingApiCallable();
 
-    apiCallable.inTypeName = typeTable.importAndGetShortestName(method.getInputType());
-    apiCallable.outTypeName = typeTable.importAndGetShortestName(method.getOutputType());
-    apiCallable.name = methodNameLowCml + "Callable";
+      apiCallable.inTypeName = typeTable.importAndGetShortestName(method.getInputType());
+      apiCallable.outTypeName = typeTable.importAndGetShortestName(method.getOutputType());
+      apiCallable.name = methodNameLowCml + "Callable";
+      apiCallable.settingsFunctionName = methodNameLowCml + "Settings";
 
-    apiCallables.add(apiCallable);
+      apiCallables.add(apiCallable);
 
-    if (methodConfig.isPageStreaming()) {
-      PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
+    } else {
+      JavaSimpleApiCallable apiCallable = new JavaSimpleApiCallable();
 
-      JavaPagedApiCallable pagedApiCallable = new JavaPagedApiCallable();
+      apiCallable.inTypeName = typeTable.importAndGetShortestName(method.getInputType());
+      apiCallable.outTypeName = typeTable.importAndGetShortestName(method.getOutputType());
+      apiCallable.name = methodNameLowCml + "Callable";
+      apiCallable.settingsFunctionName = methodNameLowCml + "Settings";
 
-      pagedApiCallable.inTypeName = apiCallable.inTypeName;
-      pagedApiCallable.pageAccessorTypeName =
-          typeTable.importAndGetShortestName("com.google.api.gax.core.PageAccessor");
-      pagedApiCallable.resourceTypeName =
-          typeTable.importAndGetShortestNameForElementType(
-              pageStreaming.getResourcesField().getType());
-      pagedApiCallable.name = methodNameLowCml + "PagedCallable";
-      apiCallables.add(pagedApiCallable);
+      apiCallables.add(apiCallable);
+
+      if (methodConfig.isPageStreaming()) {
+        PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
+
+        JavaPagedApiCallable pagedApiCallable = new JavaPagedApiCallable();
+
+        pagedApiCallable.inTypeName = apiCallable.inTypeName;
+        pagedApiCallable.pageAccessorTypeName =
+            typeTable.importAndGetShortestName("com.google.api.gax.core.PageAccessor");
+        pagedApiCallable.resourceTypeName =
+            typeTable.importAndGetShortestNameForElementType(
+                pageStreaming.getResourcesField().getType());
+        pagedApiCallable.name = methodNameLowCml + "PagedCallable";
+        pagedApiCallable.settingsFunctionName = methodNameLowCml + "Settings";
+        apiCallables.add(pagedApiCallable);
+      }
     }
 
     return apiCallables;
@@ -191,6 +221,100 @@ public class ModelToJavaSurfaceTransformer {
     }
 
     return functions;
+  }
+
+  private List<JavaApiMethod> generateApiMethods() {
+    List<JavaApiMethod> apiMethods = new ArrayList<>();
+
+    for (Method method : service.getMethods()) {
+      MethodConfig methodConfig = apiConfig.getInterfaceConfig(service).getMethodConfig(method);
+
+      if (methodConfig.isPageStreaming()) {
+        if (methodConfig.isFlattening()) {
+          for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
+            apiMethods.add(generatePagedFlattenedMethod(method, methodConfig, fields));
+          }
+        }
+        apiMethods.add(new JavaPagedRequestObjectMethod());
+        apiMethods.add(new JavaPagedCallableMethod());
+        apiMethods.add(new JavaUnpagedListCallableMethod());
+      } else {
+        if (methodConfig.isFlattening()) {
+          for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
+            JavaFlattenedMethod apiMethod = new JavaFlattenedMethod();
+            apiMethod.fields = fields;
+            apiMethods.add(apiMethod);
+          }
+        }
+        apiMethods.add(new JavaRequestObjectMethod());
+        apiMethods.add(new JavaCallableMethod());
+      }
+    }
+
+    return apiMethods;
+  }
+
+  private JavaPagedFlattenedMethod generatePagedFlattenedMethod(
+      Method method, MethodConfig methodConfig, ImmutableList<Field> fields) {
+    PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
+
+    JavaPagedFlattenedMethod apiMethod = new JavaPagedFlattenedMethod();
+    apiMethod.resourceTypeName =
+        typeTable.importAndGetShortestNameForElementType(
+            pageStreaming.getResourcesField().getType());
+    apiMethod.name = getApiMethodName(method);
+
+    List<JavaRequestObjectParam> requestObjectParams = new ArrayList<>();
+    for (Field field : fields) {
+      requestObjectParams.add(generateRequestObjectParam(field));
+    }
+    apiMethod.requestObjectParams = requestObjectParams;
+
+    List<JavaPathTemplateCheck> pathTemplateChecks = new ArrayList<>();
+    for (Field field : fields) {
+      ImmutableMap<String, String> fieldNamePatterns = methodConfig.getFieldNamePatterns();
+      String entityName = fieldNamePatterns.get(field.getSimpleName());
+      if (entityName != null) {
+        CollectionConfig collectionConfig =
+            apiConfig.getInterfaceConfig(service).getCollectionConfig(entityName);
+        JavaPathTemplateCheck check = new JavaPathTemplateCheck();
+        check.pathTemplateName = getPathTemplateName(collectionConfig);
+        check.paramName = getVariableNameForField(field);
+
+        pathTemplateChecks.add(check);
+      }
+    }
+    apiMethod.pathTemplateChecks = pathTemplateChecks;
+
+    apiMethod.requestTypeName = typeTable.importAndGetShortestName(method.getInputType());
+
+    return apiMethod;
+  }
+
+  private JavaRequestObjectParam generateRequestObjectParam(Field field) {
+    JavaRequestObjectParam param = new JavaRequestObjectParam();
+    param.name = getVariableNameForField(field);
+    param.typeName = typeTable.importAndGetShortestName(field.getType());
+
+    TypeRef fieldType = field.getType();
+    String fieldSuffix = LanguageUtil.lowerUnderscoreToUpperCamel(field.getSimpleName());
+    if (fieldType.isMap()) {
+      param.setCallName = "putAll" + fieldSuffix;
+    } else if (fieldType.isRepeated()) {
+      param.setCallName = "addAll" + fieldSuffix;
+    } else {
+      param.setCallName = "set" + fieldSuffix;
+    }
+
+    return param;
+  }
+
+  private String getVariableNameForField(Field field) {
+    return LanguageUtil.lowerUnderscoreToLowerCamel(field.getSimpleName());
+  }
+
+  private String getApiMethodName(Method method) {
+    return LanguageUtil.upperCamelToLowerCamel(method.getSimpleName());
   }
 
   private String getPathTemplateName(CollectionConfig collectionConfig) {

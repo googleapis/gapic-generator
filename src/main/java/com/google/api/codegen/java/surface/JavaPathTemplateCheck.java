@@ -14,10 +14,8 @@
  */
 package com.google.api.codegen.java.surface;
 
-public class JavaPagedApiCallable implements JavaApiCallable {
-  public String inTypeName;
-  public String pageAccessorTypeName;
-  public String resourceTypeName;
-  public String name;
-  public String settingsFunctionName;
+public class JavaPathTemplateCheck {
+
+  public String pathTemplateName;
+  public String paramName;
 }

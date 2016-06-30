@@ -18,4 +18,5 @@ public class JavaSimpleApiCallable implements JavaApiCallable {
   public String inTypeName;
   public String outTypeName;
   public String name;
+  public String settingsFunctionName;
 }
