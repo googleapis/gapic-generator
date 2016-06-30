@@ -9,8 +9,9 @@
   @@javax.annotation.Generated("by GAPIC")
   public class {@xapiClass.name} implements AutoCloseable {
     {@members(xapiClass)}
-
     {@resourceUtils(xapiClass)}
+    {@constructors(xapiClass)}
+    {@apiMethods(xapiClass)}
   }
 @end
 
@@ -23,7 +24,7 @@
   @join pathTemplate : xapiClass.pathTemplates
     private static final PathTemplate {@pathTemplate.name} =
         PathTemplate.createWithoutUrlEncoding("{@pathTemplate.pattern}");
-
+    {@""}
   @end
 @end
 
@@ -31,9 +32,9 @@
   @join function : xapiClass.formatResourceFunctions
     {@formatResourceFunction(function)}
   @end
-  
+  {@""}
   @join function : xapiClass.parseResourceFunctions
-    {@parseResourceFunctions(function)}
+    {@parseResourceFunction(function)}
   @end
 @end
 
@@ -47,7 +48,7 @@
     return {@function.pathTemplateName}.instantiate(
         {@pathTemplateArgs(function.resourceIdParams)});
   }
-
+  {@""}
 @end
 
 @private formatResourceFunctionParams(resourceIdParams)
@@ -62,7 +63,7 @@
   @end
 @end
 
-@private parseResourceFunctions(function)
+@private parseResourceFunction(function)
   /**
    * Parses the {@function.outputResourceId} from the given fully-qualified path which
    * represents a {@function.entityName} resource.
@@ -71,7 +72,7 @@
     return {@function.pathTemplateName}.parse({@function.entityNameParamName})\
       .get("{@function.outputResourceId}");
   }
-
+  {@""}
 @end
 
 @private members(xapiClass)
@@ -87,6 +88,8 @@
     @case "JavaPagedApiCallable"
       private final ApiCallable<{@apiCallable.inTypeName}, \
         {@apiCallable.pageAccessorTypeName}<{@apiCallable.resourceTypeName}>> {@apiCallable.name};
+    @case "JavaBundlingApiCallable"
+      private final ApiCallable<{@apiCallable.inTypeName}, {@apiCallable.outTypeName}> {@apiCallable.name};
     @default
       $unhandledCase: {@apiCallable.getClass.getSimpleName}$
     @end
@@ -96,4 +99,147 @@
   public final {@xapiClass.settingsClassName} getSettings() {
     return settings;
   }
+  {@""}
+@end
+
+@private constructors(xapiClass)
+  /**
+   * Constructs an instance of {@xapiClass.name} with default settings.
+   */
+  public static final {@xapiClass.name} createWithDefaults() throws IOException {
+    return create({@xapiClass.settingsClassName}.defaultBuilder().build());
+  }
+
+  /**
+   * Constructs an instance of {@xapiClass.name}, using the given settings.
+   * The channels are created based on the settings passed in, or defaults for any
+   * settings that are not set.
+   */
+  public static final {@xapiClass.name} create({@xapiClass.settingsClassName} settings) throws IOException {
+    return new {@xapiClass.name}(settings);
+  }
+
+  /**
+   * Constructs an instance of {@xapiClass.name}, using the given settings.
+   * This is protected so that it easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected {@xapiClass.name}({@xapiClass.settingsClassName} settings) throws IOException {
+    this.settings = settings;
+    this.executor = settings.getExecutorProvider().getOrBuildExecutor();
+    this.channel = settings.getChannelProvider().getOrBuildChannel(this.executor);
+
+    @join apiCallable : xapiClass.apiCallableMembers
+      @switch apiCallable.getClass().getSimpleName()
+      @case "JavaSimpleApiCallable"
+        this.{@apiCallable.name} = ApiCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+      @case "JavaPagedApiCallable"
+        this.{@apiCallable.name} =
+            ApiCallable.createPagedVariant(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+      @case "JavaBundlingApiCallable"
+        this.{@apiCallable.name} = ApiCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+        if (settings.{@apiCallable.settingsFunctionName}().getBundlerFactory() != null) {
+          closeables.add(settings.{@apiCallable.settingsFunctionName}().getBundlerFactory());
+        }
+      @default
+        $unhandledCase: {@apiCallable.getClass.getSimpleName}$
+      @end
+    @end
+
+    if (settings.getChannelProvider().shouldAutoClose()) {
+      closeables.add(
+        new Closeable() {
+          @@Override
+          public void close() throws IOException {
+            channel.shutdown();
+          }
+        });
+    }
+    if (settings.getExecutorProvider().shouldAutoClose()) {
+      closeables.add(
+        new Closeable() {
+          @@Override
+          public void close() throws IOException {
+            executor.shutdown();
+          }
+        });
+    }
+  }
+  {@""}
+@end
+
+@private apiMethods(xapiClass)
+  @join apiMethod : xapiClass.apiMethods
+    @switch apiMethod.getClass().getSimpleName()
+    @case "JavaPagedFlattenedMethod"
+      {@pagedFlattenedMethod(apiMethod)}
+    @case "JavaPagedRequestObjectMethod"
+      {@pagedRequestObjectMethod(apiMethod)}
+    @case "JavaPagedCallableMethod"
+      {@pagedCallableMethod(apiMethod)}
+    @case "JavaUnpagedListCallableMethod"
+      {@unpagedListCallableMethod(apiMethod)}
+    @case "JavaFlattenedMethod"
+      {@flattenedMethod(apiMethod)}
+    @case "JavaRequestObjectMethod"
+      {@requestObjectMethod(apiMethod)}
+    @case "JavaCallableMethod"
+      {@callableMethod(apiMethod)}
+    @default
+      $unhandledCase: {@apiMethod.getClass.getSimpleName}$
+    @end
+    {@""}
+  @end
+@end
+
+@private pagedFlattenedMethod(apiMethod)
+  {@iterableFlattenedMethodJavaDoc(apiMethod)}
+  public final PageAccessor<{@apiMethod.resourceTypeName}> \
+      {@apiMethod.name}({@paramList(apiMethod.requestObjectParams)}) {
+    @join pathTemplateCheck : apiMethod.pathTemplateChecks
+      {@pathTemplateCheckLine(pathTemplateCheck)}
+    @end
+    {@apiMethod.requestTypeName} request =
+        {@apiMethod.requestTypeName}.newBuilder()
+        {@builderSetCalls(apiMethod.requestObjectParams)}
+        .build();
+    return {@apiMethod.name}(request);
+  }
+@end
+
+@private pagedRequestObjectMethod(method)
+@end
+
+@private pagedCallableMethod(method)
+@end
+
+@private unpagedListCallableMethod(method)
+@end
+
+@private flattenedMethod(method)
+@end
+
+@private requestObjectMethod(method)
+@end
+
+@private callableMethod(method)
+@end
+
+@private iterableFlattenedMethodJavaDoc(apiMethod)
+@end
+
+@private paramList(params)
+  @join param : params on ", "
+    {@param.typeName} {@param.name}
+  @end
+@end
+
+@private builderSetCalls(requestObjectParams)
+  @join requestObjectParam : requestObjectParams
+    .{@requestObjectParam.setCallName}({@requestObjectParam.name})
+  @end
+@end
+
+@private pathTemplateCheckLine(pathTemplateCheck)
+  {@pathTemplateCheck.pathTemplateName}.validate({@pathTemplateCheck.paramName});
 @end
