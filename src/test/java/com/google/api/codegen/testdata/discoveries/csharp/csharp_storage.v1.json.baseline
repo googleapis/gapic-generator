@@ -1,8 +1,9 @@
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -54,8 +55,9 @@ namespace StorageSample
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -64,8 +66,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -99,17 +102,18 @@ namespace StorageSample
             string entity = "";
 
             BucketAccessControlsResource.GetRequest request = storageService.BucketAccessControls.Get(bucket, entity);
-            BucketAccessControl response = request.Execute();
+            Data.BucketAccessControl response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // BucketAccessControl response = await request.ExecuteAsync();
+            // Data.BucketAccessControl response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -118,8 +122,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -149,18 +154,22 @@ namespace StorageSample
             // Name of a bucket.
             string bucket = "";
 
-            BucketAccessControlsResource.InsertRequest request = storageService.BucketAccessControls.Insert(bucket);
-            BucketAccessControl response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.BucketAccessControl content = new Data.BucketAccessControl();
+
+            BucketAccessControlsResource.InsertRequest request = storageService.BucketAccessControls.Insert(content, bucket);
+            Data.BucketAccessControl response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // BucketAccessControl response = await request.ExecuteAsync();
+            // Data.BucketAccessControl response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -169,8 +178,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -201,17 +211,18 @@ namespace StorageSample
             string bucket = "";
 
             BucketAccessControlsResource.ListRequest request = storageService.BucketAccessControls.List(bucket);
-            BucketAccessControls response = request.Execute();
+            Data.BucketAccessControls response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // BucketAccessControls response = await request.ExecuteAsync();
+            // Data.BucketAccessControls response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -220,8 +231,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -254,18 +266,22 @@ namespace StorageSample
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
             string entity = "";
 
-            BucketAccessControlsResource.PatchRequest request = storageService.BucketAccessControls.Patch(bucket, entity);
-            BucketAccessControl response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.BucketAccessControl content = new Data.BucketAccessControl();
+
+            BucketAccessControlsResource.PatchRequest request = storageService.BucketAccessControls.Patch(content, bucket, entity);
+            Data.BucketAccessControl response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // BucketAccessControl response = await request.ExecuteAsync();
+            // Data.BucketAccessControl response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -274,8 +290,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -308,18 +325,22 @@ namespace StorageSample
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
             string entity = "";
 
-            BucketAccessControlsResource.UpdateRequest request = storageService.BucketAccessControls.Update(bucket, entity);
-            BucketAccessControl response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.BucketAccessControl content = new Data.BucketAccessControl();
+
+            BucketAccessControlsResource.UpdateRequest request = storageService.BucketAccessControls.Update(content, bucket, entity);
+            Data.BucketAccessControl response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // BucketAccessControl response = await request.ExecuteAsync();
+            // Data.BucketAccessControl response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -368,8 +389,9 @@ namespace StorageSample
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -378,8 +400,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -410,17 +433,18 @@ namespace StorageSample
             string bucket = "";
 
             BucketsResource.GetRequest request = storageService.Buckets.Get(bucket);
-            Bucket response = request.Execute();
+            Data.Bucket response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Bucket response = await request.ExecuteAsync();
+            // Data.Bucket response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -429,8 +453,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -460,18 +485,22 @@ namespace StorageSample
             // A valid API project identifier.
             string project = "";
 
-            BucketsResource.InsertRequest request = storageService.Buckets.Insert(project);
-            Bucket response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.Bucket content = new Data.Bucket();
+
+            BucketsResource.InsertRequest request = storageService.Buckets.Insert(content, project);
+            Data.Bucket response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Bucket response = await request.ExecuteAsync();
+            // Data.Bucket response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -480,8 +509,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -512,17 +542,31 @@ namespace StorageSample
             string project = "";
 
             BucketsResource.ListRequest request = storageService.Buckets.List(project);
-            Buckets response = request.Execute();
+            Data.Buckets response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.Bucket item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // Buckets response = await request.ExecuteAsync();
+            // Data.Buckets response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -531,8 +575,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -562,18 +607,22 @@ namespace StorageSample
             // Name of a bucket.
             string bucket = "";
 
-            BucketsResource.PatchRequest request = storageService.Buckets.Patch(bucket);
-            Bucket response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.Bucket content = new Data.Bucket();
+
+            BucketsResource.PatchRequest request = storageService.Buckets.Patch(content, bucket);
+            Data.Bucket response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Bucket response = await request.ExecuteAsync();
+            // Data.Bucket response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -582,8 +631,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -613,18 +663,22 @@ namespace StorageSample
             // Name of a bucket.
             string bucket = "";
 
-            BucketsResource.UpdateRequest request = storageService.Buckets.Update(bucket);
-            Bucket response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.Bucket content = new Data.Bucket();
+
+            BucketsResource.UpdateRequest request = storageService.Buckets.Update(content, bucket);
+            Data.Bucket response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Bucket response = await request.ExecuteAsync();
+            // Data.Bucket response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -634,6 +688,8 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -661,7 +717,10 @@ namespace StorageSample
 
             // TODO: Change placeholders below to values for parameters to the Stop() method:
 
-            ChannelsResource.StopRequest request = storageService.Channels.Stop();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.Channel content = new Data.Channel();
+
+            ChannelsResource.StopRequest request = storageService.Channels.Stop(content);
             request.Execute();
 
             // To execute asynchronously in an async method, use
@@ -671,8 +730,9 @@ namespace StorageSample
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -724,8 +784,9 @@ namespace StorageSample
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -734,8 +795,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -769,17 +831,18 @@ namespace StorageSample
             string entity = "";
 
             DefaultObjectAccessControlsResource.GetRequest request = storageService.DefaultObjectAccessControls.Get(bucket, entity);
-            ObjectAccessControl response = request.Execute();
+            Data.ObjectAccessControl response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // ObjectAccessControl response = await request.ExecuteAsync();
+            // Data.ObjectAccessControl response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -788,8 +851,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -819,18 +883,22 @@ namespace StorageSample
             // Name of a bucket.
             string bucket = "";
 
-            DefaultObjectAccessControlsResource.InsertRequest request = storageService.DefaultObjectAccessControls.Insert(bucket);
-            ObjectAccessControl response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.ObjectAccessControl content = new Data.ObjectAccessControl();
+
+            DefaultObjectAccessControlsResource.InsertRequest request = storageService.DefaultObjectAccessControls.Insert(content, bucket);
+            Data.ObjectAccessControl response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // ObjectAccessControl response = await request.ExecuteAsync();
+            // Data.ObjectAccessControl response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -839,8 +907,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -871,17 +940,18 @@ namespace StorageSample
             string bucket = "";
 
             DefaultObjectAccessControlsResource.ListRequest request = storageService.DefaultObjectAccessControls.List(bucket);
-            ObjectAccessControls response = request.Execute();
+            Data.ObjectAccessControls response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // ObjectAccessControls response = await request.ExecuteAsync();
+            // Data.ObjectAccessControls response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -890,8 +960,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -924,18 +995,22 @@ namespace StorageSample
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
             string entity = "";
 
-            DefaultObjectAccessControlsResource.PatchRequest request = storageService.DefaultObjectAccessControls.Patch(bucket, entity);
-            ObjectAccessControl response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.ObjectAccessControl content = new Data.ObjectAccessControl();
+
+            DefaultObjectAccessControlsResource.PatchRequest request = storageService.DefaultObjectAccessControls.Patch(content, bucket, entity);
+            Data.ObjectAccessControl response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // ObjectAccessControl response = await request.ExecuteAsync();
+            // Data.ObjectAccessControl response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -944,8 +1019,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -978,18 +1054,22 @@ namespace StorageSample
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
             string entity = "";
 
-            DefaultObjectAccessControlsResource.UpdateRequest request = storageService.DefaultObjectAccessControls.Update(bucket, entity);
-            ObjectAccessControl response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.ObjectAccessControl content = new Data.ObjectAccessControl();
+
+            DefaultObjectAccessControlsResource.UpdateRequest request = storageService.DefaultObjectAccessControls.Update(content, bucket, entity);
+            Data.ObjectAccessControl response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // ObjectAccessControl response = await request.ExecuteAsync();
+            // Data.ObjectAccessControl response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1029,12 +1109,12 @@ namespace StorageSample
             string bucket = "";
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object = "";
+            string object_ = "";
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
             string entity = "";
 
-            ObjectAccessControlsResource.DeleteRequest request = storageService.ObjectAccessControls.Delete(bucket, object, entity);
+            ObjectAccessControlsResource.DeleteRequest request = storageService.ObjectAccessControls.Delete(bucket, object_, entity);
             request.Execute();
 
             // To execute asynchronously in an async method, use
@@ -1044,8 +1124,9 @@ namespace StorageSample
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1054,8 +1135,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -1086,23 +1168,24 @@ namespace StorageSample
             string bucket = "";
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object = "";
+            string object_ = "";
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
             string entity = "";
 
-            ObjectAccessControlsResource.GetRequest request = storageService.ObjectAccessControls.Get(bucket, object, entity);
-            ObjectAccessControl response = request.Execute();
+            ObjectAccessControlsResource.GetRequest request = storageService.ObjectAccessControls.Get(bucket, object_, entity);
+            Data.ObjectAccessControl response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // ObjectAccessControl response = await request.ExecuteAsync();
+            // Data.ObjectAccessControl response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1111,8 +1194,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -1143,20 +1227,24 @@ namespace StorageSample
             string bucket = "";
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object = "";
+            string object_ = "";
 
-            ObjectAccessControlsResource.InsertRequest request = storageService.ObjectAccessControls.Insert(bucket, object);
-            ObjectAccessControl response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.ObjectAccessControl content = new Data.ObjectAccessControl();
+
+            ObjectAccessControlsResource.InsertRequest request = storageService.ObjectAccessControls.Insert(content, bucket, object_);
+            Data.ObjectAccessControl response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // ObjectAccessControl response = await request.ExecuteAsync();
+            // Data.ObjectAccessControl response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1165,8 +1253,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -1197,20 +1286,21 @@ namespace StorageSample
             string bucket = "";
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object = "";
+            string object_ = "";
 
-            ObjectAccessControlsResource.ListRequest request = storageService.ObjectAccessControls.List(bucket, object);
-            ObjectAccessControls response = request.Execute();
+            ObjectAccessControlsResource.ListRequest request = storageService.ObjectAccessControls.List(bucket, object_);
+            Data.ObjectAccessControls response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // ObjectAccessControls response = await request.ExecuteAsync();
+            // Data.ObjectAccessControls response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1219,8 +1309,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -1251,23 +1342,27 @@ namespace StorageSample
             string bucket = "";
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object = "";
+            string object_ = "";
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
             string entity = "";
 
-            ObjectAccessControlsResource.PatchRequest request = storageService.ObjectAccessControls.Patch(bucket, object, entity);
-            ObjectAccessControl response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.ObjectAccessControl content = new Data.ObjectAccessControl();
+
+            ObjectAccessControlsResource.PatchRequest request = storageService.ObjectAccessControls.Patch(content, bucket, object_, entity);
+            Data.ObjectAccessControl response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // ObjectAccessControl response = await request.ExecuteAsync();
+            // Data.ObjectAccessControl response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1276,8 +1371,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -1308,23 +1404,27 @@ namespace StorageSample
             string bucket = "";
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object = "";
+            string object_ = "";
             // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
             // group-emailAddress, allUsers, or allAuthenticatedUsers.
             string entity = "";
 
-            ObjectAccessControlsResource.UpdateRequest request = storageService.ObjectAccessControls.Update(bucket, object, entity);
-            ObjectAccessControl response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.ObjectAccessControl content = new Data.ObjectAccessControl();
+
+            ObjectAccessControlsResource.UpdateRequest request = storageService.ObjectAccessControls.Update(content, bucket, object_, entity);
+            Data.ObjectAccessControl response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // ObjectAccessControl response = await request.ExecuteAsync();
+            // Data.ObjectAccessControl response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1333,8 +1433,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -1367,18 +1468,22 @@ namespace StorageSample
             // Encoding URI Path Parts.
             string destinationObject = "";
 
-            ObjectsResource.ComposeRequest request = storageService.Objects.Compose(destinationBucket, destinationObject);
-            Object response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.ComposeRequest content = new Data.ComposeRequest();
+
+            ObjectsResource.ComposeRequest request = storageService.Objects.Compose(content, destinationBucket, destinationObject);
+            Data.Object response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Object response = await request.ExecuteAsync();
+            // Data.Object response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1387,8 +1492,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -1428,18 +1534,22 @@ namespace StorageSample
             // object metadata's name value, if any.
             string destinationObject = "";
 
-            ObjectsResource.CopyRequest request = storageService.Objects.Copy(sourceBucket, sourceObject, destinationBucket, destinationObject);
-            Object response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.Object content = new Data.Object();
+
+            ObjectsResource.CopyRequest request = storageService.Objects.Copy(content, sourceBucket, sourceObject, destinationBucket, destinationObject);
+            Data.Object response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Object response = await request.ExecuteAsync();
+            // Data.Object response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1479,9 +1589,9 @@ namespace StorageSample
             string bucket = "";
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object = "";
+            string object_ = "";
 
-            ObjectsResource.DeleteRequest request = storageService.Objects.Delete(bucket, object);
+            ObjectsResource.DeleteRequest request = storageService.Objects.Delete(bucket, object_);
             request.Execute();
 
             // To execute asynchronously in an async method, use
@@ -1491,8 +1601,9 @@ namespace StorageSample
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1501,8 +1612,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -1533,20 +1645,21 @@ namespace StorageSample
             string bucket = "";
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object = "";
+            string object_ = "";
 
-            ObjectsResource.GetRequest request = storageService.Objects.Get(bucket, object);
-            Object response = request.Execute();
+            ObjectsResource.GetRequest request = storageService.Objects.Get(bucket, object_);
+            Data.Object response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Object response = await request.ExecuteAsync();
+            // Data.Object response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1555,8 +1668,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -1587,18 +1701,22 @@ namespace StorageSample
             // value, if any.
             string bucket = "";
 
-            ObjectsResource.InsertRequest request = storageService.Objects.Insert(bucket);
-            Object response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.Object content = new Data.Object();
+
+            ObjectsResource.InsertRequest request = storageService.Objects.Insert(content, bucket);
+            Data.Object response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Object response = await request.ExecuteAsync();
+            // Data.Object response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1607,8 +1725,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -1639,17 +1758,31 @@ namespace StorageSample
             string bucket = "";
 
             ObjectsResource.ListRequest request = storageService.Objects.List(bucket);
-            Objects response = request.Execute();
+            Data.Objects response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.Object item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // Objects response = await request.ExecuteAsync();
+            // Data.Objects response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1658,8 +1791,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -1690,20 +1824,24 @@ namespace StorageSample
             string bucket = "";
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object = "";
+            string object_ = "";
 
-            ObjectsResource.PatchRequest request = storageService.Objects.Patch(bucket, object);
-            Object response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.Object content = new Data.Object();
+
+            ObjectsResource.PatchRequest request = storageService.Objects.Patch(content, bucket, object_);
+            Data.Object response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Object response = await request.ExecuteAsync();
+            // Data.Object response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1712,8 +1850,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -1753,18 +1892,22 @@ namespace StorageSample
             // path safe, see Encoding URI Path Parts.
             string destinationObject = "";
 
-            ObjectsResource.RewriteRequest request = storageService.Objects.Rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject);
-            RewriteResponse response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.Object content = new Data.Object();
+
+            ObjectsResource.RewriteRequest request = storageService.Objects.Rewrite(content, sourceBucket, sourceObject, destinationBucket, destinationObject);
+            Data.RewriteResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // RewriteResponse response = await request.ExecuteAsync();
+            // Data.RewriteResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1773,8 +1916,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -1805,20 +1949,24 @@ namespace StorageSample
             string bucket = "";
             // Name of the object. For information about how to URL encode object names to be path safe, see
             // Encoding URI Path Parts.
-            string object = "";
+            string object_ = "";
 
-            ObjectsResource.UpdateRequest request = storageService.Objects.Update(bucket, object);
-            Object response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.Object content = new Data.Object();
+
+            ObjectsResource.UpdateRequest request = storageService.Objects.Update(content, bucket, object_);
+            Data.Object response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Object response = await request.ExecuteAsync();
+            // Data.Object response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud Storage JSON API and check quota for your project at
-//    https://console.developers.google.com/apis/api/storage_component/quotas
+// 1. If not already done, enable the Cloud Storage JSON API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/storage
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1827,8 +1975,9 @@ namespace StorageSample
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Storage.v1;
-using Google.Apis.Storage.v1.Data;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Storage.v1.Data;
 
 namespace StorageSample
 {
@@ -1858,11 +2007,14 @@ namespace StorageSample
             // Name of the bucket in which to look for objects.
             string bucket = "";
 
-            ObjectsResource.WatchAllRequest request = storageService.Objects.WatchAll(bucket);
-            Channel response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.Channel content = new Data.Channel();
+
+            ObjectsResource.WatchAllRequest request = storageService.Objects.WatchAll(content, bucket);
+            Data.Channel response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Channel response = await request.ExecuteAsync();
+            // Data.Channel response = await request.ExecuteAsync();
         }
     }
 }

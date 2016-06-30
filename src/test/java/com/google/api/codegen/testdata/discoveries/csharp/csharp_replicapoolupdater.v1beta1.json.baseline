@@ -1,8 +1,9 @@
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Compute Engine Instance Group Updater API and check quota for your project at
-//    https://console.developers.google.com/apis/api/replicapoolupdater_component/quotas
+// 1. If not already done, enable the Google Compute Engine Instance Group Updater API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/replicapoolupdater
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -10,9 +11,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -47,17 +49,18 @@ namespace ReplicapoolupdaterSample
             string rollingUpdate = "";
 
             RollingUpdatesResource.CancelRequest request = replicapoolupdaterService.RollingUpdates.Cancel(project, zone, rollingUpdate);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Compute Engine Instance Group Updater API and check quota for your project at
-//    https://console.developers.google.com/apis/api/replicapoolupdater_component/quotas
+// 1. If not already done, enable the Google Compute Engine Instance Group Updater API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/replicapoolupdater
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -65,9 +68,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -102,17 +106,18 @@ namespace ReplicapoolupdaterSample
             string rollingUpdate = "";
 
             RollingUpdatesResource.GetRequest request = replicapoolupdaterService.RollingUpdates.Get(project, zone, rollingUpdate);
-            RollingUpdate response = request.Execute();
+            Data.RollingUpdate response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // RollingUpdate response = await request.ExecuteAsync();
+            // Data.RollingUpdate response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Compute Engine Instance Group Updater API and check quota for your project at
-//    https://console.developers.google.com/apis/api/replicapoolupdater_component/quotas
+// 1. If not already done, enable the Google Compute Engine Instance Group Updater API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/replicapoolupdater
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -120,9 +125,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -154,18 +160,22 @@ namespace ReplicapoolupdaterSample
             // The name of the zone in which the update's target resides.
             string zone = "";
 
-            RollingUpdatesResource.InsertRequest request = replicapoolupdaterService.RollingUpdates.Insert(project, zone);
-            Operation response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.RollingUpdate content = new Data.RollingUpdate();
+
+            RollingUpdatesResource.InsertRequest request = replicapoolupdaterService.RollingUpdates.Insert(content, project, zone);
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Compute Engine Instance Group Updater API and check quota for your project at
-//    https://console.developers.google.com/apis/api/replicapoolupdater_component/quotas
+// 1. If not already done, enable the Google Compute Engine Instance Group Updater API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/replicapoolupdater
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -173,9 +183,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -208,17 +219,31 @@ namespace ReplicapoolupdaterSample
             string zone = "";
 
             RollingUpdatesResource.ListRequest request = replicapoolupdaterService.RollingUpdates.List(project, zone);
-            RollingUpdateList response = request.Execute();
+            Data.RollingUpdateList response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.RollingUpdate item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // RollingUpdateList response = await request.ExecuteAsync();
+            // Data.RollingUpdateList response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Compute Engine Instance Group Updater API and check quota for your project at
-//    https://console.developers.google.com/apis/api/replicapoolupdater_component/quotas
+// 1. If not already done, enable the Google Compute Engine Instance Group Updater API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/replicapoolupdater
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -226,9 +251,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -263,17 +289,31 @@ namespace ReplicapoolupdaterSample
             string rollingUpdate = "";
 
             RollingUpdatesResource.ListInstanceUpdatesRequest request = replicapoolupdaterService.RollingUpdates.ListInstanceUpdates(project, zone, rollingUpdate);
-            InstanceUpdateList response = request.Execute();
+            Data.InstanceUpdateList response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.InstanceUpdate item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // InstanceUpdateList response = await request.ExecuteAsync();
+            // Data.InstanceUpdateList response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Compute Engine Instance Group Updater API and check quota for your project at
-//    https://console.developers.google.com/apis/api/replicapoolupdater_component/quotas
+// 1. If not already done, enable the Google Compute Engine Instance Group Updater API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/replicapoolupdater
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -281,9 +321,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -318,17 +359,18 @@ namespace ReplicapoolupdaterSample
             string rollingUpdate = "";
 
             RollingUpdatesResource.PauseRequest request = replicapoolupdaterService.RollingUpdates.Pause(project, zone, rollingUpdate);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Compute Engine Instance Group Updater API and check quota for your project at
-//    https://console.developers.google.com/apis/api/replicapoolupdater_component/quotas
+// 1. If not already done, enable the Google Compute Engine Instance Group Updater API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/replicapoolupdater
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -336,9 +378,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -373,17 +416,18 @@ namespace ReplicapoolupdaterSample
             string rollingUpdate = "";
 
             RollingUpdatesResource.ResumeRequest request = replicapoolupdaterService.RollingUpdates.Resume(project, zone, rollingUpdate);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Compute Engine Instance Group Updater API and check quota for your project at
-//    https://console.developers.google.com/apis/api/replicapoolupdater_component/quotas
+// 1. If not already done, enable the Google Compute Engine Instance Group Updater API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/replicapoolupdater
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -391,9 +435,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -428,17 +473,18 @@ namespace ReplicapoolupdaterSample
             string rollingUpdate = "";
 
             RollingUpdatesResource.RollbackRequest request = replicapoolupdaterService.RollingUpdates.Rollback(project, zone, rollingUpdate);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Compute Engine Instance Group Updater API and check quota for your project at
-//    https://console.developers.google.com/apis/api/replicapoolupdater_component/quotas
+// 1. If not already done, enable the Google Compute Engine Instance Group Updater API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/replicapoolupdater
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -446,9 +492,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -483,17 +530,18 @@ namespace ReplicapoolupdaterSample
             string operation = "";
 
             ZoneOperationsResource.GetRequest request = replicapoolupdaterService.ZoneOperations.Get(project, zone, operation);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Compute Engine Instance Group Updater API and check quota for your project at
-//    https://console.developers.google.com/apis/api/replicapoolupdater_component/quotas
+// 1. If not already done, enable the Google Compute Engine Instance Group Updater API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/replicapoolupdater
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -501,9 +549,10 @@ namespace ReplicapoolupdaterSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Replicapoolupdater.v1beta1;
-using Google.Apis.Replicapoolupdater.v1beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Replicapoolupdater.v1beta1.Data;
 
 namespace ReplicapoolupdaterSample
 {
@@ -536,10 +585,23 @@ namespace ReplicapoolupdaterSample
             string zone = "";
 
             ZoneOperationsResource.ListRequest request = replicapoolupdaterService.ZoneOperations.List(project, zone);
-            OperationList response = request.Execute();
+            Data.OperationList response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.Operation item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // OperationList response = await request.ExecuteAsync();
+            // Data.OperationList response = await request.ExecuteAsync();
         }
     }
 }

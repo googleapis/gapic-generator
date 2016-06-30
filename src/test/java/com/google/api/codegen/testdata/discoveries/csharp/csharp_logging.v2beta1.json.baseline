@@ -1,8 +1,9 @@
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
-//    https://console.developers.google.com/apis/api/logging_component/quotas
+// 1. If not already done, enable the Google Cloud Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -10,9 +11,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
-using Google.Apis.Logging.v2beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Logging.v2beta1.Data;
 
 namespace LoggingSample
 {
@@ -40,18 +42,35 @@ namespace LoggingSample
 
             // TODO: Change placeholders below to values for parameters to the List() method:
 
-            EntriesResource.ListRequest request = loggingService.Entries.List();
-            ListLogEntriesResponse response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.ListLogEntriesRequest content = new Data.ListLogEntriesRequest();
+
+            EntriesResource.ListRequest request = loggingService.Entries.List(content);
+            Data.ListLogEntriesResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Entries == null)
+                {
+                    continue;
+                }
+                foreach (Data.LogEntry item in response.Entries)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListLogEntriesResponse response = await request.ExecuteAsync();
+            // Data.ListLogEntriesResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
-//    https://console.developers.google.com/apis/api/logging_component/quotas
+// 1. If not already done, enable the Google Cloud Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -59,9 +78,10 @@ namespace LoggingSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
-using Google.Apis.Logging.v2beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Logging.v2beta1.Data;
 
 namespace LoggingSample
 {
@@ -89,18 +109,22 @@ namespace LoggingSample
 
             // TODO: Change placeholders below to values for parameters to the Write() method:
 
-            EntriesResource.WriteRequest request = loggingService.Entries.Write();
-            WriteLogEntriesResponse response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.WriteLogEntriesRequest content = new Data.WriteLogEntriesRequest();
+
+            EntriesResource.WriteRequest request = loggingService.Entries.Write(content);
+            Data.WriteLogEntriesResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // WriteLogEntriesResponse response = await request.ExecuteAsync();
+            // Data.WriteLogEntriesResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
-//    https://console.developers.google.com/apis/api/logging_component/quotas
+// 1. If not already done, enable the Google Cloud Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -108,9 +132,10 @@ namespace LoggingSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
-using Google.Apis.Logging.v2beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Logging.v2beta1.Data;
 
 namespace LoggingSample
 {
@@ -139,17 +164,31 @@ namespace LoggingSample
             // TODO: Change placeholders below to values for parameters to the List() method:
 
             MonitoredResourceDescriptorsResource.ListRequest request = loggingService.MonitoredResourceDescriptors.List();
-            ListMonitoredResourceDescriptorsResponse response = request.Execute();
+            Data.ListMonitoredResourceDescriptorsResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.ResourceDescriptors == null)
+                {
+                    continue;
+                }
+                foreach (Data.MonitoredResourceDescriptor item in response.ResourceDescriptors)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListMonitoredResourceDescriptorsResponse response = await request.ExecuteAsync();
+            // Data.ListMonitoredResourceDescriptorsResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
-//    https://console.developers.google.com/apis/api/logging_component/quotas
+// 1. If not already done, enable the Google Cloud Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -157,9 +196,10 @@ namespace LoggingSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
-using Google.Apis.Logging.v2beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Logging.v2beta1.Data;
 
 namespace LoggingSample
 {
@@ -187,20 +227,21 @@ namespace LoggingSample
 
             // TODO: Change placeholders below to values for parameters to the Delete() method:
             // Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
-            string logName = "";
+            string logName = "projects/{MY-PROJECT}/logs/{MY-LOG}";
 
             ProjectsResource.LogsResource.DeleteRequest request = loggingService.Projects.Logs.Delete(logName);
-            Empty response = request.Execute();
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
-//    https://console.developers.google.com/apis/api/logging_component/quotas
+// 1. If not already done, enable the Google Cloud Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -208,9 +249,10 @@ namespace LoggingSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
-using Google.Apis.Logging.v2beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Logging.v2beta1.Data;
 
 namespace LoggingSample
 {
@@ -239,20 +281,24 @@ namespace LoggingSample
             // TODO: Change placeholders below to values for parameters to the Create() method:
             // The resource name of the project in which to create the metric. Example: `"projects/my-project-id"`.
             // The new metric must be provided in the request.
-            string projectName = "";
+            string projectName = "projects/{MY-PROJECT}";
 
-            ProjectsResource.MetricsResource.CreateRequest request = loggingService.Projects.Metrics.Create(projectName);
-            LogMetric response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.LogMetric content = new Data.LogMetric();
+
+            ProjectsResource.MetricsResource.CreateRequest request = loggingService.Projects.Metrics.Create(content, projectName);
+            Data.LogMetric response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // LogMetric response = await request.ExecuteAsync();
+            // Data.LogMetric response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
-//    https://console.developers.google.com/apis/api/logging_component/quotas
+// 1. If not already done, enable the Google Cloud Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -260,9 +306,10 @@ namespace LoggingSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
-using Google.Apis.Logging.v2beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Logging.v2beta1.Data;
 
 namespace LoggingSample
 {
@@ -290,20 +337,21 @@ namespace LoggingSample
 
             // TODO: Change placeholders below to values for parameters to the Delete() method:
             // The resource name of the metric to delete. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-            string metricName = "";
+            string metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";
 
             ProjectsResource.MetricsResource.DeleteRequest request = loggingService.Projects.Metrics.Delete(metricName);
-            Empty response = request.Execute();
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
-//    https://console.developers.google.com/apis/api/logging_component/quotas
+// 1. If not already done, enable the Google Cloud Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -311,9 +359,10 @@ namespace LoggingSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
-using Google.Apis.Logging.v2beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Logging.v2beta1.Data;
 
 namespace LoggingSample
 {
@@ -341,20 +390,21 @@ namespace LoggingSample
 
             // TODO: Change placeholders below to values for parameters to the Get() method:
             // The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-            string metricName = "";
+            string metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";
 
             ProjectsResource.MetricsResource.GetRequest request = loggingService.Projects.Metrics.Get(metricName);
-            LogMetric response = request.Execute();
+            Data.LogMetric response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // LogMetric response = await request.ExecuteAsync();
+            // Data.LogMetric response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
-//    https://console.developers.google.com/apis/api/logging_component/quotas
+// 1. If not already done, enable the Google Cloud Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -362,9 +412,10 @@ namespace LoggingSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
-using Google.Apis.Logging.v2beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Logging.v2beta1.Data;
 
 namespace LoggingSample
 {
@@ -393,20 +444,34 @@ namespace LoggingSample
             // TODO: Change placeholders below to values for parameters to the List() method:
             // Required. The resource name of the project containing the metrics. Example:
             // `"projects/my-project-id"`.
-            string projectName = "";
+            string projectName = "projects/{MY-PROJECT}";
 
             ProjectsResource.MetricsResource.ListRequest request = loggingService.Projects.Metrics.List(projectName);
-            ListLogMetricsResponse response = request.Execute();
+            Data.ListLogMetricsResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Metrics == null)
+                {
+                    continue;
+                }
+                foreach (Data.LogMetric item in response.Metrics)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListLogMetricsResponse response = await request.ExecuteAsync();
+            // Data.ListLogMetricsResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
-//    https://console.developers.google.com/apis/api/logging_component/quotas
+// 1. If not already done, enable the Google Cloud Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -414,9 +479,10 @@ namespace LoggingSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
-using Google.Apis.Logging.v2beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Logging.v2beta1.Data;
 
 namespace LoggingSample
 {
@@ -446,20 +512,24 @@ namespace LoggingSample
             // The resource name of the metric to update. Example: `"projects/my-project-id/metrics/my-metric-id"`.
             // The updated metric must be provided in the request and have the same identifier that is specified in
             // `metricName`. If the metric does not exist, it is created.
-            string metricName = "";
+            string metricName = "projects/{MY-PROJECT}/metrics/{MY-METRIC}";
 
-            ProjectsResource.MetricsResource.UpdateRequest request = loggingService.Projects.Metrics.Update(metricName);
-            LogMetric response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.LogMetric content = new Data.LogMetric();
+
+            ProjectsResource.MetricsResource.UpdateRequest request = loggingService.Projects.Metrics.Update(content, metricName);
+            Data.LogMetric response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // LogMetric response = await request.ExecuteAsync();
+            // Data.LogMetric response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
-//    https://console.developers.google.com/apis/api/logging_component/quotas
+// 1. If not already done, enable the Google Cloud Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -467,9 +537,10 @@ namespace LoggingSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
-using Google.Apis.Logging.v2beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Logging.v2beta1.Data;
 
 namespace LoggingSample
 {
@@ -498,20 +569,24 @@ namespace LoggingSample
             // TODO: Change placeholders below to values for parameters to the Create() method:
             // The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`.
             // The new sink must be provided in the request.
-            string projectName = "";
+            string projectName = "projects/{MY-PROJECT}";
 
-            ProjectsResource.SinksResource.CreateRequest request = loggingService.Projects.Sinks.Create(projectName);
-            LogSink response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.LogSink content = new Data.LogSink();
+
+            ProjectsResource.SinksResource.CreateRequest request = loggingService.Projects.Sinks.Create(content, projectName);
+            Data.LogSink response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // LogSink response = await request.ExecuteAsync();
+            // Data.LogSink response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
-//    https://console.developers.google.com/apis/api/logging_component/quotas
+// 1. If not already done, enable the Google Cloud Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -519,9 +594,10 @@ namespace LoggingSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
-using Google.Apis.Logging.v2beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Logging.v2beta1.Data;
 
 namespace LoggingSample
 {
@@ -549,20 +625,21 @@ namespace LoggingSample
 
             // TODO: Change placeholders below to values for parameters to the Delete() method:
             // The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-            string sinkName = "";
+            string sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";
 
             ProjectsResource.SinksResource.DeleteRequest request = loggingService.Projects.Sinks.Delete(sinkName);
-            Empty response = request.Execute();
+            Data.Empty response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Empty response = await request.ExecuteAsync();
+            // Data.Empty response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
-//    https://console.developers.google.com/apis/api/logging_component/quotas
+// 1. If not already done, enable the Google Cloud Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -570,9 +647,10 @@ namespace LoggingSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
-using Google.Apis.Logging.v2beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Logging.v2beta1.Data;
 
 namespace LoggingSample
 {
@@ -600,20 +678,21 @@ namespace LoggingSample
 
             // TODO: Change placeholders below to values for parameters to the Get() method:
             // The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-            string sinkName = "";
+            string sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";
 
             ProjectsResource.SinksResource.GetRequest request = loggingService.Projects.Sinks.Get(sinkName);
-            LogSink response = request.Execute();
+            Data.LogSink response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // LogSink response = await request.ExecuteAsync();
+            // Data.LogSink response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
-//    https://console.developers.google.com/apis/api/logging_component/quotas
+// 1. If not already done, enable the Google Cloud Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -621,9 +700,10 @@ namespace LoggingSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
-using Google.Apis.Logging.v2beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Logging.v2beta1.Data;
 
 namespace LoggingSample
 {
@@ -652,20 +732,34 @@ namespace LoggingSample
             // TODO: Change placeholders below to values for parameters to the List() method:
             // Required. The resource name of the project containing the sinks. Example:
             // `"projects/my-logging-project"`, `"projects/01234567890"`.
-            string projectName = "";
+            string projectName = "projects/{MY-PROJECT}";
 
             ProjectsResource.SinksResource.ListRequest request = loggingService.Projects.Sinks.List(projectName);
-            ListSinksResponse response = request.Execute();
+            Data.ListSinksResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Sinks == null)
+                {
+                    continue;
+                }
+                foreach (Data.LogSink item in response.Sinks)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListSinksResponse response = await request.ExecuteAsync();
+            // Data.ListSinksResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Logging API and check quota for your project at
-//    https://console.developers.google.com/apis/api/logging_component/quotas
+// 1. If not already done, enable the Google Cloud Logging API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/logging
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -673,9 +767,10 @@ namespace LoggingSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2beta1;
-using Google.Apis.Logging.v2beta1.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Logging.v2beta1.Data;
 
 namespace LoggingSample
 {
@@ -705,13 +800,16 @@ namespace LoggingSample
             // The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The
             // updated sink must be provided in the request and have the same name that is specified in `sinkName`.
             // If the sink does not exist, it is created.
-            string sinkName = "";
+            string sinkName = "projects/{MY-PROJECT}/sinks/{MY-SINK}";
 
-            ProjectsResource.SinksResource.UpdateRequest request = loggingService.Projects.Sinks.Update(sinkName);
-            LogSink response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.LogSink content = new Data.LogSink();
+
+            ProjectsResource.SinksResource.UpdateRequest request = loggingService.Projects.Sinks.Update(content, sinkName);
+            Data.LogSink response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // LogSink response = await request.ExecuteAsync();
+            // Data.LogSink response = await request.ExecuteAsync();
         }
     }
 }

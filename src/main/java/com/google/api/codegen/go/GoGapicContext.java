@@ -398,7 +398,12 @@ public class GoGapicContext extends GapicContext implements GoContext {
     return standardImports;
   }
 
-  private TreeSet<GoImport> getMessageImports(Interface service) {
+  /**
+   * Returns a set of imports for all messages in the given service.
+   *
+   * If inputOnly is true, only imports for input messages are returned.
+   */
+  private TreeSet<GoImport> getMessageImports(Interface service, boolean inputOnly) {
     TreeSet<GoImport> messageImports = new TreeSet<>();
 
     // Add method request-type imports
@@ -408,6 +413,9 @@ public class GoGapicContext extends GapicContext implements GoContext {
       MethodConfig methodConfig =
           getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
       messageImports.add(createMessageImport(inputMessage));
+      if (inputOnly) {
+        continue;
+      }
       if (!isEmpty(method.getOutputType())) {
         messageImports.add(createMessageImport(outputMessage));
       }
@@ -457,7 +465,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
     thirdParty.add(GoImport.create("google.golang.org/grpc/metadata"));
     thirdParty.add(GoImport.create(GAX_PACKAGE_BASE, "gax"));
 
-    thirdParty.addAll(getMessageImports(service));
+    thirdParty.addAll(getMessageImports(service, false));
     Set<GoImport> standard = getStandardImports(service);
     return formatImports(standard, thirdParty);
   }
@@ -470,8 +478,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
 
     thirdParty.add(GoImport.create(getApiConfig().getPackageName()));
     thirdParty.add(GoImport.create("golang.org/x/net/context"));
-    thirdParty.add(GoImport.create(GAX_PACKAGE_BASE, "gax"));
-    thirdParty.addAll(getMessageImports(service));
+    thirdParty.addAll(getMessageImports(service, true));
 
     return formatImports(null, thirdParty);
   }

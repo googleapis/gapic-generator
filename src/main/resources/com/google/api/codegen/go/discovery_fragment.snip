@@ -13,10 +13,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the {@context.getService.getTitle} and check the quota for your project at
-//    https://console.developers.google.com/apis/api/{@context.getApi.getName}_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the {@context.getService.getTitle}
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/{@context.getApi.getName}
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/{@context.getApi.getName}/{@context.getApiVersion}
 
@@ -33,12 +35,10 @@ func main() {
   hc, err := google.DefaultClient(ctx{@scopeArg(method)})
   if err != nil {
     // {@TODO()} Handle error.
-    _ = err
   }
-  client, err := {@context.getApi.getName}.New(hc)
+  c, err := {@context.getApi.getName}.New(hc)
   if err != nil {
     // {@TODO()} Handle error.
-    _ = err
   }
 
   {@initialize(method)}
@@ -65,12 +65,10 @@ func main() {
       call := {@methodPath(method)}({@callArg(method)}).Context(ctx)
       if err := call.Do(); err != nil {
         // {@TODO()} Handle error.
-        _ = err
       }
     @else
       if err := {@methodPath(method)}({@callArg(method)}).Context(ctx).Do(); err != nil {
         // {@TODO()} Handle error.
-        _ = err
       }
     @end
   @else
@@ -78,7 +76,6 @@ func main() {
     resp, err := {@methodPath(method)}({@callArg(method)}).Context(ctx).Do()
     if err != nil {
       // {@TODO()} Handle error.
-      _ = err
     }
     // {@TODO()} Use resp.
     _ = resp
@@ -100,13 +97,12 @@ func main() {
       return nil // NOTE: returning a non-nil error stops pagination.
     }); err != nil {
       // {@TODO()} Handle error.
-      _ = err
     }
   @end
 @end
 
 @private methodPath(method)
-  client.{@resourcePath(method)}.{@context.lowerCamelToUpperCamel(context.getMethodName(method))}
+  c.{@resourcePath(method)}.{@context.lowerCamelToUpperCamel(context.getMethodName(method))}
 @end
 
 @private resourcePath(method)

@@ -44,10 +44,9 @@
   var fsp = require('fs-promise');
   var gax = require('google-gax');
   var grpc = require('grpc');
+  var grpcClient = require('{@context.grpcClientName(service)}').client;
   var path = require('path');
   var through2 = require('through2');
-
-  var google = grpc.loadObject(require('./service')).google;
 @end
 
 @private serviceClass(service)
@@ -101,9 +100,8 @@
           @let pageStreaming = ifaceConfig.getMethodConfig(method).getPageStreaming(), \
                requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
                responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
-               resources = pageStreaming.getResourcesField().getSimpleName(), \
-               methodName = context.upperCamelToLowerCamel(method.getSimpleName)
-              '{@methodName}': new gax.PageDescriptor(
+               resources = pageStreaming.getResourcesField().getSimpleName()
+              '{@methodName(method)}': new gax.PageDescriptor(
                   '{@requestToken}',
                   '{@responseToken}',
                   '{@resources}')
@@ -121,7 +119,6 @@
         '{@auth_scope}'
       @end
     ];
-    exports.ALL_SCOPES = ALL_SCOPES;
   @end
 @end
 
@@ -130,7 +127,7 @@
        jsonBaseName = {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
     var clientConfigFile = path.join(
         __dirname, '{@jsonBaseName}_client_config.json');
-    this.defaults = fsp.readJson(clientConfigFile).then(function(data) {
+    var defaults = fsp.readJson(clientConfigFile).then(function(data) {
       @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
         return gax.constructSettings(
             '{@service.getFullName}',
@@ -138,14 +135,17 @@
             clientConfig,
             grpc.status,
             timeout,
-            PAGE_DESCRIPTORS);
+            PAGE_DESCRIPTORS,
+            {'metadata': metadata});
       @else
         return gax.constructSettings(
             '{@service.getFullName}',
             data,
             clientConfig,
             grpc.status,
-            timeout);
+            timeout,
+            null,
+            {'metadata': metadata});
       @end
     });
   @end
@@ -191,21 +191,34 @@
       var appName = opts.appName || 'gax';
       var appVersion = opts.appVersion || gax.Version;
 
-      {@constructDefaults(service)}
-
       var googleApiClient = [
         appName + '/' + appVersion,
         CODE_GEN_NAME_VERSION,
         'nodejs/' + process.version].join(' ');
-      this.headers = new grpc.Metadata();
-      this.headers.set('x-goog-api-client', googleApiClient);
+      var metadata = new grpc.Metadata();
+      metadata.set('x-goog-api-client', googleApiClient);
+
+      {@constructDefaults(service)}
+
       this.stub = gax.createStub(
           servicePath,
           port,
-          google.example.library.v1.LibraryService,
+          grpcClient.{@service.getFullName},
           {'getCredentials': getCredentials,
            'sslCreds': sslCreds,
            'scopes': scopes});
+      var methods = [
+        @join method : service.getMethods on {@","}.add(BREAK)
+          '{@methodName(method)}'
+        @end
+      ];
+      methods.forEach(function(methodName) {
+        this['_' + methodName] = Promise.all([defaults, this.stub]).then(function(vars) {
+          var options = vars[0][methodName];
+          var stub = vars[1];
+          return gax.createApiCall(stub[methodName].bind(stub), options);
+        }.bind(this));
+      }.bind(this));
     };
     exports.{@serviceName} = {@serviceName};
   @end
@@ -302,9 +315,12 @@
   api_call.call(req, **@@headers)
 @end
 
+@private methodName(method)
+  {@context.upperCamelToLowerCamel(method.getSimpleName())}
+@end
+
 @private flattenedMethod(service, method)
   @let serviceName = context.getApiWrapperName(service), \
-       methodName = context.upperCamelToLowerCamel(method.getSimpleName()), \
        documentation = comments(context.methodComments(method)), \
        methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        requiredParams = methodConfig.getRequiredFields(), \
@@ -315,13 +331,13 @@
        */
     @end
 
-    {@serviceName}.prototype.{@methodName} = function {@methodName}() {
+    {@serviceName}.prototype.{@methodName(method)} = function {@methodName(method)}() {
       var args = arguejs({
         @if requiredParams
           {@requiredParameterDefs(requiredParams)},
         @end
         @if optionalParams
-          'otherArgs': [Object],
+          'otherArgs': [Object, {}],
         @end
         @if methodConfig.isPageStreaming
           'options': [gax.CallOptions]
@@ -329,7 +345,7 @@
           'options': [gax.CallOptions],
           'callback': [Function]
         @end
-      });
+      }, arguments);
       var req = {
         @if requiredParams
           @if optionalParams
@@ -344,26 +360,18 @@
       };
       @if methodConfig.isPageStreaming
         var stream = through2.obj();
-        Promise.all([this.defaults, this.stub]).then(function(vars) {
-          var defaults = vars[0];
-          var stub = vars[1];
-          var options = defaults.{@methodName}.merge(args.options);
-          var apiCall = gax.createApiCall(stub.{@methodName}.bind(stub), options);
-          var result = apiCall(req, args.callback, this.headers, {});
+        this._{@methodName(method)}.then(function(apiCall) {
+          var result = apiCall(req, args.options);
           result.pipe(stream);
           stream.on('end', function() { result.end(); });
-        }.bind(this))['catch'](function(err) {
+        })['catch'](function(err) {
           stream.emit('error', err);
         });
         return stream;
       @else
-        Promise.all([this.defaults, this.stub]).then(function(vars) {
-          var defaults = vars[0];
-          var stub = vars[1];
-          var options = defaults.{@methodName}.merge(args.options);
-          var apiCall = gax.createApiCall(stub.{@methodName}.bind(stub), options);
-          apiCall(req, args.callback, this.headers, {});
-        }.bind(this))['catch'](function(err) {
+        this._{@methodName(method)}.then(function(apiCall) {
+          apiCall(req, args.options, args.callback);
+        })['catch'](function(err) {
           if (args.callback) {
             args.callback(err);
           }

@@ -3,10 +3,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Prediction API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/prediction_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Prediction API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/prediction
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/prediction/v1.6
 
@@ -22,12 +24,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, prediction.PredictionScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := prediction.New(hc)
+  c, err := prediction.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project associated with the model.
@@ -36,12 +36,11 @@ func main() {
   // The name of a hosted model.
   hostedModelName := "" // TODO: Update placeholder value.
 
-  resp, err := client.Hostedmodels.Predict(project, hostedModelName, &prediction.Input{
-                                             // TODO: Fill required fields.
-                                           }).Context(ctx).Do()
+  resp, err := c.Hostedmodels.Predict(project, hostedModelName, &prediction.Input{
+                                        // TODO: Fill required fields.
+                                      }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -50,10 +49,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Prediction API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/prediction_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Prediction API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/prediction
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/prediction/v1.6
 
@@ -69,12 +70,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, prediction.PredictionScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := prediction.New(hc)
+  c, err := prediction.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project associated with the model.
@@ -83,10 +82,9 @@ func main() {
   // The unique name for the predictive model.
   id := "" // TODO: Update placeholder value.
 
-  resp, err := client.Trainedmodels.Analyze(project, id).Context(ctx).Do()
+  resp, err := c.Trainedmodels.Analyze(project, id).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -95,10 +93,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Prediction API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/prediction_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Prediction API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/prediction
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/prediction/v1.6
 
@@ -114,12 +114,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, prediction.PredictionScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := prediction.New(hc)
+  c, err := prediction.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project associated with the model.
@@ -128,19 +126,20 @@ func main() {
   // The unique name for the predictive model.
   id := "" // TODO: Update placeholder value.
 
-  if err := client.Trainedmodels.Delete(project, id).Context(ctx).Do(); err != nil {
+  if err := c.Trainedmodels.Delete(project, id).Context(ctx).Do(); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Prediction API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/prediction_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Prediction API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/prediction
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/prediction/v1.6
 
@@ -156,12 +155,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, prediction.PredictionScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := prediction.New(hc)
+  c, err := prediction.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project associated with the model.
@@ -170,10 +167,9 @@ func main() {
   // The unique name for the predictive model.
   id := "" // TODO: Update placeholder value.
 
-  resp, err := client.Trainedmodels.Get(project, id).Context(ctx).Do()
+  resp, err := c.Trainedmodels.Get(project, id).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -182,10 +178,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Prediction API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/prediction_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Prediction API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/prediction
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/prediction/v1.6
 
@@ -201,23 +199,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, prediction.DevstorageFullControlScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := prediction.New(hc)
+  c, err := prediction.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project associated with the model.
   project := "" // TODO: Update placeholder value.
 
-  resp, err := client.Trainedmodels.Insert(project, &prediction.Insert{
-                                             // TODO: Fill required fields.
-                                           }).Context(ctx).Do()
+  resp, err := c.Trainedmodels.Insert(project, &prediction.Insert{
+                                        // TODO: Fill required fields.
+                                      }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -226,10 +221,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Prediction API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/prediction_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Prediction API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/prediction
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/prediction/v1.6
 
@@ -245,19 +242,17 @@ func main() {
   hc, err := google.DefaultClient(ctx, prediction.PredictionScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := prediction.New(hc)
+  c, err := prediction.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project associated with the model.
   project := "" // TODO: Update placeholder value.
 
 
-  call := client.Trainedmodels.List(project)
+  call := c.Trainedmodels.List(project)
   if err := call.Pages(ctx, func(page *prediction.List) error {
     for _, v := range page.Items {
       // TODO: Use v.
@@ -266,17 +261,18 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Prediction API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/prediction_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Prediction API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/prediction
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/prediction/v1.6
 
@@ -292,12 +288,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, prediction.PredictionScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := prediction.New(hc)
+  c, err := prediction.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project associated with the model.
@@ -306,12 +300,11 @@ func main() {
   // The unique name for the predictive model.
   id := "" // TODO: Update placeholder value.
 
-  resp, err := client.Trainedmodels.Predict(project, id, &prediction.Input{
-                                              // TODO: Fill required fields.
-                                            }).Context(ctx).Do()
+  resp, err := c.Trainedmodels.Predict(project, id, &prediction.Input{
+                                         // TODO: Fill required fields.
+                                       }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -320,10 +313,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Prediction API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/prediction_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Prediction API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/prediction
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/prediction/v1.6
 
@@ -339,12 +334,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, prediction.PredictionScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := prediction.New(hc)
+  c, err := prediction.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project associated with the model.
@@ -353,12 +346,11 @@ func main() {
   // The unique name for the predictive model.
   id := "" // TODO: Update placeholder value.
 
-  resp, err := client.Trainedmodels.Update(project, id, &prediction.Update{
-                                             // TODO: Fill required fields.
-                                           }).Context(ctx).Do()
+  resp, err := c.Trainedmodels.Update(project, id, &prediction.Update{
+                                        // TODO: Fill required fields.
+                                      }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp

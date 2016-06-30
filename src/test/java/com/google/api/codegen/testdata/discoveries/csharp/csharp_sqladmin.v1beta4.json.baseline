@@ -1,8 +1,9 @@
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -10,9 +11,10 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -47,17 +49,18 @@ namespace SQLAdminSample
             long id = 0L;
 
             BackupRunsResource.DeleteRequest request = sQLAdminService.BackupRuns.Delete(project, instance, id);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -65,9 +68,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -102,17 +106,18 @@ namespace SQLAdminSample
             long id = 0L;
 
             BackupRunsResource.GetRequest request = sQLAdminService.BackupRuns.Get(project, instance, id);
-            BackupRun response = request.Execute();
+            Data.BackupRun response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // BackupRun response = await request.ExecuteAsync();
+            // Data.BackupRun response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -120,9 +125,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -155,17 +161,31 @@ namespace SQLAdminSample
             string instance = "";
 
             BackupRunsResource.ListRequest request = sQLAdminService.BackupRuns.List(project, instance);
-            BackupRunsListResponse response = request.Execute();
+            Data.BackupRunsListResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.BackupRun item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // BackupRunsListResponse response = await request.ExecuteAsync();
+            // Data.BackupRunsListResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -173,9 +193,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -210,17 +231,18 @@ namespace SQLAdminSample
             string database = "";
 
             DatabasesResource.DeleteRequest request = sQLAdminService.Databases.Delete(project, instance, database);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -228,9 +250,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -265,17 +288,18 @@ namespace SQLAdminSample
             string database = "";
 
             DatabasesResource.GetRequest request = sQLAdminService.Databases.Get(project, instance, database);
-            Database response = request.Execute();
+            Data.Database response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Database response = await request.ExecuteAsync();
+            // Data.Database response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -283,9 +307,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -317,18 +342,22 @@ namespace SQLAdminSample
             // Database instance ID. This does not include the project ID.
             string instance = "";
 
-            DatabasesResource.InsertRequest request = sQLAdminService.Databases.Insert(project, instance);
-            Operation response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.Database content = new Data.Database();
+
+            DatabasesResource.InsertRequest request = sQLAdminService.Databases.Insert(content, project, instance);
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -336,9 +365,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -371,17 +401,18 @@ namespace SQLAdminSample
             string instance = "";
 
             DatabasesResource.ListRequest request = sQLAdminService.Databases.List(project, instance);
-            DatabasesListResponse response = request.Execute();
+            Data.DatabasesListResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // DatabasesListResponse response = await request.ExecuteAsync();
+            // Data.DatabasesListResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -389,9 +420,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -425,18 +457,22 @@ namespace SQLAdminSample
             // Name of the database to be updated in the instance.
             string database = "";
 
-            DatabasesResource.PatchRequest request = sQLAdminService.Databases.Patch(project, instance, database);
-            Operation response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.Database content = new Data.Database();
+
+            DatabasesResource.PatchRequest request = sQLAdminService.Databases.Patch(content, project, instance, database);
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -444,9 +480,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -480,18 +517,22 @@ namespace SQLAdminSample
             // Name of the database to be updated in the instance.
             string database = "";
 
-            DatabasesResource.UpdateRequest request = sQLAdminService.Databases.Update(project, instance, database);
-            Operation response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.Database content = new Data.Database();
+
+            DatabasesResource.UpdateRequest request = sQLAdminService.Databases.Update(content, project, instance, database);
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -499,9 +540,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -530,17 +572,18 @@ namespace SQLAdminSample
             // TODO: Change placeholders below to values for parameters to the List() method:
 
             FlagsResource.ListRequest request = sQLAdminService.Flags.List();
-            FlagsListResponse response = request.Execute();
+            Data.FlagsListResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // FlagsListResponse response = await request.ExecuteAsync();
+            // Data.FlagsListResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -548,9 +591,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -582,18 +626,22 @@ namespace SQLAdminSample
             // The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
             string instance = "";
 
-            InstancesResource.CloneRequest request = sQLAdminService.Instances.Clone(project, instance);
-            Operation response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.InstancesCloneRequest content = new Data.InstancesCloneRequest();
+
+            InstancesResource.CloneRequest request = sQLAdminService.Instances.Clone(content, project, instance);
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -601,9 +649,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -636,17 +685,18 @@ namespace SQLAdminSample
             string instance = "";
 
             InstancesResource.DeleteRequest request = sQLAdminService.Instances.Delete(project, instance);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -654,9 +704,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -688,18 +739,22 @@ namespace SQLAdminSample
             // Cloud SQL instance ID. This does not include the project ID.
             string instance = "";
 
-            InstancesResource.ExportRequest request = sQLAdminService.Instances.Export(project, instance);
-            Operation response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.InstancesExportRequest content = new Data.InstancesExportRequest();
+
+            InstancesResource.ExportRequest request = sQLAdminService.Instances.Export(content, project, instance);
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -707,9 +762,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -741,18 +797,22 @@ namespace SQLAdminSample
             // Cloud SQL instance ID. This does not include the project ID.
             string instance = "";
 
-            InstancesResource.FailoverRequest request = sQLAdminService.Instances.Failover(project, instance);
-            Operation response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.InstancesFailoverRequest content = new Data.InstancesFailoverRequest();
+
+            InstancesResource.FailoverRequest request = sQLAdminService.Instances.Failover(content, project, instance);
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -760,9 +820,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -795,17 +856,18 @@ namespace SQLAdminSample
             string instance = "";
 
             InstancesResource.GetRequest request = sQLAdminService.Instances.Get(project, instance);
-            DatabaseInstance response = request.Execute();
+            Data.DatabaseInstance response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // DatabaseInstance response = await request.ExecuteAsync();
+            // Data.DatabaseInstance response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -813,9 +875,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -847,18 +910,22 @@ namespace SQLAdminSample
             // Cloud SQL instance ID. This does not include the project ID.
             string instance = "";
 
-            InstancesResource.ImportRequest request = sQLAdminService.Instances.Import(project, instance);
-            Operation response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.InstancesImportRequest content = new Data.InstancesImportRequest();
+
+            InstancesResource.ImportRequest request = sQLAdminService.Instances.Import(content, project, instance);
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -866,9 +933,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -898,18 +966,22 @@ namespace SQLAdminSample
             // Project ID of the project to which the newly created Cloud SQL instances should belong.
             string project = "";
 
-            InstancesResource.InsertRequest request = sQLAdminService.Instances.Insert(project);
-            Operation response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.DatabaseInstance content = new Data.DatabaseInstance();
+
+            InstancesResource.InsertRequest request = sQLAdminService.Instances.Insert(content, project);
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -917,9 +989,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -950,17 +1023,31 @@ namespace SQLAdminSample
             string project = "";
 
             InstancesResource.ListRequest request = sQLAdminService.Instances.List(project);
-            InstancesListResponse response = request.Execute();
+            Data.InstancesListResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.DatabaseInstance item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // InstancesListResponse response = await request.ExecuteAsync();
+            // Data.InstancesListResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -968,9 +1055,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1002,18 +1090,22 @@ namespace SQLAdminSample
             // Cloud SQL instance ID. This does not include the project ID.
             string instance = "";
 
-            InstancesResource.PatchRequest request = sQLAdminService.Instances.Patch(project, instance);
-            Operation response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.DatabaseInstance content = new Data.DatabaseInstance();
+
+            InstancesResource.PatchRequest request = sQLAdminService.Instances.Patch(content, project, instance);
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1021,9 +1113,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1056,17 +1149,18 @@ namespace SQLAdminSample
             string instance = "";
 
             InstancesResource.PromoteReplicaRequest request = sQLAdminService.Instances.PromoteReplica(project, instance);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1074,9 +1168,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1109,17 +1204,18 @@ namespace SQLAdminSample
             string instance = "";
 
             InstancesResource.ResetSslConfigRequest request = sQLAdminService.Instances.ResetSslConfig(project, instance);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1127,9 +1223,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1162,17 +1259,18 @@ namespace SQLAdminSample
             string instance = "";
 
             InstancesResource.RestartRequest request = sQLAdminService.Instances.Restart(project, instance);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1180,9 +1278,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1214,18 +1313,22 @@ namespace SQLAdminSample
             // Cloud SQL instance ID. This does not include the project ID.
             string instance = "";
 
-            InstancesResource.RestoreBackupRequest request = sQLAdminService.Instances.RestoreBackup(project, instance);
-            Operation response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.InstancesRestoreBackupRequest content = new Data.InstancesRestoreBackupRequest();
+
+            InstancesResource.RestoreBackupRequest request = sQLAdminService.Instances.RestoreBackup(content, project, instance);
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1233,9 +1336,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1268,17 +1372,18 @@ namespace SQLAdminSample
             string instance = "";
 
             InstancesResource.StartReplicaRequest request = sQLAdminService.Instances.StartReplica(project, instance);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1286,9 +1391,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1321,17 +1427,18 @@ namespace SQLAdminSample
             string instance = "";
 
             InstancesResource.StopReplicaRequest request = sQLAdminService.Instances.StopReplica(project, instance);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1339,9 +1446,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1373,18 +1481,22 @@ namespace SQLAdminSample
             // Cloud SQL instance ID. This does not include the project ID.
             string instance = "";
 
-            InstancesResource.UpdateRequest request = sQLAdminService.Instances.Update(project, instance);
-            Operation response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.DatabaseInstance content = new Data.DatabaseInstance();
+
+            InstancesResource.UpdateRequest request = sQLAdminService.Instances.Update(content, project, instance);
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1392,9 +1504,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1427,17 +1540,18 @@ namespace SQLAdminSample
             string operation = "";
 
             OperationsResource.GetRequest request = sQLAdminService.Operations.Get(project, operation);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1445,9 +1559,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1480,17 +1595,31 @@ namespace SQLAdminSample
             string instance = "";
 
             OperationsResource.ListRequest request = sQLAdminService.Operations.List(project, instance);
-            OperationsListResponse response = request.Execute();
+            Data.OperationsListResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Items == null)
+                {
+                    continue;
+                }
+                foreach (Data.Operation item in response.Items)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // OperationsListResponse response = await request.ExecuteAsync();
+            // Data.OperationsListResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1498,9 +1627,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1532,18 +1662,22 @@ namespace SQLAdminSample
             // Cloud SQL instance ID. This does not include the project ID.
             string instance = "";
 
-            SslCertsResource.CreateEphemeralRequest request = sQLAdminService.SslCerts.CreateEphemeral(project, instance);
-            SslCert response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.SslCertsCreateEphemeralRequest content = new Data.SslCertsCreateEphemeralRequest();
+
+            SslCertsResource.CreateEphemeralRequest request = sQLAdminService.SslCerts.CreateEphemeral(content, project, instance);
+            Data.SslCert response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // SslCert response = await request.ExecuteAsync();
+            // Data.SslCert response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1551,9 +1685,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1588,17 +1723,18 @@ namespace SQLAdminSample
             string sha1Fingerprint = "";
 
             SslCertsResource.DeleteRequest request = sQLAdminService.SslCerts.Delete(project, instance, sha1Fingerprint);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1606,9 +1742,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1643,17 +1780,18 @@ namespace SQLAdminSample
             string sha1Fingerprint = "";
 
             SslCertsResource.GetRequest request = sQLAdminService.SslCerts.Get(project, instance, sha1Fingerprint);
-            SslCert response = request.Execute();
+            Data.SslCert response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // SslCert response = await request.ExecuteAsync();
+            // Data.SslCert response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1661,9 +1799,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1695,18 +1834,22 @@ namespace SQLAdminSample
             // Cloud SQL instance ID. This does not include the project ID.
             string instance = "";
 
-            SslCertsResource.InsertRequest request = sQLAdminService.SslCerts.Insert(project, instance);
-            SslCertsInsertResponse response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.SslCertsInsertRequest content = new Data.SslCertsInsertRequest();
+
+            SslCertsResource.InsertRequest request = sQLAdminService.SslCerts.Insert(content, project, instance);
+            Data.SslCertsInsertResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // SslCertsInsertResponse response = await request.ExecuteAsync();
+            // Data.SslCertsInsertResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1714,9 +1857,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1749,17 +1893,18 @@ namespace SQLAdminSample
             string instance = "";
 
             SslCertsResource.ListRequest request = sQLAdminService.SslCerts.List(project, instance);
-            SslCertsListResponse response = request.Execute();
+            Data.SslCertsListResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // SslCertsListResponse response = await request.ExecuteAsync();
+            // Data.SslCertsListResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1767,9 +1912,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1800,17 +1946,18 @@ namespace SQLAdminSample
             string project = "";
 
             TiersResource.ListRequest request = sQLAdminService.Tiers.List(project);
-            TiersListResponse response = request.Execute();
+            Data.TiersListResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // TiersListResponse response = await request.ExecuteAsync();
+            // Data.TiersListResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1818,9 +1965,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1857,17 +2005,18 @@ namespace SQLAdminSample
             string name = "";
 
             UsersResource.DeleteRequest request = sQLAdminService.Users.Delete(project, instance, host, name);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1875,9 +2024,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1909,18 +2059,22 @@ namespace SQLAdminSample
             // Database instance ID. This does not include the project ID.
             string instance = "";
 
-            UsersResource.InsertRequest request = sQLAdminService.Users.Insert(project, instance);
-            Operation response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.User content = new Data.User();
+
+            UsersResource.InsertRequest request = sQLAdminService.Users.Insert(content, project, instance);
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1928,9 +2082,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -1963,17 +2118,18 @@ namespace SQLAdminSample
             string instance = "";
 
             UsersResource.ListRequest request = sQLAdminService.Users.List(project, instance);
-            UsersListResponse response = request.Execute();
+            Data.UsersListResponse response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // UsersListResponse response = await request.ExecuteAsync();
+            // Data.UsersListResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud SQL Administration API and check quota for your project at
-//    https://console.developers.google.com/apis/api/sqladmin_component/quotas
+// 1. If not already done, enable the Cloud SQL Administration API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/sqladmin
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
@@ -1981,9 +2137,10 @@ namespace SQLAdminSample
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
-using Google.Apis.SQLAdmin.v1beta4.Data;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.SQLAdmin.v1beta4.Data;
 
 namespace SQLAdminSample
 {
@@ -2019,11 +2176,14 @@ namespace SQLAdminSample
             // Name of the user in the instance.
             string name = "";
 
-            UsersResource.UpdateRequest request = sQLAdminService.Users.Update(project, instance, host, name);
-            Operation response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.User content = new Data.User();
+
+            UsersResource.UpdateRequest request = sQLAdminService.Users.Update(content, project, instance, host, name);
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }

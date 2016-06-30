@@ -3,10 +3,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the TaskQueue API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/taskqueue_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the TaskQueue API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/taskqueue
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/taskqueue/v1beta2
 
@@ -22,12 +24,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, taskqueue.TaskqueueScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := taskqueue.New(hc)
+  c, err := taskqueue.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project under which the queue lies.
@@ -36,10 +36,9 @@ func main() {
   // The id of the taskqueue to get the properties of.
   taskqueue2 := "" // TODO: Update placeholder value.
 
-  resp, err := client.Taskqueues.Get(project, taskqueue2).Context(ctx).Do()
+  resp, err := c.Taskqueues.Get(project, taskqueue2).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -48,10 +47,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the TaskQueue API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/taskqueue_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the TaskQueue API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/taskqueue
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/taskqueue/v1beta2
 
@@ -67,12 +68,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, taskqueue.TaskqueueScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := taskqueue.New(hc)
+  c, err := taskqueue.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project under which the queue lies.
@@ -84,19 +83,20 @@ func main() {
   // The id of the task to delete.
   task := "" // TODO: Update placeholder value.
 
-  if err := client.Tasks.Delete(project, taskqueue2, task).Context(ctx).Do(); err != nil {
+  if err := c.Tasks.Delete(project, taskqueue2, task).Context(ctx).Do(); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the TaskQueue API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/taskqueue_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the TaskQueue API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/taskqueue
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/taskqueue/v1beta2
 
@@ -112,12 +112,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, taskqueue.TaskqueueScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := taskqueue.New(hc)
+  c, err := taskqueue.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project under which the queue lies.
@@ -129,10 +127,9 @@ func main() {
   // The task to get properties of.
   task := "" // TODO: Update placeholder value.
 
-  resp, err := client.Tasks.Get(project, taskqueue2, task).Context(ctx).Do()
+  resp, err := c.Tasks.Get(project, taskqueue2, task).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -141,10 +138,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the TaskQueue API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/taskqueue_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the TaskQueue API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/taskqueue
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/taskqueue/v1beta2
 
@@ -160,12 +159,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, taskqueue.TaskqueueScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := taskqueue.New(hc)
+  c, err := taskqueue.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project under which the queue lies
@@ -174,12 +171,11 @@ func main() {
   // The taskqueue to insert the task into
   taskqueue2 := "" // TODO: Update placeholder value.
 
-  resp, err := client.Tasks.Insert(project, taskqueue2, &taskqueue.Task{
-                                     // TODO: Fill required fields.
-                                   }).Context(ctx).Do()
+  resp, err := c.Tasks.Insert(project, taskqueue2, &taskqueue.Task{
+                                // TODO: Fill required fields.
+                              }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -188,10 +184,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the TaskQueue API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/taskqueue_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the TaskQueue API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/taskqueue
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/taskqueue/v1beta2
 
@@ -207,12 +205,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, taskqueue.TaskqueueScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := taskqueue.New(hc)
+  c, err := taskqueue.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project under which the queue lies.
@@ -227,10 +223,9 @@ func main() {
   // The lease in seconds.
   leaseSecs := int64(0) // TODO: Update placeholder value.
 
-  resp, err := client.Tasks.Lease(project, taskqueue2, numTasks, leaseSecs).Context(ctx).Do()
+  resp, err := c.Tasks.Lease(project, taskqueue2, numTasks, leaseSecs).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -239,10 +234,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the TaskQueue API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/taskqueue_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the TaskQueue API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/taskqueue
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/taskqueue/v1beta2
 
@@ -258,12 +255,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, taskqueue.TaskqueueScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := taskqueue.New(hc)
+  c, err := taskqueue.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project under which the queue lies.
@@ -272,10 +267,9 @@ func main() {
   // The id of the taskqueue to list tasks from.
   taskqueue2 := "" // TODO: Update placeholder value.
 
-  resp, err := client.Tasks.List(project, taskqueue2).Context(ctx).Do()
+  resp, err := c.Tasks.List(project, taskqueue2).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -284,10 +278,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the TaskQueue API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/taskqueue_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the TaskQueue API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/taskqueue
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/taskqueue/v1beta2
 
@@ -303,12 +299,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, taskqueue.TaskqueueScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := taskqueue.New(hc)
+  c, err := taskqueue.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project under which the queue lies.
@@ -323,12 +317,11 @@ func main() {
   // The new lease in seconds.
   newLeaseSeconds := int64(0) // TODO: Update placeholder value.
 
-  resp, err := client.Tasks.Patch(project, taskqueue2, task, newLeaseSeconds, &taskqueue.Task{
-                                    // TODO: Fill required fields.
-                                  }).Context(ctx).Do()
+  resp, err := c.Tasks.Patch(project, taskqueue2, task, newLeaseSeconds, &taskqueue.Task{
+                               // TODO: Fill required fields.
+                             }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -337,10 +330,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the TaskQueue API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/taskqueue_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the TaskQueue API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/taskqueue
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/taskqueue/v1beta2
 
@@ -356,12 +351,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, taskqueue.TaskqueueScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := taskqueue.New(hc)
+  c, err := taskqueue.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project under which the queue lies.
@@ -376,12 +369,11 @@ func main() {
   // The new lease in seconds.
   newLeaseSeconds := int64(0) // TODO: Update placeholder value.
 
-  resp, err := client.Tasks.Update(project, taskqueue2, task, newLeaseSeconds, &taskqueue.Task{
-                                     // TODO: Fill required fields.
-                                   }).Context(ctx).Do()
+  resp, err := c.Tasks.Update(project, taskqueue2, task, newLeaseSeconds, &taskqueue.Task{
+                                // TODO: Fill required fields.
+                              }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp

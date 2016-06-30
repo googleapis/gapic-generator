@@ -14,18 +14,48 @@
  */
 package com.google.api.codegen.metacode;
 
-import com.google.api.codegen.metacode.FieldStructureParser;
 import com.google.common.truth.Truth;
+
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.junit.Test;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FieldStructureTest {
+
+  @Test
+  public void testRegex() throws Exception {
+    Pattern fieldPattern = FieldStructureParser.getFieldStructurePattern();
+    Pattern listPattern = FieldStructureParser.getFieldListPattern();
+    Pattern mapPattern = FieldStructureParser.getFieldMapPattern();
+
+    Matcher matcher = listPattern.matcher("mylist[0][0]");
+    Truth.assertThat(matcher.matches()).isTrue();
+    Truth.assertThat(matcher.group(1)).isEqualTo("mylist[0]");
+    Truth.assertThat(matcher.group(2)).isEqualTo("0");
+
+    String dualMatch = "mymap[0]{key}";
+    matcher = listPattern.matcher(dualMatch);
+    Truth.assertThat(matcher.matches()).isFalse();
+    matcher = mapPattern.matcher(dualMatch);
+    Truth.assertThat(matcher.matches()).isTrue();
+    Truth.assertThat(matcher.group(1)).isEqualTo("mymap[0]");
+    Truth.assertThat(matcher.group(2)).isEqualTo("key");
+
+    Matcher fieldMatcher = fieldPattern.matcher("myfield.mynextfield");
+    Truth.assertThat(fieldMatcher.matches()).isTrue();
+    Truth.assertThat(fieldMatcher.group(1)).isEqualTo("myfield");
+    Truth.assertThat(fieldMatcher.group(2)).isEqualTo("mynextfield");
+
+    Truth.assertThat(fieldPattern.matcher("singlefield").matches()).isFalse();
+    Truth.assertThat(fieldPattern.matcher("myfield.mylist[0]").matches()).isFalse();
+    Truth.assertThat(fieldPattern.matcher("myfield.mymap{key}").matches()).isFalse();
+  }
 
   @Test
   public void testSimpleField() throws Exception {
@@ -57,6 +87,55 @@ public class FieldStructureTest {
 
     List<Object> innerList = Collections.singletonList((Object) InitValueConfig.create());
     Map<String, Object> expectedStructure = Collections.singletonMap("mylist", (Object) innerList);
+
+    Map<String, Object> actualStructure = FieldStructureParser.parseFields(fieldSpecs);
+    Truth.assertThat(actualStructure).isEqualTo(expectedStructure);
+  }
+
+  @Test
+  public void testMapField() throws Exception {
+    List<String> fieldSpecs = Arrays.asList("mylist{key}");
+
+    Map<String, Object> innerMap =
+        Collections.singletonMap("key", (Object) InitValueConfig.create());
+    Map<String, Object> expectedStructure = Collections.singletonMap("mylist", (Object) innerMap);
+
+    Map<String, Object> actualStructure = FieldStructureParser.parseFields(fieldSpecs);
+    Truth.assertThat(actualStructure).isEqualTo(expectedStructure);
+  }
+
+  @Test
+  public void testNestedListField() throws Exception {
+    List<String> fieldSpecs = Arrays.asList("mylist[0][0]");
+
+    List<Object> innerList = Collections.singletonList((Object) InitValueConfig.create());
+    List<Object> outerList = Collections.singletonList((Object) innerList);
+    Map<String, Object> expectedStructure = Collections.singletonMap("mylist", (Object) outerList);
+
+    Map<String, Object> actualStructure = FieldStructureParser.parseFields(fieldSpecs);
+    Truth.assertThat(actualStructure).isEqualTo(expectedStructure);
+  }
+
+  @Test
+  public void testNestedMixedField() throws Exception {
+    List<String> fieldSpecs = Arrays.asList("mylist[0]{key}");
+
+    Map<String, Object> innerMap =
+        Collections.singletonMap("key", (Object) InitValueConfig.create());
+    List<Object> innerList = Collections.singletonList((Object) innerMap);
+    Map<String, Object> expectedStructure = Collections.singletonMap("mylist", (Object) innerList);
+
+    Map<String, Object> actualStructure = FieldStructureParser.parseFields(fieldSpecs);
+    Truth.assertThat(actualStructure).isEqualTo(expectedStructure);
+  }
+
+  @Test
+  public void testAssignment() throws Exception {
+    List<String> fieldSpecs = Arrays.asList("myfield=\"default\"");
+
+    Map<String, Object> expectedStructure =
+        Collections.singletonMap(
+            "myfield", (Object) InitValueConfig.createWithValue("\"default\""));
 
     Map<String, Object> actualStructure = FieldStructureParser.parseFields(fieldSpecs);
     Truth.assertThat(actualStructure).isEqualTo(expectedStructure);
@@ -94,6 +173,20 @@ public class FieldStructureTest {
         Collections.singletonMap("myfield", (Object) InitValueConfig.create());
     List<Object> innerList = Collections.singletonList((Object) innerStructure);
     Map<String, Object> expectedStructure = Collections.singletonMap("mylist", (Object) innerList);
+
+    Map<String, Object> actualStructure = FieldStructureParser.parseFields(fieldSpecs);
+    Truth.assertThat(actualStructure).isEqualTo(expectedStructure);
+  }
+
+  @Test
+  public void testEmbeddedFieldList() throws Exception {
+    List<String> fieldSpecs = Arrays.asList("myfield.mylist[0]");
+
+    List<Object> innerList = Collections.singletonList((Object) InitValueConfig.create());
+    Map<String, Object> innerStructure = Collections.singletonMap("mylist", (Object) innerList);
+
+    Map<String, Object> expectedStructure =
+        Collections.singletonMap("myfield", (Object) innerStructure);
 
     Map<String, Object> actualStructure = FieldStructureParser.parseFields(fieldSpecs);
     Truth.assertThat(actualStructure).isEqualTo(expectedStructure);

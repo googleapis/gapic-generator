@@ -48,11 +48,9 @@
      * This class provides the ability to make remote calls to the backing service through method
      * calls that map to API methods. Sample code to get started:
      *
-     * <pre>
-     * <code>
+     * ```
     {@createMethodSampleDoc(service, context.getFirstMethod(service))}
-     * </code>
-     * </pre>
+     * ```
      *
      * Many parameters require resource names to be formatted in a particular way. To assist
      * with these names, this class includes a format method for each type of name, and additionally
@@ -410,8 +408,12 @@
     @let paramUpperCamel = context.lowerUnderscoreToUpperCamel(field.getSimpleName), \
          paramLowerCamel = context.lowerUnderscoreToLowerCamel(field.getSimpleName)
         @if field.getType.isMap
-            // TODO make this work
-            putAll...
+            @let fullyQualifiedEntryName = context.fullyQualifiedName(field.getType), \
+                  entryName = context.getTypeName(fullyQualifiedEntryName)
+                foreach (${@paramLowerCamel} as $key => $value) {
+                    $request->add{@paramUpperCamel}((new {@entryName}())->setKey($key)->setValue($value));
+                }
+            @end
         @else
             @if field.isRepeated
                 foreach (${@paramLowerCamel} as $elem) {
@@ -449,9 +451,9 @@
     {@docLinesFromStr(context.getDescription(method))}
      *
      * Sample code:
-     * <pre><code>
+     * ```
     {@createMethodSampleDoc(service, method)}
-     * </code></pre>
+     * ```
     {@requiredArgsDoc(service, method)}
     {@optionalArgsDoc(service, method)}
      * @@param array $callSettings {

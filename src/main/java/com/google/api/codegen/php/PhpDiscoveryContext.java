@@ -14,9 +14,9 @@
  */
 package com.google.api.codegen.php;
 
+import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryContext;
-import com.google.api.Service;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Field;
@@ -31,6 +31,8 @@ import java.util.List;
 public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext {
 
   private static final String GOOGLE_SERVICE_PREFIX = "Google_Service_";
+
+  private PhpContextCommon phpCommon;
 
   /**
    * A map from inferred API package names to renamed counterparts in PHP client libraries.
@@ -88,7 +90,11 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
 
   @Override
   public void resetState(PhpContextCommon phpCommon) {
-    // TODO implement when necessary
+    this.phpCommon = phpCommon;
+  }
+
+  public PhpContextCommon php() {
+    return this.phpCommon;
   }
 
   // Snippet Helpers
@@ -162,7 +168,7 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
       String defaultPrimitiveValue = DEFAULT_PRIMITIVE_VALUE.get(kind);
       if (defaultPrimitiveValue != null) {
         return defaultPrimitiveValue;
-      } else if (kind.equals(Field.Kind.TYPE_STRING)) {
+      } else if (kind.equals(Field.Kind.TYPE_STRING) || kind.equals(Field.Kind.TYPE_ENUM)) {
         return String.format("'%s'", getDefaultString(type, field));
       }
     }

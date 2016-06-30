@@ -1,18 +1,20 @@
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
-//    https://console.developers.google.com/apis/api/appengine_component/quotas
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
 
 using Google.Apis.Appengine.v1beta5;
-using Google.Apis.Appengine.v1beta5.Data;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
 
 namespace AppengineSample
 {
@@ -43,27 +45,29 @@ namespace AppengineSample
             string appsId = "";
 
             AppsResource.GetRequest request = appengineService.Apps.Get(appsId);
-            Application response = request.Execute();
+            Data.Application response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Application response = await request.ExecuteAsync();
+            // Data.Application response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
-//    https://console.developers.google.com/apis/api/appengine_component/quotas
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
 
 using Google.Apis.Appengine.v1beta5;
-using Google.Apis.Appengine.v1beta5.Data;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
 
 namespace AppengineSample
 {
@@ -96,27 +100,29 @@ namespace AppengineSample
             string operationsId = "";
 
             AppsResource.OperationsResource.GetRequest request = appengineService.Apps.Operations.Get(appsId, operationsId);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
-//    https://console.developers.google.com/apis/api/appengine_component/quotas
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
 
 using Google.Apis.Appengine.v1beta5;
-using Google.Apis.Appengine.v1beta5.Data;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
 
 namespace AppengineSample
 {
@@ -147,27 +153,42 @@ namespace AppengineSample
             string appsId = "";
 
             AppsResource.OperationsResource.ListRequest request = appengineService.Apps.Operations.List(appsId);
-            ListOperationsResponse response = request.Execute();
+            Data.ListOperationsResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Operations == null)
+                {
+                    continue;
+                }
+                foreach (Data.Operation item in response.Operations)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListOperationsResponse response = await request.ExecuteAsync();
+            // Data.ListOperationsResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
-//    https://console.developers.google.com/apis/api/appengine_component/quotas
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
 
 using Google.Apis.Appengine.v1beta5;
-using Google.Apis.Appengine.v1beta5.Data;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
 
 namespace AppengineSample
 {
@@ -200,27 +221,29 @@ namespace AppengineSample
             string servicesId = "";
 
             AppsResource.ServicesResource.DeleteRequest request = appengineService.Apps.Services.Delete(appsId, servicesId);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
-//    https://console.developers.google.com/apis/api/appengine_component/quotas
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
 
 using Google.Apis.Appengine.v1beta5;
-using Google.Apis.Appengine.v1beta5.Data;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
 
 namespace AppengineSample
 {
@@ -253,27 +276,29 @@ namespace AppengineSample
             string servicesId = "";
 
             AppsResource.ServicesResource.GetRequest request = appengineService.Apps.Services.Get(appsId, servicesId);
-            Service response = request.Execute();
+            Data.Service response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Service response = await request.ExecuteAsync();
+            // Data.Service response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
-//    https://console.developers.google.com/apis/api/appengine_component/quotas
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
 
 using Google.Apis.Appengine.v1beta5;
-using Google.Apis.Appengine.v1beta5.Data;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
 
 namespace AppengineSample
 {
@@ -304,27 +329,42 @@ namespace AppengineSample
             string appsId = "";
 
             AppsResource.ServicesResource.ListRequest request = appengineService.Apps.Services.List(appsId);
-            ListServicesResponse response = request.Execute();
+            Data.ListServicesResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Services == null)
+                {
+                    continue;
+                }
+                foreach (Data.Service item in response.Services)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListServicesResponse response = await request.ExecuteAsync();
+            // Data.ListServicesResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
-//    https://console.developers.google.com/apis/api/appengine_component/quotas
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
 
 using Google.Apis.Appengine.v1beta5;
-using Google.Apis.Appengine.v1beta5.Data;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
 
 namespace AppengineSample
 {
@@ -356,28 +396,33 @@ namespace AppengineSample
             // Part of `name`. See documentation of `appsId`.
             string servicesId = "";
 
-            AppsResource.ServicesResource.PatchRequest request = appengineService.Apps.Services.Patch(appsId, servicesId);
-            Operation response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.Service content = new Data.Service();
+
+            AppsResource.ServicesResource.PatchRequest request = appengineService.Apps.Services.Patch(content, appsId, servicesId);
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
-//    https://console.developers.google.com/apis/api/appengine_component/quotas
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
 
 using Google.Apis.Appengine.v1beta5;
-using Google.Apis.Appengine.v1beta5.Data;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
 
 namespace AppengineSample
 {
@@ -409,28 +454,33 @@ namespace AppengineSample
             // Part of `name`. See documentation of `appsId`.
             string servicesId = "";
 
-            AppsResource.ServicesResource.VersionsResource.CreateRequest request = appengineService.Apps.Services.Versions.Create(appsId, servicesId);
-            Operation response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.Version content = new Data.Version();
+
+            AppsResource.ServicesResource.VersionsResource.CreateRequest request = appengineService.Apps.Services.Versions.Create(content, appsId, servicesId);
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
-//    https://console.developers.google.com/apis/api/appengine_component/quotas
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
 
 using Google.Apis.Appengine.v1beta5;
-using Google.Apis.Appengine.v1beta5.Data;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
 
 namespace AppengineSample
 {
@@ -466,27 +516,29 @@ namespace AppengineSample
             string versionsId = "";
 
             AppsResource.ServicesResource.VersionsResource.DeleteRequest request = appengineService.Apps.Services.Versions.Delete(appsId, servicesId, versionsId);
-            Operation response = request.Execute();
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
-//    https://console.developers.google.com/apis/api/appengine_component/quotas
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
 
 using Google.Apis.Appengine.v1beta5;
-using Google.Apis.Appengine.v1beta5.Data;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
 
 namespace AppengineSample
 {
@@ -522,27 +574,29 @@ namespace AppengineSample
             string versionsId = "";
 
             AppsResource.ServicesResource.VersionsResource.GetRequest request = appengineService.Apps.Services.Versions.Get(appsId, servicesId, versionsId);
-            Version response = request.Execute();
+            Data.Version response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Version response = await request.ExecuteAsync();
+            // Data.Version response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
-//    https://console.developers.google.com/apis/api/appengine_component/quotas
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
 
 using Google.Apis.Appengine.v1beta5;
-using Google.Apis.Appengine.v1beta5.Data;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
 
 namespace AppengineSample
 {
@@ -578,27 +632,42 @@ namespace AppengineSample
             string versionsId = "";
 
             AppsResource.ServicesResource.VersionsResource.InstancesResource.ListRequest request = appengineService.Apps.Services.Versions.Instances.List(appsId, servicesId, versionsId);
-            ListInstancesResponse response = request.Execute();
+            Data.ListInstancesResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Instances == null)
+                {
+                    continue;
+                }
+                foreach (Data.Instance item in response.Instances)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListInstancesResponse response = await request.ExecuteAsync();
+            // Data.ListInstancesResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
-//    https://console.developers.google.com/apis/api/appengine_component/quotas
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
 
 using Google.Apis.Appengine.v1beta5;
-using Google.Apis.Appengine.v1beta5.Data;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
 
 namespace AppengineSample
 {
@@ -631,27 +700,42 @@ namespace AppengineSample
             string servicesId = "";
 
             AppsResource.ServicesResource.VersionsResource.ListRequest request = appengineService.Apps.Services.Versions.List(appsId, servicesId);
-            ListVersionsResponse response = request.Execute();
+            Data.ListVersionsResponse response;
+            do
+            {
+                response = request.Execute();
+                if (response.Versions == null)
+                {
+                    continue;
+                }
+                foreach (Data.Version item in response.Versions)
+                {
+                    // TODO: Add code here to process each item.
+                }
+                request.PageToken = response.NextPageToken;
+            } while (response.NextPageToken != null);
 
             // To execute asynchronously in an async method, use
-            // ListVersionsResponse response = await request.ExecuteAsync();
+            // Data.ListVersionsResponse response = await request.ExecuteAsync();
         }
     }
 }
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google App Engine Admin API and check quota for your project at
-//    https://console.developers.google.com/apis/api/appengine_component/quotas
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
 // 2. To install the client library add a dependency on the relevant NuGet package. Libraries published
 //    by Google are owned by google-apis-packages: https://www.nuget.org/profiles/google-apis-packages
 // 3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
 //    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
 
 using Google.Apis.Appengine.v1beta5;
-using Google.Apis.Appengine.v1beta5.Data;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using System.Threading.Tasks;
+
+using Data = Google.Apis.Appengine.v1beta5.Data;
 
 namespace AppengineSample
 {
@@ -686,11 +770,14 @@ namespace AppengineSample
             // Part of `name`. See documentation of `appsId`.
             string versionsId = "";
 
-            AppsResource.ServicesResource.VersionsResource.PatchRequest request = appengineService.Apps.Services.Versions.Patch(appsId, servicesId, versionsId);
-            Operation response = request.Execute();
+            // TODO Add code to assign values to properties of 'content'.
+            Data.Version content = new Data.Version();
+
+            AppsResource.ServicesResource.VersionsResource.PatchRequest request = appengineService.Apps.Services.Versions.Patch(content, appsId, servicesId, versionsId);
+            Data.Operation response = request.Execute();
 
             // To execute asynchronously in an async method, use
-            // Operation response = await request.ExecuteAsync();
+            // Data.Operation response = await request.ExecuteAsync();
         }
     }
 }

@@ -3,10 +3,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/cloudresourcemanager/v1beta1
 
@@ -22,21 +24,18 @@ func main() {
   hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := cloudresourcemanager.New(hc)
+  c, err := cloudresourcemanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The id of the Organization resource to fetch.
   organizationId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Organizations.Get(organizationId).Context(ctx).Do()
+  resp, err := c.Organizations.Get(organizationId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -45,10 +44,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/cloudresourcemanager/v1beta1
 
@@ -64,12 +65,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := cloudresourcemanager.New(hc)
+  c, err := cloudresourcemanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
@@ -77,12 +76,11 @@ func main() {
   // this value is resource specific and is specified in the `getIamPolicy` documentation.
   resource := "" // TODO: Update placeholder value.
 
-  resp, err := client.Organizations.GetIamPolicy(resource, &cloudresourcemanager.GetIamPolicyRequest{
-                                                   // TODO: Fill required fields.
-                                                 }).Context(ctx).Do()
+  resp, err := c.Organizations.GetIamPolicy(resource, &cloudresourcemanager.GetIamPolicyRequest{
+                                              // TODO: Fill required fields.
+                                            }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -91,10 +89,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/cloudresourcemanager/v1beta1
 
@@ -110,18 +110,16 @@ func main() {
   hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := cloudresourcemanager.New(hc)
+  c, err := cloudresourcemanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
 
 
 
-  call := client.Organizations.List()
+  call := c.Organizations.List()
   if err := call.Pages(ctx, func(page *cloudresourcemanager.ListOrganizationsResponse) error {
     for _, v := range page.Organizations {
       // TODO: Use v.
@@ -130,17 +128,18 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/cloudresourcemanager/v1beta1
 
@@ -156,12 +155,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := cloudresourcemanager.New(hc)
+  c, err := cloudresourcemanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
@@ -169,12 +166,11 @@ func main() {
   // this value is resource specific and is specified in the `setIamPolicy` documentation.
   resource := "" // TODO: Update placeholder value.
 
-  resp, err := client.Organizations.SetIamPolicy(resource, &cloudresourcemanager.SetIamPolicyRequest{
-                                                   // TODO: Fill required fields.
-                                                 }).Context(ctx).Do()
+  resp, err := c.Organizations.SetIamPolicy(resource, &cloudresourcemanager.SetIamPolicyRequest{
+                                              // TODO: Fill required fields.
+                                            }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -183,10 +179,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/cloudresourcemanager/v1beta1
 
@@ -202,12 +200,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := cloudresourcemanager.New(hc)
+  c, err := cloudresourcemanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
@@ -216,12 +212,11 @@ func main() {
   // documentation.
   resource := "" // TODO: Update placeholder value.
 
-  resp, err := client.Organizations.TestIamPermissions(resource, &cloudresourcemanager.TestIamPermissionsRequest{
-                                                         // TODO: Fill required fields.
-                                                       }).Context(ctx).Do()
+  resp, err := c.Organizations.TestIamPermissions(resource, &cloudresourcemanager.TestIamPermissionsRequest{
+                                                    // TODO: Fill required fields.
+                                                  }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -230,10 +225,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/cloudresourcemanager/v1beta1
 
@@ -249,67 +246,21 @@ func main() {
   hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := cloudresourcemanager.New(hc)
+  c, err := cloudresourcemanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // An immutable id for the Organization that is assigned on creation. This should be omitted when
   // creating a new Organization. This field is read-only.
   organizationId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Organizations.Update(organizationId, &cloudresourcemanager.Organization{
-                                             // TODO: Fill required fields.
-                                           }).Context(ctx).Do()
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-  // TODO: Use resp.
-  _ = resp
-}
-package main
-
-// PRE-REQUISITES:
-// ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-// 3. To install the client library, run:
-//    go get -u google.golang.org/api/cloudresourcemanager/v1beta1
-
-import (
-  "golang.org/x/net/context"
-  "golang.org/x/oauth2/google"
-
-  "google.golang.org/api/cloudresourcemanager/v1beta1"
-)
-
-func main() {
-  ctx := context.Background()
-  hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-  client, err := cloudresourcemanager.New(hc)
-  if err != nil {
-    // TODO: Handle error.
-    _ = err
-  }
-
-
-
-  resp, err := client.Projects.Create(&cloudresourcemanager.Project{
+  resp, err := c.Organizations.Update(organizationId, &cloudresourcemanager.Organization{
                                         // TODO: Fill required fields.
                                       }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -318,10 +269,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/cloudresourcemanager/v1beta1
 
@@ -337,21 +290,60 @@ func main() {
   hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := cloudresourcemanager.New(hc)
+  c, err := cloudresourcemanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
+  }
+
+
+
+  resp, err := c.Projects.Create(&cloudresourcemanager.Project{
+                                   // TODO: Fill required fields.
+                                 }).Context(ctx).Do()
+  if err != nil {
+    // TODO: Handle error.
+  }
+  // TODO: Use resp.
+  _ = resp
+}
+package main
+
+// PRE-REQUISITES:
+// ---------------
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
+// 3. To install the client library, run:
+//    go get -u google.golang.org/api/cloudresourcemanager/v1beta1
+
+import (
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/cloudresourcemanager/v1beta1"
+)
+
+func main() {
+  ctx := context.Background()
+  hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
+  if err != nil {
+    // TODO: Handle error.
+  }
+  c, err := cloudresourcemanager.New(hc)
+  if err != nil {
+    // TODO: Handle error.
   }
 
   // The Project ID (for example, `foo-bar-123`). Required.
   projectId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Delete(projectId).Context(ctx).Do()
+  resp, err := c.Projects.Delete(projectId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -360,10 +352,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/cloudresourcemanager/v1beta1
 
@@ -379,21 +373,18 @@ func main() {
   hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := cloudresourcemanager.New(hc)
+  c, err := cloudresourcemanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The Project ID (for example, `my-project-123`). Required.
   projectId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Get(projectId).Context(ctx).Do()
+  resp, err := c.Projects.Get(projectId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -402,10 +393,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/cloudresourcemanager/v1beta1
 
@@ -421,12 +414,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := cloudresourcemanager.New(hc)
+  c, err := cloudresourcemanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // REQUIRED: The resource for which the policy is being requested. `resource` is usually specified as a
@@ -434,12 +425,11 @@ func main() {
   // this value is resource specific and is specified in the `getIamPolicy` documentation.
   resource := "" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.GetIamPolicy(resource, &cloudresourcemanager.GetIamPolicyRequest{
-                                              // TODO: Fill required fields.
-                                            }).Context(ctx).Do()
+  resp, err := c.Projects.GetIamPolicy(resource, &cloudresourcemanager.GetIamPolicyRequest{
+                                         // TODO: Fill required fields.
+                                       }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -448,10 +438,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/cloudresourcemanager/v1beta1
 
@@ -467,18 +459,16 @@ func main() {
   hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := cloudresourcemanager.New(hc)
+  c, err := cloudresourcemanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
 
 
 
-  call := client.Projects.List()
+  call := c.Projects.List()
   if err := call.Pages(ctx, func(page *cloudresourcemanager.ListProjectsResponse) error {
     for _, v := range page.Projects {
       // TODO: Use v.
@@ -487,17 +477,18 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/cloudresourcemanager/v1beta1
 
@@ -513,12 +504,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := cloudresourcemanager.New(hc)
+  c, err := cloudresourcemanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // REQUIRED: The resource for which the policy is being specified. `resource` is usually specified as a
@@ -526,12 +515,11 @@ func main() {
   // this value is resource specific and is specified in the `setIamPolicy` documentation.
   resource := "" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.SetIamPolicy(resource, &cloudresourcemanager.SetIamPolicyRequest{
-                                              // TODO: Fill required fields.
-                                            }).Context(ctx).Do()
+  resp, err := c.Projects.SetIamPolicy(resource, &cloudresourcemanager.SetIamPolicyRequest{
+                                         // TODO: Fill required fields.
+                                       }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -540,10 +528,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/cloudresourcemanager/v1beta1
 
@@ -559,12 +549,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := cloudresourcemanager.New(hc)
+  c, err := cloudresourcemanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // REQUIRED: The resource for which the policy detail is being requested. `resource` is usually
@@ -573,12 +561,11 @@ func main() {
   // documentation.
   resource := "" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.TestIamPermissions(resource, &cloudresourcemanager.TestIamPermissionsRequest{
-                                                    // TODO: Fill required fields.
-                                                  }).Context(ctx).Do()
+  resp, err := c.Projects.TestIamPermissions(resource, &cloudresourcemanager.TestIamPermissionsRequest{
+                                               // TODO: Fill required fields.
+                                             }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -587,10 +574,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/cloudresourcemanager/v1beta1
 
@@ -606,23 +595,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := cloudresourcemanager.New(hc)
+  c, err := cloudresourcemanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project ID (for example, `foo-bar-123`). Required.
   projectId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Undelete(projectId, &cloudresourcemanager.UndeleteProjectRequest{
-                                          // TODO: Fill required fields.
-                                        }).Context(ctx).Do()
+  resp, err := c.Projects.Undelete(projectId, &cloudresourcemanager.UndeleteProjectRequest{
+                                     // TODO: Fill required fields.
+                                   }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -631,10 +617,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Resource Manager API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/cloudresourcemanager_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Resource Manager API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/cloudresourcemanager
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/cloudresourcemanager/v1beta1
 
@@ -650,23 +638,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, cloudresourcemanager.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := cloudresourcemanager.New(hc)
+  c, err := cloudresourcemanager.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The project ID (for example, `my-project-123`). Required.
   projectId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Update(projectId, &cloudresourcemanager.Project{
-                                        // TODO: Fill required fields.
-                                      }).Context(ctx).Do()
+  resp, err := c.Projects.Update(projectId, &cloudresourcemanager.Project{
+                                   // TODO: Fill required fields.
+                                 }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp

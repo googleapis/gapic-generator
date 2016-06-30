@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.metacode;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
@@ -29,8 +30,25 @@ import java.util.regex.Pattern;
  * InitValueConfig.
  */
 public class FieldStructureParser {
-  // example: "messages[0]"
-  private static Pattern fieldListPattern = Pattern.compile("([^\\[]+)\\[([^\\]]+)\\]");
+
+  private static Pattern fieldStructurePattern = Pattern.compile("(.+)[.]([^.\\{\\[]+)");
+  private static Pattern fieldListPattern = Pattern.compile("(.+)\\[([^\\]]+)\\]");
+  private static Pattern fieldMapPattern = Pattern.compile("(.+)\\{([^\\}]+)\\}");
+
+  @VisibleForTesting
+  static Pattern getFieldStructurePattern() {
+    return fieldStructurePattern;
+  }
+
+  @VisibleForTesting
+  static Pattern getFieldListPattern() {
+    return fieldListPattern;
+  }
+
+  @VisibleForTesting
+  static Pattern getFieldMapPattern() {
+    return fieldMapPattern;
+  }
 
   /**
    * Parses a dotted path specification into a map of String to Map, List, or InitValueConfig.
@@ -54,21 +72,37 @@ public class FieldStructureParser {
     List<Object> unmergedFields = new ArrayList<>();
     for (String fieldSpec : fieldSpecs) {
       Object topLevel = InitValueConfig.create();
-      if (initValueConfigMap.containsKey(fieldSpec)) {
+      String[] equalsParts = fieldSpec.split("[=]");
+      if (equalsParts.length > 2) {
+        throw new IllegalArgumentException("Inconsistent: found multiple '=' characters");
+      }
+      if (equalsParts.length == 2) {
+        topLevel = InitValueConfig.createWithValue(equalsParts[1]);
+      } else if (initValueConfigMap.containsKey(fieldSpec)) {
         topLevel = initValueConfigMap.get(fieldSpec);
       }
-      String[] stringParts = fieldSpec.split("[.]");
-      for (int i = stringParts.length - 1; i >= 0; i--) {
-        Matcher listMatcher = fieldListPattern.matcher(stringParts[i]);
-        if (listMatcher.matches()) {
-          String name = listMatcher.group(1);
+
+      String toMatch = equalsParts[0];
+      while (toMatch != null) {
+        Matcher structureMatcher = fieldStructurePattern.matcher(toMatch);
+        Matcher listMatcher = fieldListPattern.matcher(toMatch);
+        Matcher mapMatcher = fieldMapPattern.matcher(toMatch);
+        if (structureMatcher.matches()) {
+          String key = structureMatcher.group(2);
+          topLevel = FieldSpec.create(key, topLevel);
+          toMatch = structureMatcher.group(1);
+        } else if (listMatcher.matches()) {
           String index = listMatcher.group(2);
-          ListElementSpec listStructure = new ListElementSpec(index, topLevel);
-          topLevel = new FieldSpec(name, listStructure);
-          // TODO also support maps - use {key} notation
+          topLevel = ListElementSpec.create(index, topLevel);
+          toMatch = listMatcher.group(1);
+        } else if (mapMatcher.matches()) {
+          String key = mapMatcher.group(2);
+          topLevel = MapElementSpec.create(key, topLevel);
+          toMatch = mapMatcher.group(1);
         } else {
-          String name = stringParts[i];
-          topLevel = new FieldSpec(name, topLevel);
+          // No pattern match implies toMatch contains simple field (with no "." separators)
+          topLevel = FieldSpec.create(toMatch, topLevel);
+          toMatch = null;
         }
       }
       unmergedFields.add(topLevel);
@@ -84,118 +118,37 @@ public class FieldStructureParser {
     return mergedFields;
   }
 
-  private static Object merge(Object mergedStructure, Object unmergedStructure) {
-    if (unmergedStructure instanceof FieldSpec) {
-      FieldSpec fieldSpec = (FieldSpec) unmergedStructure;
+  public static Object merge(Object mergedStructure, Object unmergedStructure) {
+    if (unmergedStructure instanceof PathSpec) {
+      return ((PathSpec) unmergedStructure).merge(mergedStructure);
+    } else if (unmergedStructure instanceof InitValueConfig) {
+      // Only valid to merge an InitValueConfig if the existing merged structure is
+      // an empty InitValueConfig
       if (mergedStructure instanceof InitValueConfig) {
         InitValueConfig metadata = (InitValueConfig) mergedStructure;
-        if (!metadata.isEmpty()) {
-          throw new IllegalArgumentException(
-              "Inconsistent: found both substructure and initialization metadata");
+        if (metadata.isEmpty()) {
+          // Replace empty structure with unmergedStructure
+          return unmergedStructure;
         }
-        // we encountered a partially-specified structure, so replace it with a
-        // map
-        mergedStructure = new HashMap<>();
-      } else if (!(mergedStructure instanceof Map)) {
-        String mergedTypeName = mergedStructure.getClass().getName();
-        if (mergedStructure instanceof List) {
-          mergedTypeName = "list";
-        }
-        throw new IllegalArgumentException(
-            "Inconsistent structure: " + mergedTypeName + " encountered first, then field");
       }
-
-      @SuppressWarnings("unchecked")
-      Map<String, Object> mergedMap = (Map<String, Object>) mergedStructure;
-
-      if (mergedMap.containsKey(fieldSpec.name)) {
-        Object mergedSubStructure = mergedMap.get(fieldSpec.name);
-        Object newSubStructure = merge(mergedSubStructure, fieldSpec.subStructure);
-        mergedMap.put(fieldSpec.name, newSubStructure);
-      } else {
-        mergedMap.put(fieldSpec.name, populate(fieldSpec.subStructure));
-      }
-    } else if (unmergedStructure instanceof ListElementSpec) {
-      ListElementSpec listElementSpec = (ListElementSpec) unmergedStructure;
-      if (mergedStructure instanceof InitValueConfig) {
-        InitValueConfig metadata = (InitValueConfig) mergedStructure;
-        if (!metadata.isEmpty()) {
-          throw new IllegalArgumentException(
-              "Inconsistent: found both substructure and initialization metadata");
-        }
-        // we encountered a partially-specified structure, so replace it with a
-        // list
-        mergedStructure = new ArrayList<>();
-      } else if (!(mergedStructure instanceof List)) {
-        String mergedTypeName = mergedStructure.getClass().getName();
-        if (mergedStructure instanceof Map) {
-          mergedTypeName = "field";
-        }
-        throw new IllegalArgumentException(
-            "Inconsistent structure: " + mergedTypeName + " encountered first, then list");
-      }
-
-      @SuppressWarnings("unchecked")
-      List<Object> mergedList = (List<Object>) mergedStructure;
-
-      int index = Integer.valueOf(listElementSpec.index);
-      if (index < mergedList.size()) {
-        Object mergedSubStructure = mergedList.get(index);
-        Object newSubStructure = merge(mergedSubStructure, listElementSpec.subStructure);
-        mergedList.set(index, newSubStructure);
-      } else if (index == mergedList.size()) {
-        mergedList.add(populate(listElementSpec.subStructure));
-      } else {
-        throw new IllegalArgumentException(
-            "Index leaves gap: last index = "
-                + (mergedList.size() - 1)
-                + ", this index = "
-                + index);
-      }
+      throw new IllegalArgumentException(
+          "Inconsistent: found both substructure and initialization metadata");
     } else {
       throw new IllegalArgumentException(
-          "merge: didn't expect " + unmergedStructure.getClass().getName());
+          "merge: didn't expect "
+              + unmergedStructure.getClass().getName()
+              + "; mergedStructure: "
+              + mergedStructure
+              + "; unmergeredStructure: "
+              + unmergedStructure);
     }
-    return mergedStructure;
   }
 
-  private static Object populate(Object unmergedStructure) {
-    if (unmergedStructure instanceof FieldSpec) {
-      FieldSpec fieldSpec = (FieldSpec) unmergedStructure;
-      Map<String, Object> mergedMap = new HashMap<>();
-      mergedMap.put(fieldSpec.name, populate(fieldSpec.subStructure));
-      return mergedMap;
-    } else if (unmergedStructure instanceof ListElementSpec) {
-      ListElementSpec listElementSpec = (ListElementSpec) unmergedStructure;
-      int index = Integer.valueOf(listElementSpec.index);
-      if (index != 0) {
-        throw new IllegalArgumentException("First element in list must have index 0");
-      }
-      List<Object> list = new ArrayList<>();
-      list.add(populate(listElementSpec.subStructure));
-      return list;
+  public static Object populate(Object unmergedStructure) {
+    if (unmergedStructure instanceof PathSpec) {
+      return ((PathSpec) unmergedStructure).populate();
     } else {
       return unmergedStructure;
-    }
-  }
-
-  private static class FieldSpec {
-    public String name;
-    public Object subStructure;
-
-    public FieldSpec(String name, Object subStructure) {
-      this.name = name;
-      this.subStructure = subStructure;
-    }
-  }
-
-  private static class ListElementSpec {
-    public String index;
-    public Object subStructure;
-
-    public ListElementSpec(String index, Object subStructure) {
-      this.index = index;
-      this.subStructure = subStructure;
     }
   }
 }

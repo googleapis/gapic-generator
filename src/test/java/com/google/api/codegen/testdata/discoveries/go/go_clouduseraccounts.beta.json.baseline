@@ -3,10 +3,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud User Accounts API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/clouduseraccounts_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Cloud User Accounts API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/clouduseraccounts
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/clouduseraccounts/v0.beta
 
@@ -22,12 +24,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := clouduseraccounts.New(hc)
+  c, err := clouduseraccounts.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID for this request.
@@ -36,19 +36,20 @@ func main() {
   // Name of the Operations resource to delete.
   operation := "" // TODO: Update placeholder value.
 
-  if err := client.GlobalAccountsOperations.Delete(project, operation).Context(ctx).Do(); err != nil {
+  if err := c.GlobalAccountsOperations.Delete(project, operation).Context(ctx).Do(); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud User Accounts API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/clouduseraccounts_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Cloud User Accounts API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/clouduseraccounts
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/clouduseraccounts/v0.beta
 
@@ -64,12 +65,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := clouduseraccounts.New(hc)
+  c, err := clouduseraccounts.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID for this request.
@@ -78,10 +77,9 @@ func main() {
   // Name of the Operations resource to return.
   operation := "" // TODO: Update placeholder value.
 
-  resp, err := client.GlobalAccountsOperations.Get(project, operation).Context(ctx).Do()
+  resp, err := c.GlobalAccountsOperations.Get(project, operation).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -90,10 +88,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud User Accounts API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/clouduseraccounts_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Cloud User Accounts API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/clouduseraccounts
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/clouduseraccounts/v0.beta
 
@@ -109,19 +109,17 @@ func main() {
   hc, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := clouduseraccounts.New(hc)
+  c, err := clouduseraccounts.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID for this request.
   project := "" // TODO: Update placeholder value.
 
 
-  call := client.GlobalAccountsOperations.List(project)
+  call := c.GlobalAccountsOperations.List(project)
   if err := call.Pages(ctx, func(page *clouduseraccounts.OperationList) error {
     for _, v := range page.Items {
       // TODO: Use v.
@@ -130,17 +128,18 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud User Accounts API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/clouduseraccounts_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Cloud User Accounts API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/clouduseraccounts
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/clouduseraccounts/v0.beta
 
@@ -156,12 +155,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := clouduseraccounts.New(hc)
+  c, err := clouduseraccounts.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID for this request.
@@ -170,12 +167,11 @@ func main() {
   // Name of the group for this request.
   groupName := "" // TODO: Update placeholder value.
 
-  resp, err := client.Groups.AddMember(project, groupName, &clouduseraccounts.GroupsAddMemberRequest{
-                                         // TODO: Fill required fields.
-                                       }).Context(ctx).Do()
+  resp, err := c.Groups.AddMember(project, groupName, &clouduseraccounts.GroupsAddMemberRequest{
+                                    // TODO: Fill required fields.
+                                  }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -184,10 +180,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud User Accounts API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/clouduseraccounts_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Cloud User Accounts API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/clouduseraccounts
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/clouduseraccounts/v0.beta
 
@@ -203,12 +201,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := clouduseraccounts.New(hc)
+  c, err := clouduseraccounts.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID for this request.
@@ -217,10 +213,9 @@ func main() {
   // Name of the Group resource to delete.
   groupName := "" // TODO: Update placeholder value.
 
-  resp, err := client.Groups.Delete(project, groupName).Context(ctx).Do()
+  resp, err := c.Groups.Delete(project, groupName).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -229,10 +224,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud User Accounts API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/clouduseraccounts_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Cloud User Accounts API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/clouduseraccounts
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/clouduseraccounts/v0.beta
 
@@ -248,12 +245,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := clouduseraccounts.New(hc)
+  c, err := clouduseraccounts.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID for this request.
@@ -262,10 +257,9 @@ func main() {
   // Name of the Group resource to return.
   groupName := "" // TODO: Update placeholder value.
 
-  resp, err := client.Groups.Get(project, groupName).Context(ctx).Do()
+  resp, err := c.Groups.Get(project, groupName).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -274,10 +268,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud User Accounts API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/clouduseraccounts_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Cloud User Accounts API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/clouduseraccounts
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/clouduseraccounts/v0.beta
 
@@ -293,23 +289,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := clouduseraccounts.New(hc)
+  c, err := clouduseraccounts.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID for this request.
   project := "" // TODO: Update placeholder value.
 
-  resp, err := client.Groups.Insert(project, &clouduseraccounts.Group{
-                                      // TODO: Fill required fields.
-                                    }).Context(ctx).Do()
+  resp, err := c.Groups.Insert(project, &clouduseraccounts.Group{
+                                 // TODO: Fill required fields.
+                               }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -318,10 +311,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud User Accounts API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/clouduseraccounts_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Cloud User Accounts API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/clouduseraccounts
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/clouduseraccounts/v0.beta
 
@@ -337,19 +332,17 @@ func main() {
   hc, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := clouduseraccounts.New(hc)
+  c, err := clouduseraccounts.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID for this request.
   project := "" // TODO: Update placeholder value.
 
 
-  call := client.Groups.List(project)
+  call := c.Groups.List(project)
   if err := call.Pages(ctx, func(page *clouduseraccounts.GroupList) error {
     for _, v := range page.Items {
       // TODO: Use v.
@@ -358,17 +351,18 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud User Accounts API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/clouduseraccounts_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Cloud User Accounts API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/clouduseraccounts
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/clouduseraccounts/v0.beta
 
@@ -384,12 +378,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := clouduseraccounts.New(hc)
+  c, err := clouduseraccounts.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID for this request.
@@ -398,12 +390,11 @@ func main() {
   // Name of the group for this request.
   groupName := "" // TODO: Update placeholder value.
 
-  resp, err := client.Groups.RemoveMember(project, groupName, &clouduseraccounts.GroupsRemoveMemberRequest{
-                                            // TODO: Fill required fields.
-                                          }).Context(ctx).Do()
+  resp, err := c.Groups.RemoveMember(project, groupName, &clouduseraccounts.GroupsRemoveMemberRequest{
+                                       // TODO: Fill required fields.
+                                     }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -412,10 +403,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud User Accounts API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/clouduseraccounts_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Cloud User Accounts API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/clouduseraccounts
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/clouduseraccounts/v0.beta
 
@@ -431,12 +424,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := clouduseraccounts.New(hc)
+  c, err := clouduseraccounts.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID for this request.
@@ -451,10 +442,9 @@ func main() {
   // The fully-qualified URL of the virtual machine requesting the view.
   instance := "" // TODO: Update placeholder value.
 
-  resp, err := client.Linux.GetAuthorizedKeysView(project, zone, user, instance).Context(ctx).Do()
+  resp, err := c.Linux.GetAuthorizedKeysView(project, zone, user, instance).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -463,10 +453,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud User Accounts API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/clouduseraccounts_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Cloud User Accounts API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/clouduseraccounts
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/clouduseraccounts/v0.beta
 
@@ -482,12 +474,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := clouduseraccounts.New(hc)
+  c, err := clouduseraccounts.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID for this request.
@@ -499,10 +489,9 @@ func main() {
   // The fully-qualified URL of the virtual machine requesting the views.
   instance := "" // TODO: Update placeholder value.
 
-  resp, err := client.Linux.GetLinuxAccountViews(project, zone, instance).Context(ctx).Do()
+  resp, err := c.Linux.GetLinuxAccountViews(project, zone, instance).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -511,10 +500,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud User Accounts API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/clouduseraccounts_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Cloud User Accounts API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/clouduseraccounts
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/clouduseraccounts/v0.beta
 
@@ -530,12 +521,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := clouduseraccounts.New(hc)
+  c, err := clouduseraccounts.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID for this request.
@@ -544,12 +533,11 @@ func main() {
   // Name of the user for this request.
   user := "" // TODO: Update placeholder value.
 
-  resp, err := client.Users.AddPublicKey(project, user, &clouduseraccounts.PublicKey{
-                                           // TODO: Fill required fields.
-                                         }).Context(ctx).Do()
+  resp, err := c.Users.AddPublicKey(project, user, &clouduseraccounts.PublicKey{
+                                      // TODO: Fill required fields.
+                                    }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -558,10 +546,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud User Accounts API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/clouduseraccounts_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Cloud User Accounts API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/clouduseraccounts
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/clouduseraccounts/v0.beta
 
@@ -577,12 +567,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := clouduseraccounts.New(hc)
+  c, err := clouduseraccounts.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID for this request.
@@ -591,10 +579,9 @@ func main() {
   // Name of the user resource to delete.
   user := "" // TODO: Update placeholder value.
 
-  resp, err := client.Users.Delete(project, user).Context(ctx).Do()
+  resp, err := c.Users.Delete(project, user).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -603,10 +590,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud User Accounts API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/clouduseraccounts_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Cloud User Accounts API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/clouduseraccounts
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/clouduseraccounts/v0.beta
 
@@ -622,12 +611,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := clouduseraccounts.New(hc)
+  c, err := clouduseraccounts.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID for this request.
@@ -636,10 +623,9 @@ func main() {
   // Name of the user resource to return.
   user := "" // TODO: Update placeholder value.
 
-  resp, err := client.Users.Get(project, user).Context(ctx).Do()
+  resp, err := c.Users.Get(project, user).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -648,10 +634,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud User Accounts API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/clouduseraccounts_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Cloud User Accounts API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/clouduseraccounts
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/clouduseraccounts/v0.beta
 
@@ -667,23 +655,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := clouduseraccounts.New(hc)
+  c, err := clouduseraccounts.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID for this request.
   project := "" // TODO: Update placeholder value.
 
-  resp, err := client.Users.Insert(project, &clouduseraccounts.User{
-                                     // TODO: Fill required fields.
-                                   }).Context(ctx).Do()
+  resp, err := c.Users.Insert(project, &clouduseraccounts.User{
+                                // TODO: Fill required fields.
+                              }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -692,10 +677,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud User Accounts API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/clouduseraccounts_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Cloud User Accounts API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/clouduseraccounts
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/clouduseraccounts/v0.beta
 
@@ -711,19 +698,17 @@ func main() {
   hc, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := clouduseraccounts.New(hc)
+  c, err := clouduseraccounts.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID for this request.
   project := "" // TODO: Update placeholder value.
 
 
-  call := client.Users.List(project)
+  call := c.Users.List(project)
   if err := call.Pages(ctx, func(page *clouduseraccounts.UserList) error {
     for _, v := range page.Items {
       // TODO: Use v.
@@ -732,17 +717,18 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Cloud User Accounts API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/clouduseraccounts_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Cloud User Accounts API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/clouduseraccounts
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/clouduseraccounts/v0.beta
 
@@ -758,12 +744,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, clouduseraccounts.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := clouduseraccounts.New(hc)
+  c, err := clouduseraccounts.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Project ID for this request.
@@ -776,10 +760,9 @@ func main() {
   // is defined by RFC4716 to be the MD5 digest of the public key.
   fingerprint := "" // TODO: Update placeholder value.
 
-  resp, err := client.Users.RemovePublicKey(project, user, fingerprint).Context(ctx).Do()
+  resp, err := c.Users.RemovePublicKey(project, user, fingerprint).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp

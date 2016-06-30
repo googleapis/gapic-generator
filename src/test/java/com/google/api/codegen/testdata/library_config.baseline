@@ -249,3 +249,19 @@ interfaces:
     retry_params_name: default
     field_name_patterns:
       name: book
+  - name: UpdateBookIndex
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - index_name
+        - index_map
+    required_fields:
+    - name
+    - index_name
+    - index_map
+    request_object_method: true
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: book_2

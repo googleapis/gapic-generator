@@ -110,9 +110,13 @@ service LibraryService {
 
   // Gets a book from an archive.
   rpc GetBookFromArchive(GetBookFromArchiveRequest) returns (Book) {
-    option (google.api.http) = { get: "/v1/{name=archives/**/books/*}" };
+    option (google.api.http) = { get: "/v1/{name=archives/**/books/*}"};
   }
 
+  // Updates the index of a book.
+  rpc UpdateBookIndex(UpdateBookIndexRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = { post: "/v1/{name=shelves/*/books/*}/index" body: "*" };
+  }
 }
 
 // A single book in the library.
@@ -371,4 +375,16 @@ message Comment {
 message GetBookFromArchiveRequest {
   // The name of the book to retrieve.
   string name = 1;
+}
+
+// Request message for LibraryService.UpdateBookIndex.
+message UpdateBookIndexRequest {
+  // The name of the book to update.
+  string name = 1;
+
+  // The name of the index for the book
+  string index_name = 2;
+
+  // The index to update the book with
+  map<string, string> index_map = 3;
 }

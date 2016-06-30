@@ -3,10 +3,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dns_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud DNS API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dns
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dns/v1
 
@@ -22,12 +24,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dns.New(hc)
+  c, err := dns.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Identifies the project addressed by this request.
@@ -36,12 +36,11 @@ func main() {
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
   managedZone := "" // TODO: Update placeholder value.
 
-  resp, err := client.Changes.Create(project, managedZone, &dns.Change{
-                                       // TODO: Fill required fields.
-                                     }).Context(ctx).Do()
+  resp, err := c.Changes.Create(project, managedZone, &dns.Change{
+                                  // TODO: Fill required fields.
+                                }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -50,10 +49,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dns_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud DNS API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dns
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dns/v1
 
@@ -69,12 +70,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dns.New(hc)
+  c, err := dns.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Identifies the project addressed by this request.
@@ -86,10 +85,9 @@ func main() {
   // The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
   changeId := "" // TODO: Update placeholder value.
 
-  resp, err := client.Changes.Get(project, managedZone, changeId).Context(ctx).Do()
+  resp, err := c.Changes.Get(project, managedZone, changeId).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -98,10 +96,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dns_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud DNS API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dns
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dns/v1
 
@@ -117,12 +117,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dns.New(hc)
+  c, err := dns.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Identifies the project addressed by this request.
@@ -132,7 +130,7 @@ func main() {
   managedZone := "" // TODO: Update placeholder value.
 
 
-  call := client.Changes.List(project, managedZone)
+  call := c.Changes.List(project, managedZone)
   if err := call.Pages(ctx, func(page *dns.ChangesListResponse) error {
     for _, v := range page.Changes {
       // TODO: Use v.
@@ -141,17 +139,18 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dns_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud DNS API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dns
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dns/v1
 
@@ -167,23 +166,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dns.New(hc)
+  c, err := dns.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Identifies the project addressed by this request.
   project := "" // TODO: Update placeholder value.
 
-  resp, err := client.ManagedZones.Create(project, &dns.ManagedZone{
-                                            // TODO: Fill required fields.
-                                          }).Context(ctx).Do()
+  resp, err := c.ManagedZones.Create(project, &dns.ManagedZone{
+                                       // TODO: Fill required fields.
+                                     }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -192,10 +188,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dns_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud DNS API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dns
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dns/v1
 
@@ -211,12 +209,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dns.New(hc)
+  c, err := dns.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Identifies the project addressed by this request.
@@ -225,19 +221,20 @@ func main() {
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
   managedZone := "" // TODO: Update placeholder value.
 
-  if err := client.ManagedZones.Delete(project, managedZone).Context(ctx).Do(); err != nil {
+  if err := c.ManagedZones.Delete(project, managedZone).Context(ctx).Do(); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dns_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud DNS API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dns
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dns/v1
 
@@ -253,12 +250,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dns.New(hc)
+  c, err := dns.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Identifies the project addressed by this request.
@@ -267,10 +262,9 @@ func main() {
   // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
   managedZone := "" // TODO: Update placeholder value.
 
-  resp, err := client.ManagedZones.Get(project, managedZone).Context(ctx).Do()
+  resp, err := c.ManagedZones.Get(project, managedZone).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -279,10 +273,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dns_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud DNS API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dns
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dns/v1
 
@@ -298,19 +294,17 @@ func main() {
   hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dns.New(hc)
+  c, err := dns.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Identifies the project addressed by this request.
   project := "" // TODO: Update placeholder value.
 
 
-  call := client.ManagedZones.List(project)
+  call := c.ManagedZones.List(project)
   if err := call.Pages(ctx, func(page *dns.ManagedZonesListResponse) error {
     for _, v := range page.ManagedZones {
       // TODO: Use v.
@@ -319,17 +313,18 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dns_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud DNS API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dns
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dns/v1
 
@@ -345,21 +340,18 @@ func main() {
   hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dns.New(hc)
+  c, err := dns.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Identifies the project addressed by this request.
   project := "" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Get(project).Context(ctx).Do()
+  resp, err := c.Projects.Get(project).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -368,10 +360,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud DNS API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/dns_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud DNS API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dns
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/dns/v1
 
@@ -387,12 +381,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, dns.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := dns.New(hc)
+  c, err := dns.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Identifies the project addressed by this request.
@@ -402,7 +394,7 @@ func main() {
   managedZone := "" // TODO: Update placeholder value.
 
 
-  call := client.ResourceRecordSets.List(project, managedZone)
+  call := c.ResourceRecordSets.List(project, managedZone)
   if err := call.Pages(ctx, func(page *dns.ResourceRecordSetsListResponse) error {
     for _, v := range page.Rrsets {
       // TODO: Use v.
@@ -411,6 +403,5 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }

@@ -3,10 +3,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -22,23 +24,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The subscription whose message is being acknowledged.
   subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Subscriptions.Acknowledge(subscription, &pubsub.AcknowledgeRequest{
-                                                           // TODO: Fill required fields.
-                                                         }).Context(ctx).Do()
+  resp, err := c.Projects.Subscriptions.Acknowledge(subscription, &pubsub.AcknowledgeRequest{
+                                                      // TODO: Fill required fields.
+                                                    }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -47,10 +46,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -66,12 +67,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The name of the subscription. It must have the format
@@ -81,12 +80,11 @@ func main() {
   // length, and it must not start with `"goog"`.
   name := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Subscriptions.Create(name, &pubsub.Subscription{
-                                                      // TODO: Fill required fields.
-                                                    }).Context(ctx).Do()
+  resp, err := c.Projects.Subscriptions.Create(name, &pubsub.Subscription{
+                                                 // TODO: Fill required fields.
+                                               }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -95,10 +93,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -114,21 +114,18 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The subscription to delete.
   subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Subscriptions.Delete(subscription).Context(ctx).Do()
+  resp, err := c.Projects.Subscriptions.Delete(subscription).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -137,10 +134,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -156,21 +155,18 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The name of the subscription to get.
   subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Subscriptions.Get(subscription).Context(ctx).Do()
+  resp, err := c.Projects.Subscriptions.Get(subscription).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -179,10 +175,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -198,12 +196,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // REQUIRED: The resource for which policy is being requested. `resource` is usually specified as a
@@ -212,10 +208,9 @@ func main() {
   // GetIamPolicy rpc.
   resource := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Subscriptions.GetIamPolicy(resource).Context(ctx).Do()
+  resp, err := c.Projects.Subscriptions.GetIamPolicy(resource).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -224,10 +219,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -243,19 +240,17 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The name of the cloud project that subscriptions belong to.
   project := "projects/{MY-PROJECT}" // TODO: Update placeholder value.
 
 
-  call := client.Projects.Subscriptions.List(project)
+  call := c.Projects.Subscriptions.List(project)
   if err := call.Pages(ctx, func(page *pubsub.ListSubscriptionsResponse) error {
     for _, v := range page.Subscriptions {
       // TODO: Use v.
@@ -264,17 +259,18 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -290,23 +286,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The name of the subscription.
   subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Subscriptions.ModifyAckDeadline(subscription, &pubsub.ModifyAckDeadlineRequest{
-                                                                 // TODO: Fill required fields.
-                                                               }).Context(ctx).Do()
+  resp, err := c.Projects.Subscriptions.ModifyAckDeadline(subscription, &pubsub.ModifyAckDeadlineRequest{
+                                                            // TODO: Fill required fields.
+                                                          }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -315,10 +308,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -334,23 +329,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The name of the subscription.
   subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Subscriptions.ModifyPushConfig(subscription, &pubsub.ModifyPushConfigRequest{
-                                                                // TODO: Fill required fields.
-                                                              }).Context(ctx).Do()
+  resp, err := c.Projects.Subscriptions.ModifyPushConfig(subscription, &pubsub.ModifyPushConfigRequest{
+                                                           // TODO: Fill required fields.
+                                                         }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -359,10 +351,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -378,23 +372,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The subscription from which messages should be pulled.
   subscription := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Subscriptions.Pull(subscription, &pubsub.PullRequest{
-                                                    // TODO: Fill required fields.
-                                                  }).Context(ctx).Do()
+  resp, err := c.Projects.Subscriptions.Pull(subscription, &pubsub.PullRequest{
+                                               // TODO: Fill required fields.
+                                             }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -403,10 +394,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -422,12 +415,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // REQUIRED: The resource for which policy is being specified. `resource` is usually specified as a
@@ -436,12 +427,11 @@ func main() {
   // SetIamPolicy rpc.
   resource := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Subscriptions.SetIamPolicy(resource, &pubsub.SetIamPolicyRequest{
-                                                            // TODO: Fill required fields.
-                                                          }).Context(ctx).Do()
+  resp, err := c.Projects.Subscriptions.SetIamPolicy(resource, &pubsub.SetIamPolicyRequest{
+                                                       // TODO: Fill required fields.
+                                                     }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -450,10 +440,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -469,12 +461,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // REQUIRED: The resource for which policy detail is being requested. `resource` is usually specified
@@ -483,12 +473,11 @@ func main() {
   // respective TestIamPermissions rpc.
   resource := "projects/{MY-PROJECT}/subscriptions/{MY-SUBSCRIPTION}" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Subscriptions.TestIamPermissions(resource, &pubsub.TestIamPermissionsRequest{
-                                                                  // TODO: Fill required fields.
-                                                                }).Context(ctx).Do()
+  resp, err := c.Projects.Subscriptions.TestIamPermissions(resource, &pubsub.TestIamPermissionsRequest{
+                                                             // TODO: Fill required fields.
+                                                           }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -497,10 +486,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -516,12 +507,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The name of the topic. It must have the format `"projects/{project}/topics/{topic}"`. `{topic}` must
@@ -530,12 +519,11 @@ func main() {
   // between 3 and 255 characters in length, and it must not start with `"goog"`.
   name := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Topics.Create(name, &pubsub.Topic{
-                                               // TODO: Fill required fields.
-                                             }).Context(ctx).Do()
+  resp, err := c.Projects.Topics.Create(name, &pubsub.Topic{
+                                          // TODO: Fill required fields.
+                                        }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -544,10 +532,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -563,21 +553,18 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // Name of the topic to delete.
   topic := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Topics.Delete(topic).Context(ctx).Do()
+  resp, err := c.Projects.Topics.Delete(topic).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -586,10 +573,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -605,21 +594,18 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The name of the topic to get.
   topic := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Topics.Get(topic).Context(ctx).Do()
+  resp, err := c.Projects.Topics.Get(topic).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -628,10 +614,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -647,12 +635,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // REQUIRED: The resource for which policy is being requested. `resource` is usually specified as a
@@ -661,10 +647,9 @@ func main() {
   // GetIamPolicy rpc.
   resource := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Topics.GetIamPolicy(resource).Context(ctx).Do()
+  resp, err := c.Projects.Topics.GetIamPolicy(resource).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -673,10 +658,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -692,19 +679,17 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The name of the cloud project that topics belong to.
   project := "projects/{MY-PROJECT}" // TODO: Update placeholder value.
 
 
-  call := client.Projects.Topics.List(project)
+  call := c.Projects.Topics.List(project)
   if err := call.Pages(ctx, func(page *pubsub.ListTopicsResponse) error {
     for _, v := range page.Topics {
       // TODO: Use v.
@@ -713,17 +698,18 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -739,23 +725,20 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The messages in the request will be published on this topic.
   topic := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Topics.Publish(topic, &pubsub.PublishRequest{
-                                                // TODO: Fill required fields.
-                                              }).Context(ctx).Do()
+  resp, err := c.Projects.Topics.Publish(topic, &pubsub.PublishRequest{
+                                           // TODO: Fill required fields.
+                                         }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -764,10 +747,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -783,12 +768,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // REQUIRED: The resource for which policy is being specified. `resource` is usually specified as a
@@ -797,12 +780,11 @@ func main() {
   // SetIamPolicy rpc.
   resource := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Topics.SetIamPolicy(resource, &pubsub.SetIamPolicyRequest{
-                                                     // TODO: Fill required fields.
-                                                   }).Context(ctx).Do()
+  resp, err := c.Projects.Topics.SetIamPolicy(resource, &pubsub.SetIamPolicyRequest{
+                                                // TODO: Fill required fields.
+                                              }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp
@@ -811,10 +793,12 @@ package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -830,19 +814,17 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // The name of the topic that subscriptions are attached to.
   topic := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value.
 
 
-  call := client.Projects.Topics.Subscriptions.List(topic)
+  call := c.Projects.Topics.Subscriptions.List(topic)
   if err := call.Pages(ctx, func(page *pubsub.ListTopicSubscriptionsResponse) error {
     for _, v := range page.Subscriptions {
       // TODO: Use v.
@@ -851,17 +833,18 @@ func main() {
     return nil // NOTE: returning a non-nil error stops pagination.
   }); err != nil {
     // TODO: Handle error.
-    _ = err
   }
 }
 package main
 
 // PRE-REQUISITES:
 // ---------------
-// 1. If not already done, enable the Google Cloud Pub/Sub API and check the quota for your project at
-//    https://console.developers.google.com/apis/api/pubsub_component/quotas
-// 2. This sample uses Application Default Credentials for authentication. If not already done, install the gcloud CLI from
-//    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+// 1. If not already done, enable the Google Cloud Pub/Sub API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/pubsub
+// 2. This sample uses Application Default Credentials for authentication. If
+//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
+//    and run 'gcloud beta auth application-default login'
 // 3. To install the client library, run:
 //    go get -u google.golang.org/api/pubsub/v1
 
@@ -877,12 +860,10 @@ func main() {
   hc, err := google.DefaultClient(ctx, pubsub.CloudPlatformScope)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
-  client, err := pubsub.New(hc)
+  c, err := pubsub.New(hc)
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
 
   // REQUIRED: The resource for which policy detail is being requested. `resource` is usually specified
@@ -891,12 +872,11 @@ func main() {
   // respective TestIamPermissions rpc.
   resource := "projects/{MY-PROJECT}/topics/{MY-TOPIC}" // TODO: Update placeholder value.
 
-  resp, err := client.Projects.Topics.TestIamPermissions(resource, &pubsub.TestIamPermissionsRequest{
-                                                           // TODO: Fill required fields.
-                                                         }).Context(ctx).Do()
+  resp, err := c.Projects.Topics.TestIamPermissions(resource, &pubsub.TestIamPermissionsRequest{
+                                                      // TODO: Fill required fields.
+                                                    }).Context(ctx).Do()
   if err != nil {
     // TODO: Handle error.
-    _ = err
   }
   // TODO: Use resp.
   _ = resp

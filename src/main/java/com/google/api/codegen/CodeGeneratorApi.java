@@ -23,7 +23,6 @@ import com.google.api.tools.framework.aspects.http.HttpConfigAspect;
 import com.google.api.tools.framework.aspects.naming.NamingConfigAspect;
 import com.google.api.tools.framework.aspects.system.SystemConfigAspect;
 import com.google.api.tools.framework.aspects.versioning.VersionConfigAspect;
-import com.google.api.tools.framework.aspects.visibility.VisibilityConfigAspect;
 import com.google.api.tools.framework.model.Diag;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.SimpleLocation;
@@ -86,7 +85,6 @@ public class CodeGeneratorApi extends ToolDriverBase {
     model.registerConfigAspect(DocumentationConfigAspect.create(model));
     model.registerConfigAspect(ContextConfigAspect.create(model));
     model.registerConfigAspect(HttpConfigAspect.create(model));
-    model.registerConfigAspect(VisibilityConfigAspect.create(model));
     model.registerConfigAspect(VersionConfigAspect.create(model));
     model.registerConfigAspect(NamingConfigAspect.create(model));
     model.registerConfigAspect(SystemConfigAspect.create(model));
@@ -108,8 +106,8 @@ public class CodeGeneratorApi extends ToolDriverBase {
     }
 
     model.establishStage(Merged.KEY);
-    if (model.getErrorCount() > 0) {
-      for (Diag diag : model.getDiags()) {
+    if (model.getDiagCollector().getErrorCount() > 0) {
+      for (Diag diag : model.getDiagCollector().getDiags()) {
         System.err.println(diag.toString());
       }
       return;
@@ -148,7 +146,9 @@ public class CodeGeneratorApi extends ToolDriverBase {
             new ClassInstantiator.ErrorReporter() {
               @Override
               public void error(String message, Object... args) {
-                model.addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
+                model
+                    .getDiagCollector()
+                    .addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
               }
             });
     return provider;
@@ -156,14 +156,15 @@ public class CodeGeneratorApi extends ToolDriverBase {
 
   private ConfigProto loadConfigFromFiles(List<String> configFileNames) {
     List<File> configFiles = pathsToFiles(configFileNames);
-    if (model.getErrorCount() > 0) {
+    if (model.getDiagCollector().getErrorCount() > 0) {
       return null;
     }
     ImmutableMap<String, Message> supportedConfigTypes =
         ImmutableMap.<String, Message>of(
             ConfigProto.getDescriptor().getFullName(), ConfigProto.getDefaultInstance());
     ConfigProto configProto =
-        (ConfigProto) MultiYamlReader.read(model, configFiles, supportedConfigTypes);
+        (ConfigProto)
+            MultiYamlReader.read(model.getDiagCollector(), configFiles, supportedConfigTypes);
     return configProto;
   }
 
@@ -183,6 +184,6 @@ public class CodeGeneratorApi extends ToolDriverBase {
   }
 
   private void error(String message, Object... args) {
-    model.addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
+    model.getDiagCollector().addDiag(Diag.error(SimpleLocation.TOPLEVEL, message, args));
   }
 }
