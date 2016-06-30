@@ -15,7 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.LanguageUtil;
-import com.google.api.codegen.java.direct.JavaTypeTable;
+import com.google.api.codegen.java.JavaTypeTable;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;

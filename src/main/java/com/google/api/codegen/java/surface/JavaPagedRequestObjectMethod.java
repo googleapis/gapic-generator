@@ -14,4 +14,11 @@
  */
 package com.google.api.codegen.java.surface;
 
-public class JavaPagedRequestObjectMethod implements JavaApiMethod {}
+public class JavaPagedRequestObjectMethod implements JavaApiMethod {
+
+  public JavaApiMethodDoc doc;
+  public String accessModifier;
+  public String resourceTypeName;
+  public String name;
+  public String requestTypeName;
+}

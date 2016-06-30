@@ -221,12 +221,50 @@ public class LibraryServiceApi implements AutoCloseable {
 
 
 
+
+
+
+
+
+
+
+  /**
+   * Lists shelves.
+   *
+   * Sample code:
+   * <pre><code>
+   * try {
+   *
+   * }
+   * </code></pre>
+   *
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
   public final PageAccessor<Shelf> listShelves() {
     ListShelvesRequest request =
         ListShelvesRequest.newBuilder()
 
         .build();
     return listShelves(request);
+  }
+
+  /**
+   * Lists shelves.
+   *
+   * Sample code:
+   * <pre><code>
+   * try {
+   *
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   *
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  private final PageAccessor<Shelf> listShelves(ListShelvesRequest request) {
+    return listShelvesPagedCallable()
+        .call(request);
   }
 
 
@@ -247,6 +285,37 @@ public class LibraryServiceApi implements AutoCloseable {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /**
+   * Lists books in a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try {
+   *
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf whose books we'd like to list.
+   * @param filter To test python built-in wrapping.
+   *
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
   public final PageAccessor<Book> listBooks(String name, String filter) {
     SHELF_PATH_TEMPLATE.validate(name);
     ListBooksRequest request =
@@ -257,6 +326,24 @@ public class LibraryServiceApi implements AutoCloseable {
     return listBooks(request);
   }
 
+  /**
+   * Lists books in a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try {
+   *
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   *
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final PageAccessor<Book> listBooks(ListBooksRequest request) {
+    return listBooksPagedCallable()
+        .call(request);
+  }
 
 
 
@@ -270,6 +357,30 @@ public class LibraryServiceApi implements AutoCloseable {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+  /**
+   * Lists a primitive resource. To test go page streaming.
+   *
+   * Sample code:
+   * <pre><code>
+   * try {
+   *
+   * }
+   * </code></pre>
+   *
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
   public final PageAccessor<String> listStrings() {
     ListStringsRequest request =
         ListStringsRequest.newBuilder()
@@ -277,6 +388,33 @@ public class LibraryServiceApi implements AutoCloseable {
         .build();
     return listStrings(request);
   }
+
+  /**
+   * Lists a primitive resource. To test go page streaming.
+   *
+   * Sample code:
+   * <pre><code>
+   * try {
+   *
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   *
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  private final PageAccessor<String> listStrings(ListStringsRequest request) {
+    return listStringsPagedCallable()
+        .call(request);
+  }
+
+
+
+
+
+
+
+
 
 
 

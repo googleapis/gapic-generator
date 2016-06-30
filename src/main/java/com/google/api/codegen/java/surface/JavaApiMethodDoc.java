@@ -16,12 +16,9 @@ package com.google.api.codegen.java.surface;
 
 import java.util.List;
 
-public class JavaPagedFlattenedMethod implements JavaApiMethod {
+public class JavaApiMethodDoc {
 
-  public JavaApiMethodDoc doc;
-  public String resourceTypeName;
-  public String name;
-  public List<JavaRequestObjectParam> requestObjectParams;
-  public String requestTypeName;
-  public List<JavaPathTemplateCheck> pathTemplateChecks;
+  public Iterable<String> mainDocLines;
+  public List<String> paramDocLines;
+  public List<String> throwsDocLines;
 }
