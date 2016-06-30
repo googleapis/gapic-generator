@@ -17,7 +17,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.2-SNAPSHOT'
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.7'
     classpath "gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.2"
   }
 }
@@ -65,9 +65,9 @@ ext {
     toolsFxTesting: 'io.gapi:gapi-tools-framework:0.0.0-SNAPSHOT:testing',
 
     // Protobuf
-    protobuf: 'com.google.protobuf:protobuf-java:3.0.0-beta-1',
-    protoc:  'com.google.protobuf:protoc:3.0.0-beta-1',
-    protobufGradlePlugin: 'com.google.protobuf:protobuf-gradle-plugin:0.7.2-SNAPSHOT',
+    protobuf: 'com.google.protobuf:protobuf-java:3.0.0-beta-3',
+    protoc:  'com.google.protobuf:protoc:3.0.0-beta-3',
+    protobufGradlePlugin: 'com.google.protobuf:protobuf-gradle-plugin:0.7.7',
 
     // JSON
     jackson: 'com.fasterxml.jackson.core:jackson-databind:2.7.0',
@@ -80,11 +80,6 @@ ext {
 repositories {
   mavenLocal()
   mavenCentral()
-  maven {
-    // For 0.7.2-SNAPSHOT of protobuf gradle plugin. This should be removed once
-    // this version is releaed.
-    url 'https://oss.sonatype.org/content/repositories/snapshots/'
-  }
   maven {
     // Private maven repo.
     url privateSnapshotRepo
@@ -310,7 +305,7 @@ task showGrpcJavaPluginPath << {
 task showProtobufPath() << {
   DependencyResolver resolver = new DependencyResolver(project)
   println 'output: ' + resolver.extractArchive(
-    'com.google.protobuf:protobuf-java:3.0.0-beta-1');
+    'com.google.protobuf:protobuf-java:3.0.0-beta-3');
 }
 
 // Task to display the cache path of Google Java formatter
