@@ -188,12 +188,12 @@
     @default
       $unhandledCase: {@apiMethod.getClass.getSimpleName}$
     @end
-    {@""}
+    {@BREAK}
   @end
 @end
 
 @private pagedFlattenedMethod(apiMethod)
-  {@iterableFlattenedMethodJavaDoc(apiMethod)}
+  {@methodJavaDoc(apiMethod.doc)}
   public final PageAccessor<{@apiMethod.resourceTypeName}> \
       {@apiMethod.name}({@paramList(apiMethod.requestObjectParams)}) {
     @join pathTemplateCheck : apiMethod.pathTemplateChecks
@@ -207,25 +207,56 @@
   }
 @end
 
-@private pagedRequestObjectMethod(method)
+@private pagedRequestObjectMethod(apiMethod)
+  {@methodJavaDoc(apiMethod.doc)}
+  {@apiMethod.accessModifier} final PageAccessor<{@apiMethod.resourceTypeName}> \
+      {@apiMethod.name}({@apiMethod.requestTypeName} request) {
+    return {@apiMethod.name}PagedCallable()
+        .call(request);
+  }
 @end
 
-@private pagedCallableMethod(method)
+@private pagedCallableMethod(apiMethod)
 @end
 
-@private unpagedListCallableMethod(method)
+@private unpagedListCallableMethod(apiMethod)
 @end
 
-@private flattenedMethod(method)
+@private flattenedMethod(apiMethod)
 @end
 
-@private requestObjectMethod(method)
+@private requestObjectMethod(apiMethod)
 @end
 
-@private callableMethod(method)
+@private callableMethod(apiMethod)
 @end
 
-@private iterableFlattenedMethodJavaDoc(apiMethod)
+@private methodJavaDoc(apiMethodDoc)
+  /**
+  @join commentLine : apiMethodDoc.mainDocLines
+    {@""} * {@commentLine} 
+  @end
+   *
+   * Sample code:
+   * <pre><code>
+  #@join sampleLine : generateMethodSampleCode(apiMethodDoc)
+  #  {@""} * {@sampleLine}
+  #@end
+  {@dummySample()}
+   * </code></pre>
+  @if apiMethodDoc.paramDocLines
+    {@""} *
+    @join commentLine : apiMethodDoc.paramDocLines 
+      {@""} * {@commentLine}
+    @end
+  @end
+  @if apiMethodDoc.throwsDocLines
+    {@""} *
+    @join commentLine : apiMethodDoc.throwsDocLines
+      {@""} * {@commentLine}
+    @end
+  @end
+   */
 @end
 
 @private paramList(params)
@@ -242,4 +273,10 @@
 
 @private pathTemplateCheckLine(pathTemplateCheck)
   {@pathTemplateCheck.pathTemplateName}.validate({@pathTemplateCheck.paramName});
+@end
+
+@private dummySample()
+  {@""} * try {
+   *
+   * }
 @end

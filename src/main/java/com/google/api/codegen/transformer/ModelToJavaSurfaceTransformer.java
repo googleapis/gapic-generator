@@ -19,9 +19,10 @@ import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
+import com.google.api.codegen.java.JavaDocUtil;
 import com.google.api.codegen.java.surface.JavaApiCallable;
 import com.google.api.codegen.java.surface.JavaApiMethod;
-import com.google.api.codegen.java.surface.JavaRequestObjectParam;
+import com.google.api.codegen.java.surface.JavaApiMethodDoc;
 import com.google.api.codegen.java.surface.JavaBundlingApiCallable;
 import com.google.api.codegen.java.surface.JavaCallableMethod;
 import com.google.api.codegen.java.surface.JavaFlattenedMethod;
@@ -34,19 +35,23 @@ import com.google.api.codegen.java.surface.JavaParseResourceFunction;
 import com.google.api.codegen.java.surface.JavaPathTemplate;
 import com.google.api.codegen.java.surface.JavaPathTemplateCheck;
 import com.google.api.codegen.java.surface.JavaRequestObjectMethod;
+import com.google.api.codegen.java.surface.JavaRequestObjectParam;
 import com.google.api.codegen.java.surface.JavaResourceIdParam;
 import com.google.api.codegen.java.surface.JavaSimpleApiCallable;
 import com.google.api.codegen.java.surface.JavaSurface;
 import com.google.api.codegen.java.surface.JavaUnpagedListCallableMethod;
 import com.google.api.codegen.java.surface.JavaXApi;
+import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ModelToJavaSurfaceTransformer {
@@ -235,7 +240,7 @@ public class ModelToJavaSurfaceTransformer {
             apiMethods.add(generatePagedFlattenedMethod(method, methodConfig, fields));
           }
         }
-        apiMethods.add(new JavaPagedRequestObjectMethod());
+        apiMethods.add(generatePagedRequestObjectMethod(method, methodConfig));
         apiMethods.add(new JavaPagedCallableMethod());
         apiMethods.add(new JavaUnpagedListCallableMethod());
       } else {
@@ -256,9 +261,17 @@ public class ModelToJavaSurfaceTransformer {
 
   private JavaPagedFlattenedMethod generatePagedFlattenedMethod(
       Method method, MethodConfig methodConfig, ImmutableList<Field> fields) {
-    PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
-
     JavaPagedFlattenedMethod apiMethod = new JavaPagedFlattenedMethod();
+
+    JavaApiMethodDoc doc = new JavaApiMethodDoc();
+
+    doc.mainDocLines = getJavaDocLines(method);
+    doc.paramDocLines = getMethodParamDocLines(fields);
+    doc.throwsDocLines = getThrowsDocLines();
+
+    apiMethod.doc = doc;
+
+    PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
     apiMethod.resourceTypeName =
         typeTable.importAndGetShortestNameForElementType(
             pageStreaming.getResourcesField().getType());
@@ -291,6 +304,34 @@ public class ModelToJavaSurfaceTransformer {
     return apiMethod;
   }
 
+  private JavaPagedRequestObjectMethod generatePagedRequestObjectMethod(
+      Method method, MethodConfig methodConfig) {
+    JavaPagedRequestObjectMethod apiMethod = new JavaPagedRequestObjectMethod();
+
+    JavaApiMethodDoc doc = new JavaApiMethodDoc();
+
+    doc.mainDocLines = getJavaDocLines(method);
+    doc.paramDocLines = getRequestObjectDocLines();
+    doc.throwsDocLines = getThrowsDocLines();
+
+    apiMethod.doc = doc;
+
+    if (methodConfig.hasRequestObjectMethod()) {
+      apiMethod.accessModifier = "public";
+    } else {
+      apiMethod.accessModifier = "private";
+    }
+
+    PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
+    apiMethod.resourceTypeName =
+        typeTable.importAndGetShortestNameForElementType(
+            pageStreaming.getResourcesField().getType());
+    apiMethod.name = getApiMethodName(method);
+    apiMethod.requestTypeName = typeTable.importAndGetShortestName(method.getInputType());
+
+    return apiMethod;
+  }
+
   private JavaRequestObjectParam generateRequestObjectParam(Field field) {
     JavaRequestObjectParam param = new JavaRequestObjectParam();
     param.name = getVariableNameForField(field);
@@ -307,6 +348,32 @@ public class ModelToJavaSurfaceTransformer {
     }
 
     return param;
+  }
+
+  private List<String> getJavaDocLines(ProtoElement element) {
+    return JavaDocUtil.getJavaDocLines(DocumentationUtil.getDescription(element));
+  }
+
+  private List<String> getMethodParamDocLines(Iterable<Field> fields) {
+    List<String> allDocLines = new ArrayList<>();
+    for (Field field : fields) {
+      List<String> docLines = getJavaDocLines(field);
+
+      String firstLine = "@param " + getVariableNameForField(field) + " " + docLines.get(0);
+      docLines.set(0, firstLine);
+
+      allDocLines.addAll(docLines);
+    }
+    return allDocLines;
+  }
+
+  private List<String> getThrowsDocLines() {
+    return Arrays.asList("@throws com.google.api.gax.grpc.ApiException if the remote call fails");
+  }
+
+  private List<String> getRequestObjectDocLines() {
+    return Arrays.asList(
+        "@param request The request object containing all of the parameters for the API call.");
   }
 
   private String getVariableNameForField(Field field) {
