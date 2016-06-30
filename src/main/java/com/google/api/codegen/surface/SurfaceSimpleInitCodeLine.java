@@ -12,21 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.java.surface;
+package com.google.api.codegen.surface;
 
-import com.google.api.codegen.surface.SurfaceInitCode;
+import com.google.api.codegen.metacode.InitCodeLineType;
 
-import java.util.List;
+public class SurfaceSimpleInitCodeLine implements SurfaceInitCodeLine {
 
-public class JavaPagedFlattenedMethod implements JavaApiMethod {
-
-  public SurfaceInitCode initCode;
-  public JavaApiMethodDoc doc;
-  public String resourceTypeName;
-  public String name;
-  public List<JavaRequestObjectParam> requestObjectParams;
-  public String requestTypeName;
-  public List<JavaPathTemplateCheck> pathTemplateChecks;
-  public String apiClassName;
-  public String apiVariableName;
+  public InitCodeLineType lineType;
+  public String typeName;
+  public String identifier;
+  public SurfaceInitValue initValue;
 }
