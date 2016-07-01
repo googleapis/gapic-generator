@@ -58,6 +58,17 @@ var PAGE_DESCRIPTORS = {
       'strings')
 };
 
+var BUNDLE_DESCRIPTORS = {
+  'publishSeries': new gax.BundleDescriptor(
+      'books',
+      [
+        'edition',
+        'shelf.name'
+      ],
+      'book_names',
+      gax.createByteLengthFunction(grpcClient.google.example.library.v1.Book))
+};
+
 /**
  * The scopes needed to make gRPC calls to all of the methods defined in
  * this service.
@@ -130,6 +141,7 @@ function LibraryServiceApi(opts) {
       grpc.status,
       timeout,
       PAGE_DESCRIPTORS,
+      BUNDLE_DESCRIPTORS,
       {'metadata': metadata});
 
   this.stub = gax.createStub(
@@ -471,7 +483,7 @@ LibraryServiceApi.prototype.createBook = function createBook() {
  *   retries, etc.
  * @param {?APICallback<google.example.library.v1.PublishSeriesResponse>} callback
  *   The function which will be called with the result of the API call.
- * @returns {gax.EventEmitter} - the event emitter to handle the call
+ * @returns {gax.BundleEventEmitter} - the event emitter to handle the call
  *   status.
  * @throws an error if the RPC is aborted.
  */

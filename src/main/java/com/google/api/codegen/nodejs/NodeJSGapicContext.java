@@ -151,7 +151,9 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
         + callbackType
         + "} callback\n"
         + "  The function which will be called with the result of the API call.\n"
-        + "@returns {gax.EventEmitter} - the event emitter to handle the call\n"
+        + "@returns {"
+        + (config.isBundling() ? "gax.BundleEventEmitter" : "gax.EventEmitter")
+        + "} - the event emitter to handle the call\n"
         + "  status.";
   }
 
@@ -312,6 +314,25 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       default:
         // Numeric types and enums.
         return "Number";
+    }
+  }
+
+  /**
+   * Returns the JavaScript representation of the function to return the byte length.
+   */
+  public String getByteLengthFunction(TypeRef typeRef) {
+    switch (typeRef.getKind()) {
+      case TYPE_MESSAGE:
+        return "gax.createByteLengthFunction(grpcClient."
+            + typeRef.getMessageType().getFullName()
+            + ")";
+      case TYPE_STRING:
+      case TYPE_BYTES:
+        return "function(s) { return s.length; }";
+      default:
+        // It's not quite easy how to compute the byte length for numeric
+        // values. Returns '8' (necessary for 64bit integer) always for now.
+        return "function(n) { return 8; }";
     }
   }
 
