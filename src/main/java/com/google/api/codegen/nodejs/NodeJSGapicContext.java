@@ -150,7 +150,9 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     return "@param {?"
         + callbackType
         + "} callback\n"
-        + "  The function which will be called with the result of the API call.";
+        + "  The function which will be called with the result of the API call.\n"
+        + "@returns {gax.EventEmitter} - the event emitter to handle the call\n"
+        + "  status.";
   }
 
   /**
