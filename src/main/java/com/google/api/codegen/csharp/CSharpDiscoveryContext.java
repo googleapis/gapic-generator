@@ -291,17 +291,14 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
 
   @AutoValue
   public abstract static class PageStreamingInfo {
-    public static PageStreamingInfo create(
-        String resourceFieldName, String resourceTypeName, boolean isMap) {
+    public static PageStreamingInfo create(String resourceFieldName, String resourceTypeName) {
       return new AutoValue_CSharpDiscoveryContext_PageStreamingInfo(
-          resourceFieldName, resourceTypeName, isMap);
+          resourceFieldName, resourceTypeName);
     }
 
     public abstract String resourceFieldName();
 
     public abstract String resourceTypeName();
-
-    public abstract boolean isMap();
   }
 
   @AutoValue
@@ -463,19 +460,11 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     if (isPageStreaming) {
       Type responseType = apiary.getType(method.getResponseTypeUrl());
       Field resourceField = getFirstRepeatedField(responseType);
-      String resourceFieldTypeName = usingData(resourceField.getTypeUrl());
-      boolean isMap = isMapField(responseType, resourceField.getName());
-      String resourceTypeName;
-      if (isMap) {
-        resourceTypeName = typeName(responseType, resourceField, requestTypeName);
-      } else {
-        resourceTypeName = resourceFieldTypeName;
-      }
+      String resourceTypeName = elementTypeName(responseType, resourceField, requestTypeName);
       pageStreamingInfo =
           PageStreamingInfo.create(
               CSharpContextCommon.s_underscoresToPascalCase(resourceField.getName()),
-              resourceTypeName,
-              isMap);
+              resourceTypeName);
     } else {
       pageStreamingInfo = null;
     }
@@ -508,7 +497,7 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     }
   }
 
-  private String typeName(Type parentType, Field field, String requestTypeName) {
+  private String elementTypeName(Type parentType, Field field, String requestTypeName) {
     ApiaryConfig apiary = getApiaryConfig();
     String fieldName = field.getName();
     String fieldTypeName = field.getTypeUrl();
@@ -520,6 +509,27 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
       String valueTypeName = typeName(fieldType, valueField, requestTypeName);
       return using(
           "System.Collections.Generic.KeyValuePair<" + keyTypeName + ", " + valueTypeName + ">");
+    }
+    if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
+      Field elementField =
+          field.toBuilder().setCardinality(Field.Cardinality.CARDINALITY_REQUIRED).build();
+      return typeName(parentType, elementField, requestTypeName);
+    }
+    throw new IllegalArgumentException("Not a collection type.");
+  }
+
+  private String typeName(Type parentType, Field field, String requestTypeName) {
+    ApiaryConfig apiary = getApiaryConfig();
+    String fieldName = field.getName();
+    String fieldTypeName = field.getTypeUrl();
+    Type fieldType = apiary.getType(fieldTypeName);
+    if (isMapField(parentType, fieldName)) {
+      Field keyField = apiary.getField(fieldType, "key");
+      Field valueField = apiary.getField(fieldType, "value");
+      String keyTypeName = typeName(fieldType, keyField, requestTypeName);
+      String valueTypeName = typeName(fieldType, valueField, requestTypeName);
+      return using(
+          "System.Collections.Generic.Dictionary<" + keyTypeName + ", " + valueTypeName + ">");
     }
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
       Field elementField =
