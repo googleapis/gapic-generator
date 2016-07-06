@@ -15,6 +15,7 @@
 package com.google.api.codegen.config;
 
 import com.google.api.codegen.Inflector;
+import com.google.api.codegen.LanguageUtil;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.FieldSegment;
 import com.google.api.tools.framework.aspects.http.model.HttpAttribute.LiteralSegment;
@@ -54,7 +55,8 @@ public class CollectionPattern {
         String name = "unknown";
         String suffix = "";
         if (lastSegment != null && lastSegment instanceof LiteralSegment) {
-          name = Inflector.singularize(lastSegment.syntax());
+          name =
+              LanguageUtil.upperCamelToLowerUnderscore(Inflector.singularize(lastSegment.syntax()));
         }
         if (((WildcardSegment) pathSegment).isUnbounded()) {
           name += "_path";

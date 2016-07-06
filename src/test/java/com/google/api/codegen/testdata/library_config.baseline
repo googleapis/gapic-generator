@@ -18,9 +18,9 @@ interfaces:
   collections:
   - name_pattern: archives/{archive_path=**}/books/{book}
     entity_name: book
-  - name_pattern: shelves/{shelf}
-    entity_name: shelf
-  - name_pattern: shelves/{shelf}/books/{book}
+  - name_pattern: bookShelves/{book_shelf}
+    entity_name: book_shelf
+  - name_pattern: bookShelves/{book_shelf}/books/{book}
     entity_name: book_2
   retry_codes_def:
   - name: idempotent
@@ -64,7 +64,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      name: shelf
+      name: book_shelf
   - name: ListShelves
     request_object_method: false
     page_streaming:
@@ -86,7 +86,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      name: shelf
+      name: book_shelf
   - name: MergeShelves
     flattening:
       groups:
@@ -100,7 +100,7 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
-      name: shelf
+      name: book_shelf
   - name: CreateBook
     flattening:
       groups:
@@ -114,7 +114,7 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
-      name: shelf
+      name: book_shelf
   - name: PublishSeries
     flattening:
       groups:
@@ -161,7 +161,7 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      name: shelf
+      name: book_shelf
   - name: DeleteBook
     flattening:
       groups:
@@ -236,7 +236,7 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
-      name: shelf
+      name: book_shelf
   - name: GetBookFromArchive
     flattening:
       groups:
