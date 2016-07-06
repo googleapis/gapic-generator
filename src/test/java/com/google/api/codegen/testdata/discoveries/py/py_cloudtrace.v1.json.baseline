@@ -28,11 +28,11 @@ service = discovery.build('cloudtrace', 'v1', credentials=credentials)
 # * ID of the Cloud project where the trace data is stored.
 projectId = ''
 
-traces = {
-# TODO: Add desired entries of the 'traces' dict to be changed
+traces_body = {
+# TODO: Add desired entries of the 'traces_body' dict to be changed
 }
 
-request = service.projects().patchTraces(projectId, traces)
+request = service.projects().patchTraces(projectId=projectId, body=traces_body)
 request.execute()
 """
 PRE-REQUISITES:
@@ -68,7 +68,7 @@ projectId = ''
 # * ID of the trace to return.
 traceId = ''
 
-request = service.projects().traces().get(projectId, traceId)
+request = service.projects().traces().get(projectId=projectId, traceId=traceId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -103,11 +103,11 @@ service = discovery.build('cloudtrace', 'v1', credentials=credentials)
 projectId = ''
 
 traces = service.projects().traces()
-request = traces.list(projectId)
+request = traces.list(projectId=projectId)
 while request is not None:
     response = request.execute()
 
     for trace in response['traces']:
         # TODO: Add code here to process each 'trace' resource
 
-    request = traces.list_next(request, response)
+    request = traces.list_next(previous_request=request, previous_response=response)

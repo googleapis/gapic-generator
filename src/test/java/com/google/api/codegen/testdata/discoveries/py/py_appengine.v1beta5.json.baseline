@@ -31,7 +31,7 @@ service = discovery.build('appengine', 'v1beta5', credentials=credentials)
 # * Part of `name`. Name of the application to get. For example: "apps/myapp".
 appsId = ''
 
-request = service.apps().get(appsId)
+request = service.apps().get(appsId=appsId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -70,7 +70,7 @@ appsId = ''
 # * Part of `name`. See documentation of `appsId`.
 operationsId = ''
 
-request = service.apps().operations().get(appsId, operationsId)
+request = service.apps().operations().get(appsId=appsId, operationsId=operationsId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -105,14 +105,14 @@ service = discovery.build('appengine', 'v1beta5', credentials=credentials)
 appsId = ''
 
 operations = service.apps().operations()
-request = operations.list(appsId)
+request = operations.list(appsId=appsId)
 while request is not None:
     response = request.execute()
 
     for operation in response['operations']:
         # TODO: Add code here to process each 'operation' resource
 
-    request = operations.list_next(request, response)
+    request = operations.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -147,7 +147,7 @@ appsId = ''
 # * Part of `name`. See documentation of `appsId`.
 servicesId = ''
 
-request = service.apps().services().delete(appsId, servicesId)
+request = service.apps().services().delete(appsId=appsId, servicesId=servicesId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -186,7 +186,7 @@ appsId = ''
 # * Part of `name`. See documentation of `appsId`.
 servicesId = ''
 
-request = service.apps().services().get(appsId, servicesId)
+request = service.apps().services().get(appsId=appsId, servicesId=servicesId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -221,14 +221,14 @@ service = discovery.build('appengine', 'v1beta5', credentials=credentials)
 appsId = ''
 
 services = service.apps().services()
-request = services.list(appsId)
+request = services.list(appsId=appsId)
 while request is not None:
     response = request.execute()
 
     for service in response['services']:
         # TODO: Add code here to process each 'service' resource
 
-    request = services.list_next(request, response)
+    request = services.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -263,11 +263,11 @@ appsId = ''
 # * Part of `name`. See documentation of `appsId`.
 servicesId = ''
 
-service = {
-# TODO: Add desired entries of the 'service' dict to be changed
+service_body = {
+# TODO: Add desired entries of the 'service_body' dict to be changed
 }
 
-request = service.apps().services().patch(appsId, servicesId, service)
+request = service.apps().services().patch(appsId=appsId, servicesId=servicesId, body=service_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -306,11 +306,11 @@ appsId = ''
 # * Part of `name`. See documentation of `appsId`.
 servicesId = ''
 
-version = {
-# TODO: Add desired entries of the 'version' dict
+version_body = {
+# TODO: Add desired entries of the 'version_body' dict
 }
 
-request = service.apps().services().versions().create(appsId, servicesId, version)
+request = service.apps().services().versions().create(appsId=appsId, servicesId=servicesId, body=version_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -351,7 +351,7 @@ servicesId = ''
 # * Part of `name`. See documentation of `appsId`.
 versionsId = ''
 
-request = service.apps().services().versions().delete(appsId, servicesId, versionsId)
+request = service.apps().services().versions().delete(appsId=appsId, servicesId=servicesId, versionsId=versionsId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -392,7 +392,7 @@ servicesId = ''
 # * Part of `name`. See documentation of `appsId`.
 versionsId = ''
 
-request = service.apps().services().versions().get(appsId, servicesId, versionsId)
+request = service.apps().services().versions().get(appsId=appsId, servicesId=servicesId, versionsId=versionsId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -431,14 +431,14 @@ servicesId = ''
 versionsId = ''
 
 instances = service.apps().services().versions().instances()
-request = instances.list(appsId, servicesId, versionsId)
+request = instances.list(appsId=appsId, servicesId=servicesId, versionsId=versionsId)
 while request is not None:
     response = request.execute()
 
     for instance in response['instances']:
         # TODO: Add code here to process each 'instance' resource
 
-    request = instances.list_next(request, response)
+    request = instances.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -471,14 +471,14 @@ appsId = ''
 servicesId = ''
 
 versions = service.apps().services().versions()
-request = versions.list(appsId, servicesId)
+request = versions.list(appsId=appsId, servicesId=servicesId)
 while request is not None:
     response = request.execute()
 
     for version in response['versions']:
         # TODO: Add code here to process each 'version' resource
 
-    request = versions.list_next(request, response)
+    request = versions.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -515,11 +515,11 @@ servicesId = ''
 # * Part of `name`. See documentation of `appsId`.
 versionsId = ''
 
-version = {
-# TODO: Add desired entries of the 'version' dict to be changed
+version_body = {
+# TODO: Add desired entries of the 'version_body' dict to be changed
 }
 
-request = service.apps().services().versions().patch(appsId, servicesId, versionsId, version)
+request = service.apps().services().versions().patch(appsId=appsId, servicesId=servicesId, versionsId=versionsId, body=version_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.client.util.DateTime;
 import com.google.api.codegen.discovery.DefaultString;
 import com.google.api.Service;
 import com.google.common.base.Preconditions;
@@ -66,6 +67,10 @@ public abstract class DiscoveryContext extends CodegenContext {
 
   public Api getApi() {
     return this.getService().getApis(0);
+  }
+
+  public String getApiRevision() {
+    return service.getDocumentation().getOverview();
   }
 
   /**
@@ -156,11 +161,56 @@ public abstract class DiscoveryContext extends CodegenContext {
     return apiaryConfig.getHttpMethod(method.getName()).equals("PATCH");
   }
 
-  // Returns default string. If ApiaryConfig specifies a pattern, default string for that pattern
-  // is returned. Otherwise, returns empty string.
+  /*
+   * Returns language-specific syntax of string literal with given value.
+   */
+  public String stringLiteral(String value) {
+    return "\"" + value + "\"";
+  }
+
+  /*
+   * Returns language-specific syntax of line ending with given value.
+   */
+  public String lineEnding(String value) {
+    return value + ";";
+  }
+
+  /*
+   * Returns language-specific syntax of line commented with given comment string.
+   */
+  public String lineComment(String line, String comment) {
+    return line + "  // " + comment;
+  }
+
+  /*
+   * Returns default string (to end of line) for a type's string field. If ApiaryConfig specifies a
+   * string format, returns corresponding default string with inline comment. Otherwise, if
+   * ApiaryConfig specifies a pattern, returns corresponding default string. Otherwise, returns
+   * empty string.
+   */
   protected String getDefaultString(Type type, Field field) {
+    String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
+    if (stringFormat != null) {
+      switch (stringFormat) {
+        case "byte":
+          return lineComment(
+              lineEnding(stringLiteral("")),
+              "base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648");
+        case "date":
+          return lineComment(
+              lineEnding(stringLiteral("1969-12-31")),
+              stringLiteral("YYYY-MM-DD") + ": see java.text.SimpleDateFormat");
+        case "date-time":
+          return lineComment(
+              lineEnding(stringLiteral(new DateTime(0L).toStringRfc3339())),
+              stringLiteral("YYYY-MM-DDThh:mm:ss.fffZ")
+                  + " (UTC): see com.google.api.client.util.DateTime.toStringRfc3339()");
+        default:
+          return lineEnding(stringLiteral(""));
+      }
+    }
     String stringPattern = getApiaryConfig().getFieldPattern().get(type.getName(), field.getName());
-    return Strings.nullToEmpty(DefaultString.forPattern(stringPattern));
+    return lineEnding(stringLiteral(Strings.nullToEmpty(DefaultString.forPattern(stringPattern))));
   }
 
   // Line wrap `str`, returning a list of lines. Each line in the returned list is guaranteed to
@@ -235,5 +285,19 @@ public abstract class DiscoveryContext extends CodegenContext {
     return api.getName().equals("sqladmin")
         && api.getVersion().equals("v1beta4")
         && method.getName().equals("sql.users.list");
+  }
+
+  // used to handle inconsistency in language detections and translations methods for Translate API
+  // remove if inconsistency is resolved
+  protected boolean isTranslateLanguageDetectionsOrTranslationsField(Method method, Field field) {
+    if (method == null) {
+      return false;
+    }
+    Api api = getApi();
+    return (api.getName().equals("translate")
+        && api.getVersion().equals("v2")
+        && (method.getName().equals("language.detections.list")
+            || method.getName().equals("language.translations.list"))
+        && field.getName().equals("q"));
   }
 }
