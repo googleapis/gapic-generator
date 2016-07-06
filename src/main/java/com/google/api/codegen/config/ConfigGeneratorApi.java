@@ -67,6 +67,8 @@ public class ConfigGeneratorApi extends ToolDriverBase {
 
   private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
 
+  private static final String DEFAULT_TIMEOUT = "30000";
+
   /** Constructs a config generator api based on given options. */
   public ConfigGeneratorApi(ToolOptions options) {
     super(options);
@@ -120,7 +122,7 @@ public class ConfigGeneratorApi extends ToolDriverBase {
             new MethodConfigGenerator() {
               @Override
               public Map<String, Object> generate(Method method) {
-                return ImmutableMap.of("timeout_millis", (Object) 30000);
+                return ImmutableMap.of("timeout_millis", (Object) DEFAULT_TIMEOUT);
               }
             });
     List<Object> methods = new LinkedList<Object>();
