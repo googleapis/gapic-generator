@@ -491,7 +491,8 @@ public class CSharpDiscoveryContext extends DiscoveryContext implements CSharpCo
     } else if (field.getKind() == Kind.TYPE_ENUM) {
       return "(" + typeName + ") 0";
     } else if (field.getKind() == Kind.TYPE_STRING) {
-      return "\"" + getDefaultString(parentType, field) + "\"";
+      String defaultString = getDefaultString(parentType, field);
+      return defaultString.substring(0, defaultString.indexOf(";"));
     } else {
       return DEFAULTVALUE_MAP.get(field.getKind());
     }

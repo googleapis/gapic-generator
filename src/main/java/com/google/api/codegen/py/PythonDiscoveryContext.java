@@ -58,25 +58,8 @@ public class PythonDiscoveryContext extends DiscoveryContext {
           .put("dict", "{}")
           .put("bool", "False")
           .put("int", "0")
-          .put("long", "0L")
+          .put("long", "str(0L)")
           .put("float", "0.0")
-          .build();
-
-  /**
-   * A map from {@link ApiaryConfig#stringFormat} label (or null) to corresponding default value.
-   */
-  private static final ImmutableMap<String, String> STRING_DEFAULT_MAP =
-      ImmutableMap.<String, String>builder()
-          .put(
-              "byte",
-              "''" + "  # base64-encoded string of bytes: see http://tools.ietf.org/html/rfc4648")
-          .put("date", "'1969-12-31'" + "  # 'YYYY-MM-DD': see datetime.date.isoformat()")
-          .put(
-              "date-time",
-              "'"
-                  + new DateTime(0L).toStringRfc3339()
-                  + "'"
-                  + "  # 'YYYY-MM-DDThh:mm:ss.fffZ' (UTC): see datetime.datetime.isoformat()")
           .build();
 
   private static final ImmutableMap<String, String> RENAMED_METHOD_MAP =
@@ -176,7 +159,14 @@ public class PythonDiscoveryContext extends DiscoveryContext {
    * Generates placeholder assignment (to end of line) for a type's field based on field kind and,
    * for explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.
    */
-  public String typeDefaultValue(Type type, Field field) {
+  public String typeDefaultValue(Type type, Field field, Method method) {
+    // used to handle inconsistency in language detections and translations methods for Translate
+    // API
+    // remove if inconsistency is resolved in discovery docs
+    if (isTranslateLanguageDetectionsOrTranslationsField(method, field)) {
+      return lineEnding(stringLiteral(""));
+    }
+
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
       String fieldTypeName = field.getTypeUrl();
       Type items = this.getApiaryConfig().getType(fieldTypeName);
@@ -190,6 +180,10 @@ public class PythonDiscoveryContext extends DiscoveryContext {
       }
     }
     return nativeDefaultValue(type, field);
+  }
+
+  public String typeDefaultValue(Type type, Field field) {
+    return typeDefaultValue(type, field, null);
   }
 
   private String elementDefaultValue(Type type, Field field) {
@@ -214,23 +208,25 @@ public class PythonDiscoveryContext extends DiscoveryContext {
         return nativeDefault;
       }
       if (typeName.equals("str")) {
-        String stringFormat = getApiaryConfig().getStringFormat(type.getName(), field.getName());
-        if (stringFormat != null) {
-          String value = STRING_DEFAULT_MAP.get(stringFormat);
-          if (value != null) {
-            return value;
-          }
-        }
-        String stringPattern =
-            getApiaryConfig().getFieldPattern().get(type.getName(), field.getName());
-        String patternSample = DefaultString.forPattern(stringPattern);
-        if (patternSample != null) {
-          return String.format("'%s'", patternSample);
-        }
-        return "''";
+        return getDefaultString(type, field);
       }
     }
     return "None";
+  }
+
+  @Override
+  public String stringLiteral(String value) {
+    return "'" + value + "'";
+  }
+
+  @Override
+  public String lineEnding(String value) {
+    return value;
+  }
+
+  @Override
+  public String lineComment(String line, String comment) {
+    return line + "  # " + comment;
   }
 
   // Handlers for Exceptional Inconsistencies
