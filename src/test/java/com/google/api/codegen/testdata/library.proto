@@ -26,10 +26,10 @@ option go_package = "github.com/googleapis/proto-client-go/library/v1";
 // resource model:
 //
 // - The API has a collection of [Shelf][google.example.library.v1.Shelf]
-//   resources, named ``shelves/*``
+//   resources, named ``bookShelves/*``
 //
 // - Each Shelf has a collection of [Book][google.example.library.v1.Book]
-//   resources, named `shelves/*/books/*`
+//   resources, named `bookShelves/*/books/*`
 //
 // Check out [cloud docs!](/library/example/link).
 // This is [not a cloud link](http://www.google.com).
@@ -38,34 +38,34 @@ service LibraryService {
 
   // Creates a shelf, and returns the new Shelf.
   rpc CreateShelf(CreateShelfRequest) returns (Shelf) {
-    option (google.api.http) = { post: "/v1/shelves" body: "shelf" };
+    option (google.api.http) = { post: "/v1/bookShelves" body: "shelf" };
   }
 
   // Gets a shelf.
   rpc GetShelf(GetShelfRequest) returns (Shelf) {
-    option (google.api.http) = { get: "/v1/{name=shelves/*}" };
+    option (google.api.http) = { get: "/v1/{name=bookShelves/*}" };
   }
 
   // Lists shelves.
   rpc ListShelves(ListShelvesRequest) returns (ListShelvesResponse) {
-    option (google.api.http) = { get: "/v1/shelves" };
+    option (google.api.http) = { get: "/v1/bookShelves" };
   }
 
   // Deletes a shelf.
   rpc DeleteShelf(DeleteShelfRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = { delete: "/v1/{name=shelves/*}" };
+    option (google.api.http) = { delete: "/v1/{name=bookShelves/*}" };
   }
 
   // Merges two shelves by adding all books from the shelf named
   // `other_shelf_name` to shelf `name`, and deletes
   // `other_shelf_name`. Returns the updated shelf.
   rpc MergeShelves(MergeShelvesRequest) returns (Shelf) {
-    option (google.api.http) = { post: "/v1/{name=shelves/*}:merge" body: "*" };
+    option (google.api.http) = { post: "/v1/{name=bookShelves/*}:merge" body: "*" };
   }
 
   // Creates a book.
   rpc CreateBook(CreateBookRequest) returns (Book) {
-    option (google.api.http) = { post: "/v1/{name=shelves/*}/books" body: "book" };
+    option (google.api.http) = { post: "/v1/{name=bookShelves/*}/books" body: "book" };
   }
 
   // Creates a series of books.
@@ -75,27 +75,27 @@ service LibraryService {
 
   // Gets a book.
   rpc GetBook(GetBookRequest) returns (Book) {
-    option (google.api.http) = { get: "/v1/{name=shelves/*/books/*}" };
+    option (google.api.http) = { get: "/v1/{name=bookShelves/*/books/*}" };
   }
 
   // Lists books in a shelf.
   rpc ListBooks(ListBooksRequest) returns (ListBooksResponse) {
-    option (google.api.http) = { get: "/v1/{name=shelves/*}/books" };
+    option (google.api.http) = { get: "/v1/{name=bookShelves/*}/books" };
   }
 
   // Deletes a book.
   rpc DeleteBook(DeleteBookRequest) returns (protobuf.Empty) {
-    option (google.api.http) = { delete: "/v1/{name=shelves/*/books/*}" };
+    option (google.api.http) = { delete: "/v1/{name=bookShelves/*/books/*}" };
   }
 
   // Updates a book.
   rpc UpdateBook(UpdateBookRequest) returns (Book) {
-    option (google.api.http) = { put: "/v1/{name=shelves/*/books/*}" body: "book" };
+    option (google.api.http) = { put: "/v1/{name=bookShelves/*/books/*}" body: "book" };
   }
 
   // Moves a book to another shelf, and returns the new book.
   rpc MoveBook(MoveBookRequest) returns (Book) {
-    option (google.api.http) = { post: "/v1/{name=shelves/*/books/*}:move" body: "*" };
+    option (google.api.http) = { post: "/v1/{name=bookShelves/*/books/*}:move" body: "*" };
   }
 
   // Lists a primitive resource. To test go page streaming.
@@ -105,7 +105,7 @@ service LibraryService {
 
   // Adds comments to a book
   rpc AddComments(AddCommentsRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = { post: "/v1/{name=shelves/*}/comments" body: "*" };
+    option (google.api.http) = { post: "/v1/{name=bookShelves/*}/comments" body: "*" };
   }
 
   // Gets a book from an archive.
@@ -115,14 +115,14 @@ service LibraryService {
 
   // Updates the index of a book.
   rpc UpdateBookIndex(UpdateBookIndexRequest) returns (google.protobuf.Empty) {
-    option (google.api.http) = { post: "/v1/{name=shelves/*/books/*}/index" body: "*" };
+    option (google.api.http) = { post: "/v1/{name=bookShelves/*/books/*}/index" body: "*" };
   }
 }
 
 // A single book in the library.
 message Book {
   // The resource name of the book.
-  // Book names have the form `shelves/{shelf_id}/books/{book_id}`.
+  // Book names have the form `bookShelves/{shelf_id}/books/{book_id}`.
   string name = 1;
 
   // The name of the book author.
@@ -179,7 +179,7 @@ message SomeMessage2 {
 // A Shelf contains a collection of books with a theme.
 message Shelf {
   // The resource name of the shelf.
-  // Shelf names have the form `shelves/{shelf_id}`.
+  // Shelf names have the form `bookShelves/{shelf_id}`.
   string name = 1;
 
   // The theme of the shelf
