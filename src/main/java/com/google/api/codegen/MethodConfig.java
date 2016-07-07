@@ -24,6 +24,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
+import org.joda.time.Duration;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -41,6 +43,7 @@ public class MethodConfig {
   private final FlatteningConfig flattening;
   private final String retryCodesConfigName;
   private final String retrySettingsConfigName;
+  private final Duration timeout;
   private final Iterable<Field> requiredFields;
   private final Iterable<Field> optionalFields;
   private final BundlingConfig bundling;
@@ -49,9 +52,8 @@ public class MethodConfig {
   private final List<String> sampleCodeInitFields;
 
   /**
-   * Creates an instance of MethodConfig based on MethodConfigProto, linking it up with the
-   * provided method. On errors, null will be returned, and diagnostics are reported to the diag
-   * collector.
+   * Creates an instance of MethodConfig based on MethodConfigProto, linking it up with the provided
+   * method. On errors, null will be returned, and diagnostics are reported to the diag collector.
    */
   @Nullable
   public static MethodConfig createMethodConfig(
@@ -121,6 +123,16 @@ public class MethodConfig {
       error = true;
     }
 
+    Duration timeout = Duration.millis(methodConfigProto.getTimeoutMillis());
+    if (timeout.getMillis() <= 0) {
+      diagCollector.addDiag(
+          Diag.error(
+              SimpleLocation.TOPLEVEL,
+              "Default timeout not found or has invalid value (in method %s)",
+              method.getFullName()));
+      error = true;
+    }
+
     boolean hasRequestObjectMethod = methodConfigProto.getRequestObjectMethod();
 
     List<String> requiredFieldNames = methodConfigProto.getRequiredFieldsList();
@@ -165,6 +177,7 @@ public class MethodConfig {
           flattening,
           retryCodesName,
           retryParamsName,
+          timeout,
           bundling,
           hasRequestObjectMethod,
           requiredFields,
@@ -179,6 +192,7 @@ public class MethodConfig {
       FlatteningConfig flattening,
       String retryCodesConfigName,
       String retrySettingsConfigName,
+      Duration timeout,
       BundlingConfig bundling,
       boolean hasRequestObjectMethod,
       Iterable<Field> requiredFields,
@@ -189,6 +203,7 @@ public class MethodConfig {
     this.flattening = flattening;
     this.retryCodesConfigName = retryCodesConfigName;
     this.retrySettingsConfigName = retrySettingsConfigName;
+    this.timeout = timeout;
     this.bundling = bundling;
     this.hasRequestObjectMethod = hasRequestObjectMethod;
     this.requiredFields = requiredFields;
@@ -197,93 +212,72 @@ public class MethodConfig {
     this.sampleCodeInitFields = sampleCodeInitFields;
   }
 
-  /**
-   * Returns true if this method has page streaming configured.
-   */
+  /** Returns true if this method has page streaming configured. */
   public boolean isPageStreaming() {
     return pageStreaming != null;
   }
 
-  /**
-   * Returns the page streaming configuration of the method.
-   */
+  /** Returns the page streaming configuration of the method. */
   public PageStreamingConfig getPageStreaming() {
     return pageStreaming;
   }
 
-  /**
-   * Returns true if this method has flattening configured.
-   */
+  /** Returns true if this method has flattening configured. */
   public boolean isFlattening() {
     return flattening != null;
   }
 
-  /**
-   * Returns the flattening configuration of the method.
-   */
+  /** Returns the flattening configuration of the method. */
   public FlatteningConfig getFlattening() {
     return flattening;
   }
 
-  /**
-   * Returns the name of the retry codes config this method uses.
-   */
+  /** Returns the name of the retry codes config this method uses. */
   public String getRetryCodesConfigName() {
     return retryCodesConfigName;
   }
 
-  /**
-   * Returns the name of the retry params config this method uses.
-   */
+  /** Returns the name of the retry params config this method uses. */
   public String getRetrySettingsConfigName() {
     return retrySettingsConfigName;
   }
 
-  /**
-   * Returns true if this method has bundling configured.
-   */
+  /** Returns the default, non-retrying timeout for the method. */
+  public Duration getTimeout() {
+    return timeout;
+  }
+
+  /** Returns true if this method has bundling configured. */
   public boolean isBundling() {
     return bundling != null;
   }
 
-  /**
-   * Returns the bundling configuration of the method.
-   */
+  /** Returns the bundling configuration of the method. */
   public BundlingConfig getBundling() {
     return bundling;
   }
 
-  /**
-   * Returns whether the generation of the method taking a request object is turned on.
-   */
+  /** Returns whether the generation of the method taking a request object is turned on. */
   public boolean hasRequestObjectMethod() {
     return hasRequestObjectMethod;
   }
 
-  /**
-   * Returns the set of fields of the method that are always required.
-   */
+  /** Returns the set of fields of the method that are always required. */
   public Iterable<Field> getRequiredFields() {
     return requiredFields;
   }
 
-  /**
-   * Returns the set of fields of the method that are not always required.
-   */
+  /** Returns the set of fields of the method that are not always required. */
   public Iterable<Field> getOptionalFields() {
     return optionalFields;
   }
 
-  /**
-   * Returns a map of fields to entity_name elements.
-   */
+  /** Returns a map of fields to entity_name elements. */
   public ImmutableMap<String, String> getFieldNamePatterns() {
     return fieldNamePatterns;
   }
 
-  /**
-   * Returns the field structure of fields that needs to be initialized in sample code.
-   */
+  /** Returns the field structure of fields that needs to be initialized in sample code. */
   public List<String> getSampleCodeInitFields() {
     return sampleCodeInitFields;
   }

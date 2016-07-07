@@ -86,9 +86,15 @@
         @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
                 methodName = context.upperCamelToLowerUnderscore(method.getSimpleName), \
                 isBundling = methodConfig.isBundling, \
+                timeout = methodConfig.getTimeout.getMillis, \
                 retryCodesName = methodConfig.getRetryCodesConfigName, \
                 retryParamsName = methodConfig.getRetrySettingsConfigName
             "{@method.getSimpleName}": {
+              @if or(and(retryCodesName, retryParamsName), isBundling)
+                "timeout_millis": {@timeout},
+              @else
+                "timeout_millis": {@timeout}
+              @end
               @if and(retryCodesName, retryParamsName)
                   "retry_codes_name": "{@retryCodesName}",
                   @if isBundling

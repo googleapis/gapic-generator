@@ -29,9 +29,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Base class for code generator baseline tests.
- */
+/** Base class for code generator baseline tests. */
 public abstract class GapicTestBase extends ConfigBaselineTestCase {
 
   // example: library[ruby_message]
@@ -58,7 +56,6 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
   @Override
   protected void setupModel() {
     super.setupModel();
-
     config =
         CodegenTestUtil.readConfig(
             model.getDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
@@ -125,6 +122,9 @@ public abstract class GapicTestBase extends ConfigBaselineTestCase {
 
     ApiConfig apiConfig = ApiConfig.createApiConfig(model, config);
     if (apiConfig == null) {
+      for (Diag diag : model.getDiagCollector().getDiags()) {
+        System.err.println(diag.toString());
+      }
       return null;
     }
 
