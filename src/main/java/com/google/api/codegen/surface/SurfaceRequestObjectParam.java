@@ -12,12 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.java.surface;
+package com.google.api.codegen.surface;
 
-public class JavaPagedApiCallable implements JavaApiCallable {
-  public String inTypeName;
-  public String pageAccessorTypeName;
-  public String resourceTypeName;
+public class SurfaceRequestObjectParam {
   public String name;
-  public String settingsFunctionName;
+  public String typeName;
+  public String setCallName;
 }

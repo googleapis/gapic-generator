@@ -12,23 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.java.surface;
+package com.google.api.codegen.surface;
 
-import java.util.List;
-
-public class JavaXApi {
-  public String packageName;
-  public String name;
-  public String settingsClassName;
-  public List<JavaApiCallable> apiCallableMembers;
-  public List<JavaPathTemplate> pathTemplates;
-  public List<JavaFormatResourceFunction> formatResourceFunctions;
-  public List<JavaParseResourceFunction> parseResourceFunctions;
-  public List<JavaApiMethod> apiMethods;
-
-  public List<String> imports;
-
-  public String getFileName() {
-    return name + ".java";
-  }
-}
+public class SurfaceRequestObjectMethod implements SurfaceApiMethod {}

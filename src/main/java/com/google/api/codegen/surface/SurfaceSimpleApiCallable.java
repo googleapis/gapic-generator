@@ -12,10 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.java.surface;
+package com.google.api.codegen.surface;
 
-public class JavaRequestObjectParam {
+public class SurfaceSimpleApiCallable implements SurfaceApiCallable {
+  public String inTypeName;
+  public String outTypeName;
   public String name;
-  public String typeName;
-  public String setCallName;
+  public String settingsFunctionName;
 }

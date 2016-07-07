@@ -12,12 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.java.surface;
+package com.google.api.codegen.surface;
 
-import com.google.api.tools.framework.model.Field;
-import com.google.common.collect.ImmutableList;
-
-public class JavaFlattenedMethod implements JavaApiMethod {
-
-  public ImmutableList<Field> fields;
+public class SurfaceResourceIdParam {
+  public String name;
+  public String templateKey;
 }
