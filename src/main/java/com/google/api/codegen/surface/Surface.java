@@ -16,4 +16,5 @@ package com.google.api.codegen.surface;
 
 public class Surface {
   public SurfaceXApi xapiClass;
+  public SurfaceXSettings xsettingsClass;
 }

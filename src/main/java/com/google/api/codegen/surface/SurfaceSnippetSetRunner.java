@@ -15,15 +15,38 @@
 package com.google.api.codegen.surface;
 
 import com.google.api.codegen.GeneratedResult;
+import com.google.api.tools.framework.snippet.Doc;
+import com.google.api.tools.framework.snippet.SnippetSet;
+import com.google.common.collect.ImmutableMap;
 
 /**
  * A SurfaceSnippetSetRunner takes the element, snippet file, and context as input and then uses the
  * Snippet Set templating engine to generate an output document.
  */
-public interface SurfaceSnippetSetRunner<Element> {
+public class SurfaceSnippetSetRunner {
 
-  /**
-   * Runs the code generation.
-   */
-  GeneratedResult generate(Element element, String snippetFileName);
+  private String resourceRoot;
+  private Object utilObject;
+
+  public SurfaceSnippetSetRunner(String resourceRoot, Object utilObject) {
+    this.resourceRoot = resourceRoot;
+    this.utilObject = utilObject;
+  }
+
+  public GeneratedResult generate(SurfaceGenInput input, String snippetFileName) {
+    SurfaceSnippetSet snippets =
+        SnippetSet.createSnippetInterface(
+            SurfaceSnippetSet.class,
+            resourceRoot,
+            snippetFileName,
+            ImmutableMap.<String, Object>of("util", utilObject));
+
+    String outputFilename = input.getFileName();
+    Doc result = snippets.generateClass(input);
+    return GeneratedResult.create(result, outputFilename);
+  }
+
+  private interface SurfaceSnippetSet {
+    Doc generateClass(SurfaceGenInput input);
+  }
 }

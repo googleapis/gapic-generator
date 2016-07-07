@@ -16,15 +16,12 @@ package com.google.api.codegen.surface;
 
 import java.util.List;
 
-public class SurfaceXApi implements SurfaceGenInput {
+public class SurfaceXSettings implements SurfaceGenInput {
   public String packageName;
   public String name;
-  public String settingsClassName;
-  public List<SurfaceApiCallable> apiCallableMembers;
-  public List<SurfacePathTemplate> pathTemplates;
-  public List<SurfaceFormatResourceFunction> formatResourceFunctions;
-  public List<SurfaceParseResourceFunction> parseResourceFunctions;
-  public List<SurfaceApiMethod> apiMethods;
+  public String serviceAddress;
+  public Integer servicePort;
+  public Iterable<String> authScopes;
 
   public List<String> imports;
 

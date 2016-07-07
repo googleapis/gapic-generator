@@ -28,6 +28,7 @@ import com.google.api.tools.framework.snippet.Doc;
 import com.google.common.base.Strings;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -38,7 +39,7 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
   private final Model model;
   private final InputElementView<Interface> view;
   private final ApiConfig apiConfig;
-  private final SurfaceSnippetSetRunner<SurfaceXApi> snippetSetRunner;
+  private final SurfaceSnippetSetRunner snippetSetRunner;
   private final List<String> snippetFileNames;
   private final GapicCodePathMapper pathMapper;
 
@@ -46,20 +47,20 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
       Model model,
       InputElementView<Interface> view,
       ApiConfig apiConfig,
-      SurfaceSnippetSetRunner<SurfaceXApi> snippetSetRunner,
-      List<String> snippetFileNames,
+      SurfaceSnippetSetRunner snippetSetRunner,
+      //      List<String> snippetFileNames,
       GapicCodePathMapper pathMapper) {
     this.model = model;
     this.view = view;
     this.apiConfig = apiConfig;
     this.snippetSetRunner = snippetSetRunner;
-    this.snippetFileNames = snippetFileNames;
+    this.snippetFileNames = Arrays.asList("xapi.snip", "xsettings.snip");
     this.pathMapper = pathMapper;
   }
 
   @Override
   public List<String> getSnippetFileNames() {
-    return snippetFileNames;
+    return Arrays.asList("xapi.snip", "xsettings.snip");
   }
 
   @Override
@@ -100,7 +101,15 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
     List<GeneratedResult> generated = new ArrayList<>();
     for (Interface interfaze : view.getElementIterable(model)) {
       Surface surface = ModelToJavaSurfaceTransformer.defaultTransform(interfaze, apiConfig);
-      GeneratedResult result = snippetSetRunner.generate(surface.xapiClass, snippetFileName);
+      GeneratedResult result = null;
+      // FIXME huge hack to glue everything together
+      if (snippetFileName.equals("xapi.snip")) {
+        result = snippetSetRunner.generate(surface.xapiClass, snippetFileName);
+      } else if (snippetFileName.equals("xsettings.snip")) {
+        result = snippetSetRunner.generate(surface.xsettingsClass, snippetFileName);
+      } else {
+        throw new RuntimeException("Unsupported snippet: " + snippetFileName);
+      }
 
       String subPath = pathMapper.getOutputPath(interfaze, apiConfig);
 
@@ -130,8 +139,8 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
     private Model model;
     private InputElementView<Interface> view;
     private ApiConfig apiConfig;
-    private SurfaceSnippetSetRunner<SurfaceXApi> snippetSetRunner;
-    private List<String> snippetFileNames;
+    private SurfaceSnippetSetRunner snippetSetRunner;
+    //private List<String> snippetFileNames;
     private GapicCodePathMapper pathMapper;
 
     private Builder() {}
@@ -151,15 +160,15 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
       return this;
     }
 
-    public Builder setSnippetSetRunner(SurfaceSnippetSetRunner<SurfaceXApi> snippetSetRunner) {
+    public Builder setSnippetSetRunner(SurfaceSnippetSetRunner snippetSetRunner) {
       this.snippetSetRunner = snippetSetRunner;
       return this;
     }
 
-    public Builder setSnippetFileNames(List<String> snippetFileNames) {
-      this.snippetFileNames = snippetFileNames;
-      return this;
-    }
+    //    public Builder setSnippetFileNames(List<String> snippetFileNames) {
+    //      this.snippetFileNames = snippetFileNames;
+    //      return this;
+    //    }
 
     public Builder setCodePathMapper(GapicCodePathMapper pathMapper) {
       this.pathMapper = pathMapper;
@@ -167,8 +176,7 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
     }
 
     public SurfaceGapicProvider build() {
-      return new SurfaceGapicProvider(
-          model, view, apiConfig, snippetSetRunner, snippetFileNames, pathMapper);
+      return new SurfaceGapicProvider(model, view, apiConfig, snippetSetRunner, pathMapper);
     }
   }
 }
