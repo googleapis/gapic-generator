@@ -45,9 +45,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-/**
- * Main class for the config generator.
- */
+/** Main class for the config generator. */
 public class ConfigGeneratorApi extends ToolDriverBase {
 
   public static final Option<String> OUTPUT_FILE =
@@ -69,9 +67,10 @@ public class ConfigGeneratorApi extends ToolDriverBase {
 
   private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
 
-  /**
-   * Constructs a config generator api based on given options.
-   */
+  private static final String CONFIG_KEY_TIMEOUT = "timeout_millis";
+  private static final int CONFIG_VALUE_DEFAULT_TIMEOUT = 30000;
+
+  /** Constructs a config generator api based on given options. */
   public ConfigGeneratorApi(ToolOptions options) {
     super(options);
   }
@@ -101,9 +100,7 @@ public class ConfigGeneratorApi extends ToolDriverBase {
     dump(output);
   }
 
-  /**
-   * Generates a collection configurations section.
-   */
+  /** Generates a collection configurations section. */
   private static List<Object> generateCollectionConfigs(Map<String, String> nameMap) {
     List<Object> output = new LinkedList<Object>();
     for (String resourceNameString : nameMap.keySet()) {
@@ -122,7 +119,13 @@ public class ConfigGeneratorApi extends ToolDriverBase {
             new FieldConfigGenerator(),
             new PageStreamingConfigGenerator(),
             new RetryGenerator(),
-            new FieldNamePatternConfigGenerator(collectionConfigNameMap));
+            new FieldNamePatternConfigGenerator(collectionConfigNameMap),
+            new MethodConfigGenerator() {
+              @Override
+              public Map<String, Object> generate(Method method) {
+                return ImmutableMap.of(CONFIG_KEY_TIMEOUT, (Object) CONFIG_VALUE_DEFAULT_TIMEOUT);
+              }
+            });
     List<Object> methods = new LinkedList<Object>();
     for (Method method : service.getMethods()) {
       Map<String, Object> methodConfig = new LinkedHashMap<String, Object>();
