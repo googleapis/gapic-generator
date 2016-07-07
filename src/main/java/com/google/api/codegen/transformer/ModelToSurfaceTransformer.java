@@ -12,9 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.surface;
+package com.google.api.codegen.transformer;
 
-public class Surface {
-  public SurfaceXApi xapiClass;
-  public SurfaceXSettings xsettingsClass;
+import com.google.api.codegen.surface.SurfaceDoc;
+import com.google.api.tools.framework.model.Interface;
+
+import java.util.List;
+
+public interface ModelToSurfaceTransformer {
+  List<SurfaceDoc> transform(Interface service);
+
+  List<String> getTemplateFileNames();
 }

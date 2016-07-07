@@ -14,19 +14,8 @@
  */
 package com.google.api.codegen.surface;
 
-import java.util.List;
+public interface SurfaceDoc {
+  String getTemplateFileName();
 
-public class SurfaceXSettings implements SurfaceGenInput {
-  public String packageName;
-  public String name;
-  public String serviceAddress;
-  public Integer servicePort;
-  public Iterable<String> authScopes;
-
-  public List<String> imports;
-
-  @Override
-  public String getFileName() {
-    return name + ".java";
-  }
+  String getOutputPath();
 }

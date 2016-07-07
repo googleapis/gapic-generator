@@ -12,18 +12,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.languagedirect;
+package com.google.api.codegen.surface;
 
-import com.google.api.codegen.GeneratedResult;
+import java.util.List;
 
-/**
- * A LanguageDirectSnippetSetRunner takes the element, snippet file, and context as input and then uses the
- * Snippet Set templating engine to generate an output document.
- */
-public interface LanguageDirectSnippetSetRunner<Element> {
+public class SurfaceDynamicXApi implements SurfaceDoc {
+  public String packageName;
+  public String name;
+  public String serviceAddress;
+  public Integer servicePort;
 
-  /**
-   * Runs the code generation.
-   */
-  GeneratedResult generate(Element element, String snippetFileName);
+  public List<String> imports;
+  public String outputPath;
+
+  @Override
+  public String getTemplateFileName() {
+    return "xapi.snip";
+  }
+
+  @Override
+  public String getOutputPath() {
+    return outputPath;
+  }
 }

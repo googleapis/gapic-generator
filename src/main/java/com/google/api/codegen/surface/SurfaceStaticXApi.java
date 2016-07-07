@@ -16,7 +16,7 @@ package com.google.api.codegen.surface;
 
 import java.util.List;
 
-public class SurfaceXApi implements SurfaceGenInput {
+public class SurfaceStaticXApi implements SurfaceDoc {
   public String packageName;
   public String name;
   public String settingsClassName;
@@ -27,9 +27,15 @@ public class SurfaceXApi implements SurfaceGenInput {
   public List<SurfaceApiMethod> apiMethods;
 
   public List<String> imports;
+  public String outputPath;
 
   @Override
-  public String getFileName() {
-    return name + ".java";
+  public String getTemplateFileName() {
+    return "xapi.snip";
+  }
+
+  @Override
+  public String getOutputPath() {
+    return outputPath;
   }
 }

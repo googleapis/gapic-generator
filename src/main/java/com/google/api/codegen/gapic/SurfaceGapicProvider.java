@@ -14,121 +14,74 @@
  */
 package com.google.api.codegen.gapic;
 
-import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.InputElementView;
-import com.google.api.codegen.surface.Surface;
+import com.google.api.codegen.surface.SurfaceDoc;
 import com.google.api.codegen.surface.SurfaceSnippetSetRunner;
-import com.google.api.codegen.surface.SurfaceXApi;
-import com.google.api.codegen.transformer.ModelToJavaSurfaceTransformer;
+import com.google.api.codegen.transformer.ModelToSurfaceTransformer;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.snippet.Doc;
-import com.google.common.base.Strings;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.annotation.Nullable;
-
 public class SurfaceGapicProvider implements GapicProvider<Interface> {
   private final Model model;
   private final InputElementView<Interface> view;
-  private final ApiConfig apiConfig;
   private final SurfaceSnippetSetRunner snippetSetRunner;
-  private final List<String> snippetFileNames;
-  private final GapicCodePathMapper pathMapper;
+  private final ModelToSurfaceTransformer modelToSurfaceTransformer;
 
   private SurfaceGapicProvider(
       Model model,
       InputElementView<Interface> view,
-      ApiConfig apiConfig,
       SurfaceSnippetSetRunner snippetSetRunner,
-      //      List<String> snippetFileNames,
-      GapicCodePathMapper pathMapper) {
+      ModelToSurfaceTransformer modelToSurfaceTransformer) {
     this.model = model;
     this.view = view;
-    this.apiConfig = apiConfig;
     this.snippetSetRunner = snippetSetRunner;
-    this.snippetFileNames = Arrays.asList("xapi.snip", "xsettings.snip");
-    this.pathMapper = pathMapper;
+    this.modelToSurfaceTransformer = modelToSurfaceTransformer;
   }
 
   @Override
   public List<String> getSnippetFileNames() {
-    return Arrays.asList("xapi.snip", "xsettings.snip");
+    return modelToSurfaceTransformer.getTemplateFileNames();
   }
 
   @Override
   public Map<String, Doc> generate() {
-    Map<String, Doc> docs = new TreeMap<>();
-
-    for (String snippetFileName : snippetFileNames) {
-      Map<String, Doc> snippetDocs = generate(snippetFileName);
-      docs.putAll(snippetDocs);
-    }
-
-    return docs;
+    return generate(null);
   }
 
-  @Nullable
   @Override
   public Map<String, Doc> generate(String snippetFileName) {
-    Map<String, Doc> docs = new TreeMap<>();
-    List<GeneratedResult> generatedOutput = generateSnip(snippetFileName);
-    if (generatedOutput == null) {
-      return docs;
-    }
-    for (GeneratedResult result : generatedOutput) {
-      docs.put(result.getFilename(), result.getDoc());
-    }
-    return docs;
-  }
-
-  @Nullable
-  private List<GeneratedResult> generateSnip(String snippetFileName) {
     // Establish required stage for generation.
     model.establishStage(Merged.KEY);
     if (model.getDiagCollector().getErrorCount() > 0) {
       return null;
     }
 
-    // Run the generator for each service.
-    List<GeneratedResult> generated = new ArrayList<>();
+    Map<String, Doc> docs = new TreeMap<>();
+
     for (Interface interfaze : view.getElementIterable(model)) {
-      Surface surface = ModelToJavaSurfaceTransformer.defaultTransform(interfaze, apiConfig);
-      GeneratedResult result = null;
-      // FIXME huge hack to glue everything together
-      if (snippetFileName.equals("xapi.snip")) {
-        result = snippetSetRunner.generate(surface.xapiClass, snippetFileName);
-      } else if (snippetFileName.equals("xsettings.snip")) {
-        result = snippetSetRunner.generate(surface.xsettingsClass, snippetFileName);
-      } else {
-        throw new RuntimeException("Unsupported snippet: " + snippetFileName);
+      List<SurfaceDoc> surfaceDocs = modelToSurfaceTransformer.transform(interfaze);
+      if (model.getDiagCollector().getErrorCount() > 0) {
+        continue;
       }
-
-      String subPath = pathMapper.getOutputPath(interfaze, apiConfig);
-
-      if (!Strings.isNullOrEmpty(subPath)) {
-        subPath = subPath + "/" + result.getFilename();
-      } else {
-        subPath = result.getFilename();
+      for (SurfaceDoc surfaceDoc : surfaceDocs) {
+        if (snippetFileName != null && !surfaceDoc.getTemplateFileName().equals(snippetFileName)) {
+          continue;
+        }
+        Doc doc = snippetSetRunner.generate(surfaceDoc);
+        if (doc == null) {
+          continue;
+        }
+        docs.put(surfaceDoc.getOutputPath(), doc);
       }
-
-      GeneratedResult outputResult = GeneratedResult.create(result.getDoc(), subPath);
-      generated.add(outputResult);
     }
 
-    // Return result.
-    if (model.getDiagCollector().getErrorCount() > 0) {
-      return null;
-    }
-
-    return generated;
+    return docs;
   }
 
   public static Builder newBuilder() {
@@ -138,10 +91,8 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
   public static class Builder {
     private Model model;
     private InputElementView<Interface> view;
-    private ApiConfig apiConfig;
     private SurfaceSnippetSetRunner snippetSetRunner;
-    //private List<String> snippetFileNames;
-    private GapicCodePathMapper pathMapper;
+    private ModelToSurfaceTransformer modelToSurfaceTransformer;
 
     private Builder() {}
 
@@ -155,28 +106,19 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
       return this;
     }
 
-    public Builder setApiConfig(ApiConfig apiConfig) {
-      this.apiConfig = apiConfig;
-      return this;
-    }
-
     public Builder setSnippetSetRunner(SurfaceSnippetSetRunner snippetSetRunner) {
       this.snippetSetRunner = snippetSetRunner;
       return this;
     }
 
-    //    public Builder setSnippetFileNames(List<String> snippetFileNames) {
-    //      this.snippetFileNames = snippetFileNames;
-    //      return this;
-    //    }
-
-    public Builder setCodePathMapper(GapicCodePathMapper pathMapper) {
-      this.pathMapper = pathMapper;
+    public Builder setModelToSurfaceTransformer(
+        ModelToSurfaceTransformer modelToSurfaceTransformer) {
+      this.modelToSurfaceTransformer = modelToSurfaceTransformer;
       return this;
     }
 
     public SurfaceGapicProvider build() {
-      return new SurfaceGapicProvider(model, view, apiConfig, snippetSetRunner, pathMapper);
+      return new SurfaceGapicProvider(model, view, snippetSetRunner, modelToSurfaceTransformer);
     }
   }
 }
