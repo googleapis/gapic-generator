@@ -1,0 +1,37 @@
+@extends "../common.snip"
+
+@snippet generate(xapiClass)
+    <?php
+
+    namespace {@xapiClass.packageName};
+
+    @join import : xapiClass.imports
+        use {@import};
+    @end
+
+    class {@xapiClass.name}
+    {
+        {@constants(xapiClass)}
+    }
+@end
+
+@private constants(xapiClass)
+    /**
+     * The default address of the service.
+     */
+    const SERVICE_ADDRESS = '{@xapiClass.serviceAddress}';
+
+    /**
+     * The default port of the service.
+     */
+    const DEFAULT_SERVICE_PORT = {@xapiClass.servicePort};
+
+    /**
+     * The default timeout for non-retrying methods.
+     */
+    const DEFAULT_TIMEOUT_MILLIS = 30000;
+
+    const _GAX_VERSION = '0.1.0';
+    const _CODEGEN_NAME = 'GAPIC';
+    const _CODEGEN_VERSION = '0.0.0';
+@end

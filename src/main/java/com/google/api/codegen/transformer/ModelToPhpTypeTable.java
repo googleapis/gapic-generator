@@ -12,8 +12,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.surface;
+package com.google.api.codegen.transformer;
 
-public interface SurfaceGenInput {
-  String getFileName();
+import com.google.api.codegen.php.PhpTypeTable;
+
+import java.util.List;
+
+public class ModelToPhpTypeTable {
+  private PhpTypeTable phpTypeTable;
+
+  public ModelToPhpTypeTable() {
+    phpTypeTable = new PhpTypeTable();
+  }
+
+  public void addImport(String longName) {
+    importAndGetShortestName(longName);
+  }
+
+  public String importAndGetShortestName(String longName) {
+    return phpTypeTable.importAndGetShortestName(longName);
+  }
+
+  public List<String> getImports() {
+    return phpTypeTable.getImports();
+  }
 }

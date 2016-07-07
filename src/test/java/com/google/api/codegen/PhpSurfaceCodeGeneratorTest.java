@@ -27,12 +27,12 @@ import org.junit.runners.Parameterized.Parameters;
  * Java code generator baseline tests.
  */
 @RunWith(Parameterized.class)
-public class JavaSurfaceCodeGeneratorTest extends GapicTestBase {
+public class PhpSurfaceCodeGeneratorTest extends GapicTestBase {
 
-  public JavaSurfaceCodeGeneratorTest(
+  public PhpSurfaceCodeGeneratorTest(
       String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
     super(name, idForFactory, gapicConfigFileNames, snippetName);
-    getTestDataLocator().addTestDataSource(com.google.api.codegen.java.JavaTypeTable.class, "");
+    getTestDataLocator().addTestDataSource(com.google.api.codegen.php.PhpTypeTable.class, "");
   }
 
   /**
@@ -42,8 +42,8 @@ public class JavaSurfaceCodeGeneratorTest extends GapicTestBase {
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
     return GapicTestBase.createTestedConfigs(
-        MainGapicProviderFactory.JAVA_SURFACE,
-        new String[] {"java_gapic.yaml", "library_gapic.yaml"});
+        MainGapicProviderFactory.PHP_SURFACE,
+        new String[] {"php_gapic.yaml", "library_gapic.yaml"});
   }
 
   // Tests

@@ -20,6 +20,7 @@ import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.ServiceConfig;
+import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.java.JavaDocUtil;
 import com.google.api.codegen.metacode.FieldSetting;
 import com.google.api.codegen.metacode.FieldStructureParser;
@@ -31,12 +32,12 @@ import com.google.api.codegen.metacode.ListInitCodeLine;
 import com.google.api.codegen.metacode.MapInitCodeLine;
 import com.google.api.codegen.metacode.SimpleInitCodeLine;
 import com.google.api.codegen.metacode.StructureInitCodeLine;
-import com.google.api.codegen.surface.Surface;
 import com.google.api.codegen.surface.SurfaceApiCallable;
 import com.google.api.codegen.surface.SurfaceApiMethod;
 import com.google.api.codegen.surface.SurfaceApiMethodDoc;
 import com.google.api.codegen.surface.SurfaceBundlingApiCallable;
 import com.google.api.codegen.surface.SurfaceCallableMethod;
+import com.google.api.codegen.surface.SurfaceDoc;
 import com.google.api.codegen.surface.SurfaceFieldSetting;
 import com.google.api.codegen.surface.SurfaceFlattenedMethod;
 import com.google.api.codegen.surface.SurfaceFormatResourceFunction;
@@ -60,10 +61,10 @@ import com.google.api.codegen.surface.SurfaceResourceIdParam;
 import com.google.api.codegen.surface.SurfaceSimpleApiCallable;
 import com.google.api.codegen.surface.SurfaceSimpleInitCodeLine;
 import com.google.api.codegen.surface.SurfaceSimpleInitValue;
+import com.google.api.codegen.surface.SurfaceStaticXApi;
+import com.google.api.codegen.surface.SurfaceStaticXSettings;
 import com.google.api.codegen.surface.SurfaceStructureInitCodeLine;
 import com.google.api.codegen.surface.SurfaceUnpagedListCallableMethod;
-import com.google.api.codegen.surface.SurfaceXApi;
-import com.google.api.codegen.surface.SurfaceXSettings;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -78,29 +79,42 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class ModelToJavaSurfaceTransformer {
+public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer {
   private Interface service;
   private ApiConfig apiConfig;
   private ModelToJavaTypeTable typeTable;
   private IdentifierNamer namer;
+  private GapicCodePathMapper pathMapper;
 
-  public static Surface defaultTransform(Interface service, ApiConfig apiConfig) {
-    return new ModelToJavaSurfaceTransformer(service, apiConfig).transform();
-  }
-
-  public ModelToJavaSurfaceTransformer(Interface service, ApiConfig apiConfig) {
-    this.service = service;
+  public ModelToJavaSurfaceTransformer(ApiConfig apiConfig, GapicCodePathMapper pathMapper) {
     this.apiConfig = apiConfig;
+    this.pathMapper = pathMapper;
     this.namer = new JavaIdentifierNamer();
   }
 
-  public Surface transform() {
-    Surface surface = new Surface();
+  @Override
+  public List<String> getTemplateFileNames() {
+    List<String> fileNames = new ArrayList<>();
+
+    fileNames.add(new SurfaceStaticXApi().getTemplateFileName());
+    fileNames.add(new SurfaceStaticXSettings().getTemplateFileName());
+
+    return fileNames;
+  }
+
+  @Override
+  public List<SurfaceDoc> transform(Interface service) {
+    // FIXME pass around service instead of mutating state
+    this.service = service;
+
+    String outputPath = pathMapper.getOutputPath(service, apiConfig);
+
+    List<SurfaceDoc> surfaceData = new ArrayList<>();
 
     typeTable = new ModelToJavaTypeTable();
     addXApiImports();
 
-    SurfaceXApi xapiClass = new SurfaceXApi();
+    SurfaceStaticXApi xapiClass = new SurfaceStaticXApi();
     xapiClass.packageName = apiConfig.getPackageName();
     xapiClass.name = getApiWrapperClassName();
     xapiClass.settingsClassName = getSettingsClassName();
@@ -113,12 +127,14 @@ public class ModelToJavaSurfaceTransformer {
     // must be done as the last step to catch all imports
     xapiClass.imports = typeTable.getImports();
 
-    surface.xapiClass = xapiClass;
+    xapiClass.outputPath = outputPath + "/" + xapiClass.name + ".java";
+
+    surfaceData.add(xapiClass);
 
     typeTable = new ModelToJavaTypeTable();
     addXSettingsImports();
 
-    SurfaceXSettings xsettingsClass = new SurfaceXSettings();
+    SurfaceStaticXSettings xsettingsClass = new SurfaceStaticXSettings();
     xsettingsClass.packageName = apiConfig.getPackageName();
     xsettingsClass.name = getSettingsClassName();
     ServiceConfig serviceConfig = new ServiceConfig();
@@ -129,9 +145,11 @@ public class ModelToJavaSurfaceTransformer {
     // must be done as the last step to catch all imports
     xsettingsClass.imports = typeTable.getImports();
 
-    surface.xsettingsClass = xsettingsClass;
+    xsettingsClass.outputPath = outputPath + "/" + xsettingsClass.name + ".java";
 
-    return surface;
+    surfaceData.add(xsettingsClass);
+
+    return surfaceData;
   }
 
   private void addXApiImports() {

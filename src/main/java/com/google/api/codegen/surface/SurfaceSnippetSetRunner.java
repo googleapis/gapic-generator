@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.surface;
 
-import com.google.api.codegen.GeneratedResult;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
@@ -33,20 +32,18 @@ public class SurfaceSnippetSetRunner {
     this.utilObject = utilObject;
   }
 
-  public GeneratedResult generate(SurfaceGenInput input, String snippetFileName) {
+  public Doc generate(SurfaceDoc input) {
     SurfaceSnippetSet snippets =
         SnippetSet.createSnippetInterface(
             SurfaceSnippetSet.class,
             resourceRoot,
-            snippetFileName,
+            input.getTemplateFileName(),
             ImmutableMap.<String, Object>of("util", utilObject));
 
-    String outputFilename = input.getFileName();
-    Doc result = snippets.generateClass(input);
-    return GeneratedResult.create(result, outputFilename);
+    return snippets.generate(input);
   }
 
   private interface SurfaceSnippetSet {
-    Doc generateClass(SurfaceGenInput input);
+    Doc generate(SurfaceDoc input);
   }
 }

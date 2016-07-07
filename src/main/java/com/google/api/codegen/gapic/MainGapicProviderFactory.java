@@ -34,6 +34,7 @@ import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
 import com.google.api.codegen.php.PhpGapicContext;
 import com.google.api.codegen.php.PhpSnippetSetRunner;
+import com.google.api.codegen.php.PhpTypeTable;
 import com.google.api.codegen.py.PythonGapicContext;
 import com.google.api.codegen.py.PythonInterfaceInitializer;
 import com.google.api.codegen.py.PythonProtoFileInitializer;
@@ -41,6 +42,8 @@ import com.google.api.codegen.py.PythonSnippetSetRunner;
 import com.google.api.codegen.ruby.RubyGapicContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
 import com.google.api.codegen.surface.SurfaceSnippetSetRunner;
+import com.google.api.codegen.transformer.ModelToJavaSurfaceTransformer;
+import com.google.api.codegen.transformer.ModelToPhpSurfaceTransformer;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -66,6 +69,7 @@ public class MainGapicProviderFactory
   public static final String RUBY = "ruby";
 
   public static final String JAVA_SURFACE = "java_surface";
+  public static final String PHP_SURFACE = "php_surface";
 
   /**
    * Create the GapicProviders based on the given id
@@ -150,9 +154,9 @@ public class MainGapicProviderFactory
           SurfaceGapicProvider.newBuilder()
               .setModel(model)
               .setView(new InterfaceView())
-              .setApiConfig(apiConfig)
               .setSnippetSetRunner(new SurfaceSnippetSetRunner(resourceRoot, new JavaSnippetUtil()))
-              .setCodePathMapper(javaPathMapper)
+              .setModelToSurfaceTransformer(
+                  new ModelToJavaSurfaceTransformer(apiConfig, javaPathMapper))
               .build();
 
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
@@ -206,6 +210,21 @@ public class MainGapicProviderFactory
               .setCodePathMapper(phpClientConfigPathMapper)
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider, clientConfigProvider);
+
+    } else if (id.equals(PHP_SURFACE)) {
+      GapicCodePathMapper phpPathMapper =
+          CommonGapicCodePathMapper.newBuilder().setPrefix("src").build();
+      String resourceRoot = PhpTypeTable.class.getPackage().getName().replace('.', '/');
+      GapicProvider<? extends Object> mainProvider =
+          SurfaceGapicProvider.newBuilder()
+              .setModel(model)
+              .setView(new InterfaceView())
+              .setSnippetSetRunner(new SurfaceSnippetSetRunner(resourceRoot, new Object()))
+              .setModelToSurfaceTransformer(
+                  new ModelToPhpSurfaceTransformer(apiConfig, phpPathMapper))
+              .build();
+
+      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
 
     } else if (id.equals(PYTHON)) {
       GapicCodePathMapper pythonPathMapper =
