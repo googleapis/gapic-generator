@@ -19,6 +19,7 @@ import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
+import com.google.api.codegen.ServiceConfig;
 import com.google.api.codegen.java.JavaDocUtil;
 import com.google.api.codegen.metacode.FieldSetting;
 import com.google.api.codegen.metacode.FieldStructureParser;
@@ -62,6 +63,7 @@ import com.google.api.codegen.surface.SurfaceSimpleInitValue;
 import com.google.api.codegen.surface.SurfaceStructureInitCodeLine;
 import com.google.api.codegen.surface.SurfaceUnpagedListCallableMethod;
 import com.google.api.codegen.surface.SurfaceXApi;
+import com.google.api.codegen.surface.SurfaceXSettings;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -96,7 +98,7 @@ public class ModelToJavaSurfaceTransformer {
     Surface surface = new Surface();
 
     typeTable = new ModelToJavaTypeTable();
-    addAlwaysImports();
+    addXApiImports();
 
     SurfaceXApi xapiClass = new SurfaceXApi();
     xapiClass.packageName = apiConfig.getPackageName();
@@ -114,17 +116,51 @@ public class ModelToJavaSurfaceTransformer {
     surface.xapiClass = xapiClass;
 
     typeTable = new ModelToJavaTypeTable();
+    addXSettingsImports();
+
+    SurfaceXSettings xsettingsClass = new SurfaceXSettings();
+    xsettingsClass.packageName = apiConfig.getPackageName();
+    xsettingsClass.name = getSettingsClassName();
+    ServiceConfig serviceConfig = new ServiceConfig();
+    xsettingsClass.serviceAddress = serviceConfig.getServiceAddress(service);
+    xsettingsClass.servicePort = serviceConfig.getServicePort();
+    xsettingsClass.authScopes = serviceConfig.getAuthScopes(service);
+
+    // must be done as the last step to catch all imports
+    xsettingsClass.imports = typeTable.getImports();
+
+    surface.xsettingsClass = xsettingsClass;
 
     return surface;
   }
 
-  private void addAlwaysImports() {
+  private void addXApiImports() {
     typeTable.addImport("com.google.api.gax.grpc.ApiCallable");
     typeTable.addImport("com.google.api.gax.protobuf.PathTemplate");
     typeTable.addImport("io.grpc.ManagedChannel");
     typeTable.addImport("java.io.Closeable");
     typeTable.addImport("java.io.IOException");
     typeTable.addImport("java.util.ArrayList");
+    typeTable.addImport("java.util.List");
+    typeTable.addImport("java.util.concurrent.ScheduledExecutorService");
+  }
+
+  private void addXSettingsImports() {
+    typeTable.addImport("com.google.api.gax.core.ConnectionSettings");
+    typeTable.addImport("com.google.api.gax.core.RetrySettings");
+    typeTable.addImport("com.google.api.gax.grpc.ApiCallSettings");
+    typeTable.addImport("com.google.api.gax.grpc.SimpleCallSettings");
+    typeTable.addImport("com.google.api.gax.grpc.ServiceApiSettings");
+    typeTable.addImport("com.google.auth.Credentials");
+    typeTable.addImport("com.google.common.collect.ImmutableList");
+    typeTable.addImport("com.google.common.collect.ImmutableMap");
+    typeTable.addImport("com.google.common.collect.ImmutableSet");
+    typeTable.addImport("com.google.common.collect.Lists");
+    typeTable.addImport("com.google.common.collect.Sets");
+    typeTable.addImport("io.grpc.ManagedChannel");
+    typeTable.addImport("io.grpc.Status");
+    typeTable.addImport("org.joda.time.Duration");
+    typeTable.addImport("java.io.IOException");
     typeTable.addImport("java.util.List");
     typeTable.addImport("java.util.concurrent.ScheduledExecutorService");
   }

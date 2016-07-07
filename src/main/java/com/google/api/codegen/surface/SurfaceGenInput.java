@@ -14,22 +14,6 @@
  */
 package com.google.api.codegen.surface;
 
-import java.util.List;
-
-public class SurfaceXApi implements SurfaceGenInput {
-  public String packageName;
-  public String name;
-  public String settingsClassName;
-  public List<SurfaceApiCallable> apiCallableMembers;
-  public List<SurfacePathTemplate> pathTemplates;
-  public List<SurfaceFormatResourceFunction> formatResourceFunctions;
-  public List<SurfaceParseResourceFunction> parseResourceFunctions;
-  public List<SurfaceApiMethod> apiMethods;
-
-  public List<String> imports;
-
-  @Override
-  public String getFileName() {
-    return name + ".java";
-  }
+public interface SurfaceGenInput {
+  String getFileName();
 }
