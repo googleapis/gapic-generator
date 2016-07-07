@@ -21,6 +21,7 @@ import com.google.common.escape.Escapers;
 import java.util.ArrayList;
 import java.util.List;
 
+// FIXME exercise this functionality in the transformer instead of in the templates
 public class JavaDocUtil {
   /**
    * Escaper for formatting javadoc strings.

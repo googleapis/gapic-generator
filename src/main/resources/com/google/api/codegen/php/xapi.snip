@@ -12,6 +12,7 @@
     class {@xapiClass.name}
     {
         {@constants(xapiClass)}
+        {@statics(xapiClass)}
     }
 @end
 
@@ -34,4 +35,16 @@
     const _GAX_VERSION = '0.1.0';
     const _CODEGEN_NAME = 'GAPIC';
     const _CODEGEN_VERSION = '0.0.0';
+    {@""}
+@end
+
+@private statics(xapiClass)
+    {@pathTemplateConstants(xapiClass)}
+@end
+
+@private pathTemplateConstants(xapiClass)
+    @join pathTemplate : xapiClass.pathTemplates
+        private static ${@pathTemplate.name};
+    @end
+    {@""}
 @end

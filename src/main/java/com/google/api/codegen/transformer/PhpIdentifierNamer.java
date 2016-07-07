@@ -14,44 +14,28 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.CollectionConfig;
+import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.tools.framework.model.TypeRef;
+
+import org.apache.commons.lang3.NotImplementedException;
 
 public class PhpIdentifierNamer implements IdentifierNamer {
 
   @Override
   public String getVariableName(String identifier, InitValueConfig initValueConfig) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public String getTypeName(TypeRef elementType) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public String getElementTypeName(TypeRef elementType) {
-    // TODO Auto-generated method stub
-    return null;
+    throw new NotImplementedException("PhpIdentifierNamer.getVariableName");
   }
 
   @Override
   public String getSetFunctionCallName(TypeRef type, String fieldName) {
-    // TODO Auto-generated method stub
-    return null;
+    throw new NotImplementedException("PhpIdentifierNamer.getSetFunctionCallName");
   }
 
   @Override
-  public String renderPrimitiveValue(TypeRef keyType, String value) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public String zeroValue(TypeRef type) {
-    // TODO Auto-generated method stub
-    return null;
+  public String getPathTemplateName(CollectionConfig collectionConfig) {
+    return LanguageUtil.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName())
+        + "NameTemplate";
   }
 }

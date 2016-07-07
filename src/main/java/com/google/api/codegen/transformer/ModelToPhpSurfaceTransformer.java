@@ -25,16 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
-  private Interface service;
-  private ApiConfig apiConfig;
-  private ModelToPhpTypeTable typeTable;
-  private IdentifierNamer namer;
+  private ApiConfig cachedApiConfig;
   private GapicCodePathMapper pathMapper;
+  private CommonTransformer commonTransformer;
 
   public ModelToPhpSurfaceTransformer(ApiConfig apiConfig, GapicCodePathMapper pathMapper) {
-    this.apiConfig = apiConfig;
+    this.cachedApiConfig = apiConfig;
     this.pathMapper = pathMapper;
-    this.namer = new PhpIdentifierNamer();
+    this.commonTransformer = new CommonTransformer();
   }
 
   @Override
@@ -47,25 +45,26 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
   }
 
   public List<SurfaceDoc> transform(Interface service) {
-    // FIXME pass around service instead of mutating state
-    this.service = service;
+    ModelToSurfaceContext context =
+        ModelToSurfaceContext.create(
+            service, cachedApiConfig, new ModelToPhpTypeTable(), new PhpIdentifierNamer());
 
-    String outputPath = pathMapper.getOutputPath(service, apiConfig);
+    String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
 
     List<SurfaceDoc> surfaceData = new ArrayList<>();
 
-    typeTable = new ModelToPhpTypeTable();
-    addXApiImports();
+    addXApiImports(context);
 
     SurfaceDynamicXApi xapiClass = new SurfaceDynamicXApi();
-    xapiClass.packageName = apiConfig.getPackageName();
-    xapiClass.name = getApiWrapperClassName();
+    xapiClass.packageName = context.getApiConfig().getPackageName();
+    xapiClass.name = getApiWrapperClassName(context);
     ServiceConfig serviceConfig = new ServiceConfig();
     xapiClass.serviceAddress = serviceConfig.getServiceAddress(service);
     xapiClass.servicePort = serviceConfig.getServicePort();
+    xapiClass.pathTemplates = commonTransformer.generatePathTemplates(context);
 
     // must be done as the last step to catch all imports
-    xapiClass.imports = typeTable.getImports();
+    xapiClass.imports = context.getTypeTable().getImports();
 
     xapiClass.outputPath = outputPath + "/" + xapiClass.name + ".php";
 
@@ -74,7 +73,8 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
     return surfaceData;
   }
 
-  private void addXApiImports() {
+  private void addXApiImports(ModelToSurfaceContext context) {
+    ModelTypeTable typeTable = context.getTypeTable();
     typeTable.addImport("Google\\GAX\\AgentHeaderDescriptor");
     typeTable.addImport("Google\\GAX\\ApiCallable");
     typeTable.addImport("Google\\GAX\\CallSettings");
@@ -83,7 +83,7 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
     typeTable.addImport("Google\\GAX\\PathTemplate");
   }
 
-  private String getApiWrapperClassName() {
-    return service.getSimpleName() + "Api";
+  private String getApiWrapperClassName(ModelToSurfaceContext context) {
+    return context.getInterface().getSimpleName() + "Api";
   }
 }

@@ -53,7 +53,6 @@ import com.google.api.codegen.surface.SurfacePagedCallableMethod;
 import com.google.api.codegen.surface.SurfacePagedFlattenedMethod;
 import com.google.api.codegen.surface.SurfacePagedRequestObjectMethod;
 import com.google.api.codegen.surface.SurfaceParseResourceFunction;
-import com.google.api.codegen.surface.SurfacePathTemplate;
 import com.google.api.codegen.surface.SurfacePathTemplateCheck;
 import com.google.api.codegen.surface.SurfaceRequestObjectMethod;
 import com.google.api.codegen.surface.SurfaceRequestObjectParam;
@@ -80,16 +79,14 @@ import java.util.List;
 import java.util.Map;
 
 public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer {
-  private Interface service;
-  private ApiConfig apiConfig;
-  private ModelToJavaTypeTable typeTable;
-  private IdentifierNamer namer;
+  private ApiConfig cachedApiConfig;
   private GapicCodePathMapper pathMapper;
+  private CommonTransformer commonTransformer;
 
   public ModelToJavaSurfaceTransformer(ApiConfig apiConfig, GapicCodePathMapper pathMapper) {
-    this.apiConfig = apiConfig;
+    this.cachedApiConfig = apiConfig;
     this.pathMapper = pathMapper;
-    this.namer = new JavaIdentifierNamer();
+    this.commonTransformer = new CommonTransformer();
   }
 
   @Override
@@ -104,46 +101,46 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
 
   @Override
   public List<SurfaceDoc> transform(Interface service) {
-    // FIXME pass around service instead of mutating state
-    this.service = service;
+    ModelToSurfaceContext context =
+        ModelToSurfaceContext.create(
+            service, cachedApiConfig, new ModelToJavaTypeTable(), new JavaIdentifierNamer());
 
-    String outputPath = pathMapper.getOutputPath(service, apiConfig);
+    String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
 
     List<SurfaceDoc> surfaceData = new ArrayList<>();
 
-    typeTable = new ModelToJavaTypeTable();
-    addXApiImports();
+    addXApiImports(context);
 
     SurfaceStaticXApi xapiClass = new SurfaceStaticXApi();
-    xapiClass.packageName = apiConfig.getPackageName();
-    xapiClass.name = getApiWrapperClassName();
-    xapiClass.settingsClassName = getSettingsClassName();
-    xapiClass.apiCallableMembers = generateApiCallables();
-    xapiClass.pathTemplates = generatePathTemplates();
-    xapiClass.formatResourceFunctions = generateFormatResourceFunctions();
-    xapiClass.parseResourceFunctions = generateParseResourceFunctions();
-    xapiClass.apiMethods = generateApiMethods();
+    xapiClass.packageName = context.getApiConfig().getPackageName();
+    xapiClass.name = getApiWrapperClassName(context);
+    xapiClass.settingsClassName = getSettingsClassName(context);
+    xapiClass.apiCallableMembers = generateApiCallables(context);
+    xapiClass.pathTemplates = commonTransformer.generatePathTemplates(context);
+    xapiClass.formatResourceFunctions = generateFormatResourceFunctions(context);
+    xapiClass.parseResourceFunctions = generateParseResourceFunctions(context);
+    xapiClass.apiMethods = generateApiMethods(context);
 
     // must be done as the last step to catch all imports
-    xapiClass.imports = typeTable.getImports();
+    xapiClass.imports = context.getTypeTable().getImports();
 
     xapiClass.outputPath = outputPath + "/" + xapiClass.name + ".java";
 
     surfaceData.add(xapiClass);
 
-    typeTable = new ModelToJavaTypeTable();
-    addXSettingsImports();
+    context = context.withNewTypeTable();
+    addXSettingsImports(context);
 
     SurfaceStaticXSettings xsettingsClass = new SurfaceStaticXSettings();
-    xsettingsClass.packageName = apiConfig.getPackageName();
-    xsettingsClass.name = getSettingsClassName();
+    xsettingsClass.packageName = context.getApiConfig().getPackageName();
+    xsettingsClass.name = getSettingsClassName(context);
     ServiceConfig serviceConfig = new ServiceConfig();
     xsettingsClass.serviceAddress = serviceConfig.getServiceAddress(service);
     xsettingsClass.servicePort = serviceConfig.getServicePort();
     xsettingsClass.authScopes = serviceConfig.getAuthScopes(service);
 
     // must be done as the last step to catch all imports
-    xsettingsClass.imports = typeTable.getImports();
+    xsettingsClass.imports = context.getTypeTable().getImports();
 
     xsettingsClass.outputPath = outputPath + "/" + xsettingsClass.name + ".java";
 
@@ -152,7 +149,8 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     return surfaceData;
   }
 
-  private void addXApiImports() {
+  private void addXApiImports(ModelToSurfaceContext context) {
+    ModelTypeTable typeTable = context.getTypeTable();
     typeTable.addImport("com.google.api.gax.grpc.ApiCallable");
     typeTable.addImport("com.google.api.gax.protobuf.PathTemplate");
     typeTable.addImport("io.grpc.ManagedChannel");
@@ -163,7 +161,8 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     typeTable.addImport("java.util.concurrent.ScheduledExecutorService");
   }
 
-  private void addXSettingsImports() {
+  private void addXSettingsImports(ModelToSurfaceContext context) {
+    ModelTypeTable typeTable = context.getTypeTable();
     typeTable.addImport("com.google.api.gax.core.ConnectionSettings");
     typeTable.addImport("com.google.api.gax.core.RetrySettings");
     typeTable.addImport("com.google.api.gax.grpc.ApiCallSettings");
@@ -183,19 +182,21 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     typeTable.addImport("java.util.concurrent.ScheduledExecutorService");
   }
 
-  private List<SurfaceApiCallable> generateApiCallables() {
+  private List<SurfaceApiCallable> generateApiCallables(ModelToSurfaceContext context) {
     List<SurfaceApiCallable> callableMembers = new ArrayList<>();
 
-    for (Method method : service.getMethods()) {
-      MethodConfig methodConfig = apiConfig.getInterfaceConfig(service).getMethodConfig(method);
-      callableMembers.addAll(generateApiCallables(method, methodConfig));
+    for (Method method : context.getInterface().getMethods()) {
+      MethodConfig methodConfig = context.getMethodConfig(method);
+      callableMembers.addAll(generateApiCallables(context, method, methodConfig));
     }
 
     return callableMembers;
   }
 
-  private List<SurfaceApiCallable> generateApiCallables(Method method, MethodConfig methodConfig) {
+  private List<SurfaceApiCallable> generateApiCallables(
+      ModelToSurfaceContext context, Method method, MethodConfig methodConfig) {
     String methodNameLowCml = LanguageUtil.upperCamelToLowerCamel(method.getSimpleName());
+    ModelTypeTable typeTable = context.getTypeTable();
 
     List<SurfaceApiCallable> apiCallables = new ArrayList<>();
 
@@ -239,29 +240,15 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     return apiCallables;
   }
 
-  private List<SurfacePathTemplate> generatePathTemplates() {
-    List<SurfacePathTemplate> pathTemplates = new ArrayList<>();
-
-    for (CollectionConfig collectionConfig :
-        apiConfig.getInterfaceConfig(service).getCollectionConfigs()) {
-      SurfacePathTemplate pathTemplate = new SurfacePathTemplate();
-      pathTemplate.name = getPathTemplateName(collectionConfig);
-      pathTemplate.pattern = collectionConfig.getNamePattern();
-      pathTemplates.add(pathTemplate);
-    }
-
-    return pathTemplates;
-  }
-
-  private List<SurfaceFormatResourceFunction> generateFormatResourceFunctions() {
+  private List<SurfaceFormatResourceFunction> generateFormatResourceFunctions(
+      ModelToSurfaceContext context) {
     List<SurfaceFormatResourceFunction> functions = new ArrayList<>();
 
-    for (CollectionConfig collectionConfig :
-        apiConfig.getInterfaceConfig(service).getCollectionConfigs()) {
+    for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
       SurfaceFormatResourceFunction function = new SurfaceFormatResourceFunction();
       function.entityName = collectionConfig.getEntityName();
       function.name = getFormatFunctionName(collectionConfig);
-      function.pathTemplateName = getPathTemplateName(collectionConfig);
+      function.pathTemplateName = context.getNamer().getPathTemplateName(collectionConfig);
       List<SurfaceResourceIdParam> resourceIdParams = new ArrayList<>();
       for (String var : collectionConfig.getNameTemplate().vars()) {
         SurfaceResourceIdParam param = new SurfaceResourceIdParam();
@@ -277,11 +264,11 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     return functions;
   }
 
-  private List<SurfaceParseResourceFunction> generateParseResourceFunctions() {
+  private List<SurfaceParseResourceFunction> generateParseResourceFunctions(
+      ModelToSurfaceContext context) {
     List<SurfaceParseResourceFunction> functions = new ArrayList<>();
 
-    for (CollectionConfig collectionConfig :
-        apiConfig.getInterfaceConfig(service).getCollectionConfigs()) {
+    for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
       for (String var : collectionConfig.getNameTemplate().vars()) {
         SurfaceParseResourceFunction function = new SurfaceParseResourceFunction();
         function.entityName =
@@ -292,7 +279,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
                 + "From"
                 + LanguageUtil.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName())
                 + "Name";
-        function.pathTemplateName = getPathTemplateName(collectionConfig);
+        function.pathTemplateName = context.getNamer().getPathTemplateName(collectionConfig);
         function.entityNameParamName = function.entityName + "Name";
         function.outputResourceId = var;
 
@@ -303,19 +290,19 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     return functions;
   }
 
-  private List<SurfaceApiMethod> generateApiMethods() {
+  private List<SurfaceApiMethod> generateApiMethods(ModelToSurfaceContext context) {
     List<SurfaceApiMethod> apiMethods = new ArrayList<>();
 
-    for (Method method : service.getMethods()) {
-      MethodConfig methodConfig = apiConfig.getInterfaceConfig(service).getMethodConfig(method);
+    for (Method method : context.getInterface().getMethods()) {
+      MethodConfig methodConfig = context.getMethodConfig(method);
 
       if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
-            apiMethods.add(generatePagedFlattenedMethod(method, methodConfig, fields));
+            apiMethods.add(generatePagedFlattenedMethod(context, method, methodConfig, fields));
           }
         }
-        apiMethods.add(generatePagedRequestObjectMethod(method, methodConfig));
+        apiMethods.add(generatePagedRequestObjectMethod(context, method, methodConfig));
         apiMethods.add(new SurfacePagedCallableMethod());
         apiMethods.add(new SurfaceUnpagedListCallableMethod());
       } else {
@@ -335,10 +322,13 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
   }
 
   private SurfacePagedFlattenedMethod generatePagedFlattenedMethod(
-      Method method, MethodConfig methodConfig, ImmutableList<Field> fields) {
+      ModelToSurfaceContext context,
+      Method method,
+      MethodConfig methodConfig,
+      ImmutableList<Field> fields) {
     SurfacePagedFlattenedMethod apiMethod = new SurfacePagedFlattenedMethod();
 
-    apiMethod.initCode = generateInitCode(method, methodConfig, fields);
+    apiMethod.initCode = generateInitCode(context, method, methodConfig, fields);
 
     SurfaceApiMethodDoc doc = new SurfaceApiMethodDoc();
 
@@ -350,13 +340,14 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
 
     PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
     apiMethod.resourceTypeName =
-        typeTable.importAndGetShortestNameForElementType(
-            pageStreaming.getResourcesField().getType());
+        context
+            .getTypeTable()
+            .importAndGetShortestNameForElementType(pageStreaming.getResourcesField().getType());
     apiMethod.name = getApiMethodName(method);
 
     List<SurfaceRequestObjectParam> requestObjectParams = new ArrayList<>();
     for (Field field : fields) {
-      requestObjectParams.add(generateRequestObjectParam(field));
+      requestObjectParams.add(generateRequestObjectParam(context, field));
     }
     apiMethod.requestObjectParams = requestObjectParams;
 
@@ -365,10 +356,9 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
       ImmutableMap<String, String> fieldNamePatterns = methodConfig.getFieldNamePatterns();
       String entityName = fieldNamePatterns.get(field.getSimpleName());
       if (entityName != null) {
-        CollectionConfig collectionConfig =
-            apiConfig.getInterfaceConfig(service).getCollectionConfig(entityName);
+        CollectionConfig collectionConfig = context.getCollectionConfig(entityName);
         SurfacePathTemplateCheck check = new SurfacePathTemplateCheck();
-        check.pathTemplateName = getPathTemplateName(collectionConfig);
+        check.pathTemplateName = context.getNamer().getPathTemplateName(collectionConfig);
         check.paramName = getVariableNameForField(field);
 
         pathTemplateChecks.add(check);
@@ -376,34 +366,39 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     }
     apiMethod.pathTemplateChecks = pathTemplateChecks;
 
-    apiMethod.requestTypeName = typeTable.importAndGetShortestName(method.getInputType());
+    apiMethod.requestTypeName =
+        context.getTypeTable().importAndGetShortestName(method.getInputType());
 
-    apiMethod.apiClassName = getApiWrapperClassName();
-    apiMethod.apiVariableName = getApiWrapperVariableName();
+    apiMethod.apiClassName = getApiWrapperClassName(context);
+    apiMethod.apiVariableName = getApiWrapperVariableName(context);
 
     return apiMethod;
   }
 
   public SurfaceInitCode generateInitCode(
-      Method method, MethodConfig methodConfig, Iterable<Field> fields) {
-    Map<String, Object> initFieldStructure = createInitFieldStructure(methodConfig);
+      ModelToSurfaceContext context,
+      Method method,
+      MethodConfig methodConfig,
+      Iterable<Field> fields) {
+    Map<String, Object> initFieldStructure = createInitFieldStructure(context, methodConfig);
     InitCodeGenerator generator = new InitCodeGenerator();
     InitCode initCode = generator.generateRequestFieldInitCode(method, initFieldStructure, fields);
 
     SurfaceInitCode surfaceInitCode = new SurfaceInitCode();
-    surfaceInitCode.lines = generateSurfaceInitCodeLines(initCode);
-    surfaceInitCode.fieldSettings = getFieldSettings(initCode.getArgFields());
+    surfaceInitCode.lines = generateSurfaceInitCodeLines(context, initCode);
+    surfaceInitCode.fieldSettings = getFieldSettings(context, initCode.getArgFields());
     return surfaceInitCode;
   }
 
-  private Map<String, Object> createInitFieldStructure(MethodConfig methodConfig) {
+  private Map<String, Object> createInitFieldStructure(
+      ModelToSurfaceContext context, MethodConfig methodConfig) {
     Map<String, String> fieldNamePatterns = methodConfig.getFieldNamePatterns();
 
     ImmutableMap.Builder<String, InitValueConfig> initValueConfigMap = ImmutableMap.builder();
     for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
-      CollectionConfig collectionConfig = getCollectionConfig(fieldNamePattern.getValue());
+      CollectionConfig collectionConfig = context.getCollectionConfig(fieldNamePattern.getValue());
       InitValueConfig initValueConfig =
-          InitValueConfig.create(getApiWrapperClassName(), collectionConfig);
+          InitValueConfig.create(getApiWrapperClassName(context), collectionConfig);
       initValueConfigMap.put(fieldNamePattern.getKey(), initValueConfig);
     }
     Map<String, Object> initFieldStructure =
@@ -412,25 +407,22 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     return initFieldStructure;
   }
 
-  private CollectionConfig getCollectionConfig(String entityName) {
-    return apiConfig.getInterfaceConfig(service).getCollectionConfig(entityName);
-  }
-
-  public List<SurfaceInitCodeLine> generateSurfaceInitCodeLines(InitCode initCode) {
+  public List<SurfaceInitCodeLine> generateSurfaceInitCodeLines(
+      ModelToSurfaceContext context, InitCode initCode) {
     List<SurfaceInitCodeLine> surfaceLines = new ArrayList<>();
     for (InitCodeLine line : initCode.getLines()) {
       switch (line.getLineType()) {
         case StructureInitLine:
-          surfaceLines.add(generateStructureInitCodeLine((StructureInitCodeLine) line));
+          surfaceLines.add(generateStructureInitCodeLine(context, (StructureInitCodeLine) line));
           continue;
         case ListInitLine:
-          surfaceLines.add(generateListInitCodeLine((ListInitCodeLine) line));
+          surfaceLines.add(generateListInitCodeLine(context, (ListInitCodeLine) line));
           continue;
         case SimpleInitLine:
-          surfaceLines.add(generateSimpleInitCodeLine((SimpleInitCodeLine) line));
+          surfaceLines.add(generateSimpleInitCodeLine(context, (SimpleInitCodeLine) line));
           continue;
         case MapInitLine:
-          surfaceLines.add(generateMapInitCodeLine((MapInitCodeLine) line));
+          surfaceLines.add(generateMapInitCodeLine(context, (MapInitCodeLine) line));
           continue;
         default:
           throw new RuntimeException("unhandled line type: " + line.getLineType());
@@ -439,23 +431,28 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     return surfaceLines;
   }
 
-  private SurfaceStructureInitCodeLine generateStructureInitCodeLine(StructureInitCodeLine line) {
+  private SurfaceStructureInitCodeLine generateStructureInitCodeLine(
+      ModelToSurfaceContext context, StructureInitCodeLine line) {
     SurfaceStructureInitCodeLine surfaceLine = new SurfaceStructureInitCodeLine();
 
+    IdentifierNamer namer = context.getNamer();
     surfaceLine.lineType = line.getLineType();
-    surfaceLine.typeName = namer.getTypeName(line.getType());
+    surfaceLine.typeName = context.getTypeTable().importAndGetShortestName(line.getType());
     surfaceLine.identifier = namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
-    surfaceLine.fieldSettings = getFieldSettings(line.getFieldSettings());
-    surfaceLine.initValue = getInitValue(line.getType(), line.getInitValueConfig());
+    surfaceLine.fieldSettings = getFieldSettings(context, line.getFieldSettings());
+    surfaceLine.initValue = getInitValue(context, line.getType(), line.getInitValueConfig());
 
     return surfaceLine;
   }
 
-  private SurfaceListInitCodeLine generateListInitCodeLine(ListInitCodeLine line) {
+  private SurfaceListInitCodeLine generateListInitCodeLine(
+      ModelToSurfaceContext context, ListInitCodeLine line) {
     SurfaceListInitCodeLine surfaceLine = new SurfaceListInitCodeLine();
 
+    IdentifierNamer namer = context.getNamer();
     surfaceLine.lineType = line.getLineType();
-    surfaceLine.elementTypeName = namer.getElementTypeName(line.getElementType());
+    surfaceLine.elementTypeName =
+        context.getTypeTable().importAndGetShortestNameForElementType(line.getElementType());
     surfaceLine.identifier = namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
     List<String> elementIdentifiers = new ArrayList<>();
     for (String identifier : line.getElementIdentifiers()) {
@@ -466,29 +463,34 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     return surfaceLine;
   }
 
-  private SurfaceSimpleInitCodeLine generateSimpleInitCodeLine(SimpleInitCodeLine line) {
+  private SurfaceSimpleInitCodeLine generateSimpleInitCodeLine(
+      ModelToSurfaceContext context, SimpleInitCodeLine line) {
     SurfaceSimpleInitCodeLine surfaceLine = new SurfaceSimpleInitCodeLine();
 
+    IdentifierNamer namer = context.getNamer();
     surfaceLine.lineType = line.getLineType();
-    surfaceLine.typeName = namer.getTypeName(line.getType());
+    surfaceLine.typeName = context.getTypeTable().importAndGetShortestName(line.getType());
     surfaceLine.identifier = namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
-    surfaceLine.initValue = getInitValue(line.getType(), line.getInitValueConfig());
+    surfaceLine.initValue = getInitValue(context, line.getType(), line.getInitValueConfig());
 
     return surfaceLine;
   }
 
-  private SurfaceInitCodeLine generateMapInitCodeLine(MapInitCodeLine line) {
+  private SurfaceInitCodeLine generateMapInitCodeLine(
+      ModelToSurfaceContext context, MapInitCodeLine line) {
     SurfaceMapInitCodeLine surfaceLine = new SurfaceMapInitCodeLine();
 
+    ModelTypeTable typeTable = context.getTypeTable();
     surfaceLine.lineType = line.getLineType();
-    surfaceLine.keyTypeName = namer.getTypeName(line.getKeyType());
-    surfaceLine.valueTypeName = namer.getTypeName(line.getValueType());
-    surfaceLine.identifier = namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
+    surfaceLine.keyTypeName = typeTable.importAndGetShortestName(line.getKeyType());
+    surfaceLine.valueTypeName = typeTable.importAndGetShortestName(line.getValueType());
+    surfaceLine.identifier =
+        context.getNamer().getVariableName(line.getIdentifier(), line.getInitValueConfig());
     List<SurfaceMapEntry> entries = new ArrayList<>();
     for (Map.Entry<String, String> entry : line.getElementIdentifierMap().entrySet()) {
       SurfaceMapEntry mapEntry = new SurfaceMapEntry();
-      mapEntry.key = namer.renderPrimitiveValue(line.getKeyType(), entry.getKey());
-      mapEntry.value = namer.renderPrimitiveValue(line.getElementType(), entry.getValue());
+      mapEntry.key = typeTable.renderPrimitiveValue(line.getKeyType(), entry.getKey());
+      mapEntry.value = typeTable.renderPrimitiveValue(line.getElementType(), entry.getValue());
       entries.add(mapEntry);
     }
     surfaceLine.initEntries = entries;
@@ -496,11 +498,12 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     return surfaceLine;
   }
 
-  private SurfaceInitValue getInitValue(TypeRef type, InitValueConfig initValueConfig) {
+  private SurfaceInitValue getInitValue(
+      ModelToSurfaceContext context, TypeRef type, InitValueConfig initValueConfig) {
     if (initValueConfig.hasFormattingConfig()) {
       SurfaceFormattedInitValue initValue = new SurfaceFormattedInitValue();
 
-      initValue.apiWrapperName = getApiWrapperClassName();
+      initValue.apiWrapperName = getApiWrapperClassName(context);
       initValue.formatFunctionName = getFormatFunctionName(initValueConfig.getCollectionConfig());
       List<String> formatFunctionArgs = new ArrayList<>();
       for (String var : initValueConfig.getCollectionConfig().getNameTemplate().vars()) {
@@ -514,16 +517,18 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
 
       if (initValueConfig.hasInitialValue()) {
         initValue.initialValue =
-            namer.renderPrimitiveValue(type, initValueConfig.getInitialValue());
+            context.getTypeTable().renderPrimitiveValue(type, initValueConfig.getInitialValue());
       } else {
-        initValue.initialValue = namer.zeroValue(type);
+        initValue.initialValue = context.getTypeTable().importAndGetZeroValue(type);
       }
 
       return initValue;
     }
   }
 
-  public List<SurfaceFieldSetting> getFieldSettings(Iterable<FieldSetting> fieldSettings) {
+  public List<SurfaceFieldSetting> getFieldSettings(
+      ModelToSurfaceContext context, Iterable<FieldSetting> fieldSettings) {
+    IdentifierNamer namer = context.getNamer();
     List<SurfaceFieldSetting> allSettings = new ArrayList<>();
     for (FieldSetting setting : fieldSettings) {
       SurfaceFieldSetting fieldSetting = new SurfaceFieldSetting();
@@ -537,7 +542,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
   }
 
   private SurfacePagedRequestObjectMethod generatePagedRequestObjectMethod(
-      Method method, MethodConfig methodConfig) {
+      ModelToSurfaceContext context, Method method, MethodConfig methodConfig) {
     SurfacePagedRequestObjectMethod apiMethod = new SurfacePagedRequestObjectMethod();
 
     SurfaceApiMethodDoc doc = new SurfaceApiMethodDoc();
@@ -556,18 +561,21 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
 
     PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
     apiMethod.resourceTypeName =
-        typeTable.importAndGetShortestNameForElementType(
-            pageStreaming.getResourcesField().getType());
+        context
+            .getTypeTable()
+            .importAndGetShortestNameForElementType(pageStreaming.getResourcesField().getType());
     apiMethod.name = getApiMethodName(method);
-    apiMethod.requestTypeName = typeTable.importAndGetShortestName(method.getInputType());
+    apiMethod.requestTypeName =
+        context.getTypeTable().importAndGetShortestName(method.getInputType());
 
     return apiMethod;
   }
 
-  private SurfaceRequestObjectParam generateRequestObjectParam(Field field) {
+  private SurfaceRequestObjectParam generateRequestObjectParam(
+      ModelToSurfaceContext context, Field field) {
     SurfaceRequestObjectParam param = new SurfaceRequestObjectParam();
     param.name = getVariableNameForField(field);
-    param.typeName = typeTable.importAndGetShortestName(field.getType());
+    param.typeName = context.getTypeTable().importAndGetShortestName(field.getType());
     param.setCallName = getSetFunctionCallName(field.getType(), field.getSimpleName());
     return param;
   }
@@ -617,21 +625,16 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     return LanguageUtil.upperCamelToLowerCamel(method.getSimpleName());
   }
 
-  private String getPathTemplateName(CollectionConfig collectionConfig) {
-    return LanguageUtil.lowerUnderscoreToUpperUnderscore(collectionConfig.getEntityName())
-        + "_PATH_TEMPLATE";
+  private String getApiWrapperClassName(ModelToSurfaceContext context) {
+    return context.getInterface().getSimpleName() + "Api";
   }
 
-  private String getApiWrapperClassName() {
-    return service.getSimpleName() + "Api";
+  private String getApiWrapperVariableName(ModelToSurfaceContext context) {
+    return LanguageUtil.upperCamelToLowerCamel(getApiWrapperClassName(context));
   }
 
-  private String getApiWrapperVariableName() {
-    return LanguageUtil.upperCamelToLowerCamel(getApiWrapperClassName());
-  }
-
-  private String getSettingsClassName() {
-    return service.getSimpleName() + "Settings";
+  private String getSettingsClassName(ModelToSurfaceContext context) {
+    return context.getInterface().getSimpleName() + "Settings";
   }
 
   private String getFormatFunctionName(CollectionConfig collectionConfig) {

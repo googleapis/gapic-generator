@@ -15,14 +15,23 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.CollectionConfig;
-import com.google.api.codegen.metacode.InitValueConfig;
-import com.google.api.tools.framework.model.TypeRef;
+import com.google.api.codegen.surface.SurfacePathTemplate;
 
-public interface IdentifierNamer {
+import java.util.ArrayList;
+import java.util.List;
 
-  String getVariableName(String identifier, InitValueConfig initValueConfig);
+public class CommonTransformer {
 
-  String getSetFunctionCallName(TypeRef type, String fieldName);
+  public List<SurfacePathTemplate> generatePathTemplates(ModelToSurfaceContext context) {
+    List<SurfacePathTemplate> pathTemplates = new ArrayList<>();
 
-  String getPathTemplateName(CollectionConfig collectionConfig);
+    for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
+      SurfacePathTemplate pathTemplate = new SurfacePathTemplate();
+      pathTemplate.name = context.getNamer().getPathTemplateName(collectionConfig);
+      pathTemplate.pattern = collectionConfig.getNamePattern();
+      pathTemplates.add(pathTemplate);
+    }
+
+    return pathTemplates;
+  }
 }

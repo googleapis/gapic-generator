@@ -14,15 +14,25 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.CollectionConfig;
-import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.tools.framework.model.TypeRef;
 
-public interface IdentifierNamer {
+import java.util.List;
 
-  String getVariableName(String identifier, InitValueConfig initValueConfig);
+public interface ModelTypeTable {
 
-  String getSetFunctionCallName(TypeRef type, String fieldName);
+  ModelTypeTable cloneEmpty();
 
-  String getPathTemplateName(CollectionConfig collectionConfig);
+  void addImport(String string);
+
+  String importAndGetShortestName(String string);
+
+  String importAndGetShortestName(TypeRef inputType);
+
+  String importAndGetShortestNameForElementType(TypeRef type);
+
+  String renderPrimitiveValue(TypeRef keyType, String key);
+
+  String importAndGetZeroValue(TypeRef type);
+
+  List<String> getImports();
 }

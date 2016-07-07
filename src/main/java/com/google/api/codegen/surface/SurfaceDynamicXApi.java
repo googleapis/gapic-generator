@@ -21,6 +21,7 @@ public class SurfaceDynamicXApi implements SurfaceDoc {
   public String name;
   public String serviceAddress;
   public Integer servicePort;
+  public List<SurfacePathTemplate> pathTemplates;
 
   public List<String> imports;
   public String outputPath;
