@@ -28,7 +28,6 @@ import com.google.api.codegen.go.GoSnippetSetRunner;
 import com.google.api.codegen.java.JavaGapicContext;
 import com.google.api.codegen.java.JavaIterableSnippetSetRunner;
 import com.google.api.codegen.java.JavaSnippetSetRunner;
-import com.google.api.codegen.java.direct.JavaViewModelSnippetSetRunner;
 import com.google.api.codegen.java.surface.JavaSurfaceSnippetSetRunner;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
@@ -64,7 +63,6 @@ public class MainGapicProviderFactory
   public static final String PYTHON = "python";
   public static final String RUBY = "ruby";
 
-  public static final String JAVA_DIRECT = "java_direct";
   public static final String JAVA_SURFACE = "java_surface";
 
   /**
@@ -138,24 +136,6 @@ public class MainGapicProviderFactory
               .build();
 
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, packageInfoProvider);
-
-    } else if (id.equals(JAVA_DIRECT)) {
-      GapicCodePathMapper javaPathMapper =
-          CommonGapicCodePathMapper.newBuilder()
-              .setPrefix("src/main/java")
-              .setShouldAppendPackage(true)
-              .build();
-      GapicProvider<? extends Object> mainProvider =
-          LanguageDirectGapicProvider.newBuilder()
-              .setModel(model)
-              .setView(new InterfaceView())
-              .setApiConfig(apiConfig)
-              .setSnippetSetRunner(new JavaViewModelSnippetSetRunner())
-              .setSnippetFileNames(Arrays.asList("class.snip"))
-              .setCodePathMapper(javaPathMapper)
-              .build();
-
-      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
 
     } else if (id.equals(JAVA_SURFACE)) {
       GapicCodePathMapper javaPathMapper =
