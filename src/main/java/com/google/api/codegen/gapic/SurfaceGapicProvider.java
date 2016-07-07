@@ -17,9 +17,9 @@ package com.google.api.codegen.gapic;
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.InputElementView;
-import com.google.api.codegen.java.surface.JavaSurface;
-import com.google.api.codegen.java.surface.JavaXApi;
+import com.google.api.codegen.surface.Surface;
 import com.google.api.codegen.surface.SurfaceSnippetSetRunner;
+import com.google.api.codegen.surface.SurfaceXApi;
 import com.google.api.codegen.transformer.ModelToJavaSurfaceTransformer;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
@@ -38,7 +38,7 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
   private final Model model;
   private final InputElementView<Interface> view;
   private final ApiConfig apiConfig;
-  private final SurfaceSnippetSetRunner<JavaXApi> snippetSetRunner;
+  private final SurfaceSnippetSetRunner<SurfaceXApi> snippetSetRunner;
   private final List<String> snippetFileNames;
   private final GapicCodePathMapper pathMapper;
 
@@ -46,7 +46,7 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
       Model model,
       InputElementView<Interface> view,
       ApiConfig apiConfig,
-      SurfaceSnippetSetRunner<JavaXApi> snippetSetRunner,
+      SurfaceSnippetSetRunner<SurfaceXApi> snippetSetRunner,
       List<String> snippetFileNames,
       GapicCodePathMapper pathMapper) {
     this.model = model;
@@ -99,7 +99,7 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
     // Run the generator for each service.
     List<GeneratedResult> generated = new ArrayList<>();
     for (Interface interfaze : view.getElementIterable(model)) {
-      JavaSurface surface = ModelToJavaSurfaceTransformer.defaultTransform(interfaze, apiConfig);
+      Surface surface = ModelToJavaSurfaceTransformer.defaultTransform(interfaze, apiConfig);
       GeneratedResult result = snippetSetRunner.generate(surface.xapiClass, snippetFileName);
 
       String subPath = pathMapper.getOutputPath(interfaze, apiConfig);
@@ -130,7 +130,7 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
     private Model model;
     private InputElementView<Interface> view;
     private ApiConfig apiConfig;
-    private SurfaceSnippetSetRunner<JavaXApi> snippetSetRunner;
+    private SurfaceSnippetSetRunner<SurfaceXApi> snippetSetRunner;
     private List<String> snippetFileNames;
     private GapicCodePathMapper pathMapper;
 
@@ -151,7 +151,7 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
       return this;
     }
 
-    public Builder setSnippetSetRunner(SurfaceSnippetSetRunner<JavaXApi> snippetSetRunner) {
+    public Builder setSnippetSetRunner(SurfaceSnippetSetRunner<SurfaceXApi> snippetSetRunner) {
       this.snippetSetRunner = snippetSetRunner;
       return this;
     }

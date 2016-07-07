@@ -12,9 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.java.surface;
+package com.google.api.codegen.surface;
 
-public class JavaResourceIdParam {
+public class SurfaceParseResourceFunction {
+  public String entityName;
   public String name;
-  public String templateKey;
+  public String pathTemplateName;
+  public String entityNameParamName;
+  public String outputResourceId;
 }

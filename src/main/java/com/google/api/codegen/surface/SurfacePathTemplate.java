@@ -12,13 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.java.surface;
+package com.google.api.codegen.surface;
 
-import java.util.List;
-
-public class JavaApiMethodDoc {
-
-  public Iterable<String> mainDocLines;
-  public List<String> paramDocLines;
-  public List<String> throwsDocLines;
+public class SurfacePathTemplate {
+  public String name;
+  public String pattern;
 }

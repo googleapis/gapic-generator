@@ -82,12 +82,12 @@
 
   @join apiCallable : xapiClass.apiCallableMembers
     @switch apiCallable.getClass.getSimpleName
-    @case "JavaSimpleApiCallable"
+    @case "SurfaceSimpleApiCallable"
       private final ApiCallable<{@apiCallable.inTypeName}, {@apiCallable.outTypeName}> {@apiCallable.name};
-    @case "JavaPagedApiCallable"
+    @case "SurfacePagedApiCallable"
       private final ApiCallable<{@apiCallable.inTypeName}, \
         {@apiCallable.pageAccessorTypeName}<{@apiCallable.resourceTypeName}>> {@apiCallable.name};
-    @case "JavaBundlingApiCallable"
+    @case "SurfaceBundlingApiCallable"
       private final ApiCallable<{@apiCallable.inTypeName}, {@apiCallable.outTypeName}> {@apiCallable.name};
     @default
       $unhandledCase: {@apiCallable.getClass.getSimpleName}$
@@ -130,12 +130,12 @@
 
     @join apiCallable : xapiClass.apiCallableMembers
       @switch apiCallable.getClass.getSimpleName
-      @case "JavaSimpleApiCallable"
+      @case "SurfaceSimpleApiCallable"
         this.{@apiCallable.name} = ApiCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
-      @case "JavaPagedApiCallable"
+      @case "SurfacePagedApiCallable"
         this.{@apiCallable.name} =
             ApiCallable.createPagedVariant(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
-      @case "JavaBundlingApiCallable"
+      @case "SurfaceBundlingApiCallable"
         this.{@apiCallable.name} = ApiCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
         if (settings.{@apiCallable.settingsFunctionName}().getBundlerFactory() != null) {
           closeables.add(settings.{@apiCallable.settingsFunctionName}().getBundlerFactory());
@@ -170,19 +170,19 @@
 @private apiMethods(xapiClass)
   @join apiMethod : xapiClass.apiMethods
     @switch apiMethod.getClass.getSimpleName
-    @case "JavaPagedFlattenedMethod"
+    @case "SurfacePagedFlattenedMethod"
       {@pagedFlattenedMethod(apiMethod)}
-    @case "JavaPagedRequestObjectMethod"
+    @case "SurfacePagedRequestObjectMethod"
       {@pagedRequestObjectMethod(apiMethod)}
-    @case "JavaPagedCallableMethod"
+    @case "SurfacePagedCallableMethod"
       {@pagedCallableMethod(apiMethod)}
-    @case "JavaUnpagedListCallableMethod"
+    @case "SurfaceUnpagedListCallableMethod"
       {@unpagedListCallableMethod(apiMethod)}
-    @case "JavaFlattenedMethod"
+    @case "SurfaceFlattenedMethod"
       {@flattenedMethod(apiMethod)}
-    @case "JavaRequestObjectMethod"
+    @case "SurfaceRequestObjectMethod"
       {@requestObjectMethod(apiMethod)}
-    @case "JavaCallableMethod"
+    @case "SurfaceCallableMethod"
       {@callableMethod(apiMethod)}
     @default
       $unhandledCase: {@apiMethod.getClass.getSimpleName}$

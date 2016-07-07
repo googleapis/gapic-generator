@@ -12,12 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.java.surface;
+package com.google.api.codegen.surface;
 
-public class JavaParseResourceFunction {
-  public String entityName;
+import java.util.List;
+
+public class SurfacePagedFlattenedMethod implements SurfaceApiMethod {
+
+  public SurfaceInitCode initCode;
+  public SurfaceApiMethodDoc doc;
+  public String resourceTypeName;
   public String name;
-  public String pathTemplateName;
-  public String entityNameParamName;
-  public String outputResourceId;
+  public List<SurfaceRequestObjectParam> requestObjectParams;
+  public String requestTypeName;
+  public List<SurfacePathTemplateCheck> pathTemplateChecks;
+  public String apiClassName;
+  public String apiVariableName;
 }

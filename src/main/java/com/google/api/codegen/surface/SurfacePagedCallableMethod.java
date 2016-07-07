@@ -12,6 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.java.surface;
+package com.google.api.codegen.surface;
 
-public class JavaRequestObjectMethod implements JavaApiMethod {}
+public class SurfacePagedCallableMethod implements SurfaceApiMethod {}

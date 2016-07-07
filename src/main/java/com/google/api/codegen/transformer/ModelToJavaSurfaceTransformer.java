@@ -20,27 +20,6 @@ import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.java.JavaDocUtil;
-import com.google.api.codegen.java.surface.JavaApiCallable;
-import com.google.api.codegen.java.surface.JavaApiMethod;
-import com.google.api.codegen.java.surface.JavaApiMethodDoc;
-import com.google.api.codegen.java.surface.JavaBundlingApiCallable;
-import com.google.api.codegen.java.surface.JavaCallableMethod;
-import com.google.api.codegen.java.surface.JavaFlattenedMethod;
-import com.google.api.codegen.java.surface.JavaFormatResourceFunction;
-import com.google.api.codegen.java.surface.JavaPagedApiCallable;
-import com.google.api.codegen.java.surface.JavaPagedCallableMethod;
-import com.google.api.codegen.java.surface.JavaPagedFlattenedMethod;
-import com.google.api.codegen.java.surface.JavaPagedRequestObjectMethod;
-import com.google.api.codegen.java.surface.JavaParseResourceFunction;
-import com.google.api.codegen.java.surface.JavaPathTemplate;
-import com.google.api.codegen.java.surface.JavaPathTemplateCheck;
-import com.google.api.codegen.java.surface.JavaRequestObjectMethod;
-import com.google.api.codegen.java.surface.JavaRequestObjectParam;
-import com.google.api.codegen.java.surface.JavaResourceIdParam;
-import com.google.api.codegen.java.surface.JavaSimpleApiCallable;
-import com.google.api.codegen.java.surface.JavaSurface;
-import com.google.api.codegen.java.surface.JavaUnpagedListCallableMethod;
-import com.google.api.codegen.java.surface.JavaXApi;
 import com.google.api.codegen.metacode.FieldSetting;
 import com.google.api.codegen.metacode.FieldStructureParser;
 import com.google.api.codegen.metacode.InitCode;
@@ -51,7 +30,15 @@ import com.google.api.codegen.metacode.ListInitCodeLine;
 import com.google.api.codegen.metacode.MapInitCodeLine;
 import com.google.api.codegen.metacode.SimpleInitCodeLine;
 import com.google.api.codegen.metacode.StructureInitCodeLine;
+import com.google.api.codegen.surface.Surface;
+import com.google.api.codegen.surface.SurfaceApiCallable;
+import com.google.api.codegen.surface.SurfaceApiMethod;
+import com.google.api.codegen.surface.SurfaceApiMethodDoc;
+import com.google.api.codegen.surface.SurfaceBundlingApiCallable;
+import com.google.api.codegen.surface.SurfaceCallableMethod;
 import com.google.api.codegen.surface.SurfaceFieldSetting;
+import com.google.api.codegen.surface.SurfaceFlattenedMethod;
+import com.google.api.codegen.surface.SurfaceFormatResourceFunction;
 import com.google.api.codegen.surface.SurfaceFormattedInitValue;
 import com.google.api.codegen.surface.SurfaceInitCode;
 import com.google.api.codegen.surface.SurfaceInitCodeLine;
@@ -59,9 +46,22 @@ import com.google.api.codegen.surface.SurfaceInitValue;
 import com.google.api.codegen.surface.SurfaceListInitCodeLine;
 import com.google.api.codegen.surface.SurfaceMapEntry;
 import com.google.api.codegen.surface.SurfaceMapInitCodeLine;
+import com.google.api.codegen.surface.SurfacePagedApiCallable;
+import com.google.api.codegen.surface.SurfacePagedCallableMethod;
+import com.google.api.codegen.surface.SurfacePagedFlattenedMethod;
+import com.google.api.codegen.surface.SurfacePagedRequestObjectMethod;
+import com.google.api.codegen.surface.SurfaceParseResourceFunction;
+import com.google.api.codegen.surface.SurfacePathTemplate;
+import com.google.api.codegen.surface.SurfacePathTemplateCheck;
+import com.google.api.codegen.surface.SurfaceRequestObjectMethod;
+import com.google.api.codegen.surface.SurfaceRequestObjectParam;
+import com.google.api.codegen.surface.SurfaceResourceIdParam;
+import com.google.api.codegen.surface.SurfaceSimpleApiCallable;
 import com.google.api.codegen.surface.SurfaceSimpleInitCodeLine;
 import com.google.api.codegen.surface.SurfaceSimpleInitValue;
 import com.google.api.codegen.surface.SurfaceStructureInitCodeLine;
+import com.google.api.codegen.surface.SurfaceUnpagedListCallableMethod;
+import com.google.api.codegen.surface.SurfaceXApi;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -82,7 +82,7 @@ public class ModelToJavaSurfaceTransformer {
   private ModelToJavaTypeTable typeTable;
   private IdentifierNamer namer;
 
-  public static JavaSurface defaultTransform(Interface service, ApiConfig apiConfig) {
+  public static Surface defaultTransform(Interface service, ApiConfig apiConfig) {
     return new ModelToJavaSurfaceTransformer(service, apiConfig).transform();
   }
 
@@ -92,13 +92,13 @@ public class ModelToJavaSurfaceTransformer {
     this.namer = new JavaIdentifierNamer();
   }
 
-  public JavaSurface transform() {
-    JavaSurface surface = new JavaSurface();
+  public Surface transform() {
+    Surface surface = new Surface();
 
     typeTable = new ModelToJavaTypeTable();
     addAlwaysImports();
 
-    JavaXApi xapiClass = new JavaXApi();
+    SurfaceXApi xapiClass = new SurfaceXApi();
     xapiClass.packageName = apiConfig.getPackageName();
     xapiClass.name = getApiWrapperClassName();
     xapiClass.settingsClassName = getSettingsClassName();
@@ -129,8 +129,8 @@ public class ModelToJavaSurfaceTransformer {
     typeTable.addImport("java.util.concurrent.ScheduledExecutorService");
   }
 
-  private List<JavaApiCallable> generateApiCallables() {
-    List<JavaApiCallable> callableMembers = new ArrayList<>();
+  private List<SurfaceApiCallable> generateApiCallables() {
+    List<SurfaceApiCallable> callableMembers = new ArrayList<>();
 
     for (Method method : service.getMethods()) {
       MethodConfig methodConfig = apiConfig.getInterfaceConfig(service).getMethodConfig(method);
@@ -140,13 +140,13 @@ public class ModelToJavaSurfaceTransformer {
     return callableMembers;
   }
 
-  private List<JavaApiCallable> generateApiCallables(Method method, MethodConfig methodConfig) {
+  private List<SurfaceApiCallable> generateApiCallables(Method method, MethodConfig methodConfig) {
     String methodNameLowCml = LanguageUtil.upperCamelToLowerCamel(method.getSimpleName());
 
-    List<JavaApiCallable> apiCallables = new ArrayList<>();
+    List<SurfaceApiCallable> apiCallables = new ArrayList<>();
 
     if (methodConfig.isBundling()) {
-      JavaBundlingApiCallable apiCallable = new JavaBundlingApiCallable();
+      SurfaceBundlingApiCallable apiCallable = new SurfaceBundlingApiCallable();
 
       apiCallable.inTypeName = typeTable.importAndGetShortestName(method.getInputType());
       apiCallable.outTypeName = typeTable.importAndGetShortestName(method.getOutputType());
@@ -156,7 +156,7 @@ public class ModelToJavaSurfaceTransformer {
       apiCallables.add(apiCallable);
 
     } else {
-      JavaSimpleApiCallable apiCallable = new JavaSimpleApiCallable();
+      SurfaceSimpleApiCallable apiCallable = new SurfaceSimpleApiCallable();
 
       apiCallable.inTypeName = typeTable.importAndGetShortestName(method.getInputType());
       apiCallable.outTypeName = typeTable.importAndGetShortestName(method.getOutputType());
@@ -168,7 +168,7 @@ public class ModelToJavaSurfaceTransformer {
       if (methodConfig.isPageStreaming()) {
         PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
 
-        JavaPagedApiCallable pagedApiCallable = new JavaPagedApiCallable();
+        SurfacePagedApiCallable pagedApiCallable = new SurfacePagedApiCallable();
 
         pagedApiCallable.inTypeName = apiCallable.inTypeName;
         pagedApiCallable.pageAccessorTypeName =
@@ -185,12 +185,12 @@ public class ModelToJavaSurfaceTransformer {
     return apiCallables;
   }
 
-  private List<JavaPathTemplate> generatePathTemplates() {
-    List<JavaPathTemplate> pathTemplates = new ArrayList<>();
+  private List<SurfacePathTemplate> generatePathTemplates() {
+    List<SurfacePathTemplate> pathTemplates = new ArrayList<>();
 
     for (CollectionConfig collectionConfig :
         apiConfig.getInterfaceConfig(service).getCollectionConfigs()) {
-      JavaPathTemplate pathTemplate = new JavaPathTemplate();
+      SurfacePathTemplate pathTemplate = new SurfacePathTemplate();
       pathTemplate.name = getPathTemplateName(collectionConfig);
       pathTemplate.pattern = collectionConfig.getNamePattern();
       pathTemplates.add(pathTemplate);
@@ -199,18 +199,18 @@ public class ModelToJavaSurfaceTransformer {
     return pathTemplates;
   }
 
-  private List<JavaFormatResourceFunction> generateFormatResourceFunctions() {
-    List<JavaFormatResourceFunction> functions = new ArrayList<>();
+  private List<SurfaceFormatResourceFunction> generateFormatResourceFunctions() {
+    List<SurfaceFormatResourceFunction> functions = new ArrayList<>();
 
     for (CollectionConfig collectionConfig :
         apiConfig.getInterfaceConfig(service).getCollectionConfigs()) {
-      JavaFormatResourceFunction function = new JavaFormatResourceFunction();
+      SurfaceFormatResourceFunction function = new SurfaceFormatResourceFunction();
       function.entityName = collectionConfig.getEntityName();
       function.name = getFormatFunctionName(collectionConfig);
       function.pathTemplateName = getPathTemplateName(collectionConfig);
-      List<JavaResourceIdParam> resourceIdParams = new ArrayList<>();
+      List<SurfaceResourceIdParam> resourceIdParams = new ArrayList<>();
       for (String var : collectionConfig.getNameTemplate().vars()) {
-        JavaResourceIdParam param = new JavaResourceIdParam();
+        SurfaceResourceIdParam param = new SurfaceResourceIdParam();
         param.name = LanguageUtil.lowerUnderscoreToLowerCamel(var);
         param.templateKey = var;
         resourceIdParams.add(param);
@@ -223,13 +223,13 @@ public class ModelToJavaSurfaceTransformer {
     return functions;
   }
 
-  private List<JavaParseResourceFunction> generateParseResourceFunctions() {
-    List<JavaParseResourceFunction> functions = new ArrayList<>();
+  private List<SurfaceParseResourceFunction> generateParseResourceFunctions() {
+    List<SurfaceParseResourceFunction> functions = new ArrayList<>();
 
     for (CollectionConfig collectionConfig :
         apiConfig.getInterfaceConfig(service).getCollectionConfigs()) {
       for (String var : collectionConfig.getNameTemplate().vars()) {
-        JavaParseResourceFunction function = new JavaParseResourceFunction();
+        SurfaceParseResourceFunction function = new SurfaceParseResourceFunction();
         function.entityName =
             LanguageUtil.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName());
         function.name =
@@ -249,8 +249,8 @@ public class ModelToJavaSurfaceTransformer {
     return functions;
   }
 
-  private List<JavaApiMethod> generateApiMethods() {
-    List<JavaApiMethod> apiMethods = new ArrayList<>();
+  private List<SurfaceApiMethod> generateApiMethods() {
+    List<SurfaceApiMethod> apiMethods = new ArrayList<>();
 
     for (Method method : service.getMethods()) {
       MethodConfig methodConfig = apiConfig.getInterfaceConfig(service).getMethodConfig(method);
@@ -262,31 +262,31 @@ public class ModelToJavaSurfaceTransformer {
           }
         }
         apiMethods.add(generatePagedRequestObjectMethod(method, methodConfig));
-        apiMethods.add(new JavaPagedCallableMethod());
-        apiMethods.add(new JavaUnpagedListCallableMethod());
+        apiMethods.add(new SurfacePagedCallableMethod());
+        apiMethods.add(new SurfaceUnpagedListCallableMethod());
       } else {
         if (methodConfig.isFlattening()) {
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
-            JavaFlattenedMethod apiMethod = new JavaFlattenedMethod();
+            SurfaceFlattenedMethod apiMethod = new SurfaceFlattenedMethod();
             apiMethod.fields = fields;
             apiMethods.add(apiMethod);
           }
         }
-        apiMethods.add(new JavaRequestObjectMethod());
-        apiMethods.add(new JavaCallableMethod());
+        apiMethods.add(new SurfaceRequestObjectMethod());
+        apiMethods.add(new SurfaceCallableMethod());
       }
     }
 
     return apiMethods;
   }
 
-  private JavaPagedFlattenedMethod generatePagedFlattenedMethod(
+  private SurfacePagedFlattenedMethod generatePagedFlattenedMethod(
       Method method, MethodConfig methodConfig, ImmutableList<Field> fields) {
-    JavaPagedFlattenedMethod apiMethod = new JavaPagedFlattenedMethod();
+    SurfacePagedFlattenedMethod apiMethod = new SurfacePagedFlattenedMethod();
 
     apiMethod.initCode = generateInitCode(method, methodConfig, fields);
 
-    JavaApiMethodDoc doc = new JavaApiMethodDoc();
+    SurfaceApiMethodDoc doc = new SurfaceApiMethodDoc();
 
     doc.mainDocLines = getJavaDocLines(method);
     doc.paramDocLines = getMethodParamDocLines(fields);
@@ -300,20 +300,20 @@ public class ModelToJavaSurfaceTransformer {
             pageStreaming.getResourcesField().getType());
     apiMethod.name = getApiMethodName(method);
 
-    List<JavaRequestObjectParam> requestObjectParams = new ArrayList<>();
+    List<SurfaceRequestObjectParam> requestObjectParams = new ArrayList<>();
     for (Field field : fields) {
       requestObjectParams.add(generateRequestObjectParam(field));
     }
     apiMethod.requestObjectParams = requestObjectParams;
 
-    List<JavaPathTemplateCheck> pathTemplateChecks = new ArrayList<>();
+    List<SurfacePathTemplateCheck> pathTemplateChecks = new ArrayList<>();
     for (Field field : fields) {
       ImmutableMap<String, String> fieldNamePatterns = methodConfig.getFieldNamePatterns();
       String entityName = fieldNamePatterns.get(field.getSimpleName());
       if (entityName != null) {
         CollectionConfig collectionConfig =
             apiConfig.getInterfaceConfig(service).getCollectionConfig(entityName);
-        JavaPathTemplateCheck check = new JavaPathTemplateCheck();
+        SurfacePathTemplateCheck check = new SurfacePathTemplateCheck();
         check.pathTemplateName = getPathTemplateName(collectionConfig);
         check.paramName = getVariableNameForField(field);
 
@@ -482,11 +482,11 @@ public class ModelToJavaSurfaceTransformer {
     return allSettings;
   }
 
-  private JavaPagedRequestObjectMethod generatePagedRequestObjectMethod(
+  private SurfacePagedRequestObjectMethod generatePagedRequestObjectMethod(
       Method method, MethodConfig methodConfig) {
-    JavaPagedRequestObjectMethod apiMethod = new JavaPagedRequestObjectMethod();
+    SurfacePagedRequestObjectMethod apiMethod = new SurfacePagedRequestObjectMethod();
 
-    JavaApiMethodDoc doc = new JavaApiMethodDoc();
+    SurfaceApiMethodDoc doc = new SurfaceApiMethodDoc();
 
     doc.mainDocLines = getJavaDocLines(method);
     doc.paramDocLines = getRequestObjectDocLines();
@@ -510,8 +510,8 @@ public class ModelToJavaSurfaceTransformer {
     return apiMethod;
   }
 
-  private JavaRequestObjectParam generateRequestObjectParam(Field field) {
-    JavaRequestObjectParam param = new JavaRequestObjectParam();
+  private SurfaceRequestObjectParam generateRequestObjectParam(Field field) {
+    SurfaceRequestObjectParam param = new SurfaceRequestObjectParam();
     param.name = getVariableNameForField(field);
     param.typeName = typeTable.importAndGetShortestName(field.getType());
     param.setCallName = getSetFunctionCallName(field.getType(), field.getSimpleName());

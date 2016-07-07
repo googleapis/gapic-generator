@@ -12,10 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.java.surface;
+package com.google.api.codegen.surface;
 
-public class JavaPathTemplateCheck {
+import java.util.List;
 
-  public String pathTemplateName;
-  public String paramName;
+public class SurfaceXApi {
+  public String packageName;
+  public String name;
+  public String settingsClassName;
+  public List<SurfaceApiCallable> apiCallableMembers;
+  public List<SurfacePathTemplate> pathTemplates;
+  public List<SurfaceFormatResourceFunction> formatResourceFunctions;
+  public List<SurfaceParseResourceFunction> parseResourceFunctions;
+  public List<SurfaceApiMethod> apiMethods;
+
+  public List<String> imports;
+
+  public String getFileName() {
+    return name + ".java";
+  }
 }
