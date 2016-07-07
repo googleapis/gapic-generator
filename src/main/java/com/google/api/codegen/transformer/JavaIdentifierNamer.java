@@ -14,13 +14,12 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.tools.framework.model.TypeRef;
 
 public class JavaIdentifierNamer implements IdentifierNamer {
-  private ModelToJavaTypeTable typeTable = new ModelToJavaTypeTable();
-
   @Override
   public String getVariableName(String identifier, InitValueConfig initValueConfig) {
     if (initValueConfig.hasFormattingConfig()) {
@@ -31,32 +30,13 @@ public class JavaIdentifierNamer implements IdentifierNamer {
   }
 
   @Override
-  public String getTypeName(TypeRef elementType) {
-    return typeTable.importAndGetShortestName(elementType);
-  }
-
-  @Override
-  public String getElementTypeName(TypeRef elementType) {
-    return typeTable.importAndGetShortestNameForElementType(elementType);
-  }
-
-  @Override
   public String getSetFunctionCallName(TypeRef type, String identifier) {
     return ModelToJavaSurfaceTransformer.getSetFunctionCallName(type, identifier);
   }
 
   @Override
-  /**
-   * Get a Java formatted primitive value, given a primitive type and a string representation of
-   * that value. The value must be a valid example of that type. Values of type Bool must be either
-   * the string 'true' or 'false' (other capitalizations are permitted).
-   */
-  public String renderPrimitiveValue(TypeRef type, String value) {
-    return ModelToJavaTypeTable.renderPrimitiveValue(type, value);
-  }
-
-  @Override
-  public String zeroValue(TypeRef type) {
-    return typeTable.importAndGetZeroValue(type);
+  public String getPathTemplateName(CollectionConfig collectionConfig) {
+    return LanguageUtil.lowerUnderscoreToUpperUnderscore(collectionConfig.getEntityName())
+        + "_PATH_TEMPLATE";
   }
 }

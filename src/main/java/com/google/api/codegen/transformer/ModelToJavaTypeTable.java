@@ -27,7 +27,7 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.io.File;
 import java.util.List;
 
-public class ModelToJavaTypeTable {
+public class ModelToJavaTypeTable implements ModelTypeTable {
   private JavaTypeTable javaTypeTable;
 
   /**
@@ -83,10 +83,17 @@ public class ModelToJavaTypeTable {
     javaTypeTable = new JavaTypeTable();
   }
 
+  @Override
+  public ModelTypeTable cloneEmpty() {
+    return new ModelToJavaTypeTable();
+  }
+
+  @Override
   public void addImport(String longName) {
     importAndGetShortestName(longName);
   }
 
+  @Override
   public String importAndGetShortestName(String longName) {
     return javaTypeTable.importAndGetShortestName(longName);
   }
@@ -94,6 +101,7 @@ public class ModelToJavaTypeTable {
   /**
    * Returns the Java representation of a reference to a type.
    */
+  @Override
   public String importAndGetShortestName(TypeRef type) {
     if (type.isMap()) {
       String mapTypeName = javaTypeTable.importAndGetShortestName("java.util.Map");
@@ -114,7 +122,7 @@ public class ModelToJavaTypeTable {
     }
   }
 
-  public String importAndGetShortestName(ProtoElement elem) {
+  private String importAndGetShortestName(ProtoElement elem) {
     // Construct the full name in Java
     String name = getJavaPackage(elem.getFile());
     if (!elem.getFile().getProto().getOptions().getJavaMultipleFiles()) {
@@ -134,6 +142,7 @@ public class ModelToJavaTypeTable {
    * Returns the Java representation of a type, without cardinality. If the type is a Java
    * primitive, basicTypeName returns it in unboxed form.
    */
+  @Override
   public String importAndGetShortestNameForElementType(TypeRef type) {
     String primitiveJavaTypeName = PRIMITIVE_TYPE_MAP.get(type.getKind());
     if (primitiveJavaTypeName != null) {
@@ -154,11 +163,13 @@ public class ModelToJavaTypeTable {
     }
   }
 
+  @Override
   public List<String> getImports() {
     return javaTypeTable.getImports();
   }
 
-  public static String renderPrimitiveValue(TypeRef type, String value) {
+  @Override
+  public String renderPrimitiveValue(TypeRef type, String value) {
     Type primitiveType = type.getKind();
     if (!PRIMITIVE_TYPE_MAP.containsKey(primitiveType)) {
       throw new IllegalArgumentException(
@@ -191,6 +202,7 @@ public class ModelToJavaTypeTable {
    * Parametric types may use the diamond operator, since the return value will be used only in
    * initialization.
    */
+  @Override
   public String importAndGetZeroValue(TypeRef type) {
     // Don't call getTypeName; we don't need to import these.
     if (type.isMap()) {
