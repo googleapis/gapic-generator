@@ -6,14 +6,12 @@
 @end
 
 @snippet generateClass(service, body, imports)
-  {@fileHeader(service)}
+  {@license()}
   package {@context.getApiConfig.getPackageName};
 
   @join import : imports
     import {@import};
   @end
-
-  // Manually-added imports: add custom (non-generated) imports after this point.
 
   {@body}
 @end
@@ -33,8 +31,6 @@
     {@callables(service)}
 
     {@cleanupSection()}
-
-    {@manualSection()}
   }
 @end
 
@@ -88,8 +84,6 @@
   /**
    * Formats a string containing the fully-qualified path to represent
    * a {@collectionConfig.getEntityName} resource.
-   *
-  {@javaDocManualEdit()}
    */
   public static final String {@formatResourceFunctionName(collectionConfig)}(\
       {@formatResourceFunctionParams(collectionConfig)}) {
@@ -117,8 +111,6 @@
       /**
        * Parses the {@subField} from the given fully-qualified path which
        * represents a {@context.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName)} resource.
-       *
-      {@javaDocManualEdit()}
        */
       public static final String \
           parse{@context.lowerUnderscoreToUpperCamel(subField)}From{@resourceName(collectionConfig)}(\
@@ -163,8 +155,6 @@
   @let className = context.getApiWrapperName(service)
     /**
      * Constructs an instance of {@className} with default settings.
-     *
-    {@javaDocManualEdit()}
      */
     public static final {@className} createWithDefaults() throws IOException {
       return create({@settingsClassName(service)}.defaultBuilder().build());
@@ -174,8 +164,6 @@
      * Constructs an instance of {@className}, using the given settings.
      * The channels are created based on the settings passed in, or defaults for any
      * settings that are not set.
-     *
-    {@javaDocManualEdit()}
      */
     public static final {@className} create({@settingsClassName(service)} settings) throws IOException {
       return new {@className}(settings);
@@ -185,8 +173,6 @@
      * Constructs an instance of {@className}, using the given settings.
      * This is protected so that it easy to make a subclass, but otherwise, the static
      * factory methods should be preferred.
-     *
-    {@javaDocManualEdit()}
      */
     protected {@className}({@settingsClassName(service)} settings) throws IOException {
       this.settings = settings;
@@ -284,8 +270,6 @@
   /**
    * Initiates an orderly shutdown in which preexisting calls continue but new calls are immediately
    * cancelled.
-   *
-  {@javaDocManualEdit()}
    */
   @@Override
   public final void close() throws Exception {
@@ -293,13 +277,6 @@
       closeable.close();
     }
   }
-
-@end
-
-@private manualSection()
-  // ========
-  // Manually-added methods: add custom (non-generated) methods after this point.
-  // ========
 
 @end
 
@@ -521,9 +498,6 @@
          {@context.getApiWrapperName(service)}.create({@settingsVariable});
      * </code>
      * </pre>
-     *
-     * <!-- manual edit -->
-     * <!-- end manual edit -->
      */
   @end
 @end
@@ -569,8 +543,6 @@
     @end
     {@javaDocEmptyLine()} </code></pre>
   @end
-  {@javaDocEmptyLine()}
-  {@javaDocManualEdit()}
   @if docConfig.isCallableVariant
   @else
     {@javaDocEmptyLine()}
