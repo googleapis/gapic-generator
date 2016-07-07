@@ -344,7 +344,7 @@ public class JavaDiscoveryContext extends DiscoveryContext implements JavaContex
       return String.valueOf(Defaults.defaultValue(primitiveClass)) + ";";
     }
     if (typeName.equals("java.lang.String")) {
-      return String.format("\"%s\";", getDefaultString(type, field));
+      return getDefaultString(type, field);
     }
     return "null;";
   }

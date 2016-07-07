@@ -31,7 +31,7 @@ service = discovery.build('cloudbilling', 'v1', credentials=credentials)
 # * The resource name of the billing account to retrieve. For example, `billingAccounts/012345-567890-ABCDEF`.
 name = 'billingAccounts/{MY-BILLINGACCOUNT}'
 
-request = service.billingAccounts().get(name)
+request = service.billingAccounts().get(name=name)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -70,7 +70,7 @@ while request is not None:
     for billing_account in response['billingAccounts']:
         # TODO: Add code here to process each 'billing_account' resource
 
-    request = billingAccounts.list_next(request, response)
+    request = billingAccounts.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -101,14 +101,14 @@ service = discovery.build('cloudbilling', 'v1', credentials=credentials)
 name = 'billingAccounts/{MY-BILLINGACCOUNT}'
 
 projects = service.billingAccounts().projects()
-request = projects.list(name)
+request = projects.list(name=name)
 while request is not None:
     response = request.execute()
 
     for project_billing_info in response['projectBillingInfo']:
         # TODO: Add code here to process each 'project_billing_info' resource
 
-    request = projects.list_next(request, response)
+    request = projects.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -141,7 +141,7 @@ service = discovery.build('cloudbilling', 'v1', credentials=credentials)
 # * The resource name of the project for which billing information is retrieved. For example, `projects/tokyo-rain-123`.
 name = 'projects/{MY-PROJECT}'
 
-request = service.projects().getBillingInfo(name)
+request = service.projects().getBillingInfo(name=name)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -178,11 +178,11 @@ service = discovery.build('cloudbilling', 'v1', credentials=credentials)
 # * The resource name of the project associated with the billing information that you want to update. For example, `projects/tokyo-rain-123`.
 name = 'projects/{MY-PROJECT}'
 
-project_billing_info = {
-# TODO: Add desired entries of the 'project_billing_info' dict
+project_billing_info_body = {
+# TODO: Add desired entries of the 'project_billing_info_body' dict
 }
 
-request = service.projects().updateBillingInfo(name, project_billing_info)
+request = service.projects().updateBillingInfo(name=name, body=project_billing_info_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:

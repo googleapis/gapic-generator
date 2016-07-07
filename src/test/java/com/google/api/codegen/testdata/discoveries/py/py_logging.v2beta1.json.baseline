@@ -25,19 +25,19 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 
 
-list_log_entries_request = {
-# TODO: Add desired entries of the 'list_log_entries_request' dict
+list_log_entries_request_body = {
+# TODO: Add desired entries of the 'list_log_entries_request_body' dict
 }
 
 entries = service.entries()
-request = entries.list(list_log_entries_request)
+request = entries.list(body=list_log_entries_request_body)
 while request is not None:
     response = request.execute()
 
     for log_entry in response['entries']:
         # TODO: Add code here to process each 'log_entry' resource
 
-    list_log_entries_request.pageToken = response.nextPageToken
+    list_log_entries_request_body.pageToken = response.nextPageToken
 """
 PRE-REQUISITES:
 ---------------
@@ -67,11 +67,11 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 
 
 
-write_log_entries_request = {
-# TODO: Add desired entries of the 'write_log_entries_request' dict
+write_log_entries_request_body = {
+# TODO: Add desired entries of the 'write_log_entries_request_body' dict
 }
 
-request = service.entries().write(write_log_entries_request)
+request = service.entries().write(body=write_log_entries_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -110,7 +110,7 @@ while request is not None:
     for monitored_resource_descriptor in response['resourceDescriptors']:
         # TODO: Add code here to process each 'monitored_resource_descriptor' resource
 
-    request = monitoredResourceDescriptors.list_next(request, response)
+    request = monitoredResourceDescriptors.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -140,7 +140,7 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 # * Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
 logName = 'projects/{MY-PROJECT}/logs/{MY-LOG}'
 
-request = service.projects().logs().delete(logName)
+request = service.projects().logs().delete(logName=logName)
 request.execute()
 """
 PRE-REQUISITES:
@@ -174,11 +174,11 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 # * The resource name of the project in which to create the metric. Example: `"projects/my-project-id"`. The new metric must be provided in the request.
 projectName = 'projects/{MY-PROJECT}'
 
-log_metric = {
-# TODO: Add desired entries of the 'log_metric' dict
+log_metric_body = {
+# TODO: Add desired entries of the 'log_metric_body' dict
 }
 
-request = service.projects().metrics().create(projectName, log_metric)
+request = service.projects().metrics().create(projectName=projectName, body=log_metric_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -212,7 +212,7 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 # * The resource name of the metric to delete. Example: `"projects/my-project-id/metrics/my-metric-id"`.
 metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
 
-request = service.projects().metrics().delete(metricName)
+request = service.projects().metrics().delete(metricName=metricName)
 request.execute()
 """
 PRE-REQUISITES:
@@ -246,7 +246,7 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 # * The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
 metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
 
-request = service.projects().metrics().get(metricName)
+request = service.projects().metrics().get(metricName=metricName)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -281,14 +281,14 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 projectName = 'projects/{MY-PROJECT}'
 
 metrics = service.projects().metrics()
-request = metrics.list(projectName)
+request = metrics.list(projectName=projectName)
 while request is not None:
     response = request.execute()
 
     for log_metric in response['metrics']:
         # TODO: Add code here to process each 'log_metric' resource
 
-    request = metrics.list_next(request, response)
+    request = metrics.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -321,11 +321,11 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 # * The resource name of the metric to update. Example: `"projects/my-project-id/metrics/my-metric-id"`. The updated metric must be provided in the request and have the same identifier that is specified in `metricName`. If the metric does not exist, it is created.
 metricName = 'projects/{MY-PROJECT}/metrics/{MY-METRIC}'
 
-log_metric = {
-# TODO: Add desired entries of the 'log_metric' dict
+log_metric_body = {
+# TODO: Add desired entries of the 'log_metric_body' dict
 }
 
-request = service.projects().metrics().update(metricName, log_metric)
+request = service.projects().metrics().update(metricName=metricName, body=log_metric_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -362,11 +362,11 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 # * The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`. The new sink must be provided in the request.
 projectName = 'projects/{MY-PROJECT}'
 
-log_sink = {
-# TODO: Add desired entries of the 'log_sink' dict
+log_sink_body = {
+# TODO: Add desired entries of the 'log_sink_body' dict
 }
 
-request = service.projects().sinks().create(projectName, log_sink)
+request = service.projects().sinks().create(projectName=projectName, body=log_sink_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -400,7 +400,7 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 # * The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
 sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
 
-request = service.projects().sinks().delete(sinkName)
+request = service.projects().sinks().delete(sinkName=sinkName)
 request.execute()
 """
 PRE-REQUISITES:
@@ -434,7 +434,7 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 # * The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
 sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
 
-request = service.projects().sinks().get(sinkName)
+request = service.projects().sinks().get(sinkName=sinkName)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -469,14 +469,14 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 projectName = 'projects/{MY-PROJECT}'
 
 sinks = service.projects().sinks()
-request = sinks.list(projectName)
+request = sinks.list(projectName=projectName)
 while request is not None:
     response = request.execute()
 
     for log_sink in response['sinks']:
         # TODO: Add code here to process each 'log_sink' resource
 
-    request = sinks.list_next(request, response)
+    request = sinks.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -509,11 +509,11 @@ service = discovery.build('logging', 'v2beta1', credentials=credentials)
 # * The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The updated sink must be provided in the request and have the same name that is specified in `sinkName`. If the sink does not exist, it is created.
 sinkName = 'projects/{MY-PROJECT}/sinks/{MY-SINK}'
 
-log_sink = {
-# TODO: Add desired entries of the 'log_sink' dict
+log_sink_body = {
+# TODO: Add desired entries of the 'log_sink_body' dict
 }
 
-request = service.projects().sinks().update(sinkName, log_sink)
+request = service.projects().sinks().update(sinkName=sinkName, body=log_sink_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:

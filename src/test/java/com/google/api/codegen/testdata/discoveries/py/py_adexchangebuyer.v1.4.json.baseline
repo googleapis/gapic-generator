@@ -31,7 +31,7 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 # * The account id
 id = 0
 
-request = service.accounts().get(id)
+request = service.accounts().get(id=id)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -102,11 +102,11 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 # * The account id
 id = 0
 
-account = {
-# TODO: Add desired entries of the 'account' dict to be changed
+account_body = {
+# TODO: Add desired entries of the 'account_body' dict to be changed
 }
 
-request = service.accounts().patch(id, account)
+request = service.accounts().patch(id=id, body=account_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -143,11 +143,11 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 # * The account id
 id = 0
 
-account = {
-# TODO: Add desired entries of the 'account' dict
+account_body = {
+# TODO: Add desired entries of the 'account_body' dict
 }
 
-request = service.accounts().update(id, account)
+request = service.accounts().update(id=id, body=account_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -184,7 +184,7 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 # * The account id.
 accountId = 0
 
-request = service.billingInfo().get(accountId)
+request = service.billingInfo().get(accountId=accountId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -253,11 +253,11 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 # * The account id to get the budget information for.
-accountId = 0L
+accountId = str(0L)
 # * The billing id to get the budget information for.
-billingId = 0L
+billingId = str(0L)
 
-request = service.budget().get(accountId, billingId)
+request = service.budget().get(accountId=accountId, billingId=billingId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -292,15 +292,15 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 
 # TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
 # * The account id associated with the budget being updated.
-accountId = 0L
+accountId = str(0L)
 # * The billing id associated with the budget being updated.
-billingId = 0L
+billingId = str(0L)
 
-budget = {
-# TODO: Add desired entries of the 'budget' dict to be changed
+budget_body = {
+# TODO: Add desired entries of the 'budget_body' dict to be changed
 }
 
-request = service.budget().patch(accountId, billingId, budget)
+request = service.budget().patch(accountId=accountId, billingId=billingId, body=budget_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -335,15 +335,15 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 
 # TODO: Change placeholders below to appropriate parameter values for the 'update' method:
 # * The account id associated with the budget being updated.
-accountId = 0L
+accountId = str(0L)
 # * The billing id associated with the budget being updated.
-billingId = 0L
+billingId = str(0L)
 
-budget = {
-# TODO: Add desired entries of the 'budget' dict
+budget_body = {
+# TODO: Add desired entries of the 'budget_body' dict
 }
 
-request = service.budget().update(accountId, billingId, budget)
+request = service.budget().update(accountId=accountId, billingId=billingId, body=budget_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -379,9 +379,9 @@ accountId = 0
 # * The buyer-specific id for this creative.
 buyerCreativeId = ''
 # * The id of the deal id to associate with this creative.
-dealId = 0L
+dealId = str(0L)
 
-request = service.creatives().addDeal(accountId, buyerCreativeId, dealId)
+request = service.creatives().addDeal(accountId=accountId, buyerCreativeId=buyerCreativeId, dealId=dealId)
 request.execute()
 """
 PRE-REQUISITES:
@@ -417,7 +417,7 @@ accountId = 0
 # * The buyer-specific id for this creative.
 buyerCreativeId = ''
 
-request = service.creatives().get(accountId, buyerCreativeId)
+request = service.creatives().get(accountId=accountId, buyerCreativeId=buyerCreativeId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -451,11 +451,11 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 
 
 
-creative = {
-# TODO: Add desired entries of the 'creative' dict
+creative_body = {
+# TODO: Add desired entries of the 'creative_body' dict
 }
 
-request = service.creatives().insert(creative)
+request = service.creatives().insert(body=creative_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -494,7 +494,7 @@ while request is not None:
     for creative in response['items']:
         # TODO: Add code here to process each 'creative' resource
 
-    request = creatives.list_next(request, response)
+    request = creatives.list_next(previous_request=request, previous_response=response)
 """
 PRE-REQUISITES:
 ---------------
@@ -526,9 +526,9 @@ accountId = 0
 # * The buyer-specific id for this creative.
 buyerCreativeId = ''
 # * The id of the deal id to disassociate with this creative.
-dealId = 0L
+dealId = str(0L)
 
-request = service.creatives().removeDeal(accountId, buyerCreativeId, dealId)
+request = service.creatives().removeDeal(accountId=accountId, buyerCreativeId=buyerCreativeId, dealId=dealId)
 request.execute()
 """
 PRE-REQUISITES:
@@ -562,11 +562,11 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 # * The proposalId to delete deals from.
 proposalId = ''
 
-delete_order_deals_request = {
-# TODO: Add desired entries of the 'delete_order_deals_request' dict
+delete_order_deals_request_body = {
+# TODO: Add desired entries of the 'delete_order_deals_request_body' dict
 }
 
-request = service.marketplacedeals().delete(proposalId, delete_order_deals_request)
+request = service.marketplacedeals().delete(proposalId=proposalId, body=delete_order_deals_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -603,11 +603,11 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 # * proposalId for which deals need to be added.
 proposalId = ''
 
-add_order_deals_request = {
-# TODO: Add desired entries of the 'add_order_deals_request' dict
+add_order_deals_request_body = {
+# TODO: Add desired entries of the 'add_order_deals_request_body' dict
 }
 
-request = service.marketplacedeals().insert(proposalId, add_order_deals_request)
+request = service.marketplacedeals().insert(proposalId=proposalId, body=add_order_deals_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -644,7 +644,7 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 # * The proposalId to get deals for. To search across proposals specify order_id = '-' as part of the URL.
 proposalId = ''
 
-request = service.marketplacedeals().list(proposalId)
+request = service.marketplacedeals().list(proposalId=proposalId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -681,11 +681,11 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 # * The proposalId to edit deals on.
 proposalId = ''
 
-edit_all_order_deals_request = {
-# TODO: Add desired entries of the 'edit_all_order_deals_request' dict
+edit_all_order_deals_request_body = {
+# TODO: Add desired entries of the 'edit_all_order_deals_request_body' dict
 }
 
-request = service.marketplacedeals().update(proposalId, edit_all_order_deals_request)
+request = service.marketplacedeals().update(proposalId=proposalId, body=edit_all_order_deals_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -722,11 +722,11 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 # * The proposalId to add notes for.
 proposalId = ''
 
-add_order_notes_request = {
-# TODO: Add desired entries of the 'add_order_notes_request' dict
+add_order_notes_request_body = {
+# TODO: Add desired entries of the 'add_order_notes_request_body' dict
 }
 
-request = service.marketplacenotes().insert(proposalId, add_order_notes_request)
+request = service.marketplacenotes().insert(proposalId=proposalId, body=add_order_notes_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -763,7 +763,7 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 # * The proposalId to get notes for.
 proposalId = ''
 
-request = service.marketplacenotes().list(proposalId)
+request = service.marketplacenotes().list(proposalId=proposalId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -797,11 +797,11 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 # * The private auction id to be updated.
 privateAuctionId = ''
 
-update_private_auction_proposal_request = {
-# TODO: Add desired entries of the 'update_private_auction_proposal_request' dict
+update_private_auction_proposal_request_body = {
+# TODO: Add desired entries of the 'update_private_auction_proposal_request_body' dict
 }
 
-request = service.marketplaceprivateauction().updateproposal(privateAuctionId, update_private_auction_proposal_request)
+request = service.marketplaceprivateauction().updateproposal(privateAuctionId=privateAuctionId, body=update_private_auction_proposal_request_body)
 request.execute()
 """
 PRE-REQUISITES:
@@ -833,13 +833,13 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 # * The account id to get the reports.
-accountId = 0L
+accountId = str(0L)
 # * The end time of the report in ISO 8601 timestamp format using UTC.
 endDateTime = ''
 # * The start time of the report in ISO 8601 timestamp format using UTC.
 startDateTime = ''
 
-request = service.performanceReport().list(accountId, endDateTime, startDateTime)
+request = service.performanceReport().list(accountId=accountId, endDateTime=endDateTime, startDateTime=startDateTime)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -871,11 +871,11 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
 # * The account id to delete the pretargeting config for.
-accountId = 0L
+accountId = str(0L)
 # * The specific id of the configuration to delete.
-configId = 0L
+configId = str(0L)
 
-request = service.pretargetingConfig().delete(accountId, configId)
+request = service.pretargetingConfig().delete(accountId=accountId, configId=configId)
 request.execute()
 """
 PRE-REQUISITES:
@@ -907,11 +907,11 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 # * The account id to get the pretargeting config for.
-accountId = 0L
+accountId = str(0L)
 # * The specific id of the configuration to retrieve.
-configId = 0L
+configId = str(0L)
 
-request = service.pretargetingConfig().get(accountId, configId)
+request = service.pretargetingConfig().get(accountId=accountId, configId=configId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -946,13 +946,13 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 
 # TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
 # * The account id to insert the pretargeting config for.
-accountId = 0L
+accountId = str(0L)
 
-pretargeting_config = {
-# TODO: Add desired entries of the 'pretargeting_config' dict
+pretargeting_config_body = {
+# TODO: Add desired entries of the 'pretargeting_config_body' dict
 }
 
-request = service.pretargetingConfig().insert(accountId, pretargeting_config)
+request = service.pretargetingConfig().insert(accountId=accountId, body=pretargeting_config_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -987,9 +987,9 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 # * The account id to get the pretargeting configs for.
-accountId = 0L
+accountId = str(0L)
 
-request = service.pretargetingConfig().list(accountId)
+request = service.pretargetingConfig().list(accountId=accountId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1024,15 +1024,15 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 
 # TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
 # * The account id to update the pretargeting config for.
-accountId = 0L
+accountId = str(0L)
 # * The specific id of the configuration to update.
-configId = 0L
+configId = str(0L)
 
-pretargeting_config = {
-# TODO: Add desired entries of the 'pretargeting_config' dict to be changed
+pretargeting_config_body = {
+# TODO: Add desired entries of the 'pretargeting_config_body' dict to be changed
 }
 
-request = service.pretargetingConfig().patch(accountId, configId, pretargeting_config)
+request = service.pretargetingConfig().patch(accountId=accountId, configId=configId, body=pretargeting_config_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1067,15 +1067,15 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 
 # TODO: Change placeholders below to appropriate parameter values for the 'update' method:
 # * The account id to update the pretargeting config for.
-accountId = 0L
+accountId = str(0L)
 # * The specific id of the configuration to update.
-configId = 0L
+configId = str(0L)
 
-pretargeting_config = {
-# TODO: Add desired entries of the 'pretargeting_config' dict
+pretargeting_config_body = {
+# TODO: Add desired entries of the 'pretargeting_config_body' dict
 }
 
-request = service.pretargetingConfig().update(accountId, configId, pretargeting_config)
+request = service.pretargetingConfig().update(accountId=accountId, configId=configId, body=pretargeting_config_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1112,7 +1112,7 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 # * The id for the product to get the head revision for.
 productId = ''
 
-request = service.products().get(productId)
+request = service.products().get(productId=productId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1183,7 +1183,7 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 # * Id of the proposal to retrieve.
 proposalId = ''
 
-request = service.proposals().get(proposalId)
+request = service.proposals().get(proposalId=proposalId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1217,11 +1217,11 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 
 
 
-create_orders_request = {
-# TODO: Add desired entries of the 'create_orders_request' dict
+create_orders_request_body = {
+# TODO: Add desired entries of the 'create_orders_request_body' dict
 }
 
-request = service.proposals().insert(create_orders_request)
+request = service.proposals().insert(body=create_orders_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1258,15 +1258,15 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 # * The proposal id to update.
 proposalId = ''
 # * The last known revision number to update. If the head revision in the marketplace database has since changed, an error will be thrown. The caller should then fetch the latest proposal at head revision and retry the update at that revision.
-revisionNumber = 0L
+revisionNumber = str(0L)
 # * The proposed action to take on the proposal.
 updateAction = ''
 
-proposal = {
-# TODO: Add desired entries of the 'proposal' dict to be changed
+proposal_body = {
+# TODO: Add desired entries of the 'proposal_body' dict to be changed
 }
 
-request = service.proposals().patch(proposalId, revisionNumber, updateAction, proposal)
+request = service.proposals().patch(proposalId=proposalId, revisionNumber=revisionNumber, updateAction=updateAction, body=proposal_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1334,7 +1334,7 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 # * The proposal id for which the setup is complete
 proposalId = ''
 
-request = service.proposals().setupcomplete(proposalId)
+request = service.proposals().setupcomplete(proposalId=proposalId)
 request.execute()
 """
 PRE-REQUISITES:
@@ -1368,15 +1368,15 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 # * The proposal id to update.
 proposalId = ''
 # * The last known revision number to update. If the head revision in the marketplace database has since changed, an error will be thrown. The caller should then fetch the latest proposal at head revision and retry the update at that revision.
-revisionNumber = 0L
+revisionNumber = str(0L)
 # * The proposed action to take on the proposal.
 updateAction = ''
 
-proposal = {
-# TODO: Add desired entries of the 'proposal' dict
+proposal_body = {
+# TODO: Add desired entries of the 'proposal_body' dict
 }
 
-request = service.proposals().update(proposalId, revisionNumber, updateAction, proposal)
+request = service.proposals().update(proposalId=proposalId, revisionNumber=revisionNumber, updateAction=updateAction, body=proposal_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
@@ -1413,7 +1413,7 @@ service = discovery.build('adexchangebuyer', 'v1.4', credentials=credentials)
 # * The accountId of the publisher to get profiles for.
 accountId = 0
 
-request = service.pubprofiles().list(accountId)
+request = service.pubprofiles().list(accountId=accountId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:

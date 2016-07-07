@@ -52,10 +52,10 @@ class LibraryServiceApi(object):
     resource model:
 
     - The API has a collection of ``Shelf``
-      resources, named ``shelves/*``
+      resources, named ``bookShelves/*``
 
     - Each Shelf has a collection of ``Book``
-      resources, named ``shelves/*/books/*``
+      resources, named ``bookShelves/*/books/*``
 
     Check out `cloud docs! <https://cloud.google.com/library/example/link>`_.
     This is `not a cloud link <http://www.google.com>`_.
@@ -70,8 +70,6 @@ class LibraryServiceApi(object):
     _CODE_GEN_NAME_VERSION = 'gapic/0.1.0'
 
     _GAX_VERSION = pkg_resources.get_distribution('google-gax').version
-
-    _DEFAULT_TIMEOUT = 30
 
     _PAGE_DESCRIPTORS = {
         'list_shelves': _PageDesc(
@@ -213,7 +211,6 @@ class LibraryServiceApi(object):
             ssl_creds=None,
             scopes=None,
             client_config=None,
-            timeout=_DEFAULT_TIMEOUT,
             app_name='gax',
             app_version=_GAX_VERSION):
         """Constructor.
@@ -232,8 +229,6 @@ class LibraryServiceApi(object):
             or the specified config is missing data points.
           metadata_transformer (Callable[[], list]): A function that creates
              the metadata for requests.
-          timeout (int): The default timeout, in seconds, for calls made
-            through this client
           app_name (string): The codename of the calling service.
           app_version (string): The version of the calling service.
 
@@ -259,7 +254,6 @@ class LibraryServiceApi(object):
             default_client_config,
             client_config,
             config.STATUS_CODE_NAMES,
-            timeout,
             kwargs={'metadata': metadata},
             bundle_descriptors=self._BUNDLE_DESCRIPTORS,
             page_descriptors=self._PAGE_DESCRIPTORS)
