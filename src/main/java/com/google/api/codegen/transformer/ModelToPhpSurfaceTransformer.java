@@ -27,12 +27,12 @@ import java.util.List;
 public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
   private ApiConfig cachedApiConfig;
   private GapicCodePathMapper pathMapper;
-  private CommonTransformer commonTransformer;
+  private PathTemplateTransformer pathTemplateTransformer;
 
   public ModelToPhpSurfaceTransformer(ApiConfig apiConfig, GapicCodePathMapper pathMapper) {
     this.cachedApiConfig = apiConfig;
     this.pathMapper = pathMapper;
-    this.commonTransformer = new CommonTransformer();
+    this.pathTemplateTransformer = new PathTemplateTransformer();
   }
 
   @Override
@@ -57,15 +57,17 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
 
     SurfaceDynamicXApi xapiClass = new SurfaceDynamicXApi();
     xapiClass.packageName = context.getApiConfig().getPackageName();
-    xapiClass.name = getApiWrapperClassName(context);
+    xapiClass.name = context.getNamer().getApiWrapperClassName(context.getInterface());
     ServiceConfig serviceConfig = new ServiceConfig();
     xapiClass.serviceAddress = serviceConfig.getServiceAddress(service);
     xapiClass.servicePort = serviceConfig.getServicePort();
-    xapiClass.pathTemplates = commonTransformer.generatePathTemplates(context);
-    xapiClass.formatResourceFunctions = commonTransformer.generateFormatResourceFunctions(context);
-    xapiClass.parseResourceFunctions = commonTransformer.generateParseResourceFunctions(context);
+    xapiClass.pathTemplates = pathTemplateTransformer.generatePathTemplates(context);
+    xapiClass.formatResourceFunctions =
+        pathTemplateTransformer.generateFormatResourceFunctions(context);
+    xapiClass.parseResourceFunctions =
+        pathTemplateTransformer.generateParseResourceFunctions(context);
     xapiClass.pathTemplateGetterFunctions =
-        commonTransformer.generatePathTemplateGetterFunctions(context);
+        pathTemplateTransformer.generatePathTemplateGetterFunctions(context);
 
     // must be done as the last step to catch all imports
     xapiClass.imports = context.getTypeTable().getImports();
@@ -85,9 +87,5 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
     typeTable.addImport("Google\\GAX\\GrpcBootstrap");
     typeTable.addImport("Google\\GAX\\GrpcConstants");
     typeTable.addImport("Google\\GAX\\PathTemplate");
-  }
-
-  private String getApiWrapperClassName(ModelToSurfaceContext context) {
-    return context.getInterface().getSimpleName() + "Api";
   }
 }

@@ -16,10 +16,13 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.metacode.InitValueConfig;
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.TypeRef;
 
 public interface IdentifierNamer {
   public static final String NOT_IMPLEMENTED = "$ NOT IMPLEMENTED $";
+
+  String getApiWrapperClassName(Interface interfaze);
 
   String getVariableName(String identifier, InitValueConfig initValueConfig);
 
@@ -30,4 +33,12 @@ public interface IdentifierNamer {
   String getPathTemplateNameGetter(CollectionConfig collectionConfig);
 
   String getFormatFunctionName(CollectionConfig collectionConfig);
+
+  String getParseFunctionName(String var, CollectionConfig collectionConfig);
+
+  String getEntityName(CollectionConfig collectionConfig);
+
+  String getEntityNameParamName(CollectionConfig collectionConfig);
+
+  String getParamName(String var);
 }

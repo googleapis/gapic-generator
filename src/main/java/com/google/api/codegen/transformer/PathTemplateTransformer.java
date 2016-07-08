@@ -15,7 +15,6 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.CollectionConfig;
-import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.surface.SurfaceFormatResourceFunction;
 import com.google.api.codegen.surface.SurfaceParseResourceFunction;
 import com.google.api.codegen.surface.SurfacePathTemplate;
@@ -25,7 +24,7 @@ import com.google.api.codegen.surface.SurfaceResourceIdParam;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommonTransformer {
+public class PathTemplateTransformer {
 
   public List<SurfacePathTemplate> generatePathTemplates(ModelToSurfaceContext context) {
     List<SurfacePathTemplate> pathTemplates = new ArrayList<>();
@@ -44,17 +43,17 @@ public class CommonTransformer {
       ModelToSurfaceContext context) {
     List<SurfaceFormatResourceFunction> functions = new ArrayList<>();
 
+    IdentifierNamer namer = context.getNamer();
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
       SurfaceFormatResourceFunction function = new SurfaceFormatResourceFunction();
       function.entityName = collectionConfig.getEntityName();
-      function.name = context.getNamer().getFormatFunctionName(collectionConfig);
-      function.pathTemplateName = context.getNamer().getPathTemplateName(collectionConfig);
-      function.pathTemplateGetterName =
-          context.getNamer().getPathTemplateNameGetter(collectionConfig);
+      function.name = namer.getFormatFunctionName(collectionConfig);
+      function.pathTemplateName = namer.getPathTemplateName(collectionConfig);
+      function.pathTemplateGetterName = namer.getPathTemplateNameGetter(collectionConfig);
       List<SurfaceResourceIdParam> resourceIdParams = new ArrayList<>();
       for (String var : collectionConfig.getNameTemplate().vars()) {
         SurfaceResourceIdParam param = new SurfaceResourceIdParam();
-        param.name = LanguageUtil.lowerUnderscoreToLowerCamel(var);
+        param.name = namer.getParamName(var);
         param.templateKey = var;
         resourceIdParams.add(param);
       }
@@ -70,21 +69,15 @@ public class CommonTransformer {
       ModelToSurfaceContext context) {
     List<SurfaceParseResourceFunction> functions = new ArrayList<>();
 
+    IdentifierNamer namer = context.getNamer();
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
       for (String var : collectionConfig.getNameTemplate().vars()) {
         SurfaceParseResourceFunction function = new SurfaceParseResourceFunction();
-        function.entityName =
-            LanguageUtil.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName());
-        function.name =
-            "parse"
-                + LanguageUtil.lowerUnderscoreToUpperCamel(var)
-                + "From"
-                + LanguageUtil.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName())
-                + "Name";
-        function.pathTemplateName = context.getNamer().getPathTemplateName(collectionConfig);
-        function.pathTemplateGetterName =
-            context.getNamer().getPathTemplateNameGetter(collectionConfig);
-        function.entityNameParamName = function.entityName + "Name";
+        function.entityName = namer.getEntityName(collectionConfig);
+        function.name = namer.getParseFunctionName(var, collectionConfig);
+        function.pathTemplateName = namer.getPathTemplateName(collectionConfig);
+        function.pathTemplateGetterName = namer.getPathTemplateNameGetter(collectionConfig);
+        function.entityNameParamName = namer.getEntityNameParamName(collectionConfig);
         function.outputResourceId = var;
 
         functions.add(function);
@@ -98,10 +91,11 @@ public class CommonTransformer {
       ModelToSurfaceContext context) {
     List<SurfacePathTemplateGetterFunction> functions = new ArrayList<>();
 
+    IdentifierNamer namer = context.getNamer();
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
       SurfacePathTemplateGetterFunction function = new SurfacePathTemplateGetterFunction();
-      function.name = context.getNamer().getPathTemplateNameGetter(collectionConfig);
-      function.pathTemplateName = context.getNamer().getPathTemplateName(collectionConfig);
+      function.name = namer.getPathTemplateNameGetter(collectionConfig);
+      function.pathTemplateName = namer.getPathTemplateName(collectionConfig);
       function.pattern = collectionConfig.getNamePattern();
       functions.add(function);
     }
