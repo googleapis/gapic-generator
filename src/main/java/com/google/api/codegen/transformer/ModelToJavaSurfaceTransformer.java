@@ -40,7 +40,6 @@ import com.google.api.codegen.surface.SurfaceCallableMethod;
 import com.google.api.codegen.surface.SurfaceDoc;
 import com.google.api.codegen.surface.SurfaceFieldSetting;
 import com.google.api.codegen.surface.SurfaceFlattenedMethod;
-import com.google.api.codegen.surface.SurfaceFormatResourceFunction;
 import com.google.api.codegen.surface.SurfaceFormattedInitValue;
 import com.google.api.codegen.surface.SurfaceInitCode;
 import com.google.api.codegen.surface.SurfaceInitCodeLine;
@@ -52,11 +51,9 @@ import com.google.api.codegen.surface.SurfacePagedApiCallable;
 import com.google.api.codegen.surface.SurfacePagedCallableMethod;
 import com.google.api.codegen.surface.SurfacePagedFlattenedMethod;
 import com.google.api.codegen.surface.SurfacePagedRequestObjectMethod;
-import com.google.api.codegen.surface.SurfaceParseResourceFunction;
 import com.google.api.codegen.surface.SurfacePathTemplateCheck;
 import com.google.api.codegen.surface.SurfaceRequestObjectMethod;
 import com.google.api.codegen.surface.SurfaceRequestObjectParam;
-import com.google.api.codegen.surface.SurfaceResourceIdParam;
 import com.google.api.codegen.surface.SurfaceSimpleApiCallable;
 import com.google.api.codegen.surface.SurfaceSimpleInitCodeLine;
 import com.google.api.codegen.surface.SurfaceSimpleInitValue;
@@ -117,8 +114,8 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     xapiClass.settingsClassName = getSettingsClassName(context);
     xapiClass.apiCallableMembers = generateApiCallables(context);
     xapiClass.pathTemplates = commonTransformer.generatePathTemplates(context);
-    xapiClass.formatResourceFunctions = generateFormatResourceFunctions(context);
-    xapiClass.parseResourceFunctions = generateParseResourceFunctions(context);
+    xapiClass.formatResourceFunctions = commonTransformer.generateFormatResourceFunctions(context);
+    xapiClass.parseResourceFunctions = commonTransformer.generateParseResourceFunctions(context);
     xapiClass.apiMethods = generateApiMethods(context);
 
     // must be done as the last step to catch all imports
@@ -238,56 +235,6 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     }
 
     return apiCallables;
-  }
-
-  private List<SurfaceFormatResourceFunction> generateFormatResourceFunctions(
-      ModelToSurfaceContext context) {
-    List<SurfaceFormatResourceFunction> functions = new ArrayList<>();
-
-    for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
-      SurfaceFormatResourceFunction function = new SurfaceFormatResourceFunction();
-      function.entityName = collectionConfig.getEntityName();
-      function.name = getFormatFunctionName(collectionConfig);
-      function.pathTemplateName = context.getNamer().getPathTemplateName(collectionConfig);
-      List<SurfaceResourceIdParam> resourceIdParams = new ArrayList<>();
-      for (String var : collectionConfig.getNameTemplate().vars()) {
-        SurfaceResourceIdParam param = new SurfaceResourceIdParam();
-        param.name = LanguageUtil.lowerUnderscoreToLowerCamel(var);
-        param.templateKey = var;
-        resourceIdParams.add(param);
-      }
-      function.resourceIdParams = resourceIdParams;
-
-      functions.add(function);
-    }
-
-    return functions;
-  }
-
-  private List<SurfaceParseResourceFunction> generateParseResourceFunctions(
-      ModelToSurfaceContext context) {
-    List<SurfaceParseResourceFunction> functions = new ArrayList<>();
-
-    for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
-      for (String var : collectionConfig.getNameTemplate().vars()) {
-        SurfaceParseResourceFunction function = new SurfaceParseResourceFunction();
-        function.entityName =
-            LanguageUtil.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName());
-        function.name =
-            "parse"
-                + LanguageUtil.lowerUnderscoreToUpperCamel(var)
-                + "From"
-                + LanguageUtil.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName())
-                + "Name";
-        function.pathTemplateName = context.getNamer().getPathTemplateName(collectionConfig);
-        function.entityNameParamName = function.entityName + "Name";
-        function.outputResourceId = var;
-
-        functions.add(function);
-      }
-    }
-
-    return functions;
   }
 
   private List<SurfaceApiMethod> generateApiMethods(ModelToSurfaceContext context) {
@@ -504,7 +451,8 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
       SurfaceFormattedInitValue initValue = new SurfaceFormattedInitValue();
 
       initValue.apiWrapperName = getApiWrapperClassName(context);
-      initValue.formatFunctionName = getFormatFunctionName(initValueConfig.getCollectionConfig());
+      initValue.formatFunctionName =
+          context.getNamer().getFormatFunctionName(initValueConfig.getCollectionConfig());
       List<String> formatFunctionArgs = new ArrayList<>();
       for (String var : initValueConfig.getCollectionConfig().getNameTemplate().vars()) {
         formatFunctionArgs.add("\"[" + LanguageUtil.lowerUnderscoreToUpperUnderscore(var) + "]\"");
@@ -635,11 +583,5 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
 
   private String getSettingsClassName(ModelToSurfaceContext context) {
     return context.getInterface().getSimpleName() + "Settings";
-  }
-
-  private String getFormatFunctionName(CollectionConfig collectionConfig) {
-    return "format"
-        + LanguageUtil.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName())
-        + "Name";
   }
 }

@@ -15,7 +15,12 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.CollectionConfig;
+import com.google.api.codegen.LanguageUtil;
+import com.google.api.codegen.surface.SurfaceFormatResourceFunction;
+import com.google.api.codegen.surface.SurfaceParseResourceFunction;
 import com.google.api.codegen.surface.SurfacePathTemplate;
+import com.google.api.codegen.surface.SurfacePathTemplateGetterFunction;
+import com.google.api.codegen.surface.SurfaceResourceIdParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,5 +38,74 @@ public class CommonTransformer {
     }
 
     return pathTemplates;
+  }
+
+  public List<SurfaceFormatResourceFunction> generateFormatResourceFunctions(
+      ModelToSurfaceContext context) {
+    List<SurfaceFormatResourceFunction> functions = new ArrayList<>();
+
+    for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
+      SurfaceFormatResourceFunction function = new SurfaceFormatResourceFunction();
+      function.entityName = collectionConfig.getEntityName();
+      function.name = context.getNamer().getFormatFunctionName(collectionConfig);
+      function.pathTemplateName = context.getNamer().getPathTemplateName(collectionConfig);
+      function.pathTemplateGetterName =
+          context.getNamer().getPathTemplateNameGetter(collectionConfig);
+      List<SurfaceResourceIdParam> resourceIdParams = new ArrayList<>();
+      for (String var : collectionConfig.getNameTemplate().vars()) {
+        SurfaceResourceIdParam param = new SurfaceResourceIdParam();
+        param.name = LanguageUtil.lowerUnderscoreToLowerCamel(var);
+        param.templateKey = var;
+        resourceIdParams.add(param);
+      }
+      function.resourceIdParams = resourceIdParams;
+
+      functions.add(function);
+    }
+
+    return functions;
+  }
+
+  public List<SurfaceParseResourceFunction> generateParseResourceFunctions(
+      ModelToSurfaceContext context) {
+    List<SurfaceParseResourceFunction> functions = new ArrayList<>();
+
+    for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
+      for (String var : collectionConfig.getNameTemplate().vars()) {
+        SurfaceParseResourceFunction function = new SurfaceParseResourceFunction();
+        function.entityName =
+            LanguageUtil.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName());
+        function.name =
+            "parse"
+                + LanguageUtil.lowerUnderscoreToUpperCamel(var)
+                + "From"
+                + LanguageUtil.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName())
+                + "Name";
+        function.pathTemplateName = context.getNamer().getPathTemplateName(collectionConfig);
+        function.pathTemplateGetterName =
+            context.getNamer().getPathTemplateNameGetter(collectionConfig);
+        function.entityNameParamName = function.entityName + "Name";
+        function.outputResourceId = var;
+
+        functions.add(function);
+      }
+    }
+
+    return functions;
+  }
+
+  public List<SurfacePathTemplateGetterFunction> generatePathTemplateGetterFunctions(
+      ModelToSurfaceContext context) {
+    List<SurfacePathTemplateGetterFunction> functions = new ArrayList<>();
+
+    for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
+      SurfacePathTemplateGetterFunction function = new SurfacePathTemplateGetterFunction();
+      function.name = context.getNamer().getPathTemplateNameGetter(collectionConfig);
+      function.pathTemplateName = context.getNamer().getPathTemplateName(collectionConfig);
+      function.pattern = collectionConfig.getNamePattern();
+      functions.add(function);
+    }
+
+    return functions;
   }
 }

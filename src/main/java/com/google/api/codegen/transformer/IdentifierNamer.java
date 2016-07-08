@@ -19,10 +19,15 @@ import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.tools.framework.model.TypeRef;
 
 public interface IdentifierNamer {
+  public static final String NOT_IMPLEMENTED = "$ NOT IMPLEMENTED $";
 
   String getVariableName(String identifier, InitValueConfig initValueConfig);
 
   String getSetFunctionCallName(TypeRef type, String fieldName);
 
   String getPathTemplateName(CollectionConfig collectionConfig);
+
+  String getPathTemplateNameGetter(CollectionConfig collectionConfig);
+
+  String getFormatFunctionName(CollectionConfig collectionConfig);
 }

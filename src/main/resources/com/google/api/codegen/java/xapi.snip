@@ -8,18 +8,14 @@
   @@javax.annotation.Generated("by GAPIC")
   public class {@xapiClass.name} implements AutoCloseable {
     {@members(xapiClass)}
-    {@resourceUtils(xapiClass)}
+    {@statics(xapiClass)}
+    {@staticFunctions(xapiClass)}
     {@constructors(xapiClass)}
     {@apiMethods(xapiClass)}
   }
 @end
 
-@private resourceUtils(xapiClass)
-  {@pathTemplateConstants(xapiClass)}
-  {@resourceFunctions(xapiClass)}
-@end
-
-@private pathTemplateConstants(xapiClass)
+@private statics(xapiClass)
   @join pathTemplate : xapiClass.pathTemplates
     private static final PathTemplate {@pathTemplate.name} =
         PathTemplate.createWithoutUrlEncoding("{@pathTemplate.pattern}");
@@ -27,7 +23,7 @@
   @end
 @end
 
-@private resourceFunctions(xapiClass)
+@private staticFunctions(xapiClass)
   @join function : xapiClass.formatResourceFunctions
     {@formatResourceFunction(function)}
   @end

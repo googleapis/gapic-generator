@@ -39,4 +39,16 @@ public class JavaIdentifierNamer implements IdentifierNamer {
     return LanguageUtil.lowerUnderscoreToUpperUnderscore(collectionConfig.getEntityName())
         + "_PATH_TEMPLATE";
   }
+
+  @Override
+  public String getPathTemplateNameGetter(CollectionConfig collectionConfig) {
+    return IdentifierNamer.NOT_IMPLEMENTED;
+  }
+
+  @Override
+  public String getFormatFunctionName(CollectionConfig collectionConfig) {
+    return "format"
+        + LanguageUtil.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName())
+        + "Name";
+  }
 }
