@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.CollectionConfig;
+import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -42,15 +43,19 @@ public abstract class ModelToSurfaceContext {
     return create(getInterface(), getApiConfig(), getTypeTable().cloneEmpty(), getNamer());
   }
 
+  public InterfaceConfig getInterfaceConfig() {
+    return getApiConfig().getInterfaceConfig(getInterface());
+  }
+
   public MethodConfig getMethodConfig(Method method) {
-    return getApiConfig().getInterfaceConfig(getInterface()).getMethodConfig(method);
+    return getInterfaceConfig().getMethodConfig(method);
   }
 
   public Collection<CollectionConfig> getCollectionConfigs() {
-    return getApiConfig().getInterfaceConfig(getInterface()).getCollectionConfigs();
+    return getInterfaceConfig().getCollectionConfigs();
   }
 
   public CollectionConfig getCollectionConfig(String entityName) {
-    return getApiConfig().getInterfaceConfig(getInterface()).getCollectionConfig(entityName);
+    return getInterfaceConfig().getCollectionConfig(entityName);
   }
 }

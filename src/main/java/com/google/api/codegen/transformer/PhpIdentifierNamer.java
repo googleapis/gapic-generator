@@ -18,6 +18,7 @@ import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -72,5 +73,32 @@ public class PhpIdentifierNamer implements IdentifierNamer {
   @Override
   public String getParamName(String var) {
     return Name.from(var).toLowerCamel();
+  }
+
+  @Override
+  public String getPageStreamingDescriptorName(Method method) {
+    return Name.upperCamel(method.getSimpleName(), "PageStreamingDescriptor").toLowerCamel();
+  }
+
+  @Override
+  public void addPageStreamingDescriptorImports(ModelTypeTable typeTable) {
+    typeTable.addImport("Google\\GAX\\PageStreamingDescriptor");
+  }
+
+  @Override
+  public String getMethodKey(Method method) {
+    return Name.upperCamel(method.getSimpleName()).toLowerCamel();
+  }
+
+  @Override
+  public String getClientConfigPath(Interface service) {
+    return "./resources/"
+        + Name.upperCamel(service.getSimpleName()).join("client_config").toLowerUnderscore()
+        + ".json";
+  }
+
+  @Override
+  public String getGrpcClientTypeName(Interface service) {
+    return service.getFullName().replaceAll("\\.", "\\\\") + "Client";
   }
 }

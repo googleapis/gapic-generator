@@ -21,13 +21,22 @@ public class SurfaceDynamicXApi implements SurfaceDoc {
   public String name;
   public String serviceAddress;
   public Integer servicePort;
-  public List<SurfacePathTemplate> pathTemplates;
+  public String serviceTitle;
+  public Iterable<String> authScopes;
 
-  public List<String> imports;
-  public String outputPath;
+  public List<SurfacePathTemplate> pathTemplates;
   public List<SurfaceFormatResourceFunction> formatResourceFunctions;
   public List<SurfaceParseResourceFunction> parseResourceFunctions;
   public List<SurfacePathTemplateGetterFunction> pathTemplateGetterFunctions;
+  public List<SurfacePageStreamingDescriptor> pageStreamingDescriptors;
+
+  public List<String> methodKeys;
+  public String clientConfigPath;
+  public String interfaceKey;
+  public Object grpcClientTypeName;
+
+  public List<String> imports;
+  public String outputPath;
 
   @Override
   public String getTemplateFileName() {

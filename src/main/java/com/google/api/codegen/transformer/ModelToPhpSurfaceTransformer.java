@@ -20,6 +20,7 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.surface.SurfaceDoc;
 import com.google.api.codegen.surface.SurfaceDynamicXApi;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +29,13 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
   private ApiConfig cachedApiConfig;
   private GapicCodePathMapper pathMapper;
   private PathTemplateTransformer pathTemplateTransformer;
+  private PageStreamingTransformer pageStreamingTransformer;
 
   public ModelToPhpSurfaceTransformer(ApiConfig apiConfig, GapicCodePathMapper pathMapper) {
     this.cachedApiConfig = apiConfig;
     this.pathMapper = pathMapper;
     this.pathTemplateTransformer = new PathTemplateTransformer();
+    this.pageStreamingTransformer = new PageStreamingTransformer();
   }
 
   @Override
@@ -50,6 +53,7 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
             service, cachedApiConfig, new ModelToPhpTypeTable(), new PhpIdentifierNamer());
 
     String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
+    IdentifierNamer namer = context.getNamer();
 
     List<SurfaceDoc> surfaceData = new ArrayList<>();
 
@@ -57,10 +61,13 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
 
     SurfaceDynamicXApi xapiClass = new SurfaceDynamicXApi();
     xapiClass.packageName = context.getApiConfig().getPackageName();
-    xapiClass.name = context.getNamer().getApiWrapperClassName(context.getInterface());
+    xapiClass.name = namer.getApiWrapperClassName(context.getInterface());
     ServiceConfig serviceConfig = new ServiceConfig();
     xapiClass.serviceAddress = serviceConfig.getServiceAddress(service);
     xapiClass.servicePort = serviceConfig.getServicePort();
+    xapiClass.serviceTitle = serviceConfig.getTitle(service);
+    xapiClass.authScopes = serviceConfig.getAuthScopes(service);
+
     xapiClass.pathTemplates = pathTemplateTransformer.generatePathTemplates(context);
     xapiClass.formatResourceFunctions =
         pathTemplateTransformer.generateFormatResourceFunctions(context);
@@ -68,6 +75,14 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
         pathTemplateTransformer.generateParseResourceFunctions(context);
     xapiClass.pathTemplateGetterFunctions =
         pathTemplateTransformer.generatePathTemplateGetterFunctions(context);
+    xapiClass.pageStreamingDescriptors = pageStreamingTransformer.generateDescriptors(context);
+
+    xapiClass.methodKeys = generateMethodKeys(context);
+    xapiClass.clientConfigPath = namer.getClientConfigPath(service);
+    xapiClass.interfaceKey = service.getFullName();
+    String grpcClientTypeName = namer.getGrpcClientTypeName(context.getInterface());
+    xapiClass.grpcClientTypeName =
+        context.getTypeTable().importAndGetShortestName(grpcClientTypeName);
 
     // must be done as the last step to catch all imports
     xapiClass.imports = context.getTypeTable().getImports();
@@ -77,6 +92,16 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
     surfaceData.add(xapiClass);
 
     return surfaceData;
+  }
+
+  private List<String> generateMethodKeys(ModelToSurfaceContext context) {
+    List<String> methodKeys = new ArrayList<>();
+
+    for (Method method : context.getInterface().getMethods()) {
+      methodKeys.add(context.getNamer().getMethodKey(method));
+    }
+
+    return methodKeys;
   }
 
   private void addXApiImports(ModelToSurfaceContext context) {
