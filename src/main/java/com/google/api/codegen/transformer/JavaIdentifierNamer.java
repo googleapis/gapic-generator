@@ -18,6 +18,7 @@ import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 
 public class JavaIdentifierNamer implements IdentifierNamer {
@@ -79,5 +80,30 @@ public class JavaIdentifierNamer implements IdentifierNamer {
   @Override
   public String getParamName(String var) {
     return Name.from(var).toLowerCamel();
+  }
+
+  @Override
+  public String getPageStreamingDescriptorName(Method method) {
+    return IdentifierNamer.NOT_IMPLEMENTED;
+  }
+
+  @Override
+  public void addPageStreamingDescriptorImports(ModelTypeTable typeTable) {
+    // do nothing
+  }
+
+  @Override
+  public String getMethodKey(Method method) {
+    return IdentifierNamer.NOT_IMPLEMENTED;
+  }
+
+  @Override
+  public String getClientConfigPath(Interface service) {
+    return IdentifierNamer.NOT_IMPLEMENTED;
+  }
+
+  @Override
+  public String getGrpcClientTypeName(Interface service) {
+    return IdentifierNamer.NOT_IMPLEMENTED;
   }
 }

@@ -39,50 +39,86 @@ public class Name {
     return new Name(namePieces);
   }
 
-  public static Name lowerCamel(String identifier) {
-    for (Character ch : identifier.toCharArray()) {
-      if (!Character.isLowerCase(ch) && !Character.isUpperCase(ch)) {
-        throw new IllegalArgumentException(
-            "Name: identifier not in lower-underscore: '" + identifier + "'");
-      }
+  public static Name lowerCamel(String... pieces) {
+    List<NamePiece> namePieces = new ArrayList<>();
+    for (String piece : pieces) {
+      validateCamel(piece, false);
+      namePieces.add(new NamePiece(piece, CaseFormat.LOWER_CAMEL));
     }
-    return new Name(identifier, CaseFormat.LOWER_CAMEL);
+    return new Name(namePieces);
   }
 
-  public static void validateLowerUnderscore(String identifier) {
+  public static Name upperCamel(String... pieces) {
+    List<NamePiece> namePieces = new ArrayList<>();
+    for (String piece : pieces) {
+      validateCamel(piece, true);
+      namePieces.add(new NamePiece(piece, CaseFormat.UPPER_CAMEL));
+    }
+    return new Name(namePieces);
+  }
+
+  private static void validateLowerUnderscore(String identifier) {
+    if (!isLowerUnderscore(identifier)) {
+      throw new IllegalArgumentException(
+          "Name: identifier not in lower-underscore: '" + identifier + "'");
+    }
+  }
+
+  private static boolean isLowerUnderscore(String identifier) {
     Character underscore = Character.valueOf('_');
     for (Character ch : identifier.toCharArray()) {
       if (!Character.isLowerCase(ch) && !ch.equals(underscore)) {
-        throw new IllegalArgumentException(
-            "Name: identifier not in lower-underscore: '" + identifier + "'");
+        return false;
       }
     }
+    return true;
+  }
+
+  private static void validateCamel(String identifier, boolean upper) {
+    if (!isCamel(identifier, upper)) {
+      String casingDescription = "lower camel";
+      if (upper) {
+        casingDescription = "upper camel";
+      }
+      throw new IllegalArgumentException(
+          "Name: identifier not in " + casingDescription + ": '" + identifier + "'");
+    }
+  }
+
+  private static boolean isCamel(String identifier, boolean upper) {
+    if (identifier.length() == 0) {
+      return true;
+    }
+    if (upper && !Character.isUpperCase(identifier.charAt(0))) {
+      return false;
+    }
+    if (!upper && !Character.isLowerCase(identifier.charAt(0))) {
+      return false;
+    }
+    for (Character ch : identifier.toCharArray()) {
+      if (!Character.isLowerCase(ch) && !Character.isUpperCase(ch)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private Name(List<NamePiece> namePieces) {
     this.namePieces = namePieces;
   }
 
-  public Name(String identifier, CaseFormat caseFormat) {
-    List<NamePiece> namePieces = new ArrayList<>();
-    namePieces.add(new NamePiece(identifier, caseFormat));
-    this.namePieces = namePieces;
-  }
-
-  private static class NamePiece {
-    public String identifier;
-    public CaseFormat caseFormat;
-
-    private NamePiece(String identifier, CaseFormat caseFormat) {
-      this.identifier = identifier;
-      this.caseFormat = caseFormat;
-    }
-  }
-
   public String toUpperUnderscore() {
+    return toUnderscore(CaseFormat.UPPER_UNDERSCORE);
+  }
+
+  public String toLowerUnderscore() {
+    return toUnderscore(CaseFormat.LOWER_UNDERSCORE);
+  }
+
+  private String toUnderscore(CaseFormat caseFormat) {
     List<String> newPieces = new ArrayList<>();
     for (NamePiece namePiece : namePieces) {
-      newPieces.add(namePiece.caseFormat.to(CaseFormat.UPPER_UNDERSCORE, namePiece.identifier));
+      newPieces.add(namePiece.caseFormat.to(caseFormat, namePiece.identifier));
     }
     return Joiner.on('_').join(newPieces);
   }
@@ -101,9 +137,32 @@ public class Name {
     return buffer.toString();
   }
 
-  public Name append(String identifier) {
+  /**
+   * Returns a new Name containing the pieces from this Name plus the given
+   * identifier added on the end.
+   */
+  public Name join(String identifier) {
     validateLowerUnderscore(identifier);
-    namePieces.add(new NamePiece(identifier, CaseFormat.LOWER_UNDERSCORE));
-    return this;
+    List<NamePiece> newPieceList = new ArrayList<>();
+    newPieceList.addAll(namePieces);
+    newPieceList.add(new NamePiece(identifier, CaseFormat.LOWER_UNDERSCORE));
+    return new Name(newPieceList);
+  }
+
+  public Name join(Name rhs) {
+    List<NamePiece> newPieceList = new ArrayList<>();
+    newPieceList.addAll(namePieces);
+    newPieceList.addAll(rhs.namePieces);
+    return new Name(newPieceList);
+  }
+
+  private static class NamePiece {
+    public final String identifier;
+    public final CaseFormat caseFormat;
+
+    private NamePiece(String identifier, CaseFormat caseFormat) {
+      this.identifier = identifier;
+      this.caseFormat = caseFormat;
+    }
   }
 }

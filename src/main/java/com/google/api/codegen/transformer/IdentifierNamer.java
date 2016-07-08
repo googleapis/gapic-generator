@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 
 public interface IdentifierNamer {
@@ -41,4 +42,14 @@ public interface IdentifierNamer {
   String getEntityNameParamName(CollectionConfig collectionConfig);
 
   String getParamName(String var);
+
+  String getPageStreamingDescriptorName(Method method);
+
+  void addPageStreamingDescriptorImports(ModelTypeTable typeTable);
+
+  String getMethodKey(Method method);
+
+  String getClientConfigPath(Interface service);
+
+  String getGrpcClientTypeName(Interface service);
 }
