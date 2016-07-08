@@ -62,6 +62,10 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
     xapiClass.serviceAddress = serviceConfig.getServiceAddress(service);
     xapiClass.servicePort = serviceConfig.getServicePort();
     xapiClass.pathTemplates = commonTransformer.generatePathTemplates(context);
+    xapiClass.formatResourceFunctions = commonTransformer.generateFormatResourceFunctions(context);
+    xapiClass.parseResourceFunctions = commonTransformer.generateParseResourceFunctions(context);
+    xapiClass.pathTemplateGetterFunctions =
+        commonTransformer.generatePathTemplateGetterFunctions(context);
 
     // must be done as the last step to catch all imports
     xapiClass.imports = context.getTypeTable().getImports();

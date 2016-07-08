@@ -21,4 +21,5 @@ public class SurfaceFormatResourceFunction {
   public String name;
   public List<SurfaceResourceIdParam> resourceIdParams;
   public String pathTemplateName;
+  public String pathTemplateGetterName;
 }

@@ -14,28 +14,9 @@
  */
 package com.google.api.codegen.surface;
 
-import java.util.List;
+public class SurfacePathTemplateGetterFunction {
 
-public class SurfaceDynamicXApi implements SurfaceDoc {
-  public String packageName;
   public String name;
-  public String serviceAddress;
-  public Integer servicePort;
-  public List<SurfacePathTemplate> pathTemplates;
-
-  public List<String> imports;
-  public String outputPath;
-  public List<SurfaceFormatResourceFunction> formatResourceFunctions;
-  public List<SurfaceParseResourceFunction> parseResourceFunctions;
-  public List<SurfacePathTemplateGetterFunction> pathTemplateGetterFunctions;
-
-  @Override
-  public String getTemplateFileName() {
-    return "xapi.snip";
-  }
-
-  @Override
-  public String getOutputPath() {
-    return outputPath;
-  }
+  public String pathTemplateName;
+  public String pattern;
 }

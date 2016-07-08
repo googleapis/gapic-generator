@@ -38,4 +38,18 @@ public class PhpIdentifierNamer implements IdentifierNamer {
     return LanguageUtil.lowerUnderscoreToLowerCamel(collectionConfig.getEntityName())
         + "NameTemplate";
   }
+
+  @Override
+  public String getPathTemplateNameGetter(CollectionConfig collectionConfig) {
+    return "get"
+        + LanguageUtil.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName())
+        + "NameTemplate";
+  }
+
+  @Override
+  public String getFormatFunctionName(CollectionConfig collectionConfig) {
+    return "format"
+        + LanguageUtil.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName())
+        + "Name";
+  }
 }

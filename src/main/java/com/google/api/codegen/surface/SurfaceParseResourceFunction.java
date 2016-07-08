@@ -18,6 +18,7 @@ public class SurfaceParseResourceFunction {
   public String entityName;
   public String name;
   public String pathTemplateName;
+  public String pathTemplateGetterName;
   public String entityNameParamName;
   public String outputResourceId;
 }

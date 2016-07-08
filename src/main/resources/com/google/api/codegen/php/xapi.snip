@@ -13,6 +13,8 @@
     {
         {@constants(xapiClass)}
         {@statics(xapiClass)}
+        {@members()}
+        {@staticFunctions(xapiClass)}
     }
 @end
 
@@ -39,12 +41,83 @@
 @end
 
 @private statics(xapiClass)
-    {@pathTemplateConstants(xapiClass)}
-@end
-
-@private pathTemplateConstants(xapiClass)
     @join pathTemplate : xapiClass.pathTemplates
         private static ${@pathTemplate.name};
     @end
+    {@BREAK}
+@end
+
+@private members()
+    private $grpcBootstrap;
+    private $stub;
+    private $scopes;
+    private $defaultCallSettings;
+    private $descriptors;
     {@""}
+@end
+
+@private staticFunctions(xapiClass)
+  @join function : xapiClass.formatResourceFunctions
+    {@formatResourceFunction(function)}
+  @end
+  {@""}
+  @join function : xapiClass.parseResourceFunctions
+    {@parseResourceFunction(function)}
+  @end
+  {@""}
+  @join function : xapiClass.pathTemplateGetterFunctions
+    {@pathTemplateGetterFunction(function)}
+  @end
+@end
+
+@private formatResourceFunction(function)
+    /**
+     * Formats a string containing the fully-qualified path to represent
+     * a {@function.entityName} resource.
+     */
+    public static function {@function.name}(\
+          {@formatResourceFunctionParams(function.resourceIdParams)})
+    {
+        return self::{@function.pathTemplateGetterName}()->render([
+            {@pathTemplateArgs(function.resourceIdParams)},
+        ]);
+    }
+    {@""}
+@end
+
+@private formatResourceFunctionParams(resourceIdParams)
+    @join param : resourceIdParams on ", "
+        ${@param.name}
+    @end
+@end
+
+@private pathTemplateArgs(resourceIdParams)
+    @join param : resourceIdParams on ",".add(BREAK)
+        '{@param.templateKey}' => ${@param.name}
+    @end
+@end
+
+@private parseResourceFunction(function)
+    /**
+     * Parses the {@function.outputResourceId} from the given fully-qualified path which
+     * represents a {@function.entityName} resource.
+     */
+    public static function {@function.name}(${@function.entityNameParamName})
+    {
+        return self::{@function.pathTemplateGetterName}()\
+            ->match(${@function.entityNameParamName})['{@function.outputResourceId}'];
+    }
+  {@""}
+@end
+
+@private pathTemplateGetterFunction(function)
+    private static function {@function.name}()
+    {
+        if (self::${@function.pathTemplateName} == null) {
+            self::${@function.pathTemplateName} = new PathTemplate('{@function.pattern}');
+        }
+
+        return self::${@function.pathTemplateName};
+    }
+
 @end
