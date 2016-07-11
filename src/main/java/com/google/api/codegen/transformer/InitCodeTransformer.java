@@ -113,7 +113,7 @@ public class InitCodeTransformer {
 
     IdentifierNamer namer = context.getNamer();
     surfaceLine.lineType = line.getLineType();
-    surfaceLine.typeName = context.getTypeTable().importAndGetShortestName(line.getType());
+    surfaceLine.typeName = context.getTypeTable().getAndSaveNicknameFor(line.getType());
     surfaceLine.identifier = namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
     surfaceLine.fieldSettings = getFieldSettings(context, line.getFieldSettings());
     surfaceLine.initValue = getInitValue(context, line.getType(), line.getInitValueConfig());
@@ -128,7 +128,7 @@ public class InitCodeTransformer {
     IdentifierNamer namer = context.getNamer();
     surfaceLine.lineType = line.getLineType();
     surfaceLine.elementTypeName =
-        context.getTypeTable().importAndGetShortestNameForElementType(line.getElementType());
+        context.getTypeTable().getAndSaveNicknameForElementType(line.getElementType());
     surfaceLine.identifier = namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
     List<String> elementIdentifiers = new ArrayList<>();
     for (String identifier : line.getElementIdentifiers()) {
@@ -145,7 +145,7 @@ public class InitCodeTransformer {
 
     IdentifierNamer namer = context.getNamer();
     surfaceLine.lineType = line.getLineType();
-    surfaceLine.typeName = context.getTypeTable().importAndGetShortestName(line.getType());
+    surfaceLine.typeName = context.getTypeTable().getAndSaveNicknameFor(line.getType());
     surfaceLine.identifier = namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
     surfaceLine.initValue = getInitValue(context, line.getType(), line.getInitValueConfig());
 
@@ -158,8 +158,8 @@ public class InitCodeTransformer {
 
     ModelTypeTable typeTable = context.getTypeTable();
     surfaceLine.lineType = line.getLineType();
-    surfaceLine.keyTypeName = typeTable.importAndGetShortestName(line.getKeyType());
-    surfaceLine.valueTypeName = typeTable.importAndGetShortestName(line.getValueType());
+    surfaceLine.keyTypeName = typeTable.getAndSaveNicknameFor(line.getKeyType());
+    surfaceLine.valueTypeName = typeTable.getAndSaveNicknameFor(line.getValueType());
     surfaceLine.identifier =
         context.getNamer().getVariableName(line.getIdentifier(), line.getInitValueConfig());
     List<SurfaceMapEntry> entries = new ArrayList<>();
@@ -196,7 +196,7 @@ public class InitCodeTransformer {
         initValue.initialValue =
             context.getTypeTable().renderPrimitiveValue(type, initValueConfig.getInitialValue());
       } else {
-        initValue.initialValue = context.getTypeTable().importAndGetZeroValue(type);
+        initValue.initialValue = context.getTypeTable().getZeroValueAndSaveNicknameFor(type);
       }
 
       return initValue;

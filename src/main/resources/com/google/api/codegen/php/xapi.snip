@@ -249,7 +249,7 @@
 
 @private apiMethods(xapiClass)
     @join apiMethod : xapiClass.apiMethods on BREAK.add(BREAK)
-        #{@methodDoc(service, method)}
+        {@methodDoc(apiMethod.doc)}
         public function {@apiMethod.name}({@paramList(apiMethod.methodParams)})
         {
             $request = new {@apiMethod.requestTypeName}();
@@ -314,4 +314,71 @@
             @end
         @end
     }
+@end
+
+@private methodDoc(apiMethodDoc)
+    /**
+    @join commentLine : apiMethodDoc.mainDocLines
+        {@""} * {@commentLine}
+    @end
+     *
+     * Sample code:
+     * ```
+    #{@createMethodSampleDoc(service, method)}
+     * ```
+    @if apiMethodDoc.paramDocs
+        {@""} *
+        @join doc : apiMethodDoc.paramDocs
+            {@paramDoc(doc)}
+        @end
+    @end
+    @if apiMethodDoc.returnTypeName
+        {@""} *
+         * @@return {@apiMethodDoc.returnTypeName} 
+    @end
+     * 
+     * @@throws Google\GAX\ApiException if the remote call fails
+     */
+@end
+
+@private paramDoc(doc)
+    @switch doc.getClass.getSimpleName
+    @case "SurfaceSimpleParamDoc"
+        {@simpleParamDoc(doc)}
+    @case "SurfaceMapParamDoc"
+        {@mapParamDoc(doc)}
+    @default
+        $unhandledCase: {@doc.getClass.getSimpleName}$
+    @end
+@end
+
+@private simpleParamDoc(doc)
+    {@""} * @@param {@doc.typeName} ${@doc.paramName} {@doc.firstLine}
+    @if doc.remainingLines
+        @join commentLine : doc.remainingLines
+            {@""} * {@commentLine}
+        @end
+    @end
+@end
+
+@private mapParamDoc(doc)
+    {@""} * @@param {@doc.typeName} ${@doc.paramName} {
+     *     {@doc.firstLine}
+    @if doc.remainingLines
+        @join commentLine : doc.remainingLines
+            {@""} *     {@commentLine}
+        @end
+    @end
+    @if doc.arrayKeyDocs
+        @join simpleParamDoc : doc.arrayKeyDocs
+            {@""} *     @@var {@simpleParamDoc.typeName} ${@simpleParamDoc.paramName}
+             *          {@simpleParamDoc.firstLine}
+            @if simpleParamDoc.remainingLines
+                @join commentLine : simpleParamDoc.remainingLines
+                    {@""} *          {@commentLine}
+                @end
+            @end
+        @end
+    @end
+     * }
 @end

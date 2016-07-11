@@ -16,10 +16,10 @@ package com.google.api.codegen.surface;
 
 import java.util.List;
 
-public class SurfaceApiMethodDoc {
-
-  public Iterable<String> mainDocLines;
-  public List<SurfaceParamDoc> paramDocs;
-  public List<String> throwsDocLines;
-  public String returnTypeName;
+public class SurfaceMapParamDoc implements SurfaceParamDoc {
+  public String paramName;
+  public String typeName;
+  public String firstLine;
+  public List<String> remainingLines;
+  public List<SurfaceParamDoc> arrayKeyDocs;
 }

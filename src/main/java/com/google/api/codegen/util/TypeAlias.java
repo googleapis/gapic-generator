@@ -12,14 +12,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.surface;
+package com.google.api.codegen.util;
 
-import java.util.List;
+public class TypeAlias {
+  private final String fullName;
+  private final String nickname;
 
-public class SurfaceApiMethodDoc {
+  public TypeAlias(String fullName, String nickname) {
+    this.fullName = fullName;
+    this.nickname = nickname;
+  }
 
-  public Iterable<String> mainDocLines;
-  public List<SurfaceParamDoc> paramDocs;
-  public List<String> throwsDocLines;
-  public String returnTypeName;
+  public TypeAlias(String name) {
+    this.fullName = name;
+    this.nickname = name;
+  }
+
+  public String getFullName() {
+    return fullName;
+  }
+
+  public String getNickname() {
+    return nickname;
+  }
+
+  public boolean needsImport() {
+    return !fullName.equals(nickname);
+  }
 }

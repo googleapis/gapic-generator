@@ -189,7 +189,7 @@
 
 @private pagedFlattenedMethod(apiMethod)
   @let coreSampleCode = pagedFlattenedMethodSampleCode(apiMethod)
-    {@methodJavaDoc(apiMethod.doc, decoratedSampleCode(apiMethod, coreSampleCode))}
+    {@methodDoc(apiMethod.doc, decoratedSampleCode(apiMethod, coreSampleCode))}
   @end
   public final PageAccessor<{@apiMethod.resourceTypeName}> \
       {@apiMethod.name}({@paramList(apiMethod.methodParams)}) {
@@ -214,7 +214,7 @@
 @end
 
 @private pagedRequestObjectMethod(apiMethod)
-  {@methodJavaDoc(apiMethod.doc, "")}
+  {@methodDoc(apiMethod.doc, "")}
   {@apiMethod.accessModifier} final PageAccessor<{@apiMethod.resourceTypeName}> \
       {@apiMethod.name}({@apiMethod.requestTypeName} request) {
     return {@apiMethod.name}PagedCallable()
@@ -250,7 +250,7 @@
   @end
 @end
 
-@private methodJavaDoc(apiMethodDoc, methodSampleCode)
+@private methodDoc(apiMethodDoc, methodSampleCode)
   /**
   @join commentLine : apiMethodDoc.mainDocLines
     {@""} * {@commentLine} 
@@ -262,10 +262,10 @@
     {@""} * {@sampleLine}
   @end
    * </code></pre>
-  @if apiMethodDoc.paramDocLines
+  @if apiMethodDoc.paramDocs
     {@""} *
-    @join commentLine : apiMethodDoc.paramDocLines 
-      {@""} * {@commentLine}
+    @join doc : apiMethodDoc.paramDocs 
+      {@paramDoc(doc)}
     @end
   @end
   @if apiMethodDoc.throwsDocLines
@@ -276,6 +276,24 @@
   @end
    */
   {@EMPTY}
+@end
+
+@private paramDoc(doc)
+  @switch doc.getClass.getSimpleName
+  @case "SurfaceSimpleParamDoc"
+    {@simpleParamDoc(doc)}
+  @default
+    $unhandledCase: {@doc.getClass.getSimpleName}$
+  @end
+@end
+
+@private simpleParamDoc(doc)
+  {@""} * @@param {@doc.paramName} {@doc.firstLine}
+  @if doc.remainingLines
+    @join commentLine : doc.remainingLines
+      {@""} * {@commentLine}
+    @end
+  @end
 @end
 
 @private builderSetCalls(requestObjectParams)

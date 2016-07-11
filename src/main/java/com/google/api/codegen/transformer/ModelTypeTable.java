@@ -22,17 +22,19 @@ public interface ModelTypeTable {
 
   ModelTypeTable cloneEmpty();
 
-  void addImport(String string);
+  void saveNicknameFor(String fullName);
 
-  String importAndGetShortestName(String string);
+  String getFullNameFor(TypeRef outputType);
 
-  String importAndGetShortestName(TypeRef inputType);
+  String getAndSaveNicknameFor(String fullName);
 
-  String importAndGetShortestNameForElementType(TypeRef type);
+  String getAndSaveNicknameFor(TypeRef inputType);
+
+  String getAndSaveNicknameForElementType(TypeRef inputType);
 
   String renderPrimitiveValue(TypeRef keyType, String key);
 
-  String importAndGetZeroValue(TypeRef type);
+  String getZeroValueAndSaveNicknameFor(TypeRef type);
 
   List<String> getImports();
 }

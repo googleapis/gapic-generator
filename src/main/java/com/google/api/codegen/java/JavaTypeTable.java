@@ -15,6 +15,7 @@
 package com.google.api.codegen.java;
 
 import com.google.api.codegen.LanguageUtil;
+import com.google.api.codegen.util.TypeAlias;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
@@ -51,28 +52,36 @@ public class JavaTypeTable {
           .put("double", "Double")
           .build();
 
-  public String importAndGetShortestName(String longName) {
-    int lastDotIndex = longName.lastIndexOf('.');
+  public TypeAlias getAlias(String fullName) {
+    int lastDotIndex = fullName.lastIndexOf('.');
     if (lastDotIndex < 0) {
       throw new IllegalArgumentException("expected fully qualified name");
     }
-    String shortTypeName = longName.substring(lastDotIndex + 1);
-    return importAndGetShortestName(longName, shortTypeName);
+    String shortTypeName = fullName.substring(lastDotIndex + 1);
+    return new TypeAlias(fullName, shortTypeName);
   }
 
-  public String importAndGetShortestName(String fullName, String shortName) {
+  public String getAndSaveNicknameFor(String fullName) {
+    return getAndSaveNicknameFor(getAlias(fullName));
+  }
+
+  public String getAndSaveNicknameFor(TypeAlias alias) {
+    if (!alias.needsImport()) {
+      return alias.getNickname();
+    }
     // Derive a short name if possible
-    if (imports.containsKey(fullName)) {
+    if (imports.containsKey(alias.getFullName())) {
       // Short name already there.
-      return imports.get(fullName);
+      return imports.get(alias.getFullName());
     }
-    if (imports.containsValue(shortName)
-        || !fullName.startsWith(JAVA_LANG_TYPE_PREFIX) && isImplicitImport(shortName)) {
+    if (imports.containsValue(alias.getNickname())
+        || !alias.getFullName().startsWith(JAVA_LANG_TYPE_PREFIX)
+            && isImplicitImport(alias.getNickname())) {
       // Short name clashes, use long name.
-      return fullName;
+      return alias.getFullName();
     }
-    imports.put(fullName, shortName);
-    return shortName;
+    imports.put(alias.getFullName(), alias.getNickname());
+    return alias.getNickname();
   }
 
   /**

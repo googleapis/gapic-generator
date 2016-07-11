@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.java.JavaTypeTable;
+import com.google.api.codegen.util.TypeAlias;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
@@ -89,75 +90,69 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
   }
 
   @Override
-  public void addImport(String longName) {
-    importAndGetShortestName(longName);
+  public void saveNicknameFor(String fullName) {
+    getAndSaveNicknameFor(fullName);
   }
 
   @Override
-  public String importAndGetShortestName(String longName) {
-    return javaTypeTable.importAndGetShortestName(longName);
+  public String getFullNameFor(TypeRef outputType) {
+    // FIXME figure out aliases for non-element types
+    return getAliasForElementType(outputType).getFullName();
+  }
+
+  @Override
+  public String getAndSaveNicknameFor(String fullName) {
+    return javaTypeTable.getAndSaveNicknameFor(fullName);
   }
 
   /**
    * Returns the Java representation of a reference to a type.
    */
   @Override
-  public String importAndGetShortestName(TypeRef type) {
+  public String getAndSaveNicknameFor(TypeRef type) {
     if (type.isMap()) {
-      String mapTypeName = javaTypeTable.importAndGetShortestName("java.util.Map");
-      String keyTypeName = importAndGetShortestNameForElementType(type.getMapKeyField().getType());
-      String valueTypeName =
-          importAndGetShortestNameForElementType(type.getMapValueField().getType());
+      String mapTypeName = javaTypeTable.getAndSaveNicknameFor("java.util.Map");
+      String keyTypeName = getAndSaveNicknameForElementType(type.getMapKeyField().getType());
+      String valueTypeName = getAndSaveNicknameForElementType(type.getMapValueField().getType());
       return String.format(
           "%s<%s, %s>",
           mapTypeName,
           JavaTypeTable.getBoxedTypeName(keyTypeName),
           JavaTypeTable.getBoxedTypeName(valueTypeName));
     } else if (type.isRepeated()) {
-      String listTypeName = javaTypeTable.importAndGetShortestName("java.util.List");
-      String elementTypeName = importAndGetShortestNameForElementType(type);
+      String listTypeName = javaTypeTable.getAndSaveNicknameFor("java.util.List");
+      String elementTypeName = getAndSaveNicknameForElementType(type);
       return String.format("%s<%s>", listTypeName, JavaTypeTable.getBoxedTypeName(elementTypeName));
     } else {
-      return importAndGetShortestNameForElementType(type);
+      return getAndSaveNicknameForElementType(type);
     }
   }
 
-  private String importAndGetShortestName(ProtoElement elem) {
-    // Construct the full name in Java
-    String name = getJavaPackage(elem.getFile());
-    if (!elem.getFile().getProto().getOptions().getJavaMultipleFiles()) {
-      String outerClassName = elem.getFile().getProto().getOptions().getJavaOuterClassname();
-      if (outerClassName.isEmpty()) {
-        outerClassName = getFileClassName(elem.getFile());
-      }
-      name = name + "." + outerClassName;
-    }
-    String shortName = elem.getFullName().substring(elem.getFile().getFullName().length() + 1);
-    name = name + "." + shortName;
-
-    return javaTypeTable.importAndGetShortestName(name, shortName);
+  @Override
+  public String getAndSaveNicknameForElementType(TypeRef type) {
+    return javaTypeTable.getAndSaveNicknameFor(getAliasForElementType(type));
   }
 
   /**
    * Returns the Java representation of a type, without cardinality. If the type is a Java
    * primitive, basicTypeName returns it in unboxed form.
    */
-  @Override
-  public String importAndGetShortestNameForElementType(TypeRef type) {
-    String primitiveJavaTypeName = PRIMITIVE_TYPE_MAP.get(type.getKind());
-    if (primitiveJavaTypeName != null) {
-      if (primitiveJavaTypeName.contains(".")) {
+  private TypeAlias getAliasForElementType(TypeRef type) {
+    String primitiveTypeName = PRIMITIVE_TYPE_MAP.get(type.getKind());
+    if (primitiveTypeName != null) {
+      if (primitiveTypeName.contains(".")) {
         // Fully qualified type name, use regular type name resolver. Can skip boxing logic
         // because those types are already boxed.
-        return javaTypeTable.importAndGetShortestName(primitiveJavaTypeName);
+        return javaTypeTable.getAlias(primitiveTypeName);
+      } else {
+        return new TypeAlias(primitiveTypeName);
       }
-      return primitiveJavaTypeName;
     }
     switch (type.getKind()) {
       case TYPE_MESSAGE:
-        return importAndGetShortestName(type.getMessageType());
+        return getTypeAlias(type.getMessageType());
       case TYPE_ENUM:
-        return importAndGetShortestName(type.getEnumType());
+        return getTypeAlias(type.getEnumType());
       default:
         throw new IllegalArgumentException("unknown type kind: " + type.getKind());
     }
@@ -203,7 +198,7 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
    * initialization.
    */
   @Override
-  public String importAndGetZeroValue(TypeRef type) {
+  public String getZeroValueAndSaveNicknameFor(TypeRef type) {
     // Don't call importAndGetShortestName; we don't need to import these.
     if (type.isMap()) {
       return "new HashMap<>()";
@@ -215,9 +210,25 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
       return PRIMITIVE_ZERO_VALUE.get(type.getKind());
     }
     if (type.isMessage()) {
-      return importAndGetShortestName(type) + ".newBuilder().build()";
+      return getAndSaveNicknameFor(type) + ".newBuilder().build()";
     }
     return "null";
+  }
+
+  private TypeAlias getTypeAlias(ProtoElement elem) {
+    // Construct the full name in Java
+    String name = getJavaPackage(elem.getFile());
+    if (!elem.getFile().getProto().getOptions().getJavaMultipleFiles()) {
+      String outerClassName = elem.getFile().getProto().getOptions().getJavaOuterClassname();
+      if (outerClassName.isEmpty()) {
+        outerClassName = getFileClassName(elem.getFile());
+      }
+      name = name + "." + outerClassName;
+    }
+    String shortName = elem.getFullName().substring(elem.getFile().getFullName().length() + 1);
+    name = name + "." + shortName;
+
+    return new TypeAlias(name, shortName);
   }
 
   private static String getJavaPackage(ProtoFile file) {

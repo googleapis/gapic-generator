@@ -15,6 +15,8 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.CollectionConfig;
+import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.php.PhpDocUtil;
 import com.google.api.codegen.util.Name;
@@ -97,7 +99,7 @@ public class PhpIdentifierNamer implements IdentifierNamer {
 
   @Override
   public void addPageStreamingDescriptorImports(ModelTypeTable typeTable) {
-    typeTable.addImport("Google\\GAX\\PageStreamingDescriptor");
+    typeTable.saveNicknameFor("Google\\GAX\\PageStreamingDescriptor");
   }
 
   @Override
@@ -143,16 +145,6 @@ public class PhpIdentifierNamer implements IdentifierNamer {
   }
 
   @Override
-  public String getParamDocPrefix(Field field) {
-    throw new NotImplementedException("getParamDocPrefix(Field)");
-  }
-
-  @Override
-  public String getParamDocPrefix(String variableName, TypeRef typeRef) {
-    throw new NotImplementedException("getParamDocPrefix(variableName, TypeRef)");
-  }
-
-  @Override
   public List<String> getThrowsDocLines() {
     throw new NotImplementedException("getThrowsDocLines");
   }
@@ -168,7 +160,29 @@ public class PhpIdentifierNamer implements IdentifierNamer {
   }
 
   @Override
-  public Object getGrpcMethodName(Method method) {
+  public String getGrpcMethodName(Method method) {
     return method.getSimpleName();
+  }
+
+  @Override
+  public String getRetrySettingsClassName() {
+    return "Google\\GAX\\RetrySettings";
+  }
+
+  @Override
+  public String getOptionalArrayTypeName() {
+    return "array";
+  }
+
+  @Override
+  public String getDynamicReturnTypeName(
+      ModelTypeTable typeTable, Method method, MethodConfig methodConfig) {
+    if (new ServiceMessages().isEmptyType(method.getOutputType())) {
+      return "";
+    }
+    if (methodConfig.isPageStreaming()) {
+      return "Google\\GAX\\PageAccessor";
+    }
+    return typeTable.getFullNameFor(method.getOutputType());
   }
 }
