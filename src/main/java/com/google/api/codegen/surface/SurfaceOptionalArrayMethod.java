@@ -18,6 +18,7 @@ import java.util.List;
 
 public class SurfaceOptionalArrayMethod implements SurfaceApiMethod {
 
+  public SurfaceApiMethodDoc doc;
   public String name;
   public String requestTypeName;
   public String key;

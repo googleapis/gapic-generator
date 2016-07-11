@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.CollectionConfig;
+import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.java.JavaDocUtil;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
@@ -145,16 +146,6 @@ public class JavaIdentifierNamer implements IdentifierNamer {
   }
 
   @Override
-  public String getParamDocPrefix(Field field) {
-    return getParamDocPrefix(getVariableName(field), null);
-  }
-
-  @Override
-  public String getParamDocPrefix(String variableName, TypeRef typeRef) {
-    return "@param " + variableName + " ";
-  }
-
-  @Override
   public List<String> getThrowsDocLines() {
     return Arrays.asList("@throws com.google.api.gax.grpc.ApiException if the remote call fails");
   }
@@ -170,7 +161,23 @@ public class JavaIdentifierNamer implements IdentifierNamer {
   }
 
   @Override
-  public Object getGrpcMethodName(Method method) {
+  public String getGrpcMethodName(Method method) {
     return method.getSimpleName();
+  }
+
+  @Override
+  public String getRetrySettingsClassName() {
+    return IdentifierNamer.NOT_IMPLEMENTED;
+  }
+
+  @Override
+  public String getOptionalArrayTypeName() {
+    return IdentifierNamer.NOT_IMPLEMENTED;
+  }
+
+  @Override
+  public String getDynamicReturnTypeName(
+      ModelTypeTable typeTable, Method method, MethodConfig methodConfig) {
+    return IdentifierNamer.NOT_IMPLEMENTED;
   }
 }

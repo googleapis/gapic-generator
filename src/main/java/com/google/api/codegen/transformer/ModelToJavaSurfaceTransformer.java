@@ -118,35 +118,35 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
 
   private void addXApiImports(ModelToSurfaceContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
-    typeTable.addImport("com.google.api.gax.grpc.ApiCallable");
-    typeTable.addImport("com.google.api.gax.protobuf.PathTemplate");
-    typeTable.addImport("io.grpc.ManagedChannel");
-    typeTable.addImport("java.io.Closeable");
-    typeTable.addImport("java.io.IOException");
-    typeTable.addImport("java.util.ArrayList");
-    typeTable.addImport("java.util.List");
-    typeTable.addImport("java.util.concurrent.ScheduledExecutorService");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiCallable");
+    typeTable.saveNicknameFor("com.google.api.gax.protobuf.PathTemplate");
+    typeTable.saveNicknameFor("io.grpc.ManagedChannel");
+    typeTable.saveNicknameFor("java.io.Closeable");
+    typeTable.saveNicknameFor("java.io.IOException");
+    typeTable.saveNicknameFor("java.util.ArrayList");
+    typeTable.saveNicknameFor("java.util.List");
+    typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
   }
 
   private void addXSettingsImports(ModelToSurfaceContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
-    typeTable.addImport("com.google.api.gax.core.ConnectionSettings");
-    typeTable.addImport("com.google.api.gax.core.RetrySettings");
-    typeTable.addImport("com.google.api.gax.grpc.ApiCallSettings");
-    typeTable.addImport("com.google.api.gax.grpc.SimpleCallSettings");
-    typeTable.addImport("com.google.api.gax.grpc.ServiceApiSettings");
-    typeTable.addImport("com.google.auth.Credentials");
-    typeTable.addImport("com.google.common.collect.ImmutableList");
-    typeTable.addImport("com.google.common.collect.ImmutableMap");
-    typeTable.addImport("com.google.common.collect.ImmutableSet");
-    typeTable.addImport("com.google.common.collect.Lists");
-    typeTable.addImport("com.google.common.collect.Sets");
-    typeTable.addImport("io.grpc.ManagedChannel");
-    typeTable.addImport("io.grpc.Status");
-    typeTable.addImport("org.joda.time.Duration");
-    typeTable.addImport("java.io.IOException");
-    typeTable.addImport("java.util.List");
-    typeTable.addImport("java.util.concurrent.ScheduledExecutorService");
+    typeTable.saveNicknameFor("com.google.api.gax.core.ConnectionSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.core.RetrySettings");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.SimpleCallSettings");
+    typeTable.saveNicknameFor("com.google.api.gax.grpc.ServiceApiSettings");
+    typeTable.saveNicknameFor("com.google.auth.Credentials");
+    typeTable.saveNicknameFor("com.google.common.collect.ImmutableList");
+    typeTable.saveNicknameFor("com.google.common.collect.ImmutableMap");
+    typeTable.saveNicknameFor("com.google.common.collect.ImmutableSet");
+    typeTable.saveNicknameFor("com.google.common.collect.Lists");
+    typeTable.saveNicknameFor("com.google.common.collect.Sets");
+    typeTable.saveNicknameFor("io.grpc.ManagedChannel");
+    typeTable.saveNicknameFor("io.grpc.Status");
+    typeTable.saveNicknameFor("org.joda.time.Duration");
+    typeTable.saveNicknameFor("java.io.IOException");
+    typeTable.saveNicknameFor("java.util.List");
+    typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
   }
 
   private List<SurfaceApiCallable> generateApiCallables(ModelToSurfaceContext context) {
@@ -170,8 +170,8 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     if (methodConfig.isBundling()) {
       SurfaceBundlingApiCallable apiCallable = new SurfaceBundlingApiCallable();
 
-      apiCallable.inTypeName = typeTable.importAndGetShortestName(method.getInputType());
-      apiCallable.outTypeName = typeTable.importAndGetShortestName(method.getOutputType());
+      apiCallable.inTypeName = typeTable.getAndSaveNicknameFor(method.getInputType());
+      apiCallable.outTypeName = typeTable.getAndSaveNicknameFor(method.getOutputType());
       apiCallable.name = methodNameLowCml + "Callable";
       apiCallable.settingsFunctionName = methodNameLowCml + "Settings";
 
@@ -180,8 +180,8 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     } else {
       SurfaceSimpleApiCallable apiCallable = new SurfaceSimpleApiCallable();
 
-      apiCallable.inTypeName = typeTable.importAndGetShortestName(method.getInputType());
-      apiCallable.outTypeName = typeTable.importAndGetShortestName(method.getOutputType());
+      apiCallable.inTypeName = typeTable.getAndSaveNicknameFor(method.getInputType());
+      apiCallable.outTypeName = typeTable.getAndSaveNicknameFor(method.getOutputType());
       apiCallable.name = methodNameLowCml + "Callable";
       apiCallable.settingsFunctionName = methodNameLowCml + "Settings";
 
@@ -194,10 +194,9 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
 
         pagedApiCallable.inTypeName = apiCallable.inTypeName;
         pagedApiCallable.pageAccessorTypeName =
-            typeTable.importAndGetShortestName("com.google.api.gax.core.PageAccessor");
+            typeTable.getAndSaveNicknameFor("com.google.api.gax.core.PageAccessor");
         pagedApiCallable.resourceTypeName =
-            typeTable.importAndGetShortestNameForElementType(
-                pageStreaming.getResourcesField().getType());
+            typeTable.getAndSaveNicknameForElementType(pageStreaming.getResourcesField().getType());
         pagedApiCallable.name = methodNameLowCml + "PagedCallable";
         pagedApiCallable.settingsFunctionName = methodNameLowCml + "Settings";
         apiCallables.add(pagedApiCallable);

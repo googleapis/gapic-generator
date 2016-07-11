@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.php;
 
+import com.google.api.codegen.util.TypeAlias;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
@@ -27,27 +28,34 @@ public class PhpTypeTable {
    */
   private final BiMap<String, String> imports = HashBiMap.create();
 
-  public String importAndGetShortestName(String typeName) {
-    int lastBackslashIndex = typeName.lastIndexOf('\\');
+  public TypeAlias getAlias(String fullName) {
+    int lastBackslashIndex = fullName.lastIndexOf('\\');
     if (lastBackslashIndex < 0) {
       throw new IllegalArgumentException("expected fully qualified name");
     }
-    String shortTypeName = typeName.substring(lastBackslashIndex + 1);
-    return importAndGetShortestName(typeName, shortTypeName);
+    String nickname = fullName.substring(lastBackslashIndex + 1);
+    return new TypeAlias(fullName, nickname);
   }
 
-  public String importAndGetShortestName(String fullName, String shortName) {
+  public String getAndSaveNicknameFor(String fullName) {
+    return getAndSaveNicknameFor(getAlias(fullName));
+  }
+
+  public String getAndSaveNicknameFor(TypeAlias alias) {
+    if (!alias.needsImport()) {
+      return alias.getNickname();
+    }
     // Derive a short name if possible
-    if (imports.containsKey(fullName)) {
+    if (imports.containsKey(alias.getFullName())) {
       // Short name already there.
-      return imports.get(fullName);
+      return imports.get(alias.getFullName());
     }
-    if (imports.containsValue(shortName)) {
+    if (imports.containsValue(alias.getNickname())) {
       // Short name clashes, use long name.
-      return fullName;
+      return alias.getFullName();
     }
-    imports.put(fullName, shortName);
-    return shortName;
+    imports.put(alias.getFullName(), alias.getNickname());
+    return alias.getNickname();
   }
 
   public List<String> getImports() {

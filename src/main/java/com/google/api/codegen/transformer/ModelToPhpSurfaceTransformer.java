@@ -85,8 +85,7 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
     xapiClass.clientConfigPath = namer.getClientConfigPath(service);
     xapiClass.interfaceKey = service.getFullName();
     String grpcClientTypeName = namer.getGrpcClientTypeName(context.getInterface());
-    xapiClass.grpcClientTypeName =
-        context.getTypeTable().importAndGetShortestName(grpcClientTypeName);
+    xapiClass.grpcClientTypeName = context.getTypeTable().getAndSaveNicknameFor(grpcClientTypeName);
 
     xapiClass.apiMethods = generateApiMethods(context);
 
@@ -102,12 +101,12 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
 
   private void addXApiImports(ModelToSurfaceContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
-    typeTable.addImport("Google\\GAX\\AgentHeaderDescriptor");
-    typeTable.addImport("Google\\GAX\\ApiCallable");
-    typeTable.addImport("Google\\GAX\\CallSettings");
-    typeTable.addImport("Google\\GAX\\GrpcBootstrap");
-    typeTable.addImport("Google\\GAX\\GrpcConstants");
-    typeTable.addImport("Google\\GAX\\PathTemplate");
+    typeTable.saveNicknameFor("Google\\GAX\\AgentHeaderDescriptor");
+    typeTable.saveNicknameFor("Google\\GAX\\ApiCallable");
+    typeTable.saveNicknameFor("Google\\GAX\\CallSettings");
+    typeTable.saveNicknameFor("Google\\GAX\\GrpcBootstrap");
+    typeTable.saveNicknameFor("Google\\GAX\\GrpcConstants");
+    typeTable.saveNicknameFor("Google\\GAX\\PathTemplate");
   }
 
   private List<String> generateMethodKeys(ModelToSurfaceContext context) {

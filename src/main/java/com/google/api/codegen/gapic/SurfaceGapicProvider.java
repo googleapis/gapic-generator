@@ -64,6 +64,7 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
 
     Map<String, Doc> docs = new TreeMap<>();
 
+    // FIXME: Remove usage of InputElementView - just give the model to the transformer
     for (Interface interfaze : view.getElementIterable(model)) {
       List<SurfaceDoc> surfaceDocs = modelToSurfaceTransformer.transform(interfaze);
       if (model.getDiagCollector().getErrorCount() > 0) {

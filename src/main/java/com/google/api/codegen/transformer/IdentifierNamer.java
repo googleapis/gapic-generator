@@ -15,6 +15,7 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.CollectionConfig;
+import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.Field;
@@ -73,13 +74,16 @@ public interface IdentifierNamer {
 
   List<String> getThrowsDocLines();
 
-  String getParamDocPrefix(Field field);
-
-  String getParamDocPrefix(String string, TypeRef typeRef);
-
   String getPublicAccessModifier();
 
   String getPrivateAccessModifier();
 
-  Object getGrpcMethodName(Method method);
+  String getGrpcMethodName(Method method);
+
+  String getRetrySettingsClassName();
+
+  String getOptionalArrayTypeName();
+
+  String getDynamicReturnTypeName(
+      ModelTypeTable typeTable, Method method, MethodConfig methodConfig);
 }
