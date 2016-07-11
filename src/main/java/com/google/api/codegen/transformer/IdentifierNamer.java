@@ -16,14 +16,22 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.metacode.InitValueConfig;
+import com.google.api.codegen.util.Name;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
+
+import java.util.List;
 
 public interface IdentifierNamer {
   public static final String NOT_IMPLEMENTED = "$ NOT IMPLEMENTED $";
+  public static final String NOT_POPULATED = "$ NOT POPULATED $";
 
   String getApiWrapperClassName(Interface interfaze);
+
+  String getApiWrapperVariableName(Interface interfaze);
 
   String getVariableName(String identifier, InitValueConfig initValueConfig);
 
@@ -52,4 +60,26 @@ public interface IdentifierNamer {
   String getClientConfigPath(Interface service);
 
   String getGrpcClientTypeName(Interface service);
+
+  String getApiMethodName(Method method);
+
+  String getVariableName(Field field);
+
+  boolean shouldImportRequestObjectParamType(Field field);
+
+  String getVariableName(Name from);
+
+  List<String> getDocLines(ProtoElement protoElement);
+
+  List<String> getThrowsDocLines();
+
+  String getParamDocPrefix(Field field);
+
+  String getParamDocPrefix(String string, TypeRef typeRef);
+
+  String getPublicAccessModifier();
+
+  String getPrivateAccessModifier();
+
+  Object getGrpcMethodName(Method method);
 }

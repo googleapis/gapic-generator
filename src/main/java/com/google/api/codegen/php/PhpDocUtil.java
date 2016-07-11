@@ -12,20 +12,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.surface;
+package com.google.api.codegen.php;
 
+import com.google.common.base.Splitter;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class SurfacePagedFlattenedMethod implements SurfaceApiMethod {
+public class PhpDocUtil {
 
-  public SurfaceInitCode initCode;
-  public SurfaceApiMethodDoc doc;
-  public String resourceTypeName;
-  public String name;
-  public List<SurfaceRequestObjectParam> methodParams;
-  public List<SurfaceRequestObjectParam> requestObjectParams;
-  public String requestTypeName;
-  public List<SurfacePathTemplateCheck> pathTemplateChecks;
-  public String apiClassName;
-  public String apiVariableName;
+  public static List<String> getPhpDocLines(String text) {
+    // TODO: convert markdown to phpDoc
+    List<String> result = new ArrayList<>();
+    for (String line : Splitter.on(String.format("%n")).split(text)) {
+      result.add(line);
+    }
+    return result;
+  }
 }

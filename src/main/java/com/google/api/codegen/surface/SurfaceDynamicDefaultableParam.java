@@ -14,18 +14,7 @@
  */
 package com.google.api.codegen.surface;
 
-import java.util.List;
-
-public class SurfacePagedFlattenedMethod implements SurfaceApiMethod {
-
-  public SurfaceInitCode initCode;
-  public SurfaceApiMethodDoc doc;
-  public String resourceTypeName;
+public class SurfaceDynamicDefaultableParam implements SurfaceParam {
   public String name;
-  public List<SurfaceRequestObjectParam> methodParams;
-  public List<SurfaceRequestObjectParam> requestObjectParams;
-  public String requestTypeName;
-  public List<SurfacePathTemplateCheck> pathTemplateChecks;
-  public String apiClassName;
-  public String apiVariableName;
+  public String defaultValue;
 }

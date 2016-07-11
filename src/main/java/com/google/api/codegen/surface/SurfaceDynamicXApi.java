@@ -37,6 +37,7 @@ public class SurfaceDynamicXApi implements SurfaceDoc {
 
   public List<String> imports;
   public String outputPath;
+  public List<SurfaceApiMethod> apiMethods;
 
   @Override
   public String getTemplateFileName() {

@@ -10,7 +10,24 @@ use Google\GAX\GrpcBootstrap;
 use Google\GAX\GrpcConstants;
 use Google\GAX\PageStreamingDescriptor;
 use Google\GAX\PathTemplate;
+use google\example\library\v1\AddCommentsRequest;
+use google\example\library\v1\CreateBookRequest;
+use google\example\library\v1\CreateShelfRequest;
+use google\example\library\v1\DeleteBookRequest;
+use google\example\library\v1\DeleteShelfRequest;
+use google\example\library\v1\GetBookFromArchiveRequest;
+use google\example\library\v1\GetBookRequest;
+use google\example\library\v1\GetShelfRequest;
 use google\example\library\v1\LibraryServiceClient;
+use google\example\library\v1\ListBooksRequest;
+use google\example\library\v1\ListShelvesRequest;
+use google\example\library\v1\ListStringsRequest;
+use google\example\library\v1\MergeShelvesRequest;
+use google\example\library\v1\MoveBookRequest;
+use google\example\library\v1\PublishSeriesRequest;
+use google\example\library\v1\UpdateBookIndexRequest;
+use google\example\library\v1\UpdateBookIndexRequest.IndexMapEntry;
+use google\example\library\v1\UpdateBookRequest;
 
 class LibraryServiceApi
 {
@@ -289,4 +306,298 @@ class LibraryServiceApi
             $createStubOptions);
     }
 
+    public function createShelf($shelf, $optionalArgs = [], $callSettings = [])
+    {
+        $request = new CreateShelfRequest();
+        $request->setShelf($shelf);
+
+        $mergedSettings = $this->defaultCallSettings['createShelf']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'CreateShelf', $mergedSettings, $this->descriptors['createShelf']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    public function getShelf($name, $optionalArgs = [], $callSettings = [])
+    {
+        $request = new GetShelfRequest();
+        $request->setName($name);
+        if (isset($optionalArgs['message'])) {
+            $request->setMessage($optionalArgs['message']);
+        }
+        if (isset($optionalArgs['stringBuilder'])) {
+            $request->setStringBuilder($optionalArgs['stringBuilder']);
+        }
+
+        $mergedSettings = $this->defaultCallSettings['getShelf']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'GetShelf', $mergedSettings, $this->descriptors['getShelf']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    public function listShelves($optionalArgs = [], $callSettings = [])
+    {
+        $request = new ListShelvesRequest();
+
+        $mergedSettings = $this->defaultCallSettings['listShelves']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'ListShelves', $mergedSettings, $this->descriptors['listShelves']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    public function deleteShelf($name, $optionalArgs = [], $callSettings = [])
+    {
+        $request = new DeleteShelfRequest();
+        $request->setName($name);
+
+        $mergedSettings = $this->defaultCallSettings['deleteShelf']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'DeleteShelf', $mergedSettings, $this->descriptors['deleteShelf']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    public function mergeShelves($name, $otherShelfName, $optionalArgs = [], $callSettings = [])
+    {
+        $request = new MergeShelvesRequest();
+        $request->setName($name);
+        $request->setOtherShelfName($otherShelfName);
+
+        $mergedSettings = $this->defaultCallSettings['mergeShelves']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'MergeShelves', $mergedSettings, $this->descriptors['mergeShelves']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    public function createBook($name, $book, $optionalArgs = [], $callSettings = [])
+    {
+        $request = new CreateBookRequest();
+        $request->setName($name);
+        $request->setBook($book);
+
+        $mergedSettings = $this->defaultCallSettings['createBook']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'CreateBook', $mergedSettings, $this->descriptors['createBook']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    public function publishSeries($shelf, $books, $optionalArgs = [], $callSettings = [])
+    {
+        $request = new PublishSeriesRequest();
+        $request->setShelf($shelf);
+        foreach ($books as $elem) {
+            $request->addBooks($elem);
+        }
+        if (isset($optionalArgs['edition'])) {
+            $request->setEdition($optionalArgs['edition']);
+        }
+
+        $mergedSettings = $this->defaultCallSettings['publishSeries']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'PublishSeries', $mergedSettings, $this->descriptors['publishSeries']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    public function getBook($name, $optionalArgs = [], $callSettings = [])
+    {
+        $request = new GetBookRequest();
+        $request->setName($name);
+
+        $mergedSettings = $this->defaultCallSettings['getBook']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'GetBook', $mergedSettings, $this->descriptors['getBook']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    public function listBooks($name, $optionalArgs = [], $callSettings = [])
+    {
+        $request = new ListBooksRequest();
+        $request->setName($name);
+        if (isset($optionalArgs['pageSize'])) {
+            $request->setPageSize($optionalArgs['pageSize']);
+        }
+        if (isset($optionalArgs['filter'])) {
+            $request->setFilter($optionalArgs['filter']);
+        }
+
+        $mergedSettings = $this->defaultCallSettings['listBooks']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'ListBooks', $mergedSettings, $this->descriptors['listBooks']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    public function deleteBook($name, $optionalArgs = [], $callSettings = [])
+    {
+        $request = new DeleteBookRequest();
+        $request->setName($name);
+
+        $mergedSettings = $this->defaultCallSettings['deleteBook']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'DeleteBook', $mergedSettings, $this->descriptors['deleteBook']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    public function updateBook($name, $book, $optionalArgs = [], $callSettings = [])
+    {
+        $request = new UpdateBookRequest();
+        $request->setName($name);
+        $request->setBook($book);
+        if (isset($optionalArgs['updateMask'])) {
+            $request->setUpdateMask($optionalArgs['updateMask']);
+        }
+        if (isset($optionalArgs['physicalMask'])) {
+            $request->setPhysicalMask($optionalArgs['physicalMask']);
+        }
+
+        $mergedSettings = $this->defaultCallSettings['updateBook']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'UpdateBook', $mergedSettings, $this->descriptors['updateBook']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    public function moveBook($name, $otherShelfName, $optionalArgs = [], $callSettings = [])
+    {
+        $request = new MoveBookRequest();
+        $request->setName($name);
+        $request->setOtherShelfName($otherShelfName);
+
+        $mergedSettings = $this->defaultCallSettings['moveBook']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'MoveBook', $mergedSettings, $this->descriptors['moveBook']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    public function listStrings($optionalArgs = [], $callSettings = [])
+    {
+        $request = new ListStringsRequest();
+        if (isset($optionalArgs['name'])) {
+            $request->setName($optionalArgs['name']);
+        }
+        if (isset($optionalArgs['pageSize'])) {
+            $request->setPageSize($optionalArgs['pageSize']);
+        }
+
+        $mergedSettings = $this->defaultCallSettings['listStrings']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'ListStrings', $mergedSettings, $this->descriptors['listStrings']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    public function addComments($name, $comments, $optionalArgs = [], $callSettings = [])
+    {
+        $request = new AddCommentsRequest();
+        $request->setName($name);
+        foreach ($comments as $elem) {
+            $request->addComments($elem);
+        }
+
+        $mergedSettings = $this->defaultCallSettings['addComments']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'AddComments', $mergedSettings, $this->descriptors['addComments']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    public function getBookFromArchive($name, $optionalArgs = [], $callSettings = [])
+    {
+        $request = new GetBookFromArchiveRequest();
+        $request->setName($name);
+
+        $mergedSettings = $this->defaultCallSettings['getBookFromArchive']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'GetBookFromArchive', $mergedSettings, $this->descriptors['getBookFromArchive']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
+
+    public function updateBookIndex($name, $indexName, $indexMap, $optionalArgs = [], $callSettings = [])
+    {
+        $request = new UpdateBookIndexRequest();
+        $request->setName($name);
+        $request->setIndexName($indexName);
+        foreach ($indexMap as $key => $value) {
+            $request->addIndexMap((new UpdateBookIndexRequest.IndexMapEntry())->setKey($key)->setValue($value));
+        }
+
+        $mergedSettings = $this->defaultCallSettings['updateBookIndex']->merge(
+            new CallSettings($callSettings));
+        $callable = ApiCallable::createApiCall(
+            $this->stub, 'UpdateBookIndex', $mergedSettings, $this->descriptors['updateBookIndex']);
+
+        return $callable(
+            $request,
+            [],
+            ['call_credentials_callback' => $this->createCredentialsCallback()]);
+    }
 }
