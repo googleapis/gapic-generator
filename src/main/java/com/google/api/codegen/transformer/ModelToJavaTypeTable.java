@@ -204,7 +204,7 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
    */
   @Override
   public String importAndGetZeroValue(TypeRef type) {
-    // Don't call getTypeName; we don't need to import these.
+    // Don't call importAndGetShortestName; we don't need to import these.
     if (type.isMap()) {
       return "new HashMap<>()";
     }

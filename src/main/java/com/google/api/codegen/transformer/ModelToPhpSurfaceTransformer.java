@@ -15,8 +15,10 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.ApiConfig;
+import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.surface.SurfaceApiMethod;
 import com.google.api.codegen.surface.SurfaceDoc;
 import com.google.api.codegen.surface.SurfaceDynamicXApi;
 import com.google.api.tools.framework.model.Interface;
@@ -30,12 +32,14 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
   private GapicCodePathMapper pathMapper;
   private PathTemplateTransformer pathTemplateTransformer;
   private PageStreamingTransformer pageStreamingTransformer;
+  private ApiMethodTransformer apiMethodTransformer;
 
   public ModelToPhpSurfaceTransformer(ApiConfig apiConfig, GapicCodePathMapper pathMapper) {
     this.cachedApiConfig = apiConfig;
     this.pathMapper = pathMapper;
     this.pathTemplateTransformer = new PathTemplateTransformer();
     this.pageStreamingTransformer = new PageStreamingTransformer();
+    this.apiMethodTransformer = new ApiMethodTransformer();
   }
 
   @Override
@@ -84,6 +88,8 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
     xapiClass.grpcClientTypeName =
         context.getTypeTable().importAndGetShortestName(grpcClientTypeName);
 
+    xapiClass.apiMethods = generateApiMethods(context);
+
     // must be done as the last step to catch all imports
     xapiClass.imports = context.getTypeTable().getImports();
 
@@ -92,6 +98,16 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
     surfaceData.add(xapiClass);
 
     return surfaceData;
+  }
+
+  private void addXApiImports(ModelToSurfaceContext context) {
+    ModelTypeTable typeTable = context.getTypeTable();
+    typeTable.addImport("Google\\GAX\\AgentHeaderDescriptor");
+    typeTable.addImport("Google\\GAX\\ApiCallable");
+    typeTable.addImport("Google\\GAX\\CallSettings");
+    typeTable.addImport("Google\\GAX\\GrpcBootstrap");
+    typeTable.addImport("Google\\GAX\\GrpcConstants");
+    typeTable.addImport("Google\\GAX\\PathTemplate");
   }
 
   private List<String> generateMethodKeys(ModelToSurfaceContext context) {
@@ -104,13 +120,16 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
     return methodKeys;
   }
 
-  private void addXApiImports(ModelToSurfaceContext context) {
-    ModelTypeTable typeTable = context.getTypeTable();
-    typeTable.addImport("Google\\GAX\\AgentHeaderDescriptor");
-    typeTable.addImport("Google\\GAX\\ApiCallable");
-    typeTable.addImport("Google\\GAX\\CallSettings");
-    typeTable.addImport("Google\\GAX\\GrpcBootstrap");
-    typeTable.addImport("Google\\GAX\\GrpcConstants");
-    typeTable.addImport("Google\\GAX\\PathTemplate");
+  private List<SurfaceApiMethod> generateApiMethods(ModelToSurfaceContext context) {
+    List<SurfaceApiMethod> apiMethods = new ArrayList<>();
+
+    for (Method method : context.getInterface().getMethods()) {
+      MethodConfig methodConfig = context.getMethodConfig(method);
+
+      apiMethods.add(
+          apiMethodTransformer.generateOptionalArrayMethod(context, method, methodConfig));
+    }
+
+    return apiMethods;
   }
 }

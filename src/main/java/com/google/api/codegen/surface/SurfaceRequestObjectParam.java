@@ -14,8 +14,11 @@
  */
 package com.google.api.codegen.surface;
 
-public class SurfaceRequestObjectParam {
+public class SurfaceRequestObjectParam implements SurfaceParam {
   public String name;
+  public String elementTypeName;
   public String typeName;
   public String setCallName;
+  public boolean isMap;
+  public boolean isArray;
 }

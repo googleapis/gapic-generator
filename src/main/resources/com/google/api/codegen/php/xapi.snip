@@ -16,6 +16,7 @@
         {@members()}
         {@staticFunctions(xapiClass)}
         {@constructor(xapiClass)}
+        {@apiMethods(xapiClass)}
     }
 @end
 
@@ -244,4 +245,73 @@
             $createStubOptions);
     }
     {@""}
+@end
+
+@private apiMethods(xapiClass)
+    @join apiMethod : xapiClass.apiMethods on BREAK.add(BREAK)
+        #{@methodDoc(service, method)}
+        public function {@apiMethod.name}({@paramList(apiMethod.methodParams)})
+        {
+            $request = new {@apiMethod.requestTypeName}();
+            @join param : apiMethod.requiredRequestObjectParams
+                {@setRequiredFieldCall(param)}
+            @end
+            @join param : apiMethod.optionalRequestObjectParams
+                {@setOptionalFieldCall(param)}
+            @end
+
+            $mergedSettings = $this->defaultCallSettings['{@apiMethod.key}']->merge(
+                new CallSettings($callSettings));
+            $callable = ApiCallable::createApiCall(
+                $this->stub, '{@apiMethod.grpcMethodName}', $mergedSettings, $this->descriptors['{@apiMethod.key}']);
+
+            return $callable(
+                $request,
+                [],
+                ['call_credentials_callback' => $this->createCredentialsCallback()]);
+        }
+    @end
+@end
+
+@private paramList(params)
+    @join param : params on ", "
+        @if param.defaultValue
+            ${@param.name} = {@param.defaultValue}
+        @else
+            ${@param.name}
+        @end
+    @end
+@end
+
+@private setRequiredFieldCall(param)
+    @if param.isMap
+        foreach (${@param.name} as $key => $value) {
+            $request->{@param.setCallName}((new {@param.elementTypeName}())->setKey($key)->setValue($value));
+        }
+    @else
+        @if param.isArray
+            foreach (${@param.name} as $elem) {
+                $request->{@param.setCallName}($elem);
+            }
+        @else
+            $request->{@param.setCallName}(${@param.name});
+        @end
+    @end
+@end
+
+@private setOptionalFieldCall(param)
+    if (isset($optionalArgs['{@param.name}'])) {
+        @if param.isMap
+            // TODO make this work
+            putAll...
+        @else
+            @if param.isArray
+                foreach ($optionalArgs['{@param.name}'] as $elem) {
+                    $request->{@param.setCallName}($elem);
+                }
+            @else
+                $request->{@param.setCallName}($optionalArgs['{@param.name}']);
+            @end
+        @end
+    }
 @end
