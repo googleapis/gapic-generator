@@ -17,6 +17,7 @@ package com.google.api.codegen.discovery;
 import com.google.api.codegen.Inflector;
 import com.google.api.codegen.LanguageUtil;
 import com.google.auto.value.AutoValue;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.Field;
@@ -45,7 +46,23 @@ public class DefaultString {
     }
   }
 
-  private static final ImmutableMap<SampleKey, String> sampleStrings =
+  private final String declare;
+  private final String comment;
+
+  private DefaultString(String declare, String comment) {
+    this.declare = declare;
+    this.comment = comment;
+  }
+
+  public String getDeclare() {
+    return declare;
+  }
+
+  public String getComment() {
+    return comment;
+  }
+
+  private static final ImmutableMap<SampleKey, String> SAMPLE_STRINGS =
       ImmutableMap.<SampleKey, String>builder()
           .put(
               SampleKey.create("compute", "zone", "[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?"),
@@ -58,24 +75,25 @@ public class DefaultString {
               "us-central1-f")
           .build();
 
-  public static String of(String apiName, String fieldName, String pattern) {
+  public static DefaultString of(String apiName, String fieldName, String pattern) {
+    String sample = null;
+
     if (pattern != null) {
-      String ret = sampleStrings.get(SampleKey.create(apiName, fieldName, pattern));
-      if (ret != null) {
-        return ret;
+      // If the pattern has a specially-recognized default, use the default. No sample.
+      String def = forPattern(pattern);
+      if (def != null) {
+        return new DefaultString(def, null);
       }
 
-      ret = forPattern(pattern);
-      if (ret != null) {
-        return ret;
-      }
+      // If the pattern has a specially-recognized sample, use the sample.
+      sample = SAMPLE_STRINGS.get(SampleKey.create(apiName, fieldName, pattern));
     }
-    return String.format(
-        "{MY-%s}", LanguageUtil.lowerCamelToUpperUnderscore(fieldName).replace('_', '-'));
-  }
 
-  static String getSample(String apiName, String fieldName, String pattern) {
-    return sampleStrings.get(SampleKey.create(apiName, fieldName, pattern));
+    String def =
+        String.format(
+            "{MY-%s}", LanguageUtil.lowerCamelToUpperUnderscore(fieldName).replace('_', '-'));
+
+    return new DefaultString(def, sample);
   }
 
   private static final String WILDCARD_PATTERN = "[^/]*";
@@ -83,6 +101,7 @@ public class DefaultString {
   /**
    * Returns a default string from `pattern`, or null if the pattern is not supported.
    */
+  @VisibleForTesting
   static String forPattern(String pattern) {
     // We only care about patterns that has alternating literal and wildcard like
     //  ^foo/[^/]*/bar/[^/]*$
