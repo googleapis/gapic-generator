@@ -118,14 +118,13 @@
             if err != nil {
                 return nil, err
             }
-            return &{@clientName} {
+            c := &{@clientName} {
                 conn: conn,
                 client: {@context.getServiceClientConstructorName(service)}(conn),
                 callOptions: s.CallOptions,
-                metadata: map[string][]string{
-                    "x-goog-api-client": []string{fmt.Sprintf("%s/%s %s gax/%s go/%s", s.AppName, s.AppVersion, gapicNameVersion, gax.Version, runtime.Version())},
-                },
-            }, nil
+            }
+            c.SetGoogleClientInfo("gax", gax.Version)
+            return c, nil
         }
 
         // Connection returns the client's connection to the API service.
@@ -137,6 +136,15 @@
         // the client is no longer required.
         func (c *{@clientName}) Close() error {
             return c.conn.Close()
+        }
+
+        // SetGoogleClientInfo sets the name and version of the application in
+        // the `x-goog-api-client` header passed on each request. Intended for
+        // use by Google-written clients.
+        func (c *{@clientName}) SetGoogleClientInfo(name, version string) {
+            c.metadata = map[string][]string{
+                "x-goog-api-client": {fmt.Sprintf("%s/%s %s gax/%s go/%s", name, version, gapicNameVersion, gax.Version, runtime.Version())},
+            }
         }
     @end
 @end
