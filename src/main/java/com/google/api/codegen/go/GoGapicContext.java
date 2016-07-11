@@ -119,16 +119,23 @@ public class GoGapicContext extends GapicContext implements GoContext {
   }
 
   /**
-   * Returns the name of the service's client.
+   * Returns the service's client name prefix.
    */
-  public String getClientName(Interface service) {
+  public String getClientPrefix(Interface service) {
     String name = getReducedServiceName(service);
     // If there's only one service, or the service name matches the package name, don't prefix with
     // the service name.
     if (getModel().getSymbolTable().getInterfaces().size() == 1 || name.equals(getPackageName())) {
-      return "Client";
+      return "";
     }
-    return LanguageUtil.lowerUnderscoreToUpperCamel(name) + "Client";
+    return LanguageUtil.lowerUnderscoreToUpperCamel(name);
+  }
+
+  /**
+   * Returns the service's client name.
+   */
+  public String getClientName(Interface service) {
+    return getClientPrefix(service) + "Client";
   }
 
   /**
@@ -464,6 +471,8 @@ public class GoGapicContext extends GapicContext implements GoContext {
     thirdParty.add(GoImport.create("google.golang.org/grpc/codes"));
     thirdParty.add(GoImport.create("google.golang.org/grpc/metadata"));
     thirdParty.add(GoImport.create(GAX_PACKAGE_BASE, "gax"));
+    thirdParty.add(GoImport.create("google.golang.org/api/option"));
+    thirdParty.add(GoImport.create("google.golang.org/api/transport"));
 
     thirdParty.addAll(getMessageImports(service, false));
     Set<GoImport> standard = getStandardImports(service);

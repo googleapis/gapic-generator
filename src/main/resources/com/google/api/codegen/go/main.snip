@@ -35,11 +35,11 @@
 
             // The gRPC API client.
             client {@context.getServiceClientName(service)}
+
+            // The call options for this service.
+            callOptions *{@context.getClientPrefix(service)}CallOptions
+
     @end
-
-        // The map from the method name to the default call options for the method of this service.
-        callOptions map[string][]gax.CallOption
-
         // The metadata to be sent with each request.
         metadata map[string][]string
     }
@@ -58,7 +58,27 @@
         @end
     )
 
-    func default{@context.getClientName(service)}Settings() gax.ClientSettings {
+    // {@context.getClientPrefix(service)}CallOptions contains the retry settings for each method of this client.
+    type {@context.getClientPrefix(service)}CallOptions struct {
+        @join method : service.getMethods
+            @let methodName = method.getSimpleName
+                {@methodName} []gax.CallOption
+            @end
+        @end
+    }
+
+    func default{@context.getClientName(service)}Options() []option.ClientOption {
+        return []option.ClientOption{
+            option.WithEndpoint("{@context.getServiceConfig.getServiceAddress(service)}:{@context.getServiceConfig.getServicePort()}"),
+            option.WithScopes(
+                @join scope : context.getServiceConfig.getAuthScopes(service)
+                    "{@scope}",
+                @end
+            ),
+        }
+    }
+
+    func default{@context.getClientPrefix(service)}CallOptions() *{@context.getClientPrefix(service)}CallOptions {
         @join retryCodesDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetryCodesDefinition) if retryCodesDef.getValue
             with{@context.lowerUnderscoreToUpperCamel(retryCodesDef.getKey)}RetryCodes := gax.WithRetryCodes(
                 []codes.Code{
@@ -75,29 +95,19 @@
                 gax.WithRPCTimeoutSettings({@retryDef.getValue.getInitialRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getRpcTimeoutMultiplier}),
             }
         @end
-        return gax.ClientSettings{
-            AppName: "gax",
-            AppVersion: gax.Version,
-            Endpoint: "{@context.getServiceConfig.getServiceAddress(service)}:{@context.getServiceConfig.getServicePort()}",
-            Scopes: []string{
-                @join scope : context.getServiceConfig.getAuthScopes(service)
-                    "{@scope}",
-                @end
-            },
-            CallOptions: map[string][]gax.CallOption{
-                @join method : service.getMethods
-                    @let methodName = method.getSimpleName, \
-                         methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-                         retryParamsMethodName = context.lowerUnderscoreToLowerCamel(methodConfig.getRetrySettingsConfigName), \
-                         retryCodesMethodName = context.lowerUnderscoreToUpperCamel(methodConfig.getRetryCodesConfigName)
-                        @if {@context.hasEmptyRetryCodes(service, methodConfig)}
-                            "{@methodName}": {@retryParamsMethodName}RetryOptions,
-                        @else
-                            "{@methodName}": append([]gax.CallOption{with{@retryCodesMethodName}RetryCodes}, {@retryParamsMethodName}RetryOptions...),
-                        @end
+        return &{@context.getClientPrefix(service)}CallOptions{
+            @join method : service.getMethods
+                @let methodName = method.getSimpleName, \
+                     methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+                     retryParamsMethodName = context.lowerUnderscoreToLowerCamel(methodConfig.getRetrySettingsConfigName), \
+                     retryCodesMethodName = context.lowerUnderscoreToUpperCamel(methodConfig.getRetryCodesConfigName)
+                    @if {@context.hasEmptyRetryCodes(service, methodConfig)}
+                        {@methodName}: {@retryParamsMethodName}RetryOptions,
+                    @else
+                        {@methodName}: append({@retryParamsMethodName}RetryOptions, with{@retryCodesMethodName}RetryCodes),
                     @end
                 @end
-            },
+            @end
         }
     }
 @end
@@ -109,19 +119,15 @@
         @join commentLine : context.comments(service)
             {@commentLine}
         @end
-        func New{@clientName}(ctx context.Context, opts ...gax.ClientOption) (*{@clientName}, error) {
-            s := default{@clientName}Settings()
-            for _, opt := range opts {
-                opt.Resolve(&s)
-            }
-            conn, err := gax.DialGRPC(ctx, s)
+        func New{@clientName}(ctx context.Context, opts ...option.ClientOption) (*{@clientName}, error) {
+            conn, err := transport.DialGRPC(ctx, append(default{@clientName}Options(), opts...)...)
             if err != nil {
                 return nil, err
             }
             c := &{@clientName} {
                 conn: conn,
                 client: {@context.getServiceClientConstructorName(service)}(conn),
-                callOptions: s.CallOptions,
+                callOptions: default{@context.getClientPrefix(service)}CallOptions(),
             }
             c.SetGoogleClientInfo("gax", gax.Version)
             return c, nil
@@ -145,6 +151,16 @@
             c.metadata = map[string][]string{
                 "x-goog-api-client": {fmt.Sprintf("%s/%s %s gax/%s go/%s", name, version, gapicNameVersion, gax.Version, runtime.Version())},
             }
+        }
+
+        // Set{@context.getClientPrefix(service)}CallOptions sets the client's call options.
+        func (c *{@clientName}) Set{@context.getClientPrefix(service)}CallOptions(opts *{@context.getClientPrefix(service)}CallOptions) {
+            c.callOptions = opts
+        }
+
+        // {@context.getClientPrefix(service)}CallOptions returns the client's call options.
+        func (c *{@clientName}) {@context.getClientPrefix(service)}CallOptions() *{@context.getClientPrefix(service)}CallOptions {
+            return c.callOptions
         }
     @end
 @end
@@ -227,7 +243,7 @@
                                 @end
                                 resp, err = c.client.{@methodName}(ctx, req)
                                 return err
-                            }, c.callOptions["{@methodName}"]...)
+                            }, c.callOptions.{@methodName}...)
                             if err != nil {
                                 return err
                             }
@@ -252,7 +268,7 @@
                             var err error
                             _, err = c.client.{@methodName}(ctx, req)
                             return err
-                        }, c.callOptions["{@methodName}"]...)
+                        }, c.callOptions.{@methodName}...)
                         return err
                     }
                 @else
@@ -263,7 +279,7 @@
                             var err error
                             resp, err = c.client.{@methodName}(ctx, req)
                             return err
-                        }, c.callOptions["{@methodName}"]...)
+                        }, c.callOptions.{@methodName}...)
                         if err != nil {
                             return nil, err
                         }
