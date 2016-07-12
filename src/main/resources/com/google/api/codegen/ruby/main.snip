@@ -57,9 +57,14 @@
        documentation = {@comments(context.defaultComments(service))}
     @if documentation
       {@documentation}
+    @#
 
     @end
+    @# @@!attribute [r] stub
+    @#   @@return [{@context.getApiConfig.getPackageName}::{@service.getSimpleName}::Stub]
     class {@context.getApiWrapperName(service)}
+      attr_reader :stub
+
       {@constantSection(service)}
       @if path_templates
         {@path_templates}
@@ -133,8 +138,9 @@
   @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
        jsonBaseName = {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
     client_config_file = Pathname.new(__dir__).join(
-      '{@jsonBaseName}_client_config.json')
-    @@defaults = client_config_file.open do |f|
+      '{@jsonBaseName}_client_config.json'
+    )
+    defaults = client_config_file.open do |f|
       @if or(context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods), \
              context.messages.filterBundlingMethods(ifaceConfig, service.getMethods))
         Google::Gax.construct_settings(
@@ -153,7 +159,9 @@
           @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
             page_descriptors: PAGE_DESCRIPTORS,
           @end
-          errors: Google::Gax::Grpc::API_ERRORS)
+          errors: Google::Gax::Grpc::API_ERRORS,
+          kwargs: headers
+        )
       @else
         Google::Gax.construct_settings(
           '{@service.getFullName}',
@@ -161,7 +169,9 @@
           client_config,
           Google::Gax::Grpc::STATUS_CODE_NAMES,
           timeout,
-          errors: Google::Gax::Grpc::API_ERRORS)
+          errors: Google::Gax::Grpc::API_ERRORS,
+          kwargs: headers
+        )
       @end
     end
   @end
@@ -197,11 +207,12 @@
       client_config: {},
       timeout: DEFAULT_TIMEOUT,
       app_name: 'gax',
-      app_version: Google::Gax::VERSION)
-      {@constructDefaults(service)}
+      app_version: Google::Gax::VERSION
+    )
       google_api_client = "#{app_name}/#{app_version} " @\
         "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze
-      @@headers = { :'x-goog-api-client' => google_api_client }
+      headers = { :'x-goog-api-client' => google_api_client }
+      {@constructDefaults(service)}
       @@stub = Google::Gax::Grpc.create_stub(
         service_path,
         port,
@@ -210,6 +221,15 @@
         scopes: scopes,
         &{@context.getApiConfig.getPackageName}::{@service.getSimpleName}::Stub.method(:new)
       )
+
+      @join method : service.getMethods
+        @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName())
+          @@{@methodName} = Google::Gax.create_api_call(
+            @@stub.method(:{@methodName}),
+            defaults['{@methodName}']
+          )
+        @end
+      @end
     end
   @end
 @end
@@ -245,7 +265,8 @@
     @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
 
       {@pathTemplateName(collectionConfig)} = Google::Gax::PathTemplate.new(
-        '{@collectionConfig.getNamePattern}')
+        '{@collectionConfig.getNamePattern}'
+      )
 
       private_constant :{@pathTemplateName(collectionConfig)}
     @end
@@ -269,7 +290,8 @@
   @# @@return [String]
   def self.{@collectionConfig.getEntityName}_path({@createResourceFunctionParams(collectionConfig)})
     {@pathTemplateName(collectionConfig)}.render(
-      {@createRenderDictionary(collectionConfig)})
+      {@createRenderDictionary(collectionConfig)}
+    )
   end
 @end
 
@@ -315,12 +337,6 @@
   @end
 @end
 
-@private callableConstructor(method)
-  api_call = Google::Gax.create_api_call(
-    @@stub.method(:{@context.upperCamelToLowerUnderscore(method.getSimpleName())}), settings)
-  api_call.call(req, **@@headers)
-@end
-
 @private flattenedMethod(service, method)
   @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName()), \
        inputTypeName = context.rubyTypeName(method.getInputType()), \
@@ -344,29 +360,30 @@
         @else
           {@optionalParameterValues(optionalParams)},
         @end
-        options: nil)
+        options: nil
+      )
         @if requiredParams
           @if optionalParams
             req = {@inputTypeName}.new(
               {@namedParameters(requiredParams)},
-              {@namedParameters(optionalParams)})
+              {@namedParameters(optionalParams)}
+            )
           @else
             req = {@inputTypeName}.new(
-              {@namedParameters(requiredParams)})
+              {@namedParameters(requiredParams)}
+            )
           @end
         @else
           req = {@inputTypeName}.new(
-            {@namedParameters(optionalParams)})
+            {@namedParameters(optionalParams)}
+          )
         @end
-        settings = @@defaults['{@methodName}'].merge(options)
-        {@callableConstructor(method)}
+        @@{@methodName}.call(req, options)
       end
     @else
-      def {@methodName}(
-        options: nil)
+      def {@methodName}(options: nil)
         req = {@inputTypeName}.new
-        settings = @@defaults['{@methodName}'].merge(options)
-        {@callableConstructor(method)}
+        @@{@methodName}.call(req, options)
       end
     @end
   @end
