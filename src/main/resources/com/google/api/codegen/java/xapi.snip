@@ -78,12 +78,12 @@
 
   @join apiCallable : xapiClass.apiCallableMembers
     @switch apiCallable.getClass.getSimpleName
-    @case "SurfaceSimpleApiCallable"
+    @case "SimpleApiCallableView"
       private final ApiCallable<{@apiCallable.inTypeName}, {@apiCallable.outTypeName}> {@apiCallable.name};
-    @case "SurfacePagedApiCallable"
+    @case "PagedApiCallableView"
       private final ApiCallable<{@apiCallable.inTypeName}, \
         {@apiCallable.pageAccessorTypeName}<{@apiCallable.resourceTypeName}>> {@apiCallable.name};
-    @case "SurfaceBundlingApiCallable"
+    @case "BundlingApiCallableView"
       private final ApiCallable<{@apiCallable.inTypeName}, {@apiCallable.outTypeName}> {@apiCallable.name};
     @default
       $unhandledCase: {@apiCallable.getClass.getSimpleName}$
@@ -126,12 +126,12 @@
 
     @join apiCallable : xapiClass.apiCallableMembers
       @switch apiCallable.getClass.getSimpleName
-      @case "SurfaceSimpleApiCallable"
+      @case "SimpleApiCallableView"
         this.{@apiCallable.name} = ApiCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
-      @case "SurfacePagedApiCallable"
+      @case "PagedApiCallableView"
         this.{@apiCallable.name} =
             ApiCallable.createPagedVariant(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
-      @case "SurfaceBundlingApiCallable"
+      @case "BundlingApiCallableView"
         this.{@apiCallable.name} = ApiCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
         if (settings.{@apiCallable.settingsFunctionName}().getBundlerFactory() != null) {
           closeables.add(settings.{@apiCallable.settingsFunctionName}().getBundlerFactory());
@@ -166,19 +166,19 @@
 @private apiMethods(xapiClass)
   @join apiMethod : xapiClass.apiMethods
     @switch apiMethod.getClass.getSimpleName
-    @case "SurfacePagedFlattenedMethod"
+    @case "PagedFlattenedMethodView"
       {@pagedFlattenedMethod(apiMethod)}
-    @case "SurfacePagedRequestObjectMethod"
+    @case "PagedRequestObjectMethodView"
       {@pagedRequestObjectMethod(apiMethod)}
-    @case "SurfacePagedCallableMethod"
+    @case "PagedCallableMethodView"
       {@pagedCallableMethod(apiMethod)}
-    @case "SurfaceUnpagedListCallableMethod"
+    @case "UnpagedListCallableMethodView"
       {@unpagedListCallableMethod(apiMethod)}
-    @case "SurfaceFlattenedMethod"
+    @case "FlattenedMethodView"
       {@flattenedMethod(apiMethod)}
-    @case "SurfaceRequestObjectMethod"
+    @case "RequestObjectMethodView"
       {@requestObjectMethod(apiMethod)}
-    @case "SurfaceCallableMethod"
+    @case "CallableMethodView"
       {@callableMethod(apiMethod)}
     @default
       $unhandledCase: {@apiMethod.getClass.getSimpleName}$
@@ -280,7 +280,7 @@
 
 @private paramDoc(doc)
   @switch doc.getClass.getSimpleName
-  @case "SurfaceSimpleParamDoc"
+  @case "SimpleParamDocView"
     {@simpleParamDoc(doc)}
   @default
     $unhandledCase: {@doc.getClass.getSimpleName}$
@@ -349,9 +349,9 @@
 
 @private renderInitValue(initValue)
   @switch initValue.getClass.getSimpleName
-  @case "SurfaceSimpleInitValue"
+  @case "SimpleInitValueView"
     {@initValue.initialValue}
-  @case "SurfaceFormattedInitValue"
+  @case "FormattedInitValueView"
     {@initValue.apiWrapperName}.{@initValue.formatFunctionName}({@initValue.formatArgs})
   @default
     {@unhandledCase()}

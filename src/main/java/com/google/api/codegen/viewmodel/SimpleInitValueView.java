@@ -12,15 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.viewmodel.ViewModelDoc;
-import com.google.api.tools.framework.model.Model;
+public class SimpleInitValueView implements InitValueView {
 
-import java.util.List;
-
-public interface ModelToSurfaceTransformer {
-  List<ViewModelDoc> transform(Model model);
-
-  List<String> getTemplateFileNames();
+  public String initialValue;
 }

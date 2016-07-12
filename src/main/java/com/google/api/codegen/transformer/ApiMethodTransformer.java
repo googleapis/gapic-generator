@@ -17,17 +17,17 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
-import com.google.api.codegen.surface.SurfaceApiMethodDoc;
-import com.google.api.codegen.surface.SurfaceDynamicDefaultableParam;
-import com.google.api.codegen.surface.SurfaceMapParamDoc;
-import com.google.api.codegen.surface.SurfaceOptionalArrayMethod;
-import com.google.api.codegen.surface.SurfacePagedFlattenedMethod;
-import com.google.api.codegen.surface.SurfacePagedRequestObjectMethod;
-import com.google.api.codegen.surface.SurfaceParamDoc;
-import com.google.api.codegen.surface.SurfacePathTemplateCheck;
-import com.google.api.codegen.surface.SurfaceRequestObjectParam;
-import com.google.api.codegen.surface.SurfaceSimpleParamDoc;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.viewmodel.ApiMethodDocView;
+import com.google.api.codegen.viewmodel.DynamicDefaultableParamView;
+import com.google.api.codegen.viewmodel.MapParamDocView;
+import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
+import com.google.api.codegen.viewmodel.PagedFlattenedMethodView;
+import com.google.api.codegen.viewmodel.PagedRequestObjectMethodView;
+import com.google.api.codegen.viewmodel.ParamDocView;
+import com.google.api.codegen.viewmodel.PathTemplateCheckView;
+import com.google.api.codegen.viewmodel.RequestObjectParamView;
+import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
@@ -46,18 +46,18 @@ public class ApiMethodTransformer {
     this.initCodeTransformer = new InitCodeTransformer();
   }
 
-  public SurfacePagedFlattenedMethod generatePagedFlattenedMethod(
-      ModelToSurfaceContext context,
+  public PagedFlattenedMethodView generatePagedFlattenedMethod(
+      TransformerContext context,
       Method method,
       MethodConfig methodConfig,
       ImmutableList<Field> fields) {
-    IdentifierNamer namer = context.getNamer();
-    SurfacePagedFlattenedMethod apiMethod = new SurfacePagedFlattenedMethod();
+    SurfaceNamer namer = context.getNamer();
+    PagedFlattenedMethodView apiMethod = new PagedFlattenedMethodView();
 
     apiMethod.initCode =
         initCodeTransformer.generateInitCode(context, method, methodConfig, fields);
 
-    SurfaceApiMethodDoc doc = new SurfaceApiMethodDoc();
+    ApiMethodDocView doc = new ApiMethodDocView();
 
     doc.mainDocLines = namer.getDocLines(method);
     doc.paramDocs = getMethodParamDocs(context, methodConfig, fields);
@@ -72,20 +72,20 @@ public class ApiMethodTransformer {
             .getAndSaveNicknameForElementType(pageStreaming.getResourcesField().getType());
     apiMethod.name = namer.getApiMethodName(method);
 
-    List<SurfaceRequestObjectParam> params = new ArrayList<>();
+    List<RequestObjectParamView> params = new ArrayList<>();
     for (Field field : fields) {
       params.add(generateRequestObjectParam(context, field));
     }
     apiMethod.methodParams = params;
     apiMethod.requestObjectParams = params;
 
-    List<SurfacePathTemplateCheck> pathTemplateChecks = new ArrayList<>();
+    List<PathTemplateCheckView> pathTemplateChecks = new ArrayList<>();
     for (Field field : fields) {
       ImmutableMap<String, String> fieldNamePatterns = methodConfig.getFieldNamePatterns();
       String entityName = fieldNamePatterns.get(field.getSimpleName());
       if (entityName != null) {
         CollectionConfig collectionConfig = context.getCollectionConfig(entityName);
-        SurfacePathTemplateCheck check = new SurfacePathTemplateCheck();
+        PathTemplateCheckView check = new PathTemplateCheckView();
         check.pathTemplateName = namer.getPathTemplateName(collectionConfig);
         check.paramName = namer.getVariableName(field);
 
@@ -102,16 +102,16 @@ public class ApiMethodTransformer {
     return apiMethod;
   }
 
-  public SurfacePagedRequestObjectMethod generatePagedRequestObjectMethod(
-      ModelToSurfaceContext context, Method method, MethodConfig methodConfig) {
-    IdentifierNamer namer = context.getNamer();
-    SurfacePagedRequestObjectMethod apiMethod = new SurfacePagedRequestObjectMethod();
+  public PagedRequestObjectMethodView generatePagedRequestObjectMethod(
+      TransformerContext context, Method method, MethodConfig methodConfig) {
+    SurfaceNamer namer = context.getNamer();
+    PagedRequestObjectMethodView apiMethod = new PagedRequestObjectMethodView();
 
-    SurfaceApiMethodDoc doc = new SurfaceApiMethodDoc();
+    ApiMethodDocView doc = new ApiMethodDocView();
 
     doc.mainDocLines = namer.getDocLines(method);
     doc.paramDocs =
-        Arrays.<SurfaceParamDoc>asList(getRequestObjectParamDoc(context, method.getInputType()));
+        Arrays.<ParamDocView>asList(getRequestObjectParamDoc(context, method.getInputType()));
     doc.throwsDocLines = namer.getThrowsDocLines();
 
     apiMethod.doc = doc;
@@ -133,15 +133,15 @@ public class ApiMethodTransformer {
     return apiMethod;
   }
 
-  public SurfaceOptionalArrayMethod generateOptionalArrayMethod(
-      ModelToSurfaceContext context, Method method, MethodConfig methodConfig) {
-    IdentifierNamer namer = context.getNamer();
-    SurfaceOptionalArrayMethod apiMethod = new SurfaceOptionalArrayMethod();
+  public OptionalArrayMethodView generateOptionalArrayMethod(
+      TransformerContext context, Method method, MethodConfig methodConfig) {
+    SurfaceNamer namer = context.getNamer();
+    OptionalArrayMethodView apiMethod = new OptionalArrayMethodView();
 
-    SurfaceApiMethodDoc doc = new SurfaceApiMethodDoc();
+    ApiMethodDocView doc = new ApiMethodDocView();
 
     doc.mainDocLines = namer.getDocLines(method);
-    List<SurfaceParamDoc> paramDocs =
+    List<ParamDocView> paramDocs =
         getMethodParamDocs(context, methodConfig, methodConfig.getRequiredFields());
     paramDocs.add(
         getOptionalArrayParamDoc(context, methodConfig, methodConfig.getOptionalFields()));
@@ -157,7 +157,7 @@ public class ApiMethodTransformer {
     apiMethod.key = namer.getMethodKey(method);
     apiMethod.grpcMethodName = namer.getGrpcMethodName(method);
 
-    List<SurfaceDynamicDefaultableParam> methodParams = new ArrayList<>();
+    List<DynamicDefaultableParamView> methodParams = new ArrayList<>();
     for (Field field : methodConfig.getRequiredFields()) {
       methodParams.add(generateDefaultableParam(context, field));
     }
@@ -166,25 +166,25 @@ public class ApiMethodTransformer {
     // (not done yet because array is sufficient for PHP, and maps are more complex to construct)
     TypeRef arrayType = TypeRef.fromPrimitiveName("string").makeRepeated();
 
-    SurfaceDynamicDefaultableParam optionalArgs = new SurfaceDynamicDefaultableParam();
+    DynamicDefaultableParamView optionalArgs = new DynamicDefaultableParamView();
     optionalArgs.name = namer.getVariableName(Name.from("optional", "args"));
     optionalArgs.defaultValue = context.getTypeTable().getZeroValueAndSaveNicknameFor(arrayType);
     methodParams.add(optionalArgs);
 
-    SurfaceDynamicDefaultableParam callSettings = new SurfaceDynamicDefaultableParam();
+    DynamicDefaultableParamView callSettings = new DynamicDefaultableParamView();
     callSettings.name = namer.getVariableName(Name.from("call", "settings"));
     callSettings.defaultValue = context.getTypeTable().getZeroValueAndSaveNicknameFor(arrayType);
     methodParams.add(callSettings);
 
     apiMethod.methodParams = methodParams;
 
-    List<SurfaceRequestObjectParam> requiredRequestObjectParams = new ArrayList<>();
+    List<RequestObjectParamView> requiredRequestObjectParams = new ArrayList<>();
     for (Field field : methodConfig.getRequiredFields()) {
       requiredRequestObjectParams.add(generateRequestObjectParam(context, field));
     }
     apiMethod.requiredRequestObjectParams = requiredRequestObjectParams;
 
-    List<SurfaceRequestObjectParam> optionalRequestObjectParams = new ArrayList<>();
+    List<RequestObjectParamView> optionalRequestObjectParams = new ArrayList<>();
     for (Field field : methodConfig.getOptionalFields()) {
       optionalRequestObjectParams.add(generateRequestObjectParam(context, field));
     }
@@ -193,26 +193,26 @@ public class ApiMethodTransformer {
     return apiMethod;
   }
 
-  public SurfaceDynamicDefaultableParam generateDefaultableParam(
-      ModelToSurfaceContext context, Field field) {
-    SurfaceDynamicDefaultableParam param = new SurfaceDynamicDefaultableParam();
+  public DynamicDefaultableParamView generateDefaultableParam(
+      TransformerContext context, Field field) {
+    DynamicDefaultableParamView param = new DynamicDefaultableParamView();
     param.name = context.getNamer().getVariableName(field);
     param.defaultValue = "";
     return param;
   }
 
-  public SurfaceRequestObjectParam generateRequestObjectParam(
-      ModelToSurfaceContext context, Field field) {
-    IdentifierNamer namer = context.getNamer();
-    SurfaceRequestObjectParam param = new SurfaceRequestObjectParam();
+  public RequestObjectParamView generateRequestObjectParam(
+      TransformerContext context, Field field) {
+    SurfaceNamer namer = context.getNamer();
+    RequestObjectParamView param = new RequestObjectParamView();
     param.name = namer.getVariableName(field);
     if (namer.shouldImportRequestObjectParamType(field)) {
       param.elementTypeName =
           context.getTypeTable().getAndSaveNicknameForElementType(field.getType());
       param.typeName = context.getTypeTable().getAndSaveNicknameFor(field.getType());
     } else {
-      param.elementTypeName = IdentifierNamer.NOT_IMPLEMENTED;
-      param.typeName = IdentifierNamer.NOT_IMPLEMENTED;
+      param.elementTypeName = SurfaceNamer.NOT_IMPLEMENTED;
+      param.typeName = SurfaceNamer.NOT_IMPLEMENTED;
     }
     param.setCallName = namer.getSetFunctionCallName(field.getType(), field.getSimpleName());
     param.isMap = field.getType().isMap();
@@ -220,11 +220,11 @@ public class ApiMethodTransformer {
     return param;
   }
 
-  public List<SurfaceParamDoc> getMethodParamDocs(
-      ModelToSurfaceContext context, MethodConfig methodConfig, Iterable<Field> fields) {
-    List<SurfaceParamDoc> allDocs = new ArrayList<>();
+  public List<ParamDocView> getMethodParamDocs(
+      TransformerContext context, MethodConfig methodConfig, Iterable<Field> fields) {
+    List<ParamDocView> allDocs = new ArrayList<>();
     for (Field field : fields) {
-      SurfaceSimpleParamDoc paramDoc = new SurfaceSimpleParamDoc();
+      SimpleParamDocView paramDoc = new SimpleParamDocView();
       paramDoc.paramName = context.getNamer().getVariableName(field);
       paramDoc.typeName = context.getTypeTable().getFullNameFor(field.getType());
 
@@ -253,9 +253,8 @@ public class ApiMethodTransformer {
     return allDocs;
   }
 
-  public SurfaceSimpleParamDoc getRequestObjectParamDoc(
-      ModelToSurfaceContext context, TypeRef typeRef) {
-    SurfaceSimpleParamDoc paramDoc = new SurfaceSimpleParamDoc();
+  public SimpleParamDocView getRequestObjectParamDoc(TransformerContext context, TypeRef typeRef) {
+    SimpleParamDocView paramDoc = new SimpleParamDocView();
     paramDoc.paramName = "request";
     paramDoc.typeName = context.getTypeTable().getAndSaveNicknameFor(typeRef);
     paramDoc.firstLine = "The request object containing all of the parameters for the API call.";
@@ -263,9 +262,9 @@ public class ApiMethodTransformer {
     return paramDoc;
   }
 
-  public SurfaceParamDoc getOptionalArrayParamDoc(
-      ModelToSurfaceContext context, MethodConfig methodConfig, Iterable<Field> fields) {
-    SurfaceMapParamDoc paramDoc = new SurfaceMapParamDoc();
+  public ParamDocView getOptionalArrayParamDoc(
+      TransformerContext context, MethodConfig methodConfig, Iterable<Field> fields) {
+    MapParamDocView paramDoc = new MapParamDocView();
 
     paramDoc.paramName = context.getNamer().getVariableName(Name.from("optional", "args"));
     paramDoc.typeName = context.getNamer().getOptionalArrayTypeName();
@@ -290,16 +289,16 @@ public class ApiMethodTransformer {
     return paramDoc;
   }
 
-  public SurfaceParamDoc getCallSettingsParamDoc(ModelToSurfaceContext context) {
-    SurfaceMapParamDoc paramDoc = new SurfaceMapParamDoc();
+  public ParamDocView getCallSettingsParamDoc(TransformerContext context) {
+    MapParamDocView paramDoc = new MapParamDocView();
 
     paramDoc.paramName = context.getNamer().getVariableName(Name.from("call", "settings"));
     paramDoc.typeName = context.getNamer().getOptionalArrayTypeName();
     paramDoc.firstLine = "Optional.";
     paramDoc.remainingLines = new ArrayList<>();
 
-    List<SurfaceParamDoc> arrayKeyDocs = new ArrayList<>();
-    SurfaceSimpleParamDoc retrySettingsDoc = new SurfaceSimpleParamDoc();
+    List<ParamDocView> arrayKeyDocs = new ArrayList<>();
+    SimpleParamDocView retrySettingsDoc = new SimpleParamDocView();
     retrySettingsDoc.typeName = context.getNamer().getRetrySettingsClassName();
     retrySettingsDoc.paramName = context.getNamer().getVariableName(Name.from("retry", "settings"));
     retrySettingsDoc.firstLine = "Retry settings to use for this call. If present, then";
@@ -307,7 +306,7 @@ public class ApiMethodTransformer {
     retrySettingsDoc.remainingLines = Arrays.asList("$timeout is ignored.");
     arrayKeyDocs.add(retrySettingsDoc);
 
-    SurfaceSimpleParamDoc timeoutDoc = new SurfaceSimpleParamDoc();
+    SimpleParamDocView timeoutDoc = new SimpleParamDocView();
     timeoutDoc.typeName = context.getTypeTable().getAndSaveNicknameFor(TypeRef.of(Type.TYPE_INT32));
     timeoutDoc.paramName = context.getNamer().getVariableName(Name.from("timeout", "millis"));
     // FIXME remove PHP-specific variable naming/syntax

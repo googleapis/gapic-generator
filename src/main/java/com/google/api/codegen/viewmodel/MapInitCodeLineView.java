@@ -12,15 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.viewmodel.ViewModelDoc;
-import com.google.api.tools.framework.model.Model;
+import com.google.api.codegen.metacode.InitCodeLineType;
 
 import java.util.List;
 
-public interface ModelToSurfaceTransformer {
-  List<ViewModelDoc> transform(Model model);
+public class MapInitCodeLineView implements InitCodeLineView {
 
-  List<String> getTemplateFileNames();
+  public InitCodeLineType lineType;
+  public String keyTypeName;
+  public String valueTypeName;
+  public String identifier;
+  public List<MapEntryView> initEntries;
 }
