@@ -26,9 +26,11 @@ import com.google.api.tools.framework.model.TypeRef;
 
 import java.util.List;
 
+/**
+ * An instance of IdentifierNamer provides language-specific names or other strings.
+ */
 public interface IdentifierNamer {
   public static final String NOT_IMPLEMENTED = "$ NOT IMPLEMENTED $";
-  public static final String NOT_POPULATED = "$ NOT POPULATED $";
 
   String getApiWrapperClassName(Interface interfaze);
 
