@@ -15,12 +15,12 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.surface.SurfaceDoc;
-import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Model;
 
 import java.util.List;
 
 public interface ModelToSurfaceTransformer {
-  List<SurfaceDoc> transform(Interface service);
+  List<SurfaceDoc> transform(Model model);
 
   List<String> getTemplateFileNames();
 }

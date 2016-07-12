@@ -211,8 +211,8 @@ public class ApiMethodTransformer {
           context.getTypeTable().getAndSaveNicknameForElementType(field.getType());
       param.typeName = context.getTypeTable().getAndSaveNicknameFor(field.getType());
     } else {
-      param.elementTypeName = IdentifierNamer.NOT_POPULATED;
-      param.typeName = IdentifierNamer.NOT_POPULATED;
+      param.elementTypeName = IdentifierNamer.NOT_IMPLEMENTED;
+      param.typeName = IdentifierNamer.NOT_IMPLEMENTED;
     }
     param.setCallName = namer.getSetFunctionCallName(field.getType(), field.getSimpleName());
     param.isMap = field.getType().isMap();

@@ -29,17 +29,14 @@ import java.util.TreeMap;
 
 public class SurfaceGapicProvider implements GapicProvider<Interface> {
   private final Model model;
-  private final InputElementView<Interface> view;
   private final SurfaceSnippetSetRunner snippetSetRunner;
   private final ModelToSurfaceTransformer modelToSurfaceTransformer;
 
   private SurfaceGapicProvider(
       Model model,
-      InputElementView<Interface> view,
       SurfaceSnippetSetRunner snippetSetRunner,
       ModelToSurfaceTransformer modelToSurfaceTransformer) {
     this.model = model;
-    this.view = view;
     this.snippetSetRunner = snippetSetRunner;
     this.modelToSurfaceTransformer = modelToSurfaceTransformer;
   }
@@ -62,24 +59,21 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
       return null;
     }
 
-    Map<String, Doc> docs = new TreeMap<>();
+    List<SurfaceDoc> surfaceDocs = modelToSurfaceTransformer.transform(model);
+    if (model.getDiagCollector().getErrorCount() > 0) {
+      return null;
+    }
 
-    // FIXME: Remove usage of InputElementView - just give the model to the transformer
-    for (Interface interfaze : view.getElementIterable(model)) {
-      List<SurfaceDoc> surfaceDocs = modelToSurfaceTransformer.transform(interfaze);
-      if (model.getDiagCollector().getErrorCount() > 0) {
+    Map<String, Doc> docs = new TreeMap<>();
+    for (SurfaceDoc surfaceDoc : surfaceDocs) {
+      if (snippetFileName != null && !surfaceDoc.getTemplateFileName().equals(snippetFileName)) {
         continue;
       }
-      for (SurfaceDoc surfaceDoc : surfaceDocs) {
-        if (snippetFileName != null && !surfaceDoc.getTemplateFileName().equals(snippetFileName)) {
-          continue;
-        }
-        Doc doc = snippetSetRunner.generate(surfaceDoc);
-        if (doc == null) {
-          continue;
-        }
-        docs.put(surfaceDoc.getOutputPath(), doc);
+      Doc doc = snippetSetRunner.generate(surfaceDoc);
+      if (doc == null) {
+        continue;
       }
+      docs.put(surfaceDoc.getOutputPath(), doc);
     }
 
     return docs;
@@ -91,7 +85,6 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
 
   public static class Builder {
     private Model model;
-    private InputElementView<Interface> view;
     private SurfaceSnippetSetRunner snippetSetRunner;
     private ModelToSurfaceTransformer modelToSurfaceTransformer;
 
@@ -99,11 +92,6 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
 
     public Builder setModel(Model model) {
       this.model = model;
-      return this;
-    }
-
-    public Builder setView(InputElementView<Interface> view) {
-      this.view = view;
       return this;
     }
 
@@ -119,7 +107,7 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
     }
 
     public SurfaceGapicProvider build() {
-      return new SurfaceGapicProvider(model, view, snippetSetRunner, modelToSurfaceTransformer);
+      return new SurfaceGapicProvider(model, snippetSetRunner, modelToSurfaceTransformer);
     }
   }
 }
