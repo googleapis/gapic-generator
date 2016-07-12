@@ -484,7 +484,9 @@ LibraryServiceApi.prototype.createBook = function createBook() {
  * @param {?APICallback<google.example.library.v1.PublishSeriesResponse>} callback
  *   The function which will be called with the result of the API call.
  * @returns {gax.BundleEventEmitter} - the event emitter to handle the call
- *   status.
+ *   status. When isBundling: false is specified in the options, it still returns
+ *   a gax.BundleEventEmitter but the API is immediately invoked, so it behaves same
+ *   as a gax.EventEmitter does.
  * @throws an error if the RPC is aborted.
  */
 LibraryServiceApi.prototype.publishSeries = function publishSeries() {

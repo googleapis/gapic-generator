@@ -147,14 +147,22 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     String classInfo = jsTypeName(method.getOutputType());
 
     String callbackType = isEmpty ? "EmptyCallback" : String.format("APICallback<%s>", classInfo);
+    String returnMessage =
+        "@returns {"
+            + (config.isBundling() ? "gax.BundleEventEmitter" : "gax.EventEmitter")
+            + "} - the event emitter to handle the call\n"
+            + "  status.";
+    if (config.isBundling()) {
+      returnMessage +=
+          " When isBundling: false is specified in the options, it still returns\n"
+              + "  a gax.BundleEventEmitter but the API is immediately invoked, so it behaves same\n"
+              + "  as a gax.EventEmitter does.";
+    }
     return "@param {?"
         + callbackType
         + "} callback\n"
         + "  The function which will be called with the result of the API call.\n"
-        + "@returns {"
-        + (config.isBundling() ? "gax.BundleEventEmitter" : "gax.EventEmitter")
-        + "} - the event emitter to handle the call\n"
-        + "  status.";
+        + returnMessage;
   }
 
   /**
