@@ -1037,4 +1037,18 @@ class LibraryServiceApi
             [],
             ['call_credentials_callback' => $this->createCredentialsCallback()]);
     }
+
+    /**
+     * Initiates an orderly shutdown in which preexisting calls continue but new
+     * calls are immediately cancelled.
+     */
+    public function close()
+    {
+        $this->stub->close();
+    }
+
+    private function createCredentialsCallback()
+    {
+        return $this->grpcBootstrap->createCallCredentialsCallback($this->scopes);
+    }
 }
