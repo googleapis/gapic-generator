@@ -15,22 +15,22 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.CollectionConfig;
-import com.google.api.codegen.surface.SurfaceFormatResourceFunction;
-import com.google.api.codegen.surface.SurfaceParseResourceFunction;
-import com.google.api.codegen.surface.SurfacePathTemplate;
-import com.google.api.codegen.surface.SurfacePathTemplateGetterFunction;
-import com.google.api.codegen.surface.SurfaceResourceIdParam;
+import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
+import com.google.api.codegen.viewmodel.ParseResourceFunctionView;
+import com.google.api.codegen.viewmodel.PathTemplateView;
+import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
+import com.google.api.codegen.viewmodel.ResourceIdParamView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PathTemplateTransformer {
 
-  public List<SurfacePathTemplate> generatePathTemplates(ModelToSurfaceContext context) {
-    List<SurfacePathTemplate> pathTemplates = new ArrayList<>();
+  public List<PathTemplateView> generatePathTemplates(TransformerContext context) {
+    List<PathTemplateView> pathTemplates = new ArrayList<>();
 
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
-      SurfacePathTemplate pathTemplate = new SurfacePathTemplate();
+      PathTemplateView pathTemplate = new PathTemplateView();
       pathTemplate.name = context.getNamer().getPathTemplateName(collectionConfig);
       pathTemplate.pattern = collectionConfig.getNamePattern();
       pathTemplates.add(pathTemplate);
@@ -39,20 +39,20 @@ public class PathTemplateTransformer {
     return pathTemplates;
   }
 
-  public List<SurfaceFormatResourceFunction> generateFormatResourceFunctions(
-      ModelToSurfaceContext context) {
-    List<SurfaceFormatResourceFunction> functions = new ArrayList<>();
+  public List<FormatResourceFunctionView> generateFormatResourceFunctions(
+      TransformerContext context) {
+    List<FormatResourceFunctionView> functions = new ArrayList<>();
 
-    IdentifierNamer namer = context.getNamer();
+    SurfaceNamer namer = context.getNamer();
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
-      SurfaceFormatResourceFunction function = new SurfaceFormatResourceFunction();
+      FormatResourceFunctionView function = new FormatResourceFunctionView();
       function.entityName = collectionConfig.getEntityName();
       function.name = namer.getFormatFunctionName(collectionConfig);
       function.pathTemplateName = namer.getPathTemplateName(collectionConfig);
       function.pathTemplateGetterName = namer.getPathTemplateNameGetter(collectionConfig);
-      List<SurfaceResourceIdParam> resourceIdParams = new ArrayList<>();
+      List<ResourceIdParamView> resourceIdParams = new ArrayList<>();
       for (String var : collectionConfig.getNameTemplate().vars()) {
-        SurfaceResourceIdParam param = new SurfaceResourceIdParam();
+        ResourceIdParamView param = new ResourceIdParamView();
         param.name = namer.getParamName(var);
         param.templateKey = var;
         resourceIdParams.add(param);
@@ -65,14 +65,14 @@ public class PathTemplateTransformer {
     return functions;
   }
 
-  public List<SurfaceParseResourceFunction> generateParseResourceFunctions(
-      ModelToSurfaceContext context) {
-    List<SurfaceParseResourceFunction> functions = new ArrayList<>();
+  public List<ParseResourceFunctionView> generateParseResourceFunctions(
+      TransformerContext context) {
+    List<ParseResourceFunctionView> functions = new ArrayList<>();
 
-    IdentifierNamer namer = context.getNamer();
+    SurfaceNamer namer = context.getNamer();
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
       for (String var : collectionConfig.getNameTemplate().vars()) {
-        SurfaceParseResourceFunction function = new SurfaceParseResourceFunction();
+        ParseResourceFunctionView function = new ParseResourceFunctionView();
         function.entityName = namer.getEntityName(collectionConfig);
         function.name = namer.getParseFunctionName(var, collectionConfig);
         function.pathTemplateName = namer.getPathTemplateName(collectionConfig);
@@ -87,13 +87,13 @@ public class PathTemplateTransformer {
     return functions;
   }
 
-  public List<SurfacePathTemplateGetterFunction> generatePathTemplateGetterFunctions(
-      ModelToSurfaceContext context) {
-    List<SurfacePathTemplateGetterFunction> functions = new ArrayList<>();
+  public List<PathTemplateGetterFunctionView> generatePathTemplateGetterFunctions(
+      TransformerContext context) {
+    List<PathTemplateGetterFunctionView> functions = new ArrayList<>();
 
-    IdentifierNamer namer = context.getNamer();
+    SurfaceNamer namer = context.getNamer();
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
-      SurfacePathTemplateGetterFunction function = new SurfacePathTemplateGetterFunction();
+      PathTemplateGetterFunctionView function = new PathTemplateGetterFunctionView();
       function.name = namer.getPathTemplateNameGetter(collectionConfig);
       function.pathTemplateName = namer.getPathTemplateName(collectionConfig);
       function.pattern = collectionConfig.getNamePattern();

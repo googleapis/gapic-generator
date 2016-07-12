@@ -12,15 +12,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
-
-import com.google.api.codegen.viewmodel.ViewModelDoc;
-import com.google.api.tools.framework.model.Model;
+package com.google.api.codegen.viewmodel;
 
 import java.util.List;
 
-public interface ModelToSurfaceTransformer {
-  List<ViewModelDoc> transform(Model model);
+public class StaticXSettingsView implements ViewModelDoc {
+  public String packageName;
+  public String name;
+  public String serviceAddress;
+  public Integer servicePort;
+  public Iterable<String> authScopes;
 
-  List<String> getTemplateFileNames();
+  public List<String> imports;
+  public String outputPath;
+
+  @Override
+  public String getTemplateFileName() {
+    return "xsettings.snip";
+  }
+
+  @Override
+  public String getOutputPath() {
+    return outputPath;
+  }
 }

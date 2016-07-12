@@ -41,9 +41,9 @@ import com.google.api.codegen.py.PythonProtoFileInitializer;
 import com.google.api.codegen.py.PythonSnippetSetRunner;
 import com.google.api.codegen.ruby.RubyGapicContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
-import com.google.api.codegen.surface.SurfaceSnippetSetRunner;
 import com.google.api.codegen.transformer.ModelToJavaSurfaceTransformer;
 import com.google.api.codegen.transformer.ModelToPhpSurfaceTransformer;
+import com.google.api.codegen.viewmodel.CommonSnippetSetRunner;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -153,7 +153,7 @@ public class MainGapicProviderFactory
       GapicProvider<? extends Object> mainProvider =
           SurfaceGapicProvider.newBuilder()
               .setModel(model)
-              .setSnippetSetRunner(new SurfaceSnippetSetRunner(resourceRoot, new JavaSnippetUtil()))
+              .setSnippetSetRunner(new CommonSnippetSetRunner(resourceRoot, new JavaSnippetUtil()))
               .setModelToSurfaceTransformer(
                   new ModelToJavaSurfaceTransformer(apiConfig, javaPathMapper))
               .build();
@@ -217,7 +217,7 @@ public class MainGapicProviderFactory
       GapicProvider<? extends Object> mainProvider =
           SurfaceGapicProvider.newBuilder()
               .setModel(model)
-              .setSnippetSetRunner(new SurfaceSnippetSetRunner(resourceRoot, new Object()))
+              .setSnippetSetRunner(new CommonSnippetSetRunner(resourceRoot, new Object()))
               .setModelToSurfaceTransformer(
                   new ModelToPhpSurfaceTransformer(apiConfig, phpPathMapper))
               .build();

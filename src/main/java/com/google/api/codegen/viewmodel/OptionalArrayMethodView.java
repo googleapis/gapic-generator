@@ -12,15 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
-
-import com.google.api.codegen.viewmodel.ViewModelDoc;
-import com.google.api.tools.framework.model.Model;
+package com.google.api.codegen.viewmodel;
 
 import java.util.List;
 
-public interface ModelToSurfaceTransformer {
-  List<ViewModelDoc> transform(Model model);
+public class OptionalArrayMethodView implements ApiMethodView {
 
-  List<String> getTemplateFileNames();
+  public ApiMethodDocView doc;
+  public String name;
+  public String requestTypeName;
+  public String key;
+  public Object grpcMethodName;
+  public List<DynamicDefaultableParamView> methodParams;
+  public List<RequestObjectParamView> requiredRequestObjectParams;
+  public List<RequestObjectParamView> optionalRequestObjectParams;
 }

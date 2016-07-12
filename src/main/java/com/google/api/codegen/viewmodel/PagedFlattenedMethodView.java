@@ -12,15 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
-
-import com.google.api.codegen.viewmodel.ViewModelDoc;
-import com.google.api.tools.framework.model.Model;
+package com.google.api.codegen.viewmodel;
 
 import java.util.List;
 
-public interface ModelToSurfaceTransformer {
-  List<ViewModelDoc> transform(Model model);
+public class PagedFlattenedMethodView implements ApiMethodView {
 
-  List<String> getTemplateFileNames();
+  public InitCodeView initCode;
+  public ApiMethodDocView doc;
+  public String resourceTypeName;
+  public String name;
+  public List<RequestObjectParamView> methodParams;
+  public List<RequestObjectParamView> requestObjectParams;
+  public String requestTypeName;
+  public List<PathTemplateCheckView> pathTemplateChecks;
+  public String apiClassName;
+  public String apiVariableName;
 }

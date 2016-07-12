@@ -16,8 +16,8 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
-import com.google.api.codegen.surface.SurfacePageStreamingDescriptor;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;
 import com.google.api.tools.framework.model.Method;
 
 import java.util.ArrayList;
@@ -25,8 +25,8 @@ import java.util.List;
 
 public class PageStreamingTransformer {
 
-  public List<SurfacePageStreamingDescriptor> generateDescriptors(ModelToSurfaceContext context) {
-    List<SurfacePageStreamingDescriptor> descriptors = new ArrayList<>();
+  public List<PageStreamingDescriptorView> generateDescriptors(TransformerContext context) {
+    List<PageStreamingDescriptorView> descriptors = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
@@ -36,7 +36,7 @@ public class PageStreamingTransformer {
       context.getNamer().addPageStreamingDescriptorImports(context.getTypeTable());
       PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
 
-      SurfacePageStreamingDescriptor descriptor = new SurfacePageStreamingDescriptor();
+      PageStreamingDescriptorView descriptor = new PageStreamingDescriptorView();
       descriptor.varName = context.getNamer().getPageStreamingDescriptorName(method);
       descriptor.requestTokenFieldName = pageStreaming.getRequestTokenField().getSimpleName();
       descriptor.responseTokenFieldName = pageStreaming.getResponseTokenField().getSimpleName();

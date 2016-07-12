@@ -21,19 +21,19 @@ import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
-import com.google.api.codegen.surface.SurfaceApiCallable;
-import com.google.api.codegen.surface.SurfaceApiMethod;
-import com.google.api.codegen.surface.SurfaceBundlingApiCallable;
-import com.google.api.codegen.surface.SurfaceCallableMethod;
-import com.google.api.codegen.surface.SurfaceDoc;
-import com.google.api.codegen.surface.SurfaceFlattenedMethod;
-import com.google.api.codegen.surface.SurfacePagedApiCallable;
-import com.google.api.codegen.surface.SurfacePagedCallableMethod;
-import com.google.api.codegen.surface.SurfaceRequestObjectMethod;
-import com.google.api.codegen.surface.SurfaceSimpleApiCallable;
-import com.google.api.codegen.surface.SurfaceStaticXApi;
-import com.google.api.codegen.surface.SurfaceStaticXSettings;
-import com.google.api.codegen.surface.SurfaceUnpagedListCallableMethod;
+import com.google.api.codegen.viewmodel.ApiCallableView;
+import com.google.api.codegen.viewmodel.ApiMethodView;
+import com.google.api.codegen.viewmodel.BundlingApiCallableView;
+import com.google.api.codegen.viewmodel.CallableMethodView;
+import com.google.api.codegen.viewmodel.ViewModelDoc;
+import com.google.api.codegen.viewmodel.FlattenedMethodView;
+import com.google.api.codegen.viewmodel.PagedApiCallableView;
+import com.google.api.codegen.viewmodel.PagedCallableMethodView;
+import com.google.api.codegen.viewmodel.RequestObjectMethodView;
+import com.google.api.codegen.viewmodel.SimpleApiCallableView;
+import com.google.api.codegen.viewmodel.StaticXApiView;
+import com.google.api.codegen.viewmodel.StaticXSettingsView;
+import com.google.api.codegen.viewmodel.UnpagedListCallableMethodView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -60,33 +60,33 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
   public List<String> getTemplateFileNames() {
     List<String> fileNames = new ArrayList<>();
 
-    fileNames.add(new SurfaceStaticXApi().getTemplateFileName());
-    fileNames.add(new SurfaceStaticXSettings().getTemplateFileName());
+    fileNames.add(new StaticXApiView().getTemplateFileName());
+    fileNames.add(new StaticXSettingsView().getTemplateFileName());
 
     return fileNames;
   }
 
   @Override
-  public List<SurfaceDoc> transform(Model model) {
-    List<SurfaceDoc> surfaceDocs = new ArrayList<>();
+  public List<ViewModelDoc> transform(Model model) {
+    List<ViewModelDoc> surfaceDocs = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       surfaceDocs.addAll(transform(service));
     }
     return surfaceDocs;
   }
 
-  public List<SurfaceDoc> transform(Interface service) {
-    ModelToSurfaceContext context =
-        ModelToSurfaceContext.create(
-            service, cachedApiConfig, new ModelToJavaTypeTable(), new JavaIdentifierNamer());
+  public List<ViewModelDoc> transform(Interface service) {
+    TransformerContext context =
+        TransformerContext.create(
+            service, cachedApiConfig, new ModelToJavaTypeTable(), new JavaSurfaceNamer());
 
     String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
 
-    List<SurfaceDoc> surfaceData = new ArrayList<>();
+    List<ViewModelDoc> surfaceData = new ArrayList<>();
 
     addXApiImports(context);
 
-    SurfaceStaticXApi xapiClass = new SurfaceStaticXApi();
+    StaticXApiView xapiClass = new StaticXApiView();
     xapiClass.packageName = context.getApiConfig().getPackageName();
     xapiClass.name = context.getNamer().getApiWrapperClassName(context.getInterface());
     xapiClass.settingsClassName = getSettingsClassName(context);
@@ -108,7 +108,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     context = context.withNewTypeTable();
     addXSettingsImports(context);
 
-    SurfaceStaticXSettings xsettingsClass = new SurfaceStaticXSettings();
+    StaticXSettingsView xsettingsClass = new StaticXSettingsView();
     xsettingsClass.packageName = context.getApiConfig().getPackageName();
     xsettingsClass.name = getSettingsClassName(context);
     ServiceConfig serviceConfig = new ServiceConfig();
@@ -126,7 +126,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     return surfaceData;
   }
 
-  private void addXApiImports(ModelToSurfaceContext context) {
+  private void addXApiImports(TransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiCallable");
     typeTable.saveNicknameFor("com.google.api.gax.protobuf.PathTemplate");
@@ -138,7 +138,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
   }
 
-  private void addXSettingsImports(ModelToSurfaceContext context) {
+  private void addXSettingsImports(TransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("com.google.api.gax.core.ConnectionSettings");
     typeTable.saveNicknameFor("com.google.api.gax.core.RetrySettings");
@@ -159,8 +159,8 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
   }
 
-  private List<SurfaceApiCallable> generateApiCallables(ModelToSurfaceContext context) {
-    List<SurfaceApiCallable> callableMembers = new ArrayList<>();
+  private List<ApiCallableView> generateApiCallables(TransformerContext context) {
+    List<ApiCallableView> callableMembers = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
@@ -170,15 +170,15 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     return callableMembers;
   }
 
-  private List<SurfaceApiCallable> generateApiCallables(
-      ModelToSurfaceContext context, Method method, MethodConfig methodConfig) {
+  private List<ApiCallableView> generateApiCallables(
+      TransformerContext context, Method method, MethodConfig methodConfig) {
     String methodNameLowCml = LanguageUtil.upperCamelToLowerCamel(method.getSimpleName());
     ModelTypeTable typeTable = context.getTypeTable();
 
-    List<SurfaceApiCallable> apiCallables = new ArrayList<>();
+    List<ApiCallableView> apiCallables = new ArrayList<>();
 
     if (methodConfig.isBundling()) {
-      SurfaceBundlingApiCallable apiCallable = new SurfaceBundlingApiCallable();
+      BundlingApiCallableView apiCallable = new BundlingApiCallableView();
 
       apiCallable.inTypeName = typeTable.getAndSaveNicknameFor(method.getInputType());
       apiCallable.outTypeName = typeTable.getAndSaveNicknameFor(method.getOutputType());
@@ -188,7 +188,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
       apiCallables.add(apiCallable);
 
     } else {
-      SurfaceSimpleApiCallable apiCallable = new SurfaceSimpleApiCallable();
+      SimpleApiCallableView apiCallable = new SimpleApiCallableView();
 
       apiCallable.inTypeName = typeTable.getAndSaveNicknameFor(method.getInputType());
       apiCallable.outTypeName = typeTable.getAndSaveNicknameFor(method.getOutputType());
@@ -200,7 +200,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
       if (methodConfig.isPageStreaming()) {
         PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
 
-        SurfacePagedApiCallable pagedApiCallable = new SurfacePagedApiCallable();
+        PagedApiCallableView pagedApiCallable = new PagedApiCallableView();
 
         pagedApiCallable.inTypeName = apiCallable.inTypeName;
         pagedApiCallable.pageAccessorTypeName =
@@ -216,8 +216,8 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     return apiCallables;
   }
 
-  private List<SurfaceApiMethod> generateApiMethods(ModelToSurfaceContext context) {
-    List<SurfaceApiMethod> apiMethods = new ArrayList<>();
+  private List<ApiMethodView> generateApiMethods(TransformerContext context) {
+    List<ApiMethodView> apiMethods = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
@@ -232,25 +232,25 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
         }
         apiMethods.add(
             apiMethodTransformer.generatePagedRequestObjectMethod(context, method, methodConfig));
-        apiMethods.add(new SurfacePagedCallableMethod());
-        apiMethods.add(new SurfaceUnpagedListCallableMethod());
+        apiMethods.add(new PagedCallableMethodView());
+        apiMethods.add(new UnpagedListCallableMethodView());
       } else {
         if (methodConfig.isFlattening()) {
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
-            SurfaceFlattenedMethod apiMethod = new SurfaceFlattenedMethod();
+            FlattenedMethodView apiMethod = new FlattenedMethodView();
             apiMethod.fields = fields;
             apiMethods.add(apiMethod);
           }
         }
-        apiMethods.add(new SurfaceRequestObjectMethod());
-        apiMethods.add(new SurfaceCallableMethod());
+        apiMethods.add(new RequestObjectMethodView());
+        apiMethods.add(new CallableMethodView());
       }
     }
 
     return apiMethods;
   }
 
-  private String getSettingsClassName(ModelToSurfaceContext context) {
+  private String getSettingsClassName(TransformerContext context) {
     return context.getInterface().getSimpleName() + "Settings";
   }
 }
