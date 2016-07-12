@@ -330,9 +330,10 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       case TYPE_BYTES:
         return "function(s) { return s.length; }";
       default:
-        // It's not quite easy how to compute the byte length for numeric
-        // values. Returns '8' (necessary for 64bit integer) always for now.
-        return "function(n) { return 8; }";
+        // There is no easy way to say the actual length of the numeric fields.
+        // For now throwing an exception.
+        throw new IllegalArgumentException(
+            "Can't determine the byte length function for " + typeRef.getKind());
     }
   }
 
