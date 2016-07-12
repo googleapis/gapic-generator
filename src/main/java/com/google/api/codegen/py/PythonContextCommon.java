@@ -73,6 +73,7 @@ public class PythonContextCommon {
   private static final ImmutableSet<String> KEYWORD_BUILT_IN_SET =
       ImmutableSet.<String>builder()
           .add(
+              /* Python keywords and built-ins */ 
               "and",
               "as",
               "assert",
@@ -179,6 +180,8 @@ public class PythonContextCommon {
               "vars",
               "xrange",
               "zip",
-              "__import__")
+              "__import__",
+              /* GAPIC keywords */
+              "options")
           .build();
 }
