@@ -17,6 +17,7 @@
         {@staticFunctions(xapiClass)}
         {@constructor(xapiClass)}
         {@apiMethods(xapiClass)}
+        {@cleanupSection()}
     }
 @end
 
@@ -248,7 +249,7 @@
 @end
 
 @private apiMethods(xapiClass)
-    @join apiMethod : xapiClass.apiMethods on BREAK.add(BREAK)
+    @join apiMethod : xapiClass.apiMethods
         {@methodDoc(apiMethod.doc)}
         public function {@apiMethod.name}({@paramList(apiMethod.methodParams)})
         {
@@ -270,6 +271,7 @@
                 [],
                 ['call_credentials_callback' => $this->createCredentialsCallback()]);
         }
+        {@""}
     @end
 @end
 
@@ -381,4 +383,20 @@
         @end
     @end
      * }
+@end
+
+@private cleanupSection()
+    /**
+     * Initiates an orderly shutdown in which preexisting calls continue but new
+     * calls are immediately cancelled.
+     */
+    public function close()
+    {
+        $this->stub->close();
+    }
+
+    private function createCredentialsCallback()
+    {
+        return $this->grpcBootstrap->createCallCredentialsCallback($this->scopes);
+    }
 @end
