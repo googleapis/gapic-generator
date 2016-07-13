@@ -32,7 +32,7 @@ public class CommonSnippetSetRunner {
     this.utilObject = utilObject;
   }
 
-  public Doc generate(ViewModelDoc input) {
+  public Doc generate(ViewModel input) {
     SurfaceSnippetSet snippets =
         SnippetSet.createSnippetInterface(
             SurfaceSnippetSet.class,
@@ -44,6 +44,6 @@ public class CommonSnippetSetRunner {
   }
 
   private interface SurfaceSnippetSet {
-    Doc generate(ViewModelDoc input);
+    Doc generate(ViewModel input);
   }
 }

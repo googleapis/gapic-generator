@@ -15,11 +15,11 @@
 package com.google.api.codegen.gapic;
 
 import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.clientconfig.ClientConfigGapicContext;
 import com.google.api.codegen.InterfaceListView;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ProtoFileView;
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.clientconfig.ClientConfigGapicContext;
 import com.google.api.codegen.clientconfig.ClientConfigSnippetSetRunner;
 import com.google.api.codegen.csharp.CSharpCodePathMapper;
 import com.google.api.codegen.csharp.CSharpGapicContext;
@@ -30,12 +30,10 @@ import com.google.api.codegen.java.JavaGapicContext;
 import com.google.api.codegen.java.JavaIterableSnippetSetRunner;
 import com.google.api.codegen.java.JavaSnippetSetRunner;
 import com.google.api.codegen.java.JavaSnippetUtil;
-import com.google.api.codegen.java.JavaTypeTable;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
 import com.google.api.codegen.php.PhpGapicContext;
 import com.google.api.codegen.php.PhpSnippetSetRunner;
-import com.google.api.codegen.php.PhpTypeTable;
 import com.google.api.codegen.py.PythonGapicContext;
 import com.google.api.codegen.py.PythonInterfaceInitializer;
 import com.google.api.codegen.py.PythonProtoFileInitializer;
@@ -163,7 +161,7 @@ public class MainGapicProviderFactory
               .setSnippetSetRunner(
                   new CommonSnippetSetRunner(
                       SnippetSetRunner.SNIPPET_RESOURCE_ROOT, new JavaSnippetUtil()))
-              .setModelToSurfaceTransformer(
+              .setModelToViewTransformer(
                   new ModelToJavaSurfaceTransformer(apiConfig, javaPathMapper))
               .build();
 
@@ -233,8 +231,7 @@ public class MainGapicProviderFactory
               .setModel(model)
               .setSnippetSetRunner(
                   new CommonSnippetSetRunner(SnippetSetRunner.SNIPPET_RESOURCE_ROOT, new Object()))
-              .setModelToSurfaceTransformer(
-                  new ModelToPhpSurfaceTransformer(apiConfig, phpPathMapper))
+              .setModelToViewTransformer(new ModelToPhpSurfaceTransformer(apiConfig, phpPathMapper))
               .build();
 
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);

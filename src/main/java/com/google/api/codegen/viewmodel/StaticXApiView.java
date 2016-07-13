@@ -16,7 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import java.util.List;
 
-public class StaticXApiView implements ViewModelDoc {
+public class StaticXApiView implements ViewModel {
   public String templateFileName;
   public String packageName;
   public String name;

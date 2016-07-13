@@ -16,7 +16,7 @@ package com.google.api.codegen.viewmodel;
 
 import java.util.List;
 
-public class StaticXSettingsView implements ViewModelDoc {
+public class StaticXSettingsView implements ViewModel {
   public String templateFileName;
 
   public String packageName;

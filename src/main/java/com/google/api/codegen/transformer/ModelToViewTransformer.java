@@ -14,13 +14,13 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.viewmodel.ViewModelDoc;
+import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Model;
 
 import java.util.List;
 
-public interface ModelToSurfaceTransformer {
-  List<ViewModelDoc> transform(Model model);
+public interface ModelToViewTransformer {
+  List<ViewModel> transform(Model model);
 
   List<String> getTemplateFileNames();
 }

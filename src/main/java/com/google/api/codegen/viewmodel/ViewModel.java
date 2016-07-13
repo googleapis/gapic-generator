@@ -14,7 +14,7 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public interface ViewModelDoc {
+public interface ViewModel {
   String getTemplateFileName();
 
   String getOutputPath();

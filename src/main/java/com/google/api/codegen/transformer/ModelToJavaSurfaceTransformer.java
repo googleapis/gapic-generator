@@ -28,7 +28,7 @@ import com.google.api.codegen.viewmodel.PagedApiCallableView;
 import com.google.api.codegen.viewmodel.SimpleApiCallableView;
 import com.google.api.codegen.viewmodel.StaticXApiView;
 import com.google.api.codegen.viewmodel.StaticXSettingsView;
-import com.google.api.codegen.viewmodel.ViewModelDoc;
+import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer {
+public class ModelToJavaSurfaceTransformer implements ModelToViewTransformer {
   private ApiConfig cachedApiConfig;
   private GapicCodePathMapper pathMapper;
   private PathTemplateTransformer pathTemplateTransformer;
@@ -61,22 +61,22 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
   }
 
   @Override
-  public List<ViewModelDoc> transform(Model model) {
-    List<ViewModelDoc> surfaceDocs = new ArrayList<>();
+  public List<ViewModel> transform(Model model) {
+    List<ViewModel> surfaceDocs = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       surfaceDocs.addAll(transform(service));
     }
     return surfaceDocs;
   }
 
-  public List<ViewModelDoc> transform(Interface service) {
+  public List<ViewModel> transform(Interface service) {
     SurfaceTransformerContext context =
         SurfaceTransformerContext.create(
             service, cachedApiConfig, new ModelToJavaTypeTable(), new JavaSurfaceNamer());
 
     String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
 
-    List<ViewModelDoc> surfaceData = new ArrayList<>();
+    List<ViewModel> surfaceData = new ArrayList<>();
 
     addXApiImports(context);
 

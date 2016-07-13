@@ -20,7 +20,7 @@ import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.viewmodel.ApiMethodView;
-import com.google.api.codegen.viewmodel.ViewModelDoc;
+import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.DynamicXApiView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
+public class ModelToPhpSurfaceTransformer implements ModelToViewTransformer {
   private ApiConfig cachedApiConfig;
   private GapicCodePathMapper pathMapper;
   private PathTemplateTransformer pathTemplateTransformer;
@@ -53,15 +53,15 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
   }
 
   @Override
-  public List<ViewModelDoc> transform(Model model) {
-    List<ViewModelDoc> surfaceDocs = new ArrayList<>();
+  public List<ViewModel> transform(Model model) {
+    List<ViewModel> surfaceDocs = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       surfaceDocs.addAll(transform(service));
     }
     return surfaceDocs;
   }
 
-  public List<ViewModelDoc> transform(Interface service) {
+  public List<ViewModel> transform(Interface service) {
     SurfaceTransformerContext context =
         SurfaceTransformerContext.create(
             service, cachedApiConfig, new ModelToPhpTypeTable(), new PhpSurfaceNamer());
@@ -69,7 +69,7 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
     String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
     SurfaceNamer namer = context.getNamer();
 
-    List<ViewModelDoc> surfaceData = new ArrayList<>();
+    List<ViewModel> surfaceData = new ArrayList<>();
 
     addXApiImports(context);
 
