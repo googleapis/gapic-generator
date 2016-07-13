@@ -232,18 +232,21 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
         }
         apiMethods.add(
             apiMethodTransformer.generatePagedRequestObjectMethod(context, method, methodConfig));
-        apiMethods.add(new PagedCallableMethodView());
-        apiMethods.add(new UnpagedListCallableMethodView());
+        apiMethods.add(
+            apiMethodTransformer.generatePagedCallableMethod(context, method, methodConfig));
+        apiMethods.add(
+            apiMethodTransformer.generateUnpagedListCallableMethod(context, method, methodConfig));
       } else {
         if (methodConfig.isFlattening()) {
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
-            FlattenedMethodView apiMethod = new FlattenedMethodView();
-            apiMethod.fields = fields;
-            apiMethods.add(apiMethod);
+            apiMethods.add(
+                apiMethodTransformer.generateFlattenedMethod(
+                    context, method, methodConfig, fields));
           }
         }
-        apiMethods.add(new RequestObjectMethodView());
-        apiMethods.add(new CallableMethodView());
+        apiMethods.add(
+            apiMethodTransformer.generateRequestObjectMethod(context, method, methodConfig));
+        apiMethods.add(apiMethodTransformer.generateCallableMethod(context, method, methodConfig));
       }
     }
 

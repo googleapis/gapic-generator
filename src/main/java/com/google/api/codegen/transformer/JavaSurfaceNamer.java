@@ -180,4 +180,24 @@ public class JavaSurfaceNamer implements SurfaceNamer {
       ModelTypeTable typeTable, Method method, MethodConfig methodConfig) {
     return SurfaceNamer.NOT_IMPLEMENTED;
   }
+
+  @Override
+  public String getPagedCallableMethodName(Method method) {
+    return getPagedCallableName(method);
+  }
+
+  @Override
+  public String getPagedCallableName(Method method) {
+    return Name.upperCamel(method.getSimpleName(), "PagedCallable").toLowerCamel();
+  }
+
+  @Override
+  public String getCallableMethodName(Method method) {
+    return getCallableName(method);
+  }
+
+  @Override
+  public String getCallableName(Method method) {
+    return Name.upperCamel(method.getSimpleName(), "Callable").toLowerCamel();
+  }
 }

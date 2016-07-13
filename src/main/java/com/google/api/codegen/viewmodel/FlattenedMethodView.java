@@ -14,10 +14,16 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.tools.framework.model.Field;
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 
 public class FlattenedMethodView implements ApiMethodView {
 
-  public ImmutableList<Field> fields;
+  public ApiMethodDocView doc;
+  public String requestTypeName;
+  public String responseTypeName;
+  public String name;
+  public List<RequestObjectParamView> methodParams;
+  public List<RequestObjectParamView> requestObjectParams;
+  public List<PathTemplateCheckView> pathTemplateChecks;
+  public boolean hasReturnValue;
 }

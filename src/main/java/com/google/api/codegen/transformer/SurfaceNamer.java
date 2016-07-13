@@ -88,4 +88,12 @@ public interface SurfaceNamer {
 
   String getDynamicReturnTypeName(
       ModelTypeTable typeTable, Method method, MethodConfig methodConfig);
+
+  String getPagedCallableMethodName(Method method);
+
+  String getPagedCallableName(Method method);
+
+  String getCallableMethodName(Method method);
+
+  String getCallableName(Method method);
 }

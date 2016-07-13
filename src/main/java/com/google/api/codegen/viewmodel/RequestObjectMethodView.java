@@ -14,4 +14,13 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public class RequestObjectMethodView implements ApiMethodView {}
+public class RequestObjectMethodView implements ApiMethodView {
+
+  public ApiMethodDocView doc;
+  public String accessModifier;
+  public String name;
+  public String requestTypeName;
+  public String responseTypeName;
+  public String callableMethodName;
+  public boolean hasReturnValue;
+}

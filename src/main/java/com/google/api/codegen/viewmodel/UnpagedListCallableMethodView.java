@@ -14,4 +14,11 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public class UnpagedListCallableMethodView implements ApiMethodView {}
+public class UnpagedListCallableMethodView implements ApiMethodView {
+
+  public ApiMethodDocView doc;
+  public String name;
+  public String requestTypeName;
+  public String responseTypeName;
+  public String callableName;
+}

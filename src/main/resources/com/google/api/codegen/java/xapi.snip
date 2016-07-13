@@ -217,24 +217,64 @@
   {@methodDoc(apiMethod.doc, "")}
   {@apiMethod.accessModifier} final PageAccessor<{@apiMethod.resourceTypeName}> \
       {@apiMethod.name}({@apiMethod.requestTypeName} request) {
-    return {@apiMethod.name}PagedCallable()
+    return {@apiMethod.callableMethodName}()
         .call(request);
   }
 @end
 
 @private pagedCallableMethod(apiMethod)
+  {@methodDoc(apiMethod.doc, "")}
+  public final ApiCallable<{@apiMethod.requestTypeName}, PageAccessor<{@apiMethod.resourceTypeName}>> \
+      {@apiMethod.name}() {
+    return {@apiMethod.callableName};
+  }
 @end
 
 @private unpagedListCallableMethod(apiMethod)
+  {@methodDoc(apiMethod.doc, "")}
+  public final ApiCallable<{@apiMethod.requestTypeName}, {@apiMethod.responseTypeName}> \
+      {@apiMethod.name}() {
+    return {@apiMethod.callableName};
+  }
 @end
 
 @private flattenedMethod(apiMethod)
+  {@methodDoc(apiMethod.doc, "")}
+  public final {@apiMethod.responseTypeName} {@apiMethod.name}(\
+       {@paramList(apiMethod.methodParams)}) {
+    @join pathTemplateCheck : apiMethod.pathTemplateChecks
+      {@pathTemplateCheckLine(pathTemplateCheck)}
+    @end
+    {@apiMethod.requestTypeName} request =
+        {@apiMethod.requestTypeName}.newBuilder()
+        {@builderSetCalls(apiMethod.requestObjectParams)}
+        .build();
+    @if apiMethod.hasReturnValue
+      return {@apiMethod.name}(request);
+    @else
+      {@apiMethod.name}(request);
+    @end
+  }
 @end
 
 @private requestObjectMethod(apiMethod)
+  {@methodDoc(apiMethod.doc, "")}
+  {@apiMethod.accessModifier} final {@apiMethod.responseTypeName} \
+      {@apiMethod.name}({@apiMethod.requestTypeName} request) {
+    @if apiMethod.hasReturnValue
+      return {@apiMethod.callableMethodName}().call(request);
+    @else
+      {@apiMethod.callableMethodName}().call(request);
+    @end
+  }
 @end
 
 @private callableMethod(apiMethod)
+  {@methodDoc(apiMethod.doc, "")}
+  public final ApiCallable<{@apiMethod.requestTypeName}, {@apiMethod.responseTypeName}> \
+      {@apiMethod.name}() {
+    return {@apiMethod.callableName};
+  }
 @end
 
 @snippet decoratedSampleCode(apiMethod, coreSampleCode)

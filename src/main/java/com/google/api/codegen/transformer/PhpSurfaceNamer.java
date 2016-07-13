@@ -185,4 +185,24 @@ public class PhpSurfaceNamer implements SurfaceNamer {
     }
     return typeTable.getFullNameFor(method.getOutputType());
   }
+
+  @Override
+  public String getPagedCallableMethodName(Method method) {
+    return SurfaceNamer.NOT_IMPLEMENTED;
+  }
+
+  @Override
+  public String getPagedCallableName(Method method) {
+    return SurfaceNamer.NOT_IMPLEMENTED;
+  }
+
+  @Override
+  public String getCallableMethodName(Method method) {
+    return SurfaceNamer.NOT_IMPLEMENTED;
+  }
+
+  @Override
+  public String getCallableName(Method method) {
+    return SurfaceNamer.NOT_IMPLEMENTED;
+  }
 }

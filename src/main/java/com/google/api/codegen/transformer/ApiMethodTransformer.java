@@ -17,17 +17,23 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
+import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.ApiMethodDocView;
+import com.google.api.codegen.viewmodel.CallableMethodView;
 import com.google.api.codegen.viewmodel.DynamicDefaultableParamView;
+import com.google.api.codegen.viewmodel.FlattenedMethodView;
 import com.google.api.codegen.viewmodel.MapParamDocView;
 import com.google.api.codegen.viewmodel.OptionalArrayMethodView;
+import com.google.api.codegen.viewmodel.PagedCallableMethodView;
 import com.google.api.codegen.viewmodel.PagedFlattenedMethodView;
 import com.google.api.codegen.viewmodel.PagedRequestObjectMethodView;
 import com.google.api.codegen.viewmodel.ParamDocView;
 import com.google.api.codegen.viewmodel.PathTemplateCheckView;
+import com.google.api.codegen.viewmodel.RequestObjectMethodView;
 import com.google.api.codegen.viewmodel.RequestObjectParamView;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
+import com.google.api.codegen.viewmodel.UnpagedListCallableMethodView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
@@ -70,6 +76,7 @@ public class ApiMethodTransformer {
         context
             .getTypeTable()
             .getAndSaveNicknameForElementType(pageStreaming.getResourcesField().getType());
+    apiMethod.requestTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getInputType());
     apiMethod.name = namer.getApiMethodName(method);
 
     List<RequestObjectParamView> params = new ArrayList<>();
@@ -79,22 +86,7 @@ public class ApiMethodTransformer {
     apiMethod.methodParams = params;
     apiMethod.requestObjectParams = params;
 
-    List<PathTemplateCheckView> pathTemplateChecks = new ArrayList<>();
-    for (Field field : fields) {
-      ImmutableMap<String, String> fieldNamePatterns = methodConfig.getFieldNamePatterns();
-      String entityName = fieldNamePatterns.get(field.getSimpleName());
-      if (entityName != null) {
-        CollectionConfig collectionConfig = context.getCollectionConfig(entityName);
-        PathTemplateCheckView check = new PathTemplateCheckView();
-        check.pathTemplateName = namer.getPathTemplateName(collectionConfig);
-        check.paramName = namer.getVariableName(field);
-
-        pathTemplateChecks.add(check);
-      }
-    }
-    apiMethod.pathTemplateChecks = pathTemplateChecks;
-
-    apiMethod.requestTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getInputType());
+    apiMethod.pathTemplateChecks = generatePathTemplateChecks(context, methodConfig, fields);
 
     apiMethod.apiClassName = namer.getApiWrapperClassName(context.getInterface());
     apiMethod.apiVariableName = namer.getApiWrapperVariableName(context.getInterface());
@@ -129,8 +121,162 @@ public class ApiMethodTransformer {
             .getAndSaveNicknameForElementType(pageStreaming.getResourcesField().getType());
     apiMethod.name = namer.getApiMethodName(method);
     apiMethod.requestTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getInputType());
+    apiMethod.callableMethodName = namer.getPagedCallableMethodName(method);
 
     return apiMethod;
+  }
+
+  public PagedCallableMethodView generatePagedCallableMethod(
+      TransformerContext context, Method method, MethodConfig methodConfig) {
+    SurfaceNamer namer = context.getNamer();
+    PagedCallableMethodView apiMethod = new PagedCallableMethodView();
+
+    ApiMethodDocView doc = new ApiMethodDocView();
+
+    doc.mainDocLines = namer.getDocLines(method);
+    doc.paramDocs = new ArrayList<>();
+    doc.throwsDocLines = new ArrayList<>();
+
+    apiMethod.doc = doc;
+
+    PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
+    apiMethod.resourceTypeName =
+        context
+            .getTypeTable()
+            .getAndSaveNicknameForElementType(pageStreaming.getResourcesField().getType());
+    apiMethod.name = namer.getPagedCallableMethodName(method);
+    apiMethod.requestTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getInputType());
+    apiMethod.callableName = namer.getPagedCallableName(method);
+
+    return apiMethod;
+  }
+
+  public UnpagedListCallableMethodView generateUnpagedListCallableMethod(
+      TransformerContext context, Method method, MethodConfig methodConfig) {
+    SurfaceNamer namer = context.getNamer();
+    UnpagedListCallableMethodView apiMethod = new UnpagedListCallableMethodView();
+
+    ApiMethodDocView doc = new ApiMethodDocView();
+
+    doc.mainDocLines = namer.getDocLines(method);
+    doc.paramDocs = new ArrayList<>();
+    doc.throwsDocLines = new ArrayList<>();
+
+    apiMethod.doc = doc;
+
+    apiMethod.name = namer.getCallableMethodName(method);
+    apiMethod.requestTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getInputType());
+    apiMethod.responseTypeName =
+        context.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
+    apiMethod.callableName = namer.getCallableName(method);
+
+    return apiMethod;
+  }
+
+  public FlattenedMethodView generateFlattenedMethod(
+      TransformerContext context,
+      Method method,
+      MethodConfig methodConfig,
+      ImmutableList<Field> fields) {
+    SurfaceNamer namer = context.getNamer();
+    FlattenedMethodView apiMethod = new FlattenedMethodView();
+
+    ApiMethodDocView doc = new ApiMethodDocView();
+
+    doc.mainDocLines = namer.getDocLines(method);
+    doc.paramDocs = getMethodParamDocs(context, methodConfig, fields);
+    doc.throwsDocLines = namer.getThrowsDocLines();
+
+    apiMethod.doc = doc;
+
+    apiMethod.requestTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getInputType());
+    apiMethod.responseTypeName =
+        context.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
+    apiMethod.name = namer.getApiMethodName(method);
+
+    List<RequestObjectParamView> params = new ArrayList<>();
+    for (Field field : fields) {
+      params.add(generateRequestObjectParam(context, field));
+    }
+    apiMethod.methodParams = params;
+    apiMethod.requestObjectParams = params;
+
+    apiMethod.pathTemplateChecks = generatePathTemplateChecks(context, methodConfig, fields);
+
+    apiMethod.hasReturnValue = new ServiceMessages().isEmptyType(method.getOutputType());
+
+    return apiMethod;
+  }
+
+  public RequestObjectMethodView generateRequestObjectMethod(
+      TransformerContext context, Method method, MethodConfig methodConfig) {
+    SurfaceNamer namer = context.getNamer();
+    RequestObjectMethodView apiMethod = new RequestObjectMethodView();
+
+    ApiMethodDocView doc = new ApiMethodDocView();
+
+    doc.mainDocLines = namer.getDocLines(method);
+    doc.paramDocs =
+        Arrays.<ParamDocView>asList(getRequestObjectParamDoc(context, method.getInputType()));
+    doc.throwsDocLines = namer.getThrowsDocLines();
+
+    apiMethod.doc = doc;
+
+    if (methodConfig.hasRequestObjectMethod()) {
+      apiMethod.accessModifier = namer.getPublicAccessModifier();
+    } else {
+      apiMethod.accessModifier = namer.getPrivateAccessModifier();
+    }
+
+    apiMethod.name = namer.getApiMethodName(method);
+    apiMethod.requestTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getInputType());
+    apiMethod.responseTypeName =
+        context.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
+    apiMethod.callableMethodName = namer.getCallableMethodName(method);
+
+    apiMethod.hasReturnValue = new ServiceMessages().isEmptyType(method.getOutputType());
+
+    return apiMethod;
+  }
+
+  public CallableMethodView generateCallableMethod(
+      TransformerContext context, Method method, MethodConfig methodConfig) {
+    SurfaceNamer namer = context.getNamer();
+    CallableMethodView apiMethod = new CallableMethodView();
+
+    ApiMethodDocView doc = new ApiMethodDocView();
+
+    doc.mainDocLines = namer.getDocLines(method);
+    doc.paramDocs = new ArrayList<>();
+    doc.throwsDocLines = new ArrayList<>();
+
+    apiMethod.doc = doc;
+
+    apiMethod.name = namer.getPagedCallableMethodName(method);
+    apiMethod.requestTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getInputType());
+    apiMethod.responseTypeName =
+        context.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
+    apiMethod.callableName = namer.getPagedCallableName(method);
+
+    return apiMethod;
+  }
+
+  public List<PathTemplateCheckView> generatePathTemplateChecks(
+      TransformerContext context, MethodConfig methodConfig, ImmutableList<Field> fields) {
+    List<PathTemplateCheckView> pathTemplateChecks = new ArrayList<>();
+    for (Field field : fields) {
+      ImmutableMap<String, String> fieldNamePatterns = methodConfig.getFieldNamePatterns();
+      String entityName = fieldNamePatterns.get(field.getSimpleName());
+      if (entityName != null) {
+        CollectionConfig collectionConfig = context.getCollectionConfig(entityName);
+        PathTemplateCheckView check = new PathTemplateCheckView();
+        check.pathTemplateName = context.getNamer().getPathTemplateName(collectionConfig);
+        check.paramName = context.getNamer().getVariableName(field);
+
+        pathTemplateChecks.add(check);
+      }
+    }
+    return pathTemplateChecks;
   }
 
   public OptionalArrayMethodView generateOptionalArrayMethod(

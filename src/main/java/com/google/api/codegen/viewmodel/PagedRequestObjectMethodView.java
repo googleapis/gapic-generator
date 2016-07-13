@@ -21,4 +21,5 @@ public class PagedRequestObjectMethodView implements ApiMethodView {
   public String resourceTypeName;
   public String name;
   public String requestTypeName;
+  public Object callableMethodName;
 }
