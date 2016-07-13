@@ -1,0 +1,56 @@
+@extends "common.snip"
+
+@snippet generate(xapiTest)
+  {@license()}
+
+  package {@xapiTest.packageName};
+
+  @join import : xapiTest.imports
+    import {@import};
+  @end
+
+  @@javax.annotation.Generated("by GAPIC")
+  public class {@xapiTest.name} {
+    private static LocalServiceHelper serviceHelper;
+    private {@xapiTest.apiClassName} api;
+    private ValueGenerator valueGenerator;
+
+    @@BeforeClass
+    public static void startStaticServer() {
+      {@xapiTest.mockServiceClassName} mockService = new {@xapiTest.mockServiceClassName}();
+      serviceHelper = new LocalServiceHelper("in-process-1", mockService);
+      serviceHelper.start();
+    }
+
+    @@AfterClass
+    public static void stopServer() {
+      serviceHelper.stop();
+    }
+
+    @@Before
+    public void setUp() throws IOException {
+      serviceHelper.reset();
+      {@xapiTest.apiSettingsClassName} settings = {@xapiTest.apiSettingsClassName}.defaultBuilder()
+          .provideChannelWith(serviceHelper.createChannel(), true)
+          .build();
+      api = {@xapiTest.apiClassName}.create(settings);
+      valueGenerator = new ValueGenerator();
+    }
+
+    @@After
+    public void tearDown() throws Exception {
+      api.close();
+    }
+
+    @join case : xapiTest.testCases
+      {@testCase(case)}
+    @end
+  }
+@end
+
+@private testCase(case)
+  @@Test
+  @@SuppressWarnings("all")
+  public void {@case.name}() {
+  }
+@end

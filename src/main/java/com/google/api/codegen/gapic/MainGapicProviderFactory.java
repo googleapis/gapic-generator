@@ -25,6 +25,12 @@ import com.google.api.codegen.csharp.CSharpGapicContext;
 import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
 import com.google.api.codegen.go.GoGapicContext;
 import com.google.api.codegen.go.GoSnippetSetRunner;
+
+import com.google.api.codegen.java.JavaGapicContext;
+import com.google.api.codegen.java.JavaIterableSnippetSetRunner;
+import com.google.api.codegen.java.JavaSnippetSetRunner;
+import com.google.api.codegen.java.JavaSnippetUtil;
+import com.google.api.codegen.java.JavaTypeTable;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
 import com.google.api.codegen.py.PythonGapicContext;
@@ -38,12 +44,19 @@ import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
+import com.google.api.codegen.transformer.JavaTestTransformer;
+import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
+import com.google.api.codegen.util.CommonRenderingUtil;
+import com.google.api.codegen.viewmodel.SurfaceSnippetSetRunner;
+>>>>>>> WIP
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
+
+import org.apache.commons.lang3.NotImplementedException;
+
 import java.util.Arrays;
 import java.util.List;
-import org.apache.commons.lang3.NotImplementedException;
 
 /** MainGapicProviderFactory creates GapicProvider instances based on an id. */
 public class MainGapicProviderFactory
@@ -59,6 +72,8 @@ public class MainGapicProviderFactory
   public static final String PYTHON_DOC = "python_doc";
   public static final String RUBY = "ruby";
   public static final String RUBY_DOC = "ruby_doc";
+
+  public static final String JAVA_TEST = "java_test";
 
   /** Create the GapicProviders based on the given id */
   public static List<GapicProvider<? extends Object>> defaultCreate(
@@ -119,6 +134,22 @@ public class MainGapicProviderFactory
               .setApiConfig(apiConfig)
               .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
               .setModelToViewTransformer(new JavaGapicSurfaceTransformer(javaPathMapper))
+              .build();
+
+      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
+
+    } else if (id.equals(JAVA_TEST)) {
+      GapicCodePathMapper javaPathMapper =
+          CommonGapicCodePathMapper.newBuilder()
+              .setPrefix("src/test/java")
+              .setShouldAppendPackage(true)
+              .build();
+      String resourceRoot = JavaTypeTable.class.getPackage().getName().replace('.', '/');
+      GapicProvider<? extends Object> mainProvider =
+          TestGapicProvider.newBuilder()
+              .setModel(model)
+              .setSnippetSetRunner(new SurfaceSnippetSetRunner(resourceRoot, new JavaSnippetUtil()))
+              .setModelToSurfaceTransformer(new JavaTestTransformer(apiConfig, javaPathMapper))
               .build();
 
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
