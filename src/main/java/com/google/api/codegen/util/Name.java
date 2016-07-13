@@ -124,15 +124,23 @@ public class Name {
   }
 
   public String toLowerCamel() {
+    return toCamel(CaseFormat.LOWER_CAMEL);
+  }
+
+  public String toUpperCamel() {
+    return toCamel(CaseFormat.UPPER_CAMEL);
+  }
+
+  public String toCamel(CaseFormat caseFormat) {
     StringBuffer buffer = new StringBuffer();
     boolean firstPiece = true;
     for (NamePiece namePiece : namePieces) {
-      if (firstPiece) {
+      if (firstPiece && caseFormat.equals(CaseFormat.LOWER_CAMEL)) {
         buffer.append(namePiece.caseFormat.to(CaseFormat.LOWER_CAMEL, namePiece.identifier));
-        firstPiece = false;
       } else {
         buffer.append(namePiece.caseFormat.to(CaseFormat.UPPER_CAMEL, namePiece.identifier));
       }
+      firstPiece = false;
     }
     return buffer.toString();
   }

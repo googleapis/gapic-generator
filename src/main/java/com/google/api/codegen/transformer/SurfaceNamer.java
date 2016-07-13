@@ -17,90 +17,180 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.metacode.InitValueConfig;
+import com.google.api.codegen.util.LanguageNamer;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.Namer;
+import com.google.api.codegen.util.QualifiedName;
+import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * An instance of IdentifierNamer provides language-specific names or other strings.
  */
-public interface SurfaceNamer {
+public class SurfaceNamer extends Namer {
+  public SurfaceNamer(LanguageNamer languageNamer) {
+    super(languageNamer);
+  }
+
   public static final String NOT_IMPLEMENTED = "$ NOT IMPLEMENTED $";
 
-  String getApiWrapperClassName(Interface interfaze);
+  public String getApiWrapperClassName(Interface interfaze) {
+    return className(Name.upperCamel(interfaze.getSimpleName(), "Api"));
+  }
 
-  String getApiWrapperVariableName(Interface interfaze);
+  public String getApiWrapperVariableName(Interface interfaze) {
+    return varName(Name.upperCamel(interfaze.getSimpleName(), "Api"));
+  }
 
-  String getVariableName(String identifier, InitValueConfig initValueConfig);
+  public String getVariableName(String identifier, InitValueConfig initValueConfig) {
+    if (initValueConfig == null || !initValueConfig.hasFormattingConfig()) {
+      return varName(Name.from(identifier));
+    } else {
+      return varName(Name.from("formatted", identifier));
+    }
+  }
 
-  String getSetFunctionCallName(TypeRef type, String fieldName);
+  public String getSetFunctionCallName(TypeRef type, String identifier) {
+    if (type.isMap()) {
+      return methodName(Name.from("put", "all", identifier));
+    } else if (type.isRepeated()) {
+      return methodName(Name.from("add", "all", identifier));
+    } else {
+      return methodName(Name.from("set", identifier));
+    }
+  }
 
-  String getPathTemplateName(CollectionConfig collectionConfig);
+  public String getPathTemplateName(CollectionConfig collectionConfig) {
+    return inittedConstantName(Name.from(collectionConfig.getEntityName(), "path", "template"));
+  }
 
-  String getPathTemplateNameGetter(CollectionConfig collectionConfig);
+  public String getPathTemplateNameGetter(CollectionConfig collectionConfig) {
+    return methodName(Name.from("get", collectionConfig.getEntityName(), "name", "template"));
+  }
 
-  String getFormatFunctionName(CollectionConfig collectionConfig);
+  public String getFormatFunctionName(CollectionConfig collectionConfig) {
+    return staticFunctionName(Name.from("format", collectionConfig.getEntityName(), "name"));
+  }
 
-  String getParseFunctionName(String var, CollectionConfig collectionConfig);
+  public String getParseFunctionName(String var, CollectionConfig collectionConfig) {
+    return staticFunctionName(
+        Name.from("parse", var, "from", collectionConfig.getEntityName(), "name"));
+  }
 
-  String getEntityName(CollectionConfig collectionConfig);
+  public String getEntityName(CollectionConfig collectionConfig) {
+    return varName(Name.from(collectionConfig.getEntityName()));
+  }
 
-  String getEntityNameParamName(CollectionConfig collectionConfig);
+  public String getEntityNameParamName(CollectionConfig collectionConfig) {
+    return varName(Name.from(collectionConfig.getEntityName(), "name"));
+  }
 
-  String getParamName(String var);
+  public String getParamName(String var) {
+    return varName(Name.from(var));
+  }
 
-  String getPageStreamingDescriptorName(Method method);
+  public String getPageStreamingDescriptorName(Method method) {
+    return varName(Name.upperCamel(method.getSimpleName(), "PageStreamingDescriptor"));
+  }
 
-  void addPageStreamingDescriptorImports(ModelTypeTable typeTable);
+  public void addPageStreamingDescriptorImports(ModelTypeTable typeTable) {
+    // do nothing
+  }
 
-  String getMethodKey(Method method);
+  public String getMethodKey(Method method) {
+    return keyName(Name.upperCamel(method.getSimpleName()));
+  }
 
-  String getClientConfigPath(Interface service);
+  public String getClientConfigPath(Interface service) {
+    return SurfaceNamer.NOT_IMPLEMENTED;
+  }
 
-  String getGrpcClientTypeName(Interface service);
+  public String getGrpcClientTypeName(Interface service) {
+    QualifiedName qualifiedName = QualifiedName.dotted(service.getFullName());
+    String className = className(Name.upperCamel(qualifiedName.getHead(), "Client"));
+    return qualifiedName(qualifiedName.withHead(className));
+  }
 
-  String getApiMethodName(Method method);
+  public String getApiMethodName(Method method) {
+    return methodName(Name.upperCamel(method.getSimpleName()));
+  }
 
-  String getVariableName(Field field);
+  public String getVariableName(Field field) {
+    return varName(Name.from(field.getSimpleName()));
+  }
 
-  boolean shouldImportRequestObjectParamType(Field field);
+  public boolean shouldImportRequestObjectParamType(Field field) {
+    return true;
+  }
 
-  String getVariableName(Name from);
+  public List<String> getDocLines(ProtoElement element) {
+    return CommonDocUtil.getDocLines(DocumentationUtil.getDescription(element));
+  }
 
-  List<String> getDocLines(ProtoElement protoElement);
+  public List<String> getThrowsDocLines() {
+    return new ArrayList<>();
+  }
 
-  List<String> getThrowsDocLines();
+  public String getPublicAccessModifier() {
+    return "public";
+  }
 
-  String getPublicAccessModifier();
+  public String getPrivateAccessModifier() {
+    return "private";
+  }
 
-  String getPrivateAccessModifier();
+  public String getGrpcMethodName(Method method) {
+    // This might seem silly, but it makes clear what we're dealing with (upper camel).
+    // This is language-independent because of gRPC conventions.
+    return Name.upperCamel(method.getSimpleName()).toUpperCamel();
+  }
 
-  String getGrpcMethodName(Method method);
+  public String getRetrySettingsClassName() {
+    return SurfaceNamer.NOT_IMPLEMENTED;
+  }
 
-  String getRetrySettingsClassName();
+  public String getOptionalArrayTypeName() {
+    return SurfaceNamer.NOT_IMPLEMENTED;
+  }
 
-  String getOptionalArrayTypeName();
+  public String getDynamicReturnTypeName(
+      ModelTypeTable typeTable, Method method, MethodConfig methodConfig) {
+    return SurfaceNamer.NOT_IMPLEMENTED;
+  }
 
-  String getDynamicReturnTypeName(
-      ModelTypeTable typeTable, Method method, MethodConfig methodConfig);
+  public String getStaticReturnTypeName(
+      ModelTypeTable typeTable, Method method, MethodConfig methodConfig) {
+    return SurfaceNamer.NOT_IMPLEMENTED;
+  }
 
-  String getStaticReturnTypeName(
-      ModelTypeTable typeTable, Method method, MethodConfig methodConfig);
+  public String getPagedCallableMethodName(Method method) {
+    return methodName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
+  }
 
-  String getPagedCallableMethodName(Method method);
+  public String getPagedCallableName(Method method) {
+    return varName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
+  }
 
-  String getPagedCallableName(Method method);
+  public String getCallableMethodName(Method method) {
+    return methodName(Name.upperCamel(method.getSimpleName(), "Callable"));
+  }
 
-  String getCallableMethodName(Method method);
+  public String getCallableName(Method method) {
+    return varName(Name.upperCamel(method.getSimpleName(), "Callable"));
+  }
 
-  String getCallableName(Method method);
+  public String getGenericAwareResponseType(ModelTypeTable typeTable, TypeRef outputType) {
+    return SurfaceNamer.NOT_IMPLEMENTED;
+  }
 
-  String getGenericAwareResponseType(ModelTypeTable typeTable, TypeRef outputType);
-
-  String getGetResourceListCallName(Field resourcesField);
+  public String getGetResourceListCallName(Field resourcesField) {
+    return methodName(Name.from("get", resourcesField.getSimpleName(), "list"));
+  }
 }

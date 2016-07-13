@@ -25,7 +25,7 @@ import java.util.List;
 
 public class PageStreamingTransformer {
 
-  public List<PageStreamingDescriptorView> generateDescriptors(TransformerContext context) {
+  public List<PageStreamingDescriptorView> generateDescriptors(SurfaceTransformerContext context) {
     List<PageStreamingDescriptorView> descriptors = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {

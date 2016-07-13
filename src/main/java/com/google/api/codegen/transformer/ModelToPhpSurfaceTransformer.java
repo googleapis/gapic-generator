@@ -62,8 +62,8 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
   }
 
   public List<ViewModelDoc> transform(Interface service) {
-    TransformerContext context =
-        TransformerContext.create(
+    SurfaceTransformerContext context =
+        SurfaceTransformerContext.create(
             service, cachedApiConfig, new ModelToPhpTypeTable(), new PhpSurfaceNamer());
 
     String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
@@ -110,7 +110,7 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
     return surfaceData;
   }
 
-  private void addXApiImports(TransformerContext context) {
+  private void addXApiImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("Google\\GAX\\AgentHeaderDescriptor");
     typeTable.saveNicknameFor("Google\\GAX\\ApiCallable");
@@ -120,7 +120,7 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
     typeTable.saveNicknameFor("Google\\GAX\\PathTemplate");
   }
 
-  private List<String> generateMethodKeys(TransformerContext context) {
+  private List<String> generateMethodKeys(SurfaceTransformerContext context) {
     List<String> methodKeys = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {
@@ -130,7 +130,7 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
     return methodKeys;
   }
 
-  private List<ApiMethodView> generateApiMethods(TransformerContext context) {
+  private List<ApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
     List<ApiMethodView> apiMethods = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {

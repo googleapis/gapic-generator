@@ -12,21 +12,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.php;
+package com.google.api.codegen.util;
 
-import com.google.common.base.Splitter;
+public interface LanguageNamer {
 
-import java.util.ArrayList;
-import java.util.List;
+  String getClassName(Name name);
 
-public class PhpDocUtil {
+  String varName(Name name);
 
-  public static List<String> getPhpDocLines(String text) {
-    // TODO: convert markdown to phpDoc
-    List<String> result = new ArrayList<>();
-    for (String line : Splitter.on(String.format("%n")).split(text)) {
-      result.add(line);
-    }
-    return result;
-  }
+  String memberFunctionName(Name name);
+
+  String staticFunctionName(Name name);
+
+  String inittedConstantName(Name name);
+
+  String keyName(Name name);
+
+  String qualifiedName(QualifiedName qualifiedName);
 }

@@ -53,7 +53,7 @@ public class ApiMethodTransformer {
   }
 
   public PagedFlattenedMethodView generatePagedFlattenedMethod(
-      TransformerContext context,
+      SurfaceTransformerContext context,
       Method method,
       MethodConfig methodConfig,
       ImmutableList<Field> fields) {
@@ -95,7 +95,7 @@ public class ApiMethodTransformer {
   }
 
   public PagedRequestObjectMethodView generatePagedRequestObjectMethod(
-      TransformerContext context, Method method, MethodConfig methodConfig) {
+      SurfaceTransformerContext context, Method method, MethodConfig methodConfig) {
     SurfaceNamer namer = context.getNamer();
     PagedRequestObjectMethodView apiMethod = new PagedRequestObjectMethodView();
 
@@ -133,7 +133,7 @@ public class ApiMethodTransformer {
   }
 
   public PagedCallableMethodView generatePagedCallableMethod(
-      TransformerContext context, Method method, MethodConfig methodConfig) {
+      SurfaceTransformerContext context, Method method, MethodConfig methodConfig) {
     SurfaceNamer namer = context.getNamer();
     PagedCallableMethodView apiMethod = new PagedCallableMethodView();
 
@@ -164,7 +164,7 @@ public class ApiMethodTransformer {
   }
 
   public UnpagedListCallableMethodView generateUnpagedListCallableMethod(
-      TransformerContext context, Method method, MethodConfig methodConfig) {
+      SurfaceTransformerContext context, Method method, MethodConfig methodConfig) {
     SurfaceNamer namer = context.getNamer();
     UnpagedListCallableMethodView apiMethod = new UnpagedListCallableMethodView();
 
@@ -199,7 +199,7 @@ public class ApiMethodTransformer {
   }
 
   public FlattenedMethodView generateFlattenedMethod(
-      TransformerContext context,
+      SurfaceTransformerContext context,
       Method method,
       MethodConfig methodConfig,
       ImmutableList<Field> fields) {
@@ -241,7 +241,7 @@ public class ApiMethodTransformer {
   }
 
   public RequestObjectMethodView generateRequestObjectMethod(
-      TransformerContext context, Method method, MethodConfig methodConfig) {
+      SurfaceTransformerContext context, Method method, MethodConfig methodConfig) {
     SurfaceNamer namer = context.getNamer();
     RequestObjectMethodView apiMethod = new RequestObjectMethodView();
 
@@ -278,7 +278,7 @@ public class ApiMethodTransformer {
   }
 
   public CallableMethodView generateCallableMethod(
-      TransformerContext context, Method method, MethodConfig methodConfig) {
+      SurfaceTransformerContext context, Method method, MethodConfig methodConfig) {
     SurfaceNamer namer = context.getNamer();
     CallableMethodView apiMethod = new CallableMethodView();
 
@@ -310,7 +310,7 @@ public class ApiMethodTransformer {
   }
 
   public List<PathTemplateCheckView> generatePathTemplateChecks(
-      TransformerContext context, MethodConfig methodConfig, ImmutableList<Field> fields) {
+      SurfaceTransformerContext context, MethodConfig methodConfig, ImmutableList<Field> fields) {
     List<PathTemplateCheckView> pathTemplateChecks = new ArrayList<>();
     for (Field field : fields) {
       ImmutableMap<String, String> fieldNamePatterns = methodConfig.getFieldNamePatterns();
@@ -328,7 +328,7 @@ public class ApiMethodTransformer {
   }
 
   public OptionalArrayMethodView generateOptionalArrayMethod(
-      TransformerContext context, Method method, MethodConfig methodConfig) {
+      SurfaceTransformerContext context, Method method, MethodConfig methodConfig) {
     SurfaceNamer namer = context.getNamer();
     OptionalArrayMethodView apiMethod = new OptionalArrayMethodView();
 
@@ -361,12 +361,12 @@ public class ApiMethodTransformer {
     TypeRef arrayType = TypeRef.fromPrimitiveName("string").makeRepeated();
 
     DynamicDefaultableParamView optionalArgs = new DynamicDefaultableParamView();
-    optionalArgs.name = namer.getVariableName(Name.from("optional", "args"));
+    optionalArgs.name = namer.varName(Name.from("optional", "args"));
     optionalArgs.defaultValue = context.getTypeTable().getZeroValueAndSaveNicknameFor(arrayType);
     methodParams.add(optionalArgs);
 
     DynamicDefaultableParamView callSettings = new DynamicDefaultableParamView();
-    callSettings.name = namer.getVariableName(Name.from("call", "settings"));
+    callSettings.name = namer.varName(Name.from("call", "settings"));
     callSettings.defaultValue = context.getTypeTable().getZeroValueAndSaveNicknameFor(arrayType);
     methodParams.add(callSettings);
 
@@ -388,7 +388,7 @@ public class ApiMethodTransformer {
   }
 
   public DynamicDefaultableParamView generateDefaultableParam(
-      TransformerContext context, Field field) {
+      SurfaceTransformerContext context, Field field) {
     DynamicDefaultableParamView param = new DynamicDefaultableParamView();
     param.name = context.getNamer().getVariableName(field);
     param.defaultValue = "";
@@ -396,7 +396,7 @@ public class ApiMethodTransformer {
   }
 
   public RequestObjectParamView generateRequestObjectParam(
-      TransformerContext context, Field field) {
+      SurfaceTransformerContext context, Field field) {
     SurfaceNamer namer = context.getNamer();
     RequestObjectParamView param = new RequestObjectParamView();
     param.name = namer.getVariableName(field);
@@ -415,7 +415,7 @@ public class ApiMethodTransformer {
   }
 
   public List<ParamDocView> getMethodParamDocs(
-      TransformerContext context, MethodConfig methodConfig, Iterable<Field> fields) {
+      SurfaceTransformerContext context, MethodConfig methodConfig, Iterable<Field> fields) {
     List<ParamDocView> allDocs = new ArrayList<>();
     for (Field field : fields) {
       SimpleParamDocView paramDoc = new SimpleParamDocView();
@@ -447,7 +447,8 @@ public class ApiMethodTransformer {
     return allDocs;
   }
 
-  public SimpleParamDocView getRequestObjectParamDoc(TransformerContext context, TypeRef typeRef) {
+  public SimpleParamDocView getRequestObjectParamDoc(
+      SurfaceTransformerContext context, TypeRef typeRef) {
     SimpleParamDocView paramDoc = new SimpleParamDocView();
     paramDoc.paramName = "request";
     paramDoc.typeName = context.getTypeTable().getAndSaveNicknameFor(typeRef);
@@ -457,10 +458,10 @@ public class ApiMethodTransformer {
   }
 
   public ParamDocView getOptionalArrayParamDoc(
-      TransformerContext context, MethodConfig methodConfig, Iterable<Field> fields) {
+      SurfaceTransformerContext context, MethodConfig methodConfig, Iterable<Field> fields) {
     MapParamDocView paramDoc = new MapParamDocView();
 
-    paramDoc.paramName = context.getNamer().getVariableName(Name.from("optional", "args"));
+    paramDoc.paramName = context.getNamer().varName(Name.from("optional", "args"));
     paramDoc.typeName = context.getNamer().getOptionalArrayTypeName();
 
     List<String> docLines = null;
@@ -483,10 +484,10 @@ public class ApiMethodTransformer {
     return paramDoc;
   }
 
-  public ParamDocView getCallSettingsParamDoc(TransformerContext context) {
+  public ParamDocView getCallSettingsParamDoc(SurfaceTransformerContext context) {
     MapParamDocView paramDoc = new MapParamDocView();
 
-    paramDoc.paramName = context.getNamer().getVariableName(Name.from("call", "settings"));
+    paramDoc.paramName = context.getNamer().varName(Name.from("call", "settings"));
     paramDoc.typeName = context.getNamer().getOptionalArrayTypeName();
     paramDoc.firstLine = "Optional.";
     paramDoc.remainingLines = new ArrayList<>();
@@ -494,7 +495,7 @@ public class ApiMethodTransformer {
     List<ParamDocView> arrayKeyDocs = new ArrayList<>();
     SimpleParamDocView retrySettingsDoc = new SimpleParamDocView();
     retrySettingsDoc.typeName = context.getNamer().getRetrySettingsClassName();
-    retrySettingsDoc.paramName = context.getNamer().getVariableName(Name.from("retry", "settings"));
+    retrySettingsDoc.paramName = context.getNamer().varName(Name.from("retry", "settings"));
     retrySettingsDoc.firstLine = "Retry settings to use for this call. If present, then";
     // FIXME remove PHP-specific variable naming/syntax
     retrySettingsDoc.remainingLines = Arrays.asList("$timeout is ignored.");
@@ -502,7 +503,7 @@ public class ApiMethodTransformer {
 
     SimpleParamDocView timeoutDoc = new SimpleParamDocView();
     timeoutDoc.typeName = context.getTypeTable().getAndSaveNicknameFor(TypeRef.of(Type.TYPE_INT32));
-    timeoutDoc.paramName = context.getNamer().getVariableName(Name.from("timeout", "millis"));
+    timeoutDoc.paramName = context.getNamer().varName(Name.from("timeout", "millis"));
     // FIXME remove PHP-specific variable naming/syntax
     timeoutDoc.firstLine = "Timeout to use for this call. Only used if $retrySettings";
     timeoutDoc.remainingLines = Arrays.asList("is not set.");

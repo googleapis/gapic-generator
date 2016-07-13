@@ -26,7 +26,7 @@ import java.util.List;
 
 public class PathTemplateTransformer {
 
-  public List<PathTemplateView> generatePathTemplates(TransformerContext context) {
+  public List<PathTemplateView> generatePathTemplates(SurfaceTransformerContext context) {
     List<PathTemplateView> pathTemplates = new ArrayList<>();
 
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
@@ -40,7 +40,7 @@ public class PathTemplateTransformer {
   }
 
   public List<FormatResourceFunctionView> generateFormatResourceFunctions(
-      TransformerContext context) {
+      SurfaceTransformerContext context) {
     List<FormatResourceFunctionView> functions = new ArrayList<>();
 
     SurfaceNamer namer = context.getNamer();
@@ -66,7 +66,7 @@ public class PathTemplateTransformer {
   }
 
   public List<ParseResourceFunctionView> generateParseResourceFunctions(
-      TransformerContext context) {
+      SurfaceTransformerContext context) {
     List<ParseResourceFunctionView> functions = new ArrayList<>();
 
     SurfaceNamer namer = context.getNamer();
@@ -88,7 +88,7 @@ public class PathTemplateTransformer {
   }
 
   public List<PathTemplateGetterFunctionView> generatePathTemplateGetterFunctions(
-      TransformerContext context) {
+      SurfaceTransformerContext context) {
     List<PathTemplateGetterFunctionView> functions = new ArrayList<>();
 
     SurfaceNamer namer = context.getNamer();

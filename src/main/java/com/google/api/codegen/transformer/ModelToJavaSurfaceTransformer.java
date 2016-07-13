@@ -70,8 +70,8 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
   }
 
   public List<ViewModelDoc> transform(Interface service) {
-    TransformerContext context =
-        TransformerContext.create(
+    SurfaceTransformerContext context =
+        SurfaceTransformerContext.create(
             service, cachedApiConfig, new ModelToJavaTypeTable(), new JavaSurfaceNamer());
 
     String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
@@ -122,7 +122,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     return surfaceData;
   }
 
-  private void addXApiImports(TransformerContext context) {
+  private void addXApiImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("com.google.api.gax.grpc.ApiCallable");
     typeTable.saveNicknameFor("com.google.api.gax.protobuf.PathTemplate");
@@ -134,7 +134,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
   }
 
-  private void addXSettingsImports(TransformerContext context) {
+  private void addXSettingsImports(SurfaceTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("com.google.api.gax.core.ConnectionSettings");
     typeTable.saveNicknameFor("com.google.api.gax.core.RetrySettings");
@@ -155,7 +155,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     typeTable.saveNicknameFor("java.util.concurrent.ScheduledExecutorService");
   }
 
-  private List<ApiCallableView> generateApiCallables(TransformerContext context) {
+  private List<ApiCallableView> generateApiCallables(SurfaceTransformerContext context) {
     List<ApiCallableView> callableMembers = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {
@@ -167,7 +167,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
   }
 
   private List<ApiCallableView> generateApiCallables(
-      TransformerContext context, Method method, MethodConfig methodConfig) {
+      SurfaceTransformerContext context, Method method, MethodConfig methodConfig) {
     String methodNameLowCml = LanguageUtil.upperCamelToLowerCamel(method.getSimpleName());
     ModelTypeTable typeTable = context.getTypeTable();
 
@@ -212,7 +212,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     return apiCallables;
   }
 
-  private List<ApiMethodView> generateApiMethods(TransformerContext context) {
+  private List<ApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
     List<ApiMethodView> apiMethods = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {
@@ -249,7 +249,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     return apiMethods;
   }
 
-  private String getSettingsClassName(TransformerContext context) {
+  private String getSettingsClassName(SurfaceTransformerContext context) {
     return context.getInterface().getSimpleName() + "Settings";
   }
 }

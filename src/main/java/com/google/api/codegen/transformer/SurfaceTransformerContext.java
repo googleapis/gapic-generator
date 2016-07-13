@@ -25,10 +25,10 @@ import com.google.auto.value.AutoValue;
 import java.util.Collection;
 
 @AutoValue
-public abstract class TransformerContext {
-  public static TransformerContext create(
+public abstract class SurfaceTransformerContext {
+  public static SurfaceTransformerContext create(
       Interface interfaze, ApiConfig apiConfig, ModelTypeTable typeTable, SurfaceNamer namer) {
-    return new AutoValue_TransformerContext(interfaze, apiConfig, typeTable, namer);
+    return new AutoValue_SurfaceTransformerContext(interfaze, apiConfig, typeTable, namer);
   }
 
   public abstract Interface getInterface();
@@ -39,7 +39,7 @@ public abstract class TransformerContext {
 
   public abstract SurfaceNamer getNamer();
 
-  public TransformerContext withNewTypeTable() {
+  public SurfaceTransformerContext withNewTypeTable() {
     return create(getInterface(), getApiConfig(), getTypeTable().cloneEmpty(), getNamer());
   }
 
