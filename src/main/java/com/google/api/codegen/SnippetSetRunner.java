@@ -18,10 +18,18 @@ package com.google.api.codegen;
  * A SnippetSetRunner takes the element, snippet file, and context as input and then uses the
  * Snippet Set templating engine to generate an output document.
  */
-public interface SnippetSetRunner<Element> {
+public final class SnippetSetRunner {
 
   /**
-   * Runs the code generation.
+   * The path to the root of snippet resources.
    */
-  GeneratedResult generate(Element element, String snippetFileName, CodegenContext context);
+  public static final String SNIPPET_RESOURCE_ROOT =
+      SnippetSetRunner.class.getPackage().getName().replace('.', '/');
+
+  public interface Generator<Element> {
+    /**
+     * Runs the code generation.
+     */
+    GeneratedResult generate(Element element, String snippetFileName, CodegenContext context);
+  }
 }

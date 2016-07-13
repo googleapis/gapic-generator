@@ -1,5 +1,5 @@
-@extends "common.snip"
-@extends "method_sample.snip"
+@extends "py/common.snip"
+@extends "py/method_sample.snip"
 
 @snippet generateFilename(service)
     {@context.upperCamelToLowerUnderscore(context.getApiWrapperName(service))}.py
@@ -355,14 +355,14 @@
     @if context.getApiConfig.generateSamples
       @if descriptionComments.isEmpty
       @else
-        
-        
+
+
       @end
       {@methodSample(method)}
       @if signatureComments.isEmpty
       @else
 
-        
+
       @end
     @end
     @join comment : signatureComments
@@ -372,7 +372,7 @@
   @end
 @end
 
-@private methodSample(method) 
+@private methodSample(method)
   @let apiConfig = context.getApiConfig, \
        service = method.getParent, \
        apiName = context.getApiWrapperName(service), \

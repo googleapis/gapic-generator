@@ -45,7 +45,12 @@ module Google
         #
         # Check out {cloud docs!}[https://cloud.google.com/library/example/link].
         # This is {not a cloud link}[http://www.google.com].
+        #
+        # @!attribute [r] stub
+        #   @return [Google::Example::Library::V1::LibraryService::Stub]
         class LibraryServiceApi
+          attr_reader :stub
+
           # The default address of the service.
           SERVICE_ADDRESS = 'library-example.googleapis.com'.freeze
 
@@ -88,22 +93,25 @@ module Google
           # The scopes needed to make gRPC calls to all of the methods defined in
           # this service.
           ALL_SCOPES = [
-            'https://www.googleapis.com/auth/cloud-platform',
-            'https://www.googleapis.com/auth/library'
+            'https://www.googleapis.com/auth/library',
+            'https://www.googleapis.com/auth/cloud-platform'
           ].freeze
 
           SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-            'shelves/{shelf}')
+            'shelves/{shelf}'
+          )
 
           private_constant :SHELF_PATH_TEMPLATE
 
           BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-            'shelves/{shelf}/books/{book}')
+            'shelves/{shelf}/books/{book}'
+          )
 
           private_constant :BOOK_PATH_TEMPLATE
 
           ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-            'archives/{archive_path=**}/books/{book}')
+            'archives/{archive_path=**}/books/{book}'
+          )
 
           private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
 
@@ -112,7 +120,8 @@ module Google
           # @return [String]
           def self.shelf_path(shelf)
             SHELF_PATH_TEMPLATE.render(
-              :'shelf' => shelf)
+              :'shelf' => shelf
+            )
           end
 
           # Returns a fully-qualified book resource name string.
@@ -122,7 +131,8 @@ module Google
           def self.book_path(shelf, book)
             BOOK_PATH_TEMPLATE.render(
               :'shelf' => shelf,
-              :'book' => book)
+              :'book' => book
+            )
           end
 
           # Returns a fully-qualified archived_book resource name string.
@@ -132,7 +142,8 @@ module Google
           def self.archived_book_path(archive_path, book)
             ARCHIVED_BOOK_PATH_TEMPLATE.render(
               :'archive_path' => archive_path,
-              :'book' => book)
+              :'book' => book
+            )
           end
 
           # Parses the shelf from a shelf resource.
@@ -198,10 +209,15 @@ module Google
             client_config: {},
             timeout: DEFAULT_TIMEOUT,
             app_name: 'gax',
-            app_version: Google::Gax::VERSION)
+            app_version: Google::Gax::VERSION
+          )
+            google_api_client = "#{app_name}/#{app_version} " \
+              "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze
+            headers = { :'x-goog-api-client' => google_api_client }
             client_config_file = Pathname.new(__dir__).join(
-              'library_service_client_config.json')
-            @defaults = client_config_file.open do |f|
+              'library_service_client_config.json'
+            )
+            defaults = client_config_file.open do |f|
               Google::Gax.construct_settings(
                 'google.example.library.v1.LibraryService',
                 JSON.parse(f.read),
@@ -210,11 +226,10 @@ module Google
                 timeout,
                 bundle_descriptors: BUNDLE_DESCRIPTORS,
                 page_descriptors: PAGE_DESCRIPTORS,
-                errors: Google::Gax::Grpc::API_ERRORS)
+                errors: Google::Gax::Grpc::API_ERRORS,
+                kwargs: headers
+              )
             end
-            google_api_client = "#{app_name}/#{app_version} " \
-              "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze
-            @headers = { :'x-goog-api-client' => google_api_client }
             @stub = Google::Gax::Grpc.create_stub(
               service_path,
               port,
@@ -222,6 +237,71 @@ module Google
               channel: channel,
               scopes: scopes,
               &Google::Example::Library::V1::LibraryService::Stub.method(:new)
+            )
+
+            @create_shelf = Google::Gax.create_api_call(
+              @stub.method(:create_shelf),
+              defaults['create_shelf']
+            )
+            @get_shelf = Google::Gax.create_api_call(
+              @stub.method(:get_shelf),
+              defaults['get_shelf']
+            )
+            @list_shelves = Google::Gax.create_api_call(
+              @stub.method(:list_shelves),
+              defaults['list_shelves']
+            )
+            @delete_shelf = Google::Gax.create_api_call(
+              @stub.method(:delete_shelf),
+              defaults['delete_shelf']
+            )
+            @merge_shelves = Google::Gax.create_api_call(
+              @stub.method(:merge_shelves),
+              defaults['merge_shelves']
+            )
+            @create_book = Google::Gax.create_api_call(
+              @stub.method(:create_book),
+              defaults['create_book']
+            )
+            @publish_series = Google::Gax.create_api_call(
+              @stub.method(:publish_series),
+              defaults['publish_series']
+            )
+            @get_book = Google::Gax.create_api_call(
+              @stub.method(:get_book),
+              defaults['get_book']
+            )
+            @list_books = Google::Gax.create_api_call(
+              @stub.method(:list_books),
+              defaults['list_books']
+            )
+            @delete_book = Google::Gax.create_api_call(
+              @stub.method(:delete_book),
+              defaults['delete_book']
+            )
+            @update_book = Google::Gax.create_api_call(
+              @stub.method(:update_book),
+              defaults['update_book']
+            )
+            @move_book = Google::Gax.create_api_call(
+              @stub.method(:move_book),
+              defaults['move_book']
+            )
+            @list_strings = Google::Gax.create_api_call(
+              @stub.method(:list_strings),
+              defaults['list_strings']
+            )
+            @add_comments = Google::Gax.create_api_call(
+              @stub.method(:add_comments),
+              defaults['add_comments']
+            )
+            @get_book_from_archive = Google::Gax.create_api_call(
+              @stub.method(:get_book_from_archive),
+              defaults['get_book_from_archive']
+            )
+            @update_book_index = Google::Gax.create_api_call(
+              @stub.method(:update_book_index),
+              defaults['update_book_index']
             )
           end
 
@@ -238,13 +318,12 @@ module Google
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           def create_shelf(
             shelf,
-            options: nil)
+            options: nil
+          )
             req = Google::Example::Library::V1::CreateShelfRequest.new(
-              shelf: shelf)
-            settings = @defaults['create_shelf'].merge(options)
-            api_call = Google::Gax.create_api_call(
-              @stub.method(:create_shelf), settings)
-            api_call.call(req, **@headers)
+              shelf: shelf
+            )
+            @create_shelf.call(req, options)
           end
 
           # Gets a shelf.
@@ -263,15 +342,14 @@ module Google
             name,
             message: nil,
             string_builder: nil,
-            options: nil)
+            options: nil
+          )
             req = Google::Example::Library::V1::GetShelfRequest.new(
               name: name,
               message: message,
-              string_builder: string_builder)
-            settings = @defaults['get_shelf'].merge(options)
-            api_call = Google::Gax.create_api_call(
-              @stub.method(:get_shelf), settings)
-            api_call.call(req, **@headers)
+              string_builder: string_builder
+            )
+            @get_shelf.call(req, options)
           end
 
           # Lists shelves.
@@ -285,13 +363,9 @@ module Google
           #   operations such as per-page iteration or access to the response
           #   object.
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
-          def list_shelves(
-            options: nil)
+          def list_shelves(options: nil)
             req = Google::Example::Library::V1::ListShelvesRequest.new
-            settings = @defaults['list_shelves'].merge(options)
-            api_call = Google::Gax.create_api_call(
-              @stub.method(:list_shelves), settings)
-            api_call.call(req, **@headers)
+            @list_shelves.call(req, options)
           end
 
           # Deletes a shelf.
@@ -304,13 +378,12 @@ module Google
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           def delete_shelf(
             name,
-            options: nil)
+            options: nil
+          )
             req = Google::Example::Library::V1::DeleteShelfRequest.new(
-              name: name)
-            settings = @defaults['delete_shelf'].merge(options)
-            api_call = Google::Gax.create_api_call(
-              @stub.method(:delete_shelf), settings)
-            api_call.call(req, **@headers)
+              name: name
+            )
+            @delete_shelf.call(req, options)
           end
 
           # Merges two shelves by adding all books from the shelf named
@@ -329,14 +402,13 @@ module Google
           def merge_shelves(
             name,
             other_shelf_name,
-            options: nil)
+            options: nil
+          )
             req = Google::Example::Library::V1::MergeShelvesRequest.new(
               name: name,
-              other_shelf_name: other_shelf_name)
-            settings = @defaults['merge_shelves'].merge(options)
-            api_call = Google::Gax.create_api_call(
-              @stub.method(:merge_shelves), settings)
-            api_call.call(req, **@headers)
+              other_shelf_name: other_shelf_name
+            )
+            @merge_shelves.call(req, options)
           end
 
           # Creates a book.
@@ -353,14 +425,13 @@ module Google
           def create_book(
             name,
             book,
-            options: nil)
+            options: nil
+          )
             req = Google::Example::Library::V1::CreateBookRequest.new(
               name: name,
-              book: book)
-            settings = @defaults['create_book'].merge(options)
-            api_call = Google::Gax.create_api_call(
-              @stub.method(:create_book), settings)
-            api_call.call(req, **@headers)
+              book: book
+            )
+            @create_book.call(req, options)
           end
 
           # Creates a series of books.
@@ -380,15 +451,14 @@ module Google
             shelf,
             books,
             edition: 0,
-            options: nil)
+            options: nil
+          )
             req = Google::Example::Library::V1::PublishSeriesRequest.new(
               shelf: shelf,
               books: books,
-              edition: edition)
-            settings = @defaults['publish_series'].merge(options)
-            api_call = Google::Gax.create_api_call(
-              @stub.method(:publish_series), settings)
-            api_call.call(req, **@headers)
+              edition: edition
+            )
+            @publish_series.call(req, options)
           end
 
           # Gets a book.
@@ -402,13 +472,12 @@ module Google
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           def get_book(
             name,
-            options: nil)
+            options: nil
+          )
             req = Google::Example::Library::V1::GetBookRequest.new(
-              name: name)
-            settings = @defaults['get_book'].merge(options)
-            api_call = Google::Gax.create_api_call(
-              @stub.method(:get_book), settings)
-            api_call.call(req, **@headers)
+              name: name
+            )
+            @get_book.call(req, options)
           end
 
           # Lists books in a shelf.
@@ -436,15 +505,14 @@ module Google
             name,
             page_size: 0,
             filter: '',
-            options: nil)
+            options: nil
+          )
             req = Google::Example::Library::V1::ListBooksRequest.new(
               name: name,
               page_size: page_size,
-              filter: filter)
-            settings = @defaults['list_books'].merge(options)
-            api_call = Google::Gax.create_api_call(
-              @stub.method(:list_books), settings)
-            api_call.call(req, **@headers)
+              filter: filter
+            )
+            @list_books.call(req, options)
           end
 
           # Deletes a book.
@@ -457,13 +525,12 @@ module Google
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           def delete_book(
             name,
-            options: nil)
+            options: nil
+          )
             req = Google::Example::Library::V1::DeleteBookRequest.new(
-              name: name)
-            settings = @defaults['delete_book'].merge(options)
-            api_call = Google::Gax.create_api_call(
-              @stub.method(:delete_book), settings)
-            api_call.call(req, **@headers)
+              name: name
+            )
+            @delete_book.call(req, options)
           end
 
           # Updates a book.
@@ -486,16 +553,15 @@ module Google
             book,
             update_mask: nil,
             physical_mask: nil,
-            options: nil)
+            options: nil
+          )
             req = Google::Example::Library::V1::UpdateBookRequest.new(
               name: name,
               book: book,
               update_mask: update_mask,
-              physical_mask: physical_mask)
-            settings = @defaults['update_book'].merge(options)
-            api_call = Google::Gax.create_api_call(
-              @stub.method(:update_book), settings)
-            api_call.call(req, **@headers)
+              physical_mask: physical_mask
+            )
+            @update_book.call(req, options)
           end
 
           # Moves a book to another shelf, and returns the new book.
@@ -512,14 +578,13 @@ module Google
           def move_book(
             name,
             other_shelf_name,
-            options: nil)
+            options: nil
+          )
             req = Google::Example::Library::V1::MoveBookRequest.new(
               name: name,
-              other_shelf_name: other_shelf_name)
-            settings = @defaults['move_book'].merge(options)
-            api_call = Google::Gax.create_api_call(
-              @stub.method(:move_book), settings)
-            api_call.call(req, **@headers)
+              other_shelf_name: other_shelf_name
+            )
+            @move_book.call(req, options)
           end
 
           # Lists a primitive resource. To test go page streaming.
@@ -543,14 +608,13 @@ module Google
           def list_strings(
             name: '',
             page_size: 0,
-            options: nil)
+            options: nil
+          )
             req = Google::Example::Library::V1::ListStringsRequest.new(
               name: name,
-              page_size: page_size)
-            settings = @defaults['list_strings'].merge(options)
-            api_call = Google::Gax.create_api_call(
-              @stub.method(:list_strings), settings)
-            api_call.call(req, **@headers)
+              page_size: page_size
+            )
+            @list_strings.call(req, options)
           end
 
           # Adds comments to a book
@@ -564,14 +628,13 @@ module Google
           def add_comments(
             name,
             comments,
-            options: nil)
+            options: nil
+          )
             req = Google::Example::Library::V1::AddCommentsRequest.new(
               name: name,
-              comments: comments)
-            settings = @defaults['add_comments'].merge(options)
-            api_call = Google::Gax.create_api_call(
-              @stub.method(:add_comments), settings)
-            api_call.call(req, **@headers)
+              comments: comments
+            )
+            @add_comments.call(req, options)
           end
 
           # Gets a book from an archive.
@@ -585,13 +648,12 @@ module Google
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           def get_book_from_archive(
             name,
-            options: nil)
+            options: nil
+          )
             req = Google::Example::Library::V1::GetBookFromArchiveRequest.new(
-              name: name)
-            settings = @defaults['get_book_from_archive'].merge(options)
-            api_call = Google::Gax.create_api_call(
-              @stub.method(:get_book_from_archive), settings)
-            api_call.call(req, **@headers)
+              name: name
+            )
+            @get_book_from_archive.call(req, options)
           end
 
           # Updates the index of a book.
@@ -610,15 +672,14 @@ module Google
             name,
             index_name,
             index_map,
-            options: nil)
+            options: nil
+          )
             req = Google::Example::Library::V1::UpdateBookIndexRequest.new(
               name: name,
               index_name: index_name,
-              index_map: index_map)
-            settings = @defaults['update_book_index'].merge(options)
-            api_call = Google::Gax.create_api_call(
-              @stub.method(:update_book_index), settings)
-            api_call.call(req, **@headers)
+              index_map: index_map
+            )
+            @update_book_index.call(req, options)
           end
         end
       end

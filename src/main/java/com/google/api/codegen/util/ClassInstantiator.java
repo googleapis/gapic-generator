@@ -30,6 +30,7 @@ public final class ClassInstantiator {
     void error(String message, Object... args);
   }
 
+  @SuppressWarnings("unchecked")
   public static <LP> LP createClass(
       String className,
       Class<LP> coerceType,
@@ -71,6 +72,8 @@ public final class ClassInstantiator {
       return null;
     }
     try {
+      // Unchecked cast here. This is safe though, since we make sure that coerceType is assignable
+      // from classType.
       return (LP) ctor.newInstance(ctorArg);
     } catch (InstantiationException
         | IllegalAccessException

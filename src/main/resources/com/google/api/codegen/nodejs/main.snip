@@ -108,6 +108,28 @@
         @end
       };
     @end
+    @if context.messages.filterBundlingMethods(ifaceConfig, service.getMethods)
+
+      var BUNDLE_DESCRIPTORS = {
+        @join method : context.messages.filterBundlingMethods(ifaceConfig, service.getMethods) on {@", "}.add(BREAK)
+          @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
+            '{@methodName(method)}': new gax.BundleDescriptor(
+                '{@bundling.getBundledField().getSimpleName()}',
+                [
+                  @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
+                    '{@fieldSelector.getParamName}'
+                  @end
+                ],
+                @if bundling.hasSubresponseField()
+                  '{@bundling.getSubresponseField().getSimpleName()}',
+                @else
+                  null,
+                @end
+                {@context.getByteLengthFunction(bundling.getBundledField().getType())})
+          @end
+        @end
+      };
+    @end
 
     /**
      * The scopes needed to make gRPC calls to all of the methods defined in
@@ -127,25 +149,23 @@
     var clientConfigFile = path.join(
         __dirname, '{@jsonBaseName}_client_config.json');
     var configData = fs.readFileSync(clientConfigFile);
-    @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
-      var defaults = gax.constructSettings(
-          '{@service.getFullName}',
-          JSON.parse(configData),
-          clientConfig,
-          grpc.status,
-          timeout,
+    var defaults = gax.constructSettings(
+        '{@service.getFullName}',
+        JSON.parse(configData),
+        clientConfig,
+        grpc.status,
+        timeout,
+        @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
           PAGE_DESCRIPTORS,
-          {'metadata': metadata});
-    @else
-      var defaults = gax.constructSettings(
-          '{@service.getFullName}',
-          JSON.parse(configData),
-          clientConfig,
-          grpc.status,
-          timeout,
+        @else
           null,
-          {'metadata': metadata});
-    @end
+        @end
+        @if context.messages.filterBundlingMethods(ifaceConfig, service.getMethods)
+          BUNDLE_DESCRIPTORS,
+        @else
+          null
+        @end
+        {'metadata': metadata});
   @end
 @end
 

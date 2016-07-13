@@ -1,18 +1,16 @@
-@extends "common.snip"
+@extends "java/common.snip"
 
 @snippet generateFilename(service)
   {@settingsClassName(service)}.java
 @end
 
 @snippet generateClass(service, body, imports)
-  {@fileHeader(service)}
+  {@license()}
   package {@context.getApiConfig.getPackageName};
 
   @join import : imports
     import {@import};
   @end
-
-  // Manually-added imports: add custom (non-generated) imports after this point.
 
   {@body}
 @end
@@ -92,15 +90,11 @@
 @private constants(service)
   /**
    * The default address of the service.
-   *
-  {@javaDocManualEdit()}
    */
   public static final String DEFAULT_SERVICE_ADDRESS = "{@context.getServiceConfig.getServiceAddress(service)}";
 
   /**
    * The default port of the service.
-   *
-  {@javaDocManualEdit()}
    */
   public static final int DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()};
 

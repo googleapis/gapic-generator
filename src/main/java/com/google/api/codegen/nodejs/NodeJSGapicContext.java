@@ -147,12 +147,22 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     String classInfo = jsTypeName(method.getOutputType());
 
     String callbackType = isEmpty ? "EmptyCallback" : String.format("APICallback<%s>", classInfo);
+    String returnMessage =
+        "@returns {"
+            + (config.isBundling() ? "gax.BundleEventEmitter" : "gax.EventEmitter")
+            + "} - the event emitter to handle the call\n"
+            + "  status.";
+    if (config.isBundling()) {
+      returnMessage +=
+          " When isBundling: false is specified in the options, it still returns\n"
+              + "  a gax.BundleEventEmitter but the API is immediately invoked, so it behaves same\n"
+              + "  as a gax.EventEmitter does.";
+    }
     return "@param {?"
         + callbackType
         + "} callback\n"
         + "  The function which will be called with the result of the API call.\n"
-        + "@returns {gax.EventEmitter} - the event emitter to handle the call\n"
-        + "  status.";
+        + returnMessage;
   }
 
   /**
@@ -312,6 +322,26 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       default:
         // Numeric types and enums.
         return "Number";
+    }
+  }
+
+  /**
+   * Returns the JavaScript representation of the function to return the byte length.
+   */
+  public String getByteLengthFunction(TypeRef typeRef) {
+    switch (typeRef.getKind()) {
+      case TYPE_MESSAGE:
+        return "gax.createByteLengthFunction(grpcClient."
+            + typeRef.getMessageType().getFullName()
+            + ")";
+      case TYPE_STRING:
+      case TYPE_BYTES:
+        return "function(s) { return s.length; }";
+      default:
+        // There is no easy way to say the actual length of the numeric fields.
+        // For now throwing an exception.
+        throw new IllegalArgumentException(
+            "Can't determine the byte length function for " + typeRef.getKind());
     }
   }
 
