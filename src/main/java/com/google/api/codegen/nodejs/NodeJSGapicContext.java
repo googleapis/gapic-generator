@@ -271,7 +271,9 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       case TYPE_ENUM:
         Preconditions.checkArgument(
             type.getEnumType().getValues().size() > 0, "enum must have a value");
-        return type.getEnumType().getValues().get(0).getFullName();
+        // All of the proto messages are served under 'grpcClient' name in the
+        // Gapic generated code.
+        return "grpcClient." + type.getEnumType().getValues().get(0).getFullName();
       default:
         if (type.isPrimitive()) {
           return DEFAULT_VALUE_MAP.get(type.getKind());

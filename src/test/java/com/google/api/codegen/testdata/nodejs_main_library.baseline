@@ -171,7 +171,7 @@ function LibraryServiceApi(opts) {
   ];
   methods.forEach(function(methodName) {
     this['_' + methodName] = gax.createApiCall(
-        this.stub.then(function(stub) { return stub[methodName]; }),
+        this.stub.then(function(stub) { return stub[methodName].bind(stub); }),
         defaults[methodName]);
   }.bind(this));
 };
