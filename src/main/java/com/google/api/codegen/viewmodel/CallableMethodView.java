@@ -16,9 +16,14 @@ package com.google.api.codegen.viewmodel;
 
 public class CallableMethodView implements ApiMethodView {
 
+  public String apiClassName;
+  public String apiVariableName;
+  public String genericAwareResponseType;
+  public InitCodeView initCode;
   public ApiMethodDocView doc;
   public String name;
   public String requestTypeName;
   public String responseTypeName;
   public String callableName;
+  public boolean hasReturnValue;
 }

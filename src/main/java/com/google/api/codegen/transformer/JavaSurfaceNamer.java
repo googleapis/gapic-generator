@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.java.JavaDocUtil;
 import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.Name;
@@ -42,10 +43,10 @@ public class JavaSurfaceNamer implements SurfaceNamer {
 
   @Override
   public String getVariableName(String identifier, InitValueConfig initValueConfig) {
-    if (initValueConfig.hasFormattingConfig()) {
-      return Name.from("formatted", identifier).toLowerCamel();
-    } else {
+    if (initValueConfig == null || !initValueConfig.hasFormattingConfig()) {
       return Name.from(identifier).toLowerCamel();
+    } else {
+      return Name.from("formatted", identifier).toLowerCamel();
     }
   }
 
@@ -182,6 +183,15 @@ public class JavaSurfaceNamer implements SurfaceNamer {
   }
 
   @Override
+  public String getStaticReturnTypeName(
+      ModelTypeTable typeTable, Method method, MethodConfig methodConfig) {
+    if (new ServiceMessages().isEmptyType(method.getOutputType())) {
+      return "void";
+    }
+    return typeTable.getAndSaveNicknameFor(method.getOutputType());
+  }
+
+  @Override
   public String getPagedCallableMethodName(Method method) {
     return getPagedCallableName(method);
   }
@@ -199,5 +209,19 @@ public class JavaSurfaceNamer implements SurfaceNamer {
   @Override
   public String getCallableName(Method method) {
     return Name.upperCamel(method.getSimpleName(), "Callable").toLowerCamel();
+  }
+
+  @Override
+  public String getGenericAwareResponseType(ModelTypeTable typeTable, TypeRef outputType) {
+    if (new ServiceMessages().isEmptyType(outputType)) {
+      return "Void";
+    } else {
+      return typeTable.getAndSaveNicknameFor(outputType);
+    }
+  }
+
+  @Override
+  public String getGetResourceListCallName(Field resourcesField) {
+    return Name.from("get", resourcesField.getSimpleName(), "list").toLowerCamel();
   }
 }

@@ -16,9 +16,12 @@ package com.google.api.codegen.viewmodel;
 
 public class PagedCallableMethodView implements ApiMethodView {
 
+  public String apiClassName;
+  public String apiVariableName;
+  public InitCodeView initCode;
   public ApiMethodDocView doc;
   public String resourceTypeName;
-  public Object name;
+  public String name;
   public String requestTypeName;
   public String callableName;
 }

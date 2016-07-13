@@ -18,6 +18,9 @@ import java.util.List;
 
 public class FlattenedMethodView implements ApiMethodView {
 
+  public String apiClassName;
+  public String apiVariableName;
+  public InitCodeView initCode;
   public ApiMethodDocView doc;
   public String requestTypeName;
   public String responseTypeName;

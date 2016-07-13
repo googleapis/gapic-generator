@@ -12,6 +12,7 @@
     {@staticFunctions(xapiClass)}
     {@constructors(xapiClass)}
     {@apiMethods(xapiClass)}
+    {@cleanupSection()}
   }
 @end
 
@@ -187,6 +188,20 @@
   @end
 @end
 
+@private cleanupSection()
+  /**
+   * Initiates an orderly shutdown in which preexisting calls continue but new calls are immediately
+   * cancelled.
+   */
+  @@Override
+  public final void close() throws Exception {
+    for (AutoCloseable closeable : closeables) {
+      closeable.close();
+    }
+  }
+
+@end
+
 @private pagedFlattenedMethod(apiMethod)
   @let coreSampleCode = pagedFlattenedMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decoratedSampleCode(apiMethod, coreSampleCode))}
@@ -206,15 +221,15 @@
 
 @snippet pagedFlattenedMethodSampleCode(apiMethod)
   {@initCode(apiMethod.initCode)}
-  for ({@apiMethod.resourceTypeName} element : \
-      {@apiMethod.apiVariableName}.{@apiMethod.name}(\
-      {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})) {
+  for ({@apiMethod.resourceTypeName} element : {@sampleSyncMethodCall(apiMethod)}) {
     // doThingsWith(element);
   }
 @end
 
 @private pagedRequestObjectMethod(apiMethod)
-  {@methodDoc(apiMethod.doc, "")}
+  @let coreSampleCode = pagedRequestObjectMethodSampleCode(apiMethod)
+    {@methodDoc(apiMethod.doc, decoratedSampleCode(apiMethod, coreSampleCode))}
+  @end
   {@apiMethod.accessModifier} final PageAccessor<{@apiMethod.resourceTypeName}> \
       {@apiMethod.name}({@apiMethod.requestTypeName} request) {
     return {@apiMethod.callableMethodName}()
@@ -222,24 +237,64 @@
   }
 @end
 
+@private pagedRequestObjectMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  for ({@apiMethod.resourceTypeName} element : {@sampleSyncMethodCall(apiMethod)}) {
+    // doThingsWith(element);
+  }
+@end
+
 @private pagedCallableMethod(apiMethod)
-  {@methodDoc(apiMethod.doc, "")}
+  @let coreSampleCode = pagedCallableMethodSampleCode(apiMethod)
+    {@methodDoc(apiMethod.doc, decoratedSampleCode(apiMethod, coreSampleCode))}
+  @end
   public final ApiCallable<{@apiMethod.requestTypeName}, PageAccessor<{@apiMethod.resourceTypeName}>> \
       {@apiMethod.name}() {
     return {@apiMethod.callableName};
   }
 @end
 
+@private pagedCallableMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  ListenableFuture<PageAccessor<{@apiMethod.resourceTypeName}>> future = {@sampleFutureMethodCall(apiMethod)};
+  // Do something
+  for ({@apiMethod.resourceTypeName} element : future.get()) {
+    // doThingsWith(element);
+  }
+@end
+
 @private unpagedListCallableMethod(apiMethod)
-  {@methodDoc(apiMethod.doc, "")}
+  @let coreSampleCode = unpagedListCallableMethodSampleCode(apiMethod)
+    {@methodDoc(apiMethod.doc, decoratedSampleCode(apiMethod, coreSampleCode))}
+  @end
   public final ApiCallable<{@apiMethod.requestTypeName}, {@apiMethod.responseTypeName}> \
       {@apiMethod.name}() {
     return {@apiMethod.callableName};
   }
 @end
 
+@private unpagedListCallableMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  while (true) {
+    {@apiMethod.responseTypeName} response = \
+        {@apiMethod.apiVariableName}.{@apiMethod.name}().call(\
+        {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
+    for ({@apiMethod.resourceTypeName} element : response.{@apiMethod.getResourceListCall}()) {
+      // doThingsWith(element);
+    }
+    String nextPageToken = response.getNextPageToken();
+    if (!Strings.isNullOrEmpty(nextPageToken)) {
+      request = request.toBuilder().setPageToken(nextPageToken).build();
+    } else {
+      break;
+    }
+  }
+@end
+
 @private flattenedMethod(apiMethod)
-  {@methodDoc(apiMethod.doc, "")}
+  @let coreSampleCode = flattenedMethodSampleCode(apiMethod)
+    {@methodDoc(apiMethod.doc, decoratedSampleCode(apiMethod, coreSampleCode))}
+  @end
   public final {@apiMethod.responseTypeName} {@apiMethod.name}(\
        {@paramList(apiMethod.methodParams)}) {
     @join pathTemplateCheck : apiMethod.pathTemplateChecks
@@ -257,8 +312,19 @@
   }
 @end
 
+@private flattenedMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  @if apiMethod.hasReturnValue
+    {@apiMethod.responseTypeName} response = {@sampleSyncMethodCall(apiMethod)};
+  @else
+    {@sampleSyncMethodCall(apiMethod)};
+  @end
+@end
+
 @private requestObjectMethod(apiMethod)
-  {@methodDoc(apiMethod.doc, "")}
+  @let coreSampleCode = requestObjectMethodSampleCode(apiMethod)
+    {@methodDoc(apiMethod.doc, decoratedSampleCode(apiMethod, coreSampleCode))}
+  @end
   {@apiMethod.accessModifier} final {@apiMethod.responseTypeName} \
       {@apiMethod.name}({@apiMethod.requestTypeName} request) {
     @if apiMethod.hasReturnValue
@@ -269,12 +335,34 @@
   }
 @end
 
+@private requestObjectMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  @if apiMethod.hasReturnValue
+    {@apiMethod.responseTypeName} response = {@sampleSyncMethodCall(apiMethod)};
+  @else
+    {@sampleSyncMethodCall(apiMethod)};
+  @end
+@end
+
 @private callableMethod(apiMethod)
-  {@methodDoc(apiMethod.doc, "")}
+  @let coreSampleCode = callableMethodSampleCode(apiMethod)
+    {@methodDoc(apiMethod.doc, decoratedSampleCode(apiMethod, coreSampleCode))}
+  @end
   public final ApiCallable<{@apiMethod.requestTypeName}, {@apiMethod.responseTypeName}> \
       {@apiMethod.name}() {
     return {@apiMethod.callableName};
   }
+@end
+
+@private callableMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  ListenableFuture<{@apiMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
+  // Do something
+  @if apiMethod.hasReturnValue
+    {@apiMethod.responseTypeName} response = future.get();
+  @else
+    future.get();
+  @end
 @end
 
 @snippet decoratedSampleCode(apiMethod, coreSampleCode)
@@ -290,7 +378,18 @@
   @end
 @end
 
+@private sampleFutureMethodCall(apiMethod)
+  {@apiMethod.apiVariableName}.{@apiMethod.name}().futureCall(\
+      {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+@end
+
+@private sampleSyncMethodCall(apiMethod)
+  {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+      {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+@end
+
 @private methodDoc(apiMethodDoc, methodSampleCode)
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
   @join commentLine : apiMethodDoc.mainDocLines
     {@""} * {@commentLine} 
@@ -309,7 +408,6 @@
     @end
   @end
   @if apiMethodDoc.throwsDocLines
-    {@""} *
     @join commentLine : apiMethodDoc.throwsDocLines
       {@""} * {@commentLine}
     @end
@@ -365,8 +463,8 @@
 
 @private initLineStructure(line)
   {@line.typeName} {@line.identifier} = {@line.typeName}.newBuilder()
-  @join fieldSetting : line.getFieldSettings
-    {@EMPTY}  .{@line.setFunctionCallName}({@fieldSetting.identifier})
+  @join fieldSetting : line.fieldSettings
+    {@EMPTY}  .{@fieldSetting.setFunctionCallName}({@fieldSetting.identifier})
   @end
   {@EMPTY}  .build();
 @end
@@ -392,7 +490,7 @@
   @case "SimpleInitValueView"
     {@initValue.initialValue}
   @case "FormattedInitValueView"
-    {@initValue.apiWrapperName}.{@initValue.formatFunctionName}({@initValue.formatArgs})
+    {@initValue.apiWrapperName}.{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
   @default
     {@unhandledCase()}
   @end

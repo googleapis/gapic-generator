@@ -89,6 +89,9 @@ public interface SurfaceNamer {
   String getDynamicReturnTypeName(
       ModelTypeTable typeTable, Method method, MethodConfig methodConfig);
 
+  String getStaticReturnTypeName(
+      ModelTypeTable typeTable, Method method, MethodConfig methodConfig);
+
   String getPagedCallableMethodName(Method method);
 
   String getPagedCallableName(Method method);
@@ -96,4 +99,8 @@ public interface SurfaceNamer {
   String getCallableMethodName(Method method);
 
   String getCallableName(Method method);
+
+  String getGenericAwareResponseType(ModelTypeTable typeTable, TypeRef outputType);
+
+  String getGetResourceListCallName(Field resourcesField);
 }

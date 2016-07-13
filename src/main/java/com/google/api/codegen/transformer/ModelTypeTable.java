@@ -24,15 +24,17 @@ public interface ModelTypeTable {
 
   void saveNicknameFor(String fullName);
 
-  String getFullNameFor(TypeRef outputType);
+  String getFullNameFor(TypeRef type);
+
+  String getNicknameFor(TypeRef type);
 
   String getAndSaveNicknameFor(String fullName);
 
-  String getAndSaveNicknameFor(TypeRef inputType);
+  String getAndSaveNicknameFor(TypeRef type);
 
-  String getAndSaveNicknameForElementType(TypeRef inputType);
+  String getAndSaveNicknameForElementType(TypeRef type);
 
-  String renderPrimitiveValue(TypeRef keyType, String key);
+  String renderPrimitiveValue(TypeRef type, String key);
 
   String getZeroValueAndSaveNicknameFor(TypeRef type);
 

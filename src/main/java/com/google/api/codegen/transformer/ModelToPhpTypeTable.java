@@ -83,8 +83,13 @@ public class ModelToPhpTypeTable implements ModelTypeTable {
   }
 
   @Override
-  public String getFullNameFor(TypeRef outputType) {
-    return getTypeAlias(outputType).getFullName();
+  public String getFullNameFor(TypeRef type) {
+    return getTypeAlias(type).getFullName();
+  }
+
+  @Override
+  public String getNicknameFor(TypeRef type) {
+    return getTypeAlias(type).getNickname();
   }
 
   @Override

@@ -95,9 +95,15 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
   }
 
   @Override
-  public String getFullNameFor(TypeRef outputType) {
+  public String getFullNameFor(TypeRef type) {
     // FIXME figure out aliases for non-element types
-    return getAliasForElementType(outputType).getFullName();
+    return getAliasForElementType(type).getFullName();
+  }
+
+  @Override
+  public String getNicknameFor(TypeRef type) {
+    // FIXME figure out aliases for non-element types
+    return getAliasForElementType(type).getNickname();
   }
 
   @Override

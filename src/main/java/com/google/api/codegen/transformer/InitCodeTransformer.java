@@ -29,8 +29,8 @@ import com.google.api.codegen.metacode.SimpleInitCodeLine;
 import com.google.api.codegen.metacode.StructureInitCodeLine;
 import com.google.api.codegen.viewmodel.FieldSettingView;
 import com.google.api.codegen.viewmodel.FormattedInitValueView;
-import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.InitCodeLineView;
+import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.InitValueView;
 import com.google.api.codegen.viewmodel.ListInitCodeLineView;
 import com.google.api.codegen.viewmodel.MapEntryView;
@@ -57,6 +57,18 @@ public class InitCodeTransformer {
     Map<String, Object> initFieldStructure = createInitFieldStructure(context, methodConfig);
     InitCodeGenerator generator = new InitCodeGenerator();
     InitCode initCode = generator.generateRequestFieldInitCode(method, initFieldStructure, fields);
+
+    InitCodeView surfaceInitCode = new InitCodeView();
+    surfaceInitCode.lines = generateSurfaceInitCodeLines(context, initCode);
+    surfaceInitCode.fieldSettings = getFieldSettings(context, initCode.getArgFields());
+    return surfaceInitCode;
+  }
+
+  public InitCodeView generateRequestObjectInitCode(
+      TransformerContext context, Method method, MethodConfig methodConfig) {
+    Map<String, Object> initFieldStructure = createInitFieldStructure(context, methodConfig);
+    InitCodeGenerator generator = new InitCodeGenerator();
+    InitCode initCode = generator.generateRequestObjectInitCode(method, initFieldStructure);
 
     InitCodeView surfaceInitCode = new InitCodeView();
     surfaceInitCode.lines = generateSurfaceInitCodeLines(context, initCode);
@@ -166,7 +178,8 @@ public class InitCodeTransformer {
     for (Map.Entry<String, String> entry : line.getElementIdentifierMap().entrySet()) {
       MapEntryView mapEntry = new MapEntryView();
       mapEntry.key = typeTable.renderPrimitiveValue(line.getKeyType(), entry.getKey());
-      mapEntry.value = typeTable.renderPrimitiveValue(line.getElementType(), entry.getValue());
+      mapEntry.value =
+          context.getNamer().getVariableName(line.getElementIdentifierValue(entry.getKey()), null);
       entries.add(mapEntry);
     }
     surfaceLine.initEntries = entries;

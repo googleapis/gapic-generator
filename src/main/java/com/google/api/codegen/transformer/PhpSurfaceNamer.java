@@ -187,6 +187,12 @@ public class PhpSurfaceNamer implements SurfaceNamer {
   }
 
   @Override
+  public String getStaticReturnTypeName(
+      ModelTypeTable typeTable, Method method, MethodConfig methodConfig) {
+    return SurfaceNamer.NOT_IMPLEMENTED;
+  }
+
+  @Override
   public String getPagedCallableMethodName(Method method) {
     return SurfaceNamer.NOT_IMPLEMENTED;
   }
@@ -203,6 +209,16 @@ public class PhpSurfaceNamer implements SurfaceNamer {
 
   @Override
   public String getCallableName(Method method) {
+    return SurfaceNamer.NOT_IMPLEMENTED;
+  }
+
+  @Override
+  public String getGenericAwareResponseType(ModelTypeTable typeTable, TypeRef outputType) {
+    return SurfaceNamer.NOT_IMPLEMENTED;
+  }
+
+  @Override
+  public String getGetResourceListCallName(Field resourcesField) {
     return SurfaceNamer.NOT_IMPLEMENTED;
   }
 }

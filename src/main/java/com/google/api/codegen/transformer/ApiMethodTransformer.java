@@ -60,6 +60,9 @@ public class ApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     PagedFlattenedMethodView apiMethod = new PagedFlattenedMethodView();
 
+    apiMethod.apiClassName = namer.getApiWrapperClassName(context.getInterface());
+    apiMethod.apiVariableName = namer.getApiWrapperVariableName(context.getInterface());
+
     apiMethod.initCode =
         initCodeTransformer.generateInitCode(context, method, methodConfig, fields);
 
@@ -72,12 +75,12 @@ public class ApiMethodTransformer {
     apiMethod.doc = doc;
 
     PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
+    apiMethod.name = namer.getApiMethodName(method);
     apiMethod.resourceTypeName =
         context
             .getTypeTable()
             .getAndSaveNicknameForElementType(pageStreaming.getResourcesField().getType());
     apiMethod.requestTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getInputType());
-    apiMethod.name = namer.getApiMethodName(method);
 
     List<RequestObjectParamView> params = new ArrayList<>();
     for (Field field : fields) {
@@ -88,9 +91,6 @@ public class ApiMethodTransformer {
 
     apiMethod.pathTemplateChecks = generatePathTemplateChecks(context, methodConfig, fields);
 
-    apiMethod.apiClassName = namer.getApiWrapperClassName(context.getInterface());
-    apiMethod.apiVariableName = namer.getApiWrapperVariableName(context.getInterface());
-
     return apiMethod;
   }
 
@@ -98,6 +98,12 @@ public class ApiMethodTransformer {
       TransformerContext context, Method method, MethodConfig methodConfig) {
     SurfaceNamer namer = context.getNamer();
     PagedRequestObjectMethodView apiMethod = new PagedRequestObjectMethodView();
+
+    apiMethod.apiClassName = namer.getApiWrapperClassName(context.getInterface());
+    apiMethod.apiVariableName = namer.getApiWrapperVariableName(context.getInterface());
+
+    apiMethod.initCode =
+        initCodeTransformer.generateRequestObjectInitCode(context, method, methodConfig);
 
     ApiMethodDocView doc = new ApiMethodDocView();
 
@@ -115,11 +121,11 @@ public class ApiMethodTransformer {
     }
 
     PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
+    apiMethod.name = namer.getApiMethodName(method);
     apiMethod.resourceTypeName =
         context
             .getTypeTable()
             .getAndSaveNicknameForElementType(pageStreaming.getResourcesField().getType());
-    apiMethod.name = namer.getApiMethodName(method);
     apiMethod.requestTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getInputType());
     apiMethod.callableMethodName = namer.getPagedCallableMethodName(method);
 
@@ -131,6 +137,12 @@ public class ApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     PagedCallableMethodView apiMethod = new PagedCallableMethodView();
 
+    apiMethod.apiClassName = namer.getApiWrapperClassName(context.getInterface());
+    apiMethod.apiVariableName = namer.getApiWrapperVariableName(context.getInterface());
+
+    apiMethod.initCode =
+        initCodeTransformer.generateRequestObjectInitCode(context, method, methodConfig);
+
     ApiMethodDocView doc = new ApiMethodDocView();
 
     doc.mainDocLines = namer.getDocLines(method);
@@ -140,11 +152,11 @@ public class ApiMethodTransformer {
     apiMethod.doc = doc;
 
     PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
+    apiMethod.name = namer.getPagedCallableMethodName(method);
     apiMethod.resourceTypeName =
         context
             .getTypeTable()
             .getAndSaveNicknameForElementType(pageStreaming.getResourcesField().getType());
-    apiMethod.name = namer.getPagedCallableMethodName(method);
     apiMethod.requestTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getInputType());
     apiMethod.callableName = namer.getPagedCallableName(method);
 
@@ -156,6 +168,15 @@ public class ApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     UnpagedListCallableMethodView apiMethod = new UnpagedListCallableMethodView();
 
+    PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
+    apiMethod.apiClassName = namer.getApiWrapperClassName(context.getInterface());
+    apiMethod.apiVariableName = namer.getApiWrapperVariableName(context.getInterface());
+    apiMethod.getResourceListCall =
+        namer.getGetResourceListCallName(pageStreaming.getResourcesField());
+
+    apiMethod.initCode =
+        initCodeTransformer.generateRequestObjectInitCode(context, method, methodConfig);
+
     ApiMethodDocView doc = new ApiMethodDocView();
 
     doc.mainDocLines = namer.getDocLines(method);
@@ -165,6 +186,10 @@ public class ApiMethodTransformer {
     apiMethod.doc = doc;
 
     apiMethod.name = namer.getCallableMethodName(method);
+    apiMethod.resourceTypeName =
+        context
+            .getTypeTable()
+            .getAndSaveNicknameForElementType(pageStreaming.getResourcesField().getType());
     apiMethod.requestTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getInputType());
     apiMethod.responseTypeName =
         context.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
@@ -181,6 +206,12 @@ public class ApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     FlattenedMethodView apiMethod = new FlattenedMethodView();
 
+    apiMethod.apiClassName = namer.getApiWrapperClassName(context.getInterface());
+    apiMethod.apiVariableName = namer.getApiWrapperVariableName(context.getInterface());
+
+    apiMethod.initCode =
+        initCodeTransformer.generateInitCode(context, method, methodConfig, fields);
+
     ApiMethodDocView doc = new ApiMethodDocView();
 
     doc.mainDocLines = namer.getDocLines(method);
@@ -191,7 +222,8 @@ public class ApiMethodTransformer {
 
     apiMethod.requestTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getInputType());
     apiMethod.responseTypeName =
-        context.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
+        namer.getStaticReturnTypeName(context.getTypeTable(), method, methodConfig);
+    context.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
     apiMethod.name = namer.getApiMethodName(method);
 
     List<RequestObjectParamView> params = new ArrayList<>();
@@ -203,7 +235,7 @@ public class ApiMethodTransformer {
 
     apiMethod.pathTemplateChecks = generatePathTemplateChecks(context, methodConfig, fields);
 
-    apiMethod.hasReturnValue = new ServiceMessages().isEmptyType(method.getOutputType());
+    apiMethod.hasReturnValue = !new ServiceMessages().isEmptyType(method.getOutputType());
 
     return apiMethod;
   }
@@ -212,6 +244,12 @@ public class ApiMethodTransformer {
       TransformerContext context, Method method, MethodConfig methodConfig) {
     SurfaceNamer namer = context.getNamer();
     RequestObjectMethodView apiMethod = new RequestObjectMethodView();
+
+    apiMethod.apiClassName = namer.getApiWrapperClassName(context.getInterface());
+    apiMethod.apiVariableName = namer.getApiWrapperVariableName(context.getInterface());
+
+    apiMethod.initCode =
+        initCodeTransformer.generateRequestObjectInitCode(context, method, methodConfig);
 
     ApiMethodDocView doc = new ApiMethodDocView();
 
@@ -231,10 +269,10 @@ public class ApiMethodTransformer {
     apiMethod.name = namer.getApiMethodName(method);
     apiMethod.requestTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getInputType());
     apiMethod.responseTypeName =
-        context.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
+        namer.getStaticReturnTypeName(context.getTypeTable(), method, methodConfig);
     apiMethod.callableMethodName = namer.getCallableMethodName(method);
 
-    apiMethod.hasReturnValue = new ServiceMessages().isEmptyType(method.getOutputType());
+    apiMethod.hasReturnValue = !new ServiceMessages().isEmptyType(method.getOutputType());
 
     return apiMethod;
   }
@@ -244,6 +282,14 @@ public class ApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     CallableMethodView apiMethod = new CallableMethodView();
 
+    apiMethod.apiClassName = namer.getApiWrapperClassName(context.getInterface());
+    apiMethod.apiVariableName = namer.getApiWrapperVariableName(context.getInterface());
+    apiMethod.genericAwareResponseType =
+        namer.getGenericAwareResponseType(context.getTypeTable(), method.getOutputType());
+
+    apiMethod.initCode =
+        initCodeTransformer.generateRequestObjectInitCode(context, method, methodConfig);
+
     ApiMethodDocView doc = new ApiMethodDocView();
 
     doc.mainDocLines = namer.getDocLines(method);
@@ -252,11 +298,13 @@ public class ApiMethodTransformer {
 
     apiMethod.doc = doc;
 
-    apiMethod.name = namer.getPagedCallableMethodName(method);
+    apiMethod.name = namer.getCallableMethodName(method);
     apiMethod.requestTypeName = context.getTypeTable().getAndSaveNicknameFor(method.getInputType());
     apiMethod.responseTypeName =
         context.getTypeTable().getAndSaveNicknameFor(method.getOutputType());
-    apiMethod.callableName = namer.getPagedCallableName(method);
+    apiMethod.callableName = namer.getCallableName(method);
+
+    apiMethod.hasReturnValue = !new ServiceMessages().isEmptyType(method.getOutputType());
 
     return apiMethod;
   }

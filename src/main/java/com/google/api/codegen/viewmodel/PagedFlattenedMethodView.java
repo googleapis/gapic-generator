@@ -18,6 +18,8 @@ import java.util.List;
 
 public class PagedFlattenedMethodView implements ApiMethodView {
 
+  public String apiClassName;
+  public String apiVariableName;
   public InitCodeView initCode;
   public ApiMethodDocView doc;
   public String resourceTypeName;
@@ -26,6 +28,4 @@ public class PagedFlattenedMethodView implements ApiMethodView {
   public List<RequestObjectParamView> requestObjectParams;
   public String requestTypeName;
   public List<PathTemplateCheckView> pathTemplateChecks;
-  public String apiClassName;
-  public String apiVariableName;
 }
