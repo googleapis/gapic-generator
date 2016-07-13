@@ -333,6 +333,8 @@ module Google
           # @param message [Google::Example::Library::V1::SomeMessage]
           #   Field to verify that message-type query parameter gets flattened.
           # @param string_builder [Google::Example::Library::V1::StringBuilder]
+          # @param options_ [String]
+          #   To test 'options' parameter name conflict.
           # @param options [Google::Gax::CallOptions]
           #   Overrides the default settings for this call, e.g, timeout,
           #   retries, etc.
@@ -340,12 +342,14 @@ module Google
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           def get_shelf(
             name,
+            options_,
             message: nil,
             string_builder: nil,
             options: nil
           )
             req = Google::Example::Library::V1::GetShelfRequest.new(
               name: name,
+              options: options_,
               message: message,
               string_builder: string_builder
             )

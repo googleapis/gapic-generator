@@ -330,6 +330,8 @@ LibraryServiceApi.prototype.createShelf = function createShelf() {
  *
  * @param {String} name
  *   The name of the shelf to retrieve.
+ * @param {String} options_
+ *   To test 'options' parameter name conflict.
  * @param {?Object} otherArgs
  * @param {google.example.library.v1.SomeMessage} otherArgs.message
  *   Field to verify that message-type query parameter gets flattened.
@@ -346,12 +348,14 @@ LibraryServiceApi.prototype.createShelf = function createShelf() {
 LibraryServiceApi.prototype.getShelf = function getShelf() {
   var args = arguejs({
     'name': String,
+    'options_': String,
     'otherArgs': [Object, {}],
     'options': [gax.CallOptions],
     'callback': [Function]
   }, arguments);
   var req = {
     'name': args.name,
+    'options': args.options_,
     'message': args.otherArgs.message || {},
     'string_builder': args.otherArgs.stringBuilder || {}
   };

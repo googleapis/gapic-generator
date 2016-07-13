@@ -347,6 +347,7 @@ class LibraryServiceApi(object):
     def get_shelf(
             self,
             name,
+            options_,
             message=None,
             string_builder=None,
             options=None):
@@ -357,12 +358,14 @@ class LibraryServiceApi(object):
           >>> from library.library_service_api import LibraryServiceApi
           >>> api = LibraryServiceApi()
           >>> name = api.shelf_path('[SHELF]')
-          >>> response = api.get_shelf(name)
+          >>> options = ''
+          >>> response = api.get_shelf(name, options)
 
         Args:
           name (string): The name of the shelf to retrieve.
           message (:class:`google.example.library.v1.library_pb2.SomeMessage`): Field to verify that message-type query parameter gets flattened.
           string_builder (:class:`google.example.library.v1.library_pb2.StringBuilder`)
+          options_ (string): To test 'options' parameter name conflict.
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
 
@@ -378,6 +381,7 @@ class LibraryServiceApi(object):
             string_builder = library_pb2.StringBuilder()
         request = library_pb2.GetShelfRequest(
             name=name,
+            options=options_,
             message=message,
             string_builder=string_builder)
         return self._get_shelf(request, options)
@@ -609,7 +613,7 @@ class LibraryServiceApi(object):
             resource, this parameter does not affect the return value. If page
             streaming is performed per-page, this determines the maximum number
             of resources in a page.
-          filter (string): To test python built-in wrapping.
+          filter_ (string): To test python built-in wrapping.
           options (:class:`google.gax.CallOptions`): Overrides the default
             settings for this call, e.g, timeout, retries etc.
 
