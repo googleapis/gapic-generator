@@ -448,6 +448,9 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
               "until",
               "when",
               "while",
-              "yield")
+              "yield",
+              // "options" is here because it's a common keyword argument to
+              // specify a CallOptions instance.
+              "options")
           .build();
 }
