@@ -24,16 +24,11 @@ import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.BundlingApiCallableView;
-import com.google.api.codegen.viewmodel.CallableMethodView;
-import com.google.api.codegen.viewmodel.ViewModelDoc;
-import com.google.api.codegen.viewmodel.FlattenedMethodView;
 import com.google.api.codegen.viewmodel.PagedApiCallableView;
-import com.google.api.codegen.viewmodel.PagedCallableMethodView;
-import com.google.api.codegen.viewmodel.RequestObjectMethodView;
 import com.google.api.codegen.viewmodel.SimpleApiCallableView;
 import com.google.api.codegen.viewmodel.StaticXApiView;
 import com.google.api.codegen.viewmodel.StaticXSettingsView;
-import com.google.api.codegen.viewmodel.UnpagedListCallableMethodView;
+import com.google.api.codegen.viewmodel.ViewModelDoc;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -41,6 +36,7 @@ import com.google.api.tools.framework.model.Model;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer {
@@ -48,6 +44,9 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
   private GapicCodePathMapper pathMapper;
   private PathTemplateTransformer pathTemplateTransformer;
   private ApiMethodTransformer apiMethodTransformer;
+
+  private static final String XAPI_TEMPLATE_FILENAME = "java/xapi.snip";
+  private static final String XSETTINGS_TEMPLATE_FILENAME = "java/xsettings.snip";
 
   public ModelToJavaSurfaceTransformer(ApiConfig apiConfig, GapicCodePathMapper pathMapper) {
     this.cachedApiConfig = apiConfig;
@@ -58,12 +57,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
 
   @Override
   public List<String> getTemplateFileNames() {
-    List<String> fileNames = new ArrayList<>();
-
-    fileNames.add(new StaticXApiView().getTemplateFileName());
-    fileNames.add(new StaticXSettingsView().getTemplateFileName());
-
-    return fileNames;
+    return Arrays.asList(XAPI_TEMPLATE_FILENAME, XSETTINGS_TEMPLATE_FILENAME);
   }
 
   @Override
@@ -87,6 +81,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     addXApiImports(context);
 
     StaticXApiView xapiClass = new StaticXApiView();
+    xapiClass.templateFileName = XAPI_TEMPLATE_FILENAME;
     xapiClass.packageName = context.getApiConfig().getPackageName();
     xapiClass.name = context.getNamer().getApiWrapperClassName(context.getInterface());
     xapiClass.settingsClassName = getSettingsClassName(context);
@@ -109,6 +104,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToSurfaceTransformer 
     addXSettingsImports(context);
 
     StaticXSettingsView xsettingsClass = new StaticXSettingsView();
+    xsettingsClass.templateFileName = XSETTINGS_TEMPLATE_FILENAME;
     xsettingsClass.packageName = context.getApiConfig().getPackageName();
     xsettingsClass.name = getSettingsClassName(context);
     ServiceConfig serviceConfig = new ServiceConfig();

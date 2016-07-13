@@ -17,6 +17,7 @@ package com.google.api.codegen.viewmodel;
 import java.util.List;
 
 public class StaticXApiView implements ViewModelDoc {
+  public String templateFileName;
   public String packageName;
   public String name;
   public String settingsClassName;
@@ -31,7 +32,7 @@ public class StaticXApiView implements ViewModelDoc {
 
   @Override
   public String getTemplateFileName() {
-    return "xapi.snip";
+    return templateFileName;
   }
 
   @Override

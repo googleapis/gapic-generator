@@ -17,6 +17,7 @@ package com.google.api.codegen.viewmodel;
 import java.util.List;
 
 public class DynamicXApiView implements ViewModelDoc {
+  public String templateFileName;
   public String packageName;
   public String name;
   public String serviceAddress;
@@ -41,7 +42,7 @@ public class DynamicXApiView implements ViewModelDoc {
 
   @Override
   public String getTemplateFileName() {
-    return "xapi.snip";
+    return templateFileName;
   }
 
   @Override

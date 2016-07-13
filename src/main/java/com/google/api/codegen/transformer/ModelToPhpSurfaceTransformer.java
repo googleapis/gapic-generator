@@ -27,6 +27,7 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
@@ -35,6 +36,8 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
   private PathTemplateTransformer pathTemplateTransformer;
   private PageStreamingTransformer pageStreamingTransformer;
   private ApiMethodTransformer apiMethodTransformer;
+
+  private static final String XAPI_TEMPLATE_FILENAME = "php/xapi.snip";
 
   public ModelToPhpSurfaceTransformer(ApiConfig apiConfig, GapicCodePathMapper pathMapper) {
     this.cachedApiConfig = apiConfig;
@@ -46,11 +49,7 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
 
   @Override
   public List<String> getTemplateFileNames() {
-    List<String> fileNames = new ArrayList<>();
-
-    fileNames.add(new DynamicXApiView().getTemplateFileName());
-
-    return fileNames;
+    return Arrays.asList(XAPI_TEMPLATE_FILENAME);
   }
 
   @Override
@@ -75,6 +74,7 @@ public class ModelToPhpSurfaceTransformer implements ModelToSurfaceTransformer {
     addXApiImports(context);
 
     DynamicXApiView xapiClass = new DynamicXApiView();
+    xapiClass.templateFileName = XAPI_TEMPLATE_FILENAME;
     xapiClass.packageName = context.getApiConfig().getPackageName();
     xapiClass.name = namer.getApiWrapperClassName(context.getInterface());
     ServiceConfig serviceConfig = new ServiceConfig();

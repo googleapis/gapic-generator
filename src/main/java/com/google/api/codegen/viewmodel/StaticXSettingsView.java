@@ -17,6 +17,8 @@ package com.google.api.codegen.viewmodel;
 import java.util.List;
 
 public class StaticXSettingsView implements ViewModelDoc {
+  public String templateFileName;
+
   public String packageName;
   public String name;
   public String serviceAddress;
@@ -28,7 +30,7 @@ public class StaticXSettingsView implements ViewModelDoc {
 
   @Override
   public String getTemplateFileName() {
-    return "xsettings.snip";
+    return templateFileName;
   }
 
   @Override

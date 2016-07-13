@@ -157,11 +157,12 @@ public class MainGapicProviderFactory
               .setPrefix("src/main/java")
               .setShouldAppendPackage(true)
               .build();
-      String resourceRoot = JavaTypeTable.class.getPackage().getName().replace('.', '/');
       GapicProvider<? extends Object> mainProvider =
           SurfaceGapicProvider.newBuilder()
               .setModel(model)
-              .setSnippetSetRunner(new CommonSnippetSetRunner(resourceRoot, new JavaSnippetUtil()))
+              .setSnippetSetRunner(
+                  new CommonSnippetSetRunner(
+                      SnippetSetRunner.SNIPPET_RESOURCE_ROOT, new JavaSnippetUtil()))
               .setModelToSurfaceTransformer(
                   new ModelToJavaSurfaceTransformer(apiConfig, javaPathMapper))
               .build();
@@ -227,11 +228,11 @@ public class MainGapicProviderFactory
     } else if (id.equals(PHP_SURFACE)) {
       GapicCodePathMapper phpPathMapper =
           CommonGapicCodePathMapper.newBuilder().setPrefix("src").build();
-      String resourceRoot = PhpTypeTable.class.getPackage().getName().replace('.', '/');
       GapicProvider<? extends Object> mainProvider =
           SurfaceGapicProvider.newBuilder()
               .setModel(model)
-              .setSnippetSetRunner(new CommonSnippetSetRunner(resourceRoot, new Object()))
+              .setSnippetSetRunner(
+                  new CommonSnippetSetRunner(SnippetSetRunner.SNIPPET_RESOURCE_ROOT, new Object()))
               .setModelToSurfaceTransformer(
                   new ModelToPhpSurfaceTransformer(apiConfig, phpPathMapper))
               .build();
