@@ -28,13 +28,13 @@ import java.util.List;
  * Gapic vs Discovery). Behavior that is specific to a use case is provided through a PHP context
  * class (PhpGapicContext vs PhpDiscoveryContext).
  */
-public class PhpSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
+public class PhpSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
-  /**
-   * The path to the root of snippet resources.
-   */
-  private static final String SNIPPET_RESOURCE_ROOT =
-      PhpSnippetSetRunner.class.getPackage().getName().replace('.', '/');
+  private final String resourceRoot;
+
+  public PhpSnippetSetRunner(String resourceRoot) {
+    this.resourceRoot = resourceRoot;
+  }
 
   @Override
   @SuppressWarnings("unchecked")
@@ -43,7 +43,7 @@ public class PhpSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT>
     PhpSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             PhpSnippetSet.class,
-            SNIPPET_RESOURCE_ROOT,
+            resourceRoot,
             snippetFileName,
             ImmutableMap.<String, Object>of("context", context));
 

@@ -26,13 +26,13 @@ import java.util.TreeSet;
 /**
  * A CSharpProvider provides general CSharp code generation logic.
  */
-public class CSharpSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
+public class CSharpSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
-  /**
-   * The path to the root of snippet resources.
-   */
-  private static final String SNIPPET_RESOURCE_ROOT =
-      CSharpContextCommon.class.getPackage().getName().replace('.', '/');
+  private final String resourceRoot;
+
+  public CSharpSnippetSetRunner(String resourceRoot) {
+    this.resourceRoot = resourceRoot;
+  }
 
   @Override
   @SuppressWarnings("unchecked")
@@ -41,7 +41,7 @@ public class CSharpSnippetSetRunner<ElementT> implements SnippetSetRunner<Elemen
     CSharpSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             CSharpSnippetSet.class,
-            SNIPPET_RESOURCE_ROOT,
+            resourceRoot,
             snippetFileName,
             ImmutableMap.<String, Object>of("context", context));
 

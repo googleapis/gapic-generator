@@ -57,11 +57,14 @@ public class RubyApiaryNameMap {
     return NAME_MAP.get(id);
   }
 
+  @SuppressWarnings("unchecked")
   private static ImmutableMap<ResourceId, String> getNameMap() throws IOException {
     String data =
         Resources.toString(
             Resources.getResource(RubyApiaryNameMap.class, "apiary_names.yaml"),
             StandardCharsets.UTF_8);
+
+    // Unchecked cast here.
     Map<String, String> nameData = (Map<String, String>) (new Yaml().load(data));
     ImmutableMap.Builder<ResourceId, String> builder = ImmutableMap.<ResourceId, String>builder();
     for (Map.Entry<String, String> entry : nameData.entrySet()) {

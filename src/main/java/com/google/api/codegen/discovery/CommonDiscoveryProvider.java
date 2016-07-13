@@ -29,19 +29,21 @@ import java.util.Map;
  */
 public class CommonDiscoveryProvider implements DiscoveryProvider {
   private final DiscoveryContext context;
-  private final SnippetSetRunner<Method> snippetSetRunner;
+  private final SnippetSetRunner.Generator<Method> generator;
   private final String snippetFileName;
 
   public CommonDiscoveryProvider(
-      DiscoveryContext context, SnippetSetRunner<Method> snippetSetRunner, String snippetFileName) {
+      DiscoveryContext context,
+      SnippetSetRunner.Generator<Method> generator,
+      String snippetFileName) {
     this.context = context;
-    this.snippetSetRunner = snippetSetRunner;
+    this.generator = generator;
     this.snippetFileName = snippetFileName;
   }
 
   @Override
   public Map<String, Doc> generate(Method method) {
-    GeneratedResult result = snippetSetRunner.generate(method, snippetFileName, context);
+    GeneratedResult result = generator.generate(method, snippetFileName, context);
 
     Api api = context.getApi();
     String outputRoot =
@@ -58,7 +60,7 @@ public class CommonDiscoveryProvider implements DiscoveryProvider {
 
   public static class Builder {
     private DiscoveryContext context;
-    private SnippetSetRunner<Method> snippetSetRunner;
+    private SnippetSetRunner.Generator<Method> generator;
     private String snippetFileName;
 
     private Builder() {}
@@ -68,8 +70,8 @@ public class CommonDiscoveryProvider implements DiscoveryProvider {
       return this;
     }
 
-    public Builder setSnippetSetRunner(SnippetSetRunner<Method> snippetSetRunner) {
-      this.snippetSetRunner = snippetSetRunner;
+    public Builder setSnippetSetRunner(SnippetSetRunner.Generator<Method> generator) {
+      this.generator = generator;
       return this;
     }
 
@@ -79,7 +81,7 @@ public class CommonDiscoveryProvider implements DiscoveryProvider {
     }
 
     public CommonDiscoveryProvider build() {
-      return new CommonDiscoveryProvider(context, snippetSetRunner, snippetFileName);
+      return new CommonDiscoveryProvider(context, generator, snippetFileName);
     }
   }
 }

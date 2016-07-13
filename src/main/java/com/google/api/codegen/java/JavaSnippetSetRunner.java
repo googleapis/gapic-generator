@@ -28,13 +28,13 @@ import java.util.List;
  * (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
  * subclass of JavaContext.
  */
-public class JavaSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
+public class JavaSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
-  /**
-   * The path to the root of snippet resources.
-   */
-  private static final String SNIPPET_RESOURCE_ROOT =
-      JavaContextCommon.class.getPackage().getName().replace('.', '/');
+  private final String resourceRoot;
+
+  public JavaSnippetSetRunner(String resourceRoot) {
+    this.resourceRoot = resourceRoot;
+  }
 
   @Override
   @SuppressWarnings("unchecked")
@@ -43,7 +43,7 @@ public class JavaSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT
     JavaSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             JavaSnippetSet.class,
-            SNIPPET_RESOURCE_ROOT,
+            resourceRoot,
             snippetFileName,
             ImmutableMap.<String, Object>of("context", context));
 

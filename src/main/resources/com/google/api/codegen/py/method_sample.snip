@@ -1,4 +1,4 @@
-@extends "common.snip"
+@extends "py/common.snip"
 
 # Generate code samples for method-level documentation.
 @snippet generateMethodSampleCode(docConfig)
@@ -13,7 +13,7 @@
         {@prompt} from google.gax import CallOptions, INITIAL_PAGE
       @end
       {@prompt} api = {@ApiName}()
-      @if initCode 
+      @if initCode
         {@initCode}
       @end
       @if docConfig.isIterableResponse
@@ -66,7 +66,7 @@
 @end
 
 # Helper method for initLineStructure()
-@private initLineStructureArgs(line) 
+@private initLineStructureArgs(line)
   @join fieldSetting : line.getFieldSettings on ", "
     {@formattedIdentifier(fieldSetting)}
   @end
@@ -146,7 +146,7 @@
   @end
 @end
 
-# Optionally render the options argument for page streaming 
+# Optionally render the options argument for page streaming
 @private pageStreamingArg(argFields, isPageStreaming)
   @if isPageStreaming
     @if argFields.isEmpty

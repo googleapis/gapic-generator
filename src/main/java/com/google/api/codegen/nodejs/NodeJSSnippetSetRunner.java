@@ -26,13 +26,13 @@ import com.google.common.collect.ImmutableMap;
  * (e.g. Gapic vs Discovery). Behavior that is specific to a use case is provided through a
  * subclass of NodeJSContext.
  */
-public class NodeJSSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
+public class NodeJSSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
-  /**
-   * The path to the root of snippet resources.
-   */
-  private static final String SNIPPET_RESOURCE_ROOT =
-      NodeJSSnippetSetRunner.class.getPackage().getName().replace('.', '/');
+  private final String resourceRoot;
+
+  public NodeJSSnippetSetRunner(String resourceRoot) {
+    this.resourceRoot = resourceRoot;
+  }
 
   @Override
   @SuppressWarnings("unchecked")
@@ -41,7 +41,7 @@ public class NodeJSSnippetSetRunner<ElementT> implements SnippetSetRunner<Elemen
     NodeJSSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             NodeJSSnippetSet.class,
-            SNIPPET_RESOURCE_ROOT,
+            resourceRoot,
             snippetFileName,
             ImmutableMap.<String, Object>of("context", context));
 
