@@ -14,12 +14,38 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.auto.value.AutoValue;
+
 import java.util.List;
 
-public class ApiMethodDocView {
+import javax.annotation.Nullable;
 
-  public Iterable<String> mainDocLines;
-  public List<ParamDocView> paramDocs;
-  public List<String> throwsDocLines;
-  public String returnTypeName;
+@AutoValue
+public abstract class ApiMethodDocView {
+
+  public abstract Iterable<String> mainDocLines();
+
+  public abstract List<ParamDocView> paramDocs();
+
+  public abstract List<String> throwsDocLines();
+
+  @Nullable
+  public abstract String returnTypeName();
+
+  public static Builder newBuilder() {
+    return new AutoValue_ApiMethodDocView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder mainDocLines(Iterable<String> lines);
+
+    public abstract Builder paramDocs(List<ParamDocView> docs);
+
+    public abstract Builder throwsDocLines(List<String> lines);
+
+    public abstract Builder returnTypeName(String name);
+
+    public abstract ApiMethodDocView build();
+  }
 }

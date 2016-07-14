@@ -25,10 +25,16 @@ import com.google.auto.value.AutoValue;
 import java.util.Collection;
 
 @AutoValue
-public abstract class SurfaceTransformerContext {
-  public static SurfaceTransformerContext create(
-      Interface interfaze, ApiConfig apiConfig, ModelTypeTable typeTable, SurfaceNamer namer) {
-    return new AutoValue_SurfaceTransformerContext(interfaze, apiConfig, typeTable, namer);
+public abstract class MethodTransformerContext {
+  public static MethodTransformerContext create(
+      Interface interfaze,
+      ApiConfig apiConfig,
+      ModelTypeTable typeTable,
+      SurfaceNamer namer,
+      Method method,
+      MethodConfig methodConfig) {
+    return new AutoValue_MethodTransformerContext(
+        interfaze, apiConfig, typeTable, namer, method, methodConfig);
   }
 
   public abstract Interface getInterface();
@@ -39,16 +45,12 @@ public abstract class SurfaceTransformerContext {
 
   public abstract SurfaceNamer getNamer();
 
-  public SurfaceTransformerContext withNewTypeTable() {
-    return create(getInterface(), getApiConfig(), getTypeTable().cloneEmpty(), getNamer());
-  }
+  public abstract Method getMethod();
+
+  public abstract MethodConfig getMethodConfig();
 
   public InterfaceConfig getInterfaceConfig() {
     return getApiConfig().getInterfaceConfig(getInterface());
-  }
-
-  public MethodConfig getMethodConfig(Method method) {
-    return getInterfaceConfig().getMethodConfig(method);
   }
 
   public Collection<CollectionConfig> getCollectionConfigs() {
@@ -57,15 +59,5 @@ public abstract class SurfaceTransformerContext {
 
   public CollectionConfig getCollectionConfig(String entityName) {
     return getInterfaceConfig().getCollectionConfig(entityName);
-  }
-
-  public MethodTransformerContext asMethodContext(Method method) {
-    return MethodTransformerContext.create(
-        getInterface(),
-        getApiConfig(),
-        getTypeTable(),
-        getNamer(),
-        method,
-        getMethodConfig(method));
   }
 }

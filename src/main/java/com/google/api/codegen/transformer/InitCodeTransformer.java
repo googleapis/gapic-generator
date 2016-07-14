@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.LanguageUtil;
-import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.metacode.FieldSetting;
 import com.google.api.codegen.metacode.FieldStructureParser;
 import com.google.api.codegen.metacode.InitCode;
@@ -39,7 +38,6 @@ import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
 import com.google.api.tools.framework.model.Field;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 
@@ -49,14 +47,11 @@ import java.util.Map;
 
 public class InitCodeTransformer {
 
-  public InitCodeView generateInitCode(
-      SurfaceTransformerContext context,
-      Method method,
-      MethodConfig methodConfig,
-      Iterable<Field> fields) {
-    Map<String, Object> initFieldStructure = createInitFieldStructure(context, methodConfig);
+  public InitCodeView generateInitCode(MethodTransformerContext context, Iterable<Field> fields) {
+    Map<String, Object> initFieldStructure = createInitFieldStructure(context);
     InitCodeGenerator generator = new InitCodeGenerator();
-    InitCode initCode = generator.generateRequestFieldInitCode(method, initFieldStructure, fields);
+    InitCode initCode =
+        generator.generateRequestFieldInitCode(context.getMethod(), initFieldStructure, fields);
 
     InitCodeView surfaceInitCode = new InitCodeView();
     surfaceInitCode.lines = generateSurfaceInitCodeLines(context, initCode);
@@ -64,11 +59,11 @@ public class InitCodeTransformer {
     return surfaceInitCode;
   }
 
-  public InitCodeView generateRequestObjectInitCode(
-      SurfaceTransformerContext context, Method method, MethodConfig methodConfig) {
-    Map<String, Object> initFieldStructure = createInitFieldStructure(context, methodConfig);
+  public InitCodeView generateRequestObjectInitCode(MethodTransformerContext context) {
+    Map<String, Object> initFieldStructure = createInitFieldStructure(context);
     InitCodeGenerator generator = new InitCodeGenerator();
-    InitCode initCode = generator.generateRequestObjectInitCode(method, initFieldStructure);
+    InitCode initCode =
+        generator.generateRequestObjectInitCode(context.getMethod(), initFieldStructure);
 
     InitCodeView surfaceInitCode = new InitCodeView();
     surfaceInitCode.lines = generateSurfaceInitCodeLines(context, initCode);
@@ -76,9 +71,8 @@ public class InitCodeTransformer {
     return surfaceInitCode;
   }
 
-  public Map<String, Object> createInitFieldStructure(
-      SurfaceTransformerContext context, MethodConfig methodConfig) {
-    Map<String, String> fieldNamePatterns = methodConfig.getFieldNamePatterns();
+  public Map<String, Object> createInitFieldStructure(MethodTransformerContext context) {
+    Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
 
     ImmutableMap.Builder<String, InitValueConfig> initValueConfigMap = ImmutableMap.builder();
     for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
@@ -91,12 +85,12 @@ public class InitCodeTransformer {
     }
     Map<String, Object> initFieldStructure =
         FieldStructureParser.parseFields(
-            methodConfig.getSampleCodeInitFields(), initValueConfigMap.build());
+            context.getMethodConfig().getSampleCodeInitFields(), initValueConfigMap.build());
     return initFieldStructure;
   }
 
   public List<InitCodeLineView> generateSurfaceInitCodeLines(
-      SurfaceTransformerContext context, InitCode initCode) {
+      MethodTransformerContext context, InitCode initCode) {
     List<InitCodeLineView> surfaceLines = new ArrayList<>();
     for (InitCodeLine line : initCode.getLines()) {
       switch (line.getLineType()) {
@@ -120,7 +114,7 @@ public class InitCodeTransformer {
   }
 
   public StructureInitCodeLineView generateStructureInitCodeLine(
-      SurfaceTransformerContext context, StructureInitCodeLine line) {
+      MethodTransformerContext context, StructureInitCodeLine line) {
     StructureInitCodeLineView surfaceLine = new StructureInitCodeLineView();
 
     SurfaceNamer namer = context.getNamer();
@@ -134,7 +128,7 @@ public class InitCodeTransformer {
   }
 
   public ListInitCodeLineView generateListInitCodeLine(
-      SurfaceTransformerContext context, ListInitCodeLine line) {
+      MethodTransformerContext context, ListInitCodeLine line) {
     ListInitCodeLineView surfaceLine = new ListInitCodeLineView();
 
     SurfaceNamer namer = context.getNamer();
@@ -152,7 +146,7 @@ public class InitCodeTransformer {
   }
 
   public SimpleInitCodeLineView generateSimpleInitCodeLine(
-      SurfaceTransformerContext context, SimpleInitCodeLine line) {
+      MethodTransformerContext context, SimpleInitCodeLine line) {
     SimpleInitCodeLineView surfaceLine = new SimpleInitCodeLineView();
 
     SurfaceNamer namer = context.getNamer();
@@ -165,7 +159,7 @@ public class InitCodeTransformer {
   }
 
   public InitCodeLineView generateMapInitCodeLine(
-      SurfaceTransformerContext context, MapInitCodeLine line) {
+      MethodTransformerContext context, MapInitCodeLine line) {
     MapInitCodeLineView surfaceLine = new MapInitCodeLineView();
 
     ModelTypeTable typeTable = context.getTypeTable();
@@ -188,7 +182,7 @@ public class InitCodeTransformer {
   }
 
   public InitValueView getInitValue(
-      SurfaceTransformerContext context, TypeRef type, InitValueConfig initValueConfig) {
+      MethodTransformerContext context, TypeRef type, InitValueConfig initValueConfig) {
     if (initValueConfig.hasFormattingConfig()) {
       FormattedInitValueView initValue = new FormattedInitValueView();
 
@@ -217,7 +211,7 @@ public class InitCodeTransformer {
   }
 
   public List<FieldSettingView> getFieldSettings(
-      SurfaceTransformerContext context, Iterable<FieldSetting> fieldSettings) {
+      MethodTransformerContext context, Iterable<FieldSetting> fieldSettings) {
     SurfaceNamer namer = context.getNamer();
     List<FieldSettingView> allSettings = new ArrayList<>();
     for (FieldSetting setting : fieldSettings) {

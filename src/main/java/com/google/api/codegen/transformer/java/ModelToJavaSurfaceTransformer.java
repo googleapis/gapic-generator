@@ -20,18 +20,18 @@ import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.ServiceConfig;
-import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.viewmodel.ApiCallableView;
-import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.BundlingApiCallableView;
 import com.google.api.codegen.viewmodel.PagedApiCallableView;
 import com.google.api.codegen.viewmodel.SimpleApiCallableView;
+import com.google.api.codegen.viewmodel.StaticApiMethodView;
 import com.google.api.codegen.viewmodel.StaticXApiView;
 import com.google.api.codegen.viewmodel.StaticXSettingsView;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -191,8 +191,8 @@ public class ModelToJavaSurfaceTransformer implements ModelToViewTransformer {
     if (methodConfig.isBundling()) {
       BundlingApiCallableView apiCallable = new BundlingApiCallableView();
 
-      apiCallable.inTypeName = typeTable.getAndSaveNicknameFor(method.getInputType());
-      apiCallable.outTypeName = typeTable.getAndSaveNicknameFor(method.getOutputType());
+      apiCallable.requestTypeName = typeTable.getAndSaveNicknameFor(method.getInputType());
+      apiCallable.responseTypeName = typeTable.getAndSaveNicknameFor(method.getOutputType());
       apiCallable.name = methodNameLowCml + "Callable";
       apiCallable.settingsFunctionName = methodNameLowCml + "Settings";
 
@@ -201,8 +201,8 @@ public class ModelToJavaSurfaceTransformer implements ModelToViewTransformer {
     } else {
       SimpleApiCallableView apiCallable = new SimpleApiCallableView();
 
-      apiCallable.inTypeName = typeTable.getAndSaveNicknameFor(method.getInputType());
-      apiCallable.outTypeName = typeTable.getAndSaveNicknameFor(method.getOutputType());
+      apiCallable.requestTypeName = typeTable.getAndSaveNicknameFor(method.getInputType());
+      apiCallable.responseTypeName = typeTable.getAndSaveNicknameFor(method.getOutputType());
       apiCallable.name = methodNameLowCml + "Callable";
       apiCallable.settingsFunctionName = methodNameLowCml + "Settings";
 
@@ -213,7 +213,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToViewTransformer {
 
         PagedApiCallableView pagedApiCallable = new PagedApiCallableView();
 
-        pagedApiCallable.inTypeName = apiCallable.inTypeName;
+        pagedApiCallable.requestTypeName = apiCallable.requestTypeName;
         pagedApiCallable.pageAccessorTypeName =
             typeTable.getAndSaveNicknameFor("com.google.api.gax.core.PageAccessor");
         pagedApiCallable.resourceTypeName =
@@ -227,37 +227,31 @@ public class ModelToJavaSurfaceTransformer implements ModelToViewTransformer {
     return apiCallables;
   }
 
-  private List<ApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
-    List<ApiMethodView> apiMethods = new ArrayList<>();
+  private List<StaticApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
+    List<StaticApiMethodView> apiMethods = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
+      MethodTransformerContext methodContext = context.asMethodContext(method);
 
       if (methodConfig.isPageStreaming()) {
         if (methodConfig.isFlattening()) {
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
             apiMethods.add(
-                apiMethodTransformer.generatePagedFlattenedMethod(
-                    context, method, methodConfig, fields));
+                apiMethodTransformer.generatePagedFlattenedMethod(methodContext, fields));
           }
         }
-        apiMethods.add(
-            apiMethodTransformer.generatePagedRequestObjectMethod(context, method, methodConfig));
-        apiMethods.add(
-            apiMethodTransformer.generatePagedCallableMethod(context, method, methodConfig));
-        apiMethods.add(
-            apiMethodTransformer.generateUnpagedListCallableMethod(context, method, methodConfig));
+        apiMethods.add(apiMethodTransformer.generatePagedRequestObjectMethod(methodContext));
+        apiMethods.add(apiMethodTransformer.generatePagedCallableMethod(methodContext));
+        apiMethods.add(apiMethodTransformer.generateUnpagedListCallableMethod(methodContext));
       } else {
         if (methodConfig.isFlattening()) {
           for (ImmutableList<Field> fields : methodConfig.getFlattening().getFlatteningGroups()) {
-            apiMethods.add(
-                apiMethodTransformer.generateFlattenedMethod(
-                    context, method, methodConfig, fields));
+            apiMethods.add(apiMethodTransformer.generateFlattenedMethod(methodContext, fields));
           }
         }
-        apiMethods.add(
-            apiMethodTransformer.generateRequestObjectMethod(context, method, methodConfig));
-        apiMethods.add(apiMethodTransformer.generateCallableMethod(context, method, methodConfig));
+        apiMethods.add(apiMethodTransformer.generateRequestObjectMethod(methodContext));
+        apiMethods.add(apiMethodTransformer.generateCallableMethod(methodContext));
       }
     }
 

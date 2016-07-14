@@ -14,14 +14,22 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public class PagedCallableMethodView implements ApiMethodView {
+import com.google.api.codegen.viewmodel.StaticApiMethodView.Builder;
+import com.google.auto.value.AutoValue;
 
-  public String apiClassName;
-  public String apiVariableName;
-  public InitCodeView initCode;
-  public ApiMethodDocView doc;
-  public String resourceTypeName;
-  public String name;
-  public String requestTypeName;
-  public String callableName;
+//PagedFlattened, UnpagedListCallable, PagedCallable, PagedRequestObject
+@AutoValue
+public abstract class ListMethodDetailView {
+  public abstract String resourceTypeName();
+
+  public static Builder newBuilder() {
+    return new AutoValue_ListMethodDetailView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder resourceTypeName(String name);
+
+    public abstract ListMethodDetailView build();
+  }
 }

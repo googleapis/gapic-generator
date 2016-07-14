@@ -141,10 +141,8 @@ public class ModelToPhpSurfaceTransformer implements ModelToViewTransformer {
     List<ApiMethodView> apiMethods = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
-
       apiMethods.add(
-          apiMethodTransformer.generateOptionalArrayMethod(context, method, methodConfig));
+          apiMethodTransformer.generateOptionalArrayMethod(context.asMethodContext(method)));
     }
 
     return apiMethods;

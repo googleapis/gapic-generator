@@ -9,16 +9,16 @@
 
 @snippet pagedIterableMethodSampleCode(apiMethod)
   {@initCode(apiMethod.initCode)}
-  for ({@apiMethod.resourceTypeName} element : {@sampleSyncMethodCall(apiMethod)}) {
+  for ({@apiMethod.listMethod.resourceTypeName} element : {@sampleSyncMethodCall(apiMethod)}) {
     // doThingsWith(element);
   }
 @end
 
 @snippet pagedCallableMethodSampleCode(apiMethod)
   {@initCode(apiMethod.initCode)}
-  ListenableFuture<PageAccessor<{@apiMethod.resourceTypeName}>> future = {@sampleFutureMethodCall(apiMethod)};
+  ListenableFuture<PageAccessor<{@apiMethod.listMethod.resourceTypeName}>> future = {@sampleFutureMethodCall(apiMethod)};
   // Do something
-  for ({@apiMethod.resourceTypeName} element : future.get()) {
+  for ({@apiMethod.listMethod.resourceTypeName} element : future.get()) {
     // doThingsWith(element);
   }
 @end
@@ -29,7 +29,8 @@
     {@apiMethod.responseTypeName} response = \
         {@apiMethod.apiVariableName}.{@apiMethod.name}().call(\
         {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
-    for ({@apiMethod.resourceTypeName} element : response.{@apiMethod.getResourceListCall}()) {
+    for ({@apiMethod.listMethod.resourceTypeName} element : \
+        response.{@apiMethod.unpagedListCallableMethod.fnGetResourceListCall}()) {
       // doThingsWith(element);
     }
     String nextPageToken = response.getNextPageToken();
@@ -52,7 +53,7 @@
 
 @snippet callableMethodSampleCode(apiMethod)
   {@initCode(apiMethod.initCode)}
-  ListenableFuture<{@apiMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
+  ListenableFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
   // Do something
   @if apiMethod.hasReturnValue
     {@apiMethod.responseTypeName} response = future.get();

@@ -14,19 +14,21 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import java.util.List;
+import com.google.api.codegen.viewmodel.ListMethodDetailView.Builder;
+import com.google.auto.value.AutoValue;
 
-public class FlattenedMethodView implements ApiMethodView {
+@AutoValue
+public abstract class UnpagedListCallableMethodDetailView {
+  public abstract String fnGetResourceListCall();
 
-  public String apiClassName;
-  public String apiVariableName;
-  public InitCodeView initCode;
-  public ApiMethodDocView doc;
-  public String requestTypeName;
-  public String responseTypeName;
-  public String name;
-  public List<RequestObjectParamView> methodParams;
-  public List<RequestObjectParamView> requestObjectParams;
-  public List<PathTemplateCheckView> pathTemplateChecks;
-  public boolean hasReturnValue;
+  public static Builder newBuilder() {
+    return new AutoValue_UnpagedListCallableMethodDetailView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder fnGetResourceListCall(String name);
+
+    public abstract UnpagedListCallableMethodDetailView build();
+  }
 }

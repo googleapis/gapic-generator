@@ -14,16 +14,25 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public class RequestObjectMethodView implements ApiMethodView {
+import com.google.api.codegen.viewmodel.ListMethodDetailView.Builder;
+import com.google.auto.value.AutoValue;
 
-  public String apiClassName;
-  public String apiVariableName;
-  public InitCodeView initCode;
-  public ApiMethodDocView doc;
-  public String accessModifier;
-  public String name;
-  public String requestTypeName;
-  public String responseTypeName;
-  public String callableMethodName;
-  public boolean hasReturnValue;
+@AutoValue
+public abstract class CallableMethodDetailView {
+  public abstract String callableName();
+
+  public abstract String genericAwareResponseType();
+
+  public static Builder newBuilder() {
+    return new AutoValue_CallableMethodDetailView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder callableName(String name);
+
+    public abstract Builder genericAwareResponseType(String name);
+
+    public abstract CallableMethodDetailView build();
+  }
 }

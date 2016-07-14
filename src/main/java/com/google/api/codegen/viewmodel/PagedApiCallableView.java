@@ -15,7 +15,8 @@
 package com.google.api.codegen.viewmodel;
 
 public class PagedApiCallableView implements ApiCallableView {
-  public String inTypeName;
+  public String requestTypeName;
+  // FIXME: use responseTypeName with PagedCallable<{resourceTypeName}>
   public String pageAccessorTypeName;
   public String resourceTypeName;
   public String name;

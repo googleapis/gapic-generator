@@ -27,7 +27,7 @@ public class StaticXApiView implements ViewModel {
   public List<PathTemplateView> pathTemplates;
   public List<FormatResourceFunctionView> formatResourceFunctions;
   public List<ParseResourceFunctionView> parseResourceFunctions;
-  public List<ApiMethodView> apiMethods;
+  public List<StaticApiMethodView> apiMethods;
 
   public List<String> imports;
   public String outputPath;

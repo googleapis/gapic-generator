@@ -83,12 +83,12 @@
   @join apiCallable : xapiClass.apiCallableMembers
     @switch apiCallable.getClass.getSimpleName
     @case "SimpleApiCallableView"
-      private final ApiCallable<{@apiCallable.inTypeName}, {@apiCallable.outTypeName}> {@apiCallable.name};
+      private final ApiCallable<{@apiCallable.requestTypeName}, {@apiCallable.responseTypeName}> {@apiCallable.name};
     @case "PagedApiCallableView"
-      private final ApiCallable<{@apiCallable.inTypeName}, \
+      private final ApiCallable<{@apiCallable.requestTypeName}, \
         {@apiCallable.pageAccessorTypeName}<{@apiCallable.resourceTypeName}>> {@apiCallable.name};
     @case "BundlingApiCallableView"
-      private final ApiCallable<{@apiCallable.inTypeName}, {@apiCallable.outTypeName}> {@apiCallable.name};
+      private final ApiCallable<{@apiCallable.requestTypeName}, {@apiCallable.responseTypeName}> {@apiCallable.name};
     @default
       $unhandledCase: {@apiCallable.getClass.getSimpleName}$
     @end
@@ -169,20 +169,20 @@
 
 @private apiMethods(xapiClass)
   @join apiMethod : xapiClass.apiMethods
-    @switch apiMethod.getClass.getSimpleName
-    @case "PagedFlattenedMethodView"
+    @switch apiMethod.type.toString
+    @case "PagedFlattenedMethod"
       {@pagedFlattenedMethod(apiMethod)}
-    @case "PagedRequestObjectMethodView"
+    @case "PagedRequestObjectMethod"
       {@pagedRequestObjectMethod(apiMethod)}
-    @case "PagedCallableMethodView"
+    @case "PagedCallableMethod"
       {@pagedCallableMethod(apiMethod)}
-    @case "UnpagedListCallableMethodView"
+    @case "UnpagedListCallableMethod"
       {@unpagedListCallableMethod(apiMethod)}
-    @case "FlattenedMethodView"
+    @case "FlattenedMethod"
       {@flattenedMethod(apiMethod)}
-    @case "RequestObjectMethodView"
+    @case "RequestObjectMethod"
       {@requestObjectMethod(apiMethod)}
-    @case "CallableMethodView"
+    @case "CallableMethod"
       {@callableMethod(apiMethod)}
     @default
       $unhandledCase: {@apiMethod.getClass.getSimpleName}$
@@ -209,7 +209,7 @@
   @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decoratedSampleCode(apiMethod, coreSampleCode))}
   @end
-  public final PageAccessor<{@apiMethod.resourceTypeName}> \
+  public final PageAccessor<{@apiMethod.listMethod.resourceTypeName}> \
       {@apiMethod.name}({@paramList(apiMethod.methodParams)}) {
     @join pathTemplateCheck : apiMethod.pathTemplateChecks
       {@pathTemplateCheckLine(pathTemplateCheck)}
@@ -226,9 +226,9 @@
   @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decoratedSampleCode(apiMethod, coreSampleCode))}
   @end
-  {@apiMethod.accessModifier} final PageAccessor<{@apiMethod.resourceTypeName}> \
+  {@apiMethod.requestObjectMethod.accessModifier} final PageAccessor<{@apiMethod.listMethod.resourceTypeName}> \
       {@apiMethod.name}({@apiMethod.requestTypeName} request) {
-    return {@apiMethod.callableMethodName}()
+    return {@apiMethod.requestObjectMethod.callableMethodName}()
         .call(request);
   }
 @end
@@ -237,9 +237,9 @@
   @let coreSampleCode = pagedCallableMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decoratedSampleCode(apiMethod, coreSampleCode))}
   @end
-  public final ApiCallable<{@apiMethod.requestTypeName}, PageAccessor<{@apiMethod.resourceTypeName}>> \
+  public final ApiCallable<{@apiMethod.requestTypeName}, PageAccessor<{@apiMethod.listMethod.resourceTypeName}>> \
       {@apiMethod.name}() {
-    return {@apiMethod.callableName};
+    return {@apiMethod.callableMethod.callableName};
   }
 @end
 
@@ -249,7 +249,7 @@
   @end
   public final ApiCallable<{@apiMethod.requestTypeName}, {@apiMethod.responseTypeName}> \
       {@apiMethod.name}() {
-    return {@apiMethod.callableName};
+    return {@apiMethod.callableMethod.callableName};
   }
 @end
 
@@ -278,12 +278,12 @@
   @let coreSampleCode = syncMethodSampleCode(apiMethod)
     {@methodDoc(apiMethod.doc, decoratedSampleCode(apiMethod, coreSampleCode))}
   @end
-  {@apiMethod.accessModifier} final {@apiMethod.responseTypeName} \
+  {@apiMethod.requestObjectMethod.accessModifier} final {@apiMethod.responseTypeName} \
       {@apiMethod.name}({@apiMethod.requestTypeName} request) {
     @if apiMethod.hasReturnValue
-      return {@apiMethod.callableMethodName}().call(request);
+      return {@apiMethod.requestObjectMethod.callableMethodName}().call(request);
     @else
-      {@apiMethod.callableMethodName}().call(request);
+      {@apiMethod.requestObjectMethod.callableMethodName}().call(request);
     @end
   }
 @end
@@ -294,7 +294,7 @@
   @end
   public final ApiCallable<{@apiMethod.requestTypeName}, {@apiMethod.responseTypeName}> \
       {@apiMethod.name}() {
-    return {@apiMethod.callableName};
+    return {@apiMethod.callableMethod.callableName};
   }
 @end
 

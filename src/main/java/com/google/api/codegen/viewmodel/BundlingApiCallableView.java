@@ -15,8 +15,8 @@
 package com.google.api.codegen.viewmodel;
 
 public class BundlingApiCallableView implements ApiCallableView {
-  public String inTypeName;
-  public String outTypeName;
+  public String requestTypeName;
+  public String responseTypeName;
   public String name;
   public String settingsFunctionName;
 }
