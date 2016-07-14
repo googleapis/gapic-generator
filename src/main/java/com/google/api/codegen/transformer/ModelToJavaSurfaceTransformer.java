@@ -74,10 +74,17 @@ public class ModelToJavaSurfaceTransformer implements ModelToViewTransformer {
         SurfaceTransformerContext.create(
             service, cachedApiConfig, new ModelToJavaTypeTable(), new JavaSurfaceNamer());
 
-    String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
-
     List<ViewModel> surfaceData = new ArrayList<>();
 
+    surfaceData.add(generateXApi(context));
+
+    context = context.withNewTypeTable();
+    surfaceData.add(generateXSettings(context));
+
+    return surfaceData;
+  }
+
+  private StaticXApiView generateXApi(SurfaceTransformerContext context) {
     addXApiImports(context);
 
     StaticXApiView xapiClass = new StaticXApiView();
@@ -97,11 +104,13 @@ public class ModelToJavaSurfaceTransformer implements ModelToViewTransformer {
     // must be done as the last step to catch all imports
     xapiClass.imports = context.getTypeTable().getImports();
 
+    String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
     xapiClass.outputPath = outputPath + "/" + xapiClass.name + ".java";
 
-    surfaceData.add(xapiClass);
+    return xapiClass;
+  }
 
-    context = context.withNewTypeTable();
+  private StaticXSettingsView generateXSettings(SurfaceTransformerContext context) {
     addXSettingsImports(context);
 
     StaticXSettingsView xsettingsClass = new StaticXSettingsView();
@@ -109,18 +118,17 @@ public class ModelToJavaSurfaceTransformer implements ModelToViewTransformer {
     xsettingsClass.packageName = context.getApiConfig().getPackageName();
     xsettingsClass.name = context.getNamer().getApiSettingsClassName(context.getInterface());
     ServiceConfig serviceConfig = new ServiceConfig();
-    xsettingsClass.serviceAddress = serviceConfig.getServiceAddress(service);
+    xsettingsClass.serviceAddress = serviceConfig.getServiceAddress(context.getInterface());
     xsettingsClass.servicePort = serviceConfig.getServicePort();
-    xsettingsClass.authScopes = serviceConfig.getAuthScopes(service);
+    xsettingsClass.authScopes = serviceConfig.getAuthScopes(context.getInterface());
 
     // must be done as the last step to catch all imports
     xsettingsClass.imports = context.getTypeTable().getImports();
 
+    String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
     xsettingsClass.outputPath = outputPath + "/" + xsettingsClass.name + ".java";
 
-    surfaceData.add(xsettingsClass);
-
-    return surfaceData;
+    return xsettingsClass;
   }
 
   private void addXApiImports(SurfaceTransformerContext context) {
