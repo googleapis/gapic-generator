@@ -349,10 +349,10 @@ module Google
           )
             req = Google::Example::Library::V1::GetShelfRequest.new(
               name: name,
-              options: options_,
-              message: message,
-              string_builder: string_builder
+              options: options_
             )
+            req.message = message unless message.nil?
+            req.string_builder = string_builder unless string_builder.nil?
             @get_shelf.call(req, options)
           end
 
@@ -454,14 +454,14 @@ module Google
           def publish_series(
             shelf,
             books,
-            edition: 0,
+            edition: nil,
             options: nil
           )
             req = Google::Example::Library::V1::PublishSeriesRequest.new(
               shelf: shelf,
-              books: books,
-              edition: edition
+              books: books
             )
+            req.edition = edition unless edition.nil?
             @publish_series.call(req, options)
           end
 
@@ -507,15 +507,15 @@ module Google
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           def list_books(
             name,
-            page_size: 0,
-            filter: '',
+            page_size: nil,
+            filter: nil,
             options: nil
           )
             req = Google::Example::Library::V1::ListBooksRequest.new(
-              name: name,
-              page_size: page_size,
-              filter: filter
+              name: name
             )
+            req.page_size = page_size unless page_size.nil?
+            req.filter = filter unless filter.nil?
             @list_books.call(req, options)
           end
 
@@ -561,10 +561,10 @@ module Google
           )
             req = Google::Example::Library::V1::UpdateBookRequest.new(
               name: name,
-              book: book,
-              update_mask: update_mask,
-              physical_mask: physical_mask
+              book: book
             )
+            req.update_mask = update_mask unless update_mask.nil?
+            req.physical_mask = physical_mask unless physical_mask.nil?
             @update_book.call(req, options)
           end
 
@@ -610,14 +610,13 @@ module Google
           #   object.
           # @raise [Google::Gax::GaxError] if the RPC is aborted.
           def list_strings(
-            name: '',
-            page_size: 0,
+            name: nil,
+            page_size: nil,
             options: nil
           )
-            req = Google::Example::Library::V1::ListStringsRequest.new(
-              name: name,
-              page_size: page_size
-            )
+            req = Google::Example::Library::V1::ListStringsRequest.new
+            req.name = name unless name.nil?
+            req.page_size = page_size unless page_size.nil?
             @list_strings.call(req, options)
           end
 
