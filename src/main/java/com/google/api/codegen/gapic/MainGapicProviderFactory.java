@@ -158,9 +158,7 @@ public class MainGapicProviderFactory
       GapicProvider<? extends Object> mainProvider =
           SurfaceGapicProvider.newBuilder()
               .setModel(model)
-              .setSnippetSetRunner(
-                  new CommonSnippetSetRunner(
-                      SnippetSetRunner.SNIPPET_RESOURCE_ROOT, new JavaSnippetUtil()))
+              .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaSnippetUtil()))
               .setModelToViewTransformer(
                   new ModelToJavaSurfaceTransformer(apiConfig, javaPathMapper))
               .build();
@@ -229,8 +227,7 @@ public class MainGapicProviderFactory
       GapicProvider<? extends Object> mainProvider =
           SurfaceGapicProvider.newBuilder()
               .setModel(model)
-              .setSnippetSetRunner(
-                  new CommonSnippetSetRunner(SnippetSetRunner.SNIPPET_RESOURCE_ROOT, new Object()))
+              .setSnippetSetRunner(new CommonSnippetSetRunner(new Object()))
               .setModelToViewTransformer(new ModelToPhpSurfaceTransformer(apiConfig, phpPathMapper))
               .build();
 

@@ -20,6 +20,7 @@ import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.ServiceConfig;
+import com.google.api.codegen.SnippetSetRunner;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.ApiMethodTransformer;
 import com.google.api.codegen.transformer.ModelToViewTransformer;

@@ -25,11 +25,9 @@ import com.google.common.collect.ImmutableMap;
  */
 public class CommonSnippetSetRunner {
 
-  private String resourceRoot;
   private Object utilObject;
 
-  public CommonSnippetSetRunner(String resourceRoot, Object utilObject) {
-    this.resourceRoot = resourceRoot;
+  public CommonSnippetSetRunner(Object utilObject) {
     this.utilObject = utilObject;
   }
 
@@ -37,7 +35,7 @@ public class CommonSnippetSetRunner {
     SurfaceSnippetSet snippets =
         SnippetSet.createSnippetInterface(
             SurfaceSnippetSet.class,
-            resourceRoot,
+            input.getResourceRoot(),
             input.getTemplateFileName(),
             ImmutableMap.<String, Object>of("util", utilObject));
 

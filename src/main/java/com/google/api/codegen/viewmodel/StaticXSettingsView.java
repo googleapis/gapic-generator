@@ -14,6 +14,8 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.SnippetSetRunner;
+
 import java.util.List;
 
 public class StaticXSettingsView implements ViewModel {
@@ -27,6 +29,11 @@ public class StaticXSettingsView implements ViewModel {
 
   public List<String> imports;
   public String outputPath;
+
+  @Override
+  public String getResourceRoot() {
+    return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
+  }
 
   @Override
   public String getTemplateFileName() {
