@@ -49,6 +49,10 @@ public class SurfaceNamer extends ViewNamer {
     return varName(Name.upperCamel(interfaze.getSimpleName(), "Api"));
   }
 
+  public String getApiSettingsClassName(Interface interfaze) {
+    return className(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
+  }
+
   public String getVariableName(String identifier, InitValueConfig initValueConfig) {
     if (initValueConfig == null || !initValueConfig.hasFormattingConfig()) {
       return varName(Name.from(identifier));

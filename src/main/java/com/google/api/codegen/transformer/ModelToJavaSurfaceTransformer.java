@@ -84,7 +84,8 @@ public class ModelToJavaSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.templateFileName = XAPI_TEMPLATE_FILENAME;
     xapiClass.packageName = context.getApiConfig().getPackageName();
     xapiClass.name = context.getNamer().getApiWrapperClassName(context.getInterface());
-    xapiClass.settingsClassName = getSettingsClassName(context);
+    xapiClass.settingsClassName =
+        context.getNamer().getApiSettingsClassName(context.getInterface());
     xapiClass.apiCallableMembers = generateApiCallables(context);
     xapiClass.pathTemplates = pathTemplateTransformer.generatePathTemplates(context);
     xapiClass.formatResourceFunctions =
@@ -106,7 +107,7 @@ public class ModelToJavaSurfaceTransformer implements ModelToViewTransformer {
     StaticXSettingsView xsettingsClass = new StaticXSettingsView();
     xsettingsClass.templateFileName = XSETTINGS_TEMPLATE_FILENAME;
     xsettingsClass.packageName = context.getApiConfig().getPackageName();
-    xsettingsClass.name = getSettingsClassName(context);
+    xsettingsClass.name = context.getNamer().getApiSettingsClassName(context.getInterface());
     ServiceConfig serviceConfig = new ServiceConfig();
     xsettingsClass.serviceAddress = serviceConfig.getServiceAddress(service);
     xsettingsClass.servicePort = serviceConfig.getServicePort();
@@ -247,9 +248,5 @@ public class ModelToJavaSurfaceTransformer implements ModelToViewTransformer {
     }
 
     return apiMethods;
-  }
-
-  private String getSettingsClassName(SurfaceTransformerContext context) {
-    return context.getInterface().getSimpleName() + "Settings";
   }
 }
