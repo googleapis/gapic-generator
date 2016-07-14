@@ -37,7 +37,7 @@
             client {@context.getServiceClientName(service)}
 
             // The call options for this service.
-            callOptions *{@context.getClientPrefix(service)}CallOptions
+            CallOptions *{@context.getClientPrefix(service)}CallOptions
 
     @end
         // The metadata to be sent with each request.
@@ -78,33 +78,35 @@
         }
     }
 
+    @join retryDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetrySettingsDefinition)
+        func {@context.lowerUnderscoreToLowerCamel(retryDef.getKey)}{@context.getClientPrefix(service)}RetryOptions() []gax.CallOption {
+            return []gax.CallOption{
+                gax.WithTimeout({@retryDef.getValue.getTotalTimeout.getMillis()}*time.Millisecond),
+                gax.WithDelayTimeoutSettings({@retryDef.getValue.getInitialRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getRetryDelayMultiplier}),
+                gax.WithRPCTimeoutSettings({@retryDef.getValue.getInitialRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getRpcTimeoutMultiplier}),
+            }
+        }
+    @end
+
     func default{@context.getClientPrefix(service)}CallOptions() *{@context.getClientPrefix(service)}CallOptions {
         @join retryCodesDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetryCodesDefinition) if retryCodesDef.getValue
-            with{@context.lowerUnderscoreToUpperCamel(retryCodesDef.getKey)}RetryCodes := gax.WithRetryCodes(
-                []codes.Code{
+            with{@context.lowerUnderscoreToUpperCamel(retryCodesDef.getKey)}RetryCodes := gax.WithRetryCodes([]codes.Code{
                     @join code : retryCodesDef.getValue
                         codes.{@context.upperUnderscoreToUpperCamel(code.toString())},
                     @end
                 },
             )
         @end
-        @join retryDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetrySettingsDefinition)
-            {@context.lowerUnderscoreToLowerCamel(retryDef.getKey)}RetryOptions := []gax.CallOption{
-                gax.WithTimeout({@retryDef.getValue.getTotalTimeout.getMillis()}*time.Millisecond),
-                gax.WithDelayTimeoutSettings({@retryDef.getValue.getInitialRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getRetryDelayMultiplier}),
-                gax.WithRPCTimeoutSettings({@retryDef.getValue.getInitialRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getRpcTimeoutMultiplier}),
-            }
-        @end
         return &{@context.getClientPrefix(service)}CallOptions{
             @join method : service.getMethods
                 @let methodName = method.getSimpleName, \
                      methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-                     retryParamsMethodName = context.lowerUnderscoreToLowerCamel(methodConfig.getRetrySettingsConfigName), \
-                     retryCodesMethodName = context.lowerUnderscoreToUpperCamel(methodConfig.getRetryCodesConfigName)
+                     retryParamsName = context.lowerUnderscoreToLowerCamel(methodConfig.getRetrySettingsConfigName), \
+                     retryCodesName = context.lowerUnderscoreToUpperCamel(methodConfig.getRetryCodesConfigName)
                     @if {@context.hasEmptyRetryCodes(service, methodConfig)}
-                        {@methodName}: {@retryParamsMethodName}RetryOptions,
+                        {@methodName}: {@retryParamsName}{@context.getClientPrefix(service)}RetryOptions(),
                     @else
-                        {@methodName}: append({@retryParamsMethodName}RetryOptions, with{@retryCodesMethodName}RetryCodes),
+                        {@methodName}: append({@retryParamsName}{@context.getClientPrefix(service)}RetryOptions(), with{@retryCodesName}RetryCodes),
                     @end
                 @end
             @end
@@ -127,7 +129,7 @@
             c := &{@clientName} {
                 conn: conn,
                 client: {@context.getServiceClientConstructorName(service)}(conn),
-                callOptions: default{@context.getClientPrefix(service)}CallOptions(),
+                CallOptions: default{@context.getClientPrefix(service)}CallOptions(),
             }
             c.SetGoogleClientInfo("gax", gax.Version)
             return c, nil
@@ -151,16 +153,6 @@
             c.metadata = map[string][]string{
                 "x-goog-api-client": {fmt.Sprintf("%s/%s %s gax/%s go/%s", name, version, gapicNameVersion, gax.Version, runtime.Version())},
             }
-        }
-
-        // Set{@context.getClientPrefix(service)}CallOptions sets the client's call options.
-        func (c *{@clientName}) Set{@context.getClientPrefix(service)}CallOptions(opts *{@context.getClientPrefix(service)}CallOptions) {
-            c.callOptions = opts
-        }
-
-        // {@context.getClientPrefix(service)}CallOptions returns the client's call options.
-        func (c *{@clientName}) {@context.getClientPrefix(service)}CallOptions() *{@context.getClientPrefix(service)}CallOptions {
-            return c.callOptions
         }
     @end
 @end
@@ -243,7 +235,7 @@
                                 @end
                                 resp, err = c.client.{@methodName}(ctx, req)
                                 return err
-                            }, c.callOptions.{@methodName}...)
+                            }, c.CallOptions.{@methodName}...)
                             if err != nil {
                                 return err
                             }
@@ -268,7 +260,7 @@
                             var err error
                             _, err = c.client.{@methodName}(ctx, req)
                             return err
-                        }, c.callOptions.{@methodName}...)
+                        }, c.CallOptions.{@methodName}...)
                         return err
                     }
                 @else
@@ -279,7 +271,7 @@
                             var err error
                             resp, err = c.client.{@methodName}(ctx, req)
                             return err
-                        }, c.callOptions.{@methodName}...)
+                        }, c.CallOptions.{@methodName}...)
                         if err != nil {
                             return nil, err
                         }
