@@ -163,7 +163,7 @@
         @if context.messages.filterBundlingMethods(ifaceConfig, service.getMethods)
           BUNDLE_DESCRIPTORS,
         @else
-          null
+          null,
         @end
         {'metadata': metadata});
   @end
@@ -232,7 +232,7 @@
       ];
       methods.forEach(function(methodName) {
         this['_' + methodName] = gax.createApiCall(
-            this.stub.then(function(stub) { return stub[methodName]; }),
+            this.stub.then(function(stub) { return stub[methodName].bind(stub); }),
             defaults[methodName]);
       }.bind(this));
     };
