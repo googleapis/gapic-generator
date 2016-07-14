@@ -19,10 +19,10 @@ import com.google.common.base.Joiner;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QualifiedName {
-  private List<String> namePieces;
+public class NamePath {
+  private List<String> pathPieces;
 
-  public static QualifiedName dotted(String... pieces) {
+  public static NamePath dotted(String... pieces) {
     List<String> namePieces = new ArrayList<>();
     for (String piece : pieces) {
       for (String subPiece : piece.split("\\.")) {
@@ -32,29 +32,29 @@ public class QualifiedName {
     if (namePieces.size() == 0) {
       throw new IllegalArgumentException("QualifiedName must not be zero length");
     }
-    return new QualifiedName(namePieces);
+    return new NamePath(namePieces);
   }
 
-  private QualifiedName(List<String> namePieces) {
-    this.namePieces = namePieces;
+  private NamePath(List<String> pathPieces) {
+    this.pathPieces = pathPieces;
   }
 
-  public QualifiedName withHead(String newHead) {
-    List<String> newNamePieces = new ArrayList<>();
-    newNamePieces.addAll(namePieces);
-    newNamePieces.set(namePieces.size() - 1, newHead);
-    return new QualifiedName(newNamePieces);
+  public NamePath withHead(String newHead) {
+    List<String> newPathPieces = new ArrayList<>();
+    newPathPieces.addAll(pathPieces);
+    newPathPieces.set(pathPieces.size() - 1, newHead);
+    return new NamePath(newPathPieces);
   }
 
   public String getHead() {
-    return namePieces.get(namePieces.size() - 1);
+    return pathPieces.get(pathPieces.size() - 1);
   }
 
   public String toDotted() {
-    return Joiner.on(".").join(namePieces);
+    return Joiner.on(".").join(pathPieces);
   }
 
   public String toBackslashed() {
-    return Joiner.on("\\").join(namePieces);
+    return Joiner.on("\\").join(pathPieces);
   }
 }

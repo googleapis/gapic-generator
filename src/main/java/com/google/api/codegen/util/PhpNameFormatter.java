@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.util;
 
-public class PhpNamer implements LanguageNamer {
+public class PhpNameFormatter implements NameFormatter {
 
   @Override
-  public String getClassName(Name name) {
+  public String className(Name name) {
     return name.toUpperCamel();
   }
 
@@ -27,7 +27,7 @@ public class PhpNamer implements LanguageNamer {
   }
 
   @Override
-  public String memberFunctionName(Name name) {
+  public String methodName(Name name) {
     return name.toLowerCamel();
   }
 
@@ -47,7 +47,7 @@ public class PhpNamer implements LanguageNamer {
   }
 
   @Override
-  public String qualifiedName(QualifiedName qualifiedName) {
-    return qualifiedName.toBackslashed();
+  public String qualifiedName(NamePath namePath) {
+    return namePath.toBackslashed();
   }
 }

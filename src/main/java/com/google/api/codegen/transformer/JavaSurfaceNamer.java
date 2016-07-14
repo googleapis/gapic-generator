@@ -17,7 +17,7 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.java.JavaDocUtil;
-import com.google.api.codegen.util.JavaNamer;
+import com.google.api.codegen.util.JavaNameFormatter;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
@@ -29,7 +29,7 @@ import java.util.List;
 public class JavaSurfaceNamer extends SurfaceNamer {
 
   public JavaSurfaceNamer() {
-    super(new JavaNamer());
+    super(new JavaNameFormatter());
   }
 
   @Override

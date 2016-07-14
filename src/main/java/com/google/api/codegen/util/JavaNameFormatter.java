@@ -14,39 +14,40 @@
  */
 package com.google.api.codegen.util;
 
-public class Namer {
+public class JavaNameFormatter implements NameFormatter {
 
-  private LanguageNamer languageNamer;
-
-  public Namer(LanguageNamer languageNamer) {
-    this.languageNamer = languageNamer;
-  }
-
+  @Override
   public String className(Name name) {
-    return languageNamer.getClassName(name);
+    return name.toUpperCamel();
   }
 
+  @Override
   public String varName(Name name) {
-    return languageNamer.varName(name);
+    return name.toLowerCamel();
   }
 
+  @Override
   public String methodName(Name name) {
-    return languageNamer.memberFunctionName(name);
+    return name.toLowerCamel();
   }
 
+  @Override
   public String staticFunctionName(Name name) {
-    return languageNamer.staticFunctionName(name);
+    return name.toLowerCamel();
   }
 
+  @Override
   public String inittedConstantName(Name name) {
-    return languageNamer.inittedConstantName(name);
+    return name.toUpperUnderscore();
   }
 
+  @Override
   public String keyName(Name name) {
-    return languageNamer.keyName(name);
+    return name.toLowerCamel();
   }
 
-  public String qualifiedName(QualifiedName qualifiedName) {
-    return languageNamer.qualifiedName(qualifiedName);
+  @Override
+  public String qualifiedName(NamePath namePath) {
+    return namePath.toDotted();
   }
 }

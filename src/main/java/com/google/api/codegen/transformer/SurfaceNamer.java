@@ -17,10 +17,10 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.metacode.InitValueConfig;
-import com.google.api.codegen.util.LanguageNamer;
+import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.Namer;
-import com.google.api.codegen.util.QualifiedName;
+import com.google.api.codegen.util.ViewNamer;
+import com.google.api.codegen.util.NamePath;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -34,8 +34,8 @@ import java.util.List;
 /**
  * An instance of IdentifierNamer provides language-specific names or other strings.
  */
-public class SurfaceNamer extends Namer {
-  public SurfaceNamer(LanguageNamer languageNamer) {
+public class SurfaceNamer extends ViewNamer {
+  public SurfaceNamer(NameFormatter languageNamer) {
     super(languageNamer);
   }
 
@@ -113,9 +113,9 @@ public class SurfaceNamer extends Namer {
   }
 
   public String getGrpcClientTypeName(Interface service) {
-    QualifiedName qualifiedName = QualifiedName.dotted(service.getFullName());
-    String className = className(Name.upperCamel(qualifiedName.getHead(), "Client"));
-    return qualifiedName(qualifiedName.withHead(className));
+    NamePath namePath = NamePath.dotted(service.getFullName());
+    String className = className(Name.upperCamel(namePath.getHead(), "Client"));
+    return qualifiedName(namePath.withHead(className));
   }
 
   public String getApiMethodName(Method method) {

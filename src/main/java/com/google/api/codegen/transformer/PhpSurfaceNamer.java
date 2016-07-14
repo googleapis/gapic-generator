@@ -18,7 +18,7 @@ import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceMessages;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.PhpNamer;
+import com.google.api.codegen.util.PhpNameFormatter;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -26,7 +26,7 @@ import com.google.api.tools.framework.model.TypeRef;
 
 public class PhpSurfaceNamer extends SurfaceNamer {
   public PhpSurfaceNamer() {
-    super(new PhpNamer());
+    super(new PhpNameFormatter());
   }
 
   @Override

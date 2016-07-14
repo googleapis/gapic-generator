@@ -14,13 +14,13 @@
  */
 package com.google.api.codegen.util;
 
-public interface LanguageNamer {
+public interface NameFormatter {
 
-  String getClassName(Name name);
+  String className(Name name);
 
   String varName(Name name);
 
-  String memberFunctionName(Name name);
+  String methodName(Name name);
 
   String staticFunctionName(Name name);
 
@@ -28,5 +28,5 @@ public interface LanguageNamer {
 
   String keyName(Name name);
 
-  String qualifiedName(QualifiedName qualifiedName);
+  String qualifiedName(NamePath namePath);
 }
