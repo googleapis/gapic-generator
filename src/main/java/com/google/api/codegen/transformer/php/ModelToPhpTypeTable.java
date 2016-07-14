@@ -12,10 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.php.PhpTypeTable;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.util.TypeAlias;
+import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;

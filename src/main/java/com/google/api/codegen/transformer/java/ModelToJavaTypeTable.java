@@ -12,11 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.LanguageUtil;
-import com.google.api.codegen.java.JavaTypeTable;
+import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.util.TypeAlias;
+import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;

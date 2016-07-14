@@ -12,7 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.util;
+package com.google.api.codegen.util.java;
+
+import com.google.api.codegen.util.Name;
+import com.google.api.codegen.util.NameFormatter;
+import com.google.api.codegen.util.NamePath;
 
 public class JavaNameFormatter implements NameFormatter {
 

@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.InterfaceView;
@@ -21,6 +21,11 @@ import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.ServiceConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.transformer.ApiMethodTransformer;
+import com.google.api.codegen.transformer.ModelToViewTransformer;
+import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.PathTemplateTransformer;
+import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.viewmodel.ApiCallableView;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.BundlingApiCallableView;

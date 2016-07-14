@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.php;
+package com.google.api.codegen.util.php;
 
 import com.google.api.codegen.util.TypeAlias;
 import com.google.common.collect.BiMap;

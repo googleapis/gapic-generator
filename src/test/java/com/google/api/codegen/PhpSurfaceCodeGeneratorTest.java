@@ -32,7 +32,8 @@ public class PhpSurfaceCodeGeneratorTest extends GapicTestBase {
   public PhpSurfaceCodeGeneratorTest(
       String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
     super(name, idForFactory, gapicConfigFileNames, snippetName);
-    getTestDataLocator().addTestDataSource(com.google.api.codegen.php.PhpTypeTable.class, "");
+    getTestDataLocator()
+        .addTestDataSource(com.google.api.codegen.php.PhpSnippetSetRunner.class, "");
   }
 
   /**

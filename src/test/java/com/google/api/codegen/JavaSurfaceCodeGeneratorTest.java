@@ -32,7 +32,8 @@ public class JavaSurfaceCodeGeneratorTest extends GapicTestBase {
   public JavaSurfaceCodeGeneratorTest(
       String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
     super(name, idForFactory, gapicConfigFileNames, snippetName);
-    getTestDataLocator().addTestDataSource(com.google.api.codegen.java.JavaTypeTable.class, "");
+    getTestDataLocator()
+        .addTestDataSource(com.google.api.codegen.java.JavaSnippetSetRunner.class, "");
   }
 
   /**
