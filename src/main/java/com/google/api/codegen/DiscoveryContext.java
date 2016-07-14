@@ -213,30 +213,46 @@ public abstract class DiscoveryContext extends CodegenContext {
     return lineEnding(stringLiteral(Strings.nullToEmpty(DefaultString.forPattern(stringPattern))));
   }
 
-  // Line wrap `str`, returning a list of lines. Each line in the returned list is guaranteed to
-  // not have new line characters.
+  // Line wrap `str`, returning a list of lines. Each line in the returned list is guaranteed to not
+  // have new line characters. The first line begins with `firstLinePrefix` (defaults to list
+  // bullet: "* "), while subsequent lines begin with a hanging indent of equal width.
+  public List<String> lineWrapDoc(String str, int maxWidth, String firstLinePrefix) {
+    return s_lineWrapDoc(str, maxWidth, firstLinePrefix);
+  }
+
   public List<String> lineWrapDoc(String str, int maxWidth) {
-    return s_lineWrapDoc(str, maxWidth);
+    return lineWrapDoc(str, maxWidth, "* ");
   }
 
   // For testing.
-  public static List<String> s_lineWrapDoc(String str, int maxWidth) {
+  public static List<String> s_lineWrapDoc(String str, int maxWidth, String firstLinePrefix) {
+    int indentWidth = firstLinePrefix.length();
+    String indent = Strings.repeat(" ", indentWidth);
+    maxWidth = maxWidth - indentWidth;
+
     List<String> lines = new ArrayList<>();
+    String prefix = firstLinePrefix;
 
     for (String line : str.trim().split("\n")) {
       line = line.trim();
 
       while (line.length() > maxWidth) {
         int split = lineWrapIndex(line, maxWidth);
-        lines.add(line.substring(0, split).trim());
+        lines.add(prefix + line.substring(0, split).trim());
         line = line.substring(split).trim();
+        prefix = indent;
       }
 
       if (!line.isEmpty()) {
-        lines.add(line);
+        lines.add(prefix + line);
       }
+      prefix = indent;
     }
     return lines;
+  }
+
+  public static List<String> s_lineWrapDoc(String str, int maxWidth) {
+    return s_lineWrapDoc(str, maxWidth, "* ");
   }
 
   private static int lineWrapIndex(String line, int maxWidth) {

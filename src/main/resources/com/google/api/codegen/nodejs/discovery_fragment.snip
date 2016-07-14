@@ -57,15 +57,14 @@
       @let paramField = context.getField(signatureType, param), \
            paramValue = context.typeDefaultValue(signatureType, paramField, method), \
            paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
-        @join line : context.lineWrapDoc(paramDescription, 100)
-          // {@line}
-        @end
-
+        {@description(paramDescription)}
         {@context.mapParamName(param)}: {@paramValue}
+
       @end
     @end
     @if context.hasRequestField(method)
       resource: {},
+
     @end
     @if context.hasMediaUpload(method)
       media: {
@@ -118,4 +117,10 @@
 
 @private requestName()
   request
+@end
+
+@private description(description)
+  @join line : context.lineWrapDoc(description, 100)
+    // {@line}
+  @end
 @end
