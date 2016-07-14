@@ -263,33 +263,6 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   }
 
   /**
-   * Return the default value for the given field. Return null if there is no default value.
-   */
-  public String defaultValue(Field field) {
-    TypeRef type = field.getType();
-    // Return empty array if the type is repeated.
-    if (type.isMap()) {
-      return "nil";
-    }
-    if (type.getCardinality() == Cardinality.REPEATED) {
-      return "[]";
-    }
-    switch (type.getKind()) {
-      case TYPE_MESSAGE:
-        return "nil";
-      case TYPE_ENUM:
-        Preconditions.checkArgument(
-            type.getEnumType().getValues().size() > 0, "enum must have a value");
-        return rubyTypeName(type) + "::" + type.getEnumType().getValues().get(0).getSimpleName();
-      default:
-        if (type.isPrimitive()) {
-          return DEFAULT_VALUE_MAP.get(type.getKind());
-        }
-        throw new IllegalArgumentException("unknown type kind: " + type.getKind());
-    }
-  }
-
-  /**
    * Returns the name of Ruby class for the given proto element.
    */
   private String rubyTypeNameForProtoElement(ProtoElement element) {
