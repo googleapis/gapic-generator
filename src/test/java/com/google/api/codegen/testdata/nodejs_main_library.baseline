@@ -355,10 +355,14 @@ LibraryServiceApi.prototype.getShelf = function getShelf() {
   }, arguments);
   var req = {
     'name': args.name,
-    'options': args.options_,
-    'message': args.otherArgs.message || {},
-    'string_builder': args.otherArgs.stringBuilder || {}
+    'options': args.options_
   };
+  if ('message' in args.otherArgs) {
+    req.message = args.otherArgs.message;
+  }
+  if ('stringBuilder' in args.otherArgs) {
+    req.string_builder = args.otherArgs.stringBuilder;
+  }
   return this._getShelf(req, args.options, args.callback);
 };
 
@@ -503,9 +507,11 @@ LibraryServiceApi.prototype.publishSeries = function publishSeries() {
   }, arguments);
   var req = {
     'shelf': args.shelf,
-    'books': args.books,
-    'edition': args.otherArgs.edition || 0
+    'books': args.books
   };
+  if ('edition' in args.otherArgs) {
+    req.edition = args.otherArgs.edition;
+  }
   return this._publishSeries(req, args.options, args.callback);
 };
 
@@ -566,10 +572,14 @@ LibraryServiceApi.prototype.listBooks = function listBooks() {
     'callback': [Function]
   }, arguments);
   var req = {
-    'name': args.name,
-    'page_size': args.otherArgs.pageSize || 0,
-    'filter': args.otherArgs.filter || ''
+    'name': args.name
   };
+  if ('pageSize' in args.otherArgs) {
+    req.page_size = args.otherArgs.pageSize;
+  }
+  if ('filter' in args.otherArgs) {
+    req.filter = args.otherArgs.filter;
+  }
   return this._listBooks(req, args.options, args.callback);
 };
 
@@ -630,10 +640,14 @@ LibraryServiceApi.prototype.updateBook = function updateBook() {
   }, arguments);
   var req = {
     'name': args.name,
-    'book': args.book,
-    'update_mask': args.otherArgs.updateMask || {},
-    'physical_mask': args.otherArgs.physicalMask || {}
+    'book': args.book
   };
+  if ('updateMask' in args.otherArgs) {
+    req.update_mask = args.otherArgs.updateMask;
+  }
+  if ('physicalMask' in args.otherArgs) {
+    req.physical_mask = args.otherArgs.physicalMask;
+  }
   return this._updateBook(req, args.options, args.callback);
 };
 
@@ -694,9 +708,13 @@ LibraryServiceApi.prototype.listStrings = function listStrings() {
     'callback': [Function]
   }, arguments);
   var req = {
-    'name': args.otherArgs.name || '',
-    'page_size': args.otherArgs.pageSize || 0
   };
+  if ('name' in args.otherArgs) {
+    req.name = args.otherArgs.name;
+  }
+  if ('pageSize' in args.otherArgs) {
+    req.page_size = args.otherArgs.pageSize;
+  }
   return this._listStrings(req, args.options, args.callback);
 };
 
