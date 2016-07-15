@@ -321,7 +321,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   /**
    * Returns the iterable of Ruby module names for the proto element.
    */
-  public Iterable<String> getModules(ProtoElement element) {
+  public Iterable<String> getGrpcModules(ProtoElement element) {
     String fullName = element.getFullName();
     List<String> modules = new ArrayList<>();
     for (String pkgName : Splitter.on(".").splitToList(fullName)) {
