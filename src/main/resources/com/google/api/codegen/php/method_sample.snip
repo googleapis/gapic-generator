@@ -112,9 +112,9 @@
 
 @private formattedIdentifier(identifier, isFormatted)
   @if isFormatted
-    $formatted{@context.lowerUnderscoreToUpperCamel(identifier)}
+    $formatted{@identifier.toUpperCamel}
   @else
-    ${@context.lowerUnderscoreToLowerCamel(identifier)}
+    ${@identifier.toLowerCamel}
   @end
 @end
 
@@ -143,7 +143,7 @@
 @end
 
 @snippet setCallName(field)
-  set{@context.lowerUnderscoreToUpperCamel(field.getFieldName)}
+  set{@field.getFieldName.toUpperCamel}
 @end
 
 @private argList(fieldSettings)

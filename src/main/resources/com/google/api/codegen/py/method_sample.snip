@@ -85,7 +85,7 @@
 # Helper method for initLineList()
 @private initList(line)
   @join identifier : line.getElementIdentifiers on ", "
-    {@identifier}
+    {@identifier.toLowerUnderscore}
   @end
 @end
 
@@ -93,7 +93,7 @@
 @private initMap(line)
   @join key : line.getElementIdentifierKeys vertical on ","
     @let identifierValue = line.getElementIdentifierValue(key)
-      {@context.renderPrimitiveValue(line.getKeyType, key)}: {@identifierValue}
+      {@context.renderPrimitiveValue(line.getKeyType, key)}: {@identifierValue.toLowerUnderscore}
     @end
   @end
 @end
@@ -105,7 +105,7 @@
 
 # Properly format an identifier for this language
 @private formattedIdentifier(lineOrFieldSetting)
-  {@lineOrFieldSetting.getIdentifier}
+  {@lineOrFieldSetting.getIdentifier.toLowerUnderscore}
 @end
 
 # Value for simple argument

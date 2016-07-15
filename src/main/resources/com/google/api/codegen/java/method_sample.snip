@@ -74,7 +74,7 @@
 @private initLineStructure(line)
   {@context.typeName(line.getType)} {@formattedIdentifier(line)} = {@context.typeName(line.getType)}.newBuilder()
   @join fieldSetting : line.getFieldSettings
-    @let setCallName = setCallName(fieldSetting.getType, context.lowerUnderscoreToUpperCamel(fieldSetting.getFieldName))
+    @let setCallName = setCallName(fieldSetting.getType, fieldSetting.getFieldName.toUpperCamel)
       {@EMPTY}  .{@setCallName}({@formattedIdentifier(fieldSetting)})
     @end
   @end
@@ -91,7 +91,7 @@
   Map<{@context.basicTypeNameBoxed(line.getKeyType)}, {@context.basicTypeNameBoxed(line.getValueType)}> {@formattedIdentifier(line)} = new HashMap<>();
   @join key : line.getElementIdentifierKeys vertical
     @let identifierValue = line.getElementIdentifierValue(key)
-      {@formattedIdentifier(line)}.put({@context.renderPrimitiveValue(line.getKeyType, key)}, {@context.lowerUnderscoreToLowerCamel(identifierValue)});
+      {@formattedIdentifier(line)}.put({@context.renderPrimitiveValue(line.getKeyType, key)}, {@identifierValue.toLowerCamel});
     @end
   @end
 @end
@@ -99,7 +99,7 @@
 # Helper method for initLineList()
 @private initList(line)
   @join identifier : line.getElementIdentifiers on ", "
-    {@context.lowerUnderscoreToLowerCamel(identifier)}
+    {@identifier.toLowerCamel}
   @end
 @end
 
@@ -111,9 +111,9 @@
 # Properly format an identifier for this language
 @private formattedIdentifier(lineOrFieldSetting)
   @if lineOrFieldSetting.getInitValueConfig.hasFormattingConfig
-    formatted{@context.lowerUnderscoreToUpperCamel(lineOrFieldSetting.getIdentifier)}
+    formatted{@lineOrFieldSetting.getIdentifier.toUpperCamel}
   @else
-    {@context.lowerUnderscoreToLowerCamel(lineOrFieldSetting.getIdentifier)}
+    {@lineOrFieldSetting.getIdentifier.toLowerCamel}
   @end
 @end
 
