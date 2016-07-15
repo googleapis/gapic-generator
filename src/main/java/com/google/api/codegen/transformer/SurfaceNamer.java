@@ -53,21 +53,21 @@ public class SurfaceNamer extends ViewNamer {
     return className(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
   }
 
-  public String getVariableName(String identifier, InitValueConfig initValueConfig) {
+  public String getVariableName(Name identifier, InitValueConfig initValueConfig) {
     if (initValueConfig == null || !initValueConfig.hasFormattingConfig()) {
-      return varName(Name.from(identifier));
+      return varName(identifier);
     } else {
-      return varName(Name.from("formatted", identifier));
+      return varName(Name.from("formatted").join(identifier));
     }
   }
 
-  public String getSetFunctionCallName(TypeRef type, String identifier) {
+  public String getSetFunctionCallName(TypeRef type, Name identifier) {
     if (type.isMap()) {
-      return methodName(Name.from("put", "all", identifier));
+      return methodName(Name.from("put", "all").join(identifier));
     } else if (type.isRepeated()) {
-      return methodName(Name.from("add", "all", identifier));
+      return methodName(Name.from("add", "all").join(identifier));
     } else {
-      return methodName(Name.from("set", identifier));
+      return methodName(Name.from("set").join(identifier));
     }
   }
 

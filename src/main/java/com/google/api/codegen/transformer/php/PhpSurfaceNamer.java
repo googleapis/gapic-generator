@@ -32,11 +32,11 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getSetFunctionCallName(TypeRef type, String identifier) {
+  public String getSetFunctionCallName(TypeRef type, Name identifier) {
     if (type.isMap() || type.isRepeated()) {
-      return methodName(Name.from("add", identifier));
+      return methodName(Name.from("add").join(identifier));
     } else {
-      return methodName(Name.from("set", identifier));
+      return methodName(Name.from("set").join(identifier));
     }
   }
 

@@ -367,7 +367,8 @@ public class ApiMethodTransformer {
       param.elementTypeName = SurfaceNamer.NOT_IMPLEMENTED;
       param.typeName = SurfaceNamer.NOT_IMPLEMENTED;
     }
-    param.setCallName = namer.getSetFunctionCallName(field.getType(), field.getSimpleName());
+    param.setCallName =
+        namer.getSetFunctionCallName(field.getType(), Name.from(field.getSimpleName()));
     param.isMap = field.getType().isMap();
     param.isArray = !field.getType().isMap() && field.getType().isRepeated();
     return param;

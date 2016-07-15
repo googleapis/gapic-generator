@@ -26,6 +26,7 @@ import com.google.api.codegen.metacode.ListInitCodeLine;
 import com.google.api.codegen.metacode.MapInitCodeLine;
 import com.google.api.codegen.metacode.SimpleInitCodeLine;
 import com.google.api.codegen.metacode.StructureInitCodeLine;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.FieldSettingView;
 import com.google.api.codegen.viewmodel.FormattedInitValueView;
 import com.google.api.codegen.viewmodel.InitCodeLineView;
@@ -137,8 +138,8 @@ public class InitCodeTransformer {
         context.getTypeTable().getAndSaveNicknameForElementType(line.getElementType());
     surfaceLine.identifier = namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
     List<String> elementIdentifiers = new ArrayList<>();
-    for (String identifier : line.getElementIdentifiers()) {
-      elementIdentifiers.add(namer.getVariableName(identifier, null));
+    for (Name identifier : line.getElementIdentifiers()) {
+      elementIdentifiers.add(namer.varName(identifier));
     }
     surfaceLine.elementIdentifiers = elementIdentifiers;
 
@@ -169,7 +170,7 @@ public class InitCodeTransformer {
     surfaceLine.identifier =
         context.getNamer().getVariableName(line.getIdentifier(), line.getInitValueConfig());
     List<MapEntryView> entries = new ArrayList<>();
-    for (Map.Entry<String, String> entry : line.getElementIdentifierMap().entrySet()) {
+    for (Map.Entry<String, Name> entry : line.getElementIdentifierMap().entrySet()) {
       MapEntryView mapEntry = new MapEntryView();
       mapEntry.key = typeTable.renderPrimitiveValue(line.getKeyType(), entry.getKey());
       mapEntry.value =
