@@ -156,7 +156,7 @@ public class ApiMethodTransformer {
   public void setCommonFields(
       MethodTransformerContext context, StaticApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
-    methodViewBuilder.requestTypeName(
+    methodViewBuilder.apiRequestTypeName(
         context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getInputType()));
     methodViewBuilder.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
     methodViewBuilder.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
@@ -171,6 +171,8 @@ public class ApiMethodTransformer {
             .getAndSaveNicknameForElementType(pageStreaming.getResourcesField().getType());
     methodViewBuilder.listMethod(
         ListMethodDetailView.newBuilder().resourceTypeName(resourceTypeName).build());
+    methodViewBuilder.responseTypeName(
+        context.getNamer().getPageAccessorTypeName(resourceTypeName));
     methodViewBuilder.hasReturnValue(true);
   }
 

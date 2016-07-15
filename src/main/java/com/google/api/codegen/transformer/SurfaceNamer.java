@@ -190,11 +190,19 @@ public class SurfaceNamer extends ViewNamer {
     return varName(Name.upperCamel(method.getSimpleName(), "Callable"));
   }
 
+  public String getSettingsFunctionName(Method method) {
+    return methodName(Name.upperCamel(method.getSimpleName(), "Settings"));
+  }
+
   public String getGenericAwareResponseType(ModelTypeTable typeTable, TypeRef outputType) {
     return SurfaceNamer.NOT_IMPLEMENTED;
   }
 
   public String getGetResourceListCallName(Field resourcesField) {
     return methodName(Name.from("get", resourcesField.getSimpleName(), "list"));
+  }
+
+  public String getPageAccessorTypeName(String resourceTypeName) {
+    return SurfaceNamer.NOT_IMPLEMENTED;
   }
 }

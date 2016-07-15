@@ -61,4 +61,9 @@ public class JavaSurfaceNamer extends SurfaceNamer {
       return typeTable.getAndSaveNicknameFor(outputType);
     }
   }
+
+  @Override
+  public String getPageAccessorTypeName(String resourceTypeName) {
+    return "PageAccessor<" + resourceTypeName + ">";
+  }
 }

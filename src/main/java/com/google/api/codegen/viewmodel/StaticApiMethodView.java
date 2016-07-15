@@ -36,11 +36,9 @@ public abstract class StaticApiMethodView {
   public abstract InitCodeView initCode();
 
   public abstract ApiMethodDocView doc();
-  // FIXME: apiRequestTypeName?
-  public abstract String requestTypeName();
 
-  // FIXME: include PageAccessor/other in type
-  @Nullable
+  public abstract String apiRequestTypeName();
+
   public abstract String responseTypeName();
 
   public abstract String name();
@@ -81,7 +79,7 @@ public abstract class StaticApiMethodView {
 
     public abstract Builder doc(ApiMethodDocView doc);
 
-    public abstract Builder requestTypeName(String requestTypeName);
+    public abstract Builder apiRequestTypeName(String requestTypeName);
 
     public abstract Builder responseTypeName(String responseTypeName);
 

@@ -16,7 +16,6 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.InterfaceView;
-import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.ServiceConfig;
@@ -27,10 +26,8 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.viewmodel.ApiCallableType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
-import com.google.api.codegen.viewmodel.BundlingApiCallableView;
-import com.google.api.codegen.viewmodel.PagedApiCallableView;
-import com.google.api.codegen.viewmodel.SimpleApiCallableView;
 import com.google.api.codegen.viewmodel.StaticApiMethodView;
 import com.google.api.codegen.viewmodel.StaticXApiView;
 import com.google.api.codegen.viewmodel.StaticXSettingsView;
@@ -183,45 +180,44 @@ public class ModelToJavaSurfaceTransformer implements ModelToViewTransformer {
 
   private List<ApiCallableView> generateApiCallables(
       SurfaceTransformerContext context, Method method, MethodConfig methodConfig) {
-    String methodNameLowCml = LanguageUtil.upperCamelToLowerCamel(method.getSimpleName());
     ModelTypeTable typeTable = context.getTypeTable();
 
     List<ApiCallableView> apiCallables = new ArrayList<>();
 
+    ApiCallableView.Builder apiCallableBuilder = ApiCallableView.newBuilder();
+
+    apiCallableBuilder.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
+    apiCallableBuilder.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
+    apiCallableBuilder.name(context.getNamer().getCallableName(method));
+    apiCallableBuilder.settingsFunctionName(context.getNamer().getSettingsFunctionName(method));
+
     if (methodConfig.isBundling()) {
-      BundlingApiCallableView apiCallable = new BundlingApiCallableView();
-
-      apiCallable.requestTypeName = typeTable.getAndSaveNicknameFor(method.getInputType());
-      apiCallable.responseTypeName = typeTable.getAndSaveNicknameFor(method.getOutputType());
-      apiCallable.name = methodNameLowCml + "Callable";
-      apiCallable.settingsFunctionName = methodNameLowCml + "Settings";
-
-      apiCallables.add(apiCallable);
-
+      apiCallableBuilder.type(ApiCallableType.BundlingApiCallable);
     } else {
-      SimpleApiCallableView apiCallable = new SimpleApiCallableView();
+      apiCallableBuilder.type(ApiCallableType.SimpleApiCallable);
+    }
 
-      apiCallable.requestTypeName = typeTable.getAndSaveNicknameFor(method.getInputType());
-      apiCallable.responseTypeName = typeTable.getAndSaveNicknameFor(method.getOutputType());
-      apiCallable.name = methodNameLowCml + "Callable";
-      apiCallable.settingsFunctionName = methodNameLowCml + "Settings";
+    apiCallables.add(apiCallableBuilder.build());
 
-      apiCallables.add(apiCallable);
+    if (methodConfig.isPageStreaming()) {
+      PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
 
-      if (methodConfig.isPageStreaming()) {
-        PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
+      ApiCallableView.Builder pagedApiCallableBuilder = ApiCallableView.newBuilder();
 
-        PagedApiCallableView pagedApiCallable = new PagedApiCallableView();
+      String pageAccessorTypeName =
+          typeTable.getAndSaveNicknameFor("com.google.api.gax.core.PageAccessor");
+      String resourceTypeName =
+          typeTable.getAndSaveNicknameForElementType(pageStreaming.getResourcesField().getType());
+      String pagedResponseTypeName = pageAccessorTypeName + "<" + resourceTypeName + ">";
 
-        pagedApiCallable.requestTypeName = apiCallable.requestTypeName;
-        pagedApiCallable.pageAccessorTypeName =
-            typeTable.getAndSaveNicknameFor("com.google.api.gax.core.PageAccessor");
-        pagedApiCallable.resourceTypeName =
-            typeTable.getAndSaveNicknameForElementType(pageStreaming.getResourcesField().getType());
-        pagedApiCallable.name = methodNameLowCml + "PagedCallable";
-        pagedApiCallable.settingsFunctionName = methodNameLowCml + "Settings";
-        apiCallables.add(pagedApiCallable);
-      }
+      pagedApiCallableBuilder.requestTypeName(
+          typeTable.getAndSaveNicknameFor(method.getInputType()));
+      pagedApiCallableBuilder.responseTypeName(pagedResponseTypeName);
+      pagedApiCallableBuilder.name(context.getNamer().getPagedCallableName(method));
+      pagedApiCallableBuilder.settingsFunctionName(
+          context.getNamer().getSettingsFunctionName(method));
+
+      apiCallables.add(pagedApiCallableBuilder.type(ApiCallableType.PagedApiCallable).build());
     }
 
     return apiCallables;

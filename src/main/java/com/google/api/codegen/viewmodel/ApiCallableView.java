@@ -14,4 +14,36 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public interface ApiCallableView {}
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+public abstract class ApiCallableView {
+  public abstract ApiCallableType type();
+
+  public abstract String requestTypeName();
+
+  public abstract String responseTypeName();
+
+  public abstract String name();
+
+  public abstract String settingsFunctionName();
+
+  public static Builder newBuilder() {
+    return new AutoValue_ApiCallableView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder type(ApiCallableType type);
+
+    public abstract Builder requestTypeName(String name);
+
+    public abstract Builder responseTypeName(String name);
+
+    public abstract Builder name(String name);
+
+    public abstract Builder settingsFunctionName(String name);
+
+    public abstract ApiCallableView build();
+  }
+}
