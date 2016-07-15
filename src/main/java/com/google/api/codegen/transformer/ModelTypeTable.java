@@ -26,6 +26,8 @@ public interface ModelTypeTable {
 
   String getFullNameFor(TypeRef type);
 
+  String getFullNameForElementType(TypeRef resourceType);
+
   String getNicknameFor(TypeRef type);
 
   String getAndSaveNicknameFor(String fullName);
@@ -33,6 +35,8 @@ public interface ModelTypeTable {
   String getAndSaveNicknameFor(TypeRef type);
 
   String getAndSaveNicknameForElementType(TypeRef type);
+
+  String getAndSaveNicknameForContainer(String containerFullName, String elementFullName);
 
   String renderPrimitiveValue(TypeRef type, String key);
 

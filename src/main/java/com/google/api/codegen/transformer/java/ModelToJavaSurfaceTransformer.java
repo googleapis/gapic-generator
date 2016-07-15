@@ -204,11 +204,11 @@ public class ModelToJavaSurfaceTransformer implements ModelToViewTransformer {
 
       ApiCallableView.Builder pagedApiCallableBuilder = ApiCallableView.newBuilder();
 
-      String pageAccessorTypeName =
-          typeTable.getAndSaveNicknameFor("com.google.api.gax.core.PageAccessor");
-      String resourceTypeName =
-          typeTable.getAndSaveNicknameForElementType(pageStreaming.getResourcesField().getType());
-      String pagedResponseTypeName = pageAccessorTypeName + "<" + resourceTypeName + ">";
+      String pagedResponseTypeName =
+          context
+              .getNamer()
+              .getAndSavePagedResponseTypeName(
+                  typeTable, pageStreaming.getResourcesField().getType());
 
       pagedApiCallableBuilder.requestTypeName(
           typeTable.getAndSaveNicknameFor(method.getInputType()));

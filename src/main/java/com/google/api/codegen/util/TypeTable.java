@@ -12,12 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.java;
+package com.google.api.codegen.util;
 
-import java.util.List;
-
-public class JavaSnippetUtil {
-  public List<String> getJavaDocLines(String text) {
-    return JavaDocUtil.getJavaDocLines(text);
-  }
+public interface TypeTable {
+  String getAndSaveNicknameFor(TypeAlias alias);
 }

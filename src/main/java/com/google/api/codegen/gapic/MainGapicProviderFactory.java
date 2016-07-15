@@ -29,7 +29,6 @@ import com.google.api.codegen.go.GoSnippetSetRunner;
 import com.google.api.codegen.java.JavaGapicContext;
 import com.google.api.codegen.java.JavaIterableSnippetSetRunner;
 import com.google.api.codegen.java.JavaSnippetSetRunner;
-import com.google.api.codegen.java.JavaSnippetUtil;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
 import com.google.api.codegen.php.PhpGapicContext;
@@ -43,6 +42,8 @@ import com.google.api.codegen.ruby.RubyGapicContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
 import com.google.api.codegen.transformer.java.ModelToJavaSurfaceTransformer;
 import com.google.api.codegen.transformer.php.ModelToPhpSurfaceTransformer;
+import com.google.api.codegen.util.CommonRenderingUtil;
+import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -158,7 +159,7 @@ public class MainGapicProviderFactory
       GapicProvider<? extends Object> mainProvider =
           SurfaceGapicProvider.newBuilder()
               .setModel(model)
-              .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaSnippetUtil()))
+              .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
               .setModelToViewTransformer(
                   new ModelToJavaSurfaceTransformer(apiConfig, javaPathMapper))
               .build();
@@ -227,7 +228,7 @@ public class MainGapicProviderFactory
       GapicProvider<? extends Object> mainProvider =
           SurfaceGapicProvider.newBuilder()
               .setModel(model)
-              .setSnippetSetRunner(new CommonSnippetSetRunner(new Object()))
+              .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
               .setModelToViewTransformer(new ModelToPhpSurfaceTransformer(apiConfig, phpPathMapper))
               .build();
 

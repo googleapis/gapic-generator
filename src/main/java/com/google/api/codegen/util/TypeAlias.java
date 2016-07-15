@@ -18,14 +18,13 @@ public class TypeAlias {
   private final String fullName;
   private final String nickname;
 
+  public TypeAlias(String name) {
+    this(name, name);
+  }
+
   public TypeAlias(String fullName, String nickname) {
     this.fullName = fullName;
     this.nickname = nickname;
-  }
-
-  public TypeAlias(String name) {
-    this.fullName = name;
-    this.nickname = name;
   }
 
   public String getFullName() {

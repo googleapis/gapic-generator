@@ -24,5 +24,6 @@ public enum ApiMethodType {
   RequestObjectMethod,
   CallableMethod,
   // PHP
-  OptionalArrayMethod
+  OptionalArrayMethod,
+  PagedOptionalArrayMethod
 }

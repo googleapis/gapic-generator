@@ -16,11 +16,12 @@ package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.java.JavaDocUtil;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.java.JavaNameFormatter;
+import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
@@ -36,7 +37,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
 
   @Override
   public List<String> getDocLines(ProtoElement element) {
-    return JavaDocUtil.getJavaDocLines(DocumentationUtil.getDescription(element));
+    return JavaRenderingUtil.getDocLines(DocumentationUtil.getDescription(element));
   }
 
   @Override
@@ -63,7 +64,9 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getPageAccessorTypeName(String resourceTypeName) {
-    return "PageAccessor<" + resourceTypeName + ">";
+  public String getAndSavePagedResponseTypeName(ModelTypeTable typeTable, TypeRef resourceType) {
+    String resourceTypeName = typeTable.getFullNameForElementType(resourceType);
+    return typeTable.getAndSaveNicknameForContainer(
+        "com.google.api.gax.core.PageAccessor", resourceTypeName);
   }
 }

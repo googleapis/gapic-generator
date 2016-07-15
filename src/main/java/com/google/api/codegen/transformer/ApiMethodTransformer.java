@@ -165,14 +165,12 @@ public class ApiMethodTransformer {
   private void setListMethodFields(
       MethodTransformerContext context, StaticApiMethodView.Builder methodViewBuilder) {
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
-    String resourceTypeName =
-        context
-            .getTypeTable()
-            .getAndSaveNicknameForElementType(pageStreaming.getResourcesField().getType());
+    TypeRef resourceType = pageStreaming.getResourcesField().getType();
+    String resourceTypeName = context.getTypeTable().getAndSaveNicknameForElementType(resourceType);
     methodViewBuilder.listMethod(
         ListMethodDetailView.newBuilder().resourceTypeName(resourceTypeName).build());
     methodViewBuilder.responseTypeName(
-        context.getNamer().getPageAccessorTypeName(resourceTypeName));
+        context.getNamer().getAndSavePagedResponseTypeName(context.getTypeTable(), resourceType));
     methodViewBuilder.hasReturnValue(true);
   }
 
@@ -289,6 +287,17 @@ public class ApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     OptionalArrayMethodView apiMethod = new OptionalArrayMethodView();
 
+    if (context.getMethodConfig().isPageStreaming()) {
+      apiMethod.type = ApiMethodType.PagedOptionalArrayMethod;
+    } else {
+      apiMethod.type = ApiMethodType.OptionalArrayMethod;
+    }
+    apiMethod.apiClassName = namer.getApiWrapperClassName(context.getInterface());
+    apiMethod.apiVariableName = namer.getApiWrapperVariableName(context.getInterface());
+    apiMethod.initCode =
+        initCodeTransformer.generateInitCode(
+            context, context.getMethodConfig().getRequiredFields());
+
     ApiMethodDocView.Builder docBuilder = ApiMethodDocView.newBuilder();
 
     docBuilder.mainDocLines(namer.getDocLines(context.getMethod()));
@@ -307,6 +316,7 @@ public class ApiMethodTransformer {
     apiMethod.name = namer.getApiMethodName(context.getMethod());
     apiMethod.requestTypeName =
         context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getInputType());
+    apiMethod.hasReturnValue = !ServiceMessages.s_isEmptyType(context.getMethod().getOutputType());
     apiMethod.key = namer.getMethodKey(context.getMethod());
     apiMethod.grpcMethodName = namer.getGrpcMethodName(context.getMethod());
 
@@ -380,7 +390,7 @@ public class ApiMethodTransformer {
     for (Field field : fields) {
       SimpleParamDocView paramDoc = new SimpleParamDocView();
       paramDoc.paramName = context.getNamer().getVariableName(field);
-      paramDoc.typeName = context.getTypeTable().getFullNameFor(field.getType());
+      paramDoc.typeName = context.getTypeTable().getAndSaveNicknameFor(field.getType());
 
       List<String> docLines = null;
       MethodConfig methodConfig = context.getMethodConfig();

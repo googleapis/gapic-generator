@@ -1,3 +1,6 @@
+@extends "php/mvvm_common.snip"
+@extends "php/xapi_sample.snip"
+
 @snippet generate(xapiClass)
     <?php
 
@@ -248,7 +251,9 @@
 
 @private apiMethods(xapiClass)
     @join apiMethod : xapiClass.apiMethods
-        {@methodDoc(apiMethod.doc)}
+        @let coreSampleCode = sampleCode(apiMethod)
+            {@methodDoc(apiMethod.doc, decoratedSampleCode(apiMethod, coreSampleCode))}
+        @end
         public function {@apiMethod.name}({@paramList(apiMethod.methodParams)})
         {
             $request = new {@apiMethod.requestTypeName}();
@@ -316,7 +321,7 @@
     }
 @end
 
-@private methodDoc(apiMethodDoc)
+@private methodDoc(apiMethodDoc, methodSampleCode)
     /**
     @join commentLine : apiMethodDoc.mainDocLines
         {@""} * {@commentLine}
@@ -324,7 +329,9 @@
      *
      * Sample code:
      * ```
-    #{@createMethodSampleDoc(service, method)}
+    @join sampleLine : util.getDocLines(methodSampleCode)
+        {@""} * {@sampleLine}
+    @end
      * ```
     @if apiMethodDoc.paramDocs
         {@""} *
@@ -339,6 +346,7 @@
      * 
      * @@throws Google\GAX\ApiException if the remote call fails
      */
+    {@""}
 @end
 
 @private paramDoc(doc)

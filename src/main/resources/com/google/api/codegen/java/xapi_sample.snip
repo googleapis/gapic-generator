@@ -62,12 +62,6 @@
   @end
 @end
 
-@private sampleMethodCallArgList(fieldSettings)
-  @join fieldSetting : fieldSettings on ", "
-    {@fieldSetting.identifier}
-  @end
-@end
-
 @private sampleFutureMethodCall(apiMethod)
   {@apiMethod.apiVariableName}.{@apiMethod.name}().futureCall(\
       {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
@@ -76,6 +70,12 @@
 @private sampleSyncMethodCall(apiMethod)
   {@apiMethod.apiVariableName}.{@apiMethod.name}(\
       {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+@end
+
+@private sampleMethodCallArgList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
 @end
 
 @private initCode(initCodeSpec)

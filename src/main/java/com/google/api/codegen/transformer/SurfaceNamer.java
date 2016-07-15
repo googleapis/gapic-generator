@@ -17,10 +17,11 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.metacode.InitValueConfig;
-import com.google.api.codegen.util.NameFormatter;
+import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
-import com.google.api.codegen.util.ViewNamer;
+import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NamePath;
+import com.google.api.codegen.util.ViewNamer;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -135,7 +136,7 @@ public class SurfaceNamer extends ViewNamer {
   }
 
   public List<String> getDocLines(ProtoElement element) {
-    return CommonDocUtil.getDocLines(DocumentationUtil.getDescription(element));
+    return CommonRenderingUtil.getDocLines(DocumentationUtil.getDescription(element));
   }
 
   public List<String> getThrowsDocLines() {
@@ -202,7 +203,7 @@ public class SurfaceNamer extends ViewNamer {
     return methodName(Name.from("get", resourcesField.getSimpleName(), "list"));
   }
 
-  public String getPageAccessorTypeName(String resourceTypeName) {
+  public String getAndSavePagedResponseTypeName(ModelTypeTable typeTable, TypeRef resourceType) {
     return SurfaceNamer.NOT_IMPLEMENTED;
   }
 }

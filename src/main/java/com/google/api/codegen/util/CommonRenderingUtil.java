@@ -12,35 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.java;
+package com.google.api.codegen.util;
 
 import com.google.common.base.Splitter;
-import com.google.common.escape.Escaper;
-import com.google.common.escape.Escapers;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class JavaDocUtil {
-  /**
-   * Escaper for formatting javadoc strings.
-   */
-  private static final Escaper JAVADOC_ESCAPER =
-      Escapers.builder()
-          .addEscape('&', "&amp;")
-          .addEscape('<', "&lt;")
-          .addEscape('>', "&gt;")
-          .addEscape('*', "&ast;")
-          .build();
+public class CommonRenderingUtil {
 
-  /**
-   * Splits given text into lines and returns an list of strings, each one representing a line.
-   * Performs escaping of certain html characters.
-   */
-  public static List<String> getJavaDocLines(String text) {
-    // TODO: convert markdown to javadoc
+  public static List<String> getDocLines(String text) {
+    // TODO: convert markdown to phpDoc
     List<String> result = new ArrayList<>();
-    text = JAVADOC_ESCAPER.escape(text);
     for (String line : Splitter.on(String.format("%n")).split(text)) {
       result.add(line);
     }

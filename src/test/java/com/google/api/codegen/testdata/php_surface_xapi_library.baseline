@@ -11,6 +11,8 @@ use Google\GAX\GrpcConstants;
 use Google\GAX\PageStreamingDescriptor;
 use Google\GAX\PathTemplate;
 use google\example\library\v1\AddCommentsRequest;
+use google\example\library\v1\Book;
+use google\example\library\v1\Comment;
 use google\example\library\v1\CreateBookRequest;
 use google\example\library\v1\CreateShelfRequest;
 use google\example\library\v1\DeleteBookRequest;
@@ -25,9 +27,13 @@ use google\example\library\v1\ListStringsRequest;
 use google\example\library\v1\MergeShelvesRequest;
 use google\example\library\v1\MoveBookRequest;
 use google\example\library\v1\PublishSeriesRequest;
+use google\example\library\v1\Shelf;
+use google\example\library\v1\SomeMessage;
+use google\example\library\v1\StringBuilder;
 use google\example\library\v1\UpdateBookIndexRequest;
 use google\example\library\v1\UpdateBookIndexRequest.IndexMapEntry;
 use google\example\library\v1\UpdateBookRequest;
+use google\protobuf\FieldMask;
 
 class LibraryServiceApi
 {
@@ -311,9 +317,18 @@ class LibraryServiceApi
      *
      * Sample code:
      * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $shelf = new Shelf();
+     *     $response = $libraryServiceApi->createShelf($shelf);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
      * ```
      *
-     * @param google\example\library\v1\Shelf $shelf The shelf to create.
+     * @param Shelf $shelf The shelf to create.
      * @param array $optionalArgs {
      *     Optional. There are no optional parameters for this method yet;
      *               this $optionalArgs parameter reserves a spot for future ones.
@@ -353,14 +368,23 @@ class LibraryServiceApi
      *
      * Sample code:
      * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $formattedName = LibraryServiceApi::formatShelfName("[SHELF]");
+     *     $response = $libraryServiceApi->getShelf($formattedName);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
      * ```
      *
      * @param string $name The name of the shelf to retrieve.
      * @param array $optionalArgs {
      *     Optional.
-     *     @var google\example\library\v1\SomeMessage $message
+     *     @var SomeMessage $message
      *          Field to verify that message-type query parameter gets flattened.
-     *     @var google\example\library\v1\StringBuilder $stringBuilder
+     *     @var StringBuilder $stringBuilder
      *
      * }
      * @param array $callSettings {
@@ -404,6 +428,17 @@ class LibraryServiceApi
      *
      * Sample code:
      * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *
+     *     foreach ($libraryServiceApi->listShelves() as $element) {
+     *         // doThingsWith(element);
+     *     }
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
      * ```
      *
      * @param array $optionalArgs {
@@ -444,6 +479,15 @@ class LibraryServiceApi
      *
      * Sample code:
      * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $formattedName = LibraryServiceApi::formatShelfName("[SHELF]");
+     *     $libraryServiceApi->deleteShelf($formattedName);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
      * ```
      *
      * @param string $name The name of the shelf to delete.
@@ -486,6 +530,16 @@ class LibraryServiceApi
      *
      * Sample code:
      * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $formattedName = LibraryServiceApi::formatShelfName("[SHELF]");
+     *     $formattedOtherShelfName = LibraryServiceApi::formatShelfName("[SHELF]");
+     *     $response = $libraryServiceApi->mergeShelves($formattedName, $formattedOtherShelfName);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
      * ```
      *
      * @param string $name The name of the shelf we're adding books to.
@@ -530,10 +584,20 @@ class LibraryServiceApi
      *
      * Sample code:
      * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $formattedName = LibraryServiceApi::formatShelfName("[SHELF]");
+     *     $book = new Book();
+     *     $response = $libraryServiceApi->createBook($formattedName, $book);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
      * ```
      *
      * @param string $name The name of the shelf in which the book is created.
-     * @param google\example\library\v1\Book $book The book to create.
+     * @param Book $book The book to create.
      * @param array $optionalArgs {
      *     Optional. There are no optional parameters for this method yet;
      *               this $optionalArgs parameter reserves a spot for future ones.
@@ -574,10 +638,20 @@ class LibraryServiceApi
      *
      * Sample code:
      * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $shelf = new Shelf();
+     *     $books = [];
+     *     $response = $libraryServiceApi->publishSeries($shelf, $books);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
      * ```
      *
-     * @param google\example\library\v1\Shelf $shelf The shelf in which the series is created.
-     * @param google\example\library\v1\Book[] $books The books to publish in the series.
+     * @param Shelf $shelf The shelf in which the series is created.
+     * @param Book[] $books The books to publish in the series.
      * @param array $optionalArgs {
      *     Optional.
      *     @var int $edition
@@ -624,6 +698,15 @@ class LibraryServiceApi
      *
      * Sample code:
      * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF]", "[BOOK]");
+     *     $response = $libraryServiceApi->getBook($formattedName);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
      * ```
      *
      * @param string $name The name of the book to retrieve.
@@ -666,6 +749,17 @@ class LibraryServiceApi
      *
      * Sample code:
      * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $formattedName = LibraryServiceApi::formatShelfName("[SHELF]");
+     *     foreach ($libraryServiceApi->listBooks($formattedName) as $element) {
+     *         // doThingsWith(element);
+     *     }
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
      * ```
      *
      * @param string $name The name of the shelf whose books we'd like to list.
@@ -721,6 +815,15 @@ class LibraryServiceApi
      *
      * Sample code:
      * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF]", "[BOOK]");
+     *     $libraryServiceApi->deleteBook($formattedName);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
      * ```
      *
      * @param string $name The name of the book to delete.
@@ -761,13 +864,23 @@ class LibraryServiceApi
      *
      * Sample code:
      * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF]", "[BOOK]");
+     *     $book = new Book();
+     *     $response = $libraryServiceApi->updateBook($formattedName, $book);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
      * ```
      *
      * @param string $name The name of the book to update.
-     * @param google\example\library\v1\Book $book The book to update with.
+     * @param Book $book The book to update with.
      * @param array $optionalArgs {
      *     Optional.
-     *     @var google\protobuf\FieldMask $updateMask
+     *     @var FieldMask $updateMask
      *          A field mask to apply, rendered as an HTTP parameter.
      *     @var google\example\library\v1\FieldMask $physicalMask
      *          To test Python import clash resolution.
@@ -814,6 +927,16 @@ class LibraryServiceApi
      *
      * Sample code:
      * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF]", "[BOOK]");
+     *     $formattedOtherShelfName = LibraryServiceApi::formatShelfName("[SHELF]");
+     *     $response = $libraryServiceApi->moveBook($formattedName, $formattedOtherShelfName);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
      * ```
      *
      * @param string $name The name of the book to move.
@@ -858,6 +981,17 @@ class LibraryServiceApi
      *
      * Sample code:
      * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *
+     *     foreach ($libraryServiceApi->listStrings() as $element) {
+     *         // doThingsWith(element);
+     *     }
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
      * ```
      *
      * @param array $optionalArgs {
@@ -911,10 +1045,23 @@ class LibraryServiceApi
      *
      * Sample code:
      * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF]", "[BOOK]");
+     *     $comment = "";
+     *     $commentsElement = new Comment();
+     *     $commentsElement->setComment($comment);
+     *     $comments = [$commentsElement];
+     *     $libraryServiceApi->addComments($formattedName, $comments);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
      * ```
      *
      * @param string $name
-     * @param google\example\library\v1\Comment[] $comments
+     * @param Comment[] $comments
      * @param array $optionalArgs {
      *     Optional. There are no optional parameters for this method yet;
      *               this $optionalArgs parameter reserves a spot for future ones.
@@ -955,6 +1102,15 @@ class LibraryServiceApi
      *
      * Sample code:
      * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $formattedName = LibraryServiceApi::formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
+     *     $response = $libraryServiceApi->getBookFromArchive($formattedName);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
      * ```
      *
      * @param string $name The name of the book to retrieve.
@@ -997,6 +1153,18 @@ class LibraryServiceApi
      *
      * Sample code:
      * ```
+     * try {
+     *     $libraryServiceApi = new LibraryServiceApi();
+     *     $formattedName = LibraryServiceApi::formatBookName("[SHELF]", "[BOOK]");
+     *     $indexName = "default index";
+     *     $indexMapItem = "";
+     *     $indexMap = ["default_key" => $indexMapItem,];
+     *     $libraryServiceApi->updateBookIndex($formattedName, $indexName, $indexMap);
+     * } finally {
+     *     if (isset($libraryServiceApi)) {
+     *         $libraryServiceApi->close();
+     *     }
+     * }
      * ```
      *
      * @param string $name The name of the book to update.

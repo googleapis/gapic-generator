@@ -18,6 +18,10 @@ import java.util.List;
 
 public class OptionalArrayMethodView implements ApiMethodView {
 
+  public ApiMethodType type;
+  public String apiClassName;
+  public String apiVariableName;
+  public InitCodeView initCode;
   public ApiMethodDocView doc;
   public String name;
   public String requestTypeName;
@@ -26,4 +30,5 @@ public class OptionalArrayMethodView implements ApiMethodView {
   public List<DynamicDefaultableParamView> methodParams;
   public List<RequestObjectParamView> requiredRequestObjectParams;
   public List<RequestObjectParamView> optionalRequestObjectParams;
+  public boolean hasReturnValue;
 }

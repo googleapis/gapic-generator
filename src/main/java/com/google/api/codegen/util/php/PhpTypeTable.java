@@ -15,6 +15,8 @@
 package com.google.api.codegen.util.php;
 
 import com.google.api.codegen.util.TypeAlias;
+import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.TypeTable;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
@@ -22,23 +24,27 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PhpTypeTable {
+public class PhpTypeTable implements TypeTable {
   /**
    * A bi-map from full names to short names indicating the import map.
    */
   private final BiMap<String, String> imports = HashBiMap.create();
 
-  public TypeAlias getAlias(String fullName) {
+  public TypeName getTypeName(String fullName) {
     int lastBackslashIndex = fullName.lastIndexOf('\\');
     if (lastBackslashIndex < 0) {
       throw new IllegalArgumentException("expected fully qualified name");
     }
     String nickname = fullName.substring(lastBackslashIndex + 1);
-    return new TypeAlias(fullName, nickname);
+    return new TypeName(fullName, nickname);
   }
 
   public String getAndSaveNicknameFor(String fullName) {
-    return getAndSaveNicknameFor(getAlias(fullName));
+    return getAndSaveNicknameFor(getTypeName(fullName));
+  }
+
+  public String getAndSaveNicknameFor(TypeName typeName) {
+    return typeName.getAndSaveNicknameIn(this);
   }
 
   public String getAndSaveNicknameFor(TypeAlias alias) {
