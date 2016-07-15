@@ -117,10 +117,7 @@ func main() {
         paramField = context.getField(signatureType, param), \
         paramValue = context.typeDefaultValue(signatureType, paramField), \
         paramDescription = context.getApiaryConfig.getDescription(signatureType.getName, param)
-      @join line : context.lineWrapDoc(paramDescription, 100)
-        // {@line}
-      @end
-
+      {@description(paramDescription)}
       {@unclashVar(param)} := {@paramValue} // {@TODO()} Update placeholder value.
     @end
   @end
@@ -153,5 +150,11 @@ func main() {
     {@var}2
   @else
     {@var}
+  @end
+@end
+
+@private description(description)
+  @join line : context.lineWrapDoc(description, 100)
+    // {@line}
   @end
 @end

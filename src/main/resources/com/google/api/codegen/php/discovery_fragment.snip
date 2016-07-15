@@ -64,6 +64,7 @@
       @let paramField = context.getField(signatureType, param), \
            paramValue = context.typeDefaultValue(signatureType, paramField), \
            paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
+
         {@description(paramDescription)}
         ${@param} = {@paramValue};
       @end
@@ -120,7 +121,7 @@
   @end
 @end
 
-@snippet description(description)
+@private description(description)
   @join line : context.lineWrapDoc(description, 100)
     // {@line}
   @end

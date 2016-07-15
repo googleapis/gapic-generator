@@ -26,19 +26,21 @@ public class LineWrapTest {
 
     // Check for off-by-one's.
     s = "aaa a";
-    Truth.assertThat(DiscoveryContext.s_lineWrapDoc(s, s.length())).containsExactly(s);
-    Truth.assertThat(DiscoveryContext.s_lineWrapDoc(s, s.length() - 1))
-        .containsExactly("aaa", "a")
+    Truth.assertThat(DiscoveryContext.s_lineWrapDoc(s, s.length() + 2)).containsExactly("* " + s);
+    Truth.assertThat(DiscoveryContext.s_lineWrapDoc(s, s.length() + 2 - 1))
+        .containsExactly("* aaa", "  a")
         .inOrder();
 
     // Honor existing newlines.
     s = "abc\nxyz";
-    Truth.assertThat(DiscoveryContext.s_lineWrapDoc(s, 10)).containsExactly("abc", "xyz").inOrder();
+    Truth.assertThat(DiscoveryContext.s_lineWrapDoc(s, 10))
+        .containsExactly("* abc", "  xyz")
+        .inOrder();
 
     // Break long lines
     s = "aaa 123456789 bbb";
     Truth.assertThat(DiscoveryContext.s_lineWrapDoc(s, 5))
-        .containsExactly("aaa", "123456789", "bbb")
+        .containsExactly("* aaa", "  123456789", "  bbb")
         .inOrder();
   }
 }

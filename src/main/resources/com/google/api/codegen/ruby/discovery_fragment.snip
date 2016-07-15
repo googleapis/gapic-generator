@@ -56,15 +56,14 @@
       @let paramField = context.getField(signatureType, param), \
            paramValue = context.typeDefaultValue(signatureType, paramField), \
            paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
-        @join line : context.lineWrapDoc(paramDescription, 100)
-          @# {@line}
-        @end
 
+        {@description(paramDescription)}
         {@context.getParamName(method, param)} = {@paramValue}
-
       @end
     @end
+
     @if context.hasRequestField(method)
+
       {@resourceObject(method)} = \
           Google::Apis::{@ApiName}{@ApiVersion}::{@context.lowerUnderscoreToUpperCamel(context.getRequestTypeName(method))}.new
 
@@ -114,4 +113,10 @@
 
 @private resourceObject(method)
   {@context.getRequestTypeName(method)}_object
+@end
+
+@private description(description)
+  @join line : context.lineWrapDoc(description, 100)
+    @# {@line}
+  @end
 @end

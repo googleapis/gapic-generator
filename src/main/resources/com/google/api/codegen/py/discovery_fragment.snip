@@ -137,7 +137,8 @@
             @let paramField = context.getField(signatureType, param), \
                  paramValue = context.typeDefaultValue(signatureType, paramField, method), \
                  paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
-                {@item(paramDescription)}
+
+                {@description(paramDescription)}
                 {@param} = {@paramValue}
             @end
         @end
@@ -180,6 +181,12 @@
     @join argument : arguments on ", "
         {@argument}={@argument}
     @end
+@end
+
+@private description(description)
+  @join line : context.lineWrapDoc(description, 100)
+    @# {@line}
+  @end
 @end
 
 @private alwaysImport() fill
