@@ -48,7 +48,7 @@
 
 @private serviceClass(service)
   @let body = serviceClassBody(service)
-    {@module(context.getModules(service.getParent).iterator, body) }
+    {@module(context.getApiModules().iterator, body) }
   @end
 @end
 
@@ -61,7 +61,7 @@
 
     @end
     @# @@!attribute [r] stub
-    @#   @@return [{@context.getApiConfig.getPackageName}::{@service.getSimpleName}::Stub]
+    @#   @@return [{@context.rubyTypeNameForProtoElement(service)}::Stub]
     class {@context.getApiWrapperName(service)}
       attr_reader :stub
 
@@ -219,7 +219,7 @@
         chan_creds: chan_creds,
         channel: channel,
         scopes: scopes,
-        &{@context.getApiConfig.getPackageName}::{@service.getSimpleName}::Stub.method(:new)
+        &{@context.rubyTypeNameForProtoElement(service)}::Stub.method(:new)
       )
 
       @join method : service.getMethods

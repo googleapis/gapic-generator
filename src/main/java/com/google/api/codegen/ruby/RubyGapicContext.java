@@ -265,7 +265,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   /**
    * Returns the name of Ruby class for the given proto element.
    */
-  private String rubyTypeNameForProtoElement(ProtoElement element) {
+  public String rubyTypeNameForProtoElement(ProtoElement element) {
     String fullName = element.getFullName();
     int lastDot = fullName.lastIndexOf('.');
     if (lastDot < 0) {
@@ -321,13 +321,17 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   /**
    * Returns the iterable of Ruby module names for the proto element.
    */
-  public Iterable<String> getModules(ProtoElement element) {
+  public Iterable<String> getGrpcModules(ProtoElement element) {
     String fullName = element.getFullName();
     List<String> modules = new ArrayList<>();
     for (String pkgName : Splitter.on(".").splitToList(fullName)) {
       modules.add(lowerUnderscoreToUpperCamel(pkgName));
     }
     return modules;
+  }
+
+  public Iterable<String> getApiModules() {
+    return Splitter.on("::").splitToList(getApiConfig().getPackageName());
   }
 
   // Constants
