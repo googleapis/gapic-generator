@@ -14,12 +14,43 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.viewmodel.ListMethodDetailView.Builder;
+import com.google.auto.value.AutoValue;
+
 import java.util.List;
 
-public class MapParamDocView implements ParamDocView {
-  public String paramName;
-  public String typeName;
-  public String firstLine;
-  public List<String> remainingLines;
-  public List<ParamDocView> arrayKeyDocs;
+@AutoValue
+public abstract class MapParamDocView implements ParamDocView {
+  public abstract String paramName();
+
+  public abstract String typeName();
+
+  public abstract String firstLine();
+
+  public abstract List<String> remainingLines();
+
+  public abstract List<ParamDocView> arrayKeyDocs();
+
+  public String type() {
+    return MapParamDocView.class.getSimpleName();
+  }
+
+  public static Builder newBuilder() {
+    return new AutoValue_MapParamDocView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder paramName(String val);
+
+    public abstract Builder typeName(String val);
+
+    public abstract Builder firstLine(String val);
+
+    public abstract Builder remainingLines(List<String> val);
+
+    public abstract Builder arrayKeyDocs(List<ParamDocView> val);
+
+    public abstract MapParamDocView build();
+  }
 }

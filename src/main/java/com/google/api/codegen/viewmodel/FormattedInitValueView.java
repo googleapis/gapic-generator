@@ -14,11 +14,35 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.viewmodel.CallableMethodDetailView.Builder;
+import com.google.auto.value.AutoValue;
+
 import java.util.List;
 
-public class FormattedInitValueView implements InitValueView {
+@AutoValue
+public abstract class FormattedInitValueView implements InitValueView {
+  public abstract String apiWrapperName();
 
-  public String apiWrapperName;
-  public String formatFunctionName;
-  public List<String> formatArgs;
+  public abstract String formatFunctionName();
+
+  public abstract List<String> formatArgs();
+
+  public String type() {
+    return FormattedInitValueView.class.getSimpleName();
+  }
+
+  public static Builder newBuilder() {
+    return new AutoValue_FormattedInitValueView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder apiWrapperName(String val);
+
+    public abstract Builder formatFunctionName(String val);
+
+    public abstract Builder formatArgs(List<String> val);
+
+    public abstract FormattedInitValueView build();
+  }
 }

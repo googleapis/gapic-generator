@@ -14,8 +14,26 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public class FieldSettingView {
+import com.google.api.codegen.viewmodel.DynamicXApiView.Builder;
+import com.google.auto.value.AutoValue;
 
-  public String setFunctionCallName;
-  public String identifier;
+@AutoValue
+public abstract class FieldSettingView {
+
+  public abstract String fnSetFunctionCallName();
+
+  public abstract String identifier();
+
+  public static Builder newBuilder() {
+    return new AutoValue_FieldSettingView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder fnSetFunctionCallName(String val);
+
+    public abstract Builder identifier(String val);
+
+    public abstract FieldSettingView build();
+  }
 }

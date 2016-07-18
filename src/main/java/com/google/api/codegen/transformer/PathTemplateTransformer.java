@@ -30,10 +30,10 @@ public class PathTemplateTransformer {
     List<PathTemplateView> pathTemplates = new ArrayList<>();
 
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
-      PathTemplateView pathTemplate = new PathTemplateView();
-      pathTemplate.name = context.getNamer().getPathTemplateName(collectionConfig);
-      pathTemplate.pattern = collectionConfig.getNamePattern();
-      pathTemplates.add(pathTemplate);
+      PathTemplateView.Builder pathTemplate = PathTemplateView.newBuilder();
+      pathTemplate.name(context.getNamer().getPathTemplateName(collectionConfig));
+      pathTemplate.pattern(collectionConfig.getNamePattern());
+      pathTemplates.add(pathTemplate.build());
     }
 
     return pathTemplates;
@@ -45,21 +45,20 @@ public class PathTemplateTransformer {
 
     SurfaceNamer namer = context.getNamer();
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
-      FormatResourceFunctionView function = new FormatResourceFunctionView();
-      function.entityName = collectionConfig.getEntityName();
-      function.name = namer.getFormatFunctionName(collectionConfig);
-      function.pathTemplateName = namer.getPathTemplateName(collectionConfig);
-      function.pathTemplateGetterName = namer.getPathTemplateNameGetter(collectionConfig);
+      FormatResourceFunctionView.Builder function = FormatResourceFunctionView.newBuilder();
+      function.entityName(collectionConfig.getEntityName());
+      function.name(namer.getFormatFunctionName(collectionConfig));
+      function.pathTemplateName(namer.getPathTemplateName(collectionConfig));
+      function.pathTemplateGetterName(namer.getPathTemplateNameGetter(collectionConfig));
       List<ResourceIdParamView> resourceIdParams = new ArrayList<>();
       for (String var : collectionConfig.getNameTemplate().vars()) {
-        ResourceIdParamView param = new ResourceIdParamView();
-        param.name = namer.getParamName(var);
-        param.templateKey = var;
+        ResourceIdParamView param =
+            ResourceIdParamView.newBuilder().name(namer.getParamName(var)).templateKey(var).build();
         resourceIdParams.add(param);
       }
-      function.resourceIdParams = resourceIdParams;
+      function.resourceIdParams(resourceIdParams);
 
-      functions.add(function);
+      functions.add(function.build());
     }
 
     return functions;
@@ -72,15 +71,15 @@ public class PathTemplateTransformer {
     SurfaceNamer namer = context.getNamer();
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
       for (String var : collectionConfig.getNameTemplate().vars()) {
-        ParseResourceFunctionView function = new ParseResourceFunctionView();
-        function.entityName = namer.getEntityName(collectionConfig);
-        function.name = namer.getParseFunctionName(var, collectionConfig);
-        function.pathTemplateName = namer.getPathTemplateName(collectionConfig);
-        function.pathTemplateGetterName = namer.getPathTemplateNameGetter(collectionConfig);
-        function.entityNameParamName = namer.getEntityNameParamName(collectionConfig);
-        function.outputResourceId = var;
+        ParseResourceFunctionView.Builder function = ParseResourceFunctionView.newBuilder();
+        function.entityName(namer.getEntityName(collectionConfig));
+        function.name(namer.getParseFunctionName(var, collectionConfig));
+        function.pathTemplateName(namer.getPathTemplateName(collectionConfig));
+        function.pathTemplateGetterName(namer.getPathTemplateNameGetter(collectionConfig));
+        function.entityNameParamName(namer.getEntityNameParamName(collectionConfig));
+        function.outputResourceId(var);
 
-        functions.add(function);
+        functions.add(function.build());
       }
     }
 
@@ -93,11 +92,11 @@ public class PathTemplateTransformer {
 
     SurfaceNamer namer = context.getNamer();
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
-      PathTemplateGetterFunctionView function = new PathTemplateGetterFunctionView();
-      function.name = namer.getPathTemplateNameGetter(collectionConfig);
-      function.pathTemplateName = namer.getPathTemplateName(collectionConfig);
-      function.pattern = collectionConfig.getNamePattern();
-      functions.add(function);
+      PathTemplateGetterFunctionView.Builder function = PathTemplateGetterFunctionView.newBuilder();
+      function.name(namer.getPathTemplateNameGetter(collectionConfig));
+      function.pathTemplateName(namer.getPathTemplateName(collectionConfig));
+      function.pattern(collectionConfig.getNamePattern());
+      functions.add(function.build());
     }
 
     return functions;

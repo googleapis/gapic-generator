@@ -15,14 +15,39 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.metacode.InitCodeLineType;
+import com.google.api.codegen.viewmodel.ListMethodDetailView.Builder;
+import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
-public class MapInitCodeLineView implements InitCodeLineView {
+@AutoValue
+public abstract class MapInitCodeLineView implements InitCodeLineView {
+  public abstract InitCodeLineType lineType();
 
-  public InitCodeLineType lineType;
-  public String keyTypeName;
-  public String valueTypeName;
-  public String identifier;
-  public List<MapEntryView> initEntries;
+  public abstract String keyTypeName();
+
+  public abstract String valueTypeName();
+
+  public abstract String identifier();
+
+  public abstract List<MapEntryView> initEntries();
+
+  public static Builder newBuilder() {
+    return new AutoValue_MapInitCodeLineView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder lineType(InitCodeLineType val);
+
+    public abstract Builder keyTypeName(String val);
+
+    public abstract Builder valueTypeName(String val);
+
+    public abstract Builder identifier(String val);
+
+    public abstract Builder initEntries(List<MapEntryView> val);
+
+    public abstract MapInitCodeLineView build();
+  }
 }

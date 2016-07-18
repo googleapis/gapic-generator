@@ -14,12 +14,39 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.viewmodel.FieldSettingView.Builder;
+import com.google.auto.value.AutoValue;
+
 import java.util.List;
 
-public class FormatResourceFunctionView {
-  public String entityName;
-  public String name;
-  public List<ResourceIdParamView> resourceIdParams;
-  public String pathTemplateName;
-  public String pathTemplateGetterName;
+@AutoValue
+public abstract class FormatResourceFunctionView {
+  public abstract String entityName();
+
+  public abstract String name();
+
+  public abstract List<ResourceIdParamView> resourceIdParams();
+
+  public abstract String pathTemplateName();
+
+  public abstract String pathTemplateGetterName();
+
+  public static Builder newBuilder() {
+    return new AutoValue_FormatResourceFunctionView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder entityName(String val);
+
+    public abstract Builder name(String val);
+
+    public abstract Builder resourceIdParams(List<ResourceIdParamView> val);
+
+    public abstract Builder pathTemplateName(String val);
+
+    public abstract Builder pathTemplateGetterName(String val);
+
+    public abstract FormatResourceFunctionView build();
+  }
 }

@@ -14,8 +14,26 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public class PathTemplateCheckView {
+import com.google.api.codegen.viewmodel.ListMethodDetailView.Builder;
+import com.google.auto.value.AutoValue;
 
-  public String pathTemplateName;
-  public String paramName;
+@AutoValue
+public abstract class PathTemplateCheckView {
+
+  public abstract String pathTemplateName();
+
+  public abstract String paramName();
+
+  public static Builder newBuilder() {
+    return new AutoValue_PathTemplateCheckView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder pathTemplateName(String val);
+
+    public abstract Builder paramName(String val);
+
+    public abstract PathTemplateCheckView build();
+  }
 }

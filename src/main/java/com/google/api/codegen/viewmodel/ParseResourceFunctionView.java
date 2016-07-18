@@ -14,11 +14,41 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public class ParseResourceFunctionView {
-  public String entityName;
-  public String name;
-  public String pathTemplateName;
-  public String pathTemplateGetterName;
-  public String entityNameParamName;
-  public String outputResourceId;
+import com.google.api.codegen.viewmodel.ListMethodDetailView.Builder;
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+public abstract class ParseResourceFunctionView {
+  public abstract String entityName();
+
+  public abstract String name();
+
+  public abstract String pathTemplateName();
+
+  public abstract String pathTemplateGetterName();
+
+  public abstract String entityNameParamName();
+
+  public abstract String outputResourceId();
+
+  public static Builder newBuilder() {
+    return new AutoValue_ParseResourceFunctionView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder entityName(String val);
+
+    public abstract Builder name(String val);
+
+    public abstract Builder pathTemplateName(String val);
+
+    public abstract Builder pathTemplateGetterName(String val);
+
+    public abstract Builder entityNameParamName(String val);
+
+    public abstract Builder outputResourceId(String val);
+
+    public abstract ParseResourceFunctionView build();
+  }
 }

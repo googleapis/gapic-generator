@@ -14,7 +14,26 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public class SimpleInitValueView implements InitValueView {
+import com.google.api.codegen.viewmodel.ListMethodDetailView.Builder;
+import com.google.auto.value.AutoValue;
 
-  public String initialValue;
+@AutoValue
+public abstract class SimpleInitValueView implements InitValueView {
+
+  public abstract String initialValue();
+
+  public String type() {
+    return SimpleInitValueView.class.getSimpleName();
+  }
+
+  public static Builder newBuilder() {
+    return new AutoValue_SimpleInitValueView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder initialValue(String val);
+
+    public abstract SimpleInitValueView build();
+  }
 }

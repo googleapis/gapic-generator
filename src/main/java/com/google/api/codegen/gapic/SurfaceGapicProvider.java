@@ -65,14 +65,14 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
 
     Map<String, Doc> docs = new TreeMap<>();
     for (ViewModel surfaceDoc : surfaceDocs) {
-      if (snippetFileName != null && !surfaceDoc.getTemplateFileName().equals(snippetFileName)) {
+      if (snippetFileName != null && !surfaceDoc.templateFileName().equals(snippetFileName)) {
         continue;
       }
       Doc doc = snippetSetRunner.generate(surfaceDoc);
       if (doc == null) {
         continue;
       }
-      docs.put(surfaceDoc.getOutputPath(), doc);
+      docs.put(surfaceDoc.outputPath(), doc);
     }
 
     return docs;

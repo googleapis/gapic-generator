@@ -15,33 +15,56 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.ListMethodDetailView.Builder;
+import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
-public class StaticXSettingsView implements ViewModel {
-  public String templateFileName;
+@AutoValue
+public abstract class StaticXSettingsView implements ViewModel {
+  public abstract String templateFileName();
 
-  public String packageName;
-  public String name;
-  public String serviceAddress;
-  public Integer servicePort;
-  public Iterable<String> authScopes;
+  public abstract String packageName();
 
-  public List<String> imports;
-  public String outputPath;
+  public abstract String name();
+
+  public abstract String serviceAddress();
+
+  public abstract Integer servicePort();
+
+  public abstract Iterable<String> authScopes();
+
+  public abstract List<String> imports();
+
+  public abstract String outputPath();
 
   @Override
-  public String getResourceRoot() {
+  public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
-  @Override
-  public String getTemplateFileName() {
-    return templateFileName;
+  public static Builder newBuilder() {
+    return new AutoValue_StaticXSettingsView.Builder();
   }
 
-  @Override
-  public String getOutputPath() {
-    return outputPath;
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder templateFileName(String val);
+
+    public abstract Builder packageName(String val);
+
+    public abstract Builder name(String val);
+
+    public abstract Builder serviceAddress(String val);
+
+    public abstract Builder servicePort(Integer val);
+
+    public abstract Builder authScopes(Iterable<String> val);
+
+    public abstract Builder imports(List<String> val);
+
+    public abstract Builder outputPath(String val);
+
+    public abstract StaticXSettingsView build();
   }
 }

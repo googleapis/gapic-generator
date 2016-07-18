@@ -54,10 +54,10 @@ public class InitCodeTransformer {
     InitCode initCode =
         generator.generateRequestFieldInitCode(context.getMethod(), initFieldStructure, fields);
 
-    InitCodeView surfaceInitCode = new InitCodeView();
-    surfaceInitCode.lines = generateSurfaceInitCodeLines(context, initCode);
-    surfaceInitCode.fieldSettings = getFieldSettings(context, initCode.getArgFields());
-    return surfaceInitCode;
+    return InitCodeView.newBuilder()
+        .lines(generateSurfaceInitCodeLines(context, initCode))
+        .fieldSettings(getFieldSettings(context, initCode.getArgFields()))
+        .build();
   }
 
   public InitCodeView generateRequestObjectInitCode(MethodTransformerContext context) {
@@ -66,10 +66,10 @@ public class InitCodeTransformer {
     InitCode initCode =
         generator.generateRequestObjectInitCode(context.getMethod(), initFieldStructure);
 
-    InitCodeView surfaceInitCode = new InitCodeView();
-    surfaceInitCode.lines = generateSurfaceInitCodeLines(context, initCode);
-    surfaceInitCode.fieldSettings = getFieldSettings(context, initCode.getArgFields());
-    return surfaceInitCode;
+    return InitCodeView.newBuilder()
+        .lines(generateSurfaceInitCodeLines(context, initCode))
+        .fieldSettings(getFieldSettings(context, initCode.getArgFields()))
+        .build();
   }
 
   public Map<String, Object> createInitFieldStructure(MethodTransformerContext context) {
@@ -116,98 +116,98 @@ public class InitCodeTransformer {
 
   public StructureInitCodeLineView generateStructureInitCodeLine(
       MethodTransformerContext context, StructureInitCodeLine line) {
-    StructureInitCodeLineView surfaceLine = new StructureInitCodeLineView();
+    StructureInitCodeLineView.Builder surfaceLine = StructureInitCodeLineView.newBuilder();
 
     SurfaceNamer namer = context.getNamer();
-    surfaceLine.lineType = line.getLineType();
-    surfaceLine.typeName = context.getTypeTable().getAndSaveNicknameFor(line.getType());
-    surfaceLine.identifier = namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
-    surfaceLine.fieldSettings = getFieldSettings(context, line.getFieldSettings());
-    surfaceLine.initValue = getInitValue(context, line.getType(), line.getInitValueConfig());
+    surfaceLine.lineType(line.getLineType());
+    surfaceLine.typeName(context.getTypeTable().getAndSaveNicknameFor(line.getType()));
+    surfaceLine.identifier(namer.getVariableName(line.getIdentifier(), line.getInitValueConfig()));
+    surfaceLine.fieldSettings(getFieldSettings(context, line.getFieldSettings()));
+    surfaceLine.initValue(getInitValue(context, line.getType(), line.getInitValueConfig()));
 
-    return surfaceLine;
+    return surfaceLine.build();
   }
 
   public ListInitCodeLineView generateListInitCodeLine(
       MethodTransformerContext context, ListInitCodeLine line) {
-    ListInitCodeLineView surfaceLine = new ListInitCodeLineView();
+    ListInitCodeLineView.Builder surfaceLine = ListInitCodeLineView.newBuilder();
 
     SurfaceNamer namer = context.getNamer();
-    surfaceLine.lineType = line.getLineType();
-    surfaceLine.elementTypeName =
-        context.getTypeTable().getAndSaveNicknameForElementType(line.getElementType());
-    surfaceLine.identifier = namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
+    surfaceLine.lineType(line.getLineType());
+    surfaceLine.elementTypeName(
+        context.getTypeTable().getAndSaveNicknameForElementType(line.getElementType()));
+    surfaceLine.identifier(namer.getVariableName(line.getIdentifier(), line.getInitValueConfig()));
     List<String> elementIdentifiers = new ArrayList<>();
     for (Name identifier : line.getElementIdentifiers()) {
       elementIdentifiers.add(namer.varName(identifier));
     }
-    surfaceLine.elementIdentifiers = elementIdentifiers;
+    surfaceLine.elementIdentifiers(elementIdentifiers);
 
-    return surfaceLine;
+    return surfaceLine.build();
   }
 
   public SimpleInitCodeLineView generateSimpleInitCodeLine(
       MethodTransformerContext context, SimpleInitCodeLine line) {
-    SimpleInitCodeLineView surfaceLine = new SimpleInitCodeLineView();
+    SimpleInitCodeLineView.Builder surfaceLine = SimpleInitCodeLineView.newBuilder();
 
     SurfaceNamer namer = context.getNamer();
-    surfaceLine.lineType = line.getLineType();
-    surfaceLine.typeName = context.getTypeTable().getAndSaveNicknameFor(line.getType());
-    surfaceLine.identifier = namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
-    surfaceLine.initValue = getInitValue(context, line.getType(), line.getInitValueConfig());
+    surfaceLine.lineType(line.getLineType());
+    surfaceLine.typeName(context.getTypeTable().getAndSaveNicknameFor(line.getType()));
+    surfaceLine.identifier(namer.getVariableName(line.getIdentifier(), line.getInitValueConfig()));
+    surfaceLine.initValue(getInitValue(context, line.getType(), line.getInitValueConfig()));
 
-    return surfaceLine;
+    return surfaceLine.build();
   }
 
   public InitCodeLineView generateMapInitCodeLine(
       MethodTransformerContext context, MapInitCodeLine line) {
-    MapInitCodeLineView surfaceLine = new MapInitCodeLineView();
+    MapInitCodeLineView.Builder surfaceLine = MapInitCodeLineView.newBuilder();
 
     ModelTypeTable typeTable = context.getTypeTable();
-    surfaceLine.lineType = line.getLineType();
-    surfaceLine.keyTypeName = typeTable.getAndSaveNicknameFor(line.getKeyType());
-    surfaceLine.valueTypeName = typeTable.getAndSaveNicknameFor(line.getValueType());
-    surfaceLine.identifier =
-        context.getNamer().getVariableName(line.getIdentifier(), line.getInitValueConfig());
+    surfaceLine.lineType(line.getLineType());
+    surfaceLine.keyTypeName(typeTable.getAndSaveNicknameFor(line.getKeyType()));
+    surfaceLine.valueTypeName(typeTable.getAndSaveNicknameFor(line.getValueType()));
+    surfaceLine.identifier(
+        context.getNamer().getVariableName(line.getIdentifier(), line.getInitValueConfig()));
     List<MapEntryView> entries = new ArrayList<>();
     for (Map.Entry<String, Name> entry : line.getElementIdentifierMap().entrySet()) {
-      MapEntryView mapEntry = new MapEntryView();
-      mapEntry.key = typeTable.renderPrimitiveValue(line.getKeyType(), entry.getKey());
-      mapEntry.value =
-          context.getNamer().getVariableName(line.getElementIdentifierValue(entry.getKey()), null);
-      entries.add(mapEntry);
+      MapEntryView.Builder mapEntry = MapEntryView.newBuilder();
+      mapEntry.key(typeTable.renderPrimitiveValue(line.getKeyType(), entry.getKey()));
+      mapEntry.value(
+          context.getNamer().getVariableName(line.getElementIdentifierValue(entry.getKey()), null));
+      entries.add(mapEntry.build());
     }
-    surfaceLine.initEntries = entries;
+    surfaceLine.initEntries(entries);
 
-    return surfaceLine;
+    return surfaceLine.build();
   }
 
   public InitValueView getInitValue(
       MethodTransformerContext context, TypeRef type, InitValueConfig initValueConfig) {
     if (initValueConfig.hasFormattingConfig()) {
-      FormattedInitValueView initValue = new FormattedInitValueView();
+      FormattedInitValueView.Builder initValue = FormattedInitValueView.newBuilder();
 
-      initValue.apiWrapperName = context.getNamer().getApiWrapperClassName(context.getInterface());
-      initValue.formatFunctionName =
-          context.getNamer().getFormatFunctionName(initValueConfig.getCollectionConfig());
+      initValue.apiWrapperName(context.getNamer().getApiWrapperClassName(context.getInterface()));
+      initValue.formatFunctionName(
+          context.getNamer().getFormatFunctionName(initValueConfig.getCollectionConfig()));
       List<String> formatFunctionArgs = new ArrayList<>();
       for (String var : initValueConfig.getCollectionConfig().getNameTemplate().vars()) {
         formatFunctionArgs.add("\"[" + LanguageUtil.lowerUnderscoreToUpperUnderscore(var) + "]\"");
       }
-      initValue.formatArgs = formatFunctionArgs;
+      initValue.formatArgs(formatFunctionArgs);
 
-      return initValue;
+      return initValue.build();
     } else {
-      SimpleInitValueView initValue = new SimpleInitValueView();
+      SimpleInitValueView.Builder initValue = SimpleInitValueView.newBuilder();
 
       if (initValueConfig.hasInitialValue()) {
-        initValue.initialValue =
-            context.getTypeTable().renderPrimitiveValue(type, initValueConfig.getInitialValue());
+        initValue.initialValue(
+            context.getTypeTable().renderPrimitiveValue(type, initValueConfig.getInitialValue()));
       } else {
-        initValue.initialValue = context.getTypeTable().getZeroValueAndSaveNicknameFor(type);
+        initValue.initialValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(type));
       }
 
-      return initValue;
+      return initValue.build();
     }
   }
 
@@ -216,12 +216,12 @@ public class InitCodeTransformer {
     SurfaceNamer namer = context.getNamer();
     List<FieldSettingView> allSettings = new ArrayList<>();
     for (FieldSetting setting : fieldSettings) {
-      FieldSettingView fieldSetting = new FieldSettingView();
-      fieldSetting.setFunctionCallName =
-          namer.getSetFunctionCallName(setting.getType(), setting.getFieldName());
-      fieldSetting.identifier =
-          namer.getVariableName(setting.getIdentifier(), setting.getInitValueConfig());
-      allSettings.add(fieldSetting);
+      FieldSettingView.Builder fieldSetting = FieldSettingView.newBuilder();
+      fieldSetting.fnSetFunctionCallName(
+          namer.getSetFunctionCallName(setting.getType(), setting.getFieldName()));
+      fieldSetting.identifier(
+          namer.getVariableName(setting.getIdentifier(), setting.getInitValueConfig()));
+      allSettings.add(fieldSetting.build());
     }
     return allSettings;
   }

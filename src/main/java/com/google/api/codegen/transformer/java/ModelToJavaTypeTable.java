@@ -163,7 +163,6 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
   }
 
   /**
-   * /**
    * Returns the Java representation of a type, without cardinality. If the type is a Java
    * primitive, basicTypeName returns it in unboxed form.
    */

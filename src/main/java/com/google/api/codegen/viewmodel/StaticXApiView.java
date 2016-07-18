@@ -15,35 +15,68 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.ListMethodDetailView.Builder;
+import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
-public class StaticXApiView implements ViewModel {
-  public String templateFileName;
-  public String packageName;
-  public String name;
-  public String settingsClassName;
-  public List<ApiCallableView> apiCallableMembers;
-  public List<PathTemplateView> pathTemplates;
-  public List<FormatResourceFunctionView> formatResourceFunctions;
-  public List<ParseResourceFunctionView> parseResourceFunctions;
-  public List<StaticApiMethodView> apiMethods;
+@AutoValue
+public abstract class StaticXApiView implements ViewModel {
+  public abstract String templateFileName();
 
-  public List<String> imports;
-  public String outputPath;
+  public abstract String packageName();
+
+  public abstract String name();
+
+  public abstract String settingsClassName();
+
+  public abstract List<ApiCallableView> apiCallableMembers();
+
+  public abstract List<PathTemplateView> pathTemplates();
+
+  public abstract List<FormatResourceFunctionView> formatResourceFunctions();
+
+  public abstract List<ParseResourceFunctionView> parseResourceFunctions();
+
+  public abstract List<StaticApiMethodView> apiMethods();
+
+  public abstract List<String> imports();
+
+  public abstract String outputPath();
 
   @Override
-  public String getResourceRoot() {
+  public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
-  @Override
-  public String getTemplateFileName() {
-    return templateFileName;
+  public static Builder newBuilder() {
+    return new AutoValue_StaticXApiView.Builder();
   }
 
-  @Override
-  public String getOutputPath() {
-    return outputPath;
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder templateFileName(String val);
+
+    public abstract Builder packageName(String val);
+
+    public abstract Builder name(String val);
+
+    public abstract Builder settingsClassName(String val);
+
+    public abstract Builder apiCallableMembers(List<ApiCallableView> val);
+
+    public abstract Builder pathTemplates(List<PathTemplateView> val);
+
+    public abstract Builder formatResourceFunctions(List<FormatResourceFunctionView> val);
+
+    public abstract Builder parseResourceFunctions(List<ParseResourceFunctionView> val);
+
+    public abstract Builder apiMethods(List<StaticApiMethodView> val);
+
+    public abstract Builder imports(List<String> val);
+
+    public abstract Builder outputPath(String val);
+
+    public abstract StaticXApiView build();
   }
 }

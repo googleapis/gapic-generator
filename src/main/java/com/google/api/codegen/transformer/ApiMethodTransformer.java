@@ -273,11 +273,11 @@ public class ApiMethodTransformer {
       String entityName = fieldNamePatterns.get(field.getSimpleName());
       if (entityName != null) {
         CollectionConfig collectionConfig = context.getCollectionConfig(entityName);
-        PathTemplateCheckView check = new PathTemplateCheckView();
-        check.pathTemplateName = context.getNamer().getPathTemplateName(collectionConfig);
-        check.paramName = context.getNamer().getVariableName(field);
+        PathTemplateCheckView.Builder check = PathTemplateCheckView.newBuilder();
+        check.pathTemplateName(context.getNamer().getPathTemplateName(collectionConfig));
+        check.paramName(context.getNamer().getVariableName(field));
 
-        pathTemplateChecks.add(check);
+        pathTemplateChecks.add(check.build());
       }
     }
     return pathTemplateChecks;
@@ -285,18 +285,18 @@ public class ApiMethodTransformer {
 
   public OptionalArrayMethodView generateOptionalArrayMethod(MethodTransformerContext context) {
     SurfaceNamer namer = context.getNamer();
-    OptionalArrayMethodView apiMethod = new OptionalArrayMethodView();
+    OptionalArrayMethodView.Builder apiMethod = OptionalArrayMethodView.newBuilder();
 
     if (context.getMethodConfig().isPageStreaming()) {
-      apiMethod.type = ApiMethodType.PagedOptionalArrayMethod;
+      apiMethod.type(ApiMethodType.PagedOptionalArrayMethod);
     } else {
-      apiMethod.type = ApiMethodType.OptionalArrayMethod;
+      apiMethod.type(ApiMethodType.OptionalArrayMethod);
     }
-    apiMethod.apiClassName = namer.getApiWrapperClassName(context.getInterface());
-    apiMethod.apiVariableName = namer.getApiWrapperVariableName(context.getInterface());
-    apiMethod.initCode =
+    apiMethod.apiClassName(namer.getApiWrapperClassName(context.getInterface()));
+    apiMethod.apiVariableName(namer.getApiWrapperVariableName(context.getInterface()));
+    apiMethod.initCode(
         initCodeTransformer.generateInitCode(
-            context, context.getMethodConfig().getRequiredFields());
+            context, context.getMethodConfig().getRequiredFields()));
 
     ApiMethodDocView.Builder docBuilder = ApiMethodDocView.newBuilder();
 
@@ -311,14 +311,14 @@ public class ApiMethodTransformer {
             context.getTypeTable(), context.getMethod(), context.getMethodConfig()));
     docBuilder.throwsDocLines(new ArrayList<String>());
 
-    apiMethod.doc = docBuilder.build();
+    apiMethod.doc(docBuilder.build());
 
-    apiMethod.name = namer.getApiMethodName(context.getMethod());
-    apiMethod.requestTypeName =
-        context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getInputType());
-    apiMethod.hasReturnValue = !ServiceMessages.s_isEmptyType(context.getMethod().getOutputType());
-    apiMethod.key = namer.getMethodKey(context.getMethod());
-    apiMethod.grpcMethodName = namer.getGrpcMethodName(context.getMethod());
+    apiMethod.name(namer.getApiMethodName(context.getMethod()));
+    apiMethod.requestTypeName(
+        context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getInputType()));
+    apiMethod.hasReturnValue(!ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
+    apiMethod.key(namer.getMethodKey(context.getMethod()));
+    apiMethod.grpcMethodName(namer.getGrpcMethodName(context.getMethod()));
 
     List<DynamicDefaultableParamView> methodParams = new ArrayList<>();
     for (Field field : context.getMethodConfig().getRequiredFields()) {
@@ -329,68 +329,68 @@ public class ApiMethodTransformer {
     // (not done yet because array is sufficient for PHP, and maps are more complex to construct)
     TypeRef arrayType = TypeRef.fromPrimitiveName("string").makeRepeated();
 
-    DynamicDefaultableParamView optionalArgs = new DynamicDefaultableParamView();
-    optionalArgs.name = namer.varName(Name.from("optional", "args"));
-    optionalArgs.defaultValue = context.getTypeTable().getZeroValueAndSaveNicknameFor(arrayType);
-    methodParams.add(optionalArgs);
+    DynamicDefaultableParamView.Builder optionalArgs = DynamicDefaultableParamView.newBuilder();
+    optionalArgs.name(namer.varName(Name.from("optional", "args")));
+    optionalArgs.defaultValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(arrayType));
+    methodParams.add(optionalArgs.build());
 
-    DynamicDefaultableParamView callSettings = new DynamicDefaultableParamView();
-    callSettings.name = namer.varName(Name.from("call", "settings"));
-    callSettings.defaultValue = context.getTypeTable().getZeroValueAndSaveNicknameFor(arrayType);
-    methodParams.add(callSettings);
+    DynamicDefaultableParamView.Builder callSettings = DynamicDefaultableParamView.newBuilder();
+    callSettings.name(namer.varName(Name.from("call", "settings")));
+    callSettings.defaultValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(arrayType));
+    methodParams.add(callSettings.build());
 
-    apiMethod.methodParams = methodParams;
+    apiMethod.methodParams(methodParams);
 
     List<RequestObjectParamView> requiredRequestObjectParams = new ArrayList<>();
     for (Field field : context.getMethodConfig().getRequiredFields()) {
       requiredRequestObjectParams.add(generateRequestObjectParam(context, field));
     }
-    apiMethod.requiredRequestObjectParams = requiredRequestObjectParams;
+    apiMethod.requiredRequestObjectParams(requiredRequestObjectParams);
 
     List<RequestObjectParamView> optionalRequestObjectParams = new ArrayList<>();
     for (Field field : context.getMethodConfig().getOptionalFields()) {
       optionalRequestObjectParams.add(generateRequestObjectParam(context, field));
     }
-    apiMethod.optionalRequestObjectParams = optionalRequestObjectParams;
+    apiMethod.optionalRequestObjectParams(optionalRequestObjectParams);
 
-    return apiMethod;
+    return apiMethod.build();
   }
 
   public DynamicDefaultableParamView generateDefaultableParam(
       MethodTransformerContext context, Field field) {
-    DynamicDefaultableParamView param = new DynamicDefaultableParamView();
-    param.name = context.getNamer().getVariableName(field);
-    param.defaultValue = "";
-    return param;
+    return DynamicDefaultableParamView.newBuilder()
+        .name(context.getNamer().getVariableName(field))
+        .defaultValue("")
+        .build();
   }
 
   public RequestObjectParamView generateRequestObjectParam(
       MethodTransformerContext context, Field field) {
     SurfaceNamer namer = context.getNamer();
-    RequestObjectParamView param = new RequestObjectParamView();
-    param.name = namer.getVariableName(field);
+    RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
+    param.name(namer.getVariableName(field));
     if (namer.shouldImportRequestObjectParamType(field)) {
-      param.elementTypeName =
-          context.getTypeTable().getAndSaveNicknameForElementType(field.getType());
-      param.typeName = context.getTypeTable().getAndSaveNicknameFor(field.getType());
+      param.elementTypeName(
+          context.getTypeTable().getAndSaveNicknameForElementType(field.getType()));
+      param.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getType()));
     } else {
-      param.elementTypeName = SurfaceNamer.NOT_IMPLEMENTED;
-      param.typeName = SurfaceNamer.NOT_IMPLEMENTED;
+      param.elementTypeName(SurfaceNamer.NOT_IMPLEMENTED);
+      param.typeName(SurfaceNamer.NOT_IMPLEMENTED);
     }
-    param.setCallName =
-        namer.getSetFunctionCallName(field.getType(), Name.from(field.getSimpleName()));
-    param.isMap = field.getType().isMap();
-    param.isArray = !field.getType().isMap() && field.getType().isRepeated();
-    return param;
+    param.setCallName(
+        namer.getSetFunctionCallName(field.getType(), Name.from(field.getSimpleName())));
+    param.isMap(field.getType().isMap());
+    param.isArray(!field.getType().isMap() && field.getType().isRepeated());
+    return param.build();
   }
 
   public List<ParamDocView> getMethodParamDocs(
       MethodTransformerContext context, Iterable<Field> fields) {
     List<ParamDocView> allDocs = new ArrayList<>();
     for (Field field : fields) {
-      SimpleParamDocView paramDoc = new SimpleParamDocView();
-      paramDoc.paramName = context.getNamer().getVariableName(field);
-      paramDoc.typeName = context.getTypeTable().getAndSaveNicknameFor(field.getType());
+      SimpleParamDocView.Builder paramDoc = SimpleParamDocView.newBuilder();
+      paramDoc.paramName(context.getNamer().getVariableName(field));
+      paramDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getType()));
 
       List<String> docLines = null;
       MethodConfig methodConfig = context.getMethodConfig();
@@ -410,30 +410,30 @@ public class ApiMethodTransformer {
         docLines = context.getNamer().getDocLines(field);
       }
 
-      paramDoc.firstLine = docLines.get(0);
-      paramDoc.remainingLines = docLines.subList(1, docLines.size());
+      paramDoc.firstLine(docLines.get(0));
+      paramDoc.remainingLines(docLines.subList(1, docLines.size()));
 
-      allDocs.add(paramDoc);
+      allDocs.add(paramDoc.build());
     }
     return allDocs;
   }
 
   public SimpleParamDocView getRequestObjectParamDoc(
       MethodTransformerContext context, TypeRef typeRef) {
-    SimpleParamDocView paramDoc = new SimpleParamDocView();
-    paramDoc.paramName = "request";
-    paramDoc.typeName = context.getTypeTable().getAndSaveNicknameFor(typeRef);
-    paramDoc.firstLine = "The request object containing all of the parameters for the API call.";
-    paramDoc.remainingLines = Arrays.asList();
-    return paramDoc;
+    return SimpleParamDocView.newBuilder()
+        .paramName("request")
+        .typeName(context.getTypeTable().getAndSaveNicknameFor(typeRef))
+        .firstLine("The request object containing all of the parameters for the API call.")
+        .remainingLines(Arrays.<String>asList())
+        .build();
   }
 
   public ParamDocView getOptionalArrayParamDoc(
       MethodTransformerContext context, Iterable<Field> fields) {
-    MapParamDocView paramDoc = new MapParamDocView();
+    MapParamDocView.Builder paramDoc = MapParamDocView.newBuilder();
 
-    paramDoc.paramName = context.getNamer().varName(Name.from("optional", "args"));
-    paramDoc.typeName = context.getNamer().getOptionalArrayTypeName();
+    paramDoc.paramName(context.getNamer().varName(Name.from("optional", "args")));
+    paramDoc.typeName(context.getNamer().getOptionalArrayTypeName());
 
     List<String> docLines = null;
     if (!fields.iterator().hasNext()) {
@@ -447,41 +447,41 @@ public class ApiMethodTransformer {
     } else {
       docLines = Arrays.asList("Optional.");
     }
-    paramDoc.firstLine = docLines.get(0);
-    paramDoc.remainingLines = docLines.subList(1, docLines.size());
+    paramDoc.firstLine(docLines.get(0));
+    paramDoc.remainingLines(docLines.subList(1, docLines.size()));
 
-    paramDoc.arrayKeyDocs = getMethodParamDocs(context, fields);
+    paramDoc.arrayKeyDocs(getMethodParamDocs(context, fields));
 
-    return paramDoc;
+    return paramDoc.build();
   }
 
   public ParamDocView getCallSettingsParamDoc(MethodTransformerContext context) {
-    MapParamDocView paramDoc = new MapParamDocView();
+    MapParamDocView.Builder paramDoc = MapParamDocView.newBuilder();
 
-    paramDoc.paramName = context.getNamer().varName(Name.from("call", "settings"));
-    paramDoc.typeName = context.getNamer().getOptionalArrayTypeName();
-    paramDoc.firstLine = "Optional.";
-    paramDoc.remainingLines = new ArrayList<>();
+    paramDoc.paramName(context.getNamer().varName(Name.from("call", "settings")));
+    paramDoc.typeName(context.getNamer().getOptionalArrayTypeName());
+    paramDoc.firstLine("Optional.");
+    paramDoc.remainingLines(new ArrayList<String>());
 
     List<ParamDocView> arrayKeyDocs = new ArrayList<>();
-    SimpleParamDocView retrySettingsDoc = new SimpleParamDocView();
-    retrySettingsDoc.typeName = context.getNamer().getRetrySettingsClassName();
-    retrySettingsDoc.paramName = context.getNamer().varName(Name.from("retry", "settings"));
-    retrySettingsDoc.firstLine = "Retry settings to use for this call. If present, then";
+    SimpleParamDocView.Builder retrySettingsDoc = SimpleParamDocView.newBuilder();
+    retrySettingsDoc.typeName(context.getNamer().getRetrySettingsClassName());
+    retrySettingsDoc.paramName(context.getNamer().varName(Name.from("retry", "settings")));
+    retrySettingsDoc.firstLine("Retry settings to use for this call. If present, then");
     // FIXME remove PHP-specific variable naming/syntax
-    retrySettingsDoc.remainingLines = Arrays.asList("$timeout is ignored.");
-    arrayKeyDocs.add(retrySettingsDoc);
+    retrySettingsDoc.remainingLines(Arrays.asList("$timeout is ignored."));
+    arrayKeyDocs.add(retrySettingsDoc.build());
 
-    SimpleParamDocView timeoutDoc = new SimpleParamDocView();
-    timeoutDoc.typeName = context.getTypeTable().getAndSaveNicknameFor(TypeRef.of(Type.TYPE_INT32));
-    timeoutDoc.paramName = context.getNamer().varName(Name.from("timeout", "millis"));
+    SimpleParamDocView.Builder timeoutDoc = SimpleParamDocView.newBuilder();
+    timeoutDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(TypeRef.of(Type.TYPE_INT32)));
+    timeoutDoc.paramName(context.getNamer().varName(Name.from("timeout", "millis")));
     // FIXME remove PHP-specific variable naming/syntax
-    timeoutDoc.firstLine = "Timeout to use for this call. Only used if $retrySettings";
-    timeoutDoc.remainingLines = Arrays.asList("is not set.");
-    arrayKeyDocs.add(timeoutDoc);
+    timeoutDoc.firstLine("Timeout to use for this call. Only used if $retrySettings");
+    timeoutDoc.remainingLines(Arrays.asList("is not set."));
+    arrayKeyDocs.add(timeoutDoc.build());
 
-    paramDoc.arrayKeyDocs = arrayKeyDocs;
+    paramDoc.arrayKeyDocs(arrayKeyDocs);
 
-    return paramDoc;
+    return paramDoc.build();
   }
 }

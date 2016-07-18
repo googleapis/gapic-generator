@@ -15,45 +15,100 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.DynamicDefaultableParamView.Builder;
+import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
-public class DynamicXApiView implements ViewModel {
-  public String templateFileName;
-  public String packageName;
-  public String name;
-  public String serviceAddress;
-  public Integer servicePort;
-  public String serviceTitle;
-  public Iterable<String> authScopes;
+@AutoValue
+public abstract class DynamicXApiView implements ViewModel {
+  public abstract String templateFileName();
 
-  public List<PathTemplateView> pathTemplates;
-  public List<FormatResourceFunctionView> formatResourceFunctions;
-  public List<ParseResourceFunctionView> parseResourceFunctions;
-  public List<PathTemplateGetterFunctionView> pathTemplateGetterFunctions;
-  public List<PageStreamingDescriptorView> pageStreamingDescriptors;
+  public abstract String packageName();
 
-  public List<String> methodKeys;
-  public String clientConfigPath;
-  public String interfaceKey;
-  public Object grpcClientTypeName;
+  public abstract String name();
 
-  public List<String> imports;
-  public String outputPath;
-  public List<ApiMethodView> apiMethods;
+  public abstract String serviceAddress();
+
+  public abstract Integer servicePort();
+
+  public abstract String serviceTitle();
+
+  public abstract Iterable<String> authScopes();
+
+  public abstract List<PathTemplateView> pathTemplates();
+
+  public abstract List<FormatResourceFunctionView> formatResourceFunctions();
+
+  public abstract List<ParseResourceFunctionView> parseResourceFunctions();
+
+  public abstract List<PathTemplateGetterFunctionView> pathTemplateGetterFunctions();
+
+  public abstract List<PageStreamingDescriptorView> pageStreamingDescriptors();
+
+  public abstract List<String> methodKeys();
+
+  public abstract String clientConfigPath();
+
+  public abstract String interfaceKey();
+
+  public abstract String grpcClientTypeName();
+
+  public abstract List<String> imports();
+
+  public abstract String outputPath();
+
+  public abstract List<ApiMethodView> apiMethods();
 
   @Override
-  public String getResourceRoot() {
+  public String resourceRoot() {
     return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
-  @Override
-  public String getTemplateFileName() {
-    return templateFileName;
+  public static Builder newBuilder() {
+    return new AutoValue_DynamicXApiView.Builder();
   }
 
-  @Override
-  public String getOutputPath() {
-    return outputPath;
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder templateFileName(String val);
+
+    public abstract Builder packageName(String val);
+
+    public abstract Builder name(String val);
+
+    public abstract Builder serviceAddress(String val);
+
+    public abstract Builder servicePort(Integer val);
+
+    public abstract Builder serviceTitle(String val);
+
+    public abstract Builder authScopes(Iterable<String> val);
+
+    public abstract Builder pathTemplates(List<PathTemplateView> val);
+
+    public abstract Builder formatResourceFunctions(List<FormatResourceFunctionView> val);
+
+    public abstract Builder parseResourceFunctions(List<ParseResourceFunctionView> val);
+
+    public abstract Builder pathTemplateGetterFunctions(List<PathTemplateGetterFunctionView> val);
+
+    public abstract Builder pageStreamingDescriptors(List<PageStreamingDescriptorView> val);
+
+    public abstract Builder methodKeys(List<String> val);
+
+    public abstract Builder clientConfigPath(String val);
+
+    public abstract Builder interfaceKey(String val);
+
+    public abstract Builder grpcClientTypeName(String val);
+
+    public abstract Builder imports(List<String> val);
+
+    public abstract Builder outputPath(String val);
+
+    public abstract Builder apiMethods(List<ApiMethodView> val);
+
+    public abstract DynamicXApiView build();
   }
 }

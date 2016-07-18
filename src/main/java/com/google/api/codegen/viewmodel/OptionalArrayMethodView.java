@@ -14,21 +14,72 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.viewmodel.ListMethodDetailView.Builder;
+import com.google.auto.value.AutoValue;
+
 import java.util.List;
 
-public class OptionalArrayMethodView implements ApiMethodView {
+@AutoValue
+public abstract class OptionalArrayMethodView implements ApiMethodView {
 
-  public ApiMethodType type;
-  public String apiClassName;
-  public String apiVariableName;
-  public InitCodeView initCode;
-  public ApiMethodDocView doc;
-  public String name;
-  public String requestTypeName;
-  public String key;
-  public Object grpcMethodName;
-  public List<DynamicDefaultableParamView> methodParams;
-  public List<RequestObjectParamView> requiredRequestObjectParams;
-  public List<RequestObjectParamView> optionalRequestObjectParams;
-  public boolean hasReturnValue;
+  public abstract ApiMethodType type();
+
+  public abstract String apiClassName();
+
+  public abstract String apiVariableName();
+
+  public abstract InitCodeView initCode();
+
+  public abstract ApiMethodDocView doc();
+
+  public abstract String name();
+
+  public abstract String requestTypeName();
+
+  public abstract String key();
+
+  public abstract String grpcMethodName();
+
+  public abstract List<DynamicDefaultableParamView> methodParams();
+
+  public abstract List<RequestObjectParamView> requiredRequestObjectParams();
+
+  public abstract List<RequestObjectParamView> optionalRequestObjectParams();
+
+  public abstract boolean hasReturnValue();
+
+  public static Builder newBuilder() {
+    return new AutoValue_OptionalArrayMethodView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder type(ApiMethodType val);
+
+    public abstract Builder apiClassName(String val);
+
+    public abstract Builder apiVariableName(String val);
+
+    public abstract Builder initCode(InitCodeView val);
+
+    public abstract Builder doc(ApiMethodDocView val);
+
+    public abstract Builder name(String val);
+
+    public abstract Builder requestTypeName(String val);
+
+    public abstract Builder key(String val);
+
+    public abstract Builder grpcMethodName(String val);
+
+    public abstract Builder methodParams(List<DynamicDefaultableParamView> val);
+
+    public abstract Builder requiredRequestObjectParams(List<RequestObjectParamView> val);
+
+    public abstract Builder optionalRequestObjectParams(List<RequestObjectParamView> val);
+
+    public abstract Builder hasReturnValue(boolean val);
+
+    public abstract OptionalArrayMethodView build();
+  }
 }

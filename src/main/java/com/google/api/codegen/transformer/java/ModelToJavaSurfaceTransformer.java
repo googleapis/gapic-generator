@@ -90,48 +90,49 @@ public class ModelToJavaSurfaceTransformer implements ModelToViewTransformer {
   private StaticXApiView generateXApi(SurfaceTransformerContext context) {
     addXApiImports(context);
 
-    StaticXApiView xapiClass = new StaticXApiView();
-    xapiClass.templateFileName = XAPI_TEMPLATE_FILENAME;
-    xapiClass.packageName = context.getApiConfig().getPackageName();
-    xapiClass.name = context.getNamer().getApiWrapperClassName(context.getInterface());
-    xapiClass.settingsClassName =
-        context.getNamer().getApiSettingsClassName(context.getInterface());
-    xapiClass.apiCallableMembers = generateApiCallables(context);
-    xapiClass.pathTemplates = pathTemplateTransformer.generatePathTemplates(context);
-    xapiClass.formatResourceFunctions =
-        pathTemplateTransformer.generateFormatResourceFunctions(context);
-    xapiClass.parseResourceFunctions =
-        pathTemplateTransformer.generateParseResourceFunctions(context);
-    xapiClass.apiMethods = generateApiMethods(context);
+    StaticXApiView.Builder xapiClass = StaticXApiView.newBuilder();
+    xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
+    xapiClass.packageName(context.getApiConfig().getPackageName());
+    String name = context.getNamer().getApiWrapperClassName(context.getInterface());
+    xapiClass.name(name);
+    xapiClass.settingsClassName(context.getNamer().getApiSettingsClassName(context.getInterface()));
+    xapiClass.apiCallableMembers(generateApiCallables(context));
+    xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
+    xapiClass.formatResourceFunctions(
+        pathTemplateTransformer.generateFormatResourceFunctions(context));
+    xapiClass.parseResourceFunctions(
+        pathTemplateTransformer.generateParseResourceFunctions(context));
+    xapiClass.apiMethods(generateApiMethods(context));
 
     // must be done as the last step to catch all imports
-    xapiClass.imports = context.getTypeTable().getImports();
+    xapiClass.imports(context.getTypeTable().getImports());
 
     String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
-    xapiClass.outputPath = outputPath + "/" + xapiClass.name + ".java";
+    xapiClass.outputPath(outputPath + "/" + name + ".java");
 
-    return xapiClass;
+    return xapiClass.build();
   }
 
   private StaticXSettingsView generateXSettings(SurfaceTransformerContext context) {
     addXSettingsImports(context);
 
-    StaticXSettingsView xsettingsClass = new StaticXSettingsView();
-    xsettingsClass.templateFileName = XSETTINGS_TEMPLATE_FILENAME;
-    xsettingsClass.packageName = context.getApiConfig().getPackageName();
-    xsettingsClass.name = context.getNamer().getApiSettingsClassName(context.getInterface());
+    StaticXSettingsView.Builder xsettingsClass = StaticXSettingsView.newBuilder();
+    xsettingsClass.templateFileName(XSETTINGS_TEMPLATE_FILENAME);
+    xsettingsClass.packageName(context.getApiConfig().getPackageName());
+    String name = context.getNamer().getApiSettingsClassName(context.getInterface());
+    xsettingsClass.name(name);
     ServiceConfig serviceConfig = new ServiceConfig();
-    xsettingsClass.serviceAddress = serviceConfig.getServiceAddress(context.getInterface());
-    xsettingsClass.servicePort = serviceConfig.getServicePort();
-    xsettingsClass.authScopes = serviceConfig.getAuthScopes(context.getInterface());
+    xsettingsClass.serviceAddress(serviceConfig.getServiceAddress(context.getInterface()));
+    xsettingsClass.servicePort(serviceConfig.getServicePort());
+    xsettingsClass.authScopes(serviceConfig.getAuthScopes(context.getInterface()));
 
     // must be done as the last step to catch all imports
-    xsettingsClass.imports = context.getTypeTable().getImports();
+    xsettingsClass.imports(context.getTypeTable().getImports());
 
     String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
-    xsettingsClass.outputPath = outputPath + "/" + xsettingsClass.name + ".java";
+    xsettingsClass.outputPath(outputPath + "/" + name + ".java");
 
-    return xsettingsClass;
+    return xsettingsClass.build();
   }
 
   private void addXApiImports(SurfaceTransformerContext context) {

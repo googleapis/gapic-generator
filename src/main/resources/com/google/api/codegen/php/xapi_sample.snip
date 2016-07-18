@@ -19,7 +19,7 @@
     @case "PagedOptionalArrayMethod"
         {@pagedOptionalArrayMethodSampleCode(apiMethod)}
     @default
-        $unhandledCase: {@apiMethod.getClass.getSimpleName}$
+        $unhandledCase: {@apiMethod.type.toString}$
     @end
 @end
 
@@ -60,7 +60,7 @@
         @case "SimpleInitLine"
             {@initLineSimple(line)}
         @default
-            {@unhandledCase()}
+            $unhandledCase: {@line.lineType.toString}$
         @end
     @end
 @end
@@ -68,7 +68,7 @@
 @private initLineStructure(line)
     ${@line.identifier} = new {@line.typeName}();
     @join fieldSetting : line.fieldSettings
-        ${@line.identifier}->{@fieldSetting.setFunctionCallName}(${@fieldSetting.identifier});
+        ${@line.identifier}->{@fieldSetting.fnSetFunctionCallName}(${@fieldSetting.identifier});
     @end
 @end
 
@@ -97,12 +97,12 @@
 @end
 
 @private renderInitValue(initValue)
-    @switch initValue.getClass.getSimpleName
+    @switch initValue.type
     @case "SimpleInitValueView"
         {@initValue.initialValue}
     @case "FormattedInitValueView"
         {@initValue.apiWrapperName}::{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
     @default
-        {@unhandledCase()}
+        $unhandledCase: {@initValue.type}$
     @end
 @end

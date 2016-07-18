@@ -90,7 +90,7 @@
     @case "SimpleInitLine"
       {@initLineSimple(line)}
     @default
-      {@unhandledCase()}
+      $unhandledCase: {@line.lineType.toString}$
     @end
   @end
 @end
@@ -98,7 +98,7 @@
 @private initLineStructure(line)
   {@line.typeName} {@line.identifier} = {@line.typeName}.newBuilder()
   @join fieldSetting : line.fieldSettings
-    {@EMPTY}  .{@fieldSetting.setFunctionCallName}({@fieldSetting.identifier})
+    {@EMPTY}  .{@fieldSetting.fnSetFunctionCallName}({@fieldSetting.identifier})
   @end
   {@EMPTY}  .build();
 @end
@@ -120,12 +120,12 @@
 @end
 
 @private renderInitValue(initValue)
-  @switch initValue.getClass.getSimpleName
+  @switch initValue.type
   @case "SimpleInitValueView"
     {@initValue.initialValue}
   @case "FormattedInitValueView"
     {@initValue.apiWrapperName}.{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
   @default
-    {@unhandledCase()}
+    $unhandledCase: {@initValue.type}$
   @end
 @end

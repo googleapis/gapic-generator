@@ -79,39 +79,40 @@ public class ModelToPhpSurfaceTransformer implements ModelToViewTransformer {
 
     addXApiImports(context);
 
-    DynamicXApiView xapiClass = new DynamicXApiView();
-    xapiClass.templateFileName = XAPI_TEMPLATE_FILENAME;
-    xapiClass.packageName = context.getApiConfig().getPackageName();
-    xapiClass.name = namer.getApiWrapperClassName(context.getInterface());
+    DynamicXApiView.Builder xapiClass = DynamicXApiView.newBuilder();
+    xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
+    xapiClass.packageName(context.getApiConfig().getPackageName());
+    String name = namer.getApiWrapperClassName(context.getInterface());
+    xapiClass.name(name);
     ServiceConfig serviceConfig = new ServiceConfig();
-    xapiClass.serviceAddress = serviceConfig.getServiceAddress(service);
-    xapiClass.servicePort = serviceConfig.getServicePort();
-    xapiClass.serviceTitle = serviceConfig.getTitle(service);
-    xapiClass.authScopes = serviceConfig.getAuthScopes(service);
+    xapiClass.serviceAddress(serviceConfig.getServiceAddress(service));
+    xapiClass.servicePort(serviceConfig.getServicePort());
+    xapiClass.serviceTitle(serviceConfig.getTitle(service));
+    xapiClass.authScopes(serviceConfig.getAuthScopes(service));
 
-    xapiClass.pathTemplates = pathTemplateTransformer.generatePathTemplates(context);
-    xapiClass.formatResourceFunctions =
-        pathTemplateTransformer.generateFormatResourceFunctions(context);
-    xapiClass.parseResourceFunctions =
-        pathTemplateTransformer.generateParseResourceFunctions(context);
-    xapiClass.pathTemplateGetterFunctions =
-        pathTemplateTransformer.generatePathTemplateGetterFunctions(context);
-    xapiClass.pageStreamingDescriptors = pageStreamingTransformer.generateDescriptors(context);
+    xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
+    xapiClass.formatResourceFunctions(
+        pathTemplateTransformer.generateFormatResourceFunctions(context));
+    xapiClass.parseResourceFunctions(
+        pathTemplateTransformer.generateParseResourceFunctions(context));
+    xapiClass.pathTemplateGetterFunctions(
+        pathTemplateTransformer.generatePathTemplateGetterFunctions(context));
+    xapiClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
 
-    xapiClass.methodKeys = generateMethodKeys(context);
-    xapiClass.clientConfigPath = namer.getClientConfigPath(service);
-    xapiClass.interfaceKey = service.getFullName();
+    xapiClass.methodKeys(generateMethodKeys(context));
+    xapiClass.clientConfigPath(namer.getClientConfigPath(service));
+    xapiClass.interfaceKey(service.getFullName());
     String grpcClientTypeName = namer.getGrpcClientTypeName(context.getInterface());
-    xapiClass.grpcClientTypeName = context.getTypeTable().getAndSaveNicknameFor(grpcClientTypeName);
+    xapiClass.grpcClientTypeName(context.getTypeTable().getAndSaveNicknameFor(grpcClientTypeName));
 
-    xapiClass.apiMethods = generateApiMethods(context);
+    xapiClass.apiMethods(generateApiMethods(context));
 
     // must be done as the last step to catch all imports
-    xapiClass.imports = context.getTypeTable().getImports();
+    xapiClass.imports(context.getTypeTable().getImports());
 
-    xapiClass.outputPath = outputPath + "/" + xapiClass.name + ".php";
+    xapiClass.outputPath(outputPath + "/" + name + ".php");
 
-    surfaceData.add(xapiClass);
+    surfaceData.add(xapiClass.build());
 
     return surfaceData;
   }

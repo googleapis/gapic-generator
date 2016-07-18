@@ -14,7 +14,24 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public class DynamicDefaultableParamView implements ParamView {
-  public String name;
-  public String defaultValue;
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+public abstract class DynamicDefaultableParamView implements ParamView {
+  public abstract String name();
+
+  public abstract String defaultValue();
+
+  public static Builder newBuilder() {
+    return new AutoValue_DynamicDefaultableParamView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder name(String name);
+
+    public abstract Builder defaultValue(String value);
+
+    public abstract DynamicDefaultableParamView build();
+  }
 }

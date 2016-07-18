@@ -14,11 +14,37 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public class PageStreamingDescriptorView {
+import com.google.api.codegen.viewmodel.ListMethodDetailView.Builder;
+import com.google.auto.value.AutoValue;
 
-  public String varName;
-  public String requestTokenFieldName;
-  public String responseTokenFieldName;
-  public String resourcesFieldName;
-  public String methodName;
+@AutoValue
+public abstract class PageStreamingDescriptorView {
+  public abstract String varName();
+
+  public abstract String requestTokenFieldName();
+
+  public abstract String responseTokenFieldName();
+
+  public abstract String resourcesFieldName();
+
+  public abstract String methodName();
+
+  public static Builder newBuilder() {
+    return new AutoValue_PageStreamingDescriptorView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder varName(String val);
+
+    public abstract Builder requestTokenFieldName(String val);
+
+    public abstract Builder responseTokenFieldName(String val);
+
+    public abstract Builder resourcesFieldName(String val);
+
+    public abstract Builder methodName(String val);
+
+    public abstract PageStreamingDescriptorView build();
+  }
 }

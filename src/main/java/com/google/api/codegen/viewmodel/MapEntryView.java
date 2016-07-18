@@ -14,7 +14,25 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public class MapEntryView {
-  public String key;
-  public String value;
+import com.google.api.codegen.viewmodel.ListMethodDetailView.Builder;
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+public abstract class MapEntryView {
+  public abstract String key();
+
+  public abstract String value();
+
+  public static Builder newBuilder() {
+    return new AutoValue_MapEntryView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder key(String key);
+
+    public abstract Builder value(String value);
+
+    public abstract MapEntryView build();
+  }
 }

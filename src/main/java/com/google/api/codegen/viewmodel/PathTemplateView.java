@@ -14,7 +14,25 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public class PathTemplateView {
-  public String name;
-  public String pattern;
+import com.google.api.codegen.viewmodel.ListMethodDetailView.Builder;
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+public abstract class PathTemplateView {
+  public abstract String name();
+
+  public abstract String pattern();
+
+  public static Builder newBuilder() {
+    return new AutoValue_PathTemplateView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder name(String val);
+
+    public abstract Builder pattern(String val);
+
+    public abstract PathTemplateView build();
+  }
 }

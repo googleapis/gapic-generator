@@ -16,9 +16,9 @@ package com.google.api.codegen.viewmodel;
 
 public interface ViewModel {
 
-  String getResourceRoot();
+  String resourceRoot();
 
-  String getTemplateFileName();
+  String templateFileName();
 
-  String getOutputPath();
+  String outputPath();
 }

@@ -14,11 +14,41 @@
  */
 package com.google.api.codegen.viewmodel;
 
-public class RequestObjectParamView implements ParamView {
-  public String name;
-  public String elementTypeName;
-  public String typeName;
-  public String setCallName;
-  public boolean isMap;
-  public boolean isArray;
+import com.google.api.codegen.viewmodel.ListMethodDetailView.Builder;
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+public abstract class RequestObjectParamView implements ParamView {
+  public abstract String name();
+
+  public abstract String elementTypeName();
+
+  public abstract String typeName();
+
+  public abstract String setCallName();
+
+  public abstract boolean isMap();
+
+  public abstract boolean isArray();
+
+  public static Builder newBuilder() {
+    return new AutoValue_RequestObjectParamView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder name(String val);
+
+    public abstract Builder elementTypeName(String val);
+
+    public abstract Builder typeName(String val);
+
+    public abstract Builder setCallName(String val);
+
+    public abstract Builder isMap(boolean val);
+
+    public abstract Builder isArray(boolean val);
+
+    public abstract RequestObjectParamView build();
+  }
 }

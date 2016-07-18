@@ -35,8 +35,8 @@ public class CommonSnippetSetRunner {
     SurfaceSnippetSet snippets =
         SnippetSet.createSnippetInterface(
             SurfaceSnippetSet.class,
-            input.getResourceRoot(),
-            input.getTemplateFileName(),
+            input.resourceRoot(),
+            input.templateFileName(),
             ImmutableMap.<String, Object>of("util", utilObject));
 
     return snippets.generate(input);

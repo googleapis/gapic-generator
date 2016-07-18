@@ -17,7 +17,6 @@ package com.google.api.codegen.viewmodel;
 import com.google.api.codegen.viewmodel.StaticApiMethodView.Builder;
 import com.google.auto.value.AutoValue;
 
-//PagedFlattened, UnpagedListCallable, PagedCallable, PagedRequestObject
 @AutoValue
 public abstract class ListMethodDetailView {
   public abstract String resourceTypeName();
