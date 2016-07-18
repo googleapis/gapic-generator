@@ -19,6 +19,9 @@ import com.google.common.base.Splitter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utility class to process text in the templates.
+ */
 public class CommonRenderingUtil {
 
   public static List<String> getDocLines(String text) {

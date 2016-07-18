@@ -18,6 +18,9 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NamePath;
 
+/**
+ * The NameFormatter for Java.
+ */
 public class JavaNameFormatter implements NameFormatter {
 
   @Override

@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An instance of IdentifierNamer provides language-specific names or other strings.
+ * A SurfaceNamer provides language-specific names or other strings.
  */
 public class SurfaceNamer extends ViewNamer {
   public SurfaceNamer(NameFormatter languageNamer) {

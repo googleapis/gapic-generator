@@ -23,6 +23,9 @@ import com.google.api.tools.framework.model.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * PageStreamingTransformer generates view objects for page streaming from a service model.
+ */
 public class PageStreamingTransformer {
 
   public List<PageStreamingDescriptorView> generateDescriptors(SurfaceTransformerContext context) {

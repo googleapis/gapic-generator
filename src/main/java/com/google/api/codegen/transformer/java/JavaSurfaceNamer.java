@@ -21,7 +21,6 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
@@ -29,8 +28,14 @@ import com.google.api.tools.framework.model.TypeRef;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The SurfaceNamer for Java.
+ */
 public class JavaSurfaceNamer extends SurfaceNamer {
 
+  /**
+   * Standard constructor.
+   */
   public JavaSurfaceNamer() {
     super(new JavaNameFormatter());
   }

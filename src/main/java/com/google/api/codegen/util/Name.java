@@ -21,14 +21,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents an identifier name which is casing-aware.
+ * Name represents an identifier name which is casing-aware.
  */
 public class Name {
   private List<NamePiece> namePieces;
 
   /**
-   * Creates a Name from a sequence of lower-underscore strings. If any of the strings contain any characters
-   * that are not lower case or underscores, an IllegalArgumentException is thrown.
+   * Creates a Name from a sequence of lower-underscore strings.
+   *
+   * @throws IllegalArgumentException if any of the strings contain any characters that are not
+   * lower case or underscores.
    */
   public static Name from(String... pieces) {
     List<NamePiece> namePieces = new ArrayList<>();
@@ -39,6 +41,11 @@ public class Name {
     return new Name(namePieces);
   }
 
+  /**
+   * Creates a Name from a sequence of lower-camel strings.
+   *
+   * @throws IllegalArgumentException if any of the strings do not follow the lower-camel format.
+   */
   public static Name lowerCamel(String... pieces) {
     List<NamePiece> namePieces = new ArrayList<>();
     for (String piece : pieces) {
@@ -48,6 +55,11 @@ public class Name {
     return new Name(namePieces);
   }
 
+  /**
+   * Creates a Name from a sequence of upper-camel strings.
+   *
+   * @throws IllegalArgumentException if any of the strings do not follow the upper-camel format.
+   */
   public static Name upperCamel(String... pieces) {
     List<NamePiece> namePieces = new ArrayList<>();
     for (String piece : pieces) {
@@ -107,10 +119,16 @@ public class Name {
     this.namePieces = namePieces;
   }
 
+  /**
+   * Returns the identifier in upper-underscore format.
+   */
   public String toUpperUnderscore() {
     return toUnderscore(CaseFormat.UPPER_UNDERSCORE);
   }
 
+  /**
+   * Returns the identifier in lower-underscore format.
+   */
   public String toLowerUnderscore() {
     return toUnderscore(CaseFormat.LOWER_UNDERSCORE);
   }
@@ -123,15 +141,21 @@ public class Name {
     return Joiner.on('_').join(newPieces);
   }
 
+  /**
+   * Returns the identifier in lower-camel format.
+   */
   public String toLowerCamel() {
     return toCamel(CaseFormat.LOWER_CAMEL);
   }
 
+  /**
+   * Returns the identifier in upper-camel format.
+   */
   public String toUpperCamel() {
     return toCamel(CaseFormat.UPPER_CAMEL);
   }
 
-  public String toCamel(CaseFormat caseFormat) {
+  private String toCamel(CaseFormat caseFormat) {
     StringBuffer buffer = new StringBuffer();
     boolean firstPiece = true;
     for (NamePiece namePiece : namePieces) {
@@ -157,6 +181,10 @@ public class Name {
     return new Name(newPieceList);
   }
 
+  /**
+   * Returns a new Name containing the pieces from this Name plus the pieces of the given
+   * name added on the end.
+   */
   public Name join(Name rhs) {
     List<NamePiece> newPieceList = new ArrayList<>();
     newPieceList.addAll(namePieces);

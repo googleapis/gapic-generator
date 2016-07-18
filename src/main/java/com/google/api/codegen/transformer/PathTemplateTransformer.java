@@ -24,6 +24,9 @@ import com.google.api.codegen.viewmodel.ResourceIdParamView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * PathTemplateTransformer generates view objects for path templates from a service model.
+ */
 public class PathTemplateTransformer {
 
   public List<PathTemplateView> generatePathTemplates(SurfaceTransformerContext context) {

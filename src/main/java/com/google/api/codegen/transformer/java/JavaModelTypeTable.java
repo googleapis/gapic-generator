@@ -29,7 +29,10 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 import java.io.File;
 import java.util.List;
 
-public class ModelToJavaTypeTable implements ModelTypeTable {
+/**
+ * The ModelTypeTable for Java.
+ */
+public class JavaModelTypeTable implements ModelTypeTable {
   private JavaTypeTable javaTypeTable;
 
   /**
@@ -81,13 +84,16 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
           .put(Type.TYPE_BYTES, "ByteString.copyFromUtf8(\"\")")
           .build();
 
-  public ModelToJavaTypeTable() {
+  /**
+   * Standard constructor.
+   */
+  public JavaModelTypeTable() {
     javaTypeTable = new JavaTypeTable();
   }
 
   @Override
   public ModelTypeTable cloneEmpty() {
-    return new ModelToJavaTypeTable();
+    return new JavaModelTypeTable();
   }
 
   @Override
@@ -123,7 +129,7 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
     return javaTypeTable.getAndSaveNicknameFor(getTypeName(type));
   }
 
-  public TypeName getTypeName(TypeRef type) {
+  private TypeName getTypeName(TypeRef type) {
     if (type.isMap()) {
       TypeName mapTypeName = javaTypeTable.getTypeName("java.util.Map");
       TypeName keyTypeName = getTypeNameForElementType(type.getMapKeyField().getType(), true);

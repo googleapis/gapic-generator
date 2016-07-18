@@ -26,6 +26,9 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 
+/**
+ * The SurfaceNamer for PHP.
+ */
 public class PhpSurfaceNamer extends SurfaceNamer {
   public PhpSurfaceNamer() {
     super(new PhpNameFormatter());

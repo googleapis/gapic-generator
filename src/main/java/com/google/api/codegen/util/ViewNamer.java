@@ -15,7 +15,7 @@
 package com.google.api.codegen.util;
 
 /**
- * Instances of ViewNamer provide names for specific components of a view.
+ * A ViewNamer provides names for specific components of a view.
  *
  * Naming is composed of two steps:
  *
@@ -33,30 +33,37 @@ public class ViewNamer implements NameFormatter {
     this.formatter = formatter;
   }
 
+  @Override
   public String className(Name name) {
     return formatter.className(name);
   }
 
+  @Override
   public String varName(Name name) {
     return formatter.varName(name);
   }
 
+  @Override
   public String methodName(Name name) {
     return formatter.methodName(name);
   }
 
+  @Override
   public String staticFunctionName(Name name) {
     return formatter.staticFunctionName(name);
   }
 
+  @Override
   public String inittedConstantName(Name name) {
     return formatter.inittedConstantName(name);
   }
 
+  @Override
   public String keyName(Name name) {
     return formatter.keyName(name);
   }
 
+  @Override
   public String qualifiedName(NamePath namePath) {
     return formatter.qualifiedName(namePath);
   }

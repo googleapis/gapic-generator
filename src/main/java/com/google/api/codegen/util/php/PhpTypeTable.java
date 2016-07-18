@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The TypeTable for Java.
+ */
 public class PhpTypeTable implements TypeTable {
   /**
    * A bi-map from full names to short names indicating the import map.
@@ -47,6 +50,7 @@ public class PhpTypeTable implements TypeTable {
     return typeName.getAndSaveNicknameIn(this);
   }
 
+  @Override
   public String getAndSaveNicknameFor(TypeAlias alias) {
     if (!alias.needsImport()) {
       return alias.getNickname();

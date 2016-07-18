@@ -27,7 +27,10 @@ import java.util.List;
 
 import org.apache.commons.lang3.NotImplementedException;
 
-public class ModelToPhpTypeTable implements ModelTypeTable {
+/**
+ * The ModelTypeTable for PHP.
+ */
+public class PhpModelTypeTable implements ModelTypeTable {
   private PhpTypeTable phpTypeTable;
 
   /**
@@ -74,13 +77,16 @@ public class ModelToPhpTypeTable implements ModelTypeTable {
           .put(Type.TYPE_BYTES, "\"\"")
           .build();
 
-  public ModelToPhpTypeTable() {
+  /**
+   * Standard constructor.
+   */
+  public PhpModelTypeTable() {
     phpTypeTable = new PhpTypeTable();
   }
 
   @Override
   public ModelTypeTable cloneEmpty() {
-    return new ModelToPhpTypeTable();
+    return new PhpModelTypeTable();
   }
 
   @Override

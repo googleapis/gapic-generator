@@ -44,6 +44,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * ApiMethodTransformer generates view objects from method definitions.
+ */
 public class ApiMethodTransformer {
   private InitCodeTransformer initCodeTransformer;
 

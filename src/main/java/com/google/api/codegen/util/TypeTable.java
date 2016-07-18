@@ -14,6 +14,14 @@
  */
 package com.google.api.codegen.util;
 
+/**
+ * A type table manages the imports for a set of fully-qualified type names.
+ */
 public interface TypeTable {
+  /**
+   * Determines if the nickname of the given alias can be used, and if so, then
+   * saves it in the import table and returns it; otherwise (e.g. if there would
+   * be a clash), returns the full name.
+   */
   String getAndSaveNicknameFor(TypeAlias alias);
 }

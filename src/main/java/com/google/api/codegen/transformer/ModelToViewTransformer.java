@@ -19,6 +19,10 @@ import com.google.api.tools.framework.model.Model;
 
 import java.util.List;
 
+/**
+ * A ModelToViewTransformer transforms a Model into a list of
+ * ViewModel instances that can be rendered by a template engine.
+ */
 public interface ModelToViewTransformer {
   List<ViewModel> transform(Model model);
 

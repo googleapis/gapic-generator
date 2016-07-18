@@ -19,9 +19,16 @@ import com.google.common.base.Joiner;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * NamePath represents a fully-qualified name, separated by something like
+ * dots or slashes.
+ */
 public class NamePath {
   private List<String> pathPieces;
 
+  /**
+   * Create a NamePath that is separated by dots.
+   */
   public static NamePath dotted(String... pieces) {
     List<String> namePieces = new ArrayList<>();
     for (String piece : pieces) {
@@ -39,6 +46,10 @@ public class NamePath {
     this.pathPieces = pathPieces;
   }
 
+  /**
+   * Create a new NamePath where the head (the last piece) is replaced with the
+   * given newHead.
+   */
   public NamePath withHead(String newHead) {
     List<String> newPathPieces = new ArrayList<>();
     newPathPieces.addAll(pathPieces);
@@ -46,14 +57,23 @@ public class NamePath {
     return new NamePath(newPathPieces);
   }
 
+  /**
+   * Returns the head (last piece) of the NamePath.
+   */
   public String getHead() {
     return pathPieces.get(pathPieces.size() - 1);
   }
 
+  /**
+   * Returns the namePath in dotted form.
+   */
   public String toDotted() {
     return Joiner.on(".").join(pathPieces);
   }
 
+  /**
+   * Returns the namePath in backslashed form.
+   */
   public String toBackslashed() {
     return Joiner.on("\\").join(pathPieces);
   }

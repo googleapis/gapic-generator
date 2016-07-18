@@ -28,6 +28,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The TypeTable for Java.
+ */
 public class JavaTypeTable implements TypeTable {
   /**
    * A bi-map from full names to short names indicating the import map.
@@ -71,6 +74,7 @@ public class JavaTypeTable implements TypeTable {
     return typeName.getAndSaveNicknameIn(this);
   }
 
+  @Override
   public String getAndSaveNicknameFor(TypeAlias alias) {
     if (!alias.needsImport()) {
       return alias.getNickname();

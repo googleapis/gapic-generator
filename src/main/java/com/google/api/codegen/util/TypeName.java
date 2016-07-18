@@ -28,10 +28,16 @@ public class TypeName {
   private final String pattern;
   private final List<TypeName> innerTypeNames;
 
+  /**
+   * Constructs a TypeName where the full name and nickname are the same.
+   */
   public TypeName(String name) {
     this(name, name);
   }
 
+  /**
+   * Standard constructor.
+   */
   public TypeName(String fullName, String nickname) {
     this.topLevelAlias = new TypeAlias(fullName, nickname);
     this.pattern = null;
@@ -39,10 +45,14 @@ public class TypeName {
   }
 
   /**
+   * Constructs a composite TypeName with a special string pattern to render the type, and a list
+   * of inner TypeName instances that parameterize the type.
    *
-   * @param fullName
-   * @param nickname
-   * @param pattern Use the pattern %s for self and %i for inner types, one for each inner type in the order that they are provided.
+   * @param fullName full name
+   * @param nickname nickname
+   * @param pattern Use the pattern %s for self and %i for inner types, one for each inner type
+   *                in the order that they are provided. If this is null, then the type name of
+   *                the outer type is used, and inner type names are ignored.
    * @param innerTypeNames
    */
   public TypeName(String fullName, String nickname, String pattern, TypeName... innerTypeNames) {
@@ -51,6 +61,9 @@ public class TypeName {
     this.innerTypeNames = Arrays.asList(innerTypeNames);
   }
 
+  /**
+   * Renders the fully-qualified name of this type given its pattern.
+   */
   public String getFullName() {
     if (pattern == null) {
       return topLevelAlias.getFullName();
@@ -62,6 +75,9 @@ public class TypeName {
     return result;
   }
 
+  /**
+   * Renders the short name of this type given its pattern.
+   */
   public String getNickname() {
     if (pattern == null) {
       return topLevelAlias.getNickname();
@@ -73,6 +89,10 @@ public class TypeName {
     return result;
   }
 
+  /**
+   * Renders the short name of this type given its pattern, and adds any necessary nicknames
+   * to the given type table.
+   */
   public String getAndSaveNicknameIn(TypeTable typeTable) {
     String topLevelNickname = typeTable.getAndSaveNicknameFor(topLevelAlias);
     if (pattern == null) {
@@ -83,16 +103,5 @@ public class TypeName {
       result = StringUtils.replaceOnce(result, "%i", innerTypeName.getAndSaveNicknameIn(typeTable));
     }
     return result;
-  }
-
-  public List<TypeAlias> getAliases() {
-    List<TypeAlias> aliases = new ArrayList<>();
-
-    aliases.add(topLevelAlias);
-    for (TypeName innerTypeName : innerTypeNames) {
-      aliases.addAll(innerTypeName.getAliases());
-    }
-
-    return aliases;
   }
 }

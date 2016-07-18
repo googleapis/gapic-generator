@@ -21,6 +21,9 @@ import com.google.common.escape.Escapers;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utility class for Java to process text in the templates.
+ */
 public class JavaRenderingUtil {
   /**
    * Escaper for formatting javadoc strings.

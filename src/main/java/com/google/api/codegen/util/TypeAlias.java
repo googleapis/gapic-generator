@@ -14,27 +14,48 @@
  */
 package com.google.api.codegen.util;
 
+/**
+ * TypeAlias represents an alias between a fully-qualified version of a name
+ * (the "fullName") and a short version of a name (the "nickname").
+ */
 public class TypeAlias {
   private final String fullName;
   private final String nickname;
 
+  /**
+   * Creates a TypeAlias where the fullName and nickname are the same.
+   */
   public TypeAlias(String name) {
     this(name, name);
   }
 
+  /**
+   * Standard constructor.
+   */
   public TypeAlias(String fullName, String nickname) {
     this.fullName = fullName;
     this.nickname = nickname;
   }
 
+  /**
+   * The full name of the alias.
+   */
   public String getFullName() {
     return fullName;
   }
 
+  /**
+   * The nickname of the alias.
+   */
   public String getNickname() {
     return nickname;
   }
 
+  /**
+   * Returns true if the alias needs to be imported to refer to it only
+   * through the nickname. This will be false if the full name and nickname
+   * are the same.
+   */
   public boolean needsImport() {
     return !fullName.equals(nickname);
   }

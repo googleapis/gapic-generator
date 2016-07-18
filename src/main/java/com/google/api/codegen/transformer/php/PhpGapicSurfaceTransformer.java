@@ -37,7 +37,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ModelToPhpSurfaceTransformer implements ModelToViewTransformer {
+/**
+ * The ModelToViewTransformer to transform a Model into the standard GAPIC surface in PHP.
+ */
+public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private ApiConfig cachedApiConfig;
   private GapicCodePathMapper pathMapper;
   private PathTemplateTransformer pathTemplateTransformer;
@@ -46,7 +49,10 @@ public class ModelToPhpSurfaceTransformer implements ModelToViewTransformer {
 
   private static final String XAPI_TEMPLATE_FILENAME = "php/xapi.snip";
 
-  public ModelToPhpSurfaceTransformer(ApiConfig apiConfig, GapicCodePathMapper pathMapper) {
+  /**
+   * Standard constructor.
+   */
+  public PhpGapicSurfaceTransformer(ApiConfig apiConfig, GapicCodePathMapper pathMapper) {
     this.cachedApiConfig = apiConfig;
     this.pathMapper = pathMapper;
     this.pathTemplateTransformer = new PathTemplateTransformer();
@@ -71,7 +77,7 @@ public class ModelToPhpSurfaceTransformer implements ModelToViewTransformer {
   public List<ViewModel> transform(Interface service) {
     SurfaceTransformerContext context =
         SurfaceTransformerContext.create(
-            service, cachedApiConfig, new ModelToPhpTypeTable(), new PhpSurfaceNamer());
+            service, cachedApiConfig, new PhpModelTypeTable(), new PhpSurfaceNamer());
 
     String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
     SurfaceNamer namer = context.getNamer();

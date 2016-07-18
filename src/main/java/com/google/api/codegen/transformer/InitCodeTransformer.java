@@ -46,6 +46,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * InitCodeTransformer generates initialization code for a given method and then transforms
+ * it to a view object which can be rendered by a template engine.
+ */
 public class InitCodeTransformer {
 
   public InitCodeView generateInitCode(MethodTransformerContext context, Iterable<Field> fields) {
