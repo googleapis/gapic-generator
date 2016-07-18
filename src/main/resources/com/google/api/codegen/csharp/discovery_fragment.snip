@@ -64,14 +64,16 @@
         HttpClientInitializer = credential,
         ApplicationName = "Google Cloud Platform Sample",
     });
+    @if sample.params
 
-    // TODO: Change placeholders below to values for parameters to the {@sample.methodName}() method:
-    @join param : sample.params
+        // TODO: Change placeholders below to values for parameters to the {@sample.methodName}() method:
+        @join param : sample.params
 
-        @join line : param.description
-            {@line}
+            @join line : param.description
+                {@line}
+            @end
+            {@param.typeName} {@param.name} = {@param.defaultValue};
         @end
-        {@param.typeName} {@param.name} = {@param.defaultValue};
     @end
     @if sample.hasRequestField
 
