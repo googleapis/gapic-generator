@@ -38,6 +38,7 @@ import com.google.api.codegen.viewmodel.MapInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
+import com.google.api.codegen.viewmodel.testing.ApiTestAssertView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
@@ -76,7 +77,27 @@ public class InitCodeTransformer {
         .build();
   }
 
-  private Map<String, Object> createInitFieldStructure(MethodTransformerContext context) {
+  public List<ApiTestAssertView> generateTestAssertViews(
+      MethodTransformerContext context, Iterable<Field> fields) {
+    List<ApiTestAssertView> assertViews = new ArrayList<>();
+    Map<String, Object> initFieldStructure = createInitFieldStructure(context);
+    InitCodeGenerator generator = new InitCodeGenerator();
+    InitCode initCode =
+        generator.generateRequestFieldInitCode(context.getMethod(), initFieldStructure, fields);
+
+    for (InitCodeLine line : initCode.getLines()) {
+      SurfaceNamer namer = context.getNamer();
+      ApiTestAssertView assertView = new ApiTestAssertView();
+      assertView.expectedValueIdentifier =
+          namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
+      assertView.actualValueIdentifier = namer.getGetFunctionCallName(line.getIdentifier());
+      assertViews.add(assertView);
+    }
+
+    return assertViews;
+  }
+
+  public Map<String, Object> createInitFieldStructure(MethodTransformerContext context) {
     Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
 
     ImmutableMap.Builder<String, InitValueConfig> initValueConfigMap = ImmutableMap.builder();

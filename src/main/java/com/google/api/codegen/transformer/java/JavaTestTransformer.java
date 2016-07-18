@@ -12,14 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.InterfaceView;
+import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
+import com.google.api.codegen.transformer.InitCodeTransformer;
+import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.Transformer;
 import com.google.api.codegen.viewmodel.ViewModelDoc;
+import com.google.api.codegen.viewmodel.testing.ApiTestCaseView;
 import com.google.api.codegen.viewmodel.testing.ApiTestClassView;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 
 import java.util.ArrayList;
@@ -31,12 +37,14 @@ public class JavaTestTransformer implements Transformer {
   private GapicCodePathMapper pathMapper;
   private ModelToJavaTypeTable typeTable;
   private JavaSurfaceNamer surfaceNamer;
+  private InitCodeTransformer initCodeTransformer;
 
   public JavaTestTransformer(ApiConfig apiConfig, GapicCodePathMapper javaPathMapper) {
     this.apiConfig = apiConfig;
     this.pathMapper = javaPathMapper;
     this.typeTable = new ModelToJavaTypeTable();
     this.surfaceNamer = new JavaSurfaceNamer();
+    this.initCodeTransformer = new InitCodeTransformer();
   }
 
   @Override
@@ -86,11 +94,41 @@ public class JavaTestTransformer implements Transformer {
     testClass.apiClassName = surfaceNamer.getApiWrapperClassName(service);
     testClass.name = testClass.apiClassName + "Test";
     testClass.mockServiceClassName = "Mock" + testClass.apiClassName;
-    testClass.testCases = new ArrayList<>();
+    testClass.testCases = createTestCaseViews(service);
 
     String outputPath = pathMapper.getOutputPath(service, apiConfig);
     testClass.outputPath = outputPath + "/" + testClass.name + ".java";
     testClass.imports = typeTable.getImports();
     return testClass;
+  }
+
+  private List<ApiTestCaseView> createTestCaseViews(Interface service) {
+    ArrayList<ApiTestCaseView> testCaseViews = new ArrayList<>();
+    for (Method method : service.getMethods()) {
+      MethodConfig methodConfig = apiConfig.getInterfaceConfig(service).getMethodConfig(method);
+      MethodTransformerContext context =
+          MethodTransformerContext.create(
+              service, apiConfig, typeTable, surfaceNamer, method, methodConfig);
+      ApiTestCaseView testCaseView = new ApiTestCaseView();
+      testCaseView.name = method.getSimpleName() + "Test";
+      testCaseView.methodName = method.getSimpleName();
+      testCaseView.requestType = typeTable.getAndSaveNicknameFor(method.getInputType());
+      testCaseView.initCode =
+          initCodeTransformer.generateInitCode(context, methodConfig.getRequiredFields());
+      testCaseView.isPageStreaming = methodConfig.isPageStreaming();
+      if (testCaseView.isPageStreaming) {
+        testCaseView.resourceType =
+            typeTable.getAndSaveNicknameForElementType(
+                methodConfig.getPageStreaming().getResourcesField().getType());
+      } else {
+        testCaseView.resourceType = "";
+      }
+
+      testCaseView.asserts =
+          initCodeTransformer.generateTestAssertViews(context, methodConfig.getRequiredFields());
+      testCaseViews.add(testCaseView);
+    }
+
+    return testCaseViews;
   }
 }

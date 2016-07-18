@@ -34,15 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A SurfaceNamer provides language-specific names for specific components of a view for a surface.
- *
- * Naming is composed of two steps:
- *
- * 1. Composing a Name instance with the name pieces
- * 2. Formatting the Name for the particular type of identifier needed.
- *
- * This class delegates step 2 to the provided name formatter, which generally
- * would be a language-specific namer.
+ * An instance of IdentifierNamer provides language-specific names or other strings.
  */
 public class SurfaceNamer extends NameFormatterDelegator {
   private ModelTypeFormatter modelTypeFormatter;
@@ -57,13 +49,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     this.typeNameConverter = typeNameConverter;
   }
 
-  public ModelTypeFormatter getModelTypeFormatter() {
-    return modelTypeFormatter;
-  }
-
-  public String getNotImplementedString(String feature) {
-    return "$ NOT IMPLEMENTED: " + feature + " $";
-  }
+  public static final String NOT_IMPLEMENTED = "$ NOT IMPLEMENTED $";
 
   /** The name of the class that implements a particular proto interface. */
   public String getApiWrapperClassName(Interface interfaze) {
@@ -108,7 +94,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
    */
   public String getVariableName(Name identifier, InitValueConfig initValueConfig) {
     if (initValueConfig == null || !initValueConfig.hasFormattingConfig()) {
-      return varName(identifier);
+      return varName(Name.from(identifier));
     } else {
       return varName(Name.from("formatted").join(identifier));
     }
@@ -256,7 +242,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The path to the client config for the given interface. */
   public String getClientConfigPath(Interface service) {
-    return getNotImplementedString("SurfaceNamer.getClientConfigPath");
+    return SurfaceNamer.NOT_IMPLEMENTED;
   }
 
   /**
@@ -349,7 +335,45 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   /** The type name for an optional array argument; not used in most languages. */
   public String getOptionalArrayTypeName() {
-    return getNotImplementedString("SurfaceNamer.getOptionalArrayTypeName");
+    return SurfaceNamer.NOT_IMPLEMENTED;
+  }
+
+  public String getDynamicReturnTypeName(
+      ModelTypeTable typeTable, Method method, MethodConfig methodConfig) {
+    return SurfaceNamer.NOT_IMPLEMENTED;
+  }
+
+  public String getStaticReturnTypeName(
+      ModelTypeTable typeTable, Method method, MethodConfig methodConfig) {
+    return SurfaceNamer.NOT_IMPLEMENTED;
+  }
+
+  public String getPagedCallableMethodName(Method method) {
+    return methodName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
+  }
+
+  public String getPagedCallableName(Method method) {
+    return varName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
+  }
+
+  public String getCallableMethodName(Method method) {
+    return methodName(Name.upperCamel(method.getSimpleName(), "Callable"));
+  }
+
+  public String getCallableName(Method method) {
+    return varName(Name.upperCamel(method.getSimpleName(), "Callable"));
+  }
+
+  public String getSettingsFunctionName(Method method) {
+    return methodName(Name.upperCamel(method.getSimpleName(), "Settings"));
+  }
+
+  public String getGenericAwareResponseType(ModelTypeTable typeTable, TypeRef outputType) {
+    return SurfaceNamer.NOT_IMPLEMENTED;
+  }
+
+  public String getGetResourceListCallName(Field resourcesField) {
+    return methodName(Name.from("get", resourcesField.getSimpleName(), "list"));
   }
 
   /** The return type name in a dynamic language for the given method. */

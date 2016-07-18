@@ -15,7 +15,6 @@
 package com.google.api.codegen.util.java;
 
 import com.google.api.codegen.LanguageUtil;
-import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
@@ -29,9 +28,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-/**
- * The TypeTable for Java.
- */
 public class JavaTypeTable implements TypeTable {
   /**
    * A bi-map from full names to short names indicating the import map.
@@ -58,34 +54,13 @@ public class JavaTypeTable implements TypeTable {
           .put("double", "Double")
           .build();
 
-  @Override
-  public TypeTable cloneEmpty() {
-    return new JavaTypeTable();
-  }
-
   public TypeName getTypeName(String fullName) {
     int lastDotIndex = fullName.lastIndexOf('.');
     if (lastDotIndex < 0) {
-      return new TypeName(fullName, fullName);
+      throw new IllegalArgumentException("expected fully qualified name");
     }
     String shortTypeName = fullName.substring(lastDotIndex + 1);
     return new TypeName(fullName, shortTypeName);
-  }
-
-  @Override
-  public NamePath getNamePath(String fullName) {
-    return NamePath.dotted(fullName);
-  }
-
-  @Override
-  public TypeName getContainerTypeName(String containerFullName, String elementFullName) {
-    TypeName containerTypeName = getTypeName(containerFullName);
-    TypeName elementTypeName = getTypeName(elementFullName);
-    return new TypeName(
-        containerTypeName.getFullName(),
-        containerTypeName.getNickname(),
-        "%s<%i>",
-        elementTypeName);
   }
 
   public String getAndSaveNicknameFor(String fullName) {
@@ -96,7 +71,6 @@ public class JavaTypeTable implements TypeTable {
     return typeName.getAndSaveNicknameIn(this);
   }
 
-  @Override
   public String getAndSaveNicknameFor(TypeAlias alias) {
     if (!alias.needsImport()) {
       return alias.getNickname();

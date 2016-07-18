@@ -1,4 +1,5 @@
 @extends "common.snip"
+@extends "mvvm_common.snip"
 
 @snippet generate(xapiTest)
   {@license()}
@@ -42,15 +43,97 @@
       api.close();
     }
 
-    @join case : xapiTest.testCases
-      {@testCase(case)}
+    @join test : xapiTest.testCases
+      {@testCase(test)}
+
     @end
   }
 @end
 
-@private testCase(case)
+@private testCase(test)
   @@Test
   @@SuppressWarnings("all")
-  public void {@case.name}() {
+  public void {@test.name}() {
+    {@initCode(test.initCode)}
+    {@methodCall(test)}
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    {@test.requestType} request = ({@test.requestType})requests[0];
+
+    @join assert : test.asserts
+      Assert.assertEquals(request.{@assert.actualValueIdentifier}(), {@assert.expectedValueIdentifier});
+    @end
   }
+@end
+
+@private methodCall(test)
+  @if {@test.isPageStreaming}
+    PageAccessor<{@test.resourceType}> response = api.{@test.methodName}(\
+      {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+    for ({@test.resourceType} element : response) {
+      // DO NOTHING
+    }
+  @else
+    api.{@test.methodName}(\
+      {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+  @end
+@end
+
+@private sampleMethodCallArgList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+@end
+
+@private initCode(initCodeSpec)
+  @join line : initCodeSpec.lines
+    @switch line.lineType.toString
+    @case "StructureInitLine"
+      {@initLineStructure(line)}
+    @case "ListInitLine"
+      {@initLineList(line)}
+    @case "MapInitLine"
+      {@initLineMap(line)}
+    @case "SimpleInitLine"
+      {@initLineSimple(line)}
+    @default
+      $unhandledCase: {@line.lineType.toString}$
+    @end
+  @end
+@end
+
+@private initLineStructure(line)
+  {@line.typeName} {@line.identifier} = {@line.typeName}.newBuilder()
+  @join fieldSetting : line.fieldSettings
+    {@EMPTY}  .{@fieldSetting.fnSetFunctionCallName}({@fieldSetting.identifier})
+  @end
+  {@EMPTY}  .build();
+@end
+
+@private initLineList(line)
+  List<{@line.elementTypeName}> {@line.identifier} = \
+      Arrays.asList({@argList(line.elementIdentifiers)});
+@end
+
+@private initLineMap(line)
+  Map<{@line.keyTypeName}, {@line.valueTypeName}> {@line.identifier} = new HashMap<>();
+  @join mapEntry : line.initEntries vertical
+    {@line.identifier}.put({@mapEntry.key}, {@mapEntry.value});
+  @end
+@end
+
+@private initLineSimple(line)
+  {@line.typeName} {@line.identifier} = {@renderInitValue(line.initValue)};
+@end
+
+@private renderInitValue(initValue)
+  @switch initValue.type
+  @case "SimpleInitValueView"
+    {@initValue.initialValue}
+  @case "FormattedInitValueView"
+    {@initValue.apiWrapperName}.{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
+  @default
+    $unhandledCase: {@initValue.type}$
+  @end
 @end

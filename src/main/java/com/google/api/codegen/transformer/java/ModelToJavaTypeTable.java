@@ -12,11 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.transformer;
+package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.LanguageUtil;
-import com.google.api.codegen.java.JavaTypeTable;
-import com.google.api.codegen.util.TypeAlias;
+import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
@@ -31,10 +32,14 @@ import java.util.List;
 public class ModelToJavaTypeTable implements ModelTypeTable {
   private JavaTypeTable javaTypeTable;
 
-  /** The package prefix protoc uses if no java package option was provided. */
+  /**
+   * The package prefix protoc uses if no java package option was provided.
+   */
   private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.protos";
 
-  /** A map from primitive types in proto to Java counterparts. */
+  /**
+   * A map from primitive types in proto to Java counterparts.
+   */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "boolean")
@@ -54,7 +59,9 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
           .put(Type.TYPE_BYTES, "com.google.protobuf.ByteString")
           .build();
 
-  /** A map from primitive types in proto to zero value in Java */
+  /**
+   * A map from primitive types in proto to zero value in Java
+   */
   private static final ImmutableMap<Type, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "false")
@@ -89,9 +96,18 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
   }
 
   @Override
-  public String getFullNameFor(TypeRef outputType) {
-    // FIXME figure out aliases for non-element types
-    return getAliasForElementType(outputType).getFullName();
+  public String getFullNameFor(TypeRef type) {
+    return getTypeName(type).getFullName();
+  }
+
+  @Override
+  public String getFullNameForElementType(TypeRef type) {
+    return getTypeNameForElementType(type, true).getFullName();
+  }
+
+  @Override
+  public String getNicknameFor(TypeRef type) {
+    return getTypeName(type).getNickname();
   }
 
   @Override
@@ -99,52 +115,77 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
     return javaTypeTable.getAndSaveNicknameFor(fullName);
   }
 
-  /** Returns the Java representation of a reference to a type. */
+  /**
+   * Returns the Java representation of a reference to a type.
+   */
   @Override
   public String getAndSaveNicknameFor(TypeRef type) {
+    return javaTypeTable.getAndSaveNicknameFor(getTypeName(type));
+  }
+
+  public TypeName getTypeName(TypeRef type) {
     if (type.isMap()) {
-      String mapTypeName = javaTypeTable.getAndSaveNicknameFor("java.util.Map");
-      String keyTypeName = getAndSaveNicknameForElementType(type.getMapKeyField().getType());
-      String valueTypeName = getAndSaveNicknameForElementType(type.getMapValueField().getType());
-      return String.format(
-          "%s<%s, %s>",
-          mapTypeName,
-          JavaTypeTable.getBoxedTypeName(keyTypeName),
-          JavaTypeTable.getBoxedTypeName(valueTypeName));
+      TypeName mapTypeName = javaTypeTable.getTypeName("java.util.Map");
+      TypeName keyTypeName = getTypeNameForElementType(type.getMapKeyField().getType(), true);
+      TypeName valueTypeName = getTypeNameForElementType(type.getMapValueField().getType(), true);
+      return new TypeName(
+          mapTypeName.getFullName(),
+          mapTypeName.getNickname(),
+          "%s<%i, %i>",
+          keyTypeName,
+          valueTypeName);
     } else if (type.isRepeated()) {
-      String listTypeName = javaTypeTable.getAndSaveNicknameFor("java.util.List");
-      String elementTypeName = getAndSaveNicknameForElementType(type);
-      return String.format("%s<%s>", listTypeName, JavaTypeTable.getBoxedTypeName(elementTypeName));
+      TypeName listTypeName = javaTypeTable.getTypeName("java.util.List");
+      TypeName elementTypeName = getTypeNameForElementType(type, true);
+      return new TypeName(
+          listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
     } else {
-      return getAndSaveNicknameForElementType(type);
+      return getTypeNameForElementType(type, false);
     }
   }
 
   @Override
   public String getAndSaveNicknameForElementType(TypeRef type) {
-    return javaTypeTable.getAndSaveNicknameFor(getAliasForElementType(type));
+    return javaTypeTable.getAndSaveNicknameFor(getTypeNameForElementType(type, true));
+  }
+
+  @Override
+  public String getAndSaveNicknameForContainer(String containerFullName, String elementFullName) {
+    TypeName containerTypeName = javaTypeTable.getTypeName(containerFullName);
+    TypeName elementTypeName = javaTypeTable.getTypeName(elementFullName);
+    TypeName completeTypeName =
+        new TypeName(
+            containerTypeName.getFullName(),
+            containerTypeName.getNickname(),
+            "%s<%i>",
+            elementTypeName);
+    return javaTypeTable.getAndSaveNicknameFor(completeTypeName);
   }
 
   /**
    * Returns the Java representation of a type, without cardinality. If the type is a Java
    * primitive, basicTypeName returns it in unboxed form.
    */
-  private TypeAlias getAliasForElementType(TypeRef type) {
+  private TypeName getTypeNameForElementType(TypeRef type, boolean shouldBoxPrimitives) {
     String primitiveTypeName = PRIMITIVE_TYPE_MAP.get(type.getKind());
     if (primitiveTypeName != null) {
       if (primitiveTypeName.contains(".")) {
         // Fully qualified type name, use regular type name resolver. Can skip boxing logic
         // because those types are already boxed.
-        return javaTypeTable.getAlias(primitiveTypeName);
+        return javaTypeTable.getTypeName(primitiveTypeName);
       } else {
-        return new TypeAlias(primitiveTypeName);
+        if (shouldBoxPrimitives) {
+          return new TypeName(JavaTypeTable.getBoxedTypeName(primitiveTypeName));
+        } else {
+          return new TypeName(primitiveTypeName);
+        }
       }
     }
     switch (type.getKind()) {
       case TYPE_MESSAGE:
-        return getTypeAlias(type.getMessageType());
+        return getTypeName(type.getMessageType());
       case TYPE_ENUM:
-        return getTypeAlias(type.getEnumType());
+        return getTypeName(type.getEnumType());
       default:
         throw new IllegalArgumentException("unknown type kind: " + type.getKind());
     }
@@ -186,7 +227,7 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
   /**
    * Returns the Java representation of a zero value for that type, to be used in code sample doc.
    *
-   * <p>Parametric types may use the diamond operator, since the return value will be used only in
+   * Parametric types may use the diamond operator, since the return value will be used only in
    * initialization.
    */
   @Override
@@ -207,7 +248,7 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
     return "null";
   }
 
-  private TypeAlias getTypeAlias(ProtoElement elem) {
+  private TypeName getTypeName(ProtoElement elem) {
     // Construct the full name in Java
     String name = getJavaPackage(elem.getFile());
     if (!elem.getFile().getProto().getOptions().getJavaMultipleFiles()) {
@@ -220,7 +261,7 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
     String shortName = elem.getFullName().substring(elem.getFile().getFullName().length() + 1);
     name = name + "." + shortName;
 
-    return new TypeAlias(name, shortName);
+    return new TypeName(name, shortName);
   }
 
   private static String getJavaPackage(ProtoFile file) {
@@ -231,7 +272,9 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
     return packageName;
   }
 
-  /** Gets the class name for the given proto file. */
+  /**
+   * Gets the class name for the given proto file.
+   */
   private static String getFileClassName(ProtoFile file) {
     String baseName = Files.getNameWithoutExtension(new File(file.getSimpleName()).getName());
     return LanguageUtil.lowerUnderscoreToUpperCamel(baseName);
