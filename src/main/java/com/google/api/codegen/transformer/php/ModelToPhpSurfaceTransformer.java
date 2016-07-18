@@ -27,6 +27,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicXApiView;
+import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -79,8 +80,19 @@ public class ModelToPhpSurfaceTransformer implements ModelToViewTransformer {
 
     addXApiImports(context);
 
+    List<ApiMethodView> methods = generateApiMethods(context);
+
     DynamicXApiView.Builder xapiClass = DynamicXApiView.newBuilder();
+
+    ServiceDocView.Builder serviceDoc = ServiceDocView.newBuilder();
+    List<String> docLines = context.getNamer().getDocLines(service);
+    serviceDoc.firstLine(docLines.get(0));
+    serviceDoc.remainingLines(docLines.subList(1, docLines.size()));
+    serviceDoc.exampleApiMethod(methods.get(0));
+    xapiClass.doc(serviceDoc.build());
+
     xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
+    xapiClass.protoFilename(service.getFile().getSimpleName());
     xapiClass.packageName(context.getApiConfig().getPackageName());
     String name = namer.getApiWrapperClassName(context.getInterface());
     xapiClass.name(name);
@@ -105,7 +117,7 @@ public class ModelToPhpSurfaceTransformer implements ModelToViewTransformer {
     String grpcClientTypeName = namer.getGrpcClientTypeName(context.getInterface());
     xapiClass.grpcClientTypeName(context.getTypeTable().getAndSaveNicknameFor(grpcClientTypeName));
 
-    xapiClass.apiMethods(generateApiMethods(context));
+    xapiClass.apiMethods(methods);
 
     // must be done as the last step to catch all imports
     xapiClass.imports(context.getTypeTable().getImports());

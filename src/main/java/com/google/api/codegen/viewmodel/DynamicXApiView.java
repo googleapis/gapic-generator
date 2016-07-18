@@ -26,6 +26,10 @@ public abstract class DynamicXApiView implements ViewModel {
 
   public abstract String packageName();
 
+  public abstract String protoFilename();
+
+  public abstract ServiceDocView doc();
+
   public abstract String name();
 
   public abstract String serviceAddress();
@@ -74,6 +78,10 @@ public abstract class DynamicXApiView implements ViewModel {
     public abstract Builder templateFileName(String val);
 
     public abstract Builder packageName(String val);
+
+    public abstract Builder protoFilename(String simpleName);
+
+    public abstract Builder doc(ServiceDocView doc);
 
     public abstract Builder name(String val);
 
