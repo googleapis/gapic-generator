@@ -12,10 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.java;
+package com.google.api.codegen.util.java;
 
 import com.google.api.codegen.LanguageUtil;
 import com.google.api.codegen.util.TypeAlias;
+import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.TypeTable;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
@@ -26,8 +28,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class JavaTypeTable {
-  /** A bi-map from full names to short names indicating the import map. */
+public class JavaTypeTable implements TypeTable {
+  /**
+   * A bi-map from full names to short names indicating the import map.
+   */
   private final BiMap<String, String> imports = HashBiMap.create();
 
   /**
@@ -38,7 +42,9 @@ public class JavaTypeTable {
 
   private static final String JAVA_LANG_TYPE_PREFIX = "java.lang.";
 
-  /** A map from unboxed Java primitive type name to boxed counterpart. */
+  /**
+   * A map from unboxed Java primitive type name to boxed counterpart.
+   */
   private static final ImmutableMap<String, String> BOXED_TYPE_MAP =
       ImmutableMap.<String, String>builder()
           .put("boolean", "Boolean")
@@ -48,17 +54,21 @@ public class JavaTypeTable {
           .put("double", "Double")
           .build();
 
-  public TypeAlias getAlias(String fullName) {
+  public TypeName getTypeName(String fullName) {
     int lastDotIndex = fullName.lastIndexOf('.');
     if (lastDotIndex < 0) {
       throw new IllegalArgumentException("expected fully qualified name");
     }
     String shortTypeName = fullName.substring(lastDotIndex + 1);
-    return new TypeAlias(fullName, shortTypeName);
+    return new TypeName(fullName, shortTypeName);
   }
 
   public String getAndSaveNicknameFor(String fullName) {
-    return getAndSaveNicknameFor(getAlias(fullName));
+    return getAndSaveNicknameFor(getTypeName(fullName));
+  }
+
+  public String getAndSaveNicknameFor(TypeName typeName) {
+    return typeName.getAndSaveNicknameIn(this);
   }
 
   public String getAndSaveNicknameFor(TypeAlias alias) {
@@ -80,9 +90,11 @@ public class JavaTypeTable {
     return alias.getNickname();
   }
 
-  /** Returns the Java representation of a basic type in boxed form. */
-  public static String getBoxedTypeName(String typeName) {
-    return LanguageUtil.getRename(typeName, BOXED_TYPE_MAP);
+  /**
+   * Returns the Java representation of a basic type in boxed form.
+   */
+  public static String getBoxedTypeName(String primitiveTypeName) {
+    return LanguageUtil.getRename(primitiveTypeName, BOXED_TYPE_MAP);
   }
 
   public List<String> getImports() {
@@ -99,7 +111,9 @@ public class JavaTypeTable {
     return cleanedImports;
   }
 
-  /** Checks whether the simple type name is implicitly imported from java.lang. */
+  /**
+   * Checks whether the simple type name is implicitly imported from java.lang.
+   */
   private boolean isImplicitImport(String name) {
     Boolean yes = implicitImports.get(name);
     if (yes != null) {

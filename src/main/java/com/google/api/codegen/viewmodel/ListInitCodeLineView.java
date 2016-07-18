@@ -15,7 +15,6 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.metacode.InitCodeLineType;
-import com.google.api.codegen.viewmodel.InitCodeView.Builder;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
