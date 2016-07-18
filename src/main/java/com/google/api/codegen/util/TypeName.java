@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class TypeName {
    * Standard constructor.
    */
   public TypeName(String fullName, String nickname) {
-    this.topLevelAlias = new TypeAlias(fullName, nickname);
+    this.topLevelAlias = TypeAlias.create(fullName, nickname);
     this.pattern = null;
     this.innerTypeNames = Arrays.asList();
   }
@@ -56,7 +55,7 @@ public class TypeName {
    * @param innerTypeNames
    */
   public TypeName(String fullName, String nickname, String pattern, TypeName... innerTypeNames) {
-    this.topLevelAlias = new TypeAlias(fullName, nickname);
+    this.topLevelAlias = TypeAlias.create(fullName, nickname);
     this.pattern = pattern;
     this.innerTypeNames = Arrays.asList(innerTypeNames);
   }

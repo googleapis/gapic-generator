@@ -14,42 +14,38 @@
  */
 package com.google.api.codegen.util;
 
+import com.google.auto.value.AutoValue;
+
 /**
  * TypeAlias represents an alias between a fully-qualified version of a name
  * (the "fullName") and a short version of a name (the "nickname").
  */
-public class TypeAlias {
-  private final String fullName;
-  private final String nickname;
+@AutoValue
+public abstract class TypeAlias {
 
   /**
    * Creates a TypeAlias where the fullName and nickname are the same.
    */
-  public TypeAlias(String name) {
-    this(name, name);
+  public static TypeAlias create(String name) {
+    return create(name, name);
   }
 
   /**
    * Standard constructor.
    */
-  public TypeAlias(String fullName, String nickname) {
-    this.fullName = fullName;
-    this.nickname = nickname;
+  public static TypeAlias create(String fullName, String nickname) {
+    return new AutoValue_TypeAlias(fullName, nickname);
   }
 
   /**
    * The full name of the alias.
    */
-  public String getFullName() {
-    return fullName;
-  }
+  public abstract String getFullName();
 
   /**
    * The nickname of the alias.
    */
-  public String getNickname() {
-    return nickname;
-  }
+  public abstract String getNickname();
 
   /**
    * Returns true if the alias needs to be imported to refer to it only
@@ -57,6 +53,6 @@ public class TypeAlias {
    * are the same.
    */
   public boolean needsImport() {
-    return !fullName.equals(nickname);
+    return !getFullName().equals(getNickname());
   }
 }

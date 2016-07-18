@@ -56,25 +56,22 @@ public abstract class DiscoveryGeneratorTestBase extends ConfigBaselineTestCase 
   }
 
   protected void setupDiscovery() {
-    // FIXME this is just commented out to make the tests go faster during iterations of refactoring.
-    // The real fix is to move discovery tests out of toolkit altogether:
-    // https://github.com/googleapis/toolkit/issues/201
-    //    try {
-    //      discoveryImporter =
-    //          DiscoveryImporter.parse(
-    //              new StringReader(
-    //                  getTestDataLocator()
-    //                      .readTestData(getTestDataLocator().findTestData(discoveryDocFileName))));
-    //    } catch (IOException e) {
-    //      throw new IllegalArgumentException("Problem creating Generator", e);
-    //    }
-    //
-    //    config =
-    //        CodegenTestUtil.readConfig(
-    //            new SimpleDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
-    //    if (config == null) {
-    //      return;
-    //    }
+    try {
+      discoveryImporter =
+          DiscoveryImporter.parse(
+              new StringReader(
+                  getTestDataLocator()
+                      .readTestData(getTestDataLocator().findTestData(discoveryDocFileName))));
+    } catch (IOException e) {
+      throw new IllegalArgumentException("Problem creating Generator", e);
+    }
+
+    config =
+        CodegenTestUtil.readConfig(
+            new SimpleDiagCollector(), getTestDataLocator(), gapicConfigFileNames);
+    if (config == null) {
+      return;
+    }
   }
 
   @Override
