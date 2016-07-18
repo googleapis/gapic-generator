@@ -163,7 +163,7 @@
         @if context.messages.filterBundlingMethods(ifaceConfig, service.getMethods)
           BUNDLE_DESCRIPTORS,
         @else
-          null
+          null,
         @end
         {'metadata': metadata});
   @end
@@ -232,7 +232,7 @@
       ];
       methods.forEach(function(methodName) {
         this['_' + methodName] = gax.createApiCall(
-            this.stub.then(function(stub) { return stub[methodName]; }),
+            this.stub.then(function(stub) { return stub[methodName].bind(stub); }),
             defaults[methodName]);
       }.bind(this));
     };
@@ -359,17 +359,17 @@
         'callback': [Function]
       }, arguments);
       var req = {
-        @if requiredParams
-          @if optionalParams
-            {@namedParameters(requiredParams)},
-            {@namedOptionalParameters(optionalParams)}
-          @else
-            {@namedParameters(requiredParams)}
-          @end
-        @else
-          {@namedOptionalParameters(optionalParams)}
+        @join field : requiredParams on ",".add(BREAK)
+          '{@field.getSimpleName}': args.{@fieldParameterName(field)}
         @end
       };
+      @join field : optionalParams
+        @let paramName = fieldParameterName(field)
+          if ('{@paramName}' in args.otherArgs) {
+            req.{@field.getSimpleName} = args.otherArgs.{@paramName};
+          }
+        @end
+      @end
       return this._{@methodName(method)}(req, args.options, args.callback);
     };
   @end
@@ -382,20 +382,5 @@
 @private requiredParameterDefs(params)
   @join field : params on ",".add(BREAK)
     '{@fieldParameterName(field)}': {@context.getFieldType(field)}
-  @end
-@end
-
-@private namedParameters(params)
-  @join field : params on ",".add(BREAK)
-    '{@field.getSimpleName()}': args.{@fieldParameterName(field)}
-  @end
-@end
-
-@private namedOptionalParameters(params)
-  @join field : params on ",".add(BREAK)
-    @let paramName = field.getSimpleName(), \
-         defaultValue = context.defaultValue(field)
-      '{@paramName}': args.otherArgs.{@fieldParameterName(field)} || {@defaultValue}
-    @end
   @end
 @end

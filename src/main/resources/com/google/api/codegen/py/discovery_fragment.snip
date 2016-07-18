@@ -100,9 +100,8 @@
             response = request.execute()
 
             @# {@TODO()} Change code below to process the 'response' dict:
-            @let json = importHandler.addImportStandard("json"), \
-                 _ = importHandler.addImportStandard("__future__", "print_function")
-                print({@json}.dumps(response))
+	    @let pprint = importHandler.addImportStandard("pprint", "pprint")
+	    	{@pprint}(response)
             @end
         @end
     @end
@@ -138,7 +137,8 @@
             @let paramField = context.getField(signatureType, param), \
                  paramValue = context.typeDefaultValue(signatureType, paramField, method), \
                  paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
-                {@item(paramDescription)}
+
+                {@description(paramDescription)}
                 {@param} = {@paramValue}
             @end
         @end
@@ -183,7 +183,13 @@
     @end
 @end
 
+@private description(description)
+  @join line : context.lineWrapDoc(description, 100)
+    @# {@line}
+  @end
+@end
+
 @private alwaysImport() fill
-  {@context.silent(importHandler.addImportLocal("apiclient", "discovery"))}
+  {@context.silent(importHandler.addImportLocal("googleapiclient", "discovery"))}
   {@context.silent(importHandler.addImportLocal("oauth2client.client", "GoogleCredentials"))}
 @end

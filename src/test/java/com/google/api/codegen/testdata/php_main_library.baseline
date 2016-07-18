@@ -426,7 +426,8 @@ class LibraryServiceApi
      * try {
      *     $libraryServiceApi = new LibraryServiceApi();
      *     $formattedName = LibraryServiceApi::formatShelfName("[SHELF]");
-     *     $response = $libraryServiceApi->getShelf($formattedName);
+     *     $options = "";
+     *     $response = $libraryServiceApi->getShelf($formattedName, $options);
      * } finally {
      *     if (isset($libraryServiceApi)) {
      *         $libraryServiceApi->close();
@@ -435,6 +436,7 @@ class LibraryServiceApi
      * ```
      *
      * @param string $name The name of the shelf to retrieve.
+     * @param string $options To test 'options' parameter name conflict.
      * @param array $optionalArgs {
      *     Optional.
      *     @var SomeMessage $message Field to verify that message-type query parameter gets flattened.
@@ -454,10 +456,11 @@ class LibraryServiceApi
      *
      * @throws Google\GAX\ApiException if the remote call fails
      */
-    public function getShelf($name, $optionalArgs = [], $callSettings = [])
+    public function getShelf($name, $options, $optionalArgs = [], $callSettings = [])
     {
         $request = new GetShelfRequest();
         $request->setName($name);
+        $request->setOptions($options);
         if (isset($optionalArgs['message'])) {
             $request->setMessage($optionalArgs['message']);
         }

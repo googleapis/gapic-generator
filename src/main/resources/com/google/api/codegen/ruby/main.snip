@@ -48,7 +48,7 @@
 
 @private serviceClass(service)
   @let body = serviceClassBody(service)
-    {@module(context.getModules(service.getParent).iterator, body) }
+    {@module(context.getApiModules().iterator, body) }
   @end
 @end
 
@@ -61,7 +61,7 @@
 
     @end
     @# @@!attribute [r] stub
-    @#   @@return [{@context.getApiConfig.getPackageName}::{@service.getSimpleName}::Stub]
+    @#   @@return [{@context.rubyTypeNameForProtoElement(service)}::Stub]
     class {@context.getApiWrapperName(service)}
       attr_reader :stub
 
@@ -219,7 +219,7 @@
         chan_creds: chan_creds,
         channel: channel,
         scopes: scopes,
-        &{@context.getApiConfig.getPackageName}::{@service.getSimpleName}::Stub.method(:new)
+        &{@context.rubyTypeNameForProtoElement(service)}::Stub.method(:new)
       )
 
       @join method : service.getMethods
@@ -363,20 +363,16 @@
         options: nil
       )
         @if requiredParams
-          @if optionalParams
-            req = {@inputTypeName}.new(
-              {@namedParameters(requiredParams)},
-              {@namedParameters(optionalParams)}
-            )
-          @else
-            req = {@inputTypeName}.new(
-              {@namedParameters(requiredParams)}
-            )
-          @end
-        @else
           req = {@inputTypeName}.new(
-            {@namedParameters(optionalParams)}
+            {@namedParameters(requiredParams)}
           )
+        @else
+          req = {@inputTypeName}.new
+        @end
+        @join field : optionalParams
+          @let paramName = context.wrapIfKeywordOrBuiltIn(field.getSimpleName())
+            req.{@field.getSimpleName()} = {@paramName} unless {@paramName}.nil?
+          @end
         @end
         @@{@methodName}.call(req, options)
       end
@@ -397,9 +393,7 @@
 
 @private optionalParameterValues(params)
   @join field : params on ",".add(BREAK)
-    @let paramName = {@context.wrapIfKeywordOrBuiltIn(field.getSimpleName())}
-      {@paramName}: {@context.defaultValue(field)}
-    @end
+    {@context.wrapIfKeywordOrBuiltIn(field.getSimpleName)}: nil
   @end
 @end
 

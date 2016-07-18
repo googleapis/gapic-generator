@@ -263,36 +263,9 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   }
 
   /**
-   * Return the default value for the given field. Return null if there is no default value.
-   */
-  public String defaultValue(Field field) {
-    TypeRef type = field.getType();
-    // Return empty array if the type is repeated.
-    if (type.isMap()) {
-      return "nil";
-    }
-    if (type.getCardinality() == Cardinality.REPEATED) {
-      return "[]";
-    }
-    switch (type.getKind()) {
-      case TYPE_MESSAGE:
-        return "nil";
-      case TYPE_ENUM:
-        Preconditions.checkArgument(
-            type.getEnumType().getValues().size() > 0, "enum must have a value");
-        return rubyTypeName(type) + "::" + type.getEnumType().getValues().get(0).getSimpleName();
-      default:
-        if (type.isPrimitive()) {
-          return DEFAULT_VALUE_MAP.get(type.getKind());
-        }
-        throw new IllegalArgumentException("unknown type kind: " + type.getKind());
-    }
-  }
-
-  /**
    * Returns the name of Ruby class for the given proto element.
    */
-  private String rubyTypeNameForProtoElement(ProtoElement element) {
+  public String rubyTypeNameForProtoElement(ProtoElement element) {
     String fullName = element.getFullName();
     int lastDot = fullName.lastIndexOf('.');
     if (lastDot < 0) {
@@ -348,13 +321,17 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
   /**
    * Returns the iterable of Ruby module names for the proto element.
    */
-  public Iterable<String> getModules(ProtoElement element) {
+  public Iterable<String> getGrpcModules(ProtoElement element) {
     String fullName = element.getFullName();
     List<String> modules = new ArrayList<>();
     for (String pkgName : Splitter.on(".").splitToList(fullName)) {
       modules.add(lowerUnderscoreToUpperCamel(pkgName));
     }
     return modules;
+  }
+
+  public Iterable<String> getApiModules() {
+    return Splitter.on("::").splitToList(getApiConfig().getPackageName());
   }
 
   // Constants
@@ -448,6 +425,9 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
               "until",
               "when",
               "while",
-              "yield")
+              "yield",
+              // "options" is here because it's a common keyword argument to
+              // specify a CallOptions instance.
+              "options")
           .build();
 }

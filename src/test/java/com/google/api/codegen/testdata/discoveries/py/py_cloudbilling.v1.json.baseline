@@ -10,10 +10,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -28,14 +27,16 @@ service = discovery.build('cloudbilling', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-# * The resource name of the billing account to retrieve. For example, `billingAccounts/012345-567890-ABCDEF`.
+
+# * The resource name of the billing account to retrieve. For example,
+#   `billingAccounts/012345-567890-ABCDEF`.
 name = 'billingAccounts/{MY-BILLINGACCOUNT}'
 
 request = service.billingAccounts().get(name=name)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -47,7 +48,7 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -82,7 +83,7 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -97,7 +98,9 @@ service = discovery.build('cloudbilling', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-# * The resource name of the billing account associated with the projects that you want to list. For example, `billingAccounts/012345-567890-ABCDEF`.
+
+# * The resource name of the billing account associated with the projects that you want to list. For
+#   example, `billingAccounts/012345-567890-ABCDEF`.
 name = 'billingAccounts/{MY-BILLINGACCOUNT}'
 
 projects = service.billingAccounts().projects()
@@ -120,10 +123,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -138,14 +140,16 @@ service = discovery.build('cloudbilling', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'getBillingInfo' method:
-# * The resource name of the project for which billing information is retrieved. For example, `projects/tokyo-rain-123`.
+
+# * The resource name of the project for which billing information is retrieved. For example,
+#   `projects/tokyo-rain-123`.
 name = 'projects/{MY-PROJECT}'
 
 request = service.projects().getBillingInfo(name=name)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -157,10 +161,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -175,7 +178,9 @@ service = discovery.build('cloudbilling', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'updateBillingInfo' method:
-# * The resource name of the project associated with the billing information that you want to update. For example, `projects/tokyo-rain-123`.
+
+# * The resource name of the project associated with the billing information that you want to update.
+#   For example, `projects/tokyo-rain-123`.
 name = 'projects/{MY-PROJECT}'
 
 project_billing_info_body = {
@@ -186,4 +191,4 @@ request = service.projects().updateBillingInfo(name=name, body=project_billing_i
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)

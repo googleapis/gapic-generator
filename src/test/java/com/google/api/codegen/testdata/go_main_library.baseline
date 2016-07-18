@@ -25,6 +25,8 @@ import (
     gax "github.com/googleapis/gax-go"
     google_example_library_v1 "github.com/googleapis/proto-client-go/library/v1"
     "golang.org/x/net/context"
+    "google.golang.org/api/option"
+    "google.golang.org/api/transport"
     "google.golang.org/grpc"
     "google.golang.org/grpc/codes"
     "google.golang.org/grpc/metadata"
@@ -36,44 +38,67 @@ var (
     libraryArchivedBookPathTemplate = gax.MustCompilePathTemplate("archives/{archive_path=**}/books/{book}")
 )
 
-func defaultClientSettings() gax.ClientSettings {
-    withIdempotentRetryCodes := gax.WithRetryCodes(
-        []codes.Code{
-            codes.DeadlineExceeded,
-            codes.Unavailable,
-        },
-    )
-    defaultRetryOptions := []gax.CallOption{
+// CallOptions contains the retry settings for each method of this client.
+type CallOptions struct {
+    CreateShelf []gax.CallOption
+    GetShelf []gax.CallOption
+    ListShelves []gax.CallOption
+    DeleteShelf []gax.CallOption
+    MergeShelves []gax.CallOption
+    CreateBook []gax.CallOption
+    PublishSeries []gax.CallOption
+    GetBook []gax.CallOption
+    ListBooks []gax.CallOption
+    DeleteBook []gax.CallOption
+    UpdateBook []gax.CallOption
+    MoveBook []gax.CallOption
+    ListStrings []gax.CallOption
+    AddComments []gax.CallOption
+    GetBookFromArchive []gax.CallOption
+    UpdateBookIndex []gax.CallOption
+}
+
+func defaultClientOptions() []option.ClientOption {
+    return []option.ClientOption{
+        option.WithEndpoint("library-example.googleapis.com:443"),
+        option.WithScopes(
+            "https://www.googleapis.com/auth/cloud-platform",
+            "https://www.googleapis.com/auth/library",
+        ),
+    }
+}
+
+func defaultRetryOptions() []gax.CallOption {
+    return []gax.CallOption{
         gax.WithTimeout(30000*time.Millisecond),
         gax.WithDelayTimeoutSettings(100*time.Millisecond, 1000*time.Millisecond, 1.2),
         gax.WithRPCTimeoutSettings(300*time.Millisecond, 3000*time.Millisecond, 1.3),
     }
-    return gax.ClientSettings{
-        AppName: "gax",
-        AppVersion: gax.Version,
-        Endpoint: "library-example.googleapis.com:443",
-        Scopes: []string{
-            "https://www.googleapis.com/auth/cloud-platform",
-            "https://www.googleapis.com/auth/library",
+}
+
+func defaultCallOptions() *CallOptions {
+    withIdempotentRetryCodes := gax.WithRetryCodes([]codes.Code{
+            codes.DeadlineExceeded,
+            codes.Unavailable,
         },
-        CallOptions: map[string][]gax.CallOption{
-            "CreateShelf": defaultRetryOptions,
-            "GetShelf": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
-            "ListShelves": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
-            "DeleteShelf": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
-            "MergeShelves": defaultRetryOptions,
-            "CreateBook": defaultRetryOptions,
-            "PublishSeries": defaultRetryOptions,
-            "GetBook": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
-            "ListBooks": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
-            "DeleteBook": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
-            "UpdateBook": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
-            "MoveBook": defaultRetryOptions,
-            "ListStrings": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
-            "AddComments": defaultRetryOptions,
-            "GetBookFromArchive": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
-            "UpdateBookIndex": append([]gax.CallOption{withIdempotentRetryCodes}, defaultRetryOptions...),
-        },
+    )
+    return &CallOptions{
+        CreateShelf: defaultRetryOptions(),
+        GetShelf: append(defaultRetryOptions(), withIdempotentRetryCodes),
+        ListShelves: append(defaultRetryOptions(), withIdempotentRetryCodes),
+        DeleteShelf: append(defaultRetryOptions(), withIdempotentRetryCodes),
+        MergeShelves: defaultRetryOptions(),
+        CreateBook: defaultRetryOptions(),
+        PublishSeries: defaultRetryOptions(),
+        GetBook: append(defaultRetryOptions(), withIdempotentRetryCodes),
+        ListBooks: append(defaultRetryOptions(), withIdempotentRetryCodes),
+        DeleteBook: append(defaultRetryOptions(), withIdempotentRetryCodes),
+        UpdateBook: append(defaultRetryOptions(), withIdempotentRetryCodes),
+        MoveBook: defaultRetryOptions(),
+        ListStrings: append(defaultRetryOptions(), withIdempotentRetryCodes),
+        AddComments: defaultRetryOptions(),
+        GetBookFromArchive: append(defaultRetryOptions(), withIdempotentRetryCodes),
+        UpdateBookIndex: append(defaultRetryOptions(), withIdempotentRetryCodes),
     }
 }
 
@@ -85,8 +110,8 @@ type Client struct {
     // The gRPC API client.
     client google_example_library_v1.LibraryServiceClient
 
-    // The map from the method name to the default call options for the method of this service.
-    callOptions map[string][]gax.CallOption
+    // The call options for this service.
+    CallOptions *CallOptions
 
     // The metadata to be sent with each request.
     metadata map[string][]string
@@ -106,23 +131,18 @@ type Client struct {
 //
 // Check out [cloud docs!](/library/example/link).
 // This is [not a cloud link](http://www.google.com).
-func NewClient(ctx context.Context, opts ...gax.ClientOption) (*Client, error) {
-    s := defaultClientSettings()
-    for _, opt := range opts {
-        opt.Resolve(&s)
-    }
-    conn, err := gax.DialGRPC(ctx, s)
+func NewClient(ctx context.Context, opts ...option.ClientOption) (*Client, error) {
+    conn, err := transport.DialGRPC(ctx, append(defaultClientOptions(), opts...)...)
     if err != nil {
         return nil, err
     }
-    return &Client {
+    c := &Client {
         conn: conn,
         client: google_example_library_v1.NewLibraryServiceClient(conn),
-        callOptions: s.CallOptions,
-        metadata: map[string][]string{
-            "x-goog-api-client": []string{fmt.Sprintf("%s/%s %s gax/%s go/%s", s.AppName, s.AppVersion, gapicNameVersion, gax.Version, runtime.Version())},
-        },
-    }, nil
+        CallOptions: defaultCallOptions(),
+    }
+    c.SetGoogleClientInfo("gax", gax.Version)
+    return c, nil
 }
 
 // Connection returns the client's connection to the API service.
@@ -134,6 +154,15 @@ func (c *Client) Connection() *grpc.ClientConn {
 // the client is no longer required.
 func (c *Client) Close() error {
     return c.conn.Close()
+}
+
+// SetGoogleClientInfo sets the name and version of the application in
+// the `x-goog-api-client` header passed on each request. Intended for
+// use by Google-written clients.
+func (c *Client) SetGoogleClientInfo(name, version string) {
+    c.metadata = map[string][]string{
+        "x-goog-api-client": {fmt.Sprintf("%s/%s %s gax/%s go/%s", name, version, gapicNameVersion, gax.Version, runtime.Version())},
+    }
 }
 
 // Path templates.
@@ -181,7 +210,7 @@ func (c *Client) CreateShelf(ctx context.Context, req *google_example_library_v1
         var err error
         resp, err = c.client.CreateShelf(ctx, req)
         return err
-    }, c.callOptions["CreateShelf"]...)
+    }, c.CallOptions.CreateShelf...)
     if err != nil {
         return nil, err
     }
@@ -197,7 +226,7 @@ func (c *Client) GetShelf(ctx context.Context, req *google_example_library_v1.Ge
         var err error
         resp, err = c.client.GetShelf(ctx, req)
         return err
-    }, c.callOptions["GetShelf"]...)
+    }, c.CallOptions.GetShelf...)
     if err != nil {
         return nil, err
     }
@@ -216,7 +245,7 @@ func (c *Client) ListShelves(ctx context.Context, req *google_example_library_v1
             req.PageToken = it.nextPageToken
             resp, err = c.client.ListShelves(ctx, req)
             return err
-        }, c.callOptions["ListShelves"]...)
+        }, c.CallOptions.ListShelves...)
         if err != nil {
             return err
         }
@@ -238,7 +267,7 @@ func (c *Client) DeleteShelf(ctx context.Context, req *google_example_library_v1
         var err error
         _, err = c.client.DeleteShelf(ctx, req)
         return err
-    }, c.callOptions["DeleteShelf"]...)
+    }, c.CallOptions.DeleteShelf...)
     return err
 }
 
@@ -253,7 +282,7 @@ func (c *Client) MergeShelves(ctx context.Context, req *google_example_library_v
         var err error
         resp, err = c.client.MergeShelves(ctx, req)
         return err
-    }, c.callOptions["MergeShelves"]...)
+    }, c.CallOptions.MergeShelves...)
     if err != nil {
         return nil, err
     }
@@ -269,7 +298,7 @@ func (c *Client) CreateBook(ctx context.Context, req *google_example_library_v1.
         var err error
         resp, err = c.client.CreateBook(ctx, req)
         return err
-    }, c.callOptions["CreateBook"]...)
+    }, c.CallOptions.CreateBook...)
     if err != nil {
         return nil, err
     }
@@ -285,7 +314,7 @@ func (c *Client) PublishSeries(ctx context.Context, req *google_example_library_
         var err error
         resp, err = c.client.PublishSeries(ctx, req)
         return err
-    }, c.callOptions["PublishSeries"]...)
+    }, c.CallOptions.PublishSeries...)
     if err != nil {
         return nil, err
     }
@@ -301,7 +330,7 @@ func (c *Client) GetBook(ctx context.Context, req *google_example_library_v1.Get
         var err error
         resp, err = c.client.GetBook(ctx, req)
         return err
-    }, c.callOptions["GetBook"]...)
+    }, c.CallOptions.GetBook...)
     if err != nil {
         return nil, err
     }
@@ -321,7 +350,7 @@ func (c *Client) ListBooks(ctx context.Context, req *google_example_library_v1.L
             req.PageSize = it.pageSize
             resp, err = c.client.ListBooks(ctx, req)
             return err
-        }, c.callOptions["ListBooks"]...)
+        }, c.CallOptions.ListBooks...)
         if err != nil {
             return err
         }
@@ -343,7 +372,7 @@ func (c *Client) DeleteBook(ctx context.Context, req *google_example_library_v1.
         var err error
         _, err = c.client.DeleteBook(ctx, req)
         return err
-    }, c.callOptions["DeleteBook"]...)
+    }, c.CallOptions.DeleteBook...)
     return err
 }
 
@@ -356,7 +385,7 @@ func (c *Client) UpdateBook(ctx context.Context, req *google_example_library_v1.
         var err error
         resp, err = c.client.UpdateBook(ctx, req)
         return err
-    }, c.callOptions["UpdateBook"]...)
+    }, c.CallOptions.UpdateBook...)
     if err != nil {
         return nil, err
     }
@@ -372,7 +401,7 @@ func (c *Client) MoveBook(ctx context.Context, req *google_example_library_v1.Mo
         var err error
         resp, err = c.client.MoveBook(ctx, req)
         return err
-    }, c.callOptions["MoveBook"]...)
+    }, c.CallOptions.MoveBook...)
     if err != nil {
         return nil, err
     }
@@ -392,7 +421,7 @@ func (c *Client) ListStrings(ctx context.Context, req *google_example_library_v1
             req.PageSize = it.pageSize
             resp, err = c.client.ListStrings(ctx, req)
             return err
-        }, c.callOptions["ListStrings"]...)
+        }, c.CallOptions.ListStrings...)
         if err != nil {
             return err
         }
@@ -414,7 +443,7 @@ func (c *Client) AddComments(ctx context.Context, req *google_example_library_v1
         var err error
         _, err = c.client.AddComments(ctx, req)
         return err
-    }, c.callOptions["AddComments"]...)
+    }, c.CallOptions.AddComments...)
     return err
 }
 
@@ -427,7 +456,7 @@ func (c *Client) GetBookFromArchive(ctx context.Context, req *google_example_lib
         var err error
         resp, err = c.client.GetBookFromArchive(ctx, req)
         return err
-    }, c.callOptions["GetBookFromArchive"]...)
+    }, c.CallOptions.GetBookFromArchive...)
     if err != nil {
         return nil, err
     }
@@ -442,7 +471,7 @@ func (c *Client) UpdateBookIndex(ctx context.Context, req *google_example_librar
         var err error
         _, err = c.client.UpdateBookIndex(ctx, req)
         return err
-    }, c.callOptions["UpdateBookIndex"]...)
+    }, c.CallOptions.UpdateBookIndex...)
     return err
 }
 

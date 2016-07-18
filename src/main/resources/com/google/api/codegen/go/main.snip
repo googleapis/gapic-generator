@@ -35,11 +35,11 @@
 
             // The gRPC API client.
             client {@context.getServiceClientName(service)}
+
+            // The call options for this service.
+            CallOptions *{@context.getClientPrefix(service)}CallOptions
+
     @end
-
-        // The map from the method name to the default call options for the method of this service.
-        callOptions map[string][]gax.CallOption
-
         // The metadata to be sent with each request.
         metadata map[string][]string
     }
@@ -58,46 +58,58 @@
         @end
     )
 
-    func default{@context.getClientName(service)}Settings() gax.ClientSettings {
+    // {@context.getClientPrefix(service)}CallOptions contains the retry settings for each method of this client.
+    type {@context.getClientPrefix(service)}CallOptions struct {
+        @join method : service.getMethods
+            @let methodName = method.getSimpleName
+                {@methodName} []gax.CallOption
+            @end
+        @end
+    }
+
+    func default{@context.getClientName(service)}Options() []option.ClientOption {
+        return []option.ClientOption{
+            option.WithEndpoint("{@context.getServiceConfig.getServiceAddress(service)}:{@context.getServiceConfig.getServicePort()}"),
+            option.WithScopes(
+                @join scope : context.getServiceConfig.getAuthScopes(service)
+                    "{@scope}",
+                @end
+            ),
+        }
+    }
+
+    @join retryDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetrySettingsDefinition)
+        func {@context.lowerUnderscoreToLowerCamel(retryDef.getKey)}{@context.getClientPrefix(service)}RetryOptions() []gax.CallOption {
+            return []gax.CallOption{
+                gax.WithTimeout({@retryDef.getValue.getTotalTimeout.getMillis()}*time.Millisecond),
+                gax.WithDelayTimeoutSettings({@retryDef.getValue.getInitialRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getRetryDelayMultiplier}),
+                gax.WithRPCTimeoutSettings({@retryDef.getValue.getInitialRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getRpcTimeoutMultiplier}),
+            }
+        }
+    @end
+
+    func default{@context.getClientPrefix(service)}CallOptions() *{@context.getClientPrefix(service)}CallOptions {
         @join retryCodesDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetryCodesDefinition) if retryCodesDef.getValue
-            with{@context.lowerUnderscoreToUpperCamel(retryCodesDef.getKey)}RetryCodes := gax.WithRetryCodes(
-                []codes.Code{
+            with{@context.lowerUnderscoreToUpperCamel(retryCodesDef.getKey)}RetryCodes := gax.WithRetryCodes([]codes.Code{
                     @join code : retryCodesDef.getValue
                         codes.{@context.upperUnderscoreToUpperCamel(code.toString())},
                     @end
                 },
             )
         @end
-        @join retryDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetrySettingsDefinition)
-            {@context.lowerUnderscoreToLowerCamel(retryDef.getKey)}RetryOptions := []gax.CallOption{
-                gax.WithTimeout({@retryDef.getValue.getTotalTimeout.getMillis()}*time.Millisecond),
-                gax.WithDelayTimeoutSettings({@retryDef.getValue.getInitialRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRetryDelay.getMillis}*time.Millisecond, {@retryDef.getValue.getRetryDelayMultiplier}),
-                gax.WithRPCTimeoutSettings({@retryDef.getValue.getInitialRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getMaxRpcTimeout.getMillis}*time.Millisecond, {@retryDef.getValue.getRpcTimeoutMultiplier}),
-            }
-        @end
-        return gax.ClientSettings{
-            AppName: "gax",
-            AppVersion: gax.Version,
-            Endpoint: "{@context.getServiceConfig.getServiceAddress(service)}:{@context.getServiceConfig.getServicePort()}",
-            Scopes: []string{
-                @join scope : context.getServiceConfig.getAuthScopes(service)
-                    "{@scope}",
-                @end
-            },
-            CallOptions: map[string][]gax.CallOption{
-                @join method : service.getMethods
-                    @let methodName = method.getSimpleName, \
-                         methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-                         retryParamsMethodName = context.lowerUnderscoreToLowerCamel(methodConfig.getRetrySettingsConfigName), \
-                         retryCodesMethodName = context.lowerUnderscoreToUpperCamel(methodConfig.getRetryCodesConfigName)
-                        @if {@context.hasEmptyRetryCodes(service, methodConfig)}
-                            "{@methodName}": {@retryParamsMethodName}RetryOptions,
-                        @else
-                            "{@methodName}": append([]gax.CallOption{with{@retryCodesMethodName}RetryCodes}, {@retryParamsMethodName}RetryOptions...),
-                        @end
+        return &{@context.getClientPrefix(service)}CallOptions{
+            @join method : service.getMethods
+                @let methodName = method.getSimpleName, \
+                     methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
+                     retryParamsName = context.lowerUnderscoreToLowerCamel(methodConfig.getRetrySettingsConfigName), \
+                     retryCodesName = context.lowerUnderscoreToUpperCamel(methodConfig.getRetryCodesConfigName)
+                    @if {@context.hasEmptyRetryCodes(service, methodConfig)}
+                        {@methodName}: {@retryParamsName}{@context.getClientPrefix(service)}RetryOptions(),
+                    @else
+                        {@methodName}: append({@retryParamsName}{@context.getClientPrefix(service)}RetryOptions(), with{@retryCodesName}RetryCodes),
                     @end
                 @end
-            },
+            @end
         }
     }
 @end
@@ -109,23 +121,18 @@
         @join commentLine : context.comments(service)
             {@commentLine}
         @end
-        func New{@clientName}(ctx context.Context, opts ...gax.ClientOption) (*{@clientName}, error) {
-            s := default{@clientName}Settings()
-            for _, opt := range opts {
-                opt.Resolve(&s)
-            }
-            conn, err := gax.DialGRPC(ctx, s)
+        func New{@clientName}(ctx context.Context, opts ...option.ClientOption) (*{@clientName}, error) {
+            conn, err := transport.DialGRPC(ctx, append(default{@clientName}Options(), opts...)...)
             if err != nil {
                 return nil, err
             }
-            return &{@clientName} {
+            c := &{@clientName} {
                 conn: conn,
                 client: {@context.getServiceClientConstructorName(service)}(conn),
-                callOptions: s.CallOptions,
-                metadata: map[string][]string{
-                    "x-goog-api-client": []string{fmt.Sprintf("%s/%s %s gax/%s go/%s", s.AppName, s.AppVersion, gapicNameVersion, gax.Version, runtime.Version())},
-                },
-            }, nil
+                CallOptions: default{@context.getClientPrefix(service)}CallOptions(),
+            }
+            c.SetGoogleClientInfo("gax", gax.Version)
+            return c, nil
         }
 
         // Connection returns the client's connection to the API service.
@@ -137,6 +144,15 @@
         // the client is no longer required.
         func (c *{@clientName}) Close() error {
             return c.conn.Close()
+        }
+
+        // SetGoogleClientInfo sets the name and version of the application in
+        // the `x-goog-api-client` header passed on each request. Intended for
+        // use by Google-written clients.
+        func (c *{@clientName}) SetGoogleClientInfo(name, version string) {
+            c.metadata = map[string][]string{
+                "x-goog-api-client": {fmt.Sprintf("%s/%s %s gax/%s go/%s", name, version, gapicNameVersion, gax.Version, runtime.Version())},
+            }
         }
     @end
 @end
@@ -219,7 +235,7 @@
                                 @end
                                 resp, err = c.client.{@methodName}(ctx, req)
                                 return err
-                            }, c.callOptions["{@methodName}"]...)
+                            }, c.CallOptions.{@methodName}...)
                             if err != nil {
                                 return err
                             }
@@ -244,7 +260,7 @@
                             var err error
                             _, err = c.client.{@methodName}(ctx, req)
                             return err
-                        }, c.callOptions["{@methodName}"]...)
+                        }, c.CallOptions.{@methodName}...)
                         return err
                     }
                 @else
@@ -255,7 +271,7 @@
                             var err error
                             resp, err = c.client.{@methodName}(ctx, req)
                             return err
-                        }, c.callOptions["{@methodName}"]...)
+                        }, c.CallOptions.{@methodName}...)
                         if err != nil {
                             return nil, err
                         }

@@ -154,10 +154,10 @@ public class PythonGapicContext extends GapicContext {
   }
 
   /** Returns a comment string for field, consisting of type information and proto comment. */
-  private String fieldComment(Field field, PythonImportHandler importHandler, String paramComment) {
+  private String fieldComment(
+      String name, Field field, PythonImportHandler importHandler, String paramComment) {
     String comment =
-        String.format(
-            "  %s (%s)", field.getSimpleName(), fieldTypeCardinalityComment(field, importHandler));
+        String.format("  %s (%s)", name, fieldTypeCardinalityComment(field, importHandler));
     if (paramComment == null) {
       paramComment = getSphinxifiedScopedDescription(field);
     }
@@ -179,7 +179,7 @@ public class PythonGapicContext extends GapicContext {
     StringBuilder paramTypesBuilder = new StringBuilder();
     paramTypesBuilder.append("Attributes:\n");
     for (Field field : msg.getFields()) {
-      paramTypesBuilder.append(fieldComment(field, importHandler, null));
+      paramTypesBuilder.append(fieldComment(field.getSimpleName(), field, importHandler, null));
     }
     String paramTypes = paramTypesBuilder.toString();
     // Generate comment contents
@@ -251,10 +251,12 @@ public class PythonGapicContext extends GapicContext {
     // parameter types
     contentBuilder.append("Args:\n");
     for (Field field : this.messages().flattenedFields(method.getInputType())) {
+      String name = pythonCommon.wrapIfKeywordOrBuiltIn(field.getSimpleName());
       if (config.isPageStreaming()
           && field.equals((config.getPageStreaming().getPageSizeField()))) {
         contentBuilder.append(
             fieldComment(
+                name,
                 field,
                 importHandler,
                 "The maximum number of resources contained in the\n"
@@ -263,7 +265,7 @@ public class PythonGapicContext extends GapicContext {
                     + "streaming is performed per-page, this determines the maximum number\n"
                     + "of resources in a page."));
       } else {
-        contentBuilder.append(fieldComment(field, importHandler, null));
+        contentBuilder.append(fieldComment(name, field, importHandler, null));
       }
     }
     contentBuilder.append(

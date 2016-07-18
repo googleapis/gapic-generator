@@ -10,7 +10,7 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -25,9 +25,12 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
 # * Name of a bucket.
 bucket = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
 request = service.bucketAccessControls().delete(bucket=bucket, entity=entity)
@@ -43,10 +46,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -61,16 +63,19 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
 # * Name of a bucket.
 bucket = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
 request = service.bucketAccessControls().get(bucket=bucket, entity=entity)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -82,10 +87,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -100,6 +104,7 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
 # * Name of a bucket.
 bucket = ''
 
@@ -111,7 +116,7 @@ request = service.bucketAccessControls().insert(bucket=bucket, body=bucket_acces
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -123,10 +128,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -141,6 +145,7 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
 # * Name of a bucket.
 bucket = ''
 
@@ -148,7 +153,7 @@ request = service.bucketAccessControls().list(bucket=bucket)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -160,10 +165,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -178,9 +182,12 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
 # * Name of a bucket.
 bucket = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
 bucket_access_control_body = {
@@ -191,7 +198,7 @@ request = service.bucketAccessControls().patch(bucket=bucket, entity=entity, bod
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -203,10 +210,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -221,9 +227,12 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
 # * Name of a bucket.
 bucket = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
 bucket_access_control_body = {
@@ -234,7 +243,7 @@ request = service.bucketAccessControls().update(bucket=bucket, entity=entity, bo
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -246,7 +255,7 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -261,6 +270,7 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
 # * Name of a bucket.
 bucket = ''
 
@@ -277,10 +287,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -295,6 +304,7 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
 # * Name of a bucket.
 bucket = ''
 
@@ -302,7 +312,7 @@ request = service.buckets().get(bucket=bucket)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -314,10 +324,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -332,6 +341,7 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
 # * A valid API project identifier.
 project = ''
 
@@ -343,7 +353,7 @@ request = service.buckets().insert(project=project, body=bucket_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -355,7 +365,7 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -370,6 +380,7 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
 # * A valid API project identifier.
 project = ''
 
@@ -393,10 +404,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -411,6 +421,7 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
 # * Name of a bucket.
 bucket = ''
 
@@ -422,7 +433,7 @@ request = service.buckets().patch(bucket=bucket, body=bucket_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -434,10 +445,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -452,6 +462,7 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
 # * Name of a bucket.
 bucket = ''
 
@@ -463,7 +474,7 @@ request = service.buckets().update(bucket=bucket, body=bucket_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -475,7 +486,7 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -507,7 +518,7 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -522,9 +533,12 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
 # * Name of a bucket.
 bucket = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
 request = service.defaultObjectAccessControls().delete(bucket=bucket, entity=entity)
@@ -540,10 +554,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -558,16 +571,19 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
 # * Name of a bucket.
 bucket = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
 request = service.defaultObjectAccessControls().get(bucket=bucket, entity=entity)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -579,10 +595,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -597,6 +612,7 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
 # * Name of a bucket.
 bucket = ''
 
@@ -608,7 +624,7 @@ request = service.defaultObjectAccessControls().insert(bucket=bucket, body=objec
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -620,10 +636,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -638,6 +653,7 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
 # * Name of a bucket.
 bucket = ''
 
@@ -645,7 +661,7 @@ request = service.defaultObjectAccessControls().list(bucket=bucket)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -657,10 +673,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -675,9 +690,12 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
 # * Name of a bucket.
 bucket = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
 object_access_control_body = {
@@ -688,7 +706,7 @@ request = service.defaultObjectAccessControls().patch(bucket=bucket, entity=enti
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -700,10 +718,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -718,9 +735,12 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
 # * Name of a bucket.
 bucket = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
 object_access_control_body = {
@@ -731,7 +751,7 @@ request = service.defaultObjectAccessControls().update(bucket=bucket, entity=ent
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -743,7 +763,7 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -758,11 +778,16 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
 # * Name of a bucket.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
 request = service.objectAccessControls().delete(bucket=bucket, object=object, entity=entity)
@@ -778,10 +803,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -796,18 +820,23 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
 # * Name of a bucket.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
 request = service.objectAccessControls().get(bucket=bucket, object=object, entity=entity)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -819,10 +848,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -837,9 +865,12 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
 # * Name of a bucket.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
 
 object_access_control_body = {
@@ -850,7 +881,7 @@ request = service.objectAccessControls().insert(bucket=bucket, object=object, bo
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -862,10 +893,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -880,16 +910,19 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
 # * Name of a bucket.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
 
 request = service.objectAccessControls().list(bucket=bucket, object=object)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -901,10 +934,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -919,11 +951,16 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
 # * Name of a bucket.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
 object_access_control_body = {
@@ -934,7 +971,7 @@ request = service.objectAccessControls().patch(bucket=bucket, object=object, ent
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -946,10 +983,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -964,11 +1000,16 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
 # * Name of a bucket.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
 object_access_control_body = {
@@ -979,7 +1020,7 @@ request = service.objectAccessControls().update(bucket=bucket, object=object, en
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -991,10 +1032,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1009,9 +1049,12 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'compose' method:
+
 # * Name of the bucket in which to store the new object.
 destinationBucket = ''
-# * Name of the new object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the new object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 destinationObject = ''
 
 compose_request_body = {
@@ -1022,7 +1065,7 @@ request = service.objects().compose(destinationBucket=destinationBucket, destina
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -1034,10 +1077,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1052,13 +1094,21 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'copy' method:
+
 # * Name of the bucket in which to find the source object.
 sourceBucket = ''
-# * Name of the source object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the source object. For information about how to URL encode object names to be path safe,
+#   see Encoding URI Path Parts.
 sourceObject = ''
-# * Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket value, if any.For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the bucket in which to store the new object. Overrides the provided object metadata's
+#   bucket value, if any.For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 destinationBucket = ''
-# * Name of the new object. Required when the object metadata is not otherwise provided. Overrides the object metadata's name value, if any.
+
+# * Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
+#   object metadata's name value, if any.
 destinationObject = ''
 
 object__body = {
@@ -1069,7 +1119,7 @@ request = service.objects().copy(sourceBucket=sourceBucket, sourceObject=sourceO
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -1081,7 +1131,7 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1096,9 +1146,12 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
 # * Name of the bucket in which the object resides.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
 
 request = service.objects().delete(bucket=bucket, object=object)
@@ -1114,10 +1167,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1132,16 +1184,19 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
 # * Name of the bucket in which the object resides.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
 
 request = service.objects().get(bucket=bucket, object=object)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -1153,10 +1208,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1171,7 +1225,9 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
-# * Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket value, if any.
+
+# * Name of the bucket in which to store the new object. Overrides the provided object metadata's
+#   bucket value, if any.
 bucket = ''
 
 object__body = {
@@ -1182,7 +1238,7 @@ request = service.objects().insert(bucket=bucket, body=object__body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -1194,7 +1250,7 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1209,6 +1265,7 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
 # * Name of the bucket in which to look for objects.
 bucket = ''
 
@@ -1232,10 +1289,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1250,9 +1306,12 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
 # * Name of the bucket in which the object resides.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
 
 object__body = {
@@ -1263,7 +1322,7 @@ request = service.objects().patch(bucket=bucket, object=object, body=object__bod
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -1275,10 +1334,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1293,13 +1351,21 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'rewrite' method:
+
 # * Name of the bucket in which to find the source object.
 sourceBucket = ''
-# * Name of the source object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the source object. For information about how to URL encode object names to be path safe,
+#   see Encoding URI Path Parts.
 sourceObject = ''
-# * Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket value, if any.
+
+# * Name of the bucket in which to store the new object. Overrides the provided object metadata's
+#   bucket value, if any.
 destinationBucket = ''
-# * Name of the new object. Required when the object metadata is not otherwise provided. Overrides the object metadata's name value, if any. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
+#   object metadata's name value, if any. For information about how to URL encode object names to be
+#   path safe, see Encoding URI Path Parts.
 destinationObject = ''
 
 object__body = {
@@ -1310,7 +1376,7 @@ request = service.objects().rewrite(sourceBucket=sourceBucket, sourceObject=sour
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -1322,10 +1388,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1340,9 +1405,12 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
 # * Name of the bucket in which the object resides.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
 
 object__body = {
@@ -1353,7 +1421,7 @@ request = service.objects().update(bucket=bucket, object=object, body=object__bo
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -1365,10 +1433,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1383,6 +1450,7 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'watchAll' method:
+
 # * Name of the bucket in which to look for objects.
 bucket = ''
 
@@ -1394,4 +1462,4 @@ request = service.objects().watchAll(bucket=bucket, body=channel_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)

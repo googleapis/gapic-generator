@@ -10,10 +10,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -28,6 +27,7 @@ service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+
 # * The project id. The value can be the numeric project ID or string-based project name.
 project = ''
 
@@ -39,7 +39,7 @@ request = service.metricDescriptors().create(project=project, body=metric_descri
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -51,10 +51,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -69,8 +68,10 @@ service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
 # * The project ID to which the metric belongs.
 project = ''
+
 # * Name of the metric.
 metric = ''
 
@@ -78,7 +79,7 @@ request = service.metricDescriptors().delete(project=project, metric=metric)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -90,7 +91,7 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -105,6 +106,7 @@ service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
 # * The project id. The value can be the numeric project ID or string-based project name.
 project = ''
 
@@ -128,7 +130,7 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -143,10 +145,15 @@ service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-# * The project ID to which this time series belongs. The value can be the numeric project ID or string-based project name.
+
+# * The project ID to which this time series belongs. The value can be the numeric project ID or
+#   string-based project name.
 project = ''
-# * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example, compute.googleapis.com/instance/disk/read_ops_count.
+
+# * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+#   compute.googleapis.com/instance/disk/read_ops_count.
 metric = ''
+
 # * End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
 youngest = ''
 
@@ -170,10 +177,9 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -188,6 +194,7 @@ service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'write' method:
+
 # * The project ID. The value can be the numeric project ID or string-based project name.
 project = ''
 
@@ -199,7 +206,7 @@ request = service.timeseries().write(project=project, body=write_timeseries_requ
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
 PRE-REQUISITES:
 ---------------
@@ -211,7 +218,7 @@ PRE-REQUISITES:
    https://cloud.google.com/sdk/ and run 'gcloud auth application-default login'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -226,10 +233,15 @@ service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-# * The project ID to which this time series belongs. The value can be the numeric project ID or string-based project name.
+
+# * The project ID to which this time series belongs. The value can be the numeric project ID or
+#   string-based project name.
 project = ''
-# * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example, compute.googleapis.com/instance/disk/read_ops_count.
+
+# * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+#   compute.googleapis.com/instance/disk/read_ops_count.
 metric = ''
+
 # * End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
 youngest = ''
 

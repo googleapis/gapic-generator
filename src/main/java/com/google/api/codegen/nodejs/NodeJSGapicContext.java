@@ -254,33 +254,6 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   /**
-   * Return the default value for the given field.
-   */
-  public String defaultValue(Field field) {
-    TypeRef type = field.getType();
-    if (type.isMap()) {
-      return "{}";
-    }
-    // Return empty array if the type is repeated.
-    if (type.getCardinality() == Cardinality.REPEATED) {
-      return "[]";
-    }
-    switch (type.getKind()) {
-      case TYPE_MESSAGE:
-        return "{}";
-      case TYPE_ENUM:
-        Preconditions.checkArgument(
-            type.getEnumType().getValues().size() > 0, "enum must have a value");
-        return type.getEnumType().getValues().get(0).getFullName();
-      default:
-        if (type.isPrimitive()) {
-          return DEFAULT_VALUE_MAP.get(type.getKind());
-        }
-        throw new IllegalArgumentException("unknown type kind: " + type.getKind());
-    }
-  }
-
-  /**
    * Returns the name of JS type for the given typeRef.
    */
   public String jsTypeName(TypeRef typeRef) {
