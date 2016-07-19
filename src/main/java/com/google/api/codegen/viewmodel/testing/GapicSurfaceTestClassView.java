@@ -18,7 +18,7 @@ import com.google.api.codegen.viewmodel.ViewModelDoc;
 
 import java.util.List;
 
-public class ApiTestClassView implements ViewModelDoc {
+public class GapicSurfaceTestClassView implements ViewModelDoc {
   public String packageName;
   public String name;
 
@@ -29,7 +29,7 @@ public class ApiTestClassView implements ViewModelDoc {
   public List<String> imports;
   public String outputPath;
 
-  public List<ApiTestCaseView> testCases;
+  public List<GapicSurfaceTestCaseView> testCases;
 
   @Override
   public String getTemplateFileName() {

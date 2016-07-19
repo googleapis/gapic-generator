@@ -38,7 +38,7 @@ import com.google.api.codegen.viewmodel.MapInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
-import com.google.api.codegen.viewmodel.testing.ApiTestAssertView;
+import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
@@ -77,9 +77,9 @@ public class InitCodeTransformer {
         .build();
   }
 
-  public List<ApiTestAssertView> generateTestAssertViews(
+  public List<GapicSurfaceTestAssertView> generateTestAssertViews(
       MethodTransformerContext context, Iterable<Field> fields) {
-    List<ApiTestAssertView> assertViews = new ArrayList<>();
+    List<GapicSurfaceTestAssertView> assertViews = new ArrayList<>();
     Map<String, Object> initFieldStructure = createInitFieldStructure(context);
     InitCodeGenerator generator = new InitCodeGenerator();
     InitCode initCode =
@@ -87,7 +87,7 @@ public class InitCodeTransformer {
 
     for (InitCodeLine line : initCode.getLines()) {
       SurfaceNamer namer = context.getNamer();
-      ApiTestAssertView assertView = new ApiTestAssertView();
+      GapicSurfaceTestAssertView assertView = new GapicSurfaceTestAssertView();
       assertView.expectedValueIdentifier =
           namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
       assertView.actualValueIdentifier = namer.getGetFunctionCallName(line.getIdentifier());

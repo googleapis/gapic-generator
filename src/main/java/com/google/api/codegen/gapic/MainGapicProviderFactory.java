@@ -40,9 +40,13 @@ import com.google.api.codegen.py.PythonSnippetSetRunner;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.ruby.RubyGapicContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
+<<<<<<< bd659a94b828e8f5da3a345e56ae0a65bb88846f
 import com.google.api.codegen.transformer.JavaTestTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
+=======
+import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
+>>>>>>> Fix github feedbacks.
 import com.google.api.codegen.viewmodel.SurfaceSnippetSetRunner;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
@@ -158,7 +162,8 @@ public class MainGapicProviderFactory
           TestGapicProvider.newBuilder()
               .setModel(model)
               .setSnippetSetRunner(new SurfaceSnippetSetRunner(resourceRoot, new JavaSnippetUtil()))
-              .setModelToSurfaceTransformer(new JavaTestTransformer(apiConfig, javaPathMapper))
+              .setModelToSurfaceTransformer(
+                  new JavaGapicSurfaceTestTransformer(apiConfig, javaPathMapper))
               .build();
 
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);

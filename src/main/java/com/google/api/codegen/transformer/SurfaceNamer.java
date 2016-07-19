@@ -210,4 +210,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getAndSavePagedResponseTypeName(ModelTypeTable typeTable, TypeRef resourceType) {
     return SurfaceNamer.NOT_IMPLEMENTED;
   }
+
+  public String getTestCaseName(Method method) {
+    return methodName(Name.upperCamel(method.getSimpleName(), "Test"));
+  }
+
+  public String getTestClassName(Interface service) {
+    return className(Name.upperCamel(getApiWrapperClassName(service), "Test"));
+  }
 }
