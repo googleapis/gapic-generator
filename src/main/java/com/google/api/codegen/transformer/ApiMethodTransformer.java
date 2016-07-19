@@ -435,18 +435,19 @@ public class ApiMethodTransformer {
       MethodTransformerContext context, Iterable<Field> fields) {
     MapParamDocView.Builder paramDoc = MapParamDocView.newBuilder();
 
-    paramDoc.paramName(context.getNamer().varName(Name.from("optional", "args")));
+    Name optionalArgsName = Name.from("optional", "args");
+
+    paramDoc.paramName(context.getNamer().varName(optionalArgsName));
     paramDoc.typeName(context.getNamer().getOptionalArrayTypeName());
 
     List<String> docLines = null;
     if (!fields.iterator().hasNext()) {
-      docLines =
-          Arrays.asList(
-              new String[] {
-                "Optional. There are no optional parameters for this method yet;",
-                // FIXME remove PHP-specific variable naming/syntax
-                "          this $optionalArgs parameter reserves a spot for future ones."
-              });
+      String retrySettingsDocText =
+          String.format(
+              "Optional. There are no optional parameters for this method yet;\n"
+                  + "          this %s parameter reserves a spot for future ones.",
+              context.getNamer().varReference(optionalArgsName));
+      docLines = context.getNamer().getDocLines(retrySettingsDocText);
     } else {
       docLines = Arrays.asList("Optional.");
     }
