@@ -18,7 +18,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -48,28 +47,24 @@ public class RubyDiscoveryFragmentGeneratorTest extends DiscoveryGeneratorTestBa
    */
   @Parameters(name = "{0}")
   public static List<Object[]> testedConfigs() {
-    // FIXME this is just commented out to make the tests go faster during iterations of refactoring.
-    // The real fix is to move discovery tests out of toolkit altogether:
-    // https://github.com/googleapis/toolkit/issues/201
-    //    File dir =
-    //        new File(
-    //            System.getProperty("user.dir"),
-    //            "src/test/java/com/google/api/codegen/testdata/discoveries");
-    //    ImmutableList.Builder<Object[]> builder = ImmutableList.<Object[]>builder();
-    //    for (File file : dir.listFiles(new DiscoveryFile())) {
-    //      String fileName = file.getName();
-    //      if (SKIP_TEST.contains(fileName)) {
-    //        continue;
-    //      }
-    //      builder.add(
-    //          new Object[] {
-    //            "ruby_" + fileName,
-    //            "discoveries/" + fileName,
-    //            new String[] {"com/google/api/codegen/ruby/ruby_discovery.yaml"}
-    //          });
-    //    }
-    //    return builder.build();
-    return new ArrayList<>();
+    File dir =
+        new File(
+            System.getProperty("user.dir"),
+            "src/test/java/com/google/api/codegen/testdata/discoveries");
+    ImmutableList.Builder<Object[]> builder = ImmutableList.<Object[]>builder();
+    for (File file : dir.listFiles(new DiscoveryFile())) {
+      String fileName = file.getName();
+      if (SKIP_TEST.contains(fileName)) {
+        continue;
+      }
+      builder.add(
+          new Object[] {
+            "ruby_" + fileName,
+            "discoveries/" + fileName,
+            new String[] {"com/google/api/codegen/ruby/ruby_discovery.yaml"}
+          });
+    }
+    return builder.build();
   }
 
   @Before
