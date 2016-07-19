@@ -469,18 +469,30 @@ public class ApiMethodTransformer {
     List<ParamDocView> arrayKeyDocs = new ArrayList<>();
     SimpleParamDocView.Builder retrySettingsDoc = SimpleParamDocView.newBuilder();
     retrySettingsDoc.typeName(context.getNamer().getRetrySettingsClassName());
-    retrySettingsDoc.paramName(context.getNamer().varName(Name.from("retry", "settings")));
-    retrySettingsDoc.firstLine("Retry settings to use for this call. If present, then");
-    // FIXME remove PHP-specific variable naming/syntax
-    retrySettingsDoc.remainingLines(Arrays.asList("$timeout is ignored."));
+
+    Name retrySettingsName = Name.from("retry", "settings");
+    Name timeoutMillisName = Name.from("timeout", "millis");
+
+    retrySettingsDoc.paramName(context.getNamer().varName(retrySettingsName));
+    String retrySettingsDocText =
+        String.format(
+            "Retry settings to use for this call. If present, then\n%s is ignored.",
+            context.getNamer().varReference(timeoutMillisName));
+    List<String> retrySettingsDocLines = context.getNamer().getDocLines(retrySettingsDocText);
+    retrySettingsDoc.firstLine(retrySettingsDocLines.get(0));
+    retrySettingsDoc.remainingLines(retrySettingsDocLines.subList(1, retrySettingsDocLines.size()));
     arrayKeyDocs.add(retrySettingsDoc.build());
 
     SimpleParamDocView.Builder timeoutDoc = SimpleParamDocView.newBuilder();
     timeoutDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(TypeRef.of(Type.TYPE_INT32)));
-    timeoutDoc.paramName(context.getNamer().varName(Name.from("timeout", "millis")));
-    // FIXME remove PHP-specific variable naming/syntax
-    timeoutDoc.firstLine("Timeout to use for this call. Only used if $retrySettings");
-    timeoutDoc.remainingLines(Arrays.asList("is not set."));
+    timeoutDoc.paramName(context.getNamer().varName(timeoutMillisName));
+    String timeoutMillisDocText =
+        String.format(
+            "Timeout to use for this call. Only used if %s\nis not set.",
+            context.getNamer().varReference(retrySettingsName));
+    List<String> timeoutMillisDocLines = context.getNamer().getDocLines(timeoutMillisDocText);
+    timeoutDoc.firstLine(timeoutMillisDocLines.get(0));
+    timeoutDoc.remainingLines(timeoutMillisDocLines.subList(1, timeoutMillisDocLines.size()));
     arrayKeyDocs.add(timeoutDoc.build());
 
     paramDoc.arrayKeyDocs(arrayKeyDocs);

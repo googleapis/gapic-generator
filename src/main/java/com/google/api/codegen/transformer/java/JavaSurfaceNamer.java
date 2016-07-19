@@ -41,8 +41,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public List<String> getDocLines(ProtoElement element) {
-    return JavaRenderingUtil.getDocLines(DocumentationUtil.getDescription(element));
+  public List<String> getDocLines(String text) {
+    return JavaRenderingUtil.getDocLines(text);
   }
 
   @Override

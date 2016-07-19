@@ -44,6 +44,11 @@ public class ViewNamer implements NameFormatter {
   }
 
   @Override
+  public String varReference(Name name) {
+    return formatter.varReference(name);
+  }
+
+  @Override
   public String methodName(Name name) {
     return formatter.methodName(name);
   }

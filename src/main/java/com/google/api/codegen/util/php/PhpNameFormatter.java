@@ -34,6 +34,11 @@ public class PhpNameFormatter implements NameFormatter {
   }
 
   @Override
+  public String varReference(Name name) {
+    return "$" + varName(name);
+  }
+
+  @Override
   public String methodName(Name name) {
     return name.toLowerCamel();
   }

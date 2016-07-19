@@ -135,8 +135,12 @@ public class SurfaceNamer extends ViewNamer {
     return true;
   }
 
+  public List<String> getDocLines(String text) {
+    return CommonRenderingUtil.getDocLines(text);
+  }
+
   public List<String> getDocLines(ProtoElement element) {
-    return CommonRenderingUtil.getDocLines(DocumentationUtil.getDescription(element));
+    return getDocLines(DocumentationUtil.getDescription(element));
   }
 
   public List<String> getThrowsDocLines() {

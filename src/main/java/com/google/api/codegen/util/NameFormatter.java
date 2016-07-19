@@ -31,6 +31,11 @@ public interface NameFormatter {
   String varName(Name name);
 
   /**
+   * Formats the name as a reference to a variable name.
+   */
+  String varReference(Name name);
+
+  /**
    * Formats the name as a method name.
    */
   String methodName(Name name);
