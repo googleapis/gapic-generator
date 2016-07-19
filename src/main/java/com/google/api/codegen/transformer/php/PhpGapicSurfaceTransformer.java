@@ -41,7 +41,6 @@ import java.util.List;
  * The ModelToViewTransformer to transform a Model into the standard GAPIC surface in PHP.
  */
 public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
-  private ApiConfig cachedApiConfig;
   private GapicCodePathMapper pathMapper;
   private PathTemplateTransformer pathTemplateTransformer;
   private PageStreamingTransformer pageStreamingTransformer;
@@ -53,7 +52,6 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
    * Standard constructor.
    */
   public PhpGapicSurfaceTransformer(ApiConfig apiConfig, GapicCodePathMapper pathMapper) {
-    this.cachedApiConfig = apiConfig;
     this.pathMapper = pathMapper;
     this.pathTemplateTransformer = new PathTemplateTransformer();
     this.pageStreamingTransformer = new PageStreamingTransformer();
@@ -66,20 +64,20 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model) {
+  public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
-      surfaceDocs.addAll(transform(service));
+      SurfaceTransformerContext context =
+          SurfaceTransformerContext.create(
+              service, apiConfig, new PhpModelTypeTable(), new PhpSurfaceNamer());
+
+      surfaceDocs.addAll(transform(context));
     }
     return surfaceDocs;
   }
 
-  public List<ViewModel> transform(Interface service) {
-    SurfaceTransformerContext context =
-        SurfaceTransformerContext.create(
-            service, cachedApiConfig, new PhpModelTypeTable(), new PhpSurfaceNamer());
-
-    String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
+  public List<ViewModel> transform(SurfaceTransformerContext context) {
+    String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
     SurfaceNamer namer = context.getNamer();
 
     List<ViewModel> surfaceData = new ArrayList<>();
@@ -91,22 +89,22 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     DynamicXApiView.Builder xapiClass = DynamicXApiView.newBuilder();
 
     ServiceDocView.Builder serviceDoc = ServiceDocView.newBuilder();
-    List<String> docLines = context.getNamer().getDocLines(service);
+    List<String> docLines = context.getNamer().getDocLines(context.getInterface());
     serviceDoc.firstLine(docLines.get(0));
     serviceDoc.remainingLines(docLines.subList(1, docLines.size()));
     serviceDoc.exampleApiMethod(methods.get(0));
     xapiClass.doc(serviceDoc.build());
 
     xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
-    xapiClass.protoFilename(service.getFile().getSimpleName());
+    xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
     xapiClass.packageName(context.getApiConfig().getPackageName());
     String name = namer.getApiWrapperClassName(context.getInterface());
     xapiClass.name(name);
     ServiceConfig serviceConfig = new ServiceConfig();
-    xapiClass.serviceAddress(serviceConfig.getServiceAddress(service));
+    xapiClass.serviceAddress(serviceConfig.getServiceAddress(context.getInterface()));
     xapiClass.servicePort(serviceConfig.getServicePort());
-    xapiClass.serviceTitle(serviceConfig.getTitle(service));
-    xapiClass.authScopes(serviceConfig.getAuthScopes(service));
+    xapiClass.serviceTitle(serviceConfig.getTitle(context.getInterface()));
+    xapiClass.authScopes(serviceConfig.getAuthScopes(context.getInterface()));
 
     xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
     xapiClass.formatResourceFunctions(
@@ -118,8 +116,8 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.pageStreamingDescriptors(pageStreamingTransformer.generateDescriptors(context));
 
     xapiClass.methodKeys(generateMethodKeys(context));
-    xapiClass.clientConfigPath(namer.getClientConfigPath(service));
-    xapiClass.interfaceKey(service.getFullName());
+    xapiClass.clientConfigPath(namer.getClientConfigPath(context.getInterface()));
+    xapiClass.interfaceKey(context.getInterface().getFullName());
     String grpcClientTypeName = namer.getGrpcClientTypeName(context.getInterface());
     xapiClass.grpcClientTypeName(context.getTypeTable().getAndSaveNicknameFor(grpcClientTypeName));
 

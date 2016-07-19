@@ -46,7 +46,6 @@ import java.util.List;
  * The ModelToViewTransformer to transform a Model into the standard GAPIC surface in Java.
  */
 public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
-  private ApiConfig cachedApiConfig;
   private GapicCodePathMapper pathMapper;
   private PathTemplateTransformer pathTemplateTransformer;
   private ApiMethodTransformer apiMethodTransformer;
@@ -57,8 +56,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   /**
    * Standard constructor.
    */
-  public JavaGapicSurfaceTransformer(ApiConfig apiConfig, GapicCodePathMapper pathMapper) {
-    this.cachedApiConfig = apiConfig;
+  public JavaGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
     this.pathTemplateTransformer = new PathTemplateTransformer();
     this.apiMethodTransformer = new ApiMethodTransformer();
@@ -70,19 +68,18 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   @Override
-  public List<ViewModel> transform(Model model) {
+  public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
-      surfaceDocs.addAll(transform(service));
+      SurfaceTransformerContext context =
+          SurfaceTransformerContext.create(
+              service, apiConfig, new JavaModelTypeTable(), new JavaSurfaceNamer());
+      surfaceDocs.addAll(transform(context));
     }
     return surfaceDocs;
   }
 
-  public List<ViewModel> transform(Interface service) {
-    SurfaceTransformerContext context =
-        SurfaceTransformerContext.create(
-            service, cachedApiConfig, new JavaModelTypeTable(), new JavaSurfaceNamer());
-
+  public List<ViewModel> transform(SurfaceTransformerContext context) {
     List<ViewModel> surfaceData = new ArrayList<>();
 
     surfaceData.add(generateXApi(context));

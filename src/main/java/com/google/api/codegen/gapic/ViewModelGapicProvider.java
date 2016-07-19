@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.gapic;
 
+import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.viewmodel.ViewModel;
@@ -26,16 +27,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class SurfaceGapicProvider implements GapicProvider<Interface> {
+public class ViewModelGapicProvider implements GapicProvider<Interface> {
   private final Model model;
+  private final ApiConfig apiConfig;
   private final CommonSnippetSetRunner snippetSetRunner;
   private final ModelToViewTransformer modelToViewTransformer;
 
-  private SurfaceGapicProvider(
+  private ViewModelGapicProvider(
       Model model,
+      ApiConfig apiConfig,
       CommonSnippetSetRunner snippetSetRunner,
       ModelToViewTransformer modelToViewTransformer) {
     this.model = model;
+    this.apiConfig = apiConfig;
     this.snippetSetRunner = snippetSetRunner;
     this.modelToViewTransformer = modelToViewTransformer;
   }
@@ -58,7 +62,7 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
       return null;
     }
 
-    List<ViewModel> surfaceDocs = modelToViewTransformer.transform(model);
+    List<ViewModel> surfaceDocs = modelToViewTransformer.transform(model, apiConfig);
     if (model.getDiagCollector().getErrorCount() > 0) {
       return null;
     }
@@ -84,6 +88,7 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
 
   public static class Builder {
     private Model model;
+    private ApiConfig apiConfig;
     private CommonSnippetSetRunner snippetSetRunner;
     private ModelToViewTransformer modelToViewTransformer;
 
@@ -91,6 +96,11 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
 
     public Builder setModel(Model model) {
       this.model = model;
+      return this;
+    }
+
+    public Builder setApiConfig(ApiConfig apiConfig) {
+      this.apiConfig = apiConfig;
       return this;
     }
 
@@ -104,8 +114,8 @@ public class SurfaceGapicProvider implements GapicProvider<Interface> {
       return this;
     }
 
-    public SurfaceGapicProvider build() {
-      return new SurfaceGapicProvider(model, snippetSetRunner, modelToViewTransformer);
+    public ViewModelGapicProvider build() {
+      return new ViewModelGapicProvider(model, apiConfig, snippetSetRunner, modelToViewTransformer);
     }
   }
 }

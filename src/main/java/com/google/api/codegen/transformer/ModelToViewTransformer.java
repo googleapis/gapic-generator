@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Model;
 
@@ -24,7 +25,7 @@ import java.util.List;
  * ViewModel instances that can be rendered by a template engine.
  */
 public interface ModelToViewTransformer {
-  List<ViewModel> transform(Model model);
+  List<ViewModel> transform(Model model, ApiConfig apiConfig);
 
   List<String> getTemplateFileNames();
 }

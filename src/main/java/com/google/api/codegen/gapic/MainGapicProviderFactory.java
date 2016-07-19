@@ -157,10 +157,11 @@ public class MainGapicProviderFactory
               .setShouldAppendPackage(true)
               .build();
       GapicProvider<? extends Object> mainProvider =
-          SurfaceGapicProvider.newBuilder()
+          ViewModelGapicProvider.newBuilder()
               .setModel(model)
+              .setApiConfig(apiConfig)
               .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
-              .setModelToViewTransformer(new JavaGapicSurfaceTransformer(apiConfig, javaPathMapper))
+              .setModelToViewTransformer(new JavaGapicSurfaceTransformer(javaPathMapper))
               .build();
 
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
@@ -225,8 +226,9 @@ public class MainGapicProviderFactory
       GapicCodePathMapper phpPathMapper =
           CommonGapicCodePathMapper.newBuilder().setPrefix("src").build();
       GapicProvider<? extends Object> mainProvider =
-          SurfaceGapicProvider.newBuilder()
+          ViewModelGapicProvider.newBuilder()
               .setModel(model)
+              .setApiConfig(apiConfig)
               .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
               .setModelToViewTransformer(new PhpGapicSurfaceTransformer(apiConfig, phpPathMapper))
               .build();
