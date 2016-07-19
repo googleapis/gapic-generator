@@ -20,10 +20,12 @@ import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.transformer.Transformer;
 import com.google.api.codegen.viewmodel.ViewModelDoc;
-import com.google.api.codegen.viewmodel.testing.ApiTestCaseView;
-import com.google.api.codegen.viewmodel.testing.ApiTestClassView;
+import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestCaseView;
+import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestClassView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
@@ -31,20 +33,14 @@ import com.google.api.tools.framework.model.Model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JavaTestTransformer implements Transformer {
+public class JavaGapicSurfaceTestTransformer implements Transformer {
 
   private ApiConfig apiConfig;
   private GapicCodePathMapper pathMapper;
-  private ModelToJavaTypeTable typeTable;
-  private JavaSurfaceNamer surfaceNamer;
-  private InitCodeTransformer initCodeTransformer;
 
-  public JavaTestTransformer(ApiConfig apiConfig, GapicCodePathMapper javaPathMapper) {
+  public JavaGapicSurfaceTestTransformer(ApiConfig apiConfig, GapicCodePathMapper javaPathMapper) {
     this.apiConfig = apiConfig;
     this.pathMapper = javaPathMapper;
-    this.typeTable = new ModelToJavaTypeTable();
-    this.surfaceNamer = new JavaSurfaceNamer();
-    this.initCodeTransformer = new InitCodeTransformer();
   }
 
   @Override
@@ -57,8 +53,11 @@ public class JavaTestTransformer implements Transformer {
   }
 
   public List<ViewModelDoc> transform(Interface service) {
-    addImports();
-    ApiTestClassView testClass = createTestClassView(service);
+    SurfaceTransformerContext context =
+        SurfaceTransformerContext.create(
+            service, this.apiConfig, new ModelToJavaTypeTable(), new JavaSurfaceNamer());
+    addImports(context);
+    GapicSurfaceTestClassView testClass = createTestClassView(service, context);
 
     List<ViewModelDoc> views = new ArrayList<>();
     views.add(testClass);
@@ -68,12 +67,13 @@ public class JavaTestTransformer implements Transformer {
   @Override
   public List<String> getTemplateFileNames() {
     List<String> fileNames = new ArrayList<>();
-    fileNames.add(new ApiTestClassView().getTemplateFileName());
+    fileNames.add(new GapicSurfaceTestClassView().getTemplateFileName());
     // TODO(shinfan): Add more files
     return fileNames;
   }
 
-  private void addImports() {
+  private void addImports(SurfaceTransformerContext context) {
+    ModelTypeTable typeTable = context.getTypeTable();
     typeTable.saveNicknameFor("org.junit.After");
     typeTable.saveNicknameFor("org.junit.AfterClass");
     typeTable.saveNicknameFor("org.junit.Before");
@@ -87,45 +87,52 @@ public class JavaTestTransformer implements Transformer {
     typeTable.saveNicknameFor("junit.framework.Assert");
   }
 
-  private ApiTestClassView createTestClassView(Interface service) {
-    ApiTestClassView testClass = new ApiTestClassView();
-    testClass.packageName = apiConfig.getPackageName();
+  private GapicSurfaceTestClassView createTestClassView(
+      Interface service, SurfaceTransformerContext context) {
+    GapicSurfaceTestClassView testClass = new GapicSurfaceTestClassView();
+    testClass.packageName = context.getApiConfig().getPackageName();
     testClass.apiSettingsClassName = service.getSimpleName() + "Settings";
-    testClass.apiClassName = surfaceNamer.getApiWrapperClassName(service);
-    testClass.name = testClass.apiClassName + "Test";
+    testClass.apiClassName = context.getNamer().getApiWrapperClassName(service);
+    testClass.name = context.getNamer().getTestClassName(service);
     testClass.mockServiceClassName = "Mock" + testClass.apiClassName;
-    testClass.testCases = createTestCaseViews(service);
+    testClass.testCases = createTestCaseViews(service, context);
 
     String outputPath = pathMapper.getOutputPath(service, apiConfig);
     testClass.outputPath = outputPath + "/" + testClass.name + ".java";
-    testClass.imports = typeTable.getImports();
+    testClass.imports = context.getTypeTable().getImports();
     return testClass;
   }
 
-  private List<ApiTestCaseView> createTestCaseViews(Interface service) {
-    ArrayList<ApiTestCaseView> testCaseViews = new ArrayList<>();
+  private List<GapicSurfaceTestCaseView> createTestCaseViews(
+      Interface service, SurfaceTransformerContext context) {
+    ArrayList<GapicSurfaceTestCaseView> testCaseViews = new ArrayList<>();
     for (Method method : service.getMethods()) {
       MethodConfig methodConfig = apiConfig.getInterfaceConfig(service).getMethodConfig(method);
-      MethodTransformerContext context =
+      MethodTransformerContext methodContext =
           MethodTransformerContext.create(
-              service, apiConfig, typeTable, surfaceNamer, method, methodConfig);
-      ApiTestCaseView testCaseView = new ApiTestCaseView();
-      testCaseView.name = method.getSimpleName() + "Test";
+              service, apiConfig, context.getTypeTable(), context.getNamer(), method, methodConfig);
+      GapicSurfaceTestCaseView testCaseView = new GapicSurfaceTestCaseView();
+      testCaseView.name = methodContext.getNamer().getTestCaseName(method);
       testCaseView.methodName = method.getSimpleName();
-      testCaseView.requestType = typeTable.getAndSaveNicknameFor(method.getInputType());
+      testCaseView.requestTypeName =
+          context.getTypeTable().getAndSaveNicknameFor(method.getInputType());
+      InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
       testCaseView.initCode =
-          initCodeTransformer.generateInitCode(context, methodConfig.getRequiredFields());
+          initCodeTransformer.generateInitCode(methodContext, methodConfig.getRequiredFields());
       testCaseView.isPageStreaming = methodConfig.isPageStreaming();
       if (testCaseView.isPageStreaming) {
-        testCaseView.resourceType =
-            typeTable.getAndSaveNicknameForElementType(
-                methodConfig.getPageStreaming().getResourcesField().getType());
+        testCaseView.resourceTypeName =
+            methodContext
+                .getTypeTable()
+                .getAndSaveNicknameForElementType(
+                    methodConfig.getPageStreaming().getResourcesField().getType());
       } else {
-        testCaseView.resourceType = "";
+        testCaseView.resourceTypeName = "";
       }
 
       testCaseView.asserts =
-          initCodeTransformer.generateTestAssertViews(context, methodConfig.getRequiredFields());
+          initCodeTransformer.generateTestAssertViews(
+              methodContext, methodConfig.getRequiredFields());
       testCaseViews.add(testCaseView);
     }
 

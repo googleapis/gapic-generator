@@ -14,7 +14,16 @@
  */
 package com.google.api.codegen.viewmodel.testing;
 
-public class ApiTestAssertView {
-  public String actualValueIdentifier;
-  public String expectedValueIdentifier;
+import com.google.api.codegen.viewmodel.InitCodeView;
+
+import java.util.List;
+
+public class GapicSurfaceTestCaseView {
+  public String name;
+  public String methodName;
+  public String requestTypeName;
+  public String resourceTypeName;
+  public boolean isPageStreaming;
+  public InitCodeView initCode;
+  public List<GapicSurfaceTestAssertView> asserts;
 }
