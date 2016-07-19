@@ -42,20 +42,16 @@ use google\example\library\v1\GetBookRequest;
 use google\example\library\v1\GetShelfRequest;
 use google\example\library\v1\LibraryServiceClient;
 use google\example\library\v1\ListBooksRequest;
-use google\example\library\v1\ListBooksResponse;
 use google\example\library\v1\ListShelvesRequest;
-use google\example\library\v1\ListShelvesResponse;
 use google\example\library\v1\ListStringsRequest;
-use google\example\library\v1\ListStringsResponse;
 use google\example\library\v1\MergeShelvesRequest;
 use google\example\library\v1\MoveBookRequest;
 use google\example\library\v1\PublishSeriesRequest;
-use google\example\library\v1\PublishSeriesResponse;
 use google\example\library\v1\Shelf;
 use google\example\library\v1\SomeMessage;
 use google\example\library\v1\StringBuilder;
 use google\example\library\v1\UpdateBookIndexRequest;
-use google\example\library\v1\UpdateBookIndexRequest\IndexMapEntry;
+use google\example\library\v1\UpdateBookIndexRequest.IndexMapEntry;
 use google\example\library\v1\UpdateBookRequest;
 use google\protobuf\FieldMask;
 
@@ -142,7 +138,8 @@ class LibraryServiceApi
     public static function formatBookName($shelf, $book)
     {
         return self::getBookNameTemplate()->render([
-            'shelf' => $shelf, 'book' => $book,
+            'shelf' => $shelf,
+            'book' => $book,
         ]);
     }
 
@@ -153,7 +150,8 @@ class LibraryServiceApi
     public static function formatArchivedBookName($archivePath, $book)
     {
         return self::getArchivedBookNameTemplate()->render([
-            'archive_path' => $archivePath, 'book' => $book,
+            'archive_path' => $archivePath,
+            'book' => $book,
         ]);
     }
 
@@ -229,6 +227,7 @@ class LibraryServiceApi
 
         return self::$archivedBookNameTemplate;
     }
+
 
     private static function getPageStreamingDescriptors()
     {
@@ -389,11 +388,11 @@ class LibraryServiceApi
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
-     *    Optional.
-     *    @var Google\GAX\RetrySettings $retrySettings
+     *     Optional.
+     *     @var Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
-     *          $timeout is ignored.
-     *    @var int $timeoutMillis
+     *          $timeoutMillis is ignored.
+     *     @var int $timeoutMillis
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
@@ -439,15 +438,17 @@ class LibraryServiceApi
      * @param string $options To test 'options' parameter name conflict.
      * @param array $optionalArgs {
      *     Optional.
-     *     @var SomeMessage $message Field to verify that message-type query parameter gets flattened.
+     *     @var SomeMessage $message
+     *          Field to verify that message-type query parameter gets flattened.
      *     @var StringBuilder $stringBuilder
+     *
      * }
      * @param array $callSettings {
-     *    Optional.
-     *    @var Google\GAX\RetrySettings $retrySettings
+     *     Optional.
+     *     @var Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
-     *          $timeout is ignored.
-     *    @var int $timeoutMillis
+     *          $timeoutMillis is ignored.
+     *     @var int $timeoutMillis
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
@@ -502,11 +503,11 @@ class LibraryServiceApi
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
-     *    Optional.
-     *    @var Google\GAX\RetrySettings $retrySettings
+     *     Optional.
+     *     @var Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
-     *          $timeout is ignored.
-     *    @var int $timeoutMillis
+     *          $timeoutMillis is ignored.
+     *     @var int $timeoutMillis
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
@@ -552,11 +553,11 @@ class LibraryServiceApi
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
-     *    Optional.
-     *    @var Google\GAX\RetrySettings $retrySettings
+     *     Optional.
+     *     @var Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
-     *          $timeout is ignored.
-     *    @var int $timeoutMillis
+     *          $timeoutMillis is ignored.
+     *     @var int $timeoutMillis
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
@@ -605,11 +606,11 @@ class LibraryServiceApi
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
-     *    Optional.
-     *    @var Google\GAX\RetrySettings $retrySettings
+     *     Optional.
+     *     @var Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
-     *          $timeout is ignored.
-     *    @var int $timeoutMillis
+     *          $timeoutMillis is ignored.
+     *     @var int $timeoutMillis
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
@@ -659,11 +660,11 @@ class LibraryServiceApi
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
-     *    Optional.
-     *    @var Google\GAX\RetrySettings $retrySettings
+     *     Optional.
+     *     @var Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
-     *          $timeout is ignored.
-     *    @var int $timeoutMillis
+     *          $timeoutMillis is ignored.
+     *     @var int $timeoutMillis
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
@@ -710,14 +711,15 @@ class LibraryServiceApi
      * @param Book[] $books The books to publish in the series.
      * @param array $optionalArgs {
      *     Optional.
-     *     @var int $edition The edition of the series
+     *     @var int $edition
+     *          The edition of the series
      * }
      * @param array $callSettings {
-     *    Optional.
-     *    @var Google\GAX\RetrySettings $retrySettings
+     *     Optional.
+     *     @var Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
-     *          $timeout is ignored.
-     *    @var int $timeoutMillis
+     *          $timeoutMillis is ignored.
+     *     @var int $timeoutMillis
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
@@ -770,11 +772,11 @@ class LibraryServiceApi
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
-     *    Optional.
-     *    @var Google\GAX\RetrySettings $retrySettings
+     *     Optional.
+     *     @var Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
-     *          $timeout is ignored.
-     *    @var int $timeoutMillis
+     *          $timeoutMillis is ignored.
+     *     @var int $timeoutMillis
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
@@ -821,19 +823,20 @@ class LibraryServiceApi
      * @param array $optionalArgs {
      *     Optional.
      *     @var int $pageSize
-     *           The maximum number of resources contained in the underlying API
-     *           response. If page streaming is performed per-resource, this
-     *           parameter does not affect the return value. If page streaming is
-     *           performed per-page, this determines the maximum number of
-     *           resources in a page.
-     *     @var string $filter To test python built-in wrapping.
+     *          The maximum number of resources contained in the underlying API
+     *          response. If page streaming is performed per-resource, this
+     *          parameter does not affect the return value. If page streaming is
+     *          performed per-page, this determines the maximum number of
+     *          resources in a page.
+     *     @var string $filter
+     *          To test python built-in wrapping.
      * }
      * @param array $callSettings {
-     *    Optional.
-     *    @var Google\GAX\RetrySettings $retrySettings
+     *     Optional.
+     *     @var Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
-     *          $timeout is ignored.
-     *    @var int $timeoutMillis
+     *          $timeoutMillis is ignored.
+     *     @var int $timeoutMillis
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
@@ -886,11 +889,11 @@ class LibraryServiceApi
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
-     *    Optional.
-     *    @var Google\GAX\RetrySettings $retrySettings
+     *     Optional.
+     *     @var Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
-     *          $timeout is ignored.
-     *    @var int $timeoutMillis
+     *          $timeoutMillis is ignored.
+     *     @var int $timeoutMillis
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
@@ -934,15 +937,17 @@ class LibraryServiceApi
      * @param Book $book The book to update with.
      * @param array $optionalArgs {
      *     Optional.
-     *     @var FieldMask $updateMask A field mask to apply, rendered as an HTTP parameter.
-     *     @var google\example\library\v1\FieldMask $physicalMask To test Python import clash resolution.
+     *     @var FieldMask $updateMask
+     *          A field mask to apply, rendered as an HTTP parameter.
+     *     @var google\example\library\v1\FieldMask $physicalMask
+     *          To test Python import clash resolution.
      * }
      * @param array $callSettings {
-     *    Optional.
-     *    @var Google\GAX\RetrySettings $retrySettings
+     *     Optional.
+     *     @var Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
-     *          $timeout is ignored.
-     *    @var int $timeoutMillis
+     *          $timeoutMillis is ignored.
+     *     @var int $timeoutMillis
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
@@ -998,11 +1003,11 @@ class LibraryServiceApi
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
-     *    Optional.
-     *    @var Google\GAX\RetrySettings $retrySettings
+     *     Optional.
+     *     @var Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
-     *          $timeout is ignored.
-     *    @var int $timeoutMillis
+     *          $timeoutMillis is ignored.
+     *     @var int $timeoutMillis
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
@@ -1049,19 +1054,20 @@ class LibraryServiceApi
      * @param array $optionalArgs {
      *     Optional.
      *     @var string $name
+     *
      *     @var int $pageSize
-     *           The maximum number of resources contained in the underlying API
-     *           response. If page streaming is performed per-resource, this
-     *           parameter does not affect the return value. If page streaming is
-     *           performed per-page, this determines the maximum number of
-     *           resources in a page.
+     *          The maximum number of resources contained in the underlying API
+     *          response. If page streaming is performed per-resource, this
+     *          parameter does not affect the return value. If page streaming is
+     *          performed per-page, this determines the maximum number of
+     *          resources in a page.
      * }
      * @param array $callSettings {
-     *    Optional.
-     *    @var Google\GAX\RetrySettings $retrySettings
+     *     Optional.
+     *     @var Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
-     *          $timeout is ignored.
-     *    @var int $timeoutMillis
+     *          $timeoutMillis is ignored.
+     *     @var int $timeoutMillis
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
@@ -1118,11 +1124,11 @@ class LibraryServiceApi
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
-     *    Optional.
-     *    @var Google\GAX\RetrySettings $retrySettings
+     *     Optional.
+     *     @var Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
-     *          $timeout is ignored.
-     *    @var int $timeoutMillis
+     *          $timeoutMillis is ignored.
+     *     @var int $timeoutMillis
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
@@ -1170,11 +1176,11 @@ class LibraryServiceApi
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
-     *    Optional.
-     *    @var Google\GAX\RetrySettings $retrySettings
+     *     Optional.
+     *     @var Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
-     *          $timeout is ignored.
-     *    @var int $timeoutMillis
+     *          $timeoutMillis is ignored.
+     *     @var int $timeoutMillis
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
@@ -1207,7 +1213,7 @@ class LibraryServiceApi
      * try {
      *     $libraryServiceApi = new LibraryServiceApi();
      *     $formattedName = LibraryServiceApi::formatBookName("[SHELF]", "[BOOK]");
-     *     $indexName = "";
+     *     $indexName = "default index";
      *     $indexMapItem = "";
      *     $indexMap = ["default_key" => $indexMapItem,];
      *     $libraryServiceApi->updateBookIndex($formattedName, $indexName, $indexMap);
@@ -1226,11 +1232,11 @@ class LibraryServiceApi
      *               this $optionalArgs parameter reserves a spot for future ones.
      * }
      * @param array $callSettings {
-     *    Optional.
-     *    @var Google\GAX\RetrySettings $retrySettings
+     *     Optional.
+     *     @var Google\GAX\RetrySettings $retrySettings
      *          Retry settings to use for this call. If present, then
-     *          $timeout is ignored.
-     *    @var int $timeoutMillis
+     *          $timeoutMillis is ignored.
+     *     @var int $timeoutMillis
      *          Timeout to use for this call. Only used if $retrySettings
      *          is not set.
      * }
@@ -1243,7 +1249,7 @@ class LibraryServiceApi
         $request->setName($name);
         $request->setIndexName($indexName);
         foreach ($indexMap as $key => $value) {
-            $request->addIndexMap((new IndexMapEntry())->setKey($key)->setValue($value));
+            $request->addIndexMap((new UpdateBookIndexRequest.IndexMapEntry())->setKey($key)->setValue($value));
         }
 
         $mergedSettings = $this->defaultCallSettings['updateBookIndex']->merge(
@@ -1271,4 +1277,3 @@ class LibraryServiceApi
         return $this->grpcBootstrap->createCallCredentialsCallback($this->scopes);
     }
 }
-

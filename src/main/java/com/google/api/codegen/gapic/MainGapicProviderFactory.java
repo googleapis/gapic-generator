@@ -31,8 +31,6 @@ import com.google.api.codegen.java.JavaIterableSnippetSetRunner;
 import com.google.api.codegen.java.JavaSnippetSetRunner;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
-import com.google.api.codegen.php.PhpGapicContext;
-import com.google.api.codegen.php.PhpSnippetSetRunner;
 import com.google.api.codegen.py.PythonGapicContext;
 import com.google.api.codegen.py.PythonInterfaceInitializer;
 import com.google.api.codegen.py.PythonProtoFileInitializer;
@@ -197,14 +195,11 @@ public class MainGapicProviderFactory
       GapicCodePathMapper phpPathMapper =
           CommonGapicCodePathMapper.newBuilder().setPrefix("src").build();
       GapicProvider<? extends Object> provider =
-          CommonGapicProvider.<Interface>newBuilder()
+          ViewModelGapicProvider.newBuilder()
               .setModel(model)
-              .setView(new InterfaceView())
-              .setContext(new PhpGapicContext(model, apiConfig))
-              .setSnippetSetRunner(
-                  new PhpSnippetSetRunner<Interface>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-              .setSnippetFileNames(Arrays.asList("php/main.snip"))
-              .setCodePathMapper(phpPathMapper)
+              .setApiConfig(apiConfig)
+              .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+              .setModelToViewTransformer(new PhpGapicSurfaceTransformer(apiConfig, phpPathMapper))
               .build();
 
       GapicCodePathMapper phpClientConfigPathMapper =
@@ -221,19 +216,6 @@ public class MainGapicProviderFactory
               .setCodePathMapper(phpClientConfigPathMapper)
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider, clientConfigProvider);
-
-    } else if (id.equals(PHP_SURFACE)) {
-      GapicCodePathMapper phpPathMapper =
-          CommonGapicCodePathMapper.newBuilder().setPrefix("src").build();
-      GapicProvider<? extends Object> mainProvider =
-          ViewModelGapicProvider.newBuilder()
-              .setModel(model)
-              .setApiConfig(apiConfig)
-              .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
-              .setModelToViewTransformer(new PhpGapicSurfaceTransformer(apiConfig, phpPathMapper))
-              .build();
-
-      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
 
     } else if (id.equals(PYTHON)) {
       GapicCodePathMapper pythonPathMapper =

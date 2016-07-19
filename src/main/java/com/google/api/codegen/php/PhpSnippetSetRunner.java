@@ -17,6 +17,7 @@ package com.google.api.codegen.php;
 import com.google.api.codegen.CodegenContext;
 import com.google.api.codegen.GeneratedResult;
 import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
@@ -48,15 +49,15 @@ public class PhpSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator
             ImmutableMap.<String, Object>of("context", context));
 
     String outputFilename = snippets.generateFilename(element).prettyPrint();
-    PhpContextCommon phpContextCommon = new PhpContextCommon();
+    PhpTypeTable phpTypeTable = new PhpTypeTable();
 
     // TODO don't depend on a cast here
     PhpContext phpContext = (PhpContext) context;
-    phpContext.resetState(phpContextCommon);
+    phpContext.resetState(phpTypeTable);
 
     Doc body = snippets.generateBody(element);
 
-    List<String> cleanedImports = phpContextCommon.getImports();
+    List<String> cleanedImports = phpTypeTable.getImports();
 
     Doc result = snippets.generateClass(element, body, cleanedImports);
     return GeneratedResult.create(result, outputFilename);

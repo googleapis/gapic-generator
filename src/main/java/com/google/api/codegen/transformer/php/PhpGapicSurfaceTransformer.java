@@ -46,7 +46,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private PageStreamingTransformer pageStreamingTransformer;
   private ApiMethodTransformer apiMethodTransformer;
 
-  private static final String XAPI_TEMPLATE_FILENAME = "php/xapi.snip";
+  private static final String XAPI_TEMPLATE_FILENAME = "php/main.snip";
 
   /**
    * Standard constructor.

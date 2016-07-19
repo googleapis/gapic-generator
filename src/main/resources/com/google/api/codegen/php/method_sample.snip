@@ -1,153 +1,108 @@
-@snippet methodSampleDoc(docConfig)
-    @let ApiName = docConfig.getApiName, \
-            apiName = context.upperCamelToLowerCamel(ApiName), \
-            methodName = docConfig.getMethodName(), \
-            returnType = docConfig.getReturnType(), \
-            initCodeSpec = docConfig.getInitCode()
-        try {
-            ${@apiName} = new {@ApiName}();
-            {@initCode(initCodeSpec)}
-            @if docConfig.isPagedVariant()
-                foreach ({@methodCallSampleCode(methodName, apiName, initCodeSpec)} as $element) {
-                    // doThingsWith(element);
-                }
-            @else
-                @if returnType
-                    $response = {@methodCallSampleCode(methodName, apiName, initCodeSpec)};
-                @else
-                    {@methodCallSampleCode(methodName, apiName, initCodeSpec)};
-                @end
-            @end
-        } finally {
-            if (isset(${@apiName})) {
-                ${@apiName}->close();
-            }
+@extends "php/mvvm_common.snip"
+
+@snippet decorateSampleCode(apiMethod, coreSampleCode)
+    try {
+        ${@apiMethod.apiVariableName} = new {@apiMethod.apiClassName}();
+        {@initCode(apiMethod.initCode)}
+        {@coreSampleCode}
+    } finally {
+        if (isset(${@apiMethod.apiVariableName})) {
+            ${@apiMethod.apiVariableName}->close();
         }
+    }
+@end
+
+@snippet sampleCode(apiMethod)
+    @switch apiMethod.type.toString
+    @case "OptionalArrayMethod"
+        {@optionalArrayMethodSampleCode(apiMethod)}
+    @case "PagedOptionalArrayMethod"
+        {@pagedOptionalArrayMethodSampleCode(apiMethod)}
+    @default
+        $unhandledCase: {@apiMethod.type.toString}$
     @end
 @end
 
-@private methodCallSampleCode(methodName, apiName, initCodeSpec)
-    ${@apiName}->{@methodName}({@argList(initCodeSpec.getArgFields)})
+@private optionalArrayMethodSampleCode(apiMethod)
+    @if apiMethod.hasReturnValue
+        $response = {@methodCallSampleCode(apiMethod)};
+    @else
+        {@methodCallSampleCode(apiMethod)};
+    @end
+@end
+
+@private pagedOptionalArrayMethodSampleCode(apiMethod)
+    foreach ({@methodCallSampleCode(apiMethod)} as $element) {
+        // doThingsWith(element);
+    }
+@end
+
+@private methodCallSampleCode(apiMethod)
+    ${@apiMethod.apiVariableName}->{@apiMethod.name}(\
+        {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+@end
+
+@private sampleMethodCallArgList(fieldSettings)
+    @join fieldSetting : fieldSettings on ", "
+        ${@fieldSetting.identifier}
+    @end
 @end
 
 @private initCode(initCodeSpec)
-  @join line : initCodeSpec.getLines()
-    @switch line.getLineType.toString()
-    @case "StructureInitLine"
-      {@initLineStructure(line)}
-    @case "ListInitLine"
-      {@initLineList(line)}
-    @case "SimpleInitLine"
-      {@initLineSimple(line)}
-    @case "MapInitLine"
-      {@initLineMap(initCodeSpec, line)}
-    @default
-      {@unhandledCase()}
+    @join line : initCodeSpec.lines
+        @switch line.lineType.toString
+        @case "StructureInitLine"
+            {@initLineStructure(line)}
+        @case "ListInitLine"
+            {@initLineList(line)}
+        @case "MapInitLine"
+            {@initLineMap(line)}
+        @case "SimpleInitLine"
+            {@initLineSimple(line)}
+        @default
+            $unhandledCase: {@line.lineType.toString}$
+        @end
     @end
-  @end
 @end
 
 @private initLineStructure(line)
-  {@formattedIdentifier(line)} = new {@context.typeName(line.getType)}();
-  @join fieldSetting : line.getFieldSettings
-    @let setCallName = setCallName(fieldSetting)
-      {@formattedIdentifier(line)}->{@setCallName}({@formattedIdentifier(fieldSetting)});
+    ${@line.identifier} = new {@line.typeName}();
+    @join fieldSetting : line.fieldSettings
+        ${@line.identifier}->{@fieldSetting.fnSetFunctionCallName}(${@fieldSetting.identifier});
     @end
-  @end
 @end
 
 @private initLineList(line)
-  {@formattedIdentifier(line)} = [{@initList(line)}];
+    ${@line.identifier} = [{@varList(line.elementIdentifiers)}];
 @end
 
-@private initList(line)
-  @join identifier : line.getElementIdentifiers on ", "
-    {@unformattedIdentifier(identifier)}
+@snippet varList(args)
+  @join arg : args on ", "
+    ${@arg}
   @end
 @end
 
-@private initLineMap(initCodeSpec, line)
-  @if context.initLineIsParameter(initCodeSpec, line)
-    {@formattedIdentifier(line)} = [{@initMap(line)}];
-  @else
-    {@formattedIdentifier(line)} = [];
-    @join key : line.getElementIdentifierKeys vertical
-      @let identifierValue = line.getElementIdentifierValue(key),\
-          entryIdentifier = getEntryIdentifier(line), \
-          fullyQualifiedEntryName = context.fullyQualifiedName(line.getElementType), \
-          entryName = context.getTypeName(fullyQualifiedEntryName)
-        {@entryIdentifier} = new {@entryName}();
-        {@entryIdentifier}->setKey({@context.renderPrimitiveValue(line.getKeyType, key)});
-        {@entryIdentifier}->setValue({@unformattedIdentifier(identifierValue)});
-        array_push({@formattedIdentifier(line)}, {@entryIdentifier});
-      @end
-    @end
-  @end
+@private initLineMap(line)
+    ${@line.identifier} = [{@keyVarList(line.initEntries)}];
 @end
 
-@private initMap(line)
-  @join key : line.getElementIdentifierKeys vertical
-    @let identifierValue = line.getElementIdentifierValue(key),\
-        entryIdentifier = getEntryIdentifier(line)
-      {@context.renderPrimitiveValue(line.getKeyType, key)} => {@unformattedIdentifier(identifierValue)},
-    @end
+@private keyVarList(mapEntries)
+  @join mapEntry : mapEntries
+    {@mapEntry.key} => ${@mapEntry.value},
   @end
 @end
 
 @private initLineSimple(line)
-  {@formattedIdentifier(line)} = {@initValue(line)};
+    ${@line.identifier} = {@renderInitValue(line.initValue)};
 @end
 
-@private getEntryIdentifier(lineOrFieldSetting)
-  {@unformattedIdentifier(lineOrFieldSetting.getIdentifier)}Entry
-@end
-
-@private formattedIdentifier(lineOrFieldSetting)
-  {@formattedIdentifier(lineOrFieldSetting.getIdentifier, lineOrFieldSetting.getInitValueConfig.hasFormattingConfig)}
-@end
-
-@private unformattedIdentifier(identifier)
-  {@formattedIdentifier(identifier, FALSE)}
-@end
-
-@private formattedIdentifier(identifier, isFormatted)
-  @if isFormatted
-    $formatted{@identifier.toUpperCamel}
-  @else
-    ${@identifier.toLowerCamel}
-  @end
-@end
-
-@private initValue(line)
-  @let metadata = line.getInitValueConfig
-    @if metadata.hasFormattingConfig()
-      {@metadata.getApiWrapperName}::{@formatResourceFunctionName(metadata.getCollectionConfig)}({@formatResourceFunctionArgs(metadata.getCollectionConfig)})
-    @else
-      {@context.zeroValue(line.getType)}
+@private renderInitValue(initValue)
+    @switch initValue.type
+    @case "SimpleInitValueView"
+        {@initValue.initialValue}
+    @case "FormattedInitValueView"
+        {@initValue.apiWrapperName}::{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
+    @default
+        $unhandledCase: {@initValue.type}$
     @end
-  @end
-@end
-
-@private formatResourceFunctionArgs(collectionConfig)
-  @join param : collectionConfig.getNameTemplate.vars() on ", "
-    "[{@context.lowerUnderscoreToUpperUnderscore(param)}]"
-  @end
-@end
-
-@private formatResourceFunctionName(collectionConfig)
-    format{@resourceName(collectionConfig)}
-@end
-
-@private resourceName(collectionConfig)
-    {@context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName)}Name
-@end
-
-@snippet setCallName(field)
-  set{@field.getFieldName.toUpperCamel}
-@end
-
-@private argList(fieldSettings)
-  @join fieldSetting : fieldSettings on ", "
-    {@formattedIdentifier(fieldSetting)}
-  @end
 @end
