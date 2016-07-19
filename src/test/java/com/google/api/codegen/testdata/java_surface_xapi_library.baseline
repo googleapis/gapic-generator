@@ -1,0 +1,1580 @@
+============== file: src/main/java/com/google/gcloud/pubsub/spi/LibraryServiceApi.java ==============
+package com.google.gcloud.pubsub.spi;
+
+import com.google.api.gax.core.PageAccessor;
+import com.google.api.gax.grpc.ApiCallable;
+import com.google.api.gax.protobuf.PathTemplate;
+import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.Comment;
+import com.google.example.library.v1.CreateBookRequest;
+import com.google.example.library.v1.CreateShelfRequest;
+import com.google.example.library.v1.DeleteBookRequest;
+import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.GetBookFromArchiveRequest;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.GetShelfRequest;
+import com.google.example.library.v1.ListBooksRequest;
+import com.google.example.library.v1.ListBooksResponse;
+import com.google.example.library.v1.ListShelvesRequest;
+import com.google.example.library.v1.ListShelvesResponse;
+import com.google.example.library.v1.ListStringsRequest;
+import com.google.example.library.v1.ListStringsResponse;
+import com.google.example.library.v1.MergeShelvesRequest;
+import com.google.example.library.v1.MoveBookRequest;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.PublishSeriesResponse;
+import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.SomeMessage;
+import com.google.example.library.v1.UpdateBookIndexRequest;
+import com.google.example.library.v1.UpdateBookIndexRequest.IndexMapEntry;
+import com.google.example.library.v1.UpdateBookRequest;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.Empty;
+import com.google.protobuf.FieldMask;
+import io.grpc.ManagedChannel;
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ScheduledExecutorService;
+
+@javax.annotation.Generated("by GAPIC")
+public class LibraryServiceApi implements AutoCloseable {
+  private final LibraryServiceSettings settings;
+  private final ManagedChannel channel;
+  private final ScheduledExecutorService executor;
+  private final List<AutoCloseable> closeables = new ArrayList<>();
+
+  private final ApiCallable<CreateShelfRequest, Shelf> createShelfCallable;
+  private final ApiCallable<GetShelfRequest, Shelf> getShelfCallable;
+  private final ApiCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable;
+  private final ApiCallable<ListShelvesRequest, PageAccessor<Shelf>> listShelvesPagedCallable;
+  private final ApiCallable<DeleteShelfRequest, Empty> deleteShelfCallable;
+  private final ApiCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable;
+  private final ApiCallable<CreateBookRequest, Book> createBookCallable;
+  private final ApiCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable;
+  private final ApiCallable<GetBookRequest, Book> getBookCallable;
+  private final ApiCallable<ListBooksRequest, ListBooksResponse> listBooksCallable;
+  private final ApiCallable<ListBooksRequest, PageAccessor<Book>> listBooksPagedCallable;
+  private final ApiCallable<DeleteBookRequest, Empty> deleteBookCallable;
+  private final ApiCallable<UpdateBookRequest, Book> updateBookCallable;
+  private final ApiCallable<MoveBookRequest, Book> moveBookCallable;
+  private final ApiCallable<ListStringsRequest, ListStringsResponse> listStringsCallable;
+  private final ApiCallable<ListStringsRequest, PageAccessor<String>> listStringsPagedCallable;
+  private final ApiCallable<AddCommentsRequest, Empty> addCommentsCallable;
+  private final ApiCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable;
+  private final ApiCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable;
+
+  public final LibraryServiceSettings getSettings() {
+    return settings;
+  }
+
+  private static final PathTemplate SHELF_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("shelves/{shelf}");
+
+  private static final PathTemplate BOOK_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("shelves/{shelf}/books/{book}");
+
+  private static final PathTemplate ARCHIVED_BOOK_PATH_TEMPLATE =
+      PathTemplate.createWithoutUrlEncoding("archives/{archive_path=**}/books/{book}");
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a shelf resource.
+   */
+  public static final String formatShelfName(String shelf) {
+    return SHELF_PATH_TEMPLATE.instantiate(
+        "shelf", shelf);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a book resource.
+   */
+  public static final String formatBookName(String shelf, String book) {
+    return BOOK_PATH_TEMPLATE.instantiate(
+        "shelf", shelf,
+        "book", book);
+  }
+
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a archived_book resource.
+   */
+  public static final String formatArchivedBookName(String archivePath, String book) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.instantiate(
+        "archive_path", archivePath,
+        "book", book);
+  }
+
+  /**
+   * Parses the shelf from the given fully-qualified path which
+   * represents a shelf resource.
+   */
+  public static final String parseShelfFromShelfName(String shelfName) {
+    return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf");
+  }
+
+  /**
+   * Parses the shelf from the given fully-qualified path which
+   * represents a book resource.
+   */
+  public static final String parseShelfFromBookName(String bookName) {
+    return BOOK_PATH_TEMPLATE.parse(bookName).get("shelf");
+  }
+
+  /**
+   * Parses the book from the given fully-qualified path which
+   * represents a book resource.
+   */
+  public static final String parseBookFromBookName(String bookName) {
+    return BOOK_PATH_TEMPLATE.parse(bookName).get("book");
+  }
+
+  /**
+   * Parses the archive_path from the given fully-qualified path which
+   * represents a archivedBook resource.
+   */
+  public static final String parseArchivePathFromArchivedBookName(String archivedBookName) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("archive_path");
+  }
+
+  /**
+   * Parses the book from the given fully-qualified path which
+   * represents a archivedBook resource.
+   */
+  public static final String parseBookFromArchivedBookName(String archivedBookName) {
+    return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("book");
+  }
+
+  /**
+   * Constructs an instance of LibraryServiceApi with default settings.
+   */
+  public static final LibraryServiceApi createWithDefaults() throws IOException {
+    return create(LibraryServiceSettings.defaultBuilder().build());
+  }
+
+  /**
+   * Constructs an instance of LibraryServiceApi, using the given settings.
+   * The channels are created based on the settings passed in, or defaults for any
+   * settings that are not set.
+   */
+  public static final LibraryServiceApi create(LibraryServiceSettings settings) throws IOException {
+    return new LibraryServiceApi(settings);
+  }
+
+  /**
+   * Constructs an instance of LibraryServiceApi, using the given settings.
+   * This is protected so that it easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected LibraryServiceApi(LibraryServiceSettings settings) throws IOException {
+    this.settings = settings;
+    this.executor = settings.getExecutorProvider().getOrBuildExecutor();
+    this.channel = settings.getChannelProvider().getOrBuildChannel(this.executor);
+
+    this.createShelfCallable = ApiCallable.create(settings.createShelfSettings(), this.channel, this.executor);
+    this.getShelfCallable = ApiCallable.create(settings.getShelfSettings(), this.channel, this.executor);
+    this.listShelvesCallable = ApiCallable.create(settings.listShelvesSettings(), this.channel, this.executor);
+    this.listShelvesPagedCallable =
+        ApiCallable.createPagedVariant(settings.listShelvesSettings(), this.channel, this.executor);
+    this.deleteShelfCallable = ApiCallable.create(settings.deleteShelfSettings(), this.channel, this.executor);
+    this.mergeShelvesCallable = ApiCallable.create(settings.mergeShelvesSettings(), this.channel, this.executor);
+    this.createBookCallable = ApiCallable.create(settings.createBookSettings(), this.channel, this.executor);
+    this.publishSeriesCallable = ApiCallable.create(settings.publishSeriesSettings(), this.channel, this.executor);
+    if (settings.publishSeriesSettings().getBundlerFactory() != null) {
+      closeables.add(settings.publishSeriesSettings().getBundlerFactory());
+    }
+    this.getBookCallable = ApiCallable.create(settings.getBookSettings(), this.channel, this.executor);
+    this.listBooksCallable = ApiCallable.create(settings.listBooksSettings(), this.channel, this.executor);
+    this.listBooksPagedCallable =
+        ApiCallable.createPagedVariant(settings.listBooksSettings(), this.channel, this.executor);
+    this.deleteBookCallable = ApiCallable.create(settings.deleteBookSettings(), this.channel, this.executor);
+    this.updateBookCallable = ApiCallable.create(settings.updateBookSettings(), this.channel, this.executor);
+    this.moveBookCallable = ApiCallable.create(settings.moveBookSettings(), this.channel, this.executor);
+    this.listStringsCallable = ApiCallable.create(settings.listStringsSettings(), this.channel, this.executor);
+    this.listStringsPagedCallable =
+        ApiCallable.createPagedVariant(settings.listStringsSettings(), this.channel, this.executor);
+    this.addCommentsCallable = ApiCallable.create(settings.addCommentsSettings(), this.channel, this.executor);
+    this.getBookFromArchiveCallable = ApiCallable.create(settings.getBookFromArchiveSettings(), this.channel, this.executor);
+    this.updateBookIndexCallable = ApiCallable.create(settings.updateBookIndexSettings(), this.channel, this.executor);
+
+    if (settings.getChannelProvider().shouldAutoClose()) {
+      closeables.add(
+        new Closeable() {
+          @Override
+          public void close() throws IOException {
+            channel.shutdown();
+          }
+        });
+    }
+    if (settings.getExecutorProvider().shouldAutoClose()) {
+      closeables.add(
+        new Closeable() {
+          @Override
+          public void close() throws IOException {
+            executor.shutdown();
+          }
+        });
+    }
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates a shelf, and returns the new Shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   Shelf shelf = Shelf.newBuilder().build();
+   *   Shelf response = libraryServiceApi.createShelf(shelf);
+   * }
+   * </code></pre>
+   *
+   * @param shelf The shelf to create.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Shelf createShelf(Shelf shelf) {
+    CreateShelfRequest request =
+        CreateShelfRequest.newBuilder()
+        .setShelf(shelf)
+        .build();
+    return createShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates a shelf, and returns the new Shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   Shelf shelf = Shelf.newBuilder().build();
+   *   CreateShelfRequest request = CreateShelfRequest.newBuilder()
+   *     .setShelf(shelf)
+   *     .build();
+   *   Shelf response = libraryServiceApi.createShelf(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  private final Shelf createShelf(CreateShelfRequest request) {
+    return createShelfCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates a shelf, and returns the new Shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   Shelf shelf = Shelf.newBuilder().build();
+   *   CreateShelfRequest request = CreateShelfRequest.newBuilder()
+   *     .setShelf(shelf)
+   *     .build();
+   *   ListenableFuture&lt;Shelf&gt; future = libraryServiceApi.createShelfCallable().futureCall(request);
+   *   // Do something
+   *   Shelf response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<CreateShelfRequest, Shelf> createShelfCallable() {
+    return createShelfCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   Shelf response = libraryServiceApi.getShelf(formattedName);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf to retrieve.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Shelf getShelf(String name) {
+    SHELF_PATH_TEMPLATE.validate(name);
+    GetShelfRequest request =
+        GetShelfRequest.newBuilder()
+        .setName(name)
+        .build();
+    return getShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   SomeMessage message = SomeMessage.newBuilder().build();
+   *   Shelf response = libraryServiceApi.getShelf(formattedName, message);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf to retrieve.
+   * @param message Field to verify that message-type query parameter gets flattened.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Shelf getShelf(String name, SomeMessage message) {
+    SHELF_PATH_TEMPLATE.validate(name);
+    GetShelfRequest request =
+        GetShelfRequest.newBuilder()
+        .setName(name)
+        .setMessage(message)
+        .build();
+    return getShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   SomeMessage message = SomeMessage.newBuilder().build();
+   *   com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
+   *   Shelf response = libraryServiceApi.getShelf(formattedName, message, stringBuilder);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf to retrieve.
+   * @param message Field to verify that message-type query parameter gets flattened.
+   * @param stringBuilder
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Shelf getShelf(String name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
+    SHELF_PATH_TEMPLATE.validate(name);
+    GetShelfRequest request =
+        GetShelfRequest.newBuilder()
+        .setName(name)
+        .setMessage(message)
+        .setStringBuilder(stringBuilder)
+        .build();
+    return getShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   String options = "";
+   *   GetShelfRequest request = GetShelfRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setOptions(options)
+   *     .build();
+   *   Shelf response = libraryServiceApi.getShelf(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Shelf getShelf(GetShelfRequest request) {
+    return getShelfCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   String options = "";
+   *   GetShelfRequest request = GetShelfRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setOptions(options)
+   *     .build();
+   *   ListenableFuture&lt;Shelf&gt; future = libraryServiceApi.getShelfCallable().futureCall(request);
+   *   // Do something
+   *   Shelf response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<GetShelfRequest, Shelf> getShelfCallable() {
+    return getShelfCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists shelves.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *
+   *   for (Shelf element : libraryServiceApi.listShelves()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final PageAccessor<Shelf> listShelves() {
+    ListShelvesRequest request =
+        ListShelvesRequest.newBuilder()
+
+        .build();
+    return listShelves(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists shelves.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   ListShelvesRequest request = ListShelvesRequest.newBuilder()
+   *     .build();
+   *   for (Shelf element : libraryServiceApi.listShelves(request)) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  private final PageAccessor<Shelf> listShelves(ListShelvesRequest request) {
+    return listShelvesPagedCallable()
+        .call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists shelves.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   ListShelvesRequest request = ListShelvesRequest.newBuilder()
+   *     .build();
+   *   ListenableFuture&lt;PageAccessor&lt;Shelf&gt;&gt; future = libraryServiceApi.listShelvesPagedCallable().futureCall(request);
+   *   // Do something
+   *   for (Shelf element : future.get()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<ListShelvesRequest, PageAccessor<Shelf>> listShelvesPagedCallable() {
+    return listShelvesPagedCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists shelves.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   ListShelvesRequest request = ListShelvesRequest.newBuilder()
+   *     .build();
+   *   while (true) {
+   *     ListShelvesResponse response = libraryServiceApi.listShelvesCallable().call(request);
+   *     for (Shelf element : response.getShelvesList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
+    return listShelvesCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   libraryServiceApi.deleteShelf(formattedName);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf to delete.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final void deleteShelf(String name) {
+    SHELF_PATH_TEMPLATE.validate(name);
+    DeleteShelfRequest request =
+        DeleteShelfRequest.newBuilder()
+        .setName(name)
+        .build();
+    deleteShelf(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
+   *   libraryServiceApi.deleteShelf(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  private final void deleteShelf(DeleteShelfRequest request) {
+    deleteShelfCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
+   *   ListenableFuture&lt;Void&gt; future = libraryServiceApi.deleteShelfCallable().futureCall(request);
+   *   // Do something
+   *   future.get();
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<DeleteShelfRequest, Empty> deleteShelfCallable() {
+    return deleteShelfCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Merges two shelves by adding all books from the shelf named
+   * `other_shelf_name` to shelf `name`, and deletes
+   * `other_shelf_name`. Returns the updated shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   Shelf response = libraryServiceApi.mergeShelves(formattedName, formattedOtherShelfName);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf we're adding books to.
+   * @param otherShelfName The name of the shelf we're removing books from and deleting.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Shelf mergeShelves(String name, String otherShelfName) {
+    SHELF_PATH_TEMPLATE.validate(name);
+    SHELF_PATH_TEMPLATE.validate(otherShelfName);
+    MergeShelvesRequest request =
+        MergeShelvesRequest.newBuilder()
+        .setName(name)
+        .setOtherShelfName(otherShelfName)
+        .build();
+    return mergeShelves(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Merges two shelves by adding all books from the shelf named
+   * `other_shelf_name` to shelf `name`, and deletes
+   * `other_shelf_name`. Returns the updated shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   MergeShelvesRequest request = MergeShelvesRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setOtherShelfName(formattedOtherShelfName)
+   *     .build();
+   *   Shelf response = libraryServiceApi.mergeShelves(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Shelf mergeShelves(MergeShelvesRequest request) {
+    return mergeShelvesCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Merges two shelves by adding all books from the shelf named
+   * `other_shelf_name` to shelf `name`, and deletes
+   * `other_shelf_name`. Returns the updated shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   MergeShelvesRequest request = MergeShelvesRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setOtherShelfName(formattedOtherShelfName)
+   *     .build();
+   *   ListenableFuture&lt;Shelf&gt; future = libraryServiceApi.mergeShelvesCallable().futureCall(request);
+   *   // Do something
+   *   Shelf response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable() {
+    return mergeShelvesCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   Book book = Book.newBuilder().build();
+   *   Book response = libraryServiceApi.createBook(formattedName, book);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf in which the book is created.
+   * @param book The book to create.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Book createBook(String name, Book book) {
+    SHELF_PATH_TEMPLATE.validate(name);
+    CreateBookRequest request =
+        CreateBookRequest.newBuilder()
+        .setName(name)
+        .setBook(book)
+        .build();
+    return createBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   Book book = Book.newBuilder().build();
+   *   CreateBookRequest request = CreateBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setBook(book)
+   *     .build();
+   *   Book response = libraryServiceApi.createBook(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Book createBook(CreateBookRequest request) {
+    return createBookCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   Book book = Book.newBuilder().build();
+   *   CreateBookRequest request = CreateBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setBook(book)
+   *     .build();
+   *   ListenableFuture&lt;Book&gt; future = libraryServiceApi.createBookCallable().futureCall(request);
+   *   // Do something
+   *   Book response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<CreateBookRequest, Book> createBookCallable() {
+    return createBookCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates a series of books.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   Shelf shelf = Shelf.newBuilder().build();
+   *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+   *   int edition = 0;
+   *   PublishSeriesResponse response = libraryServiceApi.publishSeries(shelf, books, edition);
+   * }
+   * </code></pre>
+   *
+   * @param shelf The shelf in which the series is created.
+   * @param books The books to publish in the series.
+   * @param edition The edition of the series
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition) {
+    PublishSeriesRequest request =
+        PublishSeriesRequest.newBuilder()
+        .setShelf(shelf)
+        .addAllBooks(books)
+        .setEdition(edition)
+        .build();
+    return publishSeries(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates a series of books.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   Shelf shelf = Shelf.newBuilder().build();
+   *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+   *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+   *     .setShelf(shelf)
+   *     .addAllBooks(books)
+   *     .build();
+   *   PublishSeriesResponse response = libraryServiceApi.publishSeries(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final PublishSeriesResponse publishSeries(PublishSeriesRequest request) {
+    return publishSeriesCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Creates a series of books.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   Shelf shelf = Shelf.newBuilder().build();
+   *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
+   *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
+   *     .setShelf(shelf)
+   *     .addAllBooks(books)
+   *     .build();
+   *   ListenableFuture&lt;PublishSeriesResponse&gt; future = libraryServiceApi.publishSeriesCallable().futureCall(request);
+   *   // Do something
+   *   PublishSeriesResponse response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable() {
+    return publishSeriesCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   Book response = libraryServiceApi.getBook(formattedName);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Book getBook(String name) {
+    BOOK_PATH_TEMPLATE.validate(name);
+    GetBookRequest request =
+        GetBookRequest.newBuilder()
+        .setName(name)
+        .build();
+    return getBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   GetBookRequest request = GetBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
+   *   Book response = libraryServiceApi.getBook(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  private final Book getBook(GetBookRequest request) {
+    return getBookCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   GetBookRequest request = GetBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
+   *   ListenableFuture&lt;Book&gt; future = libraryServiceApi.getBookCallable().futureCall(request);
+   *   // Do something
+   *   Book response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<GetBookRequest, Book> getBookCallable() {
+    return getBookCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists books in a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   String filter = "";
+   *   for (Book element : libraryServiceApi.listBooks(formattedName, filter)) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the shelf whose books we'd like to list.
+   * @param filter To test python built-in wrapping.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final PageAccessor<Book> listBooks(String name, String filter) {
+    SHELF_PATH_TEMPLATE.validate(name);
+    ListBooksRequest request =
+        ListBooksRequest.newBuilder()
+        .setName(name)
+        .setFilter(filter)
+        .build();
+    return listBooks(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists books in a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   ListBooksRequest request = ListBooksRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
+   *   for (Book element : libraryServiceApi.listBooks(request)) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final PageAccessor<Book> listBooks(ListBooksRequest request) {
+    return listBooksPagedCallable()
+        .call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists books in a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   ListBooksRequest request = ListBooksRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
+   *   ListenableFuture&lt;PageAccessor&lt;Book&gt;&gt; future = libraryServiceApi.listBooksPagedCallable().futureCall(request);
+   *   // Do something
+   *   for (Book element : future.get()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<ListBooksRequest, PageAccessor<Book>> listBooksPagedCallable() {
+    return listBooksPagedCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists books in a shelf.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   ListBooksRequest request = ListBooksRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
+   *   while (true) {
+   *     ListBooksResponse response = libraryServiceApi.listBooksCallable().call(request);
+   *     for (Book element : response.getBooksList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<ListBooksRequest, ListBooksResponse> listBooksCallable() {
+    return listBooksCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   libraryServiceApi.deleteBook(formattedName);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to delete.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final void deleteBook(String name) {
+    BOOK_PATH_TEMPLATE.validate(name);
+    DeleteBookRequest request =
+        DeleteBookRequest.newBuilder()
+        .setName(name)
+        .build();
+    deleteBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
+   *   libraryServiceApi.deleteBook(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  private final void deleteBook(DeleteBookRequest request) {
+    deleteBookCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Deletes a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
+   *   ListenableFuture&lt;Void&gt; future = libraryServiceApi.deleteBookCallable().futureCall(request);
+   *   // Do something
+   *   future.get();
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<DeleteBookRequest, Empty> deleteBookCallable() {
+    return deleteBookCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   Book book = Book.newBuilder().build();
+   *   Book response = libraryServiceApi.updateBook(formattedName, book);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to update.
+   * @param book The book to update with.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Book updateBook(String name, Book book) {
+    BOOK_PATH_TEMPLATE.validate(name);
+    UpdateBookRequest request =
+        UpdateBookRequest.newBuilder()
+        .setName(name)
+        .setBook(book)
+        .build();
+    return updateBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   Book book = Book.newBuilder().build();
+   *   FieldMask updateMask = FieldMask.newBuilder().build();
+   *   com.google.example.library.v1.FieldMask physicalMask = com.google.example.library.v1.FieldMask.newBuilder().build();
+   *   Book response = libraryServiceApi.updateBook(formattedName, book, updateMask, physicalMask);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to update.
+   * @param book The book to update with.
+   * @param updateMask A field mask to apply, rendered as an HTTP parameter.
+   * @param physicalMask To test Python import clash resolution.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Book updateBook(String name, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
+    BOOK_PATH_TEMPLATE.validate(name);
+    UpdateBookRequest request =
+        UpdateBookRequest.newBuilder()
+        .setName(name)
+        .setBook(book)
+        .setUpdateMask(updateMask)
+        .setPhysicalMask(physicalMask)
+        .build();
+    return updateBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   Book book = Book.newBuilder().build();
+   *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setBook(book)
+   *     .build();
+   *   Book response = libraryServiceApi.updateBook(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Book updateBook(UpdateBookRequest request) {
+    return updateBookCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   Book book = Book.newBuilder().build();
+   *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setBook(book)
+   *     .build();
+   *   ListenableFuture&lt;Book&gt; future = libraryServiceApi.updateBookCallable().futureCall(request);
+   *   // Do something
+   *   Book response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<UpdateBookRequest, Book> updateBookCallable() {
+    return updateBookCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Moves a book to another shelf, and returns the new book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   Book response = libraryServiceApi.moveBook(formattedName, formattedOtherShelfName);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to move.
+   * @param otherShelfName The name of the destination shelf.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Book moveBook(String name, String otherShelfName) {
+    BOOK_PATH_TEMPLATE.validate(name);
+    SHELF_PATH_TEMPLATE.validate(otherShelfName);
+    MoveBookRequest request =
+        MoveBookRequest.newBuilder()
+        .setName(name)
+        .setOtherShelfName(otherShelfName)
+        .build();
+    return moveBook(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Moves a book to another shelf, and returns the new book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   MoveBookRequest request = MoveBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setOtherShelfName(formattedOtherShelfName)
+   *     .build();
+   *   Book response = libraryServiceApi.moveBook(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Book moveBook(MoveBookRequest request) {
+    return moveBookCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Moves a book to another shelf, and returns the new book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   MoveBookRequest request = MoveBookRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setOtherShelfName(formattedOtherShelfName)
+   *     .build();
+   *   ListenableFuture&lt;Book&gt; future = libraryServiceApi.moveBookCallable().futureCall(request);
+   *   // Do something
+   *   Book response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<MoveBookRequest, Book> moveBookCallable() {
+    return moveBookCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists a primitive resource. To test go page streaming.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *
+   *   for (String element : libraryServiceApi.listStrings()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final PageAccessor<String> listStrings() {
+    ListStringsRequest request =
+        ListStringsRequest.newBuilder()
+
+        .build();
+    return listStrings(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists a primitive resource. To test go page streaming.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   ListStringsRequest request = ListStringsRequest.newBuilder()
+   *     .build();
+   *   for (String element : libraryServiceApi.listStrings(request)) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  private final PageAccessor<String> listStrings(ListStringsRequest request) {
+    return listStringsPagedCallable()
+        .call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists a primitive resource. To test go page streaming.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   ListStringsRequest request = ListStringsRequest.newBuilder()
+   *     .build();
+   *   ListenableFuture&lt;PageAccessor&lt;String&gt;&gt; future = libraryServiceApi.listStringsPagedCallable().futureCall(request);
+   *   // Do something
+   *   for (String element : future.get()) {
+   *     // doThingsWith(element);
+   *   }
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<ListStringsRequest, PageAccessor<String>> listStringsPagedCallable() {
+    return listStringsPagedCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Lists a primitive resource. To test go page streaming.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   ListStringsRequest request = ListStringsRequest.newBuilder()
+   *     .build();
+   *   while (true) {
+   *     ListStringsResponse response = libraryServiceApi.listStringsCallable().call(request);
+   *     for (String element : response.getStringsList()) {
+   *       // doThingsWith(element);
+   *     }
+   *     String nextPageToken = response.getNextPageToken();
+   *     if (!Strings.isNullOrEmpty(nextPageToken)) {
+   *       request = request.toBuilder().setPageToken(nextPageToken).build();
+   *     } else {
+   *       break;
+   *     }
+   *   }
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<ListStringsRequest, ListStringsResponse> listStringsCallable() {
+    return listStringsCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Adds comments to a book
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   ByteString comment = ByteString.copyFromUtf8("");
+   *   Comment commentsElement = Comment.newBuilder()
+   *     .setComment(comment)
+   *     .build();
+   *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
+   *   libraryServiceApi.addComments(formattedName, comments);
+   * }
+   * </code></pre>
+   *
+   * @param name
+   * @param comments
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final void addComments(String name, List<Comment> comments) {
+    BOOK_PATH_TEMPLATE.validate(name);
+    AddCommentsRequest request =
+        AddCommentsRequest.newBuilder()
+        .setName(name)
+        .addAllComments(comments)
+        .build();
+    addComments(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Adds comments to a book
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   ByteString comment = ByteString.copyFromUtf8("");
+   *   Comment commentsElement = Comment.newBuilder()
+   *     .setComment(comment)
+   *     .build();
+   *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
+   *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .addAllComments(comments)
+   *     .build();
+   *   libraryServiceApi.addComments(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final void addComments(AddCommentsRequest request) {
+    addCommentsCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Adds comments to a book
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   ByteString comment = ByteString.copyFromUtf8("");
+   *   Comment commentsElement = Comment.newBuilder()
+   *     .setComment(comment)
+   *     .build();
+   *   List&lt;Comment&gt; comments = Arrays.asList(commentsElement);
+   *   AddCommentsRequest request = AddCommentsRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .addAllComments(comments)
+   *     .build();
+   *   ListenableFuture&lt;Void&gt; future = libraryServiceApi.addCommentsCallable().futureCall(request);
+   *   // Do something
+   *   future.get();
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<AddCommentsRequest, Empty> addCommentsCallable() {
+    return addCommentsCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a book from an archive.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
+   *   Book response = libraryServiceApi.getBookFromArchive(formattedName);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to retrieve.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final Book getBookFromArchive(String name) {
+    ARCHIVED_BOOK_PATH_TEMPLATE.validate(name);
+    GetBookFromArchiveRequest request =
+        GetBookFromArchiveRequest.newBuilder()
+        .setName(name)
+        .build();
+    return getBookFromArchive(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a book from an archive.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
+   *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
+   *   Book response = libraryServiceApi.getBookFromArchive(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  private final Book getBookFromArchive(GetBookFromArchiveRequest request) {
+    return getBookFromArchiveCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Gets a book from an archive.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
+   *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .build();
+   *   ListenableFuture&lt;Book&gt; future = libraryServiceApi.getBookFromArchiveCallable().futureCall(request);
+   *   // Do something
+   *   Book response = future.get();
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable() {
+    return getBookFromArchiveCallable;
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates the index of a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String indexName = "default index";
+   *   String indexMapItem = "";
+   *   Map&lt;String, String&gt; indexMap = new HashMap&lt;&gt;();
+   *   indexMap.put("default_key", indexMapItem);
+   *   libraryServiceApi.updateBookIndex(formattedName, indexName, indexMap);
+   * }
+   * </code></pre>
+   *
+   * @param name The name of the book to update.
+   * @param indexName The name of the index for the book
+   * @param indexMap The index to update the book with
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final void updateBookIndex(String name, String indexName, Map<String, String> indexMap) {
+    BOOK_PATH_TEMPLATE.validate(name);
+    UpdateBookIndexRequest request =
+        UpdateBookIndexRequest.newBuilder()
+        .setName(name)
+        .setIndexName(indexName)
+        .putAllIndexMap(indexMap)
+        .build();
+    updateBookIndex(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates the index of a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String indexName = "default index";
+   *   String indexMapItem = "";
+   *   Map&lt;String, String&gt; indexMap = new HashMap&lt;&gt;();
+   *   indexMap.put("default_key", indexMapItem);
+   *   UpdateBookIndexRequest request = UpdateBookIndexRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setIndexName(indexName)
+   *     .putAllIndexMap(indexMap)
+   *     .build();
+   *   libraryServiceApi.updateBookIndex(request);
+   * }
+   * </code></pre>
+   *
+   * @param request The request object containing all of the parameters for the API call.
+   * @throws com.google.api.gax.grpc.ApiException if the remote call fails
+   */
+  public final void updateBookIndex(UpdateBookIndexRequest request) {
+    updateBookIndexCallable().call(request);
+  }
+
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+   * Updates the index of a book.
+   *
+   * Sample code:
+   * <pre><code>
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+   *   String indexName = "default index";
+   *   String indexMapItem = "";
+   *   Map&lt;String, String&gt; indexMap = new HashMap&lt;&gt;();
+   *   indexMap.put("default_key", indexMapItem);
+   *   UpdateBookIndexRequest request = UpdateBookIndexRequest.newBuilder()
+   *     .setName(formattedName)
+   *     .setIndexName(indexName)
+   *     .putAllIndexMap(indexMap)
+   *     .build();
+   *   ListenableFuture&lt;Void&gt; future = libraryServiceApi.updateBookIndexCallable().futureCall(request);
+   *   // Do something
+   *   future.get();
+   * }
+   * </code></pre>
+   */
+  public final ApiCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable() {
+    return updateBookIndexCallable;
+  }
+
+  /**
+   * Initiates an orderly shutdown in which preexisting calls continue but new calls are immediately
+   * cancelled.
+   */
+  @Override
+  public final void close() throws Exception {
+    for (AutoCloseable closeable : closeables) {
+      closeable.close();
+    }
+  }
+
+}

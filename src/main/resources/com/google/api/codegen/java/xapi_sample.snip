@@ -1,0 +1,131 @@
+@extends "java/mvvm_common.snip"
+
+@snippet decorateSampleCode(apiMethod, coreSampleCode)
+  try ({@apiMethod.apiClassName} {@apiMethod.apiVariableName} = \
+      {@apiMethod.apiClassName}.createWithDefaults()) {
+    {@coreSampleCode}
+  }
+@end
+
+@snippet pagedIterableMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  for ({@apiMethod.listMethod.resourceTypeName} element : {@sampleSyncMethodCall(apiMethod)}) {
+    // doThingsWith(element);
+  }
+@end
+
+@snippet pagedCallableMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  ListenableFuture<{@apiMethod.responseTypeName}> future = {@sampleFutureMethodCall(apiMethod)};
+  // Do something
+  for ({@apiMethod.listMethod.resourceTypeName} element : future.get()) {
+    // doThingsWith(element);
+  }
+@end
+
+@snippet unpagedListCallableMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  while (true) {
+    {@apiMethod.responseTypeName} response = \
+        {@apiMethod.apiVariableName}.{@apiMethod.name}().call(\
+        {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
+    for ({@apiMethod.listMethod.resourceTypeName} element : \
+        response.{@apiMethod.unpagedListCallableMethod.fnGetResourceListCall}()) {
+      // doThingsWith(element);
+    }
+    String nextPageToken = response.getNextPageToken();
+    if (!Strings.isNullOrEmpty(nextPageToken)) {
+      request = request.toBuilder().setPageToken(nextPageToken).build();
+    } else {
+      break;
+    }
+  }
+@end
+
+@snippet syncMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  @if apiMethod.hasReturnValue
+    {@apiMethod.responseTypeName} response = {@sampleSyncMethodCall(apiMethod)};
+  @else
+    {@sampleSyncMethodCall(apiMethod)};
+  @end
+@end
+
+@snippet callableMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  ListenableFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
+  // Do something
+  @if apiMethod.hasReturnValue
+    {@apiMethod.responseTypeName} response = future.get();
+  @else
+    future.get();
+  @end
+@end
+
+@private sampleFutureMethodCall(apiMethod)
+  {@apiMethod.apiVariableName}.{@apiMethod.name}().futureCall(\
+      {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+@end
+
+@private sampleSyncMethodCall(apiMethod)
+  {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+      {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+@end
+
+@private sampleMethodCallArgList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+@end
+
+@private initCode(initCodeSpec)
+  @join line : initCodeSpec.lines
+    @switch line.lineType.toString
+    @case "StructureInitLine"
+      {@initLineStructure(line)}
+    @case "ListInitLine"
+      {@initLineList(line)}
+    @case "MapInitLine"
+      {@initLineMap(line)}
+    @case "SimpleInitLine"
+      {@initLineSimple(line)}
+    @default
+      $unhandledCase: {@line.lineType.toString}$
+    @end
+  @end
+@end
+
+@private initLineStructure(line)
+  {@line.typeName} {@line.identifier} = {@line.typeName}.newBuilder()
+  @join fieldSetting : line.fieldSettings
+    {@EMPTY}  .{@fieldSetting.fnSetFunctionCallName}({@fieldSetting.identifier})
+  @end
+  {@EMPTY}  .build();
+@end
+
+@private initLineList(line)
+  List<{@line.elementTypeName}> {@line.identifier} = \
+      Arrays.asList({@argList(line.elementIdentifiers)});
+@end
+
+@private initLineMap(line)
+  Map<{@line.keyTypeName}, {@line.valueTypeName}> {@line.identifier} = new HashMap<>();
+  @join mapEntry : line.initEntries vertical
+    {@line.identifier}.put({@mapEntry.key}, {@mapEntry.value});
+  @end
+@end
+
+@private initLineSimple(line)
+  {@line.typeName} {@line.identifier} = {@renderInitValue(line.initValue)};
+@end
+
+@private renderInitValue(initValue)
+  @switch initValue.type
+  @case "SimpleInitValueView"
+    {@initValue.initialValue}
+  @case "FormattedInitValueView"
+    {@initValue.apiWrapperName}.{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
+  @default
+    $unhandledCase: {@initValue.type}$
+  @end
+@end

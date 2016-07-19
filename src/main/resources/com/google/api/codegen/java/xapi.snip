@@ -1,0 +1,341 @@
+@extends "java/mvvm_common.snip"
+@extends "java/xapi_sample.snip"
+
+@snippet generate(xapiClass)
+  package {@xapiClass.packageName};
+
+  @join import : xapiClass.imports
+    import {@import};
+  @end
+
+  @@javax.annotation.Generated("by GAPIC")
+  public class {@xapiClass.name} implements AutoCloseable {
+    {@members(xapiClass)}
+    {@statics(xapiClass)}
+    {@staticFunctions(xapiClass)}
+    {@constructors(xapiClass)}
+    {@apiMethods(xapiClass)}
+    {@cleanupSection()}
+  }
+@end
+
+@private statics(xapiClass)
+  @join pathTemplate : xapiClass.pathTemplates
+    private static final PathTemplate {@pathTemplate.name} =
+        PathTemplate.createWithoutUrlEncoding("{@pathTemplate.pattern}");
+    {@""}
+  @end
+@end
+
+@private staticFunctions(xapiClass)
+  @join function : xapiClass.formatResourceFunctions
+    {@formatResourceFunction(function)}
+  @end
+  {@""}
+  @join function : xapiClass.parseResourceFunctions
+    {@parseResourceFunction(function)}
+  @end
+@end
+
+@private formatResourceFunction(function)
+  /**
+   * Formats a string containing the fully-qualified path to represent
+   * a {@function.entityName} resource.
+   */
+  public static final String {@function.name}(\
+      {@formatResourceFunctionParams(function.resourceIdParams)}) {
+    return {@function.pathTemplateName}.instantiate(
+        {@pathTemplateArgs(function.resourceIdParams)});
+  }
+  {@""}
+@end
+
+@private formatResourceFunctionParams(resourceIdParams)
+  @join param : resourceIdParams on ", "
+    String {@param.name}
+  @end
+@end
+
+@private pathTemplateArgs(resourceIdParams)
+  @join param : resourceIdParams on ",".add(BREAK)
+    "{@param.templateKey}", {@param.name}
+  @end
+@end
+
+@private parseResourceFunction(function)
+  /**
+   * Parses the {@function.outputResourceId} from the given fully-qualified path which
+   * represents a {@function.entityName} resource.
+   */
+  public static final String {@function.name}(String {@function.entityNameParamName}) {
+    return {@function.pathTemplateName}.parse({@function.entityNameParamName})\
+      .get("{@function.outputResourceId}");
+  }
+  {@""}
+@end
+
+@private members(xapiClass)
+  private final {@xapiClass.settingsClassName} settings;
+  private final ManagedChannel channel;
+  private final ScheduledExecutorService executor;
+  private final List<AutoCloseable> closeables = new ArrayList<>();
+
+  @join apiCallable : xapiClass.apiCallableMembers
+    private final ApiCallable<{@apiCallable.requestTypeName}, {@apiCallable.responseTypeName}> {@apiCallable.name};
+  @end
+
+  public final {@xapiClass.settingsClassName} getSettings() {
+    return settings;
+  }
+  {@""}
+@end
+
+@private constructors(xapiClass)
+  /**
+   * Constructs an instance of {@xapiClass.name} with default settings.
+   */
+  public static final {@xapiClass.name} createWithDefaults() throws IOException {
+    return create({@xapiClass.settingsClassName}.defaultBuilder().build());
+  }
+
+  /**
+   * Constructs an instance of {@xapiClass.name}, using the given settings.
+   * The channels are created based on the settings passed in, or defaults for any
+   * settings that are not set.
+   */
+  public static final {@xapiClass.name} create({@xapiClass.settingsClassName} settings) throws IOException {
+    return new {@xapiClass.name}(settings);
+  }
+
+  /**
+   * Constructs an instance of {@xapiClass.name}, using the given settings.
+   * This is protected so that it easy to make a subclass, but otherwise, the static
+   * factory methods should be preferred.
+   */
+  protected {@xapiClass.name}({@xapiClass.settingsClassName} settings) throws IOException {
+    this.settings = settings;
+    this.executor = settings.getExecutorProvider().getOrBuildExecutor();
+    this.channel = settings.getChannelProvider().getOrBuildChannel(this.executor);
+
+    @join apiCallable : xapiClass.apiCallableMembers
+      @switch apiCallable.type.toString
+      @case "SimpleApiCallable"
+        this.{@apiCallable.name} = ApiCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+      @case "PagedApiCallable"
+        this.{@apiCallable.name} =
+            ApiCallable.createPagedVariant(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+      @case "BundlingApiCallable"
+        this.{@apiCallable.name} = ApiCallable.create(settings.{@apiCallable.settingsFunctionName}(), this.channel, this.executor);
+        if (settings.{@apiCallable.settingsFunctionName}().getBundlerFactory() != null) {
+          closeables.add(settings.{@apiCallable.settingsFunctionName}().getBundlerFactory());
+        }
+      @default
+        $unhandledCase: {@apiCallable.getClass.getSimpleName}$
+      @end
+    @end
+
+    if (settings.getChannelProvider().shouldAutoClose()) {
+      closeables.add(
+        new Closeable() {
+          @@Override
+          public void close() throws IOException {
+            channel.shutdown();
+          }
+        });
+    }
+    if (settings.getExecutorProvider().shouldAutoClose()) {
+      closeables.add(
+        new Closeable() {
+          @@Override
+          public void close() throws IOException {
+            executor.shutdown();
+          }
+        });
+    }
+  }
+  {@""}
+@end
+
+@private apiMethods(xapiClass)
+  @join apiMethod : xapiClass.apiMethods
+    @switch apiMethod.type.toString
+    @case "PagedFlattenedMethod"
+      {@pagedFlattenedMethod(apiMethod)}
+    @case "PagedRequestObjectMethod"
+      {@pagedRequestObjectMethod(apiMethod)}
+    @case "PagedCallableMethod"
+      {@pagedCallableMethod(apiMethod)}
+    @case "UnpagedListCallableMethod"
+      {@unpagedListCallableMethod(apiMethod)}
+    @case "FlattenedMethod"
+      {@flattenedMethod(apiMethod)}
+    @case "RequestObjectMethod"
+      {@requestObjectMethod(apiMethod)}
+    @case "CallableMethod"
+      {@callableMethod(apiMethod)}
+    @default
+      $unhandledCase: {@apiMethod.getClass.getSimpleName}$
+    @end
+    {@BREAK}
+  @end
+@end
+
+@private cleanupSection()
+  /**
+   * Initiates an orderly shutdown in which preexisting calls continue but new calls are immediately
+   * cancelled.
+   */
+  @@Override
+  public final void close() throws Exception {
+    for (AutoCloseable closeable : closeables) {
+      closeable.close();
+    }
+  }
+
+@end
+
+@private pagedFlattenedMethod(apiMethod)
+  @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  public final {@apiMethod.responseTypeName} {@apiMethod.name}({@paramList(apiMethod.methodParams)}) {
+    @join pathTemplateCheck : apiMethod.pathTemplateChecks
+      {@pathTemplateCheckLine(pathTemplateCheck)}
+    @end
+    {@apiMethod.apiRequestTypeName} request =
+        {@apiMethod.apiRequestTypeName}.newBuilder()
+        {@builderSetCalls(apiMethod.requestObjectParams)}
+        .build();
+    return {@apiMethod.name}(request);
+  }
+@end
+
+@private pagedRequestObjectMethod(apiMethod)
+  @let coreSampleCode = pagedIterableMethodSampleCode(apiMethod)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  {@apiMethod.requestObjectMethod.accessModifier} final {@apiMethod.responseTypeName} \
+      {@apiMethod.name}({@apiMethod.apiRequestTypeName} request) {
+    return {@apiMethod.requestObjectMethod.callableMethodName}()
+        .call(request);
+  }
+@end
+
+@private pagedCallableMethod(apiMethod)
+  @let coreSampleCode = pagedCallableMethodSampleCode(apiMethod)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  {@callableMethodImpl(apiMethod)}
+@end
+
+@private unpagedListCallableMethod(apiMethod)
+  @let coreSampleCode = unpagedListCallableMethodSampleCode(apiMethod)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  {@callableMethodImpl(apiMethod)}
+@end
+
+@private flattenedMethod(apiMethod)
+  @let coreSampleCode = syncMethodSampleCode(apiMethod)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  public final {@apiMethod.responseTypeName} {@apiMethod.name}(\
+       {@paramList(apiMethod.methodParams)}) {
+    @join pathTemplateCheck : apiMethod.pathTemplateChecks
+      {@pathTemplateCheckLine(pathTemplateCheck)}
+    @end
+    {@apiMethod.apiRequestTypeName} request =
+        {@apiMethod.apiRequestTypeName}.newBuilder()
+        {@builderSetCalls(apiMethod.requestObjectParams)}
+        .build();
+    @if apiMethod.hasReturnValue
+      return {@apiMethod.name}(request);
+    @else
+      {@apiMethod.name}(request);
+    @end
+  }
+@end
+
+@private requestObjectMethod(apiMethod)
+  @let coreSampleCode = syncMethodSampleCode(apiMethod)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  {@apiMethod.requestObjectMethod.accessModifier} final {@apiMethod.responseTypeName} \
+      {@apiMethod.name}({@apiMethod.apiRequestTypeName} request) {
+    @if apiMethod.hasReturnValue
+      return {@apiMethod.requestObjectMethod.callableMethodName}().call(request);
+    @else
+      {@apiMethod.requestObjectMethod.callableMethodName}().call(request);
+    @end
+  }
+@end
+
+@private callableMethod(apiMethod)
+  @let coreSampleCode = callableMethodSampleCode(apiMethod)
+    {@methodDoc(apiMethod.doc, decorateSampleCode(apiMethod, coreSampleCode))}
+  @end
+  {@callableMethodImpl(apiMethod)}
+@end
+
+@private callableMethodImpl(apiMethod)
+  public final ApiCallable<{@apiMethod.apiRequestTypeName}, {@apiMethod.responseTypeName}> \
+      {@apiMethod.name}() {
+    return {@apiMethod.callableMethod.callableName};
+  }
+@end
+
+@private methodDoc(apiMethodDoc, methodSampleCode)
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
+  /**
+  @join commentLine : apiMethodDoc.mainDocLines
+    {@""} * {@commentLine} 
+  @end
+   *
+   * Sample code:
+   * <pre><code>
+  @join sampleLine : util.getDocLines(methodSampleCode)
+    {@""} * {@sampleLine}
+  @end
+   * </code></pre>
+  @if apiMethodDoc.paramDocs
+    {@""} *
+    @join doc : apiMethodDoc.paramDocs 
+      {@paramDoc(doc)}
+    @end
+  @end
+  @if apiMethodDoc.throwsDocLines
+    @join commentLine : apiMethodDoc.throwsDocLines
+      {@""} * {@commentLine}
+    @end
+  @end
+   */
+  {@EMPTY}
+@end
+
+@private paramDoc(doc)
+  @switch doc.type
+  @case "SimpleParamDocView"
+    {@simpleParamDoc(doc)}
+  @default
+    $unhandledCase: {@doc.type}$
+  @end
+@end
+
+@private simpleParamDoc(doc)
+  {@""} * @@param {@doc.paramName} {@doc.firstLine}
+  @if doc.remainingLines
+    @join commentLine : doc.remainingLines
+      {@""} * {@commentLine}
+    @end
+  @end
+@end
+
+@private builderSetCalls(requestObjectParams)
+  @join requestObjectParam : requestObjectParams
+    .{@requestObjectParam.setCallName}({@requestObjectParam.name})
+  @end
+@end
+
+@private pathTemplateCheckLine(pathTemplateCheck)
+  {@pathTemplateCheck.pathTemplateName}.validate({@pathTemplateCheck.paramName});
+@end

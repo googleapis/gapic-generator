@@ -14,9 +14,11 @@
  */
 package com.google.api.codegen.php;
 
+import com.google.api.codegen.util.php.PhpTypeTable;
+
 /**
  * A PhpContext provides functionality specific to a context in PHP.
  */
 public interface PhpContext {
-  void resetState(PhpContextCommon phpCommon);
+  void resetState(PhpTypeTable phpTypeTable);
 }

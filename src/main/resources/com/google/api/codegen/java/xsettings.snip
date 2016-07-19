@@ -1,0 +1,43 @@
+@snippet generate(xsettingsClass)
+  package {@xsettingsClass.packageName};
+  
+  @join import : xsettingsClass.imports
+    import {@import};
+  @end
+
+  @@javax.annotation.Generated("by GAPIC")
+  public class {@xsettingsClass.name} extends ServiceApiSettings {
+    {@constants(xsettingsClass)}
+  }
+@end
+
+@private constants(xsettingsClass)
+  /**
+   * The default address of the service.
+   */
+  public static final String DEFAULT_SERVICE_ADDRESS = "{@xsettingsClass.serviceAddress}";
+
+  /**
+   * The default port of the service.
+   */
+  public static final int DEFAULT_SERVICE_PORT = {@xsettingsClass.servicePort};
+
+  /**
+   * The default scopes of the service.
+   */
+  public static final ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
+      @join scope : {@xsettingsClass.authScopes}
+        .add("{@scope}")
+      @end
+      .build();
+
+  /**
+   * The default connection settings of the service.
+   */
+  public static final ConnectionSettings DEFAULT_CONNECTION_SETTINGS =
+      ConnectionSettings.newBuilder()
+          .setServiceAddress(DEFAULT_SERVICE_ADDRESS)
+          .setPort(DEFAULT_SERVICE_PORT)
+          .provideCredentialsWith(DEFAULT_SERVICE_SCOPES)
+          .build();
+@end

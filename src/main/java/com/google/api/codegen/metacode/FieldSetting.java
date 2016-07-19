@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.metacode;
 
+import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 
@@ -25,7 +26,7 @@ import com.google.auto.value.AutoValue;
 public abstract class FieldSetting {
 
   public static FieldSetting create(
-      TypeRef type, String fieldName, String identifier, InitValueConfig initValueConfig) {
+      TypeRef type, Name fieldName, Name identifier, InitValueConfig initValueConfig) {
     return new AutoValue_FieldSetting(type, fieldName, identifier, initValueConfig);
   }
 
@@ -37,12 +38,12 @@ public abstract class FieldSetting {
   /**
    * Returns the name of the field in the containing structure.
    */
-  public abstract String getFieldName();
+  public abstract Name getFieldName();
 
   /**
    * Returns the name of the identifier being set on the field.
    */
-  public abstract String getIdentifier();
+  public abstract Name getIdentifier();
 
   /**
    * Returns the InitValueConfig for the original identifier.
