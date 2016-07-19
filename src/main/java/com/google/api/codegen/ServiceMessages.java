@@ -33,6 +33,10 @@ public class ServiceMessages {
    * Returns true if the message is the empty message.
    */
   public boolean isEmptyType(TypeRef type) {
+    return s_isEmptyType(type);
+  }
+
+  public static boolean s_isEmptyType(TypeRef type) {
     return type.isMessage()
         && type.getMessageType().getFullName().equals(Empty.getDescriptor().getFullName());
   }

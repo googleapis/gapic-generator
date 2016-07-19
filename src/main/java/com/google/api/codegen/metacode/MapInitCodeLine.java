@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.metacode;
 
+import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 
@@ -30,8 +31,8 @@ public abstract class MapInitCodeLine implements InitCodeLine {
       TypeRef keyType,
       TypeRef valueType,
       TypeRef elementType,
-      String identifier,
-      Map<String, String> elementIdentifierMap) {
+      Name identifier,
+      Map<String, Name> elementIdentifierMap) {
     return new AutoValue_MapInitCodeLine(
         keyType, valueType, elementType, identifier, elementIdentifierMap);
   }
@@ -43,15 +44,15 @@ public abstract class MapInitCodeLine implements InitCodeLine {
   public abstract TypeRef getElementType();
 
   @Override
-  public abstract String getIdentifier();
+  public abstract Name getIdentifier();
 
-  public abstract Map<String, String> getElementIdentifierMap();
+  public abstract Map<String, Name> getElementIdentifierMap();
 
   public Iterable<String> getElementIdentifierKeys() {
     return getElementIdentifierMap().keySet();
   }
 
-  public String getElementIdentifierValue(String key) {
+  public Name getElementIdentifierValue(String key) {
     return getElementIdentifierMap().get(key);
   }
 
