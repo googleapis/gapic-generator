@@ -102,6 +102,9 @@ public class RetryGenerator implements MethodConfigGenerator {
    */
   private static boolean isIdempotent(Method method) {
     HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);
+    if (httpAttr == null) {
+      return false;
+    }
     MethodKind methodKind = httpAttr.getMethodKind();
     return methodKind.isIdempotent();
   }
