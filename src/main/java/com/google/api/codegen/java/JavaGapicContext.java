@@ -16,6 +16,7 @@ package com.google.api.codegen.java;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
+import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.FieldSelector;
@@ -33,6 +34,9 @@ import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * A GapicContext specialized for Java.
@@ -316,6 +320,48 @@ public class JavaGapicContext extends GapicContext implements JavaContext {
       }
     }
     throw new RuntimeException("No flattened methods available.");
+  }
+
+  /**
+   * Heuristically find a suitable method, whose usage sample can be displayed concisely.
+   */
+  public Method getRepresentativeMethod(Interface service) {
+    final InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
+    return Collections.max(
+        service.getMethods(),
+        new Comparator<Method>() {
+          @Override
+          public int compare(Method m1, Method m2) {
+            MethodConfig c1 = interfaceConfig.getMethodConfig(m1);
+            MethodConfig c2 = interfaceConfig.getMethodConfig(m2);
+
+            int cmp;
+            // Prefer methods that are flattened.
+            if ((cmp = Boolean.compare(c1.isFlattening(), c2.isFlattening())) != 0) {
+              return cmp;
+            }
+            // Prefer methods that are *not* page streaming.
+            if ((cmp = Boolean.compare(c1.isPageStreaming(), c2.isPageStreaming())) != 0) {
+              return -cmp;
+            }
+            // For conciseness, prefer methods with fewer fields.
+            if ((cmp = Integer.compare(flattenedFieldCount(c1), flattenedFieldCount(c2))) != 0) {
+              return -cmp;
+            }
+            // Break ties by comparing names, so the output is predictable.
+            return m1.getSimpleName().compareTo(m2.getSimpleName());
+          }
+        });
+  }
+
+  private int flattenedFieldCount(MethodConfig methodConfig) {
+    int min = Integer.MAX_VALUE;
+    for (List<Field> flatteningGroup : methodConfig.getFlattening().getFlatteningGroups()) {
+      if (flatteningGroup.size() < min) {
+        min = flatteningGroup.size();
+      }
+    }
+    return min;
   }
 
   public String getTitle() {
