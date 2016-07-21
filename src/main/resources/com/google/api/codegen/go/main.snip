@@ -313,8 +313,17 @@
                 apiCall       func() error
             }
 
-            // NextPage moves to the next page and updates its internal data.
-            // On completion, the last page is returned with Done.
+            // NextPage returns the next page of results.
+            @if hasPageSizeField
+              // It will return at most the number of results specified by the last call to SetPageSize.
+              // If SetPageSize was never called or was called with a value less than 1,
+              // the page size is determined by the underlying service.
+            @end
+            //
+            // NextPage may return a second return value of Done along with the last page of results. After
+            // NextPage returns Done, all subsequent calls to NextPage will return (nil, Done).
+            //
+            // Next and NextPage should not be used with the same iterator.
             func (it *{@iteratorTypeName}) NextPage() ([]{@resourceFieldTypeName}, error) {
                 if it.atLastPage {
                     // We already returned Done with the last page of items. Continue to
@@ -330,8 +339,17 @@
                 return it.items, nil
             }
 
-            // Next returns the next element in the stream. It returns Done at
-            // the end of the stream.
+            // Next returns the next result. Its second return value is Done if there are no more results.
+            // Once next returns Done, all subsequent calls will return Done.
+            @if hasPageSizeField
+              //
+              // Internally, Next retrieves results in bulk. You can call SetPageSize as a performance hint to
+              // affect how many results are retrieved in a single RPC.
+            @end
+            //
+            // SetPageToken should not be called when using Next.
+            //
+            // Next and NextPage should not be used with the same iterator.
             func (it *{@iteratorTypeName}) Next() ({@resourceFieldTypeName}, error) {
                 for it.currentIndex >= len(it.items) {
                     if it.atLastPage {
@@ -348,28 +366,25 @@
             }
 
             @if hasPageSizeField
-                // PageSize returns the maximum size of the next page to be
-                // retrieved.
+                // PageSize returns the page size for all subsequent calls to NextPage.
                 func (it *{@iteratorTypeName}) PageSize() int32 {
                     return it.pageSize
                 }
 
-                // SetPageSize sets the maximum size of the next page to be
-                // retrieved.
+                // SetPageSize sets the page size for all subsequent calls to NextPage.
                 func (it *{@iteratorTypeName}) SetPageSize(pageSize int32) {
                     it.pageSize = pageSize
                 }
 
             @end
-            // SetPageToken sets the next page token to be retrieved. Note, it
-            // does not retrieve the next page, or modify the cached page. If
-            // Next is called, there is no guarantee that the result returned
-            // will be from the next page until NextPage is called.
+            // SetPageToken sets the page token for the next call to NextPage, to resume the iteration from
+            // a previous point.
             func (it *{@iteratorTypeName}) SetPageToken(token {@tokenType}) {
                 it.nextPageToken = token
             }
 
-            // NextPageToken returns the next page token.
+            // NextPageToken returns a page token that can be used with SetPageToken to resume
+            // iteration from the next page. It returns the empty string if there are no more pages.
             func (it *{@iteratorTypeName}) NextPageToken() {@tokenType} {
                 return it.nextPageToken
             }
