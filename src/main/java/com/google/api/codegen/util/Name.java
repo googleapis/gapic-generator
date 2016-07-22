@@ -79,7 +79,7 @@ public class Name {
   private static boolean isLowerUnderscore(String identifier) {
     Character underscore = Character.valueOf('_');
     for (Character ch : identifier.toCharArray()) {
-      if (!Character.isLowerCase(ch) && !ch.equals(underscore)) {
+      if (!Character.isLowerCase(ch) && !ch.equals(underscore) && !Character.isDigit(ch)) {
         return false;
       }
     }
