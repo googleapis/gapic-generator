@@ -60,5 +60,30 @@ public class TypeNameTest {
       imports.add(alias);
       return alias.getNickname();
     }
+
+    @Override
+    public TypeName getTypeName(String fullName) {
+      return null;
+    }
+
+    @Override
+    public TypeTable cloneEmpty() {
+      return new MockTypeTable();
+    }
+
+    @Override
+    public String getAndSaveNicknameFor(String fullName) {
+      return null;
+    }
+
+    @Override
+    public String getAndSaveNicknameFor(TypeName typeName) {
+      return null;
+    }
+
+    @Override
+    public List<String> getImports() {
+      return null;
+    }
   }
 }

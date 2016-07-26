@@ -34,6 +34,12 @@ public class PhpTypeTable implements TypeTable {
    */
   private final BiMap<String, String> imports = HashBiMap.create();
 
+  @Override
+  public TypeTable cloneEmpty() {
+    return new PhpTypeTable();
+  }
+
+  @Override
   public TypeName getTypeName(String fullName) {
     int lastBackslashIndex = fullName.lastIndexOf('\\');
     if (lastBackslashIndex < 0) {
@@ -43,10 +49,12 @@ public class PhpTypeTable implements TypeTable {
     return new TypeName(fullName, nickname);
   }
 
+  @Override
   public String getAndSaveNicknameFor(String fullName) {
     return getAndSaveNicknameFor(getTypeName(fullName));
   }
 
+  @Override
   public String getAndSaveNicknameFor(TypeName typeName) {
     return typeName.getAndSaveNicknameIn(this);
   }
@@ -69,6 +77,7 @@ public class PhpTypeTable implements TypeTable {
     return alias.getNickname();
   }
 
+  @Override
   public List<String> getImports() {
     // Clean up the imports.
     List<String> cleanedImports = new ArrayList<>();

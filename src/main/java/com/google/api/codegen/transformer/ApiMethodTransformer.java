@@ -89,8 +89,7 @@ public class ApiMethodTransformer {
     docBuilder.returnTypeName(
         context
             .getNamer()
-            .getDynamicReturnTypeName(
-                context.getTypeTable(), context.getMethod(), context.getMethodConfig()));
+            .getDynamicReturnTypeName(context.getMethod(), context.getMethodConfig()));
     docBuilder.throwsDocLines(new ArrayList<String>());
 
     return docBuilder.build();
@@ -239,7 +238,7 @@ public class ApiMethodTransformer {
 
     List<ParamDocView> arrayKeyDocs = new ArrayList<>();
     SimpleParamDocView.Builder retrySettingsDoc = SimpleParamDocView.newBuilder();
-    retrySettingsDoc.typeName(context.getNamer().getRetrySettingsClassName());
+    retrySettingsDoc.typeName(context.getNamer().getRetrySettingsTypeName());
 
     Name retrySettingsName = Name.from("retry", "settings");
     Name timeoutMillisName = Name.from("timeout", "millis");

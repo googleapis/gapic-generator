@@ -25,6 +25,7 @@ import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
+import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicXApiView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
@@ -67,9 +68,11 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
     List<ViewModel> surfaceDocs = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
+      ModelTypeTable modelTypeTable =
+          new ModelTypeTable(new PhpTypeTable(), new PhpModelTypeNameConverter());
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(
-              service, apiConfig, new PhpModelTypeTable(), new PhpSurfaceNamer());
+              service, apiConfig, modelTypeTable, new PhpSurfaceNamer());
 
       surfaceDocs.addAll(transform(context));
     }

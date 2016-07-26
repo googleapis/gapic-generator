@@ -14,8 +14,10 @@
  */
 package com.google.api.codegen.transformer.php;
 
-import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.TypeNameConverter;
+import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -23,15 +25,7 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
-import java.util.List;
-
-import org.apache.commons.lang3.NotImplementedException;
-
-/**
- * The ModelTypeTable for PHP.
- */
-public class PhpModelTypeTable implements ModelTypeTable {
-  private PhpTypeTable phpTypeTable;
+public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
 
   /**
    * A map from primitive types in proto to PHP counterparts.
@@ -77,52 +71,14 @@ public class PhpModelTypeTable implements ModelTypeTable {
           .put(Type.TYPE_BYTES, "\"\"")
           .build();
 
-  /**
-   * Standard constructor.
-   */
-  public PhpModelTypeTable() {
-    phpTypeTable = new PhpTypeTable();
+  private TypeNameConverter typeNameConverter;
+
+  public PhpModelTypeNameConverter() {
+    this.typeNameConverter = new PhpTypeTable();
   }
 
   @Override
-  public ModelTypeTable cloneEmpty() {
-    return new PhpModelTypeTable();
-  }
-
-  @Override
-  public String getFullNameFor(TypeRef type) {
-    return getTypeName(type).getFullName();
-  }
-
-  @Override
-  public String getFullNameForElementType(TypeRef type) {
-    return getTypeNameForElementType(type).getFullName();
-  }
-
-  @Override
-  public String getNicknameFor(TypeRef type) {
-    return getTypeName(type).getNickname();
-  }
-
-  @Override
-  public void saveNicknameFor(String fullName) {
-    getAndSaveNicknameFor(fullName);
-  }
-
-  @Override
-  public String getAndSaveNicknameFor(String fullName) {
-    return phpTypeTable.getAndSaveNicknameFor(fullName);
-  }
-
-  /**
-   * Returns the PHP representation of a reference to a type.
-   */
-  @Override
-  public String getAndSaveNicknameFor(TypeRef type) {
-    return phpTypeTable.getAndSaveNicknameFor(getTypeName(type));
-  }
-
-  private TypeName getTypeName(TypeRef type) {
+  public TypeName getTypeName(TypeRef type) {
     if (type.isMap()) {
       return new TypeName("array");
     } else if (type.isRepeated()) {
@@ -133,27 +89,18 @@ public class PhpModelTypeTable implements ModelTypeTable {
     }
   }
 
-  @Override
-  public String getAndSaveNicknameForElementType(TypeRef type) {
-    return phpTypeTable.getAndSaveNicknameFor(getTypeNameForElementType(type));
-  }
-
-  @Override
-  public String getAndSaveNicknameForContainer(String containerFullName, String elementFullName) {
-    throw new NotImplementedException("ModelToPhpTypeTable.getAndSaveNicknameForContainer");
-  }
-
   /**
    * Returns the PHP representation of a type, without cardinality. If the type is a primitive,
-   * importAndGetShortestNameForElementType returns it in unboxed form.
+   * getTypeNameForElementType returns it in unboxed form.
    */
-  private TypeName getTypeNameForElementType(TypeRef type) {
+  @Override
+  public TypeName getTypeNameForElementType(TypeRef type) {
     String primitiveTypeName = PRIMITIVE_TYPE_MAP.get(type.getKind());
     if (primitiveTypeName != null) {
       if (primitiveTypeName.contains("\\")) {
         // Fully qualified type name, use regular type name resolver. Can skip boxing logic
         // because those types are already boxed.
-        return phpTypeTable.getTypeName(primitiveTypeName);
+        return typeNameConverter.getTypeName(primitiveTypeName);
       } else {
         return new TypeName(primitiveTypeName);
       }
@@ -166,6 +113,36 @@ public class PhpModelTypeTable implements ModelTypeTable {
       default:
         throw new IllegalArgumentException("unknown type kind: " + type.getKind());
     }
+  }
+
+  @Override
+  public TypeName getTypeName(ProtoElement elem) {
+    // Construct the fully-qualified PHP class name
+    int fullNamePrefixLength = elem.getFile().getFullName().length() + 1;
+    String nickname = elem.getFullName().substring(fullNamePrefixLength);
+    String fullName = getPhpPackage(elem.getFile()) + "\\" + nickname;
+    return new TypeName(fullName, nickname);
+  }
+
+  /**
+   * Returns the PHP representation of a zero value for that type, to be used in code sample doc.
+   */
+  @Override
+  public TypedValue getZeroValue(TypeRef type) {
+    // Don't call getTypeName; we don't need to import these.
+    if (type.isMap()) {
+      return TypedValue.create(new TypeName("array"), "[]");
+    }
+    if (type.isRepeated()) {
+      return TypedValue.create(new TypeName("array"), "[]");
+    }
+    if (PRIMITIVE_ZERO_VALUE.containsKey(type.getKind())) {
+      return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
+    }
+    if (type.isMessage()) {
+      return TypedValue.create(getTypeName(type), "new %s()");
+    }
+    return TypedValue.create(new TypeName(""), "null");
   }
 
   @Override
@@ -185,49 +162,10 @@ public class PhpModelTypeTable implements ModelTypeTable {
       case TYPE_BYTES:
         return "\"" + value + "\"";
       default:
-        // Types that do not need to be modified (e.g. TYPE_INT32) are handled here
+        // Types that do not need to be modified (e.g. TYPE_INT32) are handled
+        // here
         return value;
     }
-  }
-
-  /**
-   * Returns the PHP representation of a zero value for that type, to be used in code sample doc.
-   *
-   * Parametric types may use the diamond operator, since the return value will be used only in
-   * initialization.
-   */
-  @Override
-  public String getZeroValueAndSaveNicknameFor(TypeRef type) {
-    // Don't call getTypeName; we don't need to import these.
-    if (type.isMap()) {
-      return "[]";
-    }
-    if (type.isRepeated()) {
-      return "[]";
-    }
-    if (PRIMITIVE_ZERO_VALUE.containsKey(type.getKind())) {
-      return PRIMITIVE_ZERO_VALUE.get(type.getKind());
-    }
-    if (type.isMessage()) {
-      return "new " + getAndSaveNicknameFor(type) + "()";
-    }
-    return "null";
-  }
-
-  @Override
-  public List<String> getImports() {
-    return phpTypeTable.getImports();
-  }
-
-  /**
-   * Gets the full name of the message or enum type in PHP.
-   */
-  private TypeName getTypeName(ProtoElement elem) {
-    // Construct the fully-qualified PHP class name
-    int fullNamePrefixLength = elem.getFile().getFullName().length() + 1;
-    String nickname = elem.getFullName().substring(fullNamePrefixLength);
-    String fullName = getPhpPackage(elem.getFile()) + "\\" + nickname;
-    return new TypeName(fullName, nickname);
   }
 
   /**

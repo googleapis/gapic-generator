@@ -17,6 +17,7 @@ package com.google.api.codegen.transformer.php;
 import com.google.api.codegen.CollectionConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.ServiceMessages;
+import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
@@ -31,7 +32,7 @@ import com.google.api.tools.framework.model.TypeRef;
  */
 public class PhpSurfaceNamer extends SurfaceNamer {
   public PhpSurfaceNamer() {
-    super(new PhpNameFormatter());
+    super(new PhpNameFormatter(), new ModelTypeFormatterImpl(new PhpModelTypeNameConverter()));
   }
 
   @Override
@@ -66,7 +67,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getRetrySettingsClassName() {
+  public String getRetrySettingsTypeName() {
     return "Google\\GAX\\RetrySettings";
   }
 
@@ -76,14 +77,13 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDynamicReturnTypeName(
-      ModelTypeTable typeTable, Method method, MethodConfig methodConfig) {
+  public String getDynamicReturnTypeName(Method method, MethodConfig methodConfig) {
     if (new ServiceMessages().isEmptyType(method.getOutputType())) {
       return "";
     }
     if (methodConfig.isPageStreaming()) {
       return "Google\\GAX\\PageAccessor";
     }
-    return typeTable.getFullNameFor(method.getOutputType());
+    return getModelTypeFormatter().getFullNameFor(method.getOutputType());
   }
 }

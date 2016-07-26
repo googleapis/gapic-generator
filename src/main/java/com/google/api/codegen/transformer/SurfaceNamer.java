@@ -20,8 +20,8 @@ import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
-import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.NameFormatterMixin;
+import com.google.api.codegen.util.NamePath;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -43,8 +43,15 @@ import java.util.List;
  * would be a language-specific namer.
  */
 public class SurfaceNamer extends NameFormatterMixin {
-  public SurfaceNamer(NameFormatter languageNamer) {
+  private ModelTypeFormatter modelTypeFormatter;
+
+  public SurfaceNamer(NameFormatter languageNamer, ModelTypeFormatter modelTypeFormatter) {
     super(languageNamer);
+    this.modelTypeFormatter = modelTypeFormatter;
+  }
+
+  public ModelTypeFormatter getModelTypeFormatter() {
+    return modelTypeFormatter;
   }
 
   public String getNotImplementedString(String feature) {
@@ -154,7 +161,7 @@ public class SurfaceNamer extends NameFormatterMixin {
     return Name.upperCamel(method.getSimpleName()).toUpperCamel();
   }
 
-  public String getRetrySettingsClassName() {
+  public String getRetrySettingsTypeName() {
     return getNotImplementedString("SurfaceNamer.getRetrySettingsClassName");
   }
 
@@ -162,8 +169,7 @@ public class SurfaceNamer extends NameFormatterMixin {
     return getNotImplementedString("SurfaceNamer.getOptionalArrayTypeName");
   }
 
-  public String getDynamicReturnTypeName(
-      ModelTypeTable typeTable, Method method, MethodConfig methodConfig) {
+  public String getDynamicReturnTypeName(Method method, MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getDynamicReturnTypeName");
   }
 }

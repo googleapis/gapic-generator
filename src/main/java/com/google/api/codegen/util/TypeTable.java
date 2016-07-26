@@ -14,14 +14,42 @@
  */
 package com.google.api.codegen.util;
 
+import java.util.List;
+
 /**
  * A type table manages the imports for a set of fully-qualified type names.
  */
-public interface TypeTable {
+public interface TypeTable extends TypeNameConverter {
+
+  @Override
+  TypeName getTypeName(String fullName);
+
+  /**
+   * Return a new TypeTable with the same concrete type as this one.
+   */
+  TypeTable cloneEmpty();
+
+  /**
+   * Computes the nickname for the given full name, adds the full name to the import set,
+   * and returns the nickname.
+   */
+  String getAndSaveNicknameFor(String fullName);
+
+  /**
+   * Computes the nickname for the given type, adds the full name to the import set,
+   * and returns the nickname.
+   */
+  String getAndSaveNicknameFor(TypeName typeName);
+
   /**
    * Determines if the nickname of the given alias can be used, and if so, then
    * saves it in the import table and returns it; otherwise (e.g. if there would
    * be a clash), returns the full name.
    */
   String getAndSaveNicknameFor(TypeAlias alias);
+
+  /**
+   * Returns the imports accumulated so far.
+   */
+  List<String> getImports();
 }
