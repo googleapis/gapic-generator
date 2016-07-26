@@ -79,7 +79,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
   /**
    * The import path for generated pb.go files for core-proto files.
    */
-  private static final String CORE_PROTO_BASE = "github.com/googleapis/proto-client-go";
+  private static final String CORE_PROTO_BASE = "google.golang.org/genproto/googleapis";
 
   /**
    * The set of the core protobuf packages.
