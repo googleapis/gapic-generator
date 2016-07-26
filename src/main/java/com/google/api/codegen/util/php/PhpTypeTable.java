@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * The TypeTable for Java.
+ * The TypeTable for PHP.
  */
 public class PhpTypeTable implements TypeTable {
   /**

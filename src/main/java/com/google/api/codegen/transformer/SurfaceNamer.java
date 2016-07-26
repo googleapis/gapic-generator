@@ -39,7 +39,9 @@ public class SurfaceNamer extends ViewNamer {
     super(languageNamer);
   }
 
-  public static final String NOT_IMPLEMENTED = "$ NOT IMPLEMENTED $";
+  public String getNotImplementedString(String feature) {
+    return "$ NOT IMPLEMENTED: " + feature + " $";
+  }
 
   public String getApiWrapperClassName(Interface interfaze) {
     return className(Name.upperCamel(interfaze.getSimpleName(), "Api"));
@@ -109,7 +111,7 @@ public class SurfaceNamer extends ViewNamer {
   }
 
   public String getClientConfigPath(Interface service) {
-    return SurfaceNamer.NOT_IMPLEMENTED;
+    return getNotImplementedString("SurfaceNamer.getClientConfigPath");
   }
 
   public String getGrpcClientTypeName(Interface service) {
@@ -145,15 +147,15 @@ public class SurfaceNamer extends ViewNamer {
   }
 
   public String getRetrySettingsClassName() {
-    return SurfaceNamer.NOT_IMPLEMENTED;
+    return getNotImplementedString("SurfaceNamer.getRetrySettingsClassName");
   }
 
   public String getOptionalArrayTypeName() {
-    return SurfaceNamer.NOT_IMPLEMENTED;
+    return getNotImplementedString("SurfaceNamer.getOptionalArrayTypeName");
   }
 
   public String getDynamicReturnTypeName(
       ModelTypeTable typeTable, Method method, MethodConfig methodConfig) {
-    return SurfaceNamer.NOT_IMPLEMENTED;
+    return getNotImplementedString("SurfaceNamer.getDynamicReturnTypeName");
   }
 }

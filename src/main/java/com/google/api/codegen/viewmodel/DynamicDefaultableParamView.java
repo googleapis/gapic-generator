@@ -17,7 +17,7 @@ package com.google.api.codegen.viewmodel;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class DynamicDefaultableParamView implements ParamView {
+public abstract class DynamicDefaultableParamView {
   public abstract String name();
 
   public abstract String defaultValue();

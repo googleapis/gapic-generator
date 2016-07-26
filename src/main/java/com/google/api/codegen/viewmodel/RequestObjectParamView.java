@@ -17,7 +17,7 @@ package com.google.api.codegen.viewmodel;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class RequestObjectParamView implements ParamView {
+public abstract class RequestObjectParamView {
   public abstract String name();
 
   public abstract String elementTypeName();

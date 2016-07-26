@@ -25,7 +25,7 @@ package com.google.api.codegen.util;
  * This class delegates step 2 to the provided name formatter, which generally
  * would be a language-specific namer.
  */
-public class ViewNamer implements NameFormatter {
+public abstract class ViewNamer implements NameFormatter {
 
   private NameFormatter formatter;
 

@@ -151,8 +151,12 @@ public class ApiMethodTransformer {
           context.getTypeTable().getAndSaveNicknameForElementType(field.getType()));
       param.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getType()));
     } else {
-      param.elementTypeName(SurfaceNamer.NOT_IMPLEMENTED);
-      param.typeName(SurfaceNamer.NOT_IMPLEMENTED);
+      param.elementTypeName(
+          namer.getNotImplementedString(
+              "ApiMethodTransformer.generateRequestObjectParam - elementTypeName"));
+      param.typeName(
+          namer.getNotImplementedString(
+              "ApiMethodTransformer.generateRequestObjectParam - typeName"));
     }
     param.setCallName(
         namer.getSetFunctionCallName(field.getType(), Name.from(field.getSimpleName())));
@@ -206,6 +210,8 @@ public class ApiMethodTransformer {
 
     List<String> docLines = null;
     if (!fields.iterator().hasNext()) {
+      // TODO figure out a reliable way to line-wrap comments across all languages
+      // instead of encoding it in the transformer
       String retrySettingsDocText =
           String.format(
               "Optional. There are no optional parameters for this method yet;\n"
@@ -239,6 +245,8 @@ public class ApiMethodTransformer {
     Name timeoutMillisName = Name.from("timeout", "millis");
 
     retrySettingsDoc.paramName(context.getNamer().varName(retrySettingsName));
+    // TODO figure out a reliable way to line-wrap comments across all languages
+    // instead of encoding it in the transformer
     String retrySettingsDocText =
         String.format(
             "Retry settings to use for this call. If present, then\n%s is ignored.",
@@ -251,6 +259,8 @@ public class ApiMethodTransformer {
     SimpleParamDocView.Builder timeoutDoc = SimpleParamDocView.newBuilder();
     timeoutDoc.typeName(context.getTypeTable().getAndSaveNicknameFor(TypeRef.of(Type.TYPE_INT32)));
     timeoutDoc.paramName(context.getNamer().varName(timeoutMillisName));
+    // TODO figure out a reliable way to line-wrap comments across all languages
+    // instead of encoding it in the transformer
     String timeoutMillisDocText =
         String.format(
             "Timeout to use for this call. Only used if %s\nis not set.",
