@@ -21,7 +21,7 @@ import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NamePath;
-import com.google.api.codegen.util.ViewNamer;
+import com.google.api.codegen.util.NameFormatterMixin;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -32,9 +32,17 @@ import com.google.api.tools.framework.model.TypeRef;
 import java.util.List;
 
 /**
- * A SurfaceNamer provides language-specific names or other strings.
+ * A SurfaceNamer provides language-specific names for specific components of a view for a surface.
+ *
+ * Naming is composed of two steps:
+ *
+ * 1. Composing a Name instance with the name pieces
+ * 2. Formatting the Name for the particular type of identifier needed.
+ *
+ * This class delegates step 2 to the provided name formatter, which generally
+ * would be a language-specific namer.
  */
-public class SurfaceNamer extends ViewNamer {
+public class SurfaceNamer extends NameFormatterMixin {
   public SurfaceNamer(NameFormatter languageNamer) {
     super(languageNamer);
   }

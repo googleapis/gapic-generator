@@ -15,21 +15,19 @@
 package com.google.api.codegen.util;
 
 /**
- * A ViewNamer provides names for specific components of a view.
+ * NameFormatterMixin is an abstract class that implements NameFormatter and
+ * simply forwards calls to another NameFormatter. This allows a child class
+ * to provide the interface of NameFormatter along with additional functionality.
  *
- * Naming is composed of two steps:
- *
- * 1. Composing a Name instance with the name pieces
- * 2. Formatting the Name for the particular type of identifier needed.
- *
- * This class delegates step 2 to the provided name formatter, which generally
- * would be a language-specific namer.
+ * Note to future maintainers: This class should only contain methods which
+ * forward on to NameFormatter and nothing else; otherwise, it is no longer
+ * functioning in spirit as a mix-in.
  */
-public abstract class ViewNamer implements NameFormatter {
+public abstract class NameFormatterMixin implements NameFormatter {
 
   private NameFormatter formatter;
 
-  public ViewNamer(NameFormatter formatter) {
+  public NameFormatterMixin(NameFormatter formatter) {
     this.formatter = formatter;
   }
 
