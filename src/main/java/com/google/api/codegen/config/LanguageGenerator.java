@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,16 +35,17 @@ public class LanguageGenerator {
 
   private static final Map<String, LanguageFormatter> LANGUAGE_FORMATTERS =
       ImmutableMap.<String, LanguageFormatter>builder()
-          .put("java", new LanguageFormatter(".", "com", false))
-          .put("python", new LanguageFormatter(".", null, false))
-          .put("go", new LanguageFormatter("/", "google.golang.org", false))
-          .put("csharp", new LanguageFormatter(".", null, true))
-          .put("ruby", new LanguageFormatter("::", null, true))
-          .put("php", new LanguageFormatter("\\", null, true))
+          .put("java", new SimpleLanguageFormatter(".", "com", false))
+          .put("python", new SimpleLanguageFormatter(".", null, false))
+          .put("go", new GoLanguageFormatter())
+          .put("csharp", new SimpleLanguageFormatter(".", null, true))
+          .put("ruby", new SimpleLanguageFormatter("::", null, true))
+          .put("php", new SimpleLanguageFormatter("\\", null, true))
           .build();
 
   public static Map<String, Object> generate(String packageName) {
-    String[] packageNameComponents = packageName.split(DEFAULT_PACKAGE_SEPARATOR);
+    List<String> packageNameComponents =
+        Arrays.asList(packageName.split(DEFAULT_PACKAGE_SEPARATOR));
 
     Map<String, Object> languages = new LinkedHashMap<>();
     for (String language : LANGUAGE_FORMATTERS.keySet()) {
@@ -61,19 +63,23 @@ public class LanguageGenerator {
     return Character.toUpperCase(string.charAt(0)) + string.substring(1);
   }
 
-  private static class LanguageFormatter {
+  private interface LanguageFormatter {
+    String getFormattedPackageName(List<String> nameComponents);
+  }
+
+  private static class SimpleLanguageFormatter implements LanguageFormatter {
 
     private final String separator;
     private final String prefix;
     private final boolean capitalize;
 
-    public LanguageFormatter(String separator, String prefix, boolean capitalize) {
+    public SimpleLanguageFormatter(String separator, String prefix, boolean capitalize) {
       this.separator = separator;
       this.prefix = prefix;
       this.capitalize = capitalize;
     }
 
-    public String getFormattedPackageName(String[] nameComponents) {
+    public String getFormattedPackageName(List<String> nameComponents) {
       List<String> elements = new LinkedList<>();
       if (prefix != null) {
         elements.add(prefix);
@@ -86,6 +92,29 @@ public class LanguageGenerator {
         }
       }
       return Joiner.on(separator).join(elements);
+    }
+  }
+
+  private static class GoLanguageFormatter implements LanguageFormatter {
+
+    private static LanguageFormatter backup =
+        new SimpleLanguageFormatter("/", "google.golang.org", false);
+
+    public String getFormattedPackageName(List<String> nameComponents) {
+      // If the name follows the pattern google.foo.bar.v1234,
+      // we reformat it into cloud.google.com.
+      // google.logging.v2 => cloud.google.com/go/logging/apiv2
+      // Otherwise, fall back to backup
+      int size = nameComponents.size();
+      if (size < 3
+          || !nameComponents.get(0).equals("google")
+          || !nameComponents.get(size - 1).startsWith("v")) {
+        return backup.getFormattedPackageName(nameComponents);
+      }
+      return "cloud.google.com/go/"
+          + Joiner.on("/").join(nameComponents.subList(1, size - 1))
+          + "/api"
+          + nameComponents.get(size - 1);
     }
   }
 }
