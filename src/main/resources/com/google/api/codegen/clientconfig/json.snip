@@ -82,7 +82,7 @@
 @end
 
 @private methodsSection(service)
-    @join method : service.getMethods on ",".add(BREAK)
+    @join method : context.getSimpleRpcMethods(service) on ",".add(BREAK)
         @let methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
                 methodName = context.upperCamelToLowerUnderscore(method.getSimpleName), \
                 isBundling = methodConfig.isBundling, \
