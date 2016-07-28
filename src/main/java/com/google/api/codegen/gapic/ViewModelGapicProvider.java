@@ -74,6 +74,7 @@ public class ViewModelGapicProvider implements GapicProvider<Interface> {
       }
       Doc doc = snippetSetRunner.generate(surfaceDoc);
       if (doc == null) {
+        // generation failed; failures are captured in the model.
         continue;
       }
       docs.put(surfaceDoc.outputPath(), doc);

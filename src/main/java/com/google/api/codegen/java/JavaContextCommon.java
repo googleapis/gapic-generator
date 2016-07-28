@@ -128,7 +128,8 @@ public class JavaContextCommon {
    * firstLinePrefix. Markdown will be translated to javadoc.
    */
   public Iterable<String> getJavaDocLinesWithPrefix(String text, String firstLinePrefix) {
-    // TODO(wgg): convert markdown to javadoc
+    // TODO: convert markdown to javadoc
+    // https://github.com/googleapis/toolkit/issues/331
     List<String> result = new ArrayList<>();
     String linePrefix = firstLinePrefix;
     text = JAVADOC_ESCAPER.escape(text);

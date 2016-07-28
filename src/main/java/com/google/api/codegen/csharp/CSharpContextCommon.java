@@ -50,6 +50,7 @@ public class CSharpContextCommon {
    */
   public Iterable<String> getXmlDocLines(String text, String element) {
     // TODO(jonskeet): Convert markdown to XML documentation format.
+    // https://github.com/googleapis/toolkit/issues/331
     List<String> result = new ArrayList<>();
     result.add("/// <" + element + ">");
     for (String line : Splitter.on(String.format("%n")).split(text)) {
@@ -65,6 +66,7 @@ public class CSharpContextCommon {
    */
   public Iterable<String> getXmlParameterLines(String text, String parameterName) {
     // TODO(jonskeet): Convert markdown to XML documentation format.
+    // https://github.com/googleapis/toolkit/issues/331
     List<String> result = new ArrayList<>();
     result.add("/// <paramref name=\"" + parameterName + "\">");
     for (String line : Splitter.on(String.format("%n")).split(text)) {

@@ -51,7 +51,7 @@ use google\example\library\v1\Shelf;
 use google\example\library\v1\SomeMessage;
 use google\example\library\v1\StringBuilder;
 use google\example\library\v1\UpdateBookIndexRequest;
-use google\example\library\v1\UpdateBookIndexRequest.IndexMapEntry;
+use google\example\library\v1\UpdateBookIndexRequest\IndexMapEntry;
 use google\example\library\v1\UpdateBookRequest;
 use google\protobuf\FieldMask;
 
@@ -340,6 +340,7 @@ class LibraryServiceApi
         }
 
         // TODO load the client config in a more package-friendly way
+        // https://github.com/googleapis/toolkit/issues/332
         $clientConfigJsonString = file_get_contents('./resources/library_service_client_config.json');
         $clientConfig = json_decode($clientConfigJsonString, true);
         $this->defaultCallSettings =
@@ -1249,7 +1250,7 @@ class LibraryServiceApi
         $request->setName($name);
         $request->setIndexName($indexName);
         foreach ($indexMap as $key => $value) {
-            $request->addIndexMap((new UpdateBookIndexRequest.IndexMapEntry())->setKey($key)->setValue($value));
+            $request->addIndexMap((new IndexMapEntry())->setKey($key)->setValue($value));
         }
 
         $mergedSettings = $this->defaultCallSettings['updateBookIndex']->merge(

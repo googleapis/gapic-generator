@@ -117,11 +117,7 @@ public class PhpModelTypeNameConverter implements ModelTypeNameConverter {
 
   @Override
   public TypeName getTypeName(ProtoElement elem) {
-    // Construct the fully-qualified PHP class name
-    int fullNamePrefixLength = elem.getFile().getFullName().length() + 1;
-    String nickname = elem.getFullName().substring(fullNamePrefixLength);
-    String fullName = getPhpPackage(elem.getFile()) + "\\" + nickname;
-    return new TypeName(fullName, nickname);
+    return typeNameConverter.getTypeName(elem.getFullName().replaceAll("\\.", "\\\\"));
   }
 
   /**

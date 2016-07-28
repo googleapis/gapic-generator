@@ -76,7 +76,7 @@ public class InitCodeTransformer {
         .build();
   }
 
-  public Map<String, Object> createInitFieldStructure(MethodTransformerContext context) {
+  private Map<String, Object> createInitFieldStructure(MethodTransformerContext context) {
     Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
 
     ImmutableMap.Builder<String, InitValueConfig> initValueConfigMap = ImmutableMap.builder();
@@ -94,7 +94,7 @@ public class InitCodeTransformer {
     return initFieldStructure;
   }
 
-  public List<InitCodeLineView> generateSurfaceInitCodeLines(
+  private List<InitCodeLineView> generateSurfaceInitCodeLines(
       MethodTransformerContext context, InitCode initCode) {
     List<InitCodeLineView> surfaceLines = new ArrayList<>();
     for (InitCodeLine line : initCode.getLines()) {
@@ -118,7 +118,7 @@ public class InitCodeTransformer {
     return surfaceLines;
   }
 
-  public StructureInitCodeLineView generateStructureInitCodeLine(
+  private StructureInitCodeLineView generateStructureInitCodeLine(
       MethodTransformerContext context, StructureInitCodeLine line) {
     StructureInitCodeLineView.Builder surfaceLine = StructureInitCodeLineView.newBuilder();
 
@@ -132,7 +132,7 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  public ListInitCodeLineView generateListInitCodeLine(
+  private ListInitCodeLineView generateListInitCodeLine(
       MethodTransformerContext context, ListInitCodeLine line) {
     ListInitCodeLineView.Builder surfaceLine = ListInitCodeLineView.newBuilder();
 
@@ -150,7 +150,7 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  public SimpleInitCodeLineView generateSimpleInitCodeLine(
+  private SimpleInitCodeLineView generateSimpleInitCodeLine(
       MethodTransformerContext context, SimpleInitCodeLine line) {
     SimpleInitCodeLineView.Builder surfaceLine = SimpleInitCodeLineView.newBuilder();
 
@@ -163,7 +163,7 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  public InitCodeLineView generateMapInitCodeLine(
+  private InitCodeLineView generateMapInitCodeLine(
       MethodTransformerContext context, MapInitCodeLine line) {
     MapInitCodeLineView.Builder surfaceLine = MapInitCodeLineView.newBuilder();
 
@@ -186,7 +186,7 @@ public class InitCodeTransformer {
     return surfaceLine.build();
   }
 
-  public InitValueView getInitValue(
+  private InitValueView getInitValue(
       MethodTransformerContext context, TypeRef type, InitValueConfig initValueConfig) {
     if (initValueConfig.hasFormattingConfig()) {
       FormattedInitValueView.Builder initValue = FormattedInitValueView.newBuilder();
@@ -215,7 +215,7 @@ public class InitCodeTransformer {
     }
   }
 
-  public List<FieldSettingView> getFieldSettings(
+  private List<FieldSettingView> getFieldSettings(
       MethodTransformerContext context, Iterable<FieldSetting> fieldSettings) {
     SurfaceNamer namer = context.getNamer();
     List<FieldSettingView> allSettings = new ArrayList<>();
