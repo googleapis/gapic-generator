@@ -129,7 +129,6 @@
     @join function : xapiClass.pathTemplateGetterFunctions
         {@pathTemplateGetterFunction(function)}
     @end
-    {@""}
     {@pageStreamingDescriptorFunction(xapiClass)}
 @end
 
@@ -439,7 +438,9 @@
     @if doc.arrayKeyDocs
         @join simpleParamDoc : doc.arrayKeyDocs
             {@""} *     @@var {@simpleParamDoc.typeName} ${@simpleParamDoc.paramName}
-             *          {@simpleParamDoc.firstLine}
+            @if simpleParamDoc.firstLine
+                {@""} *          {@simpleParamDoc.firstLine}
+            @end
             @if simpleParamDoc.remainingLines
                 @join commentLine : simpleParamDoc.remainingLines
                     {@""} *          {@commentLine}
