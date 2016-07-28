@@ -221,11 +221,9 @@ public class MainGapicProviderFactory
               .build();
 
       if (id.equals(PYTHON)) {
-        System.out.println("stopping here");
         return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, clientConfigProvider);
       }
 
-      System.out.println("not stopping");
       GapicProvider<? extends Object> messageProvider =
           CommonGapicProvider.<ProtoFile>newBuilder()
               .setModel(model)
@@ -293,7 +291,6 @@ public class MainGapicProviderFactory
   /** Create the GapicProviders based on the given id */
   @Override
   public List<GapicProvider<? extends Object>> create(Model model, ApiConfig apiConfig, String id) {
-    System.out.println("id: " + id);
     return defaultCreate(model, apiConfig, id);
   }
 }
