@@ -15,17 +15,13 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.gapic.MainGapicProviderFactory;
-
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.util.List;
-
-/**
- * Python code generator baseline tests.
- */
+/** Python code generator baseline tests. */
 public class PythonCodeGeneratorTest {
 
   @RunWith(Parameterized.class)
@@ -46,6 +42,36 @@ public class PythonCodeGeneratorTest {
     public static List<Object[]> testedConfigs() {
       return GapicTestBase.createTestedConfigs(
           MainGapicProviderFactory.PYTHON,
+          new String[] {"python_gapic.yaml", "library_gapic.yaml"});
+    }
+
+    // Tests
+    // =====
+
+    @Test
+    public void library() throws Exception {
+      test("library");
+    }
+  }
+
+  @RunWith(Parameterized.class)
+  public static class PythonLibraryDocBaseline extends GapicTestBase {
+
+    public PythonLibraryDocBaseline(
+        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, snippetName);
+      getTestDataLocator()
+          .addTestDataSource(com.google.api.codegen.py.PythonGapicContext.class, "");
+    }
+
+    /**
+     * Declares test parameters, each one an array of values passed to the constructor, with the
+     * first element a name, the second a config of this name.
+     */
+    @Parameters(name = "{0}")
+    public static List<Object[]> testedConfigs() {
+      return GapicTestBase.createTestedConfigs(
+          MainGapicProviderFactory.PYTHON_DOC,
           new String[] {"python_gapic.yaml", "library_gapic.yaml"});
     }
 

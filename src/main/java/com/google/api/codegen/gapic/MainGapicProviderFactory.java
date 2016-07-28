@@ -43,15 +43,13 @@ import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
-
 import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.lang3.NotImplementedException;
 
 import org.apache.commons.lang3.NotImplementedException;
 
-/**
- * MainGapicProviderFactory creates GapicProvider instances based on an id.
- */
+/** MainGapicProviderFactory creates GapicProvider instances based on an id. */
 public class MainGapicProviderFactory
     implements GapicProviderFactory<GapicProvider<? extends Object>> {
 
@@ -62,11 +60,11 @@ public class MainGapicProviderFactory
   public static final String NODEJS = "nodejs";
   public static final String PHP = "php";
   public static final String PYTHON = "python";
+  public static final String PYTHON_DOC = "python_doc";
   public static final String RUBY = "ruby";
+  public static final String RUBY_DOC = "ruby_doc";
 
-  /**
-   * Create the GapicProviders based on the given id
-   */
+  /** Create the GapicProviders based on the given id */
   public static List<GapicProvider<? extends Object>> defaultCreate(
       Model model, ApiConfig apiConfig, String id) {
 
@@ -196,7 +194,7 @@ public class MainGapicProviderFactory
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider, clientConfigProvider);
 
-    } else if (id.equals(PYTHON)) {
+    } else if (id.equals(PYTHON) || id.equals(PYTHON_DOC)) {
       GapicCodePathMapper pythonPathMapper =
           CommonGapicCodePathMapper.newBuilder().setShouldAppendPackage(true).build();
       GapicProvider<? extends Object> mainProvider =
@@ -210,17 +208,6 @@ public class MainGapicProviderFactory
               .setSnippetFileNames(Arrays.asList("py/main.snip"))
               .setCodePathMapper(pythonPathMapper)
               .build();
-      GapicProvider<? extends Object> messageProvider =
-          CommonGapicProvider.<ProtoFile>newBuilder()
-              .setModel(model)
-              .setView(new ProtoFileView())
-              .setContext(new PythonGapicContext(model, apiConfig))
-              .setSnippetSetRunner(
-                  new PythonSnippetSetRunner<ProtoFile>(
-                      new PythonProtoFileInitializer(), SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-              .setSnippetFileNames(Arrays.asList("py/message.snip"))
-              .setCodePathMapper(CommonGapicCodePathMapper.defaultInstance())
-              .build();
       GapicProvider<? extends Object> clientConfigProvider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
@@ -233,10 +220,27 @@ public class MainGapicProviderFactory
               .setCodePathMapper(pythonPathMapper)
               .build();
 
+      if (id.equals(PYTHON)) {
+        System.out.println("stopping here");
+        return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, clientConfigProvider);
+      }
+
+      System.out.println("not stopping");
+      GapicProvider<? extends Object> messageProvider =
+          CommonGapicProvider.<ProtoFile>newBuilder()
+              .setModel(model)
+              .setView(new ProtoFileView())
+              .setContext(new PythonGapicContext(model, apiConfig))
+              .setSnippetSetRunner(
+                  new PythonSnippetSetRunner<ProtoFile>(
+                      new PythonProtoFileInitializer(), SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
+              .setSnippetFileNames(Arrays.asList("py/message.snip"))
+              .setCodePathMapper(CommonGapicCodePathMapper.defaultInstance())
+              .build();
       return Arrays.<GapicProvider<? extends Object>>asList(
           mainProvider, messageProvider, clientConfigProvider);
 
-    } else if (id.equals(RUBY)) {
+    } else if (id.equals(RUBY) || id.equals(RUBY_DOC)) {
       GapicCodePathMapper rubyPathMapper =
           CommonGapicCodePathMapper.newBuilder()
               .setPrefix("lib")
@@ -252,16 +256,6 @@ public class MainGapicProviderFactory
               .setSnippetFileNames(Arrays.asList("ruby/main.snip"))
               .setCodePathMapper(rubyPathMapper)
               .build();
-      GapicProvider<? extends Object> messageProvider =
-          CommonGapicProvider.<ProtoFile>newBuilder()
-              .setModel(model)
-              .setView(new ProtoFileView())
-              .setContext(new RubyGapicContext(model, apiConfig))
-              .setSnippetSetRunner(
-                  new RubySnippetSetRunner<ProtoFile>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-              .setSnippetFileNames(Arrays.asList("ruby/message.snip"))
-              .setCodePathMapper(rubyPathMapper)
-              .build();
       GapicProvider<? extends Object> clientConfigProvider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
@@ -274,6 +268,20 @@ public class MainGapicProviderFactory
               .setCodePathMapper(rubyPathMapper)
               .build();
 
+      if (id.equals(RUBY)) {
+        return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, clientConfigProvider);
+      }
+
+      GapicProvider<? extends Object> messageProvider =
+          CommonGapicProvider.<ProtoFile>newBuilder()
+              .setModel(model)
+              .setView(new ProtoFileView())
+              .setContext(new RubyGapicContext(model, apiConfig))
+              .setSnippetSetRunner(
+                  new RubySnippetSetRunner<ProtoFile>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
+              .setSnippetFileNames(Arrays.asList("ruby/message.snip"))
+              .setCodePathMapper(rubyPathMapper)
+              .build();
       return Arrays.<GapicProvider<? extends Object>>asList(
           mainProvider, messageProvider, clientConfigProvider);
 
@@ -282,11 +290,10 @@ public class MainGapicProviderFactory
     }
   }
 
-  /**
-   * Create the GapicProviders based on the given id
-   */
+  /** Create the GapicProviders based on the given id */
   @Override
   public List<GapicProvider<? extends Object>> create(Model model, ApiConfig apiConfig, String id) {
+    System.out.println("id: " + id);
     return defaultCreate(model, apiConfig, id);
   }
 }
