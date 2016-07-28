@@ -16,6 +16,7 @@ package com.google.api.codegen.php;
 
 import com.google.api.codegen.ApiConfig;
 import com.google.api.codegen.GapicContext;
+import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.metacode.FieldSetting;
 import com.google.api.codegen.metacode.InitCode;
 import com.google.api.codegen.metacode.InitCodeLine;
@@ -28,6 +29,7 @@ import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 /**
@@ -272,6 +274,10 @@ public class PhpGapicContext extends GapicContext implements PhpContext {
       }
     }
     return false;
+  }
+
+  public boolean hasOptionalFields(MethodConfig methodConfig) {
+    return Iterables.size(methodConfig.getOptionalFields()) > 0 || methodConfig.isPageStreaming();
   }
 
   // Constants
