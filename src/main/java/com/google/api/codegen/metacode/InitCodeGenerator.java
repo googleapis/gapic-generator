@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.metacode;
 
+import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
@@ -44,12 +45,12 @@ public class InitCodeGenerator {
   public InitCode generateRequestObjectInitCode(
       Method method, Map<String, Object> initFieldStructure) {
     InitCodeLine lastLine =
-        generateSampleCodeInit("request", method.getInputType(), initFieldStructure);
+        generateSampleCodeInit(Name.from("request"), method.getInputType(), initFieldStructure);
     initLineSpecs.add(lastLine);
     FieldSetting requestField =
         FieldSetting.create(
             method.getInputType(),
-            "request",
+            Name.from("request"),
             lastLine.getIdentifier(),
             lastLine.getInitValueConfig());
     List<FieldSetting> outputFields = Arrays.asList(requestField);
@@ -73,7 +74,8 @@ public class InitCodeGenerator {
       }
     }
 
-    InitCodeLine lastLine = generateSampleCodeInit("request", method.getInputType(), filteredInit);
+    InitCodeLine lastLine =
+        generateSampleCodeInit(Name.from("request"), method.getInputType(), filteredInit);
     if (!(lastLine instanceof StructureInitCodeLine)) {
       throw new IllegalArgumentException(
           "Expected method request to be a message, found " + lastLine.getClass().getName());
@@ -82,18 +84,18 @@ public class InitCodeGenerator {
     return InitCode.create(initLineSpecs, requestInitCodeLine.getFieldSettings());
   }
 
-  private String getNewSymbol(String desiredName) {
-    String actualName = desiredName;
+  private Name getNewSymbol(Name desiredName) {
+    Name actualName = desiredName;
     int i = 2;
-    while (symbolTable.contains(actualName)) {
-      actualName = desiredName + i;
+    while (symbolTable.contains(actualName.toLowerUnderscore())) {
+      actualName = desiredName.join(Integer.toString(i));
     }
-    symbolTable.add(actualName);
+    symbolTable.add(actualName.toLowerUnderscore());
     return actualName;
   }
 
   private InitCodeLine generateSampleCodeInitStructure(
-      String suggestedName, TypeRef typeRef, Map<String, Object> initFieldMap) {
+      Name suggestedName, TypeRef typeRef, Map<String, Object> initFieldMap) {
     List<FieldSetting> fieldSettings = new ArrayList<>();
     for (Field field : typeRef.getMessageType().getFields()) {
       Object thisFieldInitStructure = initFieldMap.get(field.getSimpleName());
@@ -102,13 +104,14 @@ public class InitCodeGenerator {
       }
 
       InitCodeLine subFieldInit =
-          generateSampleCodeInit(field.getSimpleName(), field.getType(), thisFieldInitStructure);
+          generateSampleCodeInit(
+              Name.from(field.getSimpleName()), field.getType(), thisFieldInitStructure);
       initLineSpecs.add(subFieldInit);
 
       FieldSetting fieldSetting =
           FieldSetting.create(
               field.getType(),
-              field.getSimpleName(),
+              Name.from(field.getSimpleName()),
               subFieldInit.getIdentifier(),
               subFieldInit.getInitValueConfig());
       fieldSettings.add(fieldSetting);
@@ -119,15 +122,15 @@ public class InitCodeGenerator {
 
     // get a new symbol for this object after subfields, in order to preserve
     // numerical ordering in the case of conflicts
-    String identifier = getNewSymbol(suggestedName);
+    Name identifier = getNewSymbol(suggestedName);
     return StructureInitCodeLine.create(typeRef, identifier, fieldSettings);
   }
 
   private InitCodeLine generateSampleCodeInitList(
-      String suggestedName, TypeRef typeRef, List<Object> thisFieldInitList) {
-    List<String> elementIdentifiers = new ArrayList<>();
+      Name suggestedName, TypeRef typeRef, List<Object> thisFieldInitList) {
+    List<Name> elementIdentifiers = new ArrayList<>();
     for (Object elementInitStructure : thisFieldInitList) {
-      String suggestedElementName = suggestedName + "_element";
+      Name suggestedElementName = suggestedName.join("element");
       // Using the Optional cardinality replaces the Repeated cardinality
       TypeRef elementType = typeRef.makeOptional();
       InitCodeLine subFieldInit =
@@ -139,15 +142,15 @@ public class InitCodeGenerator {
 
     // get a new symbol for this object after elements, in order to preserve
     // numerical ordering in the case of conflicts
-    String identifier = getNewSymbol(suggestedName);
+    Name identifier = getNewSymbol(suggestedName);
     return ListInitCodeLine.create(typeRef, identifier, elementIdentifiers);
   }
 
   private InitCodeLine generateSampleCodeInitMap(
-      String suggestedName, TypeRef typeRef, Map<String, Object> thisFieldInitMap) {
+      Name suggestedName, TypeRef typeRef, Map<String, Object> thisFieldInitMap) {
     TypeRef keyTypeRef = typeRef.getMapKeyField().getType();
     TypeRef elementType = typeRef.getMapValueField().getType();
-    Map<String, String> elementIdentifierMap = new HashMap<String, String>();
+    Map<String, Name> elementIdentifierMap = new HashMap<>();
     for (String keyString : thisFieldInitMap.keySet()) {
       String validatedKeyString = validateValue(keyTypeRef, keyString);
       if (validatedKeyString == null) {
@@ -163,7 +166,7 @@ public class InitCodeGenerator {
       }
 
       Object elementInitStructure = thisFieldInitMap.get(keyString);
-      String suggestedElementName = suggestedName + "_item";
+      Name suggestedElementName = suggestedName.join("item");
       InitCodeLine subFieldInit =
           generateSampleCodeInit(suggestedElementName, elementType, elementInitStructure);
       initLineSpecs.add(subFieldInit);
@@ -173,19 +176,19 @@ public class InitCodeGenerator {
 
     // get a new symbol for this object after elements, in order to preserve
     // numerical ordering in the case of conflicts
-    String identifier = getNewSymbol(suggestedName);
+    Name identifier = getNewSymbol(suggestedName);
     return MapInitCodeLine.create(
         keyTypeRef, elementType, typeRef, identifier, elementIdentifierMap);
   }
 
   private InitCodeLine generateSampleCodeInit(
-      String suggestedName, TypeRef typeRef, Object initFieldStructure) {
+      Name suggestedName, TypeRef typeRef, Object initFieldStructure) {
     // No matter what the type in the model is, we want to stop here, because we
     // have reached the end of initFieldStructure. At codegen time, we will
     // generate the zero value for the type.
     if (initFieldStructure instanceof InitValueConfig) {
       InitValueConfig initValueConfig = (InitValueConfig) initFieldStructure;
-      String identifier = getNewSymbol(suggestedName);
+      Name identifier = getNewSymbol(suggestedName);
       if (initValueConfig.hasInitialValue()) {
         String validatedValue = validateValue(typeRef, initValueConfig.getInitialValue());
         if (validatedValue == null) {

@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.metacode;
 
+import com.google.api.codegen.util.Name;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.auto.value.AutoValue;
 
@@ -27,16 +28,16 @@ import java.util.List;
 public abstract class ListInitCodeLine implements InitCodeLine {
 
   public static ListInitCodeLine create(
-      TypeRef elementType, String identifier, List<String> elementIdentifiers) {
+      TypeRef elementType, Name identifier, List<Name> elementIdentifiers) {
     return new AutoValue_ListInitCodeLine(elementType, identifier, elementIdentifiers);
   }
 
   public abstract TypeRef getElementType();
 
   @Override
-  public abstract String getIdentifier();
+  public abstract Name getIdentifier();
 
-  public abstract List<String> getElementIdentifiers();
+  public abstract List<Name> getElementIdentifiers();
 
   @Override
   public InitCodeLineType getLineType() {
