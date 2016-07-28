@@ -30,7 +30,6 @@ import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -176,7 +175,8 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
 
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
-    for (Field field : this.messages().flattenedFields(method.getInputType())) {
+    for (Field field :
+        removePageTokenFromFields(this.messages().flattenedFields(method.getInputType()), config)) {
       if (config.isPageStreaming()
           && field.equals((config.getPageStreaming().getPageSizeField()))) {
         paramTypesBuilder.append(

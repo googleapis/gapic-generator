@@ -28,7 +28,6 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -178,7 +177,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     for (Field field : config.getRequiredFields()) {
       paramTypesBuilder.append(fieldParamComment(field, null, false));
     }
-    Iterable<Field> optionalParams = config.getOptionalFields();
+    Iterable<Field> optionalParams = removePageTokenFromFields(config.getOptionalFields(), config);
     if (optionalParams.iterator().hasNext()) {
       paramTypesBuilder.append("@param {?Object} otherArgs\n");
       for (Field field : optionalParams) {

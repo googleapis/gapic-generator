@@ -250,7 +250,8 @@ public class PythonGapicContext extends GapicContext {
 
     // parameter types
     contentBuilder.append("Args:\n");
-    for (Field field : this.messages().flattenedFields(method.getInputType())) {
+    for (Field field :
+        removePageTokenFromFields(this.messages().flattenedFields(method.getInputType()), config)) {
       String name = pythonCommon.wrapIfKeywordOrBuiltIn(field.getSimpleName());
       if (config.isPageStreaming()
           && field.equals((config.getPageStreaming().getPageSizeField()))) {

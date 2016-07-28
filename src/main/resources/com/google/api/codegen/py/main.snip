@@ -414,7 +414,7 @@
              documentation = methodComments(method), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              requiredParams = methodConfig.getRequiredFields(), \
-             optionalParams = methodConfig.getOptionalFields()
+             optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig)
         @if or(requiredParams, optionalParams)
             def {@methodName(method)}(
                     self,

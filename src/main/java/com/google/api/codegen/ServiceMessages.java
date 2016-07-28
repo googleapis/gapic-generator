@@ -21,7 +21,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.protobuf.Empty;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -73,20 +72,8 @@ public class ServiceMessages {
     return Iterables.filter(methods, isBundling);
   }
 
-  /**
-   * Returns the list of flattened fields from the given request type, excluding fields related to
-   * page streaming.
-   */
+  /** Returns the list of flattened fields from the given request type. */
   public Iterable<Field> flattenedFields(TypeRef requestType) {
-    List<Field> fields = new ArrayList<>();
-    for (Field field : requestType.getMessageType().getFields()) {
-      String simpleName = field.getSimpleName();
-      // TODO: Look this up from the config rather than hard coding it.
-      if (simpleName.equals("page_token")) {
-        continue;
-      }
-      fields.add(field);
-    }
-    return fields;
+    return requestType.getMessageType().getFields();
   }
 }

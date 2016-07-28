@@ -27,9 +27,7 @@ import com.google.api.codegen.viewmodel.RequestObjectParamView;
 import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
-import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import java.util.ArrayList;
@@ -75,7 +73,7 @@ public class ApiMethodTransformer {
     apiMethod.requiredRequestObjectParams(
         generateRequestObjectParams(context, context.getMethodConfig().getRequiredFields()));
     apiMethod.optionalRequestObjectParams(
-        generateRequestObjectParams(context, getOptionalFields(context.getMethodConfig())));
+        generateRequestObjectParams(context, context.getMethodConfig().getOptionalFields()));
 
     return apiMethod.build();
   }
@@ -86,7 +84,7 @@ public class ApiMethodTransformer {
     docBuilder.mainDocLines(context.getNamer().getDocLines(context.getMethod()));
     List<ParamDocView> paramDocs =
         getMethodParamDocs(context, context.getMethodConfig().getRequiredFields());
-    paramDocs.add(getOptionalArrayParamDoc(context, getOptionalFields(context.getMethodConfig())));
+    paramDocs.add(getOptionalArrayParamDoc(context, context.getMethodConfig().getOptionalFields()));
     docBuilder.paramDocs(paramDocs);
     docBuilder.returnTypeName(
         context
@@ -95,35 +93,6 @@ public class ApiMethodTransformer {
     docBuilder.throwsDocLines(new ArrayList<String>());
 
     return docBuilder.build();
-  }
-
-  /*
-   * Constructs a list of the optional fields for the method. Adds the page token field, which is
-   * missing from the optional fields list, and rearrange so that page token and page size are last.
-   */
-  private Iterable<Field> getOptionalFields(MethodConfig methodConfig) {
-    if (!methodConfig.isPageStreaming()) {
-      return methodConfig.getOptionalFields();
-    }
-
-    ImmutableList.Builder<Field> pageStreamingFieldsBuilder =
-        ImmutableList.<Field>builder().add(methodConfig.getPageStreaming().getRequestTokenField());
-    if (methodConfig.getPageStreaming().hasPageSizeField()) {
-      pageStreamingFieldsBuilder.add(methodConfig.getPageStreaming().getPageSizeField());
-    }
-    final ImmutableList<Field> pageStreamingFields = pageStreamingFieldsBuilder.build();
-
-    Iterable<Field> nonPageStreamingFields =
-        Iterables.filter(
-            methodConfig.getOptionalFields(),
-            new Predicate<Field>() {
-              @Override
-              public boolean apply(Field input) {
-                return !pageStreamingFields.contains(input);
-              }
-            });
-
-    return Iterables.<Field>concat(nonPageStreamingFields, pageStreamingFields);
   }
 
   private List<DynamicDefaultableParamView> generateOptionalArrayMethodParams(
