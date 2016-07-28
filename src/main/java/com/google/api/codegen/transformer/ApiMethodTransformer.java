@@ -90,7 +90,6 @@ public class ApiMethodTransformer {
     List<ParamDocView> paramDocs =
         getMethodParamDocs(context, context.getMethodConfig().getRequiredFields());
     paramDocs.add(getOptionalArrayParamDoc(context, getOptionalFields(context.getMethodConfig())));
-    paramDocs.add(getCallSettingsParamDoc(context));
     docBuilder.paramDocs(paramDocs);
     docBuilder.returnTypeName(
         context
@@ -101,9 +100,11 @@ public class ApiMethodTransformer {
     return docBuilder.build();
   }
 
+  /*
+   * Constructs a list of the optional fields for the method. Adds the page token field, which is
+   * missing from the optional fields list, and rearrange so that page token and page size are last.
+   */
   private Iterable<Field> getOptionalFields(MethodConfig methodConfig) {
-    // Add the page token field, which is missing from the optional fields list, and rearrange
-    // so that page token and page size are last
     if (methodConfig.isPageStreaming()) {
       ImmutableList.Builder<Field> pageStreamingFieldsBuilder =
           ImmutableList.<Field>builder()
@@ -141,11 +142,6 @@ public class ApiMethodTransformer {
     optionalArgs.name(context.getNamer().varName(Name.from("optional", "args")));
     optionalArgs.defaultValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(arrayType));
     methodParams.add(optionalArgs.build());
-
-    DynamicDefaultableParamView.Builder callSettings = DynamicDefaultableParamView.newBuilder();
-    callSettings.name(context.getNamer().varName(Name.from("call", "settings")));
-    callSettings.defaultValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(arrayType));
-    methodParams.add(callSettings.build());
 
     return methodParams;
   }
@@ -248,35 +244,21 @@ public class ApiMethodTransformer {
     paramDoc.paramName(context.getNamer().varName(optionalArgsName));
     paramDoc.typeName(context.getNamer().getOptionalArrayTypeName());
 
-    List<String> docLines = null;
-    if (!fields.iterator().hasNext()) {
-      // TODO figure out a reliable way to line-wrap comments across all languages
-      // instead of encoding it in the transformer
-      String retrySettingsDocText =
-          String.format(
-              "Optional. There are no optional parameters for this method yet;\n"
-                  + "          this %s parameter reserves a spot for future ones.",
-              context.getNamer().varReference(optionalArgsName));
-      docLines = context.getNamer().getDocLines(retrySettingsDocText);
-    } else {
-      docLines = Arrays.asList("Optional.");
-    }
+    List<String> docLines = Arrays.asList("Optional.");
+
     paramDoc.firstLine(docLines.get(0));
     paramDoc.remainingLines(docLines.subList(1, docLines.size()));
 
-    paramDoc.arrayKeyDocs(getMethodParamDocs(context, fields));
+    paramDoc.arrayKeyDocs(
+        ImmutableList.<ParamDocView>builder()
+            .addAll(getMethodParamDocs(context, fields))
+            .addAll(getCallSettingsParamDocList(context))
+            .build());
 
     return paramDoc.build();
   }
 
-  private ParamDocView getCallSettingsParamDoc(MethodTransformerContext context) {
-    MapParamDocView.Builder paramDoc = MapParamDocView.newBuilder();
-
-    paramDoc.paramName(context.getNamer().varName(Name.from("call", "settings")));
-    paramDoc.typeName(context.getNamer().getOptionalArrayTypeName());
-    paramDoc.firstLine("Optional.");
-    paramDoc.remainingLines(new ArrayList<String>());
-
+  private List<ParamDocView> getCallSettingsParamDocList(MethodTransformerContext context) {
     List<ParamDocView> arrayKeyDocs = new ArrayList<>();
     SimpleParamDocView.Builder retrySettingsDoc = SimpleParamDocView.newBuilder();
     retrySettingsDoc.typeName(context.getNamer().getRetrySettingsTypeName());
@@ -310,8 +292,6 @@ public class ApiMethodTransformer {
     timeoutDoc.remainingLines(timeoutMillisDocLines.subList(1, timeoutMillisDocLines.size()));
     arrayKeyDocs.add(timeoutDoc.build());
 
-    paramDoc.arrayKeyDocs(arrayKeyDocs);
-
-    return paramDoc.build();
+    return arrayKeyDocs;
   }
 }
