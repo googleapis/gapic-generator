@@ -20,7 +20,7 @@ import com.google.api.codegen.metacode.InitValueConfig;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
-import com.google.api.codegen.util.NameFormatterMixin;
+import com.google.api.codegen.util.NameFormatterDelegator;
 import com.google.api.codegen.util.NamePath;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
@@ -42,7 +42,7 @@ import java.util.List;
  * This class delegates step 2 to the provided name formatter, which generally
  * would be a language-specific namer.
  */
-public class SurfaceNamer extends NameFormatterMixin {
+public class SurfaceNamer extends NameFormatterDelegator {
   private ModelTypeFormatter modelTypeFormatter;
 
   public SurfaceNamer(NameFormatter languageNamer, ModelTypeFormatter modelTypeFormatter) {
