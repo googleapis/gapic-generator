@@ -286,6 +286,14 @@ class LibraryServiceApi
      *     @var string $appName The codename of the calling service. Default 'gax'.
      *     @var string $appVersion The version of the calling service.
      *                              Default: the current version of GAX.
+     *     @var Google\Auth\CredentialsLoader $credentialsLoader
+     *                              A CredentialsLoader object created using the
+     *                              Google\Auth library.
+     *     @var string $keyFile The contents of the service account credentials .json
+     *                              file retrieved from the Google Developers Console.
+     *     @var string $keyFilePath The full path to your service account credentials
+     *                              .json file retrieved from the Google Developers
+     *                              Console.
      * }
      */
     public function __construct($options = [])
@@ -302,6 +310,9 @@ class LibraryServiceApi
             'timeoutMillis' => self::DEFAULT_TIMEOUT_MILLIS,
             'appName' => 'gax',
             'appVersion' => self::_GAX_VERSION,
+            'credentialsLoader' => null,
+            'keyFile' => null,
+            'keyFilePath' => null,
         ];
         $options = array_merge($defaultOptions, $options);
 
@@ -358,7 +369,12 @@ class LibraryServiceApi
         if (!empty($options['sslCreds'])) {
             $createStubOptions['sslCreds'] = $options['sslCreds'];
         }
-        $this->grpcBootstrap = GrpcBootstrap::defaultInstance();
+        $grpcBootstrapOptions = array_intersect_key($options, [
+            'credentialsLoader' => null,
+            'keyFile' => null,
+            'keyFilePath' => null,
+        ]);
+        $this->grpcBootstrap = new GrpcBootstrap($this->scopes, $grpcBootstrapOptions);
         $this->stub = $this->grpcBootstrap->createStub(
             $generatedCreateStub,
             $options['serviceAddress'],
@@ -505,7 +521,7 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return Google\GAX\PageAccessor
+     * @return Google\GAX\PagedListResponse
      *
      * @throws Google\GAX\ApiException if the remote call fails
      */
@@ -818,7 +834,7 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return Google\GAX\PageAccessor
+     * @return Google\GAX\PagedListResponse
      *
      * @throws Google\GAX\ApiException if the remote call fails
      */
@@ -1040,7 +1056,7 @@ class LibraryServiceApi
      *          is not set.
      * }
      *
-     * @return Google\GAX\PageAccessor
+     * @return Google\GAX\PagedListResponse
      *
      * @throws Google\GAX\ApiException if the remote call fails
      */
@@ -1233,6 +1249,6 @@ class LibraryServiceApi
 
     private function createCredentialsCallback()
     {
-        return $this->grpcBootstrap->createCallCredentialsCallback($this->scopes);
+        return $this->grpcBootstrap->createCallCredentialsCallback();
     }
 }
