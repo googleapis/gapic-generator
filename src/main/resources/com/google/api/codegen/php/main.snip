@@ -364,9 +364,9 @@
 @private setOptionalFieldCall(param)
     if (isset($optionalArgs['{@param.name}'])) {
         @if param.isMap
-            // TODO make this work
-            // https://github.com/googleapis/toolkit/issues/333
-            putAll...
+            foreach ($optionalArgs['{@param.name}'] as $key => $value) {
+                $request->{@param.setCallName}((new {@param.elementTypeName}())->setKey($key)->setValue($value));
+            }
         @else
             @if param.isArray
                 foreach ($optionalArgs['{@param.name}'] as $elem) {
