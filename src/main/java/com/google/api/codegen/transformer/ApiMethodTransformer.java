@@ -28,16 +28,13 @@ import com.google.api.codegen.viewmodel.SimpleParamDocView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
-import autovalue.shaded.com.google.common.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 /**
  * ApiMethodTransformer generates view objects from method definitions.
@@ -105,28 +102,28 @@ public class ApiMethodTransformer {
    * missing from the optional fields list, and rearrange so that page token and page size are last.
    */
   private Iterable<Field> getOptionalFields(MethodConfig methodConfig) {
-    if (methodConfig.isPageStreaming()) {
-      ImmutableList.Builder<Field> pageStreamingFieldsBuilder =
-          ImmutableList.<Field>builder()
-              .add(methodConfig.getPageStreaming().getRequestTokenField());
-      if (methodConfig.getPageStreaming().hasPageSizeField()) {
-        pageStreamingFieldsBuilder.add(methodConfig.getPageStreaming().getPageSizeField());
-      }
-      final ImmutableList<Field> pageStreamingFields = pageStreamingFieldsBuilder.build();
-      Iterable<Field> nonPageStreamingFields =
-          Iterables.filter(
-              methodConfig.getOptionalFields(),
-              new Predicate<Field>() {
-                @Override
-                public boolean apply(@Nullable Field input) {
-                  return !pageStreamingFields.contains(input);
-                }
-              });
-
-      return Iterables.<Field>concat(nonPageStreamingFields, pageStreamingFields);
-    } else {
+    if (!methodConfig.isPageStreaming()) {
       return methodConfig.getOptionalFields();
     }
+
+    ImmutableList.Builder<Field> pageStreamingFieldsBuilder =
+        ImmutableList.<Field>builder().add(methodConfig.getPageStreaming().getRequestTokenField());
+    if (methodConfig.getPageStreaming().hasPageSizeField()) {
+      pageStreamingFieldsBuilder.add(methodConfig.getPageStreaming().getPageSizeField());
+    }
+    final ImmutableList<Field> pageStreamingFields = pageStreamingFieldsBuilder.build();
+
+    Iterable<Field> nonPageStreamingFields =
+        Iterables.filter(
+            methodConfig.getOptionalFields(),
+            new Predicate<Field>() {
+              @Override
+              public boolean apply(Field input) {
+                return !pageStreamingFields.contains(input);
+              }
+            });
+
+    return Iterables.<Field>concat(nonPageStreamingFields, pageStreamingFields);
   }
 
   private List<DynamicDefaultableParamView> generateOptionalArrayMethodParams(
