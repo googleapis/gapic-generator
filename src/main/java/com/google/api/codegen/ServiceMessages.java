@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Predicate;
@@ -70,10 +69,5 @@ public class ServiceMessages {
         };
 
     return Iterables.filter(methods, isBundling);
-  }
-
-  /** Returns the list of flattened fields from the given request type. */
-  public Iterable<Field> flattenedFields(TypeRef requestType) {
-    return requestType.getMessageType().getFields();
   }
 }

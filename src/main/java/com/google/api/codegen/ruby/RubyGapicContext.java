@@ -176,7 +176,7 @@ public class RubyGapicContext extends GapicContext implements RubyContext {
     // Generate parameter types
     StringBuilder paramTypesBuilder = new StringBuilder();
     for (Field field :
-        removePageTokenFromFields(this.messages().flattenedFields(method.getInputType()), config)) {
+        removePageTokenFromFields(method.getInputType().getMessageType().getFields(), config)) {
       if (config.isPageStreaming()
           && field.equals((config.getPageStreaming().getPageSizeField()))) {
         paramTypesBuilder.append(
