@@ -15,41 +15,71 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.gapic.MainGapicProviderFactory;
-
 import java.util.List;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-/**
- * Ruby code generator baseline tests.
- */
-@RunWith(Parameterized.class)
-public class RubyCodeGeneratorTest extends GapicTestBase {
+/** Ruby code generator baseline tests. */
+public class RubyCodeGeneratorTest {
 
-  public RubyCodeGeneratorTest(
-      String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
-    super(name, idForFactory, gapicConfigFileNames, snippetName);
-    getTestDataLocator().addTestDataSource(com.google.api.codegen.ruby.RubyGapicContext.class, "");
+  @RunWith(Parameterized.class)
+  public static class RubyLibraryBaseline extends GapicTestBase {
+
+    public RubyLibraryBaseline(
+        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, snippetName);
+      getTestDataLocator()
+          .addTestDataSource(com.google.api.codegen.ruby.RubyGapicContext.class, "");
+    }
+
+    /**
+     * Declares test parameters, each one an array of values passed to the constructor, with the
+     * first element a name, the second a config of this name.
+     */
+    @Parameters(name = "{0}")
+    public static List<Object[]> testedConfigs() {
+      return GapicTestBase.createTestedConfigs(
+          MainGapicProviderFactory.RUBY, new String[] {"ruby_gapic.yaml", "library_gapic.yaml"});
+    }
+
+    // Tests
+    // =====
+
+    @Test
+    public void library() throws Exception {
+      test("library");
+    }
   }
 
-  /**
-   * Declares test parameters, each one an array of values passed to the constructor, with the
-   * first element a name, the second a config of this name.
-   */
-  @Parameters(name = "{0}")
-  public static List<Object[]> testedConfigs() {
-    return GapicTestBase.createTestedConfigs(
-        MainGapicProviderFactory.RUBY, new String[] {"ruby_gapic.yaml", "library_gapic.yaml"});
-  }
+  @RunWith(Parameterized.class)
+  public static class RubyLibraryDocBaseline extends GapicTestBase {
 
-  // Tests
-  // =====
+    public RubyLibraryDocBaseline(
+        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, snippetName);
+      getTestDataLocator()
+          .addTestDataSource(com.google.api.codegen.ruby.RubyGapicContext.class, "");
+    }
 
-  @Test
-  public void library() throws Exception {
-    test("library");
+    /**
+     * Declares test parameters, each one an array of values passed to the constructor, with the
+     * first element a name, the second a config of this name.
+     */
+    @Parameters(name = "{0}")
+    public static List<Object[]> testedConfigs() {
+      return GapicTestBase.createTestedConfigs(
+          MainGapicProviderFactory.RUBY_DOC,
+          new String[] {"ruby_gapic.yaml", "library_gapic.yaml"});
+    }
+
+    // Tests
+    // =====
+
+    @Test
+    public void library() throws Exception {
+      test("library");
+    }
   }
 }
