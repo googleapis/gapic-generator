@@ -239,11 +239,6 @@
      *     @@var Google\Auth\CredentialsLoader $credentialsLoader
      *                              A CredentialsLoader object created using the
      *                              Google\Auth library.
-     *     @@var string $keyFile The contents of the service account credentials .json
-     *                              file retrieved from the Google Developers Console.
-     *     @@var string $keyFilePath The full path to your service account credentials
-     *                              .json file retrieved from the Google Developers
-     *                              Console.
      * }
      */
     public function __construct($options = [])
@@ -262,8 +257,6 @@
             'appName' => 'gax',
             'appVersion' => self::_GAX_VERSION,
             'credentialsLoader' => null,
-            'keyFile' => null,
-            'keyFilePath' => null,
         ];
         $options = array_merge($defaultOptions, $options);
 
@@ -309,8 +302,6 @@
         }
         $grpcBootstrapOptions = array_intersect_key($options, [
             'credentialsLoader' => null,
-            'keyFile' => null,
-            'keyFilePath' => null,
         ]);
         $this->grpcBootstrap = new GrpcBootstrap($this->scopes, $grpcBootstrapOptions);
         $this->stub = $this->grpcBootstrap->createStub(
