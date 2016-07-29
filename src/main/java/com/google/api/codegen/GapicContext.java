@@ -114,7 +114,7 @@ public class GapicContext extends CodegenContext {
   /**
    * Returns a list of simple RPC methods.
    */
-  public List<Method> getSimpleRpcMethods(Interface service) {
+  public List<Method> getNonStreamingMethods(Interface service) {
     List<Method> simples = new ArrayList<>(service.getMethods().size());
     for (Method method : service.getMethods()) {
       if (!method.getRequestStreaming() && !method.getResponseStreaming()) {
