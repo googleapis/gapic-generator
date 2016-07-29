@@ -12,25 +12,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.util;
+package com.google.api.codegen.viewmodel;
 
-import com.google.common.base.Splitter;
+import com.google.auto.value.AutoValue;
 
-import java.util.ArrayList;
-import java.util.List;
+@AutoValue
+public abstract class PathTemplateCheckView {
 
-/**
- * Utility class to process text in the templates.
- */
-public class CommonRenderingUtil {
+  public abstract String pathTemplateName();
 
-  public static List<String> getDocLines(String text) {
-    // TODO: convert markdown to language-specific doc format
-    // https://github.com/googleapis/toolkit/issues/331
-    List<String> result = new ArrayList<>();
-    for (String line : Splitter.on(String.format("%n")).split(text)) {
-      result.add(line);
-    }
-    return result;
+  public abstract String paramName();
+
+  public static Builder newBuilder() {
+    return new AutoValue_PathTemplateCheckView.Builder();
+  }
+
+  @AutoValue.Builder
+  public static abstract class Builder {
+    public abstract Builder pathTemplateName(String val);
+
+    public abstract Builder paramName(String val);
+
+    public abstract PathTemplateCheckView build();
   }
 }

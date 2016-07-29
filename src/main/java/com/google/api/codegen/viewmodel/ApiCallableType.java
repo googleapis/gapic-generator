@@ -12,27 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.java;
+package com.google.api.codegen.viewmodel;
 
-import com.google.api.tools.framework.snippet.Doc;
-
-/**
- * Entry points for a simple Java snippet set. Generation is a single phase.
- */
-interface JavaIterableSnippetSet<T> {
-
-  /**
-   * Generates the result filename for the generated document.
-   */
-  Doc generateFilename();
-
-  /**
-   * Generates the contents of the document.
-   */
-  Doc generateDocument(Iterable<Doc> fragments);
-
-  /**
-   * Generates a fragment of the doc from a service.
-   */
-  Doc generateFragment(T service);
+public enum ApiCallableType {
+  SimpleApiCallable,
+  PagedApiCallable,
+  BundlingApiCallable
 }

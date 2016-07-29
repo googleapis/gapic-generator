@@ -14,26 +14,27 @@
  */
 package com.google.api.codegen.viewmodel;
 
+import com.google.api.codegen.viewmodel.BundlingDescriptorClassView.Builder;
 import com.google.auto.value.AutoValue;
 
-import java.util.List;
-
 @AutoValue
-public abstract class InitCodeView {
-  public abstract List<InitCodeLineView> lines();
+public abstract class BundlingPartitionKeyView {
 
-  public abstract List<FieldSettingView> fieldSettings();
+  public abstract String separatorLiteral();
+
+  public abstract String fnGetCallName();
 
   public static Builder newBuilder() {
-    return new AutoValue_InitCodeView.Builder();
+    return new AutoValue_BundlingPartitionKeyView.Builder();
   }
 
   @AutoValue.Builder
   public static abstract class Builder {
-    public abstract Builder lines(List<InitCodeLineView> val);
 
-    public abstract Builder fieldSettings(List<FieldSettingView> val);
+    public abstract Builder separatorLiteral(String val);
 
-    public abstract InitCodeView build();
+    public abstract Builder fnGetCallName(String val);
+
+    public abstract BundlingPartitionKeyView build();
   }
 }

@@ -14,118 +14,14 @@
    */
 @end
 
-@snippet autoGenClassWarning()
-  // AUTO-GENERATED DOCUMENTATION AND CLASS
-@end
-
-@snippet autoGenServiceWarning()
-  // AUTO-GENERATED DOCUMENTATION AND SERVICE
-@end
-
-@snippet autoGenMethodWarning()
-  // AUTO-GENERATED DOCUMENTATION AND METHOD
-@end
-
-@snippet settingsClassName(service)
-  {@service.getSimpleName}Settings
-@end
-
-@snippet javaDoc(protoElement)
-  {@javaDocFromStr(getDoc(protoElement))}
-@end
-
-@snippet javaDocFromStr(str)
-  {@javaDocStart()}
-  {@javaDocLinesFromStr(str)}
-  {@javaDocEnd()}
-@end
-
-@snippet javaDocStart()
-  /**
-@end
-
-@snippet javaDocLines(protoElement)
-  {@javaDocLinesFromStr(getDoc(protoElement))}
-@end
-
-@snippet javaDocLinesFromStr(str)
-  @join commentLine : context.java.getJavaDocLines(str)
-    {@commentLine}
+@snippet paramList(params)
+  @join param : params on ", "
+    {@param.typeName} {@param.name}
   @end
 @end
 
-@snippet javaDocEmptyLine()
-  {@""} *
-@end
-
-@snippet javaDocThrows()
-  {@""} * @ throws com.google.api.gax.grpc.ApiException if the remote call fails
-@end
-
-@snippet javaDocEnd()
-  {@""} */
-@end
-
-@snippet getDoc(protoElement)
-  {@context.getDescription(protoElement)}
-@end
-
-@snippet setCallName(field)
-  {@setCallName(field.getType, context.lowerUnderscoreToUpperCamel(field.getSimpleName))}
-@end
-
-@snippet setCallName(type, name)
-  @if type.isMap
-    putAll{@name}
-  @else
-    @if type.isRepeated
-      addAll{@name}
-    @else
-      set{@name}
-    @end
+@snippet argList(args)
+  @join arg : args on ", "
+    {@arg}
   @end
-@end
-
-@snippet getCallName(field)
-  @let paramNameInCamel = context.lowerUnderscoreToUpperCamel(field.getSimpleName)
-    @if field.isRepeated
-      get{@paramNameInCamel}List
-    @else
-      get{@paramNameInCamel}
-    @end
-  @end
-@end
-
-@snippet getIndexCallName(field)
-  @let paramNameInCamel = context.lowerUnderscoreToUpperCamel(field.getSimpleName)
-    @if field.isRepeated
-      get{@paramNameInCamel}
-    @else
-      # TODO(garrettjones) throw snippet error
-      INVALID
-    @end
-  @end
-@end
-
-@snippet getCountCallName(field)
-  @let paramNameInCamel = context.lowerUnderscoreToUpperCamel(field.getSimpleName)
-    @if field.isRepeated
-      get{@paramNameInCamel}Count
-    @else
-      # TODO(garrettjones) throw snippet error
-      1 #INVALID
-    @end
-  @end
-@end
-
-@snippet formatResourceFunctionName(collectionConfig)
-  format{@resourceName(collectionConfig)}
-@end
-
-@snippet resourceName(collectionConfig)
-  {@context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName)}Name
-@end
-
-@snippet elementTypeName(resourcesField)
-  {@context.basicTypeNameBoxed(resourcesField.getType())}
 @end

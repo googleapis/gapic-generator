@@ -22,6 +22,7 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.php.PhpNameFormatter;
+import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -32,7 +33,10 @@ import com.google.api.tools.framework.model.TypeRef;
  */
 public class PhpSurfaceNamer extends SurfaceNamer {
   public PhpSurfaceNamer() {
-    super(new PhpNameFormatter(), new ModelTypeFormatterImpl(new PhpModelTypeNameConverter()));
+    super(
+        new PhpNameFormatter(),
+        new ModelTypeFormatterImpl(new PhpModelTypeNameConverter()),
+        new PhpTypeTable());
   }
 
   @Override

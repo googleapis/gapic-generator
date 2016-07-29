@@ -16,18 +16,15 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 
-import java.util.List;
-
 @AutoValue
-public abstract class ServiceDocView {
+public abstract class SettingsDocView {
+  public abstract String serviceAddress();
 
-  public abstract String firstLine();
+  public abstract Integer servicePort();
 
-  public abstract List<String> remainingLines();
+  public abstract String exampleApiMethodName();
 
-  public abstract ApiMethodView exampleApiMethod();
-
-  public abstract String apiVarName();
+  public abstract String exampleApiMethodSettingsGetter();
 
   public abstract String apiClassName();
 
@@ -35,19 +32,21 @@ public abstract class ServiceDocView {
 
   public abstract String settingsClassName();
 
+  public abstract String settingsBuilderVarName();
+
   public static Builder newBuilder() {
-    return new AutoValue_ServiceDocView.Builder();
+    return new AutoValue_SettingsDocView.Builder();
   }
 
   @AutoValue.Builder
   public static abstract class Builder {
-    public abstract Builder firstLine(String val);
+    public abstract Builder serviceAddress(String val);
 
-    public abstract Builder remainingLines(List<String> val);
+    public abstract Builder servicePort(Integer val);
 
-    public abstract Builder exampleApiMethod(ApiMethodView val);
+    public abstract Builder exampleApiMethodName(String val);
 
-    public abstract Builder apiVarName(String val);
+    public abstract Builder exampleApiMethodSettingsGetter(String val);
 
     public abstract Builder apiClassName(String val);
 
@@ -55,6 +54,8 @@ public abstract class ServiceDocView {
 
     public abstract Builder settingsClassName(String val);
 
-    public abstract ServiceDocView build();
+    public abstract Builder settingsBuilderVarName(String val);
+
+    public abstract SettingsDocView build();
   }
 }

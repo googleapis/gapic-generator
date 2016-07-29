@@ -15,7 +15,6 @@
 package com.google.api.codegen.gapic;
 
 import com.google.api.codegen.ApiConfig;
-import com.google.api.codegen.InterfaceListView;
 import com.google.api.codegen.InterfaceView;
 import com.google.api.codegen.ProtoFileView;
 import com.google.api.codegen.SnippetSetRunner;
@@ -26,9 +25,6 @@ import com.google.api.codegen.csharp.CSharpGapicContext;
 import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
 import com.google.api.codegen.go.GoGapicContext;
 import com.google.api.codegen.go.GoSnippetSetRunner;
-import com.google.api.codegen.java.JavaGapicContext;
-import com.google.api.codegen.java.JavaIterableSnippetSetRunner;
-import com.google.api.codegen.java.JavaSnippetSetRunner;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
 import com.google.api.codegen.py.PythonGapicContext;
@@ -38,8 +34,10 @@ import com.google.api.codegen.py.PythonSnippetSetRunner;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.ruby.RubyGapicContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
+import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
+import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -120,28 +118,14 @@ public class MainGapicProviderFactory
               .setShouldAppendPackage(true)
               .build();
       GapicProvider<? extends Object> mainProvider =
-          CommonGapicProvider.<Interface>newBuilder()
+          ViewModelGapicProvider.newBuilder()
               .setModel(model)
-              .setView(new InterfaceView())
-              .setContext(new JavaGapicContext(model, apiConfig))
-              .setSnippetSetRunner(
-                  new JavaSnippetSetRunner<Interface>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-              .setSnippetFileNames(Arrays.asList("java/main.snip", "java/settings.snip"))
-              .setCodePathMapper(javaPathMapper)
-              .build();
-      GapicProvider<? extends Object> packageInfoProvider =
-          CommonGapicProvider.<Iterable<Interface>>newBuilder()
-              .setModel(model)
-              .setView(new InterfaceListView())
-              .setContext(new JavaGapicContext(model, apiConfig))
-              .setSnippetSetRunner(
-                  new JavaIterableSnippetSetRunner<Interface>(
-                      SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-              .setSnippetFileNames(Arrays.asList("java/package-info.snip"))
-              .setCodePathMapper(javaPathMapper)
+              .setApiConfig(apiConfig)
+              .setSnippetSetRunner(new CommonSnippetSetRunner(new JavaRenderingUtil()))
+              .setModelToViewTransformer(new JavaGapicSurfaceTransformer(javaPathMapper))
               .build();
 
-      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, packageInfoProvider);
+      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
 
     } else if (id.equals(NODEJS)) {
       GapicCodePathMapper nodeJSPathMapper =

@@ -1,108 +1,70 @@
 @extends "java/common.snip"
 
-@snippet generateFilename(service)
-  {@settingsClassName(service)}.java
-@end
-
-@snippet generateClass(service, body, imports)
+@snippet generate(xsettingsClass)
   {@license()}
-  package {@context.getApiConfig.getPackageName};
-
-  @join import : imports
+  package {@xsettingsClass.packageName};
+  
+  @join import : xsettingsClass.imports
     import {@import};
   @end
 
-  {@body}
-@end
-
-@snippet generateBody(service)
-  {@alwaysImport()}
-
-  {@autoGenClassWarning()}
-  {@settingsJavaDoc(service)}
+  {@settingsDoc(xsettingsClass.doc)}
   @@javax.annotation.Generated("by GAPIC")
-  public class {@settingsClassName(service)} extends ServiceApiSettings {
-
-    {@constants(service)}
-
-    {@members(service)}
-
-    {@constructors(service)}
-
-    {@descriptors(service)}
-
-    {@innerBuilderClass(service)}
+  public class {@xsettingsClass.name} extends ServiceApiSettings {
+    {@constants(xsettingsClass)}
+    {@members(xsettingsClass)}
+    {@constructors(xsettingsClass)}
+    {@descriptors(xsettingsClass)}
+    {@innerBuilderClass(xsettingsClass)}
   }
 @end
 
-@private alwaysImport() fill
-  {@context.addImport("com.google.api.gax.core.ConnectionSettings")}
-  {@context.addImport("com.google.api.gax.core.RetrySettings")}
-  {@context.addImport("com.google.api.gax.grpc.ApiCallSettings")}
-  {@context.addImport("com.google.api.gax.grpc.SimpleCallSettings")}
-  {@context.addImport("com.google.api.gax.grpc.ServiceApiSettings")}
-  {@context.addImport("com.google.auth.Credentials")}
-  {@context.addImport("com.google.common.collect.ImmutableList")}
-  {@context.addImport("com.google.common.collect.ImmutableMap")}
-  {@context.addImport("com.google.common.collect.ImmutableSet")}
-  {@context.addImport("com.google.common.collect.Lists")}
-  {@context.addImport("com.google.common.collect.Sets")}
-  {@context.addImport("io.grpc.ManagedChannel")}
-  {@context.addImport("io.grpc.Status")}
-  {@context.addImport("org.joda.time.Duration")}
-  {@context.addImport("java.io.IOException")}
-  {@context.addImport("java.util.List")}
-  {@context.addImport("java.util.concurrent.ScheduledExecutorService")}
+@private settingsDoc(doc)
+  // AUTO-GENERATED DOCUMENTATION AND CLASS
+  /**
+   * Settings class to configure an instance of {@@link {@doc.apiClassName}}.
+   *
+   * <p>The default instance has everything set to sensible defaults:
+   *
+   * <ul>
+   * <li>The default service address ({@doc.serviceAddress}) and default port ({@doc.servicePort})
+   * are used.
+   * <li>Credentials are acquired automatically through Application Default Credentials.
+   * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
+   * </ul>
+   *
+   * <p>The builder of this class is recursive, so contained classes are themselves builders.
+   * When build() is called, the tree of builders is called to create the complete settings
+   * object. For example, to set the total timeout of {@doc.exampleApiMethodName} to 30 seconds:
+   *
+   * <pre>
+   * <code>
+   * {@doc.settingsClassName}.Builder {@doc.settingsBuilderVarName} =
+   *     {@doc.settingsClassName}.defaultBuilder();
+   * {@doc.settingsBuilderVarName}.{@doc.exampleApiMethodSettingsGetter}().getRetrySettingsBuilder()
+   *     .setTotalTimeout(Duration.standardSeconds(30));
+   * {@doc.settingsClassName} {@doc.settingsVarName} = {@doc.settingsBuilderVarName}.build();
+   * </code>
+   * </pre>
+   */
 @end
 
-@private settingsJavaDoc(service)
-  @let settingsVariable = context.upperCamelToLowerCamel(settingsClassName(service)), \
-       firstFlattenedMethod = context.getFirstFlattenedMethod(service)
-    /**
-     * Settings class to configure an instance of {@@link {@context.getApiWrapperName(service)}}.
-     *
-     * <p>The default instance has everything set to sensible defaults:
-     *
-     * <ul>
-     * <li>The default service address ({@context.getServiceConfig.getServiceAddress(service)}) and default port ({@context.getServiceConfig.getServicePort()})
-     * are used.
-     * <li>Credentials are acquired automatically through Application Default Credentials.
-     * <li>Retries are configured for idempotent methods but not for non-idempotent methods.
-     * </ul>
-     *
-     * <p>The builder of this class is recursive, so contained classes are themselves builders.
-     * When build() is called, the tree of builders is called to create the complete settings
-     * object. For example, to set the total timeout of {@firstFlattenedMethod.getSimpleName} to 30 seconds:
-     *
-     * <pre>
-     * <code>
-     * {@settingsClassName(service)}.Builder {@settingsVariable}Builder =
-     *     {@settingsClassName(service)}.defaultBuilder();
-     * {@settingsVariable}Builder.{@firstFlattenedMethod.getSimpleName}Settings().getRetrySettingsBuilder()
-     *     .setTotalTimeout(Duration.standardSeconds(30));
-     * {@settingsClassName(service)} {@settingsVariable} = {@settingsVariable}Builder.build();
-     * </code>
-     * </pre>
-     */
-  @end
-@end
-
-@private constants(service)
+@private constants(xsettingsClass)
   /**
    * The default address of the service.
    */
-  public static final String DEFAULT_SERVICE_ADDRESS = "{@context.getServiceConfig.getServiceAddress(service)}";
+  public static final String DEFAULT_SERVICE_ADDRESS = "{@xsettingsClass.serviceAddress}";
 
   /**
    * The default port of the service.
    */
-  public static final int DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()};
+  public static final int DEFAULT_SERVICE_PORT = {@xsettingsClass.servicePort};
 
   /**
    * The default scopes of the service.
    */
   public static final ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
-      @join scope : context.getServiceConfig.getAuthScopes(service)
+      @join scope : {@xsettingsClass.authScopes}
         .add("{@scope}")
       @end
       .build();
@@ -116,310 +78,356 @@
           .setPort(DEFAULT_SERVICE_PORT)
           .provideCredentialsWith(DEFAULT_SERVICE_SCOPES)
           .build();
+  {@""}
 @end
 
-@private members(service)
-  {@methodMembers(service)}
+@private members(xsettingsClass)
+  {@methodMembers(xsettingsClass)}
+  {@methodGetters(xsettingsClass)}
+  /**
+   * Returns a builder for this class with recommended defaults.
+   */
+  public static Builder defaultBuilder() {
+    return Builder.createDefault();
+  }
 
-  {@methodGetters(service)}
+  /**
+   * Returns a new builder for this class.
+   */
+  public static Builder newBuilder() {
+    return new Builder();
+  }
 
-  @let className = settingsClassName(service)
-    /**
-     * Returns a builder for this class with recommended defaults.
-     */
-    public static Builder defaultBuilder() {
-      return Builder.createDefault();
-    }
-
-    /**
-     * Returns a new builder for this class.
-     */
-    public static Builder newBuilder() {
-      return new Builder();
-    }
-
-    /**
-     * Returns a builder containing all the values of this settings class.
-     */
-    public Builder toBuilder() {
-      return new Builder(this);
-    }
-  @end
+  /**
+   * Returns a builder containing all the values of this settings class.
+   */
+  public Builder toBuilder() {
+    return new Builder(this);
+  }
+  {@""}
 @end
 
-@private methodMembers(service)
-  @join method : service.getMethods
-    @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
-         methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-         inTypeName = context.typeName(method.getInputType), \
-         outTypeName = context.typeName(method.getOutputType), \
-         isPageStreaming = methodConfig.isPageStreaming, \
-         isBundling = methodConfig.isBundling
-      @if {@isPageStreaming}
-        @let pageStreaming = methodConfig.getPageStreaming(), \
-             resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
-             dummy = context.addImport("com.google.api.gax.grpc.PageStreamingCallSettings")
-          private final PageStreamingCallSettings<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>
-              {@methodName}Settings;
-
-        @end
-      @else
-        @if {@isBundling}
-          @let bundling = methodConfig.getBundling(), \
-               dummy = context.addImport("com.google.api.gax.grpc.BundlingCallSettings")
-            private final BundlingCallSettings<{@inTypeName}, {@outTypeName}> {@methodName}Settings;
-          @end
-        @else
-          private final SimpleCallSettings<{@inTypeName}, {@outTypeName}> {@methodName}Settings;
-        @end
-      @end
+@private methodMembers(xsettingsClass)
+  @join settings : xsettingsClass.callSettings
+    @switch settings.type.toString
+    @case "SimpleApiCallable"
+      private final SimpleCallSettings<{@settings.requestTypeName}, \
+          {@settings.responseTypeName}> {@settings.memberName};
+    @case "PagedApiCallable"
+      private final PageStreamingCallSettings<{@settings.requestTypeName}, \
+          {@settings.responseTypeName}, {@settings.resourceTypeName}> {@settings.memberName};
+    @case "BundlingApiCallable"
+      private final BundlingCallSettings<{@settings.requestTypeName}, \
+          {@settings.responseTypeName}> {@settings.memberName};
+    @default
+      $unhandledCase: {@settings.type.toString}$
     @end
   @end
+  {@BREAK}
 @end
 
-@private methodGetters(service)
-  @join method : service.getMethods
-    @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
-         methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-         inTypeName = context.typeName(method.getInputType), \
-         outTypeName = context.typeName(method.getOutputType), \
-         isPageStreaming = methodConfig.isPageStreaming, \
-         isBundling = methodConfig.isBundling
-      /**
-       * Returns the object with the settings used for calls to {@methodName}.
-       */
-      @if {@isPageStreaming}
-        @let pageStreaming = methodConfig.getPageStreaming(), \
-             resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
-             dummy = context.addImport("com.google.api.gax.grpc.PageStreamingCallSettings")
-          public PageStreamingCallSettings<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>
-              {@methodName}Settings() {
-            return {@methodName}Settings;
+@private methodGetters(xsettingsClass)
+  @join settings : xsettingsClass.callSettings
+    /**
+     * Returns the object with the settings used for calls to {@settings.methodName}.
+     */
+    @switch settings.type.toString
+    @case "SimpleApiCallable"
+        public SimpleCallSettings<{@settings.requestTypeName}, \
+            {@settings.responseTypeName}> {@settings.fnGetterName}() {
+          return {@settings.memberName};
+       }
+    @case "PagedApiCallable"
+      public PageStreamingCallSettings<{@settings.requestTypeName}, \
+          {@settings.responseTypeName}, {@settings.resourceTypeName}> {@settings.fnGetterName}() {
+        return {@settings.memberName};
+      }
+    @case "BundlingApiCallable"
+      public BundlingCallSettings<{@settings.requestTypeName}, \
+          {@settings.responseTypeName}> {@settings.fnGetterName}() {
+        return {@settings.memberName};
+      }
+    @default
+      $unhandledCase: {@settings.type.toString}$
+    @end
+    {@""}
+  @end
+@end
+
+@private constructors(xsettingsClass)
+  private {@xsettingsClass.name}(Builder settingsBuilder) throws IOException {
+    super(settingsBuilder.getChannelProvider(),
+          settingsBuilder.getExecutorProvider(),
+          settingsBuilder.getGeneratorName(),
+          settingsBuilder.getGeneratorVersion(),
+          settingsBuilder.getClientLibName(),
+          settingsBuilder.getClientLibVersion());
+
+    @join settings : xsettingsClass.callSettings
+      {@settings.memberName} = settingsBuilder.{@settings.fnGetterName}().build();
+    @end
+  }
+  {@""}
+@end
+
+@private descriptors(xsettingsClass)
+  {@pageStreamingDescriptors(xsettingsClass)}
+  {@bundlingDescriptors(xsettingsClass)}
+@end
+
+@private pageStreamingDescriptors(xsettingsClass)
+  @join desc : xsettingsClass.pageStreamingDescriptors
+    private static PageStreamingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}, {@desc.resourceTypeName}> {@desc.name} =
+        new PageStreamingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}, {@desc.resourceTypeName}>() {
+          @@Override
+          public Object emptyToken() {
+            return {@desc.defaultTokenValue};
+          }
+          @@Override
+          public {@desc.requestTypeName} injectToken({@desc.requestTypeName} payload, Object token) {
+            return {@desc.requestTypeName}
+              .newBuilder(payload)
+              .{@desc.fnSetRequestToken}(({@desc.tokenTypeName}) token)
+              .build();
+          }
+          @@Override
+          public Object extractNextToken({@desc.responseTypeName} payload) {
+            return payload.{@desc.fnGetResponseToken}();
+          }
+          @@Override
+          public Iterable<{@desc.resourceTypeName}> extractResources({@desc.responseTypeName} payload) {
+            return payload.{@desc.fnGetResourcesField}();
+          }
+        };
+    {@""}
+  @end
+@end
+
+@private bundlingDescriptors(xsettingsClass)
+  @join desc : xsettingsClass.bundlingDescriptors
+    private static BundlingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}> {@desc.name} =
+        new BundlingDescriptor<{@desc.requestTypeName}, {@desc.responseTypeName}>() {
+          @@Override
+          public String getBundlePartitionKey({@desc.requestTypeName} request) {
+            return {@partitionKeyCode(desc)};
           }
 
-        @end
-      @else
-        @if {@isBundling}
-          @let bundling = methodConfig.getBundling(), \
-               dummy = context.addImport("com.google.api.gax.grpc.BundlingCallSettings")
-            public BundlingCallSettings<{@inTypeName}, {@outTypeName}> {@methodName}Settings() {
-              return {@methodName}Settings;
+          @@Override
+          public {@desc.requestTypeName} mergeRequests(Collection<{@desc.requestTypeName}> requests) {
+            {@desc.requestTypeName} firstRequest = requests.iterator().next();
+
+            {@desc.bundledFieldTypeName} elements = new ArrayList<>();
+            for ({@desc.requestTypeName} request : requests) {
+              elements.addAll(request.{@desc.fnGetBundledField}());
             }
 
-          @end
-        @else
-          public SimpleCallSettings<{@inTypeName}, {@outTypeName}> {@methodName}Settings() {
-            return {@methodName}Settings;
+            {@desc.requestTypeName} bundleRequest =
+                {@desc.requestTypeName}.newBuilder()
+                    {@fieldCopyCalls(desc.discriminatorFieldCopies)}
+                    .{@desc.fnSetBundledField}(elements)
+                    .build();
+            return bundleRequest;
           }
 
-        @end
-      @end
-    @end
+          @@Override
+          public void splitResponse(
+              {@desc.responseTypeName} bundleResponse,
+              Collection<? extends RequestIssuer<{@desc.requestTypeName}, {@desc.responseTypeName}>> bundle) {
+            # TODO(garrettjones) support case of no subresponse_field (e.g. Logging)
+            int bundleMessageIndex = 0;
+            for (RequestIssuer<{@desc.requestTypeName}, {@desc.responseTypeName}> responder : bundle) {
+              {@desc.subresponseTypeName} subresponseElements = new ArrayList<>();
+              int subresponseCount = responder.getRequest().{@desc.fnGetBundledFieldCount}();
+              for (int i = 0; i < subresponseCount; i++) {
+                subresponseElements.add(bundleResponse.{@desc.fnGetSubresponseByIndex}(bundleMessageIndex));
+                bundleMessageIndex += 1;
+              }
+              {@desc.responseTypeName} response =
+                  {@desc.responseTypeName}.newBuilder().{@desc.fnSetSubresponse}(subresponseElements).build();
+              responder.setResponse(response);
+            }
+          }
+
+          @@Override
+          public void splitException(
+              Throwable throwable,
+              Collection<? extends RequestIssuer<{@desc.requestTypeName}, {@desc.responseTypeName}>> bundle) {
+            for (RequestIssuer<{@desc.requestTypeName}, {@desc.responseTypeName}> responder : bundle) {
+              responder.setException(throwable);
+            }
+          }
+
+          @@Override
+          public long countElements({@desc.requestTypeName} request) {
+            return request.{@desc.fnGetBundledFieldCount}();
+          }
+
+          @@Override
+          public long countBytes({@desc.requestTypeName} request) {
+            return request.getSerializedSize();
+          }
+        };
+    {@""}
   @end
 @end
 
-@private constructors(service)
-  @let className = settingsClassName(service)
-    private {@className}(Builder settingsBuilder) throws IOException {
-      super(settingsBuilder.getChannelProvider(),
-            settingsBuilder.getExecutorProvider(),
-            settingsBuilder.getGeneratorName(),
-            settingsBuilder.getGeneratorVersion(),
-            settingsBuilder.getClientLibName(),
-            settingsBuilder.getClientLibVersion());
-
-      @join method : service.getMethods
-        @let methodName = context.upperCamelToLowerCamel(method.getSimpleName)
-          {@methodName}Settings = settingsBuilder.{@methodName}Settings().build();
-        @end
-      @end
-    }
+@private partitionKeyCode(bundlingDesc)
+  @join partitionKey : bundlingDesc.partitionKeys on " + "
+    request.{@partitionKey.fnGetCallName}() + {@partitionKey.separatorLiteral}
   @end
 @end
 
-@private descriptors(service)
-  {@pageStreamingDescriptors(service)}
-  {@bundlingDescriptors(service)}
-@end
-
-@private pageStreamingDescriptors(service)
-  @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service), \
-       dummy = context.addImport("com.google.api.gax.grpc.PageStreamingDescriptor")
-    @join method : context.messages.filterPageStreamingMethods(interfaceConfig, service.getMethods)
-      @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
-           inTypeName = context.typeName(method.getInputType), \
-           outTypeName = context.typeName(method.getOutputType), \
-           pageStreaming = interfaceConfig.getMethodConfig(method).getPageStreaming(), \
-           resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
-           tokenTypeName = context.typeName(pageStreaming.getResponseTokenField.getType)
-        private static PageStreamingDescriptor<{@inTypeName}, {@outTypeName}, {@resourceTypeName}> {@methodConstant}_PAGE_STR_DESC =
-            new PageStreamingDescriptor<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>() {
-              @@Override
-              public Object emptyToken() {
-                return {@context.defaultTokenValue(pageStreaming.getRequestTokenField())};
-              }
-              @@Override
-              public {@inTypeName} injectToken(
-                  {@inTypeName} payload, Object token) {
-                return {@inTypeName}
-                  .newBuilder(payload)
-                  .{@setCallName(pageStreaming.getRequestTokenField())}(({@tokenTypeName}) token)
-                  .build();
-              }
-              @@Override
-              public Object extractNextToken({@outTypeName} payload) {
-                return payload.{@getCallName(pageStreaming.getResponseTokenField())}();
-              }
-              @@Override
-              public Iterable<{@resourceTypeName}> extractResources({@outTypeName} payload) {
-                return payload.{@getCallName(pageStreaming.getResourcesField())}();
-              }
-            };
-
-      @end
-    @end
+@private fieldCopyCalls(fieldCopies)
+  @join fieldCopy : fieldCopies
+    .{@fieldCopy.fnSetFunctionCallName}(firstRequest.{@fieldCopy.fnGetFunctionCallName}())
   @end
 @end
 
-@private bundlingDescriptors(service)
-  @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service)
-    @join method : context.messages.filterBundlingMethods(interfaceConfig, service.getMethods)
-      @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
-           inTypeName = context.typeName(method.getInputType), \
-           outTypeName = context.typeName(method.getOutputType), \
-           bundling = interfaceConfig.getMethodConfig(method).getBundling(), \
-           dummy = context.addImport("com.google.api.gax.grpc.BundlingDescriptor"), \
-           dummy2 = context.addImport("java.util.Collection"), \
-           dummy3 = context.addImport("com.google.api.gax.grpc.RequestIssuer"), \
-           dummy4 = context.addImport("java.util.ArrayList")
-        private static BundlingDescriptor<{@inTypeName}, {@outTypeName}> {@methodConstant}_BUNDLING_DESC =
-            new BundlingDescriptor<{@inTypeName}, {@outTypeName}>() {
-              @@Override
-              public String getBundlePartitionKey({@inTypeName} request) {
-                return {@partitionKeyCode(bundling)};
-              }
-
-              @@Override
-              public {@inTypeName} mergeRequests(Collection<{@inTypeName}> requests) {
-                {@inTypeName} firstRequest = requests.iterator().next();
-
-                {@context.typeName(bundling.getBundledField.getType)} elements = new ArrayList<>();
-                for ({@inTypeName} request : requests) {
-                  elements.addAll(request.{@getCallName(bundling.getBundledField)}());
-                }
-
-                {@inTypeName} bundleRequest =
-                    {@inTypeName}.newBuilder()
-                        {@setDescriminatorFields(bundling)}
-                        .{@setCallName(bundling.getBundledField)}(elements)
-                        .build();
-                return bundleRequest;
-              }
-
-              @@Override
-              public void splitResponse(
-                  {@outTypeName} bundleResponse,
-                  Collection<? extends RequestIssuer<{@inTypeName}, {@outTypeName}>> bundle) {
-                # TODO(garrettjones) support case of no subresponse_field (e.g. Logging)
-                int bundleMessageIndex = 0;
-                for (RequestIssuer<{@inTypeName}, {@outTypeName}> responder : bundle) {
-                  {@context.typeName(bundling.getSubresponseField.getType)} subresponseElements = new ArrayList<>();
-                  int subresponseCount = responder.getRequest().{@getCountCallName(bundling.getBundledField)}();
-                  for (int i = 0; i < subresponseCount; i++) {
-                    subresponseElements.add(bundleResponse.{@getIndexCallName(bundling.getSubresponseField)}(bundleMessageIndex));
-                    bundleMessageIndex += 1;
-                  }
-                  {@outTypeName} response =
-                      {@outTypeName}.newBuilder().{@setCallName(bundling.getSubresponseField)}(subresponseElements).build();
-                  responder.setResponse(response);
-                }
-              }
-
-              @@Override
-              public void splitException(
-                  Throwable throwable,
-                  Collection<? extends RequestIssuer<{@inTypeName}, {@outTypeName}>> bundle) {
-                for (RequestIssuer<{@inTypeName}, {@outTypeName}> responder : bundle) {
-                  responder.setException(throwable);
-                }
-              }
-
-              @@Override
-              public long countElements({@inTypeName} request) {
-                return request.{@getCountCallName(bundling.getBundledField)}();
-              }
-
-              @@Override
-              public long countBytes({@inTypeName} request) {
-                return request.getSerializedSize();
-              }
-            };
-
-      @end
-    @end
-  @end
-@end
-
-@private partitionKeyCode(bundling)
-  {@context.partitionKeyCode(bundling.getDiscriminatorFields)}
-@end
-
-@private setDescriminatorFields(bundling)
-  @join fieldSelector : bundling.getDiscriminatorFields
-    # Note: This only supports field selectors with a single field.
-    @let field = fieldSelector.getLastField
-      .{@setCallName(field)}(firstRequest.{@getCallName(field)}())
-    @end
-  @end
-@end
-
-@private innerBuilderClass(service)
+@private innerBuilderClass(xsettingsClass)
   /**
-   * Builder for {@settingsClassName(service)}.
+   * Builder for {@xsettingsClass.name}.
    */
   public static class Builder extends ServiceApiSettings.Builder {
     private final ImmutableList<ApiCallSettings.Builder> methodSettingsBuilders;
 
-    {@builderMembers(service)}
+    {@builderMembers(xsettingsClass)}
 
-    {@builderConstants(service)}
+    {@builderConstants(xsettingsClass)}
 
-    {@builderConstructors(service)}
+    {@builderConstructors(xsettingsClass)}
 
-    {@builderMethods(service)}
+    {@builderMethods(xsettingsClass)}
   }
 @end
 
-@private builderMembers(service)
-  @join method : service.getMethods
-    @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
-         methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-         inTypeName = context.typeName(method.getInputType), \
-         outTypeName = context.typeName(method.getOutputType), \
-         isPageStreaming = methodConfig.isPageStreaming, \
-         isBundling = methodConfig.isBundling
-      @if {@isPageStreaming}
-        @let pageStreaming = methodConfig.getPageStreaming(), \
-             resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
-             dummy = context.addImport("com.google.api.gax.grpc.PageStreamingCallSettings")
-          private PageStreamingCallSettings.Builder<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>
-              {@methodName}Settings;
-        @end
-      @else
-        @if {@isBundling}
-          @let bundling = methodConfig.getBundling(), \
-               dummy = context.addImport("com.google.api.gax.grpc.BundlingCallSettings")
-            private BundlingCallSettings.Builder<{@inTypeName}, {@outTypeName}> {@methodName}Settings;
-          @end
-        @else
-          private SimpleCallSettings.Builder<{@inTypeName}, {@outTypeName}> {@methodName}Settings;
-        @end
-      @end
+@private builderMembers(xsettingsClass)
+  @join settings : xsettingsClass.callSettings
+    @switch settings.type.toString
+    @case "SimpleApiCallable"
+      private SimpleCallSettings.Builder<{@settings.requestTypeName}, \
+          {@settings.responseTypeName}> {@settings.memberName};
+    @case "PagedApiCallable"
+      private PageStreamingCallSettings.Builder<{@settings.requestTypeName}, \
+          {@settings.responseTypeName}, {@settings.resourceTypeName}> {@settings.memberName};
+    @case "BundlingApiCallable"
+      private BundlingCallSettings.Builder<{@settings.requestTypeName}, \
+          {@settings.responseTypeName}> {@settings.memberName};
+    @default
+      $unhandledCase: {@settings.type.toString}$
     @end
   @end
 @end
 
-@private builderMethods(service)
+@private builderConstants(xsettingsClass)
+  private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
+
+  static {
+    ImmutableMap.Builder<String, ImmutableSet<Status.Code>> definitions = ImmutableMap.builder();
+    @join retryCodesDef : xsettingsClass.retryCodesDefinitions
+      definitions.put(
+          "{@retryCodesDef.key}",
+          Sets.immutableEnumSet(Lists.<Status.Code>newArrayList({@statusCodes(retryCodesDef.codes)})));
+    @end
+    RETRYABLE_CODE_DEFINITIONS = definitions.build();
+  }
+
+  private static final ImmutableMap<String, RetrySettings.Builder> RETRY_PARAM_DEFINITIONS;
+
+  static {
+    ImmutableMap.Builder<String, RetrySettings.Builder> definitions = ImmutableMap.builder();
+    RetrySettings.Builder settingsBuilder = null;
+    @join retryParamsDef : xsettingsClass.retryParamsDefinitions
+      settingsBuilder = RetrySettings.newBuilder()
+          .setInitialRetryDelay(Duration.millis({@retryParamsDef.initialRetryDelay.getMillis}L))
+          .setRetryDelayMultiplier({@retryParamsDef.retryDelayMultiplier})
+          .setMaxRetryDelay(Duration.millis({@retryParamsDef.maxRetryDelay.getMillis}L))
+          .setInitialRpcTimeout(Duration.millis({@retryParamsDef.initialRpcTimeout.getMillis}L))
+          .setRpcTimeoutMultiplier({@retryParamsDef.rpcTimeoutMultiplier})
+          .setMaxRpcTimeout(Duration.millis({@retryParamsDef.maxRpcTimeout.getMillis}L))
+          .setTotalTimeout(Duration.millis({@retryParamsDef.totalTimeout.getMillis}L));
+      definitions.put("{@retryParamsDef.key}", settingsBuilder);
+    @end
+    RETRY_PARAM_DEFINITIONS = definitions.build();
+  }
+@end
+
+@private statusCodes(codes)
+  @join code : codes on ", "
+    Status.Code.{@code}
+  @end
+@end
+
+@private builderConstructors(xsettingsClass)
+  private Builder() {
+    super(DEFAULT_CONNECTION_SETTINGS);
+
+    @join settings : xsettingsClass.callSettings
+      @switch settings.type.toString
+      @case "SimpleApiCallable"
+        {@settings.memberName} = SimpleCallSettings.newBuilder({@settings.grpcTypeName}.{@settings.grpcMethodConstant});
+      @case "PagedApiCallable"
+        {@settings.memberName} = PageStreamingCallSettings.newBuilder(
+            {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
+            {@settings.pageStreamingDescriptorName});
+      @case "BundlingApiCallable"
+        {@settings.memberName} = BundlingCallSettings.newBuilder(
+            {@settings.grpcTypeName}.{@settings.grpcMethodConstant},
+            {@settings.bundlingDescriptorName})
+                .setBundlingSettingsBuilder(BundlingSettings.newBuilder());
+      @default
+        $unhandledCase: {@settings.type.toString}$
+      @end
+      {@BREAK}
+    @end
+    methodSettingsBuilders = ImmutableList.<ApiCallSettings.Builder>of(
+        @join settings : xsettingsClass.callSettings vertical on ",".add(BREAK)
+          {@settings.memberName}
+        @end
+    );
+  }
+
+  private static Builder createDefault() {
+    Builder builder = new Builder();
+    @join settings : xsettingsClass.callSettings
+      {@""}
+      @switch settings.type.toString
+      @case "SimpleApiCallable"
+      @case "PagedApiCallable"
+      @case "BundlingApiCallable"
+        builder.{@settings.fnGetterName}().getBundlingSettingsBuilder()
+            .setElementCountThreshold({@settings.bundlingConfig.elementCountThreshold})
+            .setElementCountLimit({@settings.bundlingConfig.elementCountLimit})
+            .setRequestByteThreshold({@settings.bundlingConfig.requestByteThreshold})
+            .setRequestByteLimit({@settings.bundlingConfig.requestByteLimit})
+            .setDelayThreshold(Duration.millis({@settings.bundlingConfig.delayThresholdMillis}))
+            .setBlockingCallCountThreshold(1);
+      @default
+        $unhandledCase: {@settings.type.toString}$
+      @end
+      builder.{@settings.fnGetterName}()
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@settings.retryCodesName}"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("{@settings.retryParamsName}"));
+    @end
+
+    return builder;
+  }
+
+  private Builder({@xsettingsClass.name} settings) {
+    super(settings);
+
+    @join settings : xsettingsClass.callSettings
+      {@settings.memberName} = settings.{@settings.memberName}.toBuilder();
+    @end
+
+    methodSettingsBuilders = ImmutableList.<ApiCallSettings.Builder>of(
+        @join settings : xsettingsClass.callSettings vertical on ",".add(BREAK)
+          {@settings.memberName}
+        @end
+    );
+  }
+@end
+
+@private builderMethods(xsettingsClass)
   @@Override
   protected ConnectionSettings getDefaultConnectionSettings() {
     return DEFAULT_CONNECTION_SETTINGS;
@@ -470,210 +478,33 @@
     return this;
   }
 
-  @join method : service.getMethods
-    @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
-         methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-         inTypeName = context.typeName(method.getInputType), \
-         outTypeName = context.typeName(method.getOutputType), \
-         isPageStreaming = methodConfig.isPageStreaming, \
-         isBundling = methodConfig.isBundling
-      /**
-       * Returns the builder for the settings used for calls to {@methodName}.
-       */
-      @if {@isPageStreaming}
-        @let pageStreaming = methodConfig.getPageStreaming(), \
-             resourceTypeName = context.basicTypeNameBoxed(pageStreaming.getResourcesField().getType()), \
-             dummy = context.addImport("com.google.api.gax.grpc.PageStreamingCallSettings")
-          public PageStreamingCallSettings.Builder<{@inTypeName}, {@outTypeName}, {@resourceTypeName}>
-              {@methodName}Settings() {
-            return {@methodName}Settings;
-          }
-
-        @end
-      @else
-        @if {@isBundling}
-          @let bundling = methodConfig.getBundling(), \
-               dummy = context.addImport("com.google.api.gax.grpc.BundlingCallSettings")
-            public BundlingCallSettings.Builder<{@inTypeName}, {@outTypeName}> {@methodName}Settings() {
-              return {@methodName}Settings;
-            }
-
-          @end
-        @else
-          public SimpleCallSettings.Builder<{@inTypeName}, {@outTypeName}> {@methodName}Settings() {
-            return {@methodName}Settings;
-          }
-
-        @end
-      @end
+  @join settings : xsettingsClass.callSettings
+    /**
+     * Returns the builder for the settings used for calls to {@settings.methodName}.
+     */
+    @switch settings.type.toString
+    @case "SimpleApiCallable"
+      public SimpleCallSettings.Builder<{@settings.requestTypeName}, \
+          {@settings.responseTypeName}> {@settings.fnGetterName}() {
+        return {@settings.memberName};
+      }
+    @case "PagedApiCallable"
+      public PageStreamingCallSettings.Builder<{@settings.requestTypeName}, \
+          {@settings.responseTypeName}, {@settings.resourceTypeName}> {@settings.fnGetterName}() {
+        return {@settings.memberName};
+      }
+    @case "BundlingApiCallable"
+      public BundlingCallSettings.Builder<{@settings.requestTypeName}, \
+          {@settings.responseTypeName}> {@settings.fnGetterName}() {
+        return {@settings.memberName};
+      }
+    @default
+      $unhandledCase: {@settings.type.toString}$
     @end
+    {@""}
   @end
   @@Override
-  public {@settingsClassName(service)} build() throws IOException {
-    return new {@settingsClassName(service)}(this);
+  public {@xsettingsClass.name} build() throws IOException {
+    return new {@xsettingsClass.name}(this);
   }
-@end
-
-@private builderConstants(service)
-  @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service)
-    private static final ImmutableMap<String, ImmutableSet<Status.Code>> RETRYABLE_CODE_DEFINITIONS;
-
-    static {
-      ImmutableMap.Builder<String, ImmutableSet<Status.Code>> definitions = ImmutableMap.builder();
-      @join retryDef : context.entrySet(interfaceConfig.getRetryCodesDefinition)
-        definitions.put(
-            "{@retryDef.getKey}",
-            Sets.immutableEnumSet(Lists.<Status.Code>newArrayList({@statusCodes(retryDef.getValue)})));
-      @end
-      RETRYABLE_CODE_DEFINITIONS = definitions.build();
-    }
-
-    private static final ImmutableMap<String, RetrySettings.Builder> RETRY_PARAM_DEFINITIONS;
-
-    static {
-      ImmutableMap.Builder<String, RetrySettings.Builder> definitions = ImmutableMap.builder();
-      RetrySettings.Builder settingsBuilder = null;
-      @join retryDef : context.entrySet(interfaceConfig.getRetrySettingsDefinition)
-        settingsBuilder = RetrySettings.newBuilder()
-            .setInitialRetryDelay(Duration.millis({@retryDef.getValue.getInitialRetryDelay.getMillis}L))
-            .setRetryDelayMultiplier({@retryDef.getValue.getRetryDelayMultiplier})
-            .setMaxRetryDelay(Duration.millis({@retryDef.getValue.getMaxRetryDelay.getMillis}L))
-            .setInitialRpcTimeout(Duration.millis({@retryDef.getValue.getInitialRpcTimeout.getMillis}L))
-            .setRpcTimeoutMultiplier({@retryDef.getValue.getRpcTimeoutMultiplier})
-            .setMaxRpcTimeout(Duration.millis({@retryDef.getValue.getMaxRpcTimeout.getMillis}L))
-            .setTotalTimeout(Duration.millis({@retryDef.getValue.getTotalTimeout.getMillis}L));
-        definitions.put("{@retryDef.getKey}", settingsBuilder);
-      @end
-      RETRY_PARAM_DEFINITIONS = definitions.build();
-    }
-  @end
-@end
-
-@private statusCodes(codes)
-  @join code : codes on ", "
-    Status.Code.{@code}
-  @end
-@end
-
-@private builderConstructors(service)
-  private Builder() {
-    super(DEFAULT_CONNECTION_SETTINGS);
-
-    @let serviceName = service.getSimpleName, \
-         grpcName = context.getGrpcName(service)
-      @join method : service.getMethods
-        @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
-             methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
-             methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-             retryCodesName = methodConfig.getRetryCodesConfigName, \
-             RetrySettingsName = methodConfig.getRetrySettingsConfigName, \
-             isPageStreaming = methodConfig.isPageStreaming, \
-             isBundling = methodConfig.isBundling
-          @if {@isPageStreaming}
-            @let dummy = {@context.addImport("com.google.api.gax.grpc.PageStreamingCallSettings")}
-              {@methodName}Settings = PageStreamingCallSettings.newBuilder(
-                  {@grpcName}.METHOD_{@methodConstant},
-                  {@methodConstant}_PAGE_STR_DESC);
-
-            @end
-          @else
-            @if {@isBundling}
-              @let bundlingConfig = methodConfig.getBundling, \
-                   dummy = {@context.addImport("com.google.api.gax.grpc.BundlingSettings")}
-                {@methodName}Settings = BundlingCallSettings.newBuilder(
-                    {@grpcName}.METHOD_{@methodConstant},
-                    {@methodConstant}_BUNDLING_DESC)
-                        .setBundlingSettingsBuilder(BundlingSettings.newBuilder());
-
-              @end
-            @else
-              {@methodName}Settings = SimpleCallSettings.newBuilder({@grpcName}.METHOD_{@methodConstant});
-
-            @end
-          @end
-        @end
-      @end
-    @end
-    methodSettingsBuilders = ImmutableList.<ApiCallSettings.Builder>of(
-        {@settingsList(service)}
-    );
-  }
-
-  private static Builder createDefault() {
-    Builder builder = new Builder();
-    @let serviceName = service.getSimpleName, \
-         grpcName = context.getGrpcName(service)
-      @join method : service.getMethods
-        @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
-             methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
-             methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-             retryCodesName = methodConfig.getRetryCodesConfigName, \
-             RetrySettingsName = methodConfig.getRetrySettingsConfigName, \
-             isPageStreaming = methodConfig.isPageStreaming, \
-             isBundling = methodConfig.isBundling
-          @if {@isPageStreaming}
-            @let dummy = {@context.addImport("com.google.api.gax.grpc.PageStreamingCallSettings")}
-              builder.{@methodName}Settings()
-                      .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@retryCodesName}"))
-                      .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("{@RetrySettingsName}"));
-
-            @end
-          @else
-            @if {@isBundling}
-              @let bundlingConfig = methodConfig.getBundling, \
-                   dummy = {@context.addImport("com.google.api.gax.grpc.BundlingSettings")}
-                builder.{@methodName}Settings().getBundlingSettingsBuilder()
-                        .setElementCountThreshold({@bundlingConfig.getElementCountThreshold})
-                        .setElementCountLimit({@bundlingConfig.getElementCountLimit})
-                        .setRequestByteThreshold({@bundlingConfig.getRequestByteThreshold})
-                        .setRequestByteLimit({@bundlingConfig.getRequestByteLimit})
-                        .setDelayThreshold(Duration.millis({@bundlingConfig.getDelayThresholdMillis}))
-                        .setBlockingCallCountThreshold(1);
-                builder.{@methodName}Settings()
-                        .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@retryCodesName}"))
-                        .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("{@RetrySettingsName}"));
-
-              @end
-            @else
-              builder.{@methodName}Settings()
-                  .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("{@retryCodesName}"))
-                  .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("{@RetrySettingsName}"));
-
-            @end
-          @end
-        @end
-      @end
-    @end
-    return builder;
-  }
-
-  private Builder({@settingsClassName(service)} settings) {
-    super(settings);
-
-    @join method : service.getMethods
-      @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
-           methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-           isPageStreaming = methodConfig.isPageStreaming
-        {@methodName}Settings = settings.{@methodName}Settings.toBuilder();
-      @end
-    @end
-
-    methodSettingsBuilders = ImmutableList.<ApiCallSettings.Builder>of(
-        {@settingsList(service)}
-    );
-  }
-@end
-
-@private settingsList(service)
-  @join method : service.getMethods vertical on ",".add(BREAK)
-    @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
-         methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
-         isPageStreaming = methodConfig.isPageStreaming
-      {@methodName}Settings
-    @end
-  @end
-@end
-
-@snippet generateMethodSampleCode(sampleConfig)
-# not used
 @end

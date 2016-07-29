@@ -1,56 +1,50 @@
 @extends "java/common.snip"
-@extends "java/main.snip"
+@extends "java/method_sample.snip"
 
-@snippet generateFilename()
-  package-info.java
-@end
-
-@snippet generateDocument(fragmentList)
+@snippet generate(packageInfo)
   {@license()}
 
-  {@packageJavaDoc(fragmentList)}
-
-  package {@context.getApiConfig.getPackageName};
-@end
-
-@snippet generateFragment(service)
-  @let firstFlattenedMethod = context.getFirstFlattenedMethod(service), \
-     # TODO: support the case where the API has no flattened methods.
-     firstFlattenedMethodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(firstFlattenedMethod), \
-     fields = firstFlattenedMethodConfig.getFlattening().getFlatteningGroups().get(0), \
-     fieldNamePatterns = firstFlattenedMethodConfig.getFieldNamePatterns()
-    {@javaDocLinesFromStr(context.getMultilineHeading(context.getApiWrapperName(service)))}
-     *
-    {@javaDocLinesFromStr(serviceDocString(service))}
-     *
-     * Sample for {@context.getApiWrapperName(service)}:
-     * <pre>
-     * <code>
-    @join commentLine : context.java.getJavaDocLines(generateMethodSampleCode(context.newJavaDocConfigBuilder \
-                               .setApiName(context.getApiWrapperName(service)) \
-                               .setMethodName(context.upperCamelToLowerCamel(firstFlattenedMethod.getSimpleName)) \
-                               .setReturnType(context.returnTypeOrEmpty(firstFlattenedMethod.getOutputType)) \
-                               .setFieldInitCode(context, service, firstFlattenedMethod, fields) \
-                               .setFieldParams(context, fields) \
-                               .setPagedVariant({@FALSE}) \
-                               .setCallableVariant({@FALSE}) \
-                               .build))
-      {@commentLine}
-    @end
-    {@EMPTY} * </code>
-     * </pre>
-     *
-  @end
-@end
-
-@private packageJavaDoc(fragmentList)
   /**
-   * A client to {@context.getTitle()}.
+   * A client to {@packageInfo.serviceTitle}.
    *
    * The interfaces provided are listed below, along with a usage sample
    *
-  @join fragment : fragmentList
-    {@fragment}
+  @join xapiClassDoc : packageInfo.serviceDocs
+    {@serviceShortDoc(xapiClassDoc)}
   @end
    */
+
+  package {@packageInfo.packageName};
+@end
+
+@private serviceShortDoc(xapiClassDoc)
+  @let coreSampleCode = syncMethodSampleCode(xapiClassDoc.exampleApiMethod), \
+       decoratedSampleCode = decorateSampleCode(xapiClassDoc.exampleApiMethod, coreSampleCode)
+    {@renderServiceShortDoc(xapiClassDoc, decoratedSampleCode)}
+  @end
+@end
+
+@private renderServiceShortDoc(xapiClassDoc, exampleMethodSampleCode)
+  @join commentLine : util.getMultilineHeading(xapiClassDoc.apiClassName)
+    {@""} * {@commentLine}
+  @end
+  # The join above doesn't properly add a newline on the end, so we need to force it
+  {@""}
+  {@""} *
+   * Service Description: {@xapiClassDoc.firstLine}
+  @if xapiClassDoc.remainingLines
+    @join commentLine : xapiClassDoc.remainingLines
+      {@""} * {@commentLine}
+    @end
+  @end
+   *
+   * Sample for {@xapiClassDoc.apiClassName}:
+   * <pre>
+   * <code>
+  @join sampleLine : util.getDocLines(exampleMethodSampleCode)
+    {@""} * {@sampleLine}
+  @end
+   * </code>
+   * </pre>
+   *
 @end

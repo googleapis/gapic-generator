@@ -17,8 +17,10 @@ package com.google.api.codegen.transformer;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.util.Name;
+import com.google.api.codegen.viewmodel.PageStreamingDescriptorClassView;
 import com.google.api.codegen.viewmodel.PageStreamingDescriptorView;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.TypeRef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,5 +52,49 @@ public class PageStreamingTransformer {
     }
 
     return descriptors;
+  }
+
+  public List<PageStreamingDescriptorClassView> generateDescriptorClasses(
+      SurfaceTransformerContext context) {
+    List<PageStreamingDescriptorClassView> descriptors = new ArrayList<>();
+
+    context.getNamer().addPageStreamingDescriptorImports(context.getTypeTable());
+    for (Method method : context.getInterface().getMethods()) {
+      MethodConfig methodConfig = context.getMethodConfig(method);
+      if (!methodConfig.isPageStreaming()) {
+        continue;
+      }
+      descriptors.add(generateDescriptorClass(context.asMethodContext(method)));
+    }
+
+    return descriptors;
+  }
+
+  private PageStreamingDescriptorClassView generateDescriptorClass(
+      MethodTransformerContext context) {
+    SurfaceNamer namer = context.getNamer();
+    ModelTypeTable typeTable = context.getTypeTable();
+    Method method = context.getMethod();
+    PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
+
+    PageStreamingDescriptorClassView.Builder desc = PageStreamingDescriptorClassView.newBuilder();
+
+    desc.name(namer.getPageStreamingDescriptorConstName(method));
+    desc.requestTypeName(typeTable.getAndSaveNicknameFor(method.getInputType()));
+    desc.responseTypeName(typeTable.getAndSaveNicknameFor(method.getOutputType()));
+
+    TypeRef resourceType = pageStreaming.getResourcesField().getType();
+    desc.resourceTypeName(context.getTypeTable().getAndSaveNicknameForElementType(resourceType));
+
+    TypeRef tokenType = pageStreaming.getResponseTokenField().getType();
+    desc.tokenTypeName(typeTable.getAndSaveNicknameFor(tokenType));
+
+    desc.defaultTokenValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(tokenType));
+
+    desc.fnSetRequestToken(namer.getSetFunctionCallName(pageStreaming.getRequestTokenField()));
+    desc.fnGetResponseToken(namer.getGetFunctionCallName(pageStreaming.getResponseTokenField()));
+    desc.fnGetResourcesField(namer.getGetFunctionCallName(pageStreaming.getResourcesField()));
+
+    return desc.build();
   }
 }

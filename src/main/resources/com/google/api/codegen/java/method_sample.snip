@@ -1,61 +1,86 @@
 @extends "java/common.snip"
 
-# Generate code samples for method-level documentation.
-@snippet generateMethodSampleCode(docConfig)
-  @let ApiName = docConfig.getApiName, \
-      apiName = context.upperCamelToLowerCamel(ApiName)
-    try ({@ApiName} {@apiName} = {@ApiName}.createWithDefaults()) {
-      {@initCode(docConfig.getInitCode)}
-      @if docConfig.isUnpagedListCallableVariant
-        @let resourcesField = docConfig.getResourcesFieldForUnpagedListCallable
-          while (true) {
-            {@callResultSampleCode(docConfig.getReturnType)}{@methodCallSampleCode(docConfig, apiName)};
-            for ({@elementTypeName(resourcesField)} elements : response.{@getResourcesListCall(resourcesField)}) {
-              // doThingsWith(elements);
-            }
-            String nextPageToken = response.getNextPageToken();
-            if (!Strings.isNullOrEmpty(nextPageToken)) {
-              request = request.toBuilder().setPageToken(nextPageToken).build();
-            } else {
-              break;
-            }
-          }
-        @end
-      @else
-        @if docConfig.isCallableVariant
-          ListenableFuture<{@getGenericAwareReturnType(docConfig)}> future = {@methodFutureCall(docConfig, apiName)};
-          // Do something{@BREAK}
-        @end
-        @if docConfig.isPagedVariant
-          for ({@docConfig.getReturnType} elements : {@methodCallSampleCode(docConfig, apiName)}) {
-            // doThingsWith(elements);
-          }
-        @else
-          {@callResultSampleCode(docConfig.getReturnType)}{@methodCallSampleCode(docConfig, apiName)};
-        @end
-      @end
+@snippet decorateSampleCode(apiMethod, coreSampleCode)
+  try ({@apiMethod.apiClassName} {@apiMethod.apiVariableName} = \
+      {@apiMethod.apiClassName}.createWithDefaults()) {
+    {@coreSampleCode}
+  }
+@end
+
+@snippet pagedIterableMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  for ({@apiMethod.listMethod.resourceTypeName} element : {@sampleSyncMethodCall(apiMethod)}) {
+    // doThingsWith(element);
+  }
+@end
+
+@snippet pagedCallableMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  ListenableFuture<{@apiMethod.responseTypeName}> future = {@sampleFutureMethodCall(apiMethod)};
+  // Do something
+  for ({@apiMethod.listMethod.resourceTypeName} element : future.get()) {
+    // doThingsWith(element);
+  }
+@end
+
+@snippet unpagedListCallableMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  while (true) {
+    {@apiMethod.responseTypeName} response = \
+        {@apiMethod.apiVariableName}.{@apiMethod.name}().call(\
+        {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
+    for ({@apiMethod.listMethod.resourceTypeName} element : \
+        response.{@apiMethod.unpagedListCallableMethod.fnGetResourceListCall}()) {
+      // doThingsWith(element);
     }
-  @end
+    String nextPageToken = response.getNextPageToken();
+    if (!Strings.isNullOrEmpty(nextPageToken)) {
+      request = request.toBuilder().setPageToken(nextPageToken).build();
+    } else {
+      break;
+    }
+  }
 @end
 
-# Helper functions for generateMethodSampleCode()
-
-@private getGenericAwareReturnType(docConfig)
-  @if docConfig.isPagedVariant
-    PageAccessor<{@docConfig.getGenericAwareReturnType}>
+@snippet syncMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  @if apiMethod.hasReturnValue
+    {@apiMethod.responseTypeName} response = {@sampleSyncMethodCall(apiMethod)};
   @else
-    {@docConfig.getGenericAwareReturnType}
+    {@sampleSyncMethodCall(apiMethod)};
   @end
 @end
 
-@private getResourcesListCall(resourcesField)
-  get{@context.lowerUnderscoreToUpperCamel(resourcesField.getSimpleName)}List()
+@snippet callableMethodSampleCode(apiMethod)
+  {@initCode(apiMethod.initCode)}
+  ListenableFuture<{@apiMethod.callableMethod.genericAwareResponseType}> future = {@sampleFutureMethodCall(apiMethod)};
+  // Do something
+  @if apiMethod.hasReturnValue
+    {@apiMethod.responseTypeName} response = future.get();
+  @else
+    future.get();
+  @end
 @end
 
-# Generate argument initialization code for API call
+@private sampleFutureMethodCall(apiMethod)
+  {@apiMethod.apiVariableName}.{@apiMethod.name}().futureCall(\
+      {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+@end
+
+@private sampleSyncMethodCall(apiMethod)
+  {@apiMethod.apiVariableName}.{@apiMethod.name}(\
+      {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)})
+@end
+
+@private sampleMethodCallArgList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+@end
+
 @private initCode(initCodeSpec)
-  @join line : initCodeSpec.getLines()
-    @switch line.getLineType.toString()
+  @join line : initCodeSpec.lines
+    @switch line.lineType.toString
     @case "StructureInitLine"
       {@initLineStructure(line)}
     @case "ListInitLine"
@@ -65,125 +90,42 @@
     @case "SimpleInitLine"
       {@initLineSimple(line)}
     @default
-      {@unhandledCase()}
+      $unhandledCase: {@line.lineType.toString}$
     @end
   @end
 @end
 
-# Generate a Protobuf message argument
 @private initLineStructure(line)
-  {@context.typeName(line.getType)} {@formattedIdentifier(line)} = {@context.typeName(line.getType)}.newBuilder()
-  @join fieldSetting : line.getFieldSettings
-    @let setCallName = setCallName(fieldSetting.getType, fieldSetting.getFieldName.toUpperCamel)
-      {@EMPTY}  .{@setCallName}({@formattedIdentifier(fieldSetting)})
-    @end
+  {@line.typeName} {@line.identifier} = {@line.typeName}.newBuilder()
+  @join fieldSetting : line.fieldSettings
+    {@EMPTY}  .{@fieldSetting.fnSetFunctionCallName}({@fieldSetting.identifier})
   @end
   {@EMPTY}  .build();
 @end
 
-# Generate a List argument
 @private initLineList(line)
-  List<{@context.basicTypeNameBoxed(line.getElementType)}> {@formattedIdentifier(line)} = Arrays.asList({@initList(line)});
+  List<{@line.elementTypeName}> {@line.identifier} = \
+      Arrays.asList({@argList(line.elementIdentifiers)});
 @end
 
-# Generate a Map argument
 @private initLineMap(line)
-  Map<{@context.basicTypeNameBoxed(line.getKeyType)}, {@context.basicTypeNameBoxed(line.getValueType)}> {@formattedIdentifier(line)} = new HashMap<>();
-  @join key : line.getElementIdentifierKeys vertical
-    @let identifierValue = line.getElementIdentifierValue(key)
-      {@formattedIdentifier(line)}.put({@context.renderPrimitiveValue(line.getKeyType, key)}, {@identifierValue.toLowerCamel});
-    @end
+  Map<{@line.keyTypeName}, {@line.valueTypeName}> {@line.identifier} = new HashMap<>();
+  @join mapEntry : line.initEntries vertical
+    {@line.identifier}.put({@mapEntry.key}, {@mapEntry.value});
   @end
 @end
 
-# Helper method for initLineList()
-@private initList(line)
-  @join identifier : line.getElementIdentifiers on ", "
-    {@identifier.toLowerCamel}
-  @end
-@end
-
-# Generate a simple argument
 @private initLineSimple(line)
-  {@context.typeName(line.getType)} {@formattedIdentifier(line)} = {@initValue(line)};
+  {@line.typeName} {@line.identifier} = {@renderInitValue(line.initValue)};
 @end
 
-# Properly format an identifier for this language
-@private formattedIdentifier(lineOrFieldSetting)
-  @if lineOrFieldSetting.getInitValueConfig.hasFormattingConfig
-    formatted{@lineOrFieldSetting.getIdentifier.toUpperCamel}
-  @else
-    {@lineOrFieldSetting.getIdentifier.toLowerCamel}
-  @end
-@end
-
-# Value for simple argument
-@private initValue(line)
-  @let metadata = line.getInitValueConfig
-    @if metadata.hasFormattingConfig()
-      {@metadata.getApiWrapperName}.{@formatResourceFunctionName(metadata.getCollectionConfig)}({@formatResourceFunctionArgs(metadata.getCollectionConfig)})
-    @else
-      @if metadata.hasInitialValue()
-        {@context.renderPrimitiveValue(line.getType, metadata.getInitialValue)}
-      @else
-        {@context.zeroValue(line.getType)}
-      @end
-    @end
-  @end
-@end
-
-# Format arguments for resource function call in sample
-@private formatResourceFunctionArgs(collectionConfig)
-  @join param : collectionConfig.getNameTemplate.vars() on ", "
-    "[{@context.lowerUnderscoreToUpperUnderscore(param)}]"
-  @end
-@end
-
-# Optionally render the return value from the API method call
-@private callResultSampleCode(returnType)
-  @if returnType.isEmpty
-  @else
-    {@returnType} response = {@""}
-  @end
-@end
-
-@private methodFutureCall(docConfig, apiName)
-  {@apiName}.{@methodCallName(docConfig)}().futureCall({@argList(docConfig.getInitCode.getArgFields)})
-@end
-
-# Render the API method call itself
-@private methodCallSampleCode(docConfig, apiName)
-  @if docConfig.isUnpagedListCallableVariant
-    {@apiName}.{@methodCallName(docConfig)}().call({@argList(docConfig.getInitCode.getArgFields)})
-  @else
-    @if docConfig.isCallableVariant
-      future.get()
-    @else
-      {@apiName}.{@methodCallName(docConfig)}({@argList(docConfig.getInitCode.getArgFields)})
-    @end
-  @end
-@end
-
-# Render the name of the method call
-@private methodCallName(docConfig)
-  @if docConfig.isCallableVariant
-    {@methodCallNameIter(docConfig)}Callable
-  @else
-    {@docConfig.getMethodName}
-  @end
-@end
-
-@private methodCallNameIter(docConfig)
-  @if docConfig.isPagedVariant
-    {@docConfig.getMethodName}Paged
-  @else
-    {@docConfig.getMethodName}
-  @end
-@end
-
-# Generate argument list
-@private argList(fieldSettings)
-  @join fieldSetting : fieldSettings on ", "
-    {@formattedIdentifier(fieldSetting)}
+@private renderInitValue(initValue)
+  @switch initValue.type
+  @case "SimpleInitValueView"
+    {@initValue.initialValue}
+  @case "FormattedInitValueView"
+    {@initValue.apiWrapperName}.{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
+  @default
+    $unhandledCase: {@initValue.type}$
   @end
 @end

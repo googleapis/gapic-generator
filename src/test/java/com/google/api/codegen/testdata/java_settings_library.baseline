@@ -64,8 +64,6 @@ import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 import org.joda.time.Duration;
 
-
-
 // AUTO-GENERATED DOCUMENTATION AND CLASS
 /**
  * Settings class to configure an instance of {@link LibraryServiceApi}.
@@ -81,13 +79,13 @@ import org.joda.time.Duration;
  *
  * <p>The builder of this class is recursive, so contained classes are themselves builders.
  * When build() is called, the tree of builders is called to create the complete settings
- * object. For example, to set the total timeout of CreateShelf to 30 seconds:
+ * object. For example, to set the total timeout of createShelf to 30 seconds:
  *
  * <pre>
  * <code>
  * LibraryServiceSettings.Builder libraryServiceSettingsBuilder =
  *     LibraryServiceSettings.defaultBuilder();
- * libraryServiceSettingsBuilder.CreateShelfSettings().getRetrySettingsBuilder()
+ * libraryServiceSettingsBuilder.createShelfSettings().getRetrySettingsBuilder()
  *     .setTotalTimeout(Duration.standardSeconds(30));
  * LibraryServiceSettings libraryServiceSettings = libraryServiceSettingsBuilder.build();
  * </code>
@@ -95,7 +93,6 @@ import org.joda.time.Duration;
  */
 @javax.annotation.Generated("by GAPIC")
 public class LibraryServiceSettings extends ServiceApiSettings {
-
   /**
    * The default address of the service.
    */
@@ -126,23 +123,17 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
   private final SimpleCallSettings<CreateShelfRequest, Shelf> createShelfSettings;
   private final SimpleCallSettings<GetShelfRequest, Shelf> getShelfSettings;
-  private final PageStreamingCallSettings<ListShelvesRequest, ListShelvesResponse, Shelf>
-      listShelvesSettings;
-
+  private final PageStreamingCallSettings<ListShelvesRequest, ListShelvesResponse, Shelf> listShelvesSettings;
   private final SimpleCallSettings<DeleteShelfRequest, Empty> deleteShelfSettings;
   private final SimpleCallSettings<MergeShelvesRequest, Shelf> mergeShelvesSettings;
   private final SimpleCallSettings<CreateBookRequest, Book> createBookSettings;
   private final BundlingCallSettings<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
   private final SimpleCallSettings<GetBookRequest, Book> getBookSettings;
-  private final PageStreamingCallSettings<ListBooksRequest, ListBooksResponse, Book>
-      listBooksSettings;
-
+  private final PageStreamingCallSettings<ListBooksRequest, ListBooksResponse, Book> listBooksSettings;
   private final SimpleCallSettings<DeleteBookRequest, Empty> deleteBookSettings;
   private final SimpleCallSettings<UpdateBookRequest, Book> updateBookSettings;
   private final SimpleCallSettings<MoveBookRequest, Book> moveBookSettings;
-  private final PageStreamingCallSettings<ListStringsRequest, ListStringsResponse, String>
-      listStringsSettings;
-
+  private final PageStreamingCallSettings<ListStringsRequest, ListStringsResponse, String> listStringsSettings;
   private final SimpleCallSettings<AddCommentsRequest, Empty> addCommentsSettings;
   private final SimpleCallSettings<GetBookFromArchiveRequest, Book> getBookFromArchiveSettings;
   private final SimpleCallSettings<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
@@ -164,8 +155,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   /**
    * Returns the object with the settings used for calls to listShelves.
    */
-  public PageStreamingCallSettings<ListShelvesRequest, ListShelvesResponse, Shelf>
-      listShelvesSettings() {
+  public PageStreamingCallSettings<ListShelvesRequest, ListShelvesResponse, Shelf> listShelvesSettings() {
     return listShelvesSettings;
   }
 
@@ -207,8 +197,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   /**
    * Returns the object with the settings used for calls to listBooks.
    */
-  public PageStreamingCallSettings<ListBooksRequest, ListBooksResponse, Book>
-      listBooksSettings() {
+  public PageStreamingCallSettings<ListBooksRequest, ListBooksResponse, Book> listBooksSettings() {
     return listBooksSettings;
   }
 
@@ -236,8 +225,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   /**
    * Returns the object with the settings used for calls to listStrings.
    */
-  public PageStreamingCallSettings<ListStringsRequest, ListStringsResponse, String>
-      listStringsSettings() {
+  public PageStreamingCallSettings<ListStringsRequest, ListStringsResponse, String> listStringsSettings() {
     return listStringsSettings;
   }
 
@@ -261,7 +249,6 @@ public class LibraryServiceSettings extends ServiceApiSettings {
   public SimpleCallSettings<UpdateBookIndexRequest, Empty> updateBookIndexSettings() {
     return updateBookIndexSettings;
   }
-
 
   /**
    * Returns a builder for this class with recommended defaults.
@@ -317,8 +304,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
           return "";
         }
         @Override
-        public ListShelvesRequest injectToken(
-            ListShelvesRequest payload, Object token) {
+        public ListShelvesRequest injectToken(ListShelvesRequest payload, Object token) {
           return ListShelvesRequest
             .newBuilder(payload)
             .setPageToken((String) token)
@@ -341,8 +327,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
           return "";
         }
         @Override
-        public ListBooksRequest injectToken(
-            ListBooksRequest payload, Object token) {
+        public ListBooksRequest injectToken(ListBooksRequest payload, Object token) {
           return ListBooksRequest
             .newBuilder(payload)
             .setPageToken((String) token)
@@ -365,8 +350,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
           return "";
         }
         @Override
-        public ListStringsRequest injectToken(
-            ListStringsRequest payload, Object token) {
+        public ListStringsRequest injectToken(ListStringsRequest payload, Object token) {
           return ListStringsRequest
             .newBuilder(payload)
             .setPageToken((String) token)
@@ -386,7 +370,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
       new BundlingDescriptor<PublishSeriesRequest, PublishSeriesResponse>() {
         @Override
         public String getBundlePartitionKey(PublishSeriesRequest request) {
-          return request.getEdition() + "|" + request.getName();
+          return request.getEdition() + "|" + request.getName() + "|";
         }
 
         @Override
@@ -445,7 +429,6 @@ public class LibraryServiceSettings extends ServiceApiSettings {
         }
       };
 
-
   /**
    * Builder for LibraryServiceSettings.
    */
@@ -454,20 +437,17 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
     private SimpleCallSettings.Builder<CreateShelfRequest, Shelf> createShelfSettings;
     private SimpleCallSettings.Builder<GetShelfRequest, Shelf> getShelfSettings;
-    private PageStreamingCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, Shelf>
-        listShelvesSettings;
+    private PageStreamingCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, Shelf> listShelvesSettings;
     private SimpleCallSettings.Builder<DeleteShelfRequest, Empty> deleteShelfSettings;
     private SimpleCallSettings.Builder<MergeShelvesRequest, Shelf> mergeShelvesSettings;
     private SimpleCallSettings.Builder<CreateBookRequest, Book> createBookSettings;
     private BundlingCallSettings.Builder<PublishSeriesRequest, PublishSeriesResponse> publishSeriesSettings;
     private SimpleCallSettings.Builder<GetBookRequest, Book> getBookSettings;
-    private PageStreamingCallSettings.Builder<ListBooksRequest, ListBooksResponse, Book>
-        listBooksSettings;
+    private PageStreamingCallSettings.Builder<ListBooksRequest, ListBooksResponse, Book> listBooksSettings;
     private SimpleCallSettings.Builder<DeleteBookRequest, Empty> deleteBookSettings;
     private SimpleCallSettings.Builder<UpdateBookRequest, Book> updateBookSettings;
     private SimpleCallSettings.Builder<MoveBookRequest, Book> moveBookSettings;
-    private PageStreamingCallSettings.Builder<ListStringsRequest, ListStringsResponse, String>
-        listStringsSettings;
+    private PageStreamingCallSettings.Builder<ListStringsRequest, ListStringsResponse, String> listStringsSettings;
     private SimpleCallSettings.Builder<AddCommentsRequest, Empty> addCommentsSettings;
     private SimpleCallSettings.Builder<GetBookFromArchiveRequest, Book> getBookFromArchiveSettings;
     private SimpleCallSettings.Builder<UpdateBookIndexRequest, Empty> updateBookIndexSettings;
@@ -568,6 +548,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
 
     private static Builder createDefault() {
       Builder builder = new Builder();
+
       builder.createShelfSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
@@ -577,8 +558,8 @@ public class LibraryServiceSettings extends ServiceApiSettings {
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.listShelvesSettings()
-              .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
-              .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.deleteShelfSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
@@ -593,23 +574,23 @@ public class LibraryServiceSettings extends ServiceApiSettings {
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.publishSeriesSettings().getBundlingSettingsBuilder()
-              .setElementCountThreshold(6)
-              .setElementCountLimit(7)
-              .setRequestByteThreshold(100000)
-              .setRequestByteLimit(150000)
-              .setDelayThreshold(Duration.millis(500))
-              .setBlockingCallCountThreshold(1);
+          .setElementCountThreshold(6)
+          .setElementCountLimit(7)
+          .setRequestByteThreshold(100000)
+          .setRequestByteLimit(150000)
+          .setDelayThreshold(Duration.millis(500))
+          .setBlockingCallCountThreshold(1);
       builder.publishSeriesSettings()
-              .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
-              .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.getBookSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.listBooksSettings()
-              .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
-              .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.deleteBookSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
@@ -624,8 +605,8 @@ public class LibraryServiceSettings extends ServiceApiSettings {
           .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.listStringsSettings()
-              .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
-              .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
+          .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("idempotent"))
+          .setRetrySettingsBuilder(RETRY_PARAM_DEFINITIONS.get("default"));
 
       builder.addCommentsSettings()
           .setRetryableCodes(RETRYABLE_CODE_DEFINITIONS.get("non_idempotent"))
@@ -749,8 +730,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     /**
      * Returns the builder for the settings used for calls to listShelves.
      */
-    public PageStreamingCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, Shelf>
-        listShelvesSettings() {
+    public PageStreamingCallSettings.Builder<ListShelvesRequest, ListShelvesResponse, Shelf> listShelvesSettings() {
       return listShelvesSettings;
     }
 
@@ -792,8 +772,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     /**
      * Returns the builder for the settings used for calls to listBooks.
      */
-    public PageStreamingCallSettings.Builder<ListBooksRequest, ListBooksResponse, Book>
-        listBooksSettings() {
+    public PageStreamingCallSettings.Builder<ListBooksRequest, ListBooksResponse, Book> listBooksSettings() {
       return listBooksSettings;
     }
 
@@ -821,8 +800,7 @@ public class LibraryServiceSettings extends ServiceApiSettings {
     /**
      * Returns the builder for the settings used for calls to listStrings.
      */
-    public PageStreamingCallSettings.Builder<ListStringsRequest, ListStringsResponse, String>
-        listStringsSettings() {
+    public PageStreamingCallSettings.Builder<ListStringsRequest, ListStringsResponse, String> listStringsSettings() {
       return listStringsSettings;
     }
 

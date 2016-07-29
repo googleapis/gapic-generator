@@ -14,7 +14,6 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.viewmodel.FieldSettingView.Builder;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;

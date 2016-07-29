@@ -30,9 +30,17 @@ public class NamePath {
    * Create a NamePath that is separated by dots.
    */
   public static NamePath dotted(String... pieces) {
+    return parse("\\.", pieces);
+  }
+
+  public static NamePath backslashed(String... pieces) {
+    return parse("\\\\", pieces);
+  }
+
+  private static NamePath parse(String separatorRegex, String... pieces) {
     List<String> namePieces = new ArrayList<>();
     for (String piece : pieces) {
-      for (String subPiece : piece.split("\\.")) {
+      for (String subPiece : piece.split(separatorRegex)) {
         namePieces.add(subPiece);
       }
     }

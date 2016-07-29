@@ -15,25 +15,26 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableSet;
 
-import java.util.List;
+import io.grpc.Status.Code;
 
 @AutoValue
-public abstract class InitCodeView {
-  public abstract List<InitCodeLineView> lines();
+public abstract class RetryCodesDefinitionView {
+  public abstract String key();
 
-  public abstract List<FieldSettingView> fieldSettings();
+  public abstract ImmutableSet<Code> codes();
 
   public static Builder newBuilder() {
-    return new AutoValue_InitCodeView.Builder();
+    return new AutoValue_RetryCodesDefinitionView.Builder();
   }
 
   @AutoValue.Builder
   public static abstract class Builder {
-    public abstract Builder lines(List<InitCodeLineView> val);
+    public abstract Builder key(String val);
 
-    public abstract Builder fieldSettings(List<FieldSettingView> val);
+    public abstract Builder codes(ImmutableSet<Code> val);
 
-    public abstract InitCodeView build();
+    public abstract RetryCodesDefinitionView build();
   }
 }

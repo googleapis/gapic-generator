@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 
 /**
@@ -28,6 +29,16 @@ public interface ModelTypeFormatter {
    * Get the full name for the given type.
    */
   String getFullNameFor(TypeRef type);
+
+  /**
+   * Get the full name for the given proto element.
+   */
+  String getFullNameFor(ProtoElement element);
+
+  /**
+   * Get the full name for the element type of the given type.
+   */
+  String getFullNameForElementType(TypeRef type);
 
   /**
    * Returns the nickname for the given type (without adding the full name to the import set).

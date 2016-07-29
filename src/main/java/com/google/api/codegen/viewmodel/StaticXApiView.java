@@ -20,24 +20,19 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 
 @AutoValue
-public abstract class DynamicXApiView implements ViewModel {
+public abstract class StaticXApiView implements ViewModel {
+  @Override
   public abstract String templateFileName();
 
   public abstract String packageName();
-
-  public abstract String protoFilename();
 
   public abstract ServiceDocView doc();
 
   public abstract String name();
 
-  public abstract String serviceAddress();
+  public abstract String settingsClassName();
 
-  public abstract Integer servicePort();
-
-  public abstract String serviceTitle();
-
-  public abstract Iterable<String> authScopes();
+  public abstract List<ApiCallableView> apiCallableMembers();
 
   public abstract List<PathTemplateView> pathTemplates();
 
@@ -45,23 +40,12 @@ public abstract class DynamicXApiView implements ViewModel {
 
   public abstract List<ParseResourceFunctionView> parseResourceFunctions();
 
-  public abstract List<PathTemplateGetterFunctionView> pathTemplateGetterFunctions();
-
-  public abstract List<PageStreamingDescriptorView> pageStreamingDescriptors();
-
-  public abstract List<String> methodKeys();
-
-  public abstract String clientConfigPath();
-
-  public abstract String interfaceKey();
-
-  public abstract String grpcClientTypeName();
+  public abstract List<StaticApiMethodView> apiMethods();
 
   public abstract List<String> imports();
 
+  @Override
   public abstract String outputPath();
-
-  public abstract List<ApiMethodView> apiMethods();
 
   @Override
   public String resourceRoot() {
@@ -69,7 +53,7 @@ public abstract class DynamicXApiView implements ViewModel {
   }
 
   public static Builder newBuilder() {
-    return new AutoValue_DynamicXApiView.Builder();
+    return new AutoValue_StaticXApiView.Builder();
   }
 
   @AutoValue.Builder
@@ -78,19 +62,13 @@ public abstract class DynamicXApiView implements ViewModel {
 
     public abstract Builder packageName(String val);
 
-    public abstract Builder protoFilename(String simpleName);
-
-    public abstract Builder doc(ServiceDocView doc);
+    public abstract Builder doc(ServiceDocView val);
 
     public abstract Builder name(String val);
 
-    public abstract Builder serviceAddress(String val);
+    public abstract Builder settingsClassName(String val);
 
-    public abstract Builder servicePort(Integer val);
-
-    public abstract Builder serviceTitle(String val);
-
-    public abstract Builder authScopes(Iterable<String> val);
+    public abstract Builder apiCallableMembers(List<ApiCallableView> val);
 
     public abstract Builder pathTemplates(List<PathTemplateView> val);
 
@@ -98,24 +76,12 @@ public abstract class DynamicXApiView implements ViewModel {
 
     public abstract Builder parseResourceFunctions(List<ParseResourceFunctionView> val);
 
-    public abstract Builder pathTemplateGetterFunctions(List<PathTemplateGetterFunctionView> val);
-
-    public abstract Builder pageStreamingDescriptors(List<PageStreamingDescriptorView> val);
-
-    public abstract Builder methodKeys(List<String> val);
-
-    public abstract Builder clientConfigPath(String val);
-
-    public abstract Builder interfaceKey(String val);
-
-    public abstract Builder grpcClientTypeName(String val);
+    public abstract Builder apiMethods(List<StaticApiMethodView> val);
 
     public abstract Builder imports(List<String> val);
 
     public abstract Builder outputPath(String val);
 
-    public abstract Builder apiMethods(List<ApiMethodView> val);
-
-    public abstract DynamicXApiView build();
+    public abstract StaticXApiView build();
   }
 }

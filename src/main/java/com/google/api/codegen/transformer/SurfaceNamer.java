@@ -22,6 +22,7 @@ import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.NameFormatter;
 import com.google.api.codegen.util.NameFormatterDelegator;
 import com.google.api.codegen.util.NamePath;
+import com.google.api.codegen.util.TypeNameConverter;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
@@ -29,6 +30,7 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,10 +46,15 @@ import java.util.List;
  */
 public class SurfaceNamer extends NameFormatterDelegator {
   private ModelTypeFormatter modelTypeFormatter;
+  private TypeNameConverter typeNameConverter;
 
-  public SurfaceNamer(NameFormatter languageNamer, ModelTypeFormatter modelTypeFormatter) {
+  public SurfaceNamer(
+      NameFormatter languageNamer,
+      ModelTypeFormatter modelTypeFormatter,
+      TypeNameConverter typeNameConverter) {
     super(languageNamer);
     this.modelTypeFormatter = modelTypeFormatter;
+    this.typeNameConverter = typeNameConverter;
   }
 
   public ModelTypeFormatter getModelTypeFormatter() {
@@ -66,12 +73,28 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return varName(Name.upperCamel(interfaze.getSimpleName(), "Api"));
   }
 
+  public String getApiSettingsClassName(Interface interfaze) {
+    return className(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
+  }
+
+  public String getApiSettingsVariableName(Interface interfaze) {
+    return varName(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
+  }
+
+  public String getApiSettingsBuilderVarName(Interface interfaze) {
+    return varName(Name.upperCamel(interfaze.getSimpleName(), "SettingsBuilder"));
+  }
+
   public String getVariableName(Name identifier, InitValueConfig initValueConfig) {
     if (initValueConfig == null || !initValueConfig.hasFormattingConfig()) {
       return varName(identifier);
     } else {
       return varName(Name.from("formatted").join(identifier));
     }
+  }
+
+  public String getSetFunctionCallName(Field field) {
+    return getSetFunctionCallName(field.getType(), Name.from(field.getSimpleName()));
   }
 
   public String getSetFunctionCallName(TypeRef type, Name identifier) {
@@ -81,6 +104,36 @@ public class SurfaceNamer extends NameFormatterDelegator {
       return methodName(Name.from("add", "all").join(identifier));
     } else {
       return methodName(Name.from("set").join(identifier));
+    }
+  }
+
+  public String getGetFunctionCallName(Field field) {
+    return getGetFunctionCallName(field.getType(), Name.from(field.getSimpleName()));
+  }
+
+  public String getGetFunctionCallName(TypeRef type, Name identifier) {
+    if (type.isRepeated()) {
+      return methodName(Name.from("get").join(identifier).join("list"));
+    } else {
+      return methodName(Name.from("get").join(identifier));
+    }
+  }
+
+  public String getGetCountCallName(Field field) {
+    if (field.isRepeated()) {
+      return methodName(Name.from("get", field.getSimpleName(), "count"));
+    } else {
+      throw new IllegalArgumentException(
+          "Non-repeated field " + field.getSimpleName() + " has no count function.");
+    }
+  }
+
+  public String getGetByIndexCallName(Field field) {
+    if (field.isRepeated()) {
+      return methodName(Name.from("get", field.getSimpleName()));
+    } else {
+      throw new IllegalArgumentException(
+          "Non-repeated field " + field.getSimpleName() + " has no get-by-index function.");
     }
   }
 
@@ -117,7 +170,27 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return varName(Name.upperCamel(method.getSimpleName(), "PageStreamingDescriptor"));
   }
 
+  public String getPageStreamingDescriptorConstName(Method method) {
+    return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("page_str_desc"));
+  }
+
+  public String getBundlingDescriptorConstName(Method method) {
+    return inittedConstantName(Name.upperCamel(method.getSimpleName()).join("bundling_desc"));
+  }
+
   public void addPageStreamingDescriptorImports(ModelTypeTable typeTable) {
+    // do nothing
+  }
+
+  public void addBundlingDescriptorImports(ModelTypeTable typeTable) {
+    // do nothing
+  }
+
+  public void addPageStreamingCallSettingsImports(ModelTypeTable typeTable) {
+    // do nothing
+  }
+
+  public void addBundlingCallSettingsImports(ModelTypeTable typeTable) {
     // do nothing
   }
 
@@ -130,9 +203,19 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   public String getGrpcClientTypeName(Interface service) {
-    NamePath namePath = NamePath.dotted(service.getFullName());
+    NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
     String className = className(Name.upperCamel(namePath.getHead(), "Client"));
     return qualifiedName(namePath.withHead(className));
+  }
+
+  public String getGrpcContainerTypeName(Interface service) {
+    NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
+    String className = className(Name.upperCamel(namePath.getHead(), "Grpc"));
+    return qualifiedName(namePath.withHead(className));
+  }
+
+  public String getGrpcMethodConstant(Method method) {
+    return inittedConstantName(Name.from("method").join(Name.upperCamel(method.getSimpleName())));
   }
 
   public String getApiMethodName(Method method) {
@@ -155,6 +238,18 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getDocLines(DocumentationUtil.getDescription(element));
   }
 
+  public List<String> getThrowsDocLines() {
+    return new ArrayList<>();
+  }
+
+  public String getPublicAccessModifier() {
+    return "public";
+  }
+
+  public String getPrivateAccessModifier() {
+    return "private";
+  }
+
   public String getGrpcMethodName(Method method) {
     // This might seem silly, but it makes clear what we're dealing with (upper camel).
     // This is language-independent because of gRPC conventions.
@@ -171,5 +266,45 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getDynamicReturnTypeName(Method method, MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getDynamicReturnTypeName");
+  }
+
+  public String getStaticReturnTypeName(Method method, MethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getStaticReturnTypeName");
+  }
+
+  public String getPagedCallableMethodName(Method method) {
+    return methodName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
+  }
+
+  public String getPagedCallableName(Method method) {
+    return varName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
+  }
+
+  public String getCallableMethodName(Method method) {
+    return methodName(Name.upperCamel(method.getSimpleName(), "Callable"));
+  }
+
+  public String getCallableName(Method method) {
+    return varName(Name.upperCamel(method.getSimpleName(), "Callable"));
+  }
+
+  public String getSettingsMemberName(Method method) {
+    return methodName(Name.upperCamel(method.getSimpleName(), "Settings"));
+  }
+
+  public String getSettingsFunctionName(Method method) {
+    return getSettingsMemberName(method);
+  }
+
+  public String getGenericAwareResponseTypeName(TypeRef outputType) {
+    return getNotImplementedString("SurfaceNamer.getGenericAwareResponseType");
+  }
+
+  public String getGetResourceListCallName(Field resourcesField) {
+    return methodName(Name.from("get", resourcesField.getSimpleName(), "list"));
+  }
+
+  public String getAndSavePagedResponseTypeName(ModelTypeTable typeTable, TypeRef resourceType) {
+    return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeName");
   }
 }

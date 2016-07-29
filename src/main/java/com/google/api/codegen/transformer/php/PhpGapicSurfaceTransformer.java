@@ -23,12 +23,12 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.PageStreamingTransformer;
 import com.google.api.codegen.transformer.PathTemplateTransformer;
+import com.google.api.codegen.transformer.ServiceTransformer;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
 import com.google.api.codegen.viewmodel.DynamicXApiView;
-import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -43,6 +43,7 @@ import java.util.List;
  */
 public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   private GapicCodePathMapper pathMapper;
+  private ServiceTransformer serviceTransformer;
   private PathTemplateTransformer pathTemplateTransformer;
   private PageStreamingTransformer pageStreamingTransformer;
   private ApiMethodTransformer apiMethodTransformer;
@@ -54,6 +55,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
    */
   public PhpGapicSurfaceTransformer(ApiConfig apiConfig, GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
+    this.serviceTransformer = new ServiceTransformer();
     this.pathTemplateTransformer = new PathTemplateTransformer();
     this.pageStreamingTransformer = new PageStreamingTransformer();
     this.apiMethodTransformer = new ApiMethodTransformer();
@@ -91,12 +93,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     DynamicXApiView.Builder xapiClass = DynamicXApiView.newBuilder();
 
-    ServiceDocView.Builder serviceDoc = ServiceDocView.newBuilder();
-    List<String> docLines = context.getNamer().getDocLines(context.getInterface());
-    serviceDoc.firstLine(docLines.get(0));
-    serviceDoc.remainingLines(docLines.subList(1, docLines.size()));
-    serviceDoc.exampleApiMethod(methods.get(0));
-    xapiClass.doc(serviceDoc.build());
+    xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
 
     xapiClass.templateFileName(XAPI_TEMPLATE_FILENAME);
     xapiClass.protoFilename(context.getInterface().getFile().getSimpleName());
