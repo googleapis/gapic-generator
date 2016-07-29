@@ -74,6 +74,24 @@ public class NameTest {
     Truth.assertThat(name.toUpperCamel()).isEqualTo("Dog2");
   }
 
+  @Test
+  public void testUpperWordAndNumber() {
+    Name name = Name.upperCamel("Dog", "V2");
+    Truth.assertThat(name.toLowerUnderscore()).isEqualTo("dog_v2");
+    Truth.assertThat(name.toUpperUnderscore()).isEqualTo("DOG_V2");
+    Truth.assertThat(name.toLowerCamel()).isEqualTo("dogV2");
+    Truth.assertThat(name.toUpperCamel()).isEqualTo("DogV2");
+  }
+
+  @Test
+  public void testLowerWorkAndNumber() {
+    Name name = Name.lowerCamel("dog", "v2");
+    Truth.assertThat(name.toLowerUnderscore()).isEqualTo("dog_v2");
+    Truth.assertThat(name.toUpperUnderscore()).isEqualTo("DOG_V2");
+    Truth.assertThat(name.toLowerCamel()).isEqualTo("dogV2");
+    Truth.assertThat(name.toUpperCamel()).isEqualTo("DogV2");
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void illegalLowerUnderscore() {
     Name.from("factoryDecorator");

@@ -108,7 +108,7 @@ public class Name {
       return false;
     }
     for (Character ch : identifier.toCharArray()) {
-      if (!Character.isLowerCase(ch) && !Character.isUpperCase(ch)) {
+      if (!Character.isLowerCase(ch) && !Character.isUpperCase(ch) && !Character.isDigit(ch)) {
         return false;
       }
     }
