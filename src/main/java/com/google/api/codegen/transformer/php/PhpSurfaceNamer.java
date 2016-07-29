@@ -82,7 +82,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
       return "";
     }
     if (methodConfig.isPageStreaming()) {
-      return "Google\\GAX\\PageAccessor";
+      return "Google\\GAX\\PagedListResponse";
     }
     return getModelTypeFormatter().getFullNameFor(method.getOutputType());
   }

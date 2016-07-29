@@ -236,6 +236,9 @@
      *     @@var string $appName The codename of the calling service. Default 'gax'.
      *     @@var string $appVersion The version of the calling service.
      *                              Default: the current version of GAX.
+     *     @@var Google\Auth\CredentialsLoader $credentialsLoader
+     *                              A CredentialsLoader object created using the
+     *                              Google\Auth library.
      * }
      */
     public function __construct($options = [])
@@ -253,6 +256,7 @@
             'timeoutMillis' => self::DEFAULT_TIMEOUT_MILLIS,
             'appName' => 'gax',
             'appVersion' => self::_GAX_VERSION,
+            'credentialsLoader' => null,
         ];
         $options = array_merge($defaultOptions, $options);
 
@@ -296,7 +300,10 @@
         if (!empty($options['sslCreds'])) {
             $createStubOptions['sslCreds'] = $options['sslCreds'];
         }
-        $this->grpcBootstrap = GrpcBootstrap::defaultInstance();
+        $grpcBootstrapOptions = array_intersect_key($options, [
+            'credentialsLoader' => null,
+        ]);
+        $this->grpcBootstrap = new GrpcBootstrap($this->scopes, $grpcBootstrapOptions);
         $this->stub = $this->grpcBootstrap->createStub(
             $generatedCreateStub,
             $options['serviceAddress'],
@@ -322,7 +329,7 @@
             @end
 
             $mergedSettings = $this->defaultCallSettings['{@apiMethod.key}']->merge(
-                new CallSettings($callSettings));
+                new CallSettings($optionalArgs));
             $callable = ApiCallable::createApiCall(
                 $this->stub, '{@apiMethod.grpcMethodName}', $mergedSettings, $this->descriptors['{@apiMethod.key}']);
 
@@ -364,9 +371,9 @@
 @private setOptionalFieldCall(param)
     if (isset($optionalArgs['{@param.name}'])) {
         @if param.isMap
-            // TODO make this work
-            // https://github.com/googleapis/toolkit/issues/333
-            putAll...
+            foreach ($optionalArgs['{@param.name}'] as $key => $value) {
+                $request->{@param.setCallName}((new {@param.elementTypeName}())->setKey($key)->setValue($value));
+            }
         @else
             @if param.isArray
                 foreach ($optionalArgs['{@param.name}'] as $elem) {
@@ -463,6 +470,6 @@
 
     private function createCredentialsCallback()
     {
-        return $this->grpcBootstrap->createCallCredentialsCallback($this->scopes);
+        return $this->grpcBootstrap->createCallCredentialsCallback();
     }
 @end

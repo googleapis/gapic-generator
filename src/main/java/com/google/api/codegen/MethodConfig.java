@@ -154,7 +154,7 @@ public class MethodConfig {
 
     Iterable<Field> optionalFields =
         Iterables.filter(
-            new ServiceMessages().flattenedFields(method.getInputType()),
+            method.getInputType().getMessageType().getFields(),
             new Predicate<Field>() {
               @Override
               public boolean apply(Field input) {
