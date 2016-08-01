@@ -32,6 +32,7 @@ import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestClassView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,13 +111,13 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     ArrayList<GapicSurfaceTestCaseView> testCaseViews = new ArrayList<>();
     for (Method method : context.getInterface().getMethods()) {
       MethodTransformerContext methodContext = context.asMethodContext(method);
-      testCaseViews.add(createTestCaseView(methodContext, context));
+      testCaseViews.add(createTestCaseView(methodContext));
     }
     return testCaseViews;
   }
 
   private GapicSurfaceTestCaseView createTestCaseView(
-      MethodTransformerContext methodContext, SurfaceTransformerContext surfaceContext) {
+      MethodTransformerContext methodContext) {
     MethodConfig methodConfig = methodContext.getMethodConfig();
     InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
     InitCodeView initCodeView =
@@ -136,7 +137,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     }
 
     String requestTypeName =
-        surfaceContext
+        methodContext
             .getTypeTable()
             .getAndSaveNicknameFor(methodContext.getMethod().getInputType());
 
