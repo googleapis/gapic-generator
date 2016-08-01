@@ -29,18 +29,19 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
+
 import java.util.List;
 
 /**
  * A SurfaceNamer provides language-specific names for specific components of a view for a surface.
  *
- * <p>Naming is composed of two steps:
+ * Naming is composed of two steps:
  *
- * <p>1. Composing a Name instance with the name pieces 2. Formatting the Name for the particular
- * type of identifier needed.
+ * 1. Composing a Name instance with the name pieces
+ * 2. Formatting the Name for the particular type of identifier needed.
  *
- * <p>This class delegates step 2 to the provided name formatter, which generally would be a
- * language-specific namer.
+ * This class delegates step 2 to the provided name formatter, which generally
+ * would be a language-specific namer.
  */
 public class SurfaceNamer extends NameFormatterDelegator {
   private ModelTypeFormatter modelTypeFormatter;
