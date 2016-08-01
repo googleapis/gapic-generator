@@ -24,13 +24,14 @@ import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestCaseView;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestClassView;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,35 +110,43 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
       Interface service, SurfaceTransformerContext context, ApiConfig apiConfig) {
     ArrayList<GapicSurfaceTestCaseView> testCaseViews = new ArrayList<>();
     for (Method method : service.getMethods()) {
-      MethodConfig methodConfig = apiConfig.getInterfaceConfig(service).getMethodConfig(method);
-      MethodTransformerContext methodContext =
-          MethodTransformerContext.create(
-              service, apiConfig, context.getTypeTable(), context.getNamer(), method, methodConfig);
-      GapicSurfaceTestCaseView testCaseView = new GapicSurfaceTestCaseView();
-      testCaseView.name = methodContext.getNamer().getTestClassName(service);
-      testCaseView.methodName = method.getSimpleName();
-      testCaseView.requestTypeName =
-          context.getTypeTable().getAndSaveNicknameFor(method.getInputType());
-      InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
-      testCaseView.initCode =
-          initCodeTransformer.generateInitCode(methodContext, methodConfig.getRequiredFields());
-      testCaseView.isPageStreaming = methodConfig.isPageStreaming();
-      if (testCaseView.isPageStreaming) {
-        testCaseView.resourceTypeName =
-            methodContext
-                .getTypeTable()
-                .getAndSaveNicknameForElementType(
-                    methodConfig.getPageStreaming().getResourcesField().getType());
-      } else {
-        testCaseView.resourceTypeName = "";
-      }
+      testCaseViews.add(createTestCaseView(method, service, context, apiConfig));
+    }
+    return testCaseViews;
+  }
 
-      testCaseView.asserts =
-          initCodeTransformer.generateTestAssertViews(
-              methodContext, methodConfig.getRequiredFields());
-      testCaseViews.add(testCaseView);
+  private GapicSurfaceTestCaseView createTestCaseView(
+      Method method, Interface service, SurfaceTransformerContext context, ApiConfig apiConfig) {
+    MethodConfig methodConfig = apiConfig.getInterfaceConfig(service).getMethodConfig(method);
+    MethodTransformerContext methodContext =
+        MethodTransformerContext.create(
+            service, apiConfig, context.getTypeTable(), context.getNamer(), method, methodConfig);
+
+    InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
+    InitCodeView initCodeView =
+        initCodeTransformer.generateInitCode(methodContext, methodConfig.getRequiredFields());
+    List<GapicSurfaceTestAssertView> assertViews =
+        initCodeTransformer.generateTestAssertViews(
+            methodContext, methodConfig.getRequiredFields());
+
+    String resourceTypeName = "";
+    boolean isPageStreaming = methodConfig.isPageStreaming();
+    if (isPageStreaming) {
+      resourceTypeName =
+          methodContext
+              .getTypeTable()
+              .getAndSaveNicknameForElementType(
+                  methodConfig.getPageStreaming().getResourcesField().getType());
     }
 
-    return testCaseViews;
+    return GapicSurfaceTestCaseView.newBuilder()
+        .name(methodContext.getNamer().getTestClassName(service))
+        .methodName(method.getSimpleName())
+        .requestTypeName(context.getTypeTable().getAndSaveNicknameFor(method.getInputType()))
+        .initCode(initCodeView)
+        .isPageStreaming(isPageStreaming)
+        .resourceTypeName(resourceTypeName)
+        .asserts(assertViews)
+        .build();
   }
 }

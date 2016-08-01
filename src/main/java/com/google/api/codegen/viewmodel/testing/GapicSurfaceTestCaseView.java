@@ -15,15 +15,45 @@
 package com.google.api.codegen.viewmodel.testing;
 
 import com.google.api.codegen.viewmodel.InitCodeView;
-
+import com.google.auto.value.AutoValue;
 import java.util.List;
 
-public class GapicSurfaceTestCaseView {
-  public String name;
-  public String methodName;
-  public String requestTypeName;
-  public String resourceTypeName;
-  public boolean isPageStreaming;
-  public InitCodeView initCode;
-  public List<GapicSurfaceTestAssertView> asserts;
+@AutoValue
+public abstract class GapicSurfaceTestCaseView {
+  public abstract String name();
+
+  public abstract String methodName();
+
+  public abstract String requestTypeName();
+
+  public abstract String resourceTypeName();
+
+  public abstract boolean isPageStreaming();
+
+  public abstract InitCodeView initCode();
+
+  public abstract List<GapicSurfaceTestAssertView> asserts();
+
+  public static Builder newBuilder() {
+    return new AutoValue_GapicSurfaceTestCaseView.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder methodName(String val);
+
+    public abstract Builder name(String val);
+
+    public abstract Builder requestTypeName(String val);
+
+    public abstract Builder resourceTypeName(String val);
+
+    public abstract Builder isPageStreaming(boolean val);
+
+    public abstract Builder initCode(InitCodeView val);
+
+    public abstract Builder asserts(List<GapicSurfaceTestAssertView> val);
+
+    public abstract GapicSurfaceTestCaseView build();
+  }
 }
