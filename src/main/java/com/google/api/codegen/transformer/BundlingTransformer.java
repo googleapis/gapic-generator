@@ -61,11 +61,13 @@ public class BundlingTransformer {
     desc.partitionKeys(generatePartitionKeys(context));
     desc.discriminatorFieldCopies(generateDiscriminatorFieldCopies(context));
 
-    desc.fnGetBundledField(namer.getGetFunctionCallName(bundling.getBundledField()));
-    desc.fnSetBundledField(namer.getSetFunctionCallName(bundling.getBundledField()));
-    desc.fnGetBundledFieldCount(namer.getGetCountCallName(bundling.getBundledField()));
-    desc.fnGetSubresponseByIndex(namer.getGetByIndexCallName(bundling.getSubresponseField()));
-    desc.fnSetSubresponse(namer.getSetFunctionCallName(bundling.getSubresponseField()));
+    desc.bundledFieldGetFunction(namer.getFieldGetFunctionName(bundling.getBundledField()));
+    desc.bundledFieldSetFunction(namer.getFieldSetFunctionName(bundling.getBundledField()));
+    desc.bundledFieldCountGetFunction(
+        namer.getFieldCountGetFunctionName(bundling.getBundledField()));
+    desc.subresponseByIndexGetFunction(
+        namer.getByIndexGetFunctionName(bundling.getSubresponseField()));
+    desc.subresponseSetFunction(namer.getFieldSetFunctionName(bundling.getSubresponseField()));
 
     namer.addBundlingDescriptorImports(typeTable);
 
@@ -79,8 +81,8 @@ public class BundlingTransformer {
       BundlingPartitionKeyView key =
           BundlingPartitionKeyView.newBuilder()
               .separatorLiteral("\"|\"")
-              .fnGetCallName(
-                  context.getNamer().getGetFunctionCallName(fieldSelector.getLastField()))
+              .fieldGetFunction(
+                  context.getNamer().getFieldGetFunctionName(fieldSelector.getLastField()))
               .build();
       keys.add(key);
     }
@@ -93,10 +95,10 @@ public class BundlingTransformer {
     for (FieldSelector fieldSelector : bundling.getDiscriminatorFields()) {
       FieldCopyView fieldCopy =
           FieldCopyView.newBuilder()
-              .fnGetFunctionCallName(
-                  context.getNamer().getGetFunctionCallName(fieldSelector.getLastField()))
-              .fnSetFunctionCallName(
-                  context.getNamer().getSetFunctionCallName(fieldSelector.getLastField()))
+              .fieldGetFunction(
+                  context.getNamer().getFieldGetFunctionName(fieldSelector.getLastField()))
+              .fieldSetFunction(
+                  context.getNamer().getFieldSetFunctionName(fieldSelector.getLastField()))
               .build();
       fieldCopies.add(fieldCopy);
     }

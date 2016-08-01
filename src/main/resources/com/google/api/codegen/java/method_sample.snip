@@ -30,7 +30,7 @@
         {@apiMethod.apiVariableName}.{@apiMethod.name}().call(\
         {@sampleMethodCallArgList(apiMethod.initCode.fieldSettings)});
     for ({@apiMethod.listMethod.resourceTypeName} element : \
-        response.{@apiMethod.unpagedListCallableMethod.fnGetResourceListCall}()) {
+        response.{@apiMethod.unpagedListCallableMethod.resourceListGetFunction}()) {
       // doThingsWith(element);
     }
     String nextPageToken = response.getNextPageToken();
@@ -98,7 +98,7 @@
 @private initLineStructure(line)
   {@line.typeName} {@line.identifier} = {@line.typeName}.newBuilder()
   @join fieldSetting : line.fieldSettings
-    {@EMPTY}  .{@fieldSetting.fnSetFunctionCallName}({@fieldSetting.identifier})
+    {@EMPTY}  .{@fieldSetting.fieldSetFunction}({@fieldSetting.identifier})
   @end
   {@EMPTY}  .build();
 @end

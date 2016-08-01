@@ -40,7 +40,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getSetFunctionCallName(TypeRef type, Name identifier) {
+  public String getFieldSetFunctionName(TypeRef type, Name identifier) {
     if (type.isMap() || type.isRepeated()) {
       return methodName(Name.from("add").join(identifier));
     } else {

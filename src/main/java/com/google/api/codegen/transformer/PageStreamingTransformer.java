@@ -91,9 +91,12 @@ public class PageStreamingTransformer {
 
     desc.defaultTokenValue(context.getTypeTable().getZeroValueAndSaveNicknameFor(tokenType));
 
-    desc.fnSetRequestToken(namer.getSetFunctionCallName(pageStreaming.getRequestTokenField()));
-    desc.fnGetResponseToken(namer.getGetFunctionCallName(pageStreaming.getResponseTokenField()));
-    desc.fnGetResourcesField(namer.getGetFunctionCallName(pageStreaming.getResourcesField()));
+    desc.requestTokenSetFunction(
+        namer.getFieldSetFunctionName(pageStreaming.getRequestTokenField()));
+    desc.responseTokenGetFunction(
+        namer.getFieldGetFunctionName(pageStreaming.getResponseTokenField()));
+    desc.resourcesFieldGetFunction(
+        namer.getFieldGetFunctionName(pageStreaming.getResourcesField()));
 
     return desc.build();
   }

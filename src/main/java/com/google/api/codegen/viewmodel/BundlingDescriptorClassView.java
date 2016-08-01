@@ -35,15 +35,15 @@ public abstract class BundlingDescriptorClassView {
 
   public abstract List<FieldCopyView> discriminatorFieldCopies();
 
-  public abstract String fnGetBundledField();
+  public abstract String bundledFieldGetFunction();
 
-  public abstract String fnSetBundledField();
+  public abstract String bundledFieldSetFunction();
 
-  public abstract String fnGetBundledFieldCount();
+  public abstract String bundledFieldCountGetFunction();
 
-  public abstract String fnGetSubresponseByIndex();
+  public abstract String subresponseByIndexGetFunction();
 
-  public abstract String fnSetSubresponse();
+  public abstract String subresponseSetFunction();
 
   public static Builder newBuilder() {
     return new AutoValue_BundlingDescriptorClassView.Builder();
@@ -67,15 +67,15 @@ public abstract class BundlingDescriptorClassView {
     public abstract Builder discriminatorFieldCopies(
         List<FieldCopyView> generateDiscriminatorFieldCopies);
 
-    public abstract Builder fnGetBundledField(String val);
+    public abstract Builder bundledFieldGetFunction(String val);
 
-    public abstract Builder fnSetBundledField(String val);
+    public abstract Builder bundledFieldSetFunction(String val);
 
-    public abstract Builder fnGetBundledFieldCount(String val);
+    public abstract Builder bundledFieldCountGetFunction(String val);
 
-    public abstract Builder fnGetSubresponseByIndex(String val);
+    public abstract Builder subresponseByIndexGetFunction(String val);
 
-    public abstract Builder fnSetSubresponse(String val);
+    public abstract Builder subresponseSetFunction(String val);
 
     public abstract BundlingDescriptorClassView build();
   }

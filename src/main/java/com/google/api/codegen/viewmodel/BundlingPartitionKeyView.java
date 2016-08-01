@@ -22,7 +22,7 @@ public abstract class BundlingPartitionKeyView {
 
   public abstract String separatorLiteral();
 
-  public abstract String fnGetCallName();
+  public abstract String fieldGetFunction();
 
   public static Builder newBuilder() {
     return new AutoValue_BundlingPartitionKeyView.Builder();
@@ -33,7 +33,7 @@ public abstract class BundlingPartitionKeyView {
 
     public abstract Builder separatorLiteral(String val);
 
-    public abstract Builder fnGetCallName(String val);
+    public abstract Builder fieldGetFunction(String val);
 
     public abstract BundlingPartitionKeyView build();
   }

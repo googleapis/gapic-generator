@@ -221,8 +221,8 @@ public class InitCodeTransformer {
     List<FieldSettingView> allSettings = new ArrayList<>();
     for (FieldSetting setting : fieldSettings) {
       FieldSettingView.Builder fieldSetting = FieldSettingView.newBuilder();
-      fieldSetting.fnSetFunctionCallName(
-          namer.getSetFunctionCallName(setting.getType(), setting.getFieldName()));
+      fieldSetting.fieldSetFunction(
+          namer.getFieldSetFunctionName(setting.getType(), setting.getFieldName()));
       fieldSetting.identifier(
           namer.getVariableName(setting.getIdentifier(), setting.getInitValueConfig()));
       allSettings.add(fieldSetting.build());

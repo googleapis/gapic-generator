@@ -19,9 +19,9 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class FieldCopyView {
 
-  public abstract String fnSetFunctionCallName();
+  public abstract String fieldSetFunction();
 
-  public abstract String fnGetFunctionCallName();
+  public abstract String fieldGetFunction();
 
   public static Builder newBuilder() {
     return new AutoValue_FieldCopyView.Builder();
@@ -29,9 +29,9 @@ public abstract class FieldCopyView {
 
   @AutoValue.Builder
   public static abstract class Builder {
-    public abstract Builder fnSetFunctionCallName(String val);
+    public abstract Builder fieldSetFunction(String val);
 
-    public abstract Builder fnGetFunctionCallName(String val);
+    public abstract Builder fieldGetFunction(String val);
 
     public abstract FieldCopyView build();
   }

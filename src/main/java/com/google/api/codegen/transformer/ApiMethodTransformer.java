@@ -106,7 +106,7 @@ public class ApiMethodTransformer {
             context.getMethodConfig().getPageStreaming().getResourcesField());
     UnpagedListCallableMethodDetailView unpagedListCallableDetails =
         UnpagedListCallableMethodDetailView.newBuilder()
-            .fnGetResourceListCall(getResourceListCallName)
+            .resourceListGetFunction(getResourceListCallName)
             .build();
     methodViewBuilder.unpagedListCallableMethod(unpagedListCallableDetails);
 
@@ -393,7 +393,7 @@ public class ApiMethodTransformer {
           namer.getNotImplementedString(
               "ApiMethodTransformer.generateRequestObjectParam - typeName"));
     }
-    param.setCallName(namer.getSetFunctionCallName(field));
+    param.setCallName(namer.getFieldSetFunctionName(field));
     param.isMap(field.getType().isMap());
     param.isArray(!field.getType().isMap() && field.getType().isRepeated());
     return param.build();

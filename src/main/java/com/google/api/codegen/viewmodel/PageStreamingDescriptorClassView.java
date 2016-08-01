@@ -30,11 +30,11 @@ public abstract class PageStreamingDescriptorClassView {
 
   public abstract String defaultTokenValue();
 
-  public abstract String fnSetRequestToken();
+  public abstract String requestTokenSetFunction();
 
-  public abstract String fnGetResponseToken();
+  public abstract String responseTokenGetFunction();
 
-  public abstract String fnGetResourcesField();
+  public abstract String resourcesFieldGetFunction();
 
   public static Builder newBuilder() {
     return new AutoValue_PageStreamingDescriptorClassView.Builder();
@@ -55,11 +55,11 @@ public abstract class PageStreamingDescriptorClassView {
 
     public abstract Builder defaultTokenValue(String val);
 
-    public abstract Builder fnSetRequestToken(String val);
+    public abstract Builder requestTokenSetFunction(String val);
 
-    public abstract Builder fnGetResponseToken(String val);
+    public abstract Builder responseTokenGetFunction(String val);
 
-    public abstract Builder fnGetResourcesField(String val);
+    public abstract Builder resourcesFieldGetFunction(String val);
 
     public abstract PageStreamingDescriptorClassView build();
   }

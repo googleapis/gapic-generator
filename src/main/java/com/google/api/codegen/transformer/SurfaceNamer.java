@@ -93,11 +93,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  public String getSetFunctionCallName(Field field) {
-    return getSetFunctionCallName(field.getType(), Name.from(field.getSimpleName()));
+  public String getFieldSetFunctionName(Field field) {
+    return getFieldSetFunctionName(field.getType(), Name.from(field.getSimpleName()));
   }
 
-  public String getSetFunctionCallName(TypeRef type, Name identifier) {
+  public String getFieldSetFunctionName(TypeRef type, Name identifier) {
     if (type.isMap()) {
       return methodName(Name.from("put", "all").join(identifier));
     } else if (type.isRepeated()) {
@@ -107,11 +107,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  public String getGetFunctionCallName(Field field) {
-    return getGetFunctionCallName(field.getType(), Name.from(field.getSimpleName()));
+  public String getFieldGetFunctionName(Field field) {
+    return getFieldGetFunctionName(field.getType(), Name.from(field.getSimpleName()));
   }
 
-  public String getGetFunctionCallName(TypeRef type, Name identifier) {
+  public String getFieldGetFunctionName(TypeRef type, Name identifier) {
     if (type.isRepeated()) {
       return methodName(Name.from("get").join(identifier).join("list"));
     } else {
@@ -119,7 +119,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  public String getGetCountCallName(Field field) {
+  public String getFieldCountGetFunctionName(Field field) {
     if (field.isRepeated()) {
       return methodName(Name.from("get", field.getSimpleName(), "count"));
     } else {
@@ -128,7 +128,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  public String getGetByIndexCallName(Field field) {
+  public String getByIndexGetFunctionName(Field field) {
     if (field.isRepeated()) {
       return methodName(Name.from("get", field.getSimpleName()));
     } else {

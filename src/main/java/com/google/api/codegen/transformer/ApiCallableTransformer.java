@@ -76,6 +76,7 @@ public class ApiCallableTransformer {
       PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
 
       ApiCallableView.Builder pagedApiCallableBuilder = ApiCallableView.newBuilder();
+      pagedApiCallableBuilder.type(ApiCallableType.PagedApiCallable);
 
       String pagedResponseTypeName =
           context
@@ -90,7 +91,7 @@ public class ApiCallableTransformer {
       pagedApiCallableBuilder.settingsFunctionName(
           context.getNamer().getSettingsFunctionName(method));
 
-      apiCallables.add(pagedApiCallableBuilder.type(ApiCallableType.PagedApiCallable).build());
+      apiCallables.add(pagedApiCallableBuilder.build());
     }
 
     return apiCallables;
@@ -139,7 +140,7 @@ public class ApiCallableTransformer {
     }
 
     settings.memberName(namer.getSettingsMemberName(method));
-    settings.fnGetterName(namer.getSettingsMemberName(method));
+    settings.settingsGetFunction(namer.getSettingsFunctionName(method));
 
     return Arrays.asList(settings.build());
   }

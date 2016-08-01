@@ -18,7 +18,7 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class UnpagedListCallableMethodDetailView {
-  public abstract String fnGetResourceListCall();
+  public abstract String resourceListGetFunction();
 
   public static Builder newBuilder() {
     return new AutoValue_UnpagedListCallableMethodDetailView.Builder();
@@ -26,7 +26,7 @@ public abstract class UnpagedListCallableMethodDetailView {
 
   @AutoValue.Builder
   public static abstract class Builder {
-    public abstract Builder fnGetResourceListCall(String name);
+    public abstract Builder resourceListGetFunction(String name);
 
     public abstract UnpagedListCallableMethodDetailView build();
   }

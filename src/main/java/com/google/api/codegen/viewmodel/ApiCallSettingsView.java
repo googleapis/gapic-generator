@@ -32,7 +32,7 @@ public abstract class ApiCallSettingsView {
 
   public abstract String memberName();
 
-  public abstract String fnGetterName();
+  public abstract String settingsGetFunction();
 
   public abstract String grpcTypeName();
 
@@ -67,7 +67,7 @@ public abstract class ApiCallSettingsView {
 
     public abstract Builder memberName(String val);
 
-    public abstract Builder fnGetterName(String val);
+    public abstract Builder settingsGetFunction(String val);
 
     public abstract Builder grpcTypeName(String val);
 
