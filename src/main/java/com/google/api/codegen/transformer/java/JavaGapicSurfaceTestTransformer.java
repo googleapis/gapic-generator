@@ -54,7 +54,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
           SurfaceTransformerContext.create(
               service, apiConfig, createTypeTable(), new JavaSurfaceNamer());
       addImports(context);
-      GapicSurfaceTestClassView testClass = createTestClassView(service, context, apiConfig);
+      GapicSurfaceTestClassView testClass = createTestClassView(context);
       views.add(testClass);
     }
     return views;
@@ -87,9 +87,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("junit.framework.Assert");
   }
 
-  private GapicSurfaceTestClassView createTestClassView(
-      Interface service, SurfaceTransformerContext context, ApiConfig apiConfig) {
-    String outputPath = pathMapper.getOutputPath(service, apiConfig);
+  private GapicSurfaceTestClassView createTestClassView(SurfaceTransformerContext context) {
+    Interface service = context.getInterface();
+    String outputPath = pathMapper.getOutputPath(service, context.getApiConfig());
 
     GapicSurfaceTestClassView testClass =
         GapicSurfaceTestClassView.newBuilder()
@@ -98,7 +98,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .apiClassName(context.getNamer().getApiWrapperClassName(service))
             .name(context.getNamer().getTestClassName(service))
             .mockServiceClassName(context.getNamer().getMockServiceClassName(service))
-            .testCases(createTestCaseViews(service, context, apiConfig))
+            .testCases(createTestCaseViews(context))
             .outputPath(outputPath)
             .imports(context.getTypeTable().getImports())
             .templateFileName(TEST_TEMPLATE_FILE)
@@ -106,22 +106,18 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     return testClass;
   }
 
-  private List<GapicSurfaceTestCaseView> createTestCaseViews(
-      Interface service, SurfaceTransformerContext context, ApiConfig apiConfig) {
+  private List<GapicSurfaceTestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
     ArrayList<GapicSurfaceTestCaseView> testCaseViews = new ArrayList<>();
-    for (Method method : service.getMethods()) {
-      testCaseViews.add(createTestCaseView(method, service, context, apiConfig));
+    for (Method method : context.getInterface().getMethods()) {
+      MethodTransformerContext methodContext = context.asMethodContext(method);
+      testCaseViews.add(createTestCaseView(methodContext, context));
     }
     return testCaseViews;
   }
 
   private GapicSurfaceTestCaseView createTestCaseView(
-      Method method, Interface service, SurfaceTransformerContext context, ApiConfig apiConfig) {
-    MethodConfig methodConfig = apiConfig.getInterfaceConfig(service).getMethodConfig(method);
-    MethodTransformerContext methodContext =
-        MethodTransformerContext.create(
-            service, apiConfig, context.getTypeTable(), context.getNamer(), method, methodConfig);
-
+      MethodTransformerContext methodContext, SurfaceTransformerContext surfaceContext) {
+    MethodConfig methodConfig = methodContext.getMethodConfig();
     InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
     InitCodeView initCodeView =
         initCodeTransformer.generateInitCode(methodContext, methodConfig.getRequiredFields());
@@ -139,10 +135,15 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
                   methodConfig.getPageStreaming().getResourcesField().getType());
     }
 
+    String requestTypeName =
+        surfaceContext
+            .getTypeTable()
+            .getAndSaveNicknameFor(methodContext.getMethod().getInputType());
+
     return GapicSurfaceTestCaseView.newBuilder()
-        .name(methodContext.getNamer().getTestClassName(service))
-        .methodName(method.getSimpleName())
-        .requestTypeName(context.getTypeTable().getAndSaveNicknameFor(method.getInputType()))
+        .name(methodContext.getNamer().getTestClassName(methodContext.getInterface()))
+        .methodName(methodContext.getMethod().getSimpleName())
+        .requestTypeName(requestTypeName)
         .initCode(initCodeView)
         .isPageStreaming(isPageStreaming)
         .resourceTypeName(resourceTypeName)
