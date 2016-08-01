@@ -34,6 +34,7 @@ import com.google.api.tools.framework.model.Model;
 import java.util.ArrayList;
 import java.util.List;
 
+/** A subclass of ModelToViewTransformer which translates model into API tests in Java. */
 public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   static String TEST_TEMPLATE_FILE = "java/test.snip";
@@ -62,7 +63,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
   public List<String> getTemplateFileNames() {
     List<String> fileNames = new ArrayList<>();
     fileNames.add(TEST_TEMPLATE_FILE);
-    // TODO(shinfan): Add more files
+    // TODO(shinfan): Add gRPC service mock template.
     return fileNames;
   }
 
