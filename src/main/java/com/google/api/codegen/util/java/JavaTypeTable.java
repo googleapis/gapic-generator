@@ -54,6 +54,7 @@ public class JavaTypeTable implements TypeTable {
           .put("double", "Double")
           .build();
 
+  @Override
   public TypeName getTypeName(String fullName) {
     int lastDotIndex = fullName.lastIndexOf('.');
     if (lastDotIndex < 0) {
@@ -63,14 +64,17 @@ public class JavaTypeTable implements TypeTable {
     return new TypeName(fullName, shortTypeName);
   }
 
+  @Override
   public String getAndSaveNicknameFor(String fullName) {
     return getAndSaveNicknameFor(getTypeName(fullName));
   }
 
+  @Override
   public String getAndSaveNicknameFor(TypeName typeName) {
     return typeName.getAndSaveNicknameIn(this);
   }
 
+  @Override
   public String getAndSaveNicknameFor(TypeAlias alias) {
     if (!alias.needsImport()) {
       return alias.getNickname();
@@ -97,6 +101,7 @@ public class JavaTypeTable implements TypeTable {
     return LanguageUtil.getRename(primitiveTypeName, BOXED_TYPE_MAP);
   }
 
+  @Override
   public List<String> getImports() {
     // Clean up the imports.
     List<String> cleanedImports = new ArrayList<>();
@@ -128,5 +133,10 @@ public class JavaTypeTable implements TypeTable {
     }
     implicitImports.put(name, yes);
     return yes;
+  }
+
+  @Override
+  public TypeTable cloneEmpty() {
+    return new JavaTypeTable();
   }
 }

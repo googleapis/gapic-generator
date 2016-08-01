@@ -25,8 +25,6 @@ import com.google.api.codegen.csharp.CSharpGapicContext;
 import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
 import com.google.api.codegen.go.GoGapicContext;
 import com.google.api.codegen.go.GoSnippetSetRunner;
-import com.google.api.codegen.java.JavaSnippetUtil;
-import com.google.api.codegen.java.JavaTypeTable;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
 import com.google.api.codegen.py.PythonGapicContext;
@@ -41,7 +39,6 @@ import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
-import com.google.api.codegen.viewmodel.SurfaceSnippetSetRunner;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -137,13 +134,12 @@ public class MainGapicProviderFactory
               .setPrefix("src/test/java")
               .setShouldAppendPackage(true)
               .build();
-      String resourceRoot = JavaTypeTable.class.getPackage().getName().replace('.', '/');
       GapicProvider<? extends Object> mainProvider =
-          TestGapicProvider.newBuilder()
+          ViewModelGapicProvider.newBuilder()
               .setModel(model)
-              .setSnippetSetRunner(new SurfaceSnippetSetRunner(resourceRoot, new JavaSnippetUtil()))
-              .setModelToSurfaceTransformer(
-                  new JavaGapicSurfaceTestTransformer(apiConfig, javaPathMapper))
+              .setApiConfig(apiConfig)
+              .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+              .setModelToViewTransformer(new JavaGapicSurfaceTestTransformer(javaPathMapper))
               .build();
 
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
