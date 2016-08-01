@@ -14,7 +14,24 @@
  */
 package com.google.api.codegen.viewmodel.testing;
 
-public class GapicSurfaceTestAssertView {
-  public String actualValueIdentifier;
-  public String expectedValueIdentifier;
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+public abstract class GapicSurfaceTestAssertView {
+  public abstract String actualValueIdentifier();
+
+  public abstract String expectedValueIdentifier();
+
+  public static Builder newBuilder() {
+    return new AutoValue_GapicSurfaceTestAssertView.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder actualValueIdentifier(String val);
+
+    public abstract Builder expectedValueIdentifier(String val);
+
+    public abstract GapicSurfaceTestAssertView build();
+  }
 }

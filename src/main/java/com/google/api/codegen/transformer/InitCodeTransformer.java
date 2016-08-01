@@ -42,14 +42,13 @@ import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
- * InitCodeTransformer generates initialization code for a given method and then transforms
- * it to a view object which can be rendered by a template engine.
+ * InitCodeTransformer generates initialization code for a given method and then transforms it to a
+ * view object which can be rendered by a template engine.
  */
 public class InitCodeTransformer {
 
@@ -87,10 +86,12 @@ public class InitCodeTransformer {
 
     for (InitCodeLine line : initCode.getLines()) {
       SurfaceNamer namer = context.getNamer();
-      GapicSurfaceTestAssertView assertView = new GapicSurfaceTestAssertView();
-      assertView.expectedValueIdentifier =
-          namer.getVariableName(line.getIdentifier(), line.getInitValueConfig());
-      assertView.actualValueIdentifier = namer.getGetFunctionCallName(line.getIdentifier());
+      GapicSurfaceTestAssertView assertView =
+          GapicSurfaceTestAssertView.newBuilder()
+              .expectedValueIdentifier(
+                  namer.getVariableName(line.getIdentifier(), line.getInitValueConfig()))
+              .actualValueIdentifier(namer.getGetFunctionCallName(line.getIdentifier()))
+              .build();
       assertViews.add(assertView);
     }
 
