@@ -15,8 +15,10 @@
 package com.google.api.codegen.transformer.java;
 
 import com.google.api.codegen.LanguageUtil;
-import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.ModelTypeNameConverter;
 import com.google.api.codegen.util.TypeName;
+import com.google.api.codegen.util.TypeNameConverter;
+import com.google.api.codegen.util.TypedValue;
 import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -25,21 +27,15 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
-
 import java.io.File;
-import java.util.List;
 
-public class ModelToJavaTypeTable implements ModelTypeTable {
-  private JavaTypeTable javaTypeTable;
+/** The ModelTypeTable for Java. */
+public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
 
-  /**
-   * The package prefix protoc uses if no java package option was provided.
-   */
+  /** The package prefix protoc uses if no java package option was provided. */
   private static final String DEFAULT_JAVA_PACKAGE_PREFIX = "com.google.protos";
 
-  /**
-   * A map from primitive types in proto to Java counterparts.
-   */
+  /** A map from primitive types in proto to Java counterparts. */
   private static final ImmutableMap<Type, String> PRIMITIVE_TYPE_MAP =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "boolean")
@@ -59,9 +55,7 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
           .put(Type.TYPE_BYTES, "com.google.protobuf.ByteString")
           .build();
 
-  /**
-   * A map from primitive types in proto to zero value in Java
-   */
+  /** A map from primitive types in proto to zero value in Java */
   private static final ImmutableMap<Type, String> PRIMITIVE_ZERO_VALUE =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "false")
@@ -81,51 +75,17 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
           .put(Type.TYPE_BYTES, "ByteString.copyFromUtf8(\"\")")
           .build();
 
-  public ModelToJavaTypeTable() {
-    javaTypeTable = new JavaTypeTable();
+  private TypeNameConverter typeNameConverter;
+
+  /** Standard constructor. */
+  public JavaModelTypeNameConverter() {
+    this.typeNameConverter = new JavaTypeTable();
   }
 
   @Override
-  public ModelTypeTable cloneEmpty() {
-    return new ModelToJavaTypeTable();
-  }
-
-  @Override
-  public void saveNicknameFor(String fullName) {
-    getAndSaveNicknameFor(fullName);
-  }
-
-  @Override
-  public String getFullNameFor(TypeRef type) {
-    return getTypeName(type).getFullName();
-  }
-
-  @Override
-  public String getFullNameForElementType(TypeRef type) {
-    return getTypeNameForElementType(type, true).getFullName();
-  }
-
-  @Override
-  public String getNicknameFor(TypeRef type) {
-    return getTypeName(type).getNickname();
-  }
-
-  @Override
-  public String getAndSaveNicknameFor(String fullName) {
-    return javaTypeTable.getAndSaveNicknameFor(fullName);
-  }
-
-  /**
-   * Returns the Java representation of a reference to a type.
-   */
-  @Override
-  public String getAndSaveNicknameFor(TypeRef type) {
-    return javaTypeTable.getAndSaveNicknameFor(getTypeName(type));
-  }
-
   public TypeName getTypeName(TypeRef type) {
     if (type.isMap()) {
-      TypeName mapTypeName = javaTypeTable.getTypeName("java.util.Map");
+      TypeName mapTypeName = typeNameConverter.getTypeName("java.util.Map");
       TypeName keyTypeName = getTypeNameForElementType(type.getMapKeyField().getType(), true);
       TypeName valueTypeName = getTypeNameForElementType(type.getMapValueField().getType(), true);
       return new TypeName(
@@ -135,7 +95,7 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
           keyTypeName,
           valueTypeName);
     } else if (type.isRepeated()) {
-      TypeName listTypeName = javaTypeTable.getTypeName("java.util.List");
+      TypeName listTypeName = typeNameConverter.getTypeName("java.util.List");
       TypeName elementTypeName = getTypeNameForElementType(type, true);
       return new TypeName(
           listTypeName.getFullName(), listTypeName.getNickname(), "%s<%i>", elementTypeName);
@@ -145,21 +105,8 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
   }
 
   @Override
-  public String getAndSaveNicknameForElementType(TypeRef type) {
-    return javaTypeTable.getAndSaveNicknameFor(getTypeNameForElementType(type, true));
-  }
-
-  @Override
-  public String getAndSaveNicknameForContainer(String containerFullName, String elementFullName) {
-    TypeName containerTypeName = javaTypeTable.getTypeName(containerFullName);
-    TypeName elementTypeName = javaTypeTable.getTypeName(elementFullName);
-    TypeName completeTypeName =
-        new TypeName(
-            containerTypeName.getFullName(),
-            containerTypeName.getNickname(),
-            "%s<%i>",
-            elementTypeName);
-    return javaTypeTable.getAndSaveNicknameFor(completeTypeName);
+  public TypeName getTypeNameForElementType(TypeRef type) {
+    return getTypeNameForElementType(type, true);
   }
 
   /**
@@ -172,7 +119,7 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
       if (primitiveTypeName.contains(".")) {
         // Fully qualified type name, use regular type name resolver. Can skip boxing logic
         // because those types are already boxed.
-        return javaTypeTable.getTypeName(primitiveTypeName);
+        return typeNameConverter.getTypeName(primitiveTypeName);
       } else {
         if (shouldBoxPrimitives) {
           return new TypeName(JavaTypeTable.getBoxedTypeName(primitiveTypeName));
@@ -189,11 +136,6 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
       default:
         throw new IllegalArgumentException("unknown type kind: " + type.getKind());
     }
-  }
-
-  @Override
-  public List<String> getImports() {
-    return javaTypeTable.getImports();
   }
 
   @Override
@@ -227,28 +169,29 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
   /**
    * Returns the Java representation of a zero value for that type, to be used in code sample doc.
    *
-   * Parametric types may use the diamond operator, since the return value will be used only in
+   * <p>Parametric types may use the diamond operator, since the return value will be used only in
    * initialization.
    */
   @Override
-  public String getZeroValueAndSaveNicknameFor(TypeRef type) {
+  public TypedValue getZeroValue(TypeRef type) {
     // Don't call importAndGetShortestName; we don't need to import these.
     if (type.isMap()) {
-      return "new HashMap<>()";
+      return TypedValue.create(typeNameConverter.getTypeName("java.util.HashMap"), "new %s<>()");
     }
     if (type.isRepeated()) {
-      return "new ArrayList<>()";
+      return TypedValue.create(typeNameConverter.getTypeName("java.util.ArrayList"), "new %s<>()");
     }
     if (PRIMITIVE_ZERO_VALUE.containsKey(type.getKind())) {
-      return PRIMITIVE_ZERO_VALUE.get(type.getKind());
+      return TypedValue.create(getTypeName(type), PRIMITIVE_ZERO_VALUE.get(type.getKind()));
     }
     if (type.isMessage()) {
-      return getAndSaveNicknameFor(type) + ".newBuilder().build()";
+      return TypedValue.create(getTypeName(type), "%s.newBuilder().build()");
     }
-    return "null";
+    return TypedValue.create(new TypeName(""), "null");
   }
 
-  private TypeName getTypeName(ProtoElement elem) {
+  @Override
+  public TypeName getTypeName(ProtoElement elem) {
     // Construct the full name in Java
     String name = getJavaPackage(elem.getFile());
     if (!elem.getFile().getProto().getOptions().getJavaMultipleFiles()) {
@@ -272,9 +215,7 @@ public class ModelToJavaTypeTable implements ModelTypeTable {
     return packageName;
   }
 
-  /**
-   * Gets the class name for the given proto file.
-   */
+  /** Gets the class name for the given proto file. */
   private static String getFileClassName(ProtoFile file) {
     String baseName = Files.getNameWithoutExtension(new File(file.getSimpleName()).getName());
     return LanguageUtil.lowerUnderscoreToUpperCamel(baseName);

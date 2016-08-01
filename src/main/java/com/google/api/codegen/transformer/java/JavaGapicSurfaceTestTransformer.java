@@ -20,10 +20,11 @@ import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.gapic.GapicCodePathMapper;
 import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
+import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
-import com.google.api.codegen.transformer.Transformer;
-import com.google.api.codegen.viewmodel.ViewModelDoc;
+import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestCaseView;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestClassView;
 import com.google.api.tools.framework.model.Interface;
@@ -33,43 +34,40 @@ import com.google.api.tools.framework.model.Model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JavaGapicSurfaceTestTransformer implements Transformer {
+public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
-  private ApiConfig apiConfig;
+  static String TEST_TEMPLATE_FILE = "java/test.snip";
+
   private GapicCodePathMapper pathMapper;
 
-  public JavaGapicSurfaceTestTransformer(ApiConfig apiConfig, GapicCodePathMapper javaPathMapper) {
-    this.apiConfig = apiConfig;
+  public JavaGapicSurfaceTestTransformer(GapicCodePathMapper javaPathMapper) {
     this.pathMapper = javaPathMapper;
   }
 
   @Override
-  public List<ViewModelDoc> transform(Model model) {
-    List<ViewModelDoc> views = new ArrayList<>();
+  public List<ViewModel> transform(Model model, ApiConfig apiConfig) {
+    List<ViewModel> views = new ArrayList<>();
     for (Interface service : new InterfaceView().getElementIterable(model)) {
-      views.addAll(transform(service));
+      SurfaceTransformerContext context =
+          SurfaceTransformerContext.create(
+              service, apiConfig, createTypeTable(), new JavaSurfaceNamer());
+      addImports(context);
+      GapicSurfaceTestClassView testClass = createTestClassView(service, context, apiConfig);
+      views.add(testClass);
     }
-    return views;
-  }
-
-  public List<ViewModelDoc> transform(Interface service) {
-    SurfaceTransformerContext context =
-        SurfaceTransformerContext.create(
-            service, this.apiConfig, new ModelToJavaTypeTable(), new JavaSurfaceNamer());
-    addImports(context);
-    GapicSurfaceTestClassView testClass = createTestClassView(service, context);
-
-    List<ViewModelDoc> views = new ArrayList<>();
-    views.add(testClass);
     return views;
   }
 
   @Override
   public List<String> getTemplateFileNames() {
     List<String> fileNames = new ArrayList<>();
-    fileNames.add(new GapicSurfaceTestClassView().getTemplateFileName());
+    fileNames.add(TEST_TEMPLATE_FILE);
     // TODO(shinfan): Add more files
     return fileNames;
+  }
+
+  private ModelTypeTable createTypeTable() {
+    return new ModelTypeTable(new JavaTypeTable(), new JavaModelTypeNameConverter());
   }
 
   private void addImports(SurfaceTransformerContext context) {
@@ -88,23 +86,26 @@ public class JavaGapicSurfaceTestTransformer implements Transformer {
   }
 
   private GapicSurfaceTestClassView createTestClassView(
-      Interface service, SurfaceTransformerContext context) {
-    GapicSurfaceTestClassView testClass = new GapicSurfaceTestClassView();
-    testClass.packageName = context.getApiConfig().getPackageName();
-    testClass.apiSettingsClassName = service.getSimpleName() + "Settings";
-    testClass.apiClassName = context.getNamer().getApiWrapperClassName(service);
-    testClass.name = context.getNamer().getTestClassName(service);
-    testClass.mockServiceClassName = "Mock" + testClass.apiClassName;
-    testClass.testCases = createTestCaseViews(service, context);
-
+      Interface service, SurfaceTransformerContext context, ApiConfig apiConfig) {
     String outputPath = pathMapper.getOutputPath(service, apiConfig);
-    testClass.outputPath = outputPath + "/" + testClass.name + ".java";
-    testClass.imports = context.getTypeTable().getImports();
+
+    GapicSurfaceTestClassView testClass =
+        GapicSurfaceTestClassView.newBuilder()
+            .packageName(context.getApiConfig().getPackageName())
+            .apiSettingsClassName(context.getNamer().getApiSettingsClassName(service))
+            .apiClassName(context.getNamer().getApiWrapperClassName(service))
+            .name(context.getNamer().getTestClassName(service))
+            .mockServiceClassName(context.getNamer().getMockServiceClassName(service))
+            .testCases(createTestCaseViews(service, context, apiConfig))
+            .outputPath(outputPath)
+            .imports(context.getTypeTable().getImports())
+            .templateFileName(TEST_TEMPLATE_FILE)
+            .build();
     return testClass;
   }
 
   private List<GapicSurfaceTestCaseView> createTestCaseViews(
-      Interface service, SurfaceTransformerContext context) {
+      Interface service, SurfaceTransformerContext context, ApiConfig apiConfig) {
     ArrayList<GapicSurfaceTestCaseView> testCaseViews = new ArrayList<>();
     for (Method method : service.getMethods()) {
       MethodConfig methodConfig = apiConfig.getInterfaceConfig(service).getMethodConfig(method);
@@ -112,7 +113,7 @@ public class JavaGapicSurfaceTestTransformer implements Transformer {
           MethodTransformerContext.create(
               service, apiConfig, context.getTypeTable(), context.getNamer(), method, methodConfig);
       GapicSurfaceTestCaseView testCaseView = new GapicSurfaceTestCaseView();
-      testCaseView.name = methodContext.getNamer().getTestCaseName(method);
+      testCaseView.name = methodContext.getNamer().getTestClassName(service);
       testCaseView.methodName = method.getSimpleName();
       testCaseView.requestTypeName =
           context.getTypeTable().getAndSaveNicknameFor(method.getInputType());

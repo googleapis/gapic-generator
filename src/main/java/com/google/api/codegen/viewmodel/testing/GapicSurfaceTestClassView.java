@@ -14,30 +14,62 @@
  */
 package com.google.api.codegen.viewmodel.testing;
 
-import com.google.api.codegen.viewmodel.ViewModelDoc;
-
+import com.google.api.codegen.SnippetSetRunner;
+import com.google.api.codegen.viewmodel.ViewModel;
+import com.google.auto.value.AutoValue;
 import java.util.List;
 
-public class GapicSurfaceTestClassView implements ViewModelDoc {
-  public String packageName;
-  public String name;
+@AutoValue
+public abstract class GapicSurfaceTestClassView implements ViewModel {
+  public abstract String packageName();
 
-  public String apiClassName;
-  public String apiSettingsClassName;
-  public String mockServiceClassName;
+  public abstract String name();
 
-  public List<String> imports;
-  public String outputPath;
+  public abstract String apiClassName();
 
-  public List<GapicSurfaceTestCaseView> testCases;
+  public abstract String apiSettingsClassName();
+
+  public abstract String mockServiceClassName();
+
+  public abstract List<String> imports();
+
+  public abstract List<GapicSurfaceTestCaseView> testCases();
 
   @Override
-  public String getTemplateFileName() {
-    return "/test.snip";
+  public String resourceRoot() {
+    return SnippetSetRunner.SNIPPET_RESOURCE_ROOT;
   }
 
   @Override
-  public String getOutputPath() {
-    return outputPath;
+  public abstract String templateFileName();
+
+  @Override
+  public abstract String outputPath();
+
+  public static Builder newBuilder() {
+    return new AutoValue_GapicSurfaceTestClassView.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    public abstract Builder packageName(String val);
+
+    public abstract Builder name(String val);
+
+    public abstract Builder imports(List<String> val);
+
+    public abstract Builder apiClassName(String val);
+
+    public abstract Builder apiSettingsClassName(String val);
+
+    public abstract Builder mockServiceClassName(String val);
+
+    public abstract Builder outputPath(String val);
+
+    public abstract Builder templateFileName(String val);
+
+    public abstract Builder testCases(List<GapicSurfaceTestCaseView> val);
+
+    public abstract GapicSurfaceTestClassView build();
   }
 }

@@ -29,8 +29,6 @@ import com.google.api.codegen.go.GoSnippetSetRunner;
 import com.google.api.codegen.java.JavaGapicContext;
 import com.google.api.codegen.java.JavaIterableSnippetSetRunner;
 import com.google.api.codegen.java.JavaSnippetSetRunner;
-import com.google.api.codegen.java.JavaSnippetUtil;
-import com.google.api.codegen.java.JavaTypeTable;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
 import com.google.api.codegen.py.PythonGapicContext;
@@ -40,14 +38,9 @@ import com.google.api.codegen.py.PythonSnippetSetRunner;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.ruby.RubyGapicContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
-<<<<<<< bd659a94b828e8f5da3a345e56ae0a65bb88846f
-import com.google.api.codegen.transformer.JavaTestTransformer;
+import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
-=======
-import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
->>>>>>> Fix github feedbacks.
-import com.google.api.codegen.viewmodel.SurfaceSnippetSetRunner;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
@@ -157,13 +150,12 @@ public class MainGapicProviderFactory
               .setPrefix("src/test/java")
               .setShouldAppendPackage(true)
               .build();
-      String resourceRoot = JavaTypeTable.class.getPackage().getName().replace('.', '/');
       GapicProvider<? extends Object> mainProvider =
-          TestGapicProvider.newBuilder()
+          ViewModelGapicProvider.newBuilder()
               .setModel(model)
-              .setSnippetSetRunner(new SurfaceSnippetSetRunner(resourceRoot, new JavaSnippetUtil()))
-              .setModelToSurfaceTransformer(
-                  new JavaGapicSurfaceTestTransformer(apiConfig, javaPathMapper))
+              .setApiConfig(apiConfig)
+              .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+              .setModelToViewTransformer(new JavaGapicSurfaceTestTransformer(javaPathMapper))
               .build();
 
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);

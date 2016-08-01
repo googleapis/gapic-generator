@@ -14,58 +14,23 @@
  */
 package com.google.api.codegen.transformer.java;
 
-import com.google.api.codegen.MethodConfig;
-import com.google.api.codegen.ServiceMessages;
-import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.ModelTypeFormatterImpl;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
-import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
-import com.google.api.tools.framework.model.TypeRef;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class JavaSurfaceNamer extends SurfaceNamer {
 
   public JavaSurfaceNamer() {
-    super(new JavaNameFormatter());
+    super(new JavaNameFormatter(), new ModelTypeFormatterImpl(new JavaModelTypeNameConverter()));
   }
 
   @Override
   public List<String> getDocLines(ProtoElement element) {
     return JavaRenderingUtil.getDocLines(DocumentationUtil.getDescription(element));
-  }
-
-  @Override
-  public List<String> getThrowsDocLines() {
-    return Arrays.asList("@throws com.google.api.gax.grpc.ApiException if the remote call fails");
-  }
-
-  @Override
-  public String getStaticReturnTypeName(
-      ModelTypeTable typeTable, Method method, MethodConfig methodConfig) {
-    if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
-      return "void";
-    }
-    return typeTable.getAndSaveNicknameFor(method.getOutputType());
-  }
-
-  @Override
-  public String getGenericAwareResponseType(ModelTypeTable typeTable, TypeRef outputType) {
-    if (ServiceMessages.s_isEmptyType(outputType)) {
-      return "Void";
-    } else {
-      return typeTable.getAndSaveNicknameFor(outputType);
-    }
-  }
-
-  @Override
-  public String getAndSavePagedResponseTypeName(ModelTypeTable typeTable, TypeRef resourceType) {
-    String resourceTypeName = typeTable.getFullNameForElementType(resourceType);
-    return typeTable.getAndSaveNicknameForContainer(
-        "com.google.api.gax.core.PageAccessor", resourceTypeName);
   }
 }

@@ -227,7 +227,7 @@ public class ApiMethodTransformer {
   private List<ParamDocView> getCallSettingsParamDocList(MethodTransformerContext context) {
     List<ParamDocView> arrayKeyDocs = new ArrayList<>();
     SimpleParamDocView.Builder retrySettingsDoc = SimpleParamDocView.newBuilder();
-    retrySettingsDoc.typeName(context.getNamer().getRetrySettingsClassName());
+    retrySettingsDoc.typeName(context.getNamer().getRetrySettingsTypeName());
 
     Name retrySettingsName = Name.from("retry", "settings");
     Name timeoutMillisName = Name.from("timeout", "millis");

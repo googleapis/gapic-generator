@@ -28,19 +28,34 @@ import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An instance of IdentifierNamer provides language-specific names or other strings.
+ * A SurfaceNamer provides language-specific names for specific components of a view for a surface.
+ *
+ * <p>Naming is composed of two steps:
+ *
+ * <p>1. Composing a Name instance with the name pieces 2. Formatting the Name for the particular
+ * type of identifier needed.
+ *
+ * <p>This class delegates step 2 to the provided name formatter, which generally would be a
+ * language-specific namer.
  */
 public class SurfaceNamer extends NameFormatterDelegator {
-  public SurfaceNamer(NameFormatter languageNamer) {
+  private ModelTypeFormatter modelTypeFormatter;
+
+  public SurfaceNamer(NameFormatter languageNamer, ModelTypeFormatter modelTypeFormatter) {
     super(languageNamer);
+    this.modelTypeFormatter = modelTypeFormatter;
   }
 
-  public static final String NOT_IMPLEMENTED = "$ NOT IMPLEMENTED $";
+  public ModelTypeFormatter getModelTypeFormatter() {
+    return modelTypeFormatter;
+  }
+
+  public String getNotImplementedString(String feature) {
+    return "$ NOT IMPLEMENTED: " + feature + " $";
+  }
 
   public String getApiWrapperClassName(Interface interfaze) {
     return className(Name.upperCamel(interfaze.getSimpleName(), "Api"));
@@ -50,19 +65,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return varName(Name.upperCamel(interfaze.getSimpleName(), "Api"));
   }
 
-  public String getApiSettingsClassName(Interface interfaze) {
-    return className(Name.upperCamel(interfaze.getSimpleName(), "Settings"));
-  }
-
-  public String getVariableName(String identifier, InitValueConfig initValueConfig) {
+  public String getVariableName(Name identifier, InitValueConfig initValueConfig) {
     if (initValueConfig == null || !initValueConfig.hasFormattingConfig()) {
-      return varName(Name.from(identifier));
+      return varName(identifier);
     } else {
       return varName(Name.from("formatted").join(identifier));
     }
   }
 
-  public String getSetFunctionCallName(TypeRef type, String identifier) {
+  public String getSetFunctionCallName(TypeRef type, Name identifier) {
     if (type.isMap()) {
       return methodName(Name.from("put", "all").join(identifier));
     } else if (type.isRepeated()) {
@@ -72,7 +83,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
-  public String getGetFunctionCallName(String identifier) {
+  public String getGetFunctionCallName(Name identifier) {
     return methodName(Name.from("get").join(identifier));
   }
 
@@ -118,7 +129,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   public String getClientConfigPath(Interface service) {
-    return SurfaceNamer.NOT_IMPLEMENTED;
+    return getNotImplementedString("SurfaceNamer.getClientConfigPath");
   }
 
   public String getGrpcClientTypeName(Interface service) {
@@ -139,20 +150,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return true;
   }
 
+  public List<String> getDocLines(String text) {
+    return CommonRenderingUtil.getDocLines(text);
+  }
+
   public List<String> getDocLines(ProtoElement element) {
-    return CommonRenderingUtil.getDocLines(DocumentationUtil.getDescription(element));
-  }
-
-  public List<String> getThrowsDocLines() {
-    return new ArrayList<>();
-  }
-
-  public String getPublicAccessModifier() {
-    return "public";
-  }
-
-  public String getPrivateAccessModifier() {
-    return "private";
+    return getDocLines(DocumentationUtil.getDescription(element));
   }
 
   public String getGrpcMethodName(Method method) {
@@ -161,61 +164,27 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return Name.upperCamel(method.getSimpleName()).toUpperCamel();
   }
 
-  public String getRetrySettingsClassName() {
-    return SurfaceNamer.NOT_IMPLEMENTED;
+  public String getRetrySettingsTypeName() {
+    return getNotImplementedString("SurfaceNamer.getRetrySettingsClassName");
   }
 
   public String getOptionalArrayTypeName() {
-    return SurfaceNamer.NOT_IMPLEMENTED;
+    return getNotImplementedString("SurfaceNamer.getOptionalArrayTypeName");
   }
 
-  public String getDynamicReturnTypeName(
-      ModelTypeTable typeTable, Method method, MethodConfig methodConfig) {
-    return SurfaceNamer.NOT_IMPLEMENTED;
+  public String getDynamicReturnTypeName(Method method, MethodConfig methodConfig) {
+    return getNotImplementedString("SurfaceNamer.getDynamicReturnTypeName");
   }
 
-  public String getStaticReturnTypeName(
-      ModelTypeTable typeTable, Method method, MethodConfig methodConfig) {
-    return SurfaceNamer.NOT_IMPLEMENTED;
-  }
-
-  public String getPagedCallableMethodName(Method method) {
-    return methodName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
-  }
-
-  public String getPagedCallableName(Method method) {
-    return varName(Name.upperCamel(method.getSimpleName(), "PagedCallable"));
-  }
-
-  public String getCallableMethodName(Method method) {
-    return methodName(Name.upperCamel(method.getSimpleName(), "Callable"));
-  }
-
-  public String getCallableName(Method method) {
-    return varName(Name.upperCamel(method.getSimpleName(), "Callable"));
-  }
-
-  public String getSettingsFunctionName(Method method) {
-    return methodName(Name.upperCamel(method.getSimpleName(), "Settings"));
-  }
-
-  public String getGenericAwareResponseType(ModelTypeTable typeTable, TypeRef outputType) {
-    return SurfaceNamer.NOT_IMPLEMENTED;
-  }
-
-  public String getGetResourceListCallName(Field resourcesField) {
-    return methodName(Name.from("get", resourcesField.getSimpleName(), "list"));
-  }
-
-  public String getAndSavePagedResponseTypeName(ModelTypeTable typeTable, TypeRef resourceType) {
-    return SurfaceNamer.NOT_IMPLEMENTED;
-  }
-
-  public String getTestCaseName(Method method) {
-    return methodName(Name.upperCamel(method.getSimpleName(), "Test"));
+  public String getApiSettingsClassName(Interface service) {
+    return className(Name.upperCamel(service.getSimpleName(), "Settings"));
   }
 
   public String getTestClassName(Interface service) {
-    return className(Name.upperCamel(getApiWrapperClassName(service), "Test"));
+    return className(Name.upperCamel(service.getSimpleName(), "Test"));
+  }
+
+  public String getMockServiceClassName(Interface service) {
+    return className(Name.upperCamel("Mock", service.getSimpleName()));
   }
 }
