@@ -38,14 +38,17 @@ import com.google.api.codegen.py.PythonSnippetSetRunner;
 import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.ruby.RubyGapicContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
+import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoFile;
+
+import org.apache.commons.lang3.NotImplementedException;
+
 import java.util.Arrays;
 import java.util.List;
-import org.apache.commons.lang3.NotImplementedException;
 
 /** MainGapicProviderFactory creates GapicProvider instances based on an id. */
 public class MainGapicProviderFactory
@@ -61,6 +64,8 @@ public class MainGapicProviderFactory
   public static final String PYTHON_DOC = "python_doc";
   public static final String RUBY = "ruby";
   public static final String RUBY_DOC = "ruby_doc";
+
+  public static final String JAVA_TEST = "java_test";
 
   /** Create the GapicProviders based on the given id */
   public static List<GapicProvider<? extends Object>> defaultCreate(
@@ -138,6 +143,22 @@ public class MainGapicProviderFactory
               .build();
 
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider, packageInfoProvider);
+
+    } else if (id.equals(JAVA_TEST)) {
+      GapicCodePathMapper javaPathMapper =
+          CommonGapicCodePathMapper.newBuilder()
+              .setPrefix("src/test/java")
+              .setShouldAppendPackage(true)
+              .build();
+      GapicProvider<? extends Object> mainProvider =
+          ViewModelGapicProvider.newBuilder()
+              .setModel(model)
+              .setApiConfig(apiConfig)
+              .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+              .setModelToViewTransformer(new JavaGapicSurfaceTestTransformer(javaPathMapper))
+              .build();
+
+      return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
 
     } else if (id.equals(NODEJS)) {
       GapicCodePathMapper nodeJSPathMapper =

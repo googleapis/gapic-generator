@@ -24,9 +24,7 @@ import com.google.auto.value.AutoValue;
 
 import java.util.Collection;
 
-/**
- * The context for transforming a model into a view model for a surface.
- */
+/** The context for transforming a model into a view model for a surface. */
 @AutoValue
 public abstract class SurfaceTransformerContext {
   public static SurfaceTransformerContext create(

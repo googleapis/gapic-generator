@@ -14,10 +14,10 @@
  */
 package com.google.api.codegen.util;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Arrays;
 import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Represents a simple or complex type and keeps track of the aliases for the contributing types.

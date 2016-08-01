@@ -1,0 +1,326 @@
+============== file: src/test/java/com/google/gcloud/pubsub/spi ==============
+/*
+ * Copyright 2016 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
+package com.google.gcloud.pubsub.spi;
+
+import com.google.api.gax.testing.LocalServiceHelper;
+import com.google.api.gax.testing.ValueGenerator;
+import com.google.example.library.v1.AddCommentsRequest;
+import com.google.example.library.v1.Book;
+import com.google.example.library.v1.Comment;
+import com.google.example.library.v1.CreateBookRequest;
+import com.google.example.library.v1.CreateShelfRequest;
+import com.google.example.library.v1.DeleteBookRequest;
+import com.google.example.library.v1.DeleteShelfRequest;
+import com.google.example.library.v1.GetBookFromArchiveRequest;
+import com.google.example.library.v1.GetBookRequest;
+import com.google.example.library.v1.GetShelfRequest;
+import com.google.example.library.v1.ListBooksRequest;
+import com.google.example.library.v1.ListShelvesRequest;
+import com.google.example.library.v1.ListStringsRequest;
+import com.google.example.library.v1.MergeShelvesRequest;
+import com.google.example.library.v1.MoveBookRequest;
+import com.google.example.library.v1.PublishSeriesRequest;
+import com.google.example.library.v1.Shelf;
+import com.google.example.library.v1.UpdateBookIndexRequest;
+import com.google.example.library.v1.UpdateBookRequest;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.GeneratedMessage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+@javax.annotation.Generated("by GAPIC")
+public class LibraryServiceTest {
+  private static LocalServiceHelper serviceHelper;
+  private LibraryServiceApi api;
+  private ValueGenerator valueGenerator;
+
+  @BeforeClass
+  public static void startStaticServer() {
+    MockLibraryService mockService = new MockLibraryService();
+    serviceHelper = new LocalServiceHelper("in-process-1", mockService);
+    serviceHelper.start();
+  }
+
+  @AfterClass
+  public static void stopServer() {
+    serviceHelper.stop();
+  }
+
+  @Before
+  public void setUp() throws IOException {
+    serviceHelper.reset();
+    LibraryServiceSettings settings = LibraryServiceSettings.defaultBuilder()
+        .provideChannelWith(serviceHelper.createChannel(), true)
+        .build();
+    api = LibraryServiceApi.create(settings);
+    valueGenerator = new ValueGenerator();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    api.close();
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void LibraryServiceTest() {
+    Shelf shelf = Shelf.newBuilder().build();
+    api.CreateShelf(shelf);
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    CreateShelfRequest request = (CreateShelfRequest)requests[0];
+
+    Assert.assertEquals(request.getShelf(), shelf);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void LibraryServiceTest() {
+    String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+    String options = "";
+    api.GetShelf(formattedName, options);
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    GetShelfRequest request = (GetShelfRequest)requests[0];
+
+    Assert.assertEquals(request.getName(), formattedName);
+    Assert.assertEquals(request.getOptions(), options);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void LibraryServiceTest() {
+
+    PageAccessor<Shelf> response = api.ListShelves();
+    for (Shelf element : response) {
+      // DO NOTHING
+    }
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    ListShelvesRequest request = (ListShelvesRequest)requests[0];
+
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void LibraryServiceTest() {
+    String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+    api.DeleteShelf(formattedName);
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    DeleteShelfRequest request = (DeleteShelfRequest)requests[0];
+
+    Assert.assertEquals(request.getName(), formattedName);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void LibraryServiceTest() {
+    String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+    String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
+    api.MergeShelves(formattedName, formattedOtherShelfName);
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    MergeShelvesRequest request = (MergeShelvesRequest)requests[0];
+
+    Assert.assertEquals(request.getName(), formattedName);
+    Assert.assertEquals(request.getOtherShelfName(), formattedOtherShelfName);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void LibraryServiceTest() {
+    String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+    Book book = Book.newBuilder().build();
+    api.CreateBook(formattedName, book);
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    CreateBookRequest request = (CreateBookRequest)requests[0];
+
+    Assert.assertEquals(request.getName(), formattedName);
+    Assert.assertEquals(request.getBook(), book);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void LibraryServiceTest() {
+    Shelf shelf = Shelf.newBuilder().build();
+    List<Book> books = new ArrayList<>();
+    api.PublishSeries(shelf, books);
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    PublishSeriesRequest request = (PublishSeriesRequest)requests[0];
+
+    Assert.assertEquals(request.getShelf(), shelf);
+    Assert.assertEquals(request.getBooks(), books);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void LibraryServiceTest() {
+    String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+    api.GetBook(formattedName);
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    GetBookRequest request = (GetBookRequest)requests[0];
+
+    Assert.assertEquals(request.getName(), formattedName);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void LibraryServiceTest() {
+    String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+    PageAccessor<Book> response = api.ListBooks(formattedName);
+    for (Book element : response) {
+      // DO NOTHING
+    }
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    ListBooksRequest request = (ListBooksRequest)requests[0];
+
+    Assert.assertEquals(request.getName(), formattedName);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void LibraryServiceTest() {
+    String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+    api.DeleteBook(formattedName);
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    DeleteBookRequest request = (DeleteBookRequest)requests[0];
+
+    Assert.assertEquals(request.getName(), formattedName);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void LibraryServiceTest() {
+    String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+    Book book = Book.newBuilder().build();
+    api.UpdateBook(formattedName, book);
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    UpdateBookRequest request = (UpdateBookRequest)requests[0];
+
+    Assert.assertEquals(request.getName(), formattedName);
+    Assert.assertEquals(request.getBook(), book);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void LibraryServiceTest() {
+    String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+    String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
+    api.MoveBook(formattedName, formattedOtherShelfName);
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    MoveBookRequest request = (MoveBookRequest)requests[0];
+
+    Assert.assertEquals(request.getName(), formattedName);
+    Assert.assertEquals(request.getOtherShelfName(), formattedOtherShelfName);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void LibraryServiceTest() {
+
+    PageAccessor<String> response = api.ListStrings();
+    for (String element : response) {
+      // DO NOTHING
+    }
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    ListStringsRequest request = (ListStringsRequest)requests[0];
+
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void LibraryServiceTest() {
+    String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+    ByteString comment = ByteString.copyFromUtf8("");
+    Comment commentsElement = Comment.newBuilder()
+      .setComment(comment)
+      .build();
+    List<Comment> comments = Arrays.asList(commentsElement);
+    api.AddComments(formattedName, comments);
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    AddCommentsRequest request = (AddCommentsRequest)requests[0];
+
+    Assert.assertEquals(request.getName(), formattedName);
+    Assert.assertEquals(request.getComment(), comment);
+    Assert.assertEquals(request.getCommentsElement(), commentsElement);
+    Assert.assertEquals(request.getComments(), comments);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void LibraryServiceTest() {
+    String formattedName = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
+    api.GetBookFromArchive(formattedName);
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    GetBookFromArchiveRequest request = (GetBookFromArchiveRequest)requests[0];
+
+    Assert.assertEquals(request.getName(), formattedName);
+  }
+
+  @Test
+  @SuppressWarnings("all")
+  public void LibraryServiceTest() {
+    String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
+    String indexName = "default index";
+    String indexMapItem = "";
+    Map<String, String> indexMap = new HashMap<>();
+    indexMap.put("default_key", indexMapItem);
+    api.UpdateBookIndex(formattedName, indexName, indexMap);
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    UpdateBookIndexRequest request = (UpdateBookIndexRequest)requests[0];
+
+    Assert.assertEquals(request.getName(), formattedName);
+    Assert.assertEquals(request.getIndexName(), indexName);
+    Assert.assertEquals(request.getIndexMapItem(), indexMapItem);
+    Assert.assertEquals(request.getIndexMap(), indexMap);
+  }
+
+}

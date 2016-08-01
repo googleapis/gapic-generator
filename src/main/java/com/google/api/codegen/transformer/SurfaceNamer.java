@@ -84,6 +84,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     }
   }
 
+  public String getGetFunctionCallName(Name identifier) {
+    return methodName(Name.from("get").join(identifier));
+  }
+
   public String getPathTemplateName(CollectionConfig collectionConfig) {
     return inittedConstantName(Name.from(collectionConfig.getEntityName(), "path", "template"));
   }
@@ -171,5 +175,17 @@ public class SurfaceNamer extends NameFormatterDelegator {
 
   public String getDynamicReturnTypeName(Method method, MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getDynamicReturnTypeName");
+  }
+
+  public String getApiSettingsClassName(Interface service) {
+    return className(Name.upperCamel(service.getSimpleName(), "Settings"));
+  }
+
+  public String getTestClassName(Interface service) {
+    return className(Name.upperCamel(service.getSimpleName(), "Test"));
+  }
+
+  public String getMockServiceClassName(Interface service) {
+    return className(Name.upperCamel("Mock", service.getSimpleName()));
   }
 }

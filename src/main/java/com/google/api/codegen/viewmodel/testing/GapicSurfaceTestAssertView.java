@@ -12,28 +12,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.api.codegen.viewmodel;
+package com.google.api.codegen.viewmodel.testing;
 
 import com.google.auto.value.AutoValue;
 
-import java.util.List;
-
 @AutoValue
-public abstract class InitCodeView {
-  public abstract List<InitCodeLineView> lines();
+public abstract class GapicSurfaceTestAssertView {
+  public abstract String actualValueIdentifier();
 
-  public abstract List<FieldSettingView> fieldSettings();
+  public abstract String expectedValueIdentifier();
 
   public static Builder newBuilder() {
-    return new AutoValue_InitCodeView.Builder();
+    return new AutoValue_GapicSurfaceTestAssertView.Builder();
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
-    public abstract Builder lines(List<InitCodeLineView> val);
+  public abstract static class Builder {
+    public abstract Builder actualValueIdentifier(String val);
 
-    public abstract Builder fieldSettings(List<FieldSettingView> val);
+    public abstract Builder expectedValueIdentifier(String val);
 
-    public abstract InitCodeView build();
+    public abstract GapicSurfaceTestAssertView build();
   }
 }
