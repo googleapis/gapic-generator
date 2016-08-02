@@ -25,6 +25,7 @@ import com.google.api.codegen.csharp.CSharpGapicContext;
 import com.google.api.codegen.csharp.CSharpSnippetSetRunner;
 import com.google.api.codegen.go.GoGapicContext;
 import com.google.api.codegen.go.GoSnippetSetRunner;
+import com.google.api.codegen.nodejs.NodeJSCodePathMapper;
 import com.google.api.codegen.nodejs.NodeJSGapicContext;
 import com.google.api.codegen.nodejs.NodeJSSnippetSetRunner;
 import com.google.api.codegen.py.PythonGapicContext;
@@ -145,8 +146,7 @@ public class MainGapicProviderFactory
       return Arrays.<GapicProvider<? extends Object>>asList(mainProvider);
 
     } else if (id.equals(NODEJS)) {
-      GapicCodePathMapper nodeJSPathMapper =
-          CommonGapicCodePathMapper.newBuilder().setPrefix("lib").build();
+      NodeJSCodePathMapper nodeJSPathMapper = new NodeJSCodePathMapper();
       GapicProvider<? extends Object> mainProvider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)

@@ -73,6 +73,11 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     return "grpc-" + service.getFile().getFullName().replace('.', '-');
   }
 
+  public boolean isGcloud() {
+    String packageName = getApiConfig().getPackageName();
+    return !Strings.isNullOrEmpty(packageName) && packageName.indexOf("@google-cloud/") == 0;
+  }
+
   /**
    * Returns type information for a field in JSDoc style.
    */

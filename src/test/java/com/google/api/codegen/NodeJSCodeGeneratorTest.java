@@ -26,31 +26,65 @@ import org.junit.runners.Parameterized.Parameters;
 /**
  * NodeJS code generator baseline tests.
  */
-@RunWith(Parameterized.class)
-public class NodeJSCodeGeneratorTest extends GapicTestBase {
+public class NodeJSCodeGeneratorTest {
 
-  public NodeJSCodeGeneratorTest(
-      String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
-    super(name, idForFactory, gapicConfigFileNames, snippetName);
-    getTestDataLocator()
-        .addTestDataSource(com.google.api.codegen.nodejs.NodeJSGapicContext.class, "");
+  @RunWith(Parameterized.class)
+  public static class NodeJSLibraryBaseline extends GapicTestBase {
+
+    public NodeJSLibraryBaseline(
+        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, snippetName);
+      getTestDataLocator()
+          .addTestDataSource(com.google.api.codegen.nodejs.NodeJSGapicContext.class, "");
+    }
+
+    /**
+     * Declares test parameters, each one an array of values passed to the constructor, with the
+     * first element a name, the second a config of this name.
+     */
+    @Parameters(name = "{0}")
+    public static List<Object[]> testedConfigs() {
+      return GapicTestBase.createTestedConfigs(
+          MainGapicProviderFactory.NODEJS,
+          new String[] {"nodejs_gapic.yaml", "library_gapic.yaml"});
+    }
+
+    // Tests
+    // =====
+
+    @Test
+    public void library() throws Exception {
+      test("library");
+    }
   }
 
-  /**
-   * Declares test parameters, each one an array of values passed to the constructor, with the
-   * first element a name, the second a config of this name.
-   */
-  @Parameters(name = "{0}")
-  public static List<Object[]> testedConfigs() {
-    return GapicTestBase.createTestedConfigs(
-        MainGapicProviderFactory.NODEJS, new String[] {"nodejs_gapic.yaml", "library_gapic.yaml"});
-  }
+  @RunWith(Parameterized.class)
+  public static class NodeJSNoPathTGemplatesBaseline extends GapicTestBase {
 
-  // Tests
-  // =====
+    public NodeJSNoPathTGemplatesBaseline(
+        String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
+      super(name, idForFactory, gapicConfigFileNames, snippetName);
+      getTestDataLocator()
+          .addTestDataSource(com.google.api.codegen.nodejs.NodeJSGapicContext.class, "");
+    }
 
-  @Test
-  public void library() throws Exception {
-    test("library");
+    /**
+     * Declares test parameters, each one an array of values passed to the constructor, with the
+     * first element a name, the second a config of this name.
+     */
+    @Parameters(name = "{0}")
+    public static List<Object[]> testedConfigs() {
+      return GapicTestBase.createTestedConfigs(
+          MainGapicProviderFactory.NODEJS,
+          new String[] {"nodejs_gapic.yaml", "no_path_templates_gapic.yaml"});
+    }
+
+    // Tests
+    // =====
+
+    @Test
+    public void no_path_templates() throws Exception {
+      test("no_path_templates");
+    }
   }
 }
