@@ -20,7 +20,7 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 
 @AutoValue
-public abstract class StaticXApiView implements ViewModel {
+public abstract class StaticLangXApiView implements ViewModel {
   @Override
   public abstract String templateFileName();
 
@@ -40,7 +40,7 @@ public abstract class StaticXApiView implements ViewModel {
 
   public abstract List<ParseResourceFunctionView> parseResourceFunctions();
 
-  public abstract List<StaticApiMethodView> apiMethods();
+  public abstract List<StaticLangApiMethodView> apiMethods();
 
   public abstract List<String> imports();
 
@@ -53,7 +53,7 @@ public abstract class StaticXApiView implements ViewModel {
   }
 
   public static Builder newBuilder() {
-    return new AutoValue_StaticXApiView.Builder();
+    return new AutoValue_StaticLangXApiView.Builder();
   }
 
   @AutoValue.Builder
@@ -76,12 +76,12 @@ public abstract class StaticXApiView implements ViewModel {
 
     public abstract Builder parseResourceFunctions(List<ParseResourceFunctionView> val);
 
-    public abstract Builder apiMethods(List<StaticApiMethodView> val);
+    public abstract Builder apiMethods(List<StaticLangApiMethodView> val);
 
     public abstract Builder imports(List<String> val);
 
     public abstract Builder outputPath(String val);
 
-    public abstract StaticXApiView build();
+    public abstract StaticLangXApiView build();
   }
 }

@@ -81,7 +81,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDynamicReturnTypeName(Method method, MethodConfig methodConfig) {
+  public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
     if (new ServiceMessages().isEmptyType(method.getOutputType())) {
       return "";
     }

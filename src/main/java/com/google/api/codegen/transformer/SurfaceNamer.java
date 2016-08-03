@@ -353,12 +353,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The return type name in a dynamic language for the given method. */
-  public String getDynamicReturnTypeName(Method method, MethodConfig methodConfig) {
+  public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getDynamicReturnTypeName");
   }
 
   /** The return type name in a static language for the given method. */
-  public String getStaticReturnTypeName(Method method, MethodConfig methodConfig) {
+  public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getStaticReturnTypeName");
   }
 

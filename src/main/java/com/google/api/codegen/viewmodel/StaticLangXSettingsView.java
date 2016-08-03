@@ -20,7 +20,7 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 
 @AutoValue
-public abstract class StaticXSettingsView implements ViewModel {
+public abstract class StaticLangXSettingsView implements ViewModel {
   public abstract String templateFileName();
 
   public abstract String packageName();
@@ -55,7 +55,7 @@ public abstract class StaticXSettingsView implements ViewModel {
   }
 
   public static Builder newBuilder() {
-    return new AutoValue_StaticXSettingsView.Builder();
+    return new AutoValue_StaticLangXSettingsView.Builder();
   }
 
   @AutoValue.Builder
@@ -89,6 +89,6 @@ public abstract class StaticXSettingsView implements ViewModel {
 
     public abstract Builder outputPath(String val);
 
-    public abstract StaticXSettingsView build();
+    public abstract StaticLangXSettingsView build();
   }
 }

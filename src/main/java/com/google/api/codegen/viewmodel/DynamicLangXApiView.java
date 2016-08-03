@@ -20,7 +20,7 @@ import com.google.auto.value.AutoValue;
 import java.util.List;
 
 @AutoValue
-public abstract class DynamicXApiView implements ViewModel {
+public abstract class DynamicLangXApiView implements ViewModel {
   public abstract String templateFileName();
 
   public abstract String packageName();
@@ -69,7 +69,7 @@ public abstract class DynamicXApiView implements ViewModel {
   }
 
   public static Builder newBuilder() {
-    return new AutoValue_DynamicXApiView.Builder();
+    return new AutoValue_DynamicLangXApiView.Builder();
   }
 
   @AutoValue.Builder
@@ -116,6 +116,6 @@ public abstract class DynamicXApiView implements ViewModel {
 
     public abstract Builder apiMethods(List<ApiMethodView> val);
 
-    public abstract DynamicXApiView build();
+    public abstract DynamicLangXApiView build();
   }
 }

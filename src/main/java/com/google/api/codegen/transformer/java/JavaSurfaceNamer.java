@@ -78,7 +78,7 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getStaticReturnTypeName(Method method, MethodConfig methodConfig) {
+  public String getStaticLangReturnTypeName(Method method, MethodConfig methodConfig) {
     if (ServiceMessages.s_isEmptyType(method.getOutputType())) {
       return "void";
     }

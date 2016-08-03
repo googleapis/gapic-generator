@@ -17,13 +17,13 @@ package com.google.api.codegen.viewmodel;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class DynamicDefaultableParamView {
+public abstract class DynamicLangDefaultableParamView {
   public abstract String name();
 
   public abstract String defaultValue();
 
   public static Builder newBuilder() {
-    return new AutoValue_DynamicDefaultableParamView.Builder();
+    return new AutoValue_DynamicLangDefaultableParamView.Builder();
   }
 
   @AutoValue.Builder
@@ -32,6 +32,6 @@ public abstract class DynamicDefaultableParamView {
 
     public abstract Builder defaultValue(String value);
 
-    public abstract DynamicDefaultableParamView build();
+    public abstract DynamicLangDefaultableParamView build();
   }
 }

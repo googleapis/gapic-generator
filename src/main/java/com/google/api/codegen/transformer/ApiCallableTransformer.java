@@ -14,13 +14,11 @@
  */
 package com.google.api.codegen.transformer;
 
-import com.google.api.codegen.BundlingConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.codegen.PageStreamingConfig;
 import com.google.api.codegen.viewmodel.ApiCallSettingsView;
 import com.google.api.codegen.viewmodel.ApiCallableType;
 import com.google.api.codegen.viewmodel.ApiCallableView;
-import com.google.api.codegen.viewmodel.BundlingConfigView;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 
@@ -35,11 +33,11 @@ public class ApiCallableTransformer {
     this.bundlingTransformer = new BundlingTransformer();
   }
 
-  public List<ApiCallableView> generateStaticApiCallables(SurfaceTransformerContext context) {
+  public List<ApiCallableView> generateStaticLangApiCallables(SurfaceTransformerContext context) {
     List<ApiCallableView> callableMembers = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {
-      callableMembers.addAll(generateStaticApiCallables(context.asMethodContext(method)));
+      callableMembers.addAll(generateStaticLangApiCallables(context.asMethodContext(method)));
     }
 
     return callableMembers;
@@ -55,7 +53,7 @@ public class ApiCallableTransformer {
     return settingsMembers;
   }
 
-  private List<ApiCallableView> generateStaticApiCallables(MethodTransformerContext context) {
+  private List<ApiCallableView> generateStaticLangApiCallables(MethodTransformerContext context) {
     ModelTypeTable typeTable = context.getTypeTable();
     Method method = context.getMethod();
     MethodConfig methodConfig = context.getMethodConfig();

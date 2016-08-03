@@ -15,7 +15,7 @@
 package com.google.api.codegen.viewmodel;
 
 import com.google.api.codegen.SnippetSetRunner;
-import com.google.api.codegen.viewmodel.StaticXApiView.Builder;
+import com.google.api.codegen.viewmodel.StaticLangXApiView.Builder;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;

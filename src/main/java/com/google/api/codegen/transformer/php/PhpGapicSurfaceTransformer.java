@@ -28,7 +28,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.codegen.viewmodel.ApiMethodView;
-import com.google.api.codegen.viewmodel.DynamicXApiView;
+import com.google.api.codegen.viewmodel.DynamicLangXApiView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -91,7 +91,7 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
     List<ApiMethodView> methods = generateApiMethods(context);
 
-    DynamicXApiView.Builder xapiClass = DynamicXApiView.newBuilder();
+    DynamicLangXApiView.Builder xapiClass = DynamicLangXApiView.newBuilder();
 
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, methods.get(0)));
 

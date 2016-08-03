@@ -38,9 +38,9 @@ import com.google.api.codegen.viewmodel.RetryCodesDefinitionView;
 import com.google.api.codegen.viewmodel.RetryParamsDefinitionView;
 import com.google.api.codegen.viewmodel.ServiceDocView;
 import com.google.api.codegen.viewmodel.SettingsDocView;
-import com.google.api.codegen.viewmodel.StaticApiMethodView;
-import com.google.api.codegen.viewmodel.StaticXApiView;
-import com.google.api.codegen.viewmodel.StaticXSettingsView;
+import com.google.api.codegen.viewmodel.StaticLangApiMethodView;
+import com.google.api.codegen.viewmodel.StaticLangXApiView;
+import com.google.api.codegen.viewmodel.StaticLangXSettingsView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.gax.core.RetrySettings;
 import com.google.api.tools.framework.model.Field;
@@ -101,14 +101,14 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     for (Interface service : new InterfaceView().getElementIterable(model)) {
       SurfaceTransformerContext context =
           SurfaceTransformerContext.create(service, apiConfig, createTypeTable(), namer);
-      StaticXApiView xapi = generateXApi(context);
+      StaticLangXApiView xapi = generateXApi(context);
       surfaceDocs.add(xapi);
 
       serviceDocs.add(xapi.doc());
 
       context = SurfaceTransformerContext.create(service, apiConfig, createTypeTable(), namer);
-      StaticApiMethodView exampleApiMethod = getExampleApiMethod(xapi.apiMethods());
-      StaticXSettingsView xsettings = generateXSettings(context, exampleApiMethod);
+      StaticLangApiMethodView exampleApiMethod = getExampleApiMethod(xapi.apiMethods());
+      StaticLangXSettingsView xsettings = generateXSettings(context, exampleApiMethod);
       surfaceDocs.add(xsettings);
     }
 
@@ -123,12 +123,12 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     return new ModelTypeTable(new JavaTypeTable(), new JavaModelTypeNameConverter());
   }
 
-  private StaticXApiView generateXApi(SurfaceTransformerContext context) {
+  private StaticLangXApiView generateXApi(SurfaceTransformerContext context) {
     addXApiImports(context);
 
-    List<StaticApiMethodView> methods = generateApiMethods(context);
+    List<StaticLangApiMethodView> methods = generateApiMethods(context);
 
-    StaticXApiView.Builder xapiClass = StaticXApiView.newBuilder();
+    StaticLangXApiView.Builder xapiClass = StaticLangXApiView.newBuilder();
 
     ApiMethodView exampleApiMethod = getExampleApiMethod(methods);
     xapiClass.doc(serviceTransformer.generateServiceDoc(context, exampleApiMethod));
@@ -138,7 +138,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     String name = context.getNamer().getApiWrapperClassName(context.getInterface());
     xapiClass.name(name);
     xapiClass.settingsClassName(context.getNamer().getApiSettingsClassName(context.getInterface()));
-    xapiClass.apiCallableMembers(apiCallableTransformer.generateStaticApiCallables(context));
+    xapiClass.apiCallableMembers(apiCallableTransformer.generateStaticLangApiCallables(context));
     xapiClass.pathTemplates(pathTemplateTransformer.generatePathTemplates(context));
     xapiClass.formatResourceFunctions(
         pathTemplateTransformer.generateFormatResourceFunctions(context));
@@ -155,9 +155,9 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     return xapiClass.build();
   }
 
-  private StaticApiMethodView getExampleApiMethod(List<StaticApiMethodView> methods) {
-    StaticApiMethodView exampleApiMethod = null;
-    for (StaticApiMethodView method : methods) {
+  private StaticLangApiMethodView getExampleApiMethod(List<StaticLangApiMethodView> methods) {
+    StaticLangApiMethodView exampleApiMethod = null;
+    for (StaticLangApiMethodView method : methods) {
       if (method.type().equals(ApiMethodType.FlattenedMethod)) {
         exampleApiMethod = method;
         break;
@@ -169,11 +169,11 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     return exampleApiMethod;
   }
 
-  private StaticXSettingsView generateXSettings(
-      SurfaceTransformerContext context, StaticApiMethodView exampleApiMethod) {
+  private StaticLangXSettingsView generateXSettings(
+      SurfaceTransformerContext context, StaticLangApiMethodView exampleApiMethod) {
     addXSettingsImports(context);
 
-    StaticXSettingsView.Builder xsettingsClass = StaticXSettingsView.newBuilder();
+    StaticLangXSettingsView.Builder xsettingsClass = StaticLangXSettingsView.newBuilder();
     xsettingsClass.templateFileName(XSETTINGS_TEMPLATE_FILENAME);
     xsettingsClass.packageName(context.getApiConfig().getPackageName());
     xsettingsClass.doc(generateSettingsDoc(context, exampleApiMethod));
@@ -254,7 +254,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   public SettingsDocView generateSettingsDoc(
-      SurfaceTransformerContext context, StaticApiMethodView exampleApiMethod) {
+      SurfaceTransformerContext context, StaticLangApiMethodView exampleApiMethod) {
     SurfaceNamer namer = context.getNamer();
     SettingsDocView.Builder settingsDoc = SettingsDocView.newBuilder();
     ServiceConfig serviceConfig = new ServiceConfig();
@@ -269,8 +269,8 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     return settingsDoc.build();
   }
 
-  private List<StaticApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
-    List<StaticApiMethodView> apiMethods = new ArrayList<>();
+  private List<StaticLangApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
+    List<StaticLangApiMethodView> apiMethods = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);

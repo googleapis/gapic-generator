@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
  * ApiMethodType enum.
  */
 @AutoValue
-public abstract class StaticApiMethodView implements ApiMethodView {
+public abstract class StaticLangApiMethodView implements ApiMethodView {
   public abstract ApiMethodType type();
 
   public abstract String apiClassName();
@@ -66,7 +66,7 @@ public abstract class StaticApiMethodView implements ApiMethodView {
   public abstract RequestObjectMethodDetailView requestObjectMethod();
 
   public static Builder newBuilder() {
-    return new AutoValue_StaticApiMethodView.Builder();
+    return new AutoValue_StaticLangApiMethodView.Builder();
   }
 
   @AutoValue.Builder
@@ -105,6 +105,6 @@ public abstract class StaticApiMethodView implements ApiMethodView {
 
     public abstract Builder requestObjectMethod(RequestObjectMethodDetailView details);
 
-    public abstract StaticApiMethodView build();
+    public abstract StaticLangApiMethodView build();
   }
 }

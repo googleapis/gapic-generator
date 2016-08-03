@@ -39,7 +39,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
   public abstract String grpcMethodName();
 
-  public abstract List<DynamicDefaultableParamView> methodParams();
+  public abstract List<DynamicLangDefaultableParamView> methodParams();
 
   public abstract List<RequestObjectParamView> requiredRequestObjectParams();
 
@@ -71,7 +71,7 @@ public abstract class OptionalArrayMethodView implements ApiMethodView {
 
     public abstract Builder grpcMethodName(String val);
 
-    public abstract Builder methodParams(List<DynamicDefaultableParamView> val);
+    public abstract Builder methodParams(List<DynamicLangDefaultableParamView> val);
 
     public abstract Builder requiredRequestObjectParams(List<RequestObjectParamView> val);
 
