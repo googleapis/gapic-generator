@@ -33,10 +33,7 @@ public class PageStreamingTransformer {
   public List<PageStreamingDescriptorView> generateDescriptors(SurfaceTransformerContext context) {
     List<PageStreamingDescriptorView> descriptors = new ArrayList<>();
 
-    for (Method method : context.getInterface().getMethods()) {
-      if (method.getRequestStreaming() || method.getResponseStreaming()) {
-        continue;
-      }
+    for (Method method : context.getNonStreamingMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
       if (!methodConfig.isPageStreaming()) {
         continue;
