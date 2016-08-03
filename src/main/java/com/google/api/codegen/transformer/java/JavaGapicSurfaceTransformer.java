@@ -52,6 +52,7 @@ import com.google.common.collect.ImmutableSet;
 
 import io.grpc.Status.Code;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,9 +74,6 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
   private static final String XSETTINGS_TEMPLATE_FILENAME = "java/settings.snip";
   private static final String PACKAGE_INFO_TEMPLATE_FILENAME = "java/package-info.snip";
 
-  /**
-   * Standard constructor.
-   */
   public JavaGapicSurfaceTransformer(GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
     this.serviceTransformer = new ServiceTransformer();
@@ -150,7 +148,7 @@ public class JavaGapicSurfaceTransformer implements ModelToViewTransformer {
     xapiClass.imports(context.getTypeTable().getImports());
 
     String outputPath = pathMapper.getOutputPath(context.getInterface(), context.getApiConfig());
-    xapiClass.outputPath(outputPath + "/" + name + ".java");
+    xapiClass.outputPath(outputPath + File.separator + name + ".java");
 
     return xapiClass.build();
   }

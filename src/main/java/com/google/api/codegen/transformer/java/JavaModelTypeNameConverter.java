@@ -86,9 +86,6 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
 
   private TypeNameConverter typeNameConverter;
 
-  /**
-   * Standard constructor.
-   */
   public JavaModelTypeNameConverter() {
     this.typeNameConverter = new JavaTypeTable();
   }
@@ -198,7 +195,7 @@ public class JavaModelTypeNameConverter implements ModelTypeNameConverter {
     if (type.isMessage()) {
       return TypedValue.create(getTypeName(type), "%s.newBuilder().build()");
     }
-    return TypedValue.create(new TypeName(""), "null");
+    return TypedValue.create(getTypeName(type), "null");
   }
 
   @Override

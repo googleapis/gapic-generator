@@ -50,9 +50,6 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
 
   private static final String XAPI_TEMPLATE_FILENAME = "php/main.snip";
 
-  /**
-   * Standard constructor.
-   */
   public PhpGapicSurfaceTransformer(ApiConfig apiConfig, GapicCodePathMapper pathMapper) {
     this.pathMapper = pathMapper;
     this.serviceTransformer = new ServiceTransformer();

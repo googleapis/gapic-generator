@@ -23,9 +23,6 @@ import com.google.api.tools.framework.model.TypeRef;
 public class ModelTypeFormatterImpl implements ModelTypeFormatter {
   private ModelTypeNameConverter typeNameConverter;
 
-  /**
-   * Standard constructor.
-   */
   public ModelTypeFormatterImpl(ModelTypeNameConverter typeNameConverter) {
     this.typeNameConverter = typeNameConverter;
   }

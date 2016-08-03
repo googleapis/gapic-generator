@@ -31,7 +31,7 @@ public abstract class TypeAlias {
   }
 
   /**
-   * Standard constructor.
+   * Creates a type alias with the given fullName and nickname.
    */
   public static TypeAlias create(String fullName, String nickname) {
     return new AutoValue_TypeAlias(fullName, nickname);

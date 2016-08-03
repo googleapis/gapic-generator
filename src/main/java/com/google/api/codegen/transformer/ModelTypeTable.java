@@ -30,9 +30,6 @@ public class ModelTypeTable implements ModelTypeFormatter {
   private TypeTable typeTable;
   private ModelTypeNameConverter typeNameConverter;
 
-  /**
-   * Standard constructor.
-   */
   public ModelTypeTable(TypeTable typeTable, ModelTypeNameConverter typeNameConverter) {
     this.typeFormatter = new ModelTypeFormatterImpl(typeNameConverter);
     this.typeTable = typeTable;

@@ -33,9 +33,6 @@ import java.util.List;
  */
 public class JavaSurfaceNamer extends SurfaceNamer {
 
-  /**
-   * Standard constructor.
-   */
   public JavaSurfaceNamer() {
     super(
         new JavaNameFormatter(),
