@@ -22,4 +22,14 @@ public interface TypeNameConverter {
    * Maps the given fullName to a TypeName.
    */
   TypeName getTypeName(String fullName);
+
+  /**
+   * Maps the given fullName to a NamePath.
+   */
+  NamePath getNamePath(String fullName);
+
+  /**
+   * Creates a TypeName for the container type and element type.
+   */
+  TypeName getContainerTypeName(String containerFullName, String elementFullName);
 }

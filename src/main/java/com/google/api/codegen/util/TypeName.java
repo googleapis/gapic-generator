@@ -35,7 +35,7 @@ public class TypeName {
   }
 
   /**
-   * Standard constructor.
+   * Creates a type alias with the given fullName and nickname.
    */
   public TypeName(String fullName, String nickname) {
     this.topLevelAlias = TypeAlias.create(fullName, nickname);

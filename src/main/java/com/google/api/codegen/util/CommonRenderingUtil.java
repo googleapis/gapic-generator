@@ -25,7 +25,7 @@ import java.util.List;
 public class CommonRenderingUtil {
 
   public static List<String> getDocLines(String text) {
-    // TODO: convert markdown to phpDoc
+    // TODO: convert markdown to language-specific doc format
     // https://github.com/googleapis/toolkit/issues/331
     List<String> result = new ArrayList<>();
     for (String line : Splitter.on(String.format("%n")).split(text)) {

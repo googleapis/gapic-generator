@@ -14,13 +14,12 @@
  */
 package com.google.api.codegen.viewmodel;
 
-import com.google.api.codegen.viewmodel.DynamicXApiView.Builder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class FieldSettingView {
 
-  public abstract String fnSetFunctionCallName();
+  public abstract String fieldSetFunction();
 
   public abstract String identifier();
 
@@ -30,7 +29,7 @@ public abstract class FieldSettingView {
 
   @AutoValue.Builder
   public static abstract class Builder {
-    public abstract Builder fnSetFunctionCallName(String val);
+    public abstract Builder fieldSetFunction(String val);
 
     public abstract Builder identifier(String val);
 

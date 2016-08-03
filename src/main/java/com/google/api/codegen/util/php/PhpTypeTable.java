@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.util.php;
 
+import com.google.api.codegen.util.NamePath;
 import com.google.api.codegen.util.TypeAlias;
 import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
@@ -47,6 +48,16 @@ public class PhpTypeTable implements TypeTable {
     }
     String nickname = fullName.substring(lastBackslashIndex + 1);
     return new TypeName(fullName, nickname);
+  }
+
+  @Override
+  public NamePath getNamePath(String fullName) {
+    return NamePath.backslashed(fullName);
+  }
+
+  @Override
+  public TypeName getContainerTypeName(String containerFullName, String elementFullName) {
+    return getTypeName(containerFullName);
   }
 
   @Override

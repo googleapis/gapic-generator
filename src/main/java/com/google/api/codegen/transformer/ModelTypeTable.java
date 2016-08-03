@@ -14,7 +14,9 @@
  */
 package com.google.api.codegen.transformer;
 
+import com.google.api.codegen.util.TypeName;
 import com.google.api.codegen.util.TypeTable;
+import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 
 import java.util.List;
@@ -28,9 +30,6 @@ public class ModelTypeTable implements ModelTypeFormatter {
   private TypeTable typeTable;
   private ModelTypeNameConverter typeNameConverter;
 
-  /**
-   * Standard constructor.
-   */
   public ModelTypeTable(TypeTable typeTable, ModelTypeNameConverter typeNameConverter) {
     this.typeFormatter = new ModelTypeFormatterImpl(typeNameConverter);
     this.typeTable = typeTable;
@@ -40,6 +39,16 @@ public class ModelTypeTable implements ModelTypeFormatter {
   @Override
   public String getFullNameFor(TypeRef type) {
     return typeFormatter.getFullNameFor(type);
+  }
+
+  @Override
+  public String getFullNameFor(ProtoElement element) {
+    return typeFormatter.getFullNameFor(element);
+  }
+
+  @Override
+  public String getFullNameForElementType(TypeRef type) {
+    return typeFormatter.getFullNameForElementType(type);
   }
 
   @Override
@@ -90,6 +99,11 @@ public class ModelTypeTable implements ModelTypeFormatter {
    */
   public String getAndSaveNicknameForElementType(TypeRef type) {
     return typeTable.getAndSaveNicknameFor(typeNameConverter.getTypeNameForElementType(type));
+  }
+
+  public String getAndSaveNicknameForContainer(String containerFullName, String elementFullName) {
+    TypeName completeTypeName = typeTable.getContainerTypeName(containerFullName, elementFullName);
+    return typeTable.getAndSaveNicknameFor(completeTypeName);
   }
 
   /**

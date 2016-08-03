@@ -22,6 +22,7 @@ import com.google.api.codegen.transformer.ModelTypeTable;
 import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.Name;
 import com.google.api.codegen.util.php.PhpNameFormatter;
+import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
@@ -32,11 +33,14 @@ import com.google.api.tools.framework.model.TypeRef;
  */
 public class PhpSurfaceNamer extends SurfaceNamer {
   public PhpSurfaceNamer() {
-    super(new PhpNameFormatter(), new ModelTypeFormatterImpl(new PhpModelTypeNameConverter()));
+    super(
+        new PhpNameFormatter(),
+        new ModelTypeFormatterImpl(new PhpModelTypeNameConverter()),
+        new PhpTypeTable());
   }
 
   @Override
-  public String getSetFunctionCallName(TypeRef type, Name identifier) {
+  public String getFieldSetFunctionName(TypeRef type, Name identifier) {
     if (type.isMap() || type.isRepeated()) {
       return methodName(Name.from("add").join(identifier));
     } else {
@@ -77,7 +81,7 @@ public class PhpSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getDynamicReturnTypeName(Method method, MethodConfig methodConfig) {
+  public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
     if (new ServiceMessages().isEmptyType(method.getOutputType())) {
       return "";
     }
