@@ -112,9 +112,13 @@ public class LibraryServiceTest {
   public void listShelvesTest() {
 
     PageAccessor<Shelf> response = api.ListShelves();
+
+    // Dumb value to avoid JVM optimization.
+    int requestCount = 0;
     for (Shelf element : response) {
       // PageAccessor will not make actual request until it is iterated.
       // Iterate through the element here in order to make grpc requests.
+      requestCount += 1;
     }
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
@@ -199,9 +203,13 @@ public class LibraryServiceTest {
   public void listBooksTest() {
     String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
     PageAccessor<Book> response = api.ListBooks(formattedName);
+
+    // Dumb value to avoid JVM optimization.
+    int requestCount = 0;
     for (Book element : response) {
       // PageAccessor will not make actual request until it is iterated.
       // Iterate through the element here in order to make grpc requests.
+      requestCount += 1;
     }
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
@@ -259,9 +267,13 @@ public class LibraryServiceTest {
   public void listStringsTest() {
 
     PageAccessor<String> response = api.ListStrings();
+
+    // Dumb value to avoid JVM optimization.
+    int requestCount = 0;
     for (String element : response) {
       // PageAccessor will not make actual request until it is iterated.
       // Iterate through the element here in order to make grpc requests.
+      requestCount += 1;
     }
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();

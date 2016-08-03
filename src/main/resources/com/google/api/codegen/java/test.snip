@@ -69,9 +69,13 @@
   @if {@test.isPageStreaming}
     PageAccessor<{@test.resourceTypeName}> response = api.{@test.surfaceMethodName}(\
       {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+
+    // Dumb value to avoid JVM optimization.
+    int requestCount = 0;
     for ({@test.resourceTypeName} element : response) {
       // PageAccessor will not make actual request until it is iterated.
       // Iterate through the element here in order to make grpc requests.
+      requestCount += 1;
     }
   @else
     api.{@test.surfaceMethodName}(\
