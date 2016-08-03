@@ -148,7 +148,7 @@
 @end
 
 @private methodMembers(service)
-  @join method : service.getMethods
+  @join method : context.messages.getMethods(service)
     @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
          methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
          inTypeName = context.typeName(method.getInputType), \
@@ -178,7 +178,7 @@
 @end
 
 @private methodGetters(service)
-  @join method : service.getMethods
+  @join method : context.messages.getMethods(service)
     @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
          methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
          inTypeName = context.typeName(method.getInputType), \
@@ -228,7 +228,7 @@
             settingsBuilder.getClientLibName(),
             settingsBuilder.getClientLibVersion());
 
-      @join method : service.getMethods
+      @join method : context.messages.getMethods(service)
         @let methodName = context.upperCamelToLowerCamel(method.getSimpleName)
           {@methodName}Settings = settingsBuilder.{@methodName}Settings().build();
         @end
@@ -245,7 +245,7 @@
 @private pageStreamingDescriptors(service)
   @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service), \
        dummy = context.addImport("com.google.api.gax.grpc.PageStreamingDescriptor")
-    @join method : context.messages.filterPageStreamingMethods(interfaceConfig, service.getMethods)
+    @join method : context.messages.filterPageStreamingMethods(interfaceConfig, context.messages.getMethods(service))
       @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
            inTypeName = context.typeName(method.getInputType), \
            outTypeName = context.typeName(method.getOutputType), \
@@ -283,7 +283,7 @@
 
 @private bundlingDescriptors(service)
   @let interfaceConfig = context.getApiConfig.getInterfaceConfig(service)
-    @join method : context.messages.filterBundlingMethods(interfaceConfig, service.getMethods)
+    @join method : context.messages.filterBundlingMethods(interfaceConfig, context.messages.getMethods(service))
       @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
            inTypeName = context.typeName(method.getInputType), \
            outTypeName = context.typeName(method.getOutputType), \
@@ -391,7 +391,7 @@
 @end
 
 @private builderMembers(service)
-  @join method : service.getMethods
+  @join method : context.messages.getMethods(service)
     @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
          methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
          inTypeName = context.typeName(method.getInputType), \
@@ -470,7 +470,7 @@
     return this;
   }
 
-  @join method : service.getMethods
+  @join method : context.messages.getMethods(service)
     @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
          methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
          inTypeName = context.typeName(method.getInputType), \
@@ -561,7 +561,7 @@
 
     @let serviceName = service.getSimpleName, \
          grpcName = context.getGrpcName(service)
-      @join method : service.getMethods
+      @join method : context.messages.getMethods(service)
         @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
              methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
@@ -603,7 +603,7 @@
     Builder builder = new Builder();
     @let serviceName = service.getSimpleName, \
          grpcName = context.getGrpcName(service)
-      @join method : service.getMethods
+      @join method : context.messages.getMethods(service)
         @let methodConstant = context.upperCamelToUpperUnderscore(method.getSimpleName), \
              methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
@@ -650,7 +650,7 @@
   private Builder({@settingsClassName(service)} settings) {
     super(settings);
 
-    @join method : service.getMethods
+    @join method : context.messages.getMethods(service)
       @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
            methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
            isPageStreaming = methodConfig.isPageStreaming
@@ -665,7 +665,7 @@
 @end
 
 @private settingsList(service)
-  @join method : service.getMethods vertical on ",".add(BREAK)
+  @join method : context.messages.getMethods(service) vertical on ",".add(BREAK)
     @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
          methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
          isPageStreaming = methodConfig.isPageStreaming

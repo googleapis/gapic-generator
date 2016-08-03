@@ -128,7 +128,7 @@
   private final ScheduledExecutorService executor;
   private final List<AutoCloseable> closeables = new ArrayList<>();
 
-  @join method : service.getMethods
+  @join method : context.messages.getMethods(service)
     @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
          methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
          inTypeName = context.typeName(method.getInputType), \
@@ -179,7 +179,7 @@
       this.executor = settings.getExecutorProvider().getOrBuildExecutor();
       this.channel = settings.getChannelProvider().getOrBuildChannel(this.executor);
 
-      @join method : service.getMethods
+      @join method : context.messages.getMethods(service)
         @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
              methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
              isPageStreaming = methodConfig.isPageStreaming, \
@@ -220,7 +220,7 @@
 @end
 
 @private callables(service)
-  @join method : service.getMethods
+  @join method : context.messages.getMethods(service)
     @let methodName = context.upperCamelToLowerCamel(method.getSimpleName), \
          inTypeName = context.typeName(method.getInputType), \
          outTypeName = context.typeName(method.getOutputType), \

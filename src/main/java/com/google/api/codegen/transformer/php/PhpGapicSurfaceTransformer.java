@@ -150,6 +150,9 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     List<String> methodKeys = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {
+      if (method.getRequestStreaming() || method.getResponseStreaming()) {
+        continue;
+      }
       methodKeys.add(context.getNamer().getMethodKey(method));
     }
 
@@ -160,6 +163,9 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
     List<ApiMethodView> apiMethods = new ArrayList<>();
 
     for (Method method : context.getInterface().getMethods()) {
+      if (method.getRequestStreaming() || method.getResponseStreaming()) {
+        continue;
+      }
       apiMethods.add(
           apiMethodTransformer.generateOptionalArrayMethod(context.asMethodContext(method)));
     }

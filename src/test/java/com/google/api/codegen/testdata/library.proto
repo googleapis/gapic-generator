@@ -117,6 +117,14 @@ service LibraryService {
   rpc UpdateBookIndex(UpdateBookIndexRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = { post: "/v1/{name=bookShelves/*/books/*}/index" body: "*" };
   }
+
+  // Server-side streaming example.
+  rpc ListBooksStreaming(ListBooksStreamingRequest) returns (stream ListBooksStreamingResponse) {
+    option (google.api.http) = { get: "/v1/{name=bookShelves/*}/books:stream" };
+  }
+
+  // Bidi-streaming example.
+  rpc ChatBook(stream BookComment) returns (stream BookComment) {}
 }
 
 // A single book in the library.
@@ -390,4 +398,32 @@ message UpdateBookIndexRequest {
 
   // The index to update the book with
   map<string, string> index_map = 3;
+}
+
+// Request message for LibraryService.ListBooksStreaming.
+message ListBooksStreamingRequest {
+  // The name of the shelf whose books we'd like to list.
+  string name = 1;
+
+  // The last book name already seen. The response will start the next
+  // book.
+  string last_book_name = 2;
+}
+
+// Response message for LibraryService.ListBooksStreamingResponse.
+message ListBooksStreamingResponse {
+  // The list of books.
+  repeated Book books = 1;
+
+  // The name of the last book in this response.
+  string last_book_name = 2;
+}
+
+// The request and response for LibraryService.ChatBook.
+message BookComment {
+  // The name of the book.
+  string name = 1;
+
+  // A comment for the book.
+  string comment = 2;
 }

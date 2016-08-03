@@ -46,6 +46,10 @@ public class FieldConfigGenerator implements MethodConfigGenerator {
 
   @Override
   public Map<String, Object> generate(Method method) {
+    if (method.getRequestStreaming()) {
+      return new LinkedHashMap<String, Object>();
+    }
+
     List<String> ignoredFields = Arrays.asList(PARAMETER_PAGE_TOKEN, PARAMETER_PAGE_SIZE);
 
     List<String> parameterList = new LinkedList<String>();

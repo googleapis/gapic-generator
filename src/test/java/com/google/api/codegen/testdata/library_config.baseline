@@ -283,3 +283,22 @@ interfaces:
     field_name_patterns:
       name: book_2
     timeout_millis: 30000
+  - name: ListBooksStreaming
+    flattening:
+      groups:
+      - parameters:
+        - name
+        - last_book_name
+    required_fields:
+    - name
+    - last_book_name
+    request_object_method: true
+    retry_codes_name: idempotent
+    retry_params_name: default
+    field_name_patterns:
+      name: book_shelf
+    timeout_millis: 30000
+  - name: ChatBook
+    retry_codes_name: non_idempotent
+    retry_params_name: default
+    timeout_millis: 30000

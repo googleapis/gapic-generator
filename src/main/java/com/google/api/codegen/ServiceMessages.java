@@ -14,13 +14,12 @@
  */
 package com.google.api.codegen;
 
+import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.protobuf.Empty;
-
-import java.util.List;
 
 /**
  * Utility class with methods to work with service methods.
@@ -43,7 +42,7 @@ public class ServiceMessages {
    * Inputs a list of methods and returns only those which are page streaming.
    */
   public Iterable<Method> filterPageStreamingMethods(
-      final InterfaceConfig config, List<Method> methods) {
+      final InterfaceConfig config, Iterable<Method> methods) {
     Predicate<Method> isPageStreaming =
         new Predicate<Method>() {
           @Override
@@ -59,7 +58,7 @@ public class ServiceMessages {
    * Inputs a list of methods and returns only those which are bundling.
    */
   public Iterable<Method> filterBundlingMethods(
-      final InterfaceConfig config, List<Method> methods) {
+      final InterfaceConfig config, Iterable<Method> methods) {
     Predicate<Method> isBundling =
         new Predicate<Method>() {
           @Override
@@ -69,5 +68,20 @@ public class ServiceMessages {
         };
 
     return Iterables.filter(methods, isBundling);
+  }
+
+  /**
+   * Returns the list of methods in the service. Right now this filters out streaming methods.
+   */
+  public Iterable<Method> getMethods(Interface service) {
+    Predicate<Method> isNonStreaming =
+        new Predicate<Method>() {
+          @Override
+          public boolean apply(Method method) {
+            return !method.getRequestStreaming() && !method.getResponseStreaming();
+          }
+        };
+
+    return Iterables.filter(service.getMethods(), isNonStreaming);
   }
 }
