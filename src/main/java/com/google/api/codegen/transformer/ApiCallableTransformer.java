@@ -29,6 +29,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ApiCallableTransformer {
+  private BundlingTransformer bundlingTransformer;
+
+  public ApiCallableTransformer() {
+    this.bundlingTransformer = new BundlingTransformer();
+  }
 
   public List<ApiCallableView> generateStaticApiCallables(SurfaceTransformerContext context) {
     List<ApiCallableView> callableMembers = new ArrayList<>();
@@ -128,33 +133,18 @@ public class ApiCallableTransformer {
       TypeRef resourceType = methodConfig.getPageStreaming().getResourcesField().getType();
       settings.resourceTypeName(typeTable.getAndSaveNicknameForElementType(resourceType));
       settings.pageStreamingDescriptorName(namer.getPageStreamingDescriptorConstName(method));
+    } else if (methodConfig.isBundling()) {
+      namer.addBundlingCallSettingsImports(typeTable);
+      settings.type(ApiCallableType.BundlingApiCallable);
+      settings.bundlingDescriptorName(namer.getBundlingDescriptorConstName(method));
+      settings.bundlingConfig(bundlingTransformer.generateBundlingConfig(context));
     } else {
-      if (methodConfig.isBundling()) {
-        namer.addBundlingCallSettingsImports(typeTable);
-        settings.type(ApiCallableType.BundlingApiCallable);
-        settings.bundlingDescriptorName(namer.getBundlingDescriptorConstName(method));
-        settings.bundlingConfig(generateBundlingConfig(context));
-      } else {
-        settings.type(ApiCallableType.SimpleApiCallable);
-      }
+      settings.type(ApiCallableType.SimpleApiCallable);
     }
 
     settings.memberName(namer.getSettingsMemberName(method));
     settings.settingsGetFunction(namer.getSettingsFunctionName(method));
 
     return Arrays.asList(settings.build());
-  }
-
-  private BundlingConfigView generateBundlingConfig(MethodTransformerContext context) {
-    BundlingConfig bundlingConfig = context.getMethodConfig().getBundling();
-    BundlingConfigView.Builder bundlingConfigView = BundlingConfigView.newBuilder();
-
-    bundlingConfigView.elementCountThreshold(bundlingConfig.getElementCountThreshold());
-    bundlingConfigView.elementCountLimit(bundlingConfig.getElementCountLimit());
-    bundlingConfigView.requestByteThreshold(bundlingConfig.getRequestByteThreshold());
-    bundlingConfigView.requestByteLimit(bundlingConfig.getRequestByteLimit());
-    bundlingConfigView.delayThresholdMillis(bundlingConfig.getDelayThresholdMillis());
-
-    return bundlingConfigView.build();
   }
 }

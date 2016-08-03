@@ -16,6 +16,7 @@ package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.BundlingConfig;
 import com.google.api.codegen.MethodConfig;
+import com.google.api.codegen.viewmodel.BundlingConfigView;
 import com.google.api.codegen.viewmodel.BundlingDescriptorClassView;
 import com.google.api.codegen.viewmodel.BundlingPartitionKeyView;
 import com.google.api.codegen.viewmodel.FieldCopyView;
@@ -40,6 +41,19 @@ public class BundlingTransformer {
     }
 
     return descriptors;
+  }
+
+  public BundlingConfigView generateBundlingConfig(MethodTransformerContext context) {
+    BundlingConfig bundlingConfig = context.getMethodConfig().getBundling();
+    BundlingConfigView.Builder bundlingConfigView = BundlingConfigView.newBuilder();
+
+    bundlingConfigView.elementCountThreshold(bundlingConfig.getElementCountThreshold());
+    bundlingConfigView.elementCountLimit(bundlingConfig.getElementCountLimit());
+    bundlingConfigView.requestByteThreshold(bundlingConfig.getRequestByteThreshold());
+    bundlingConfigView.requestByteLimit(bundlingConfig.getRequestByteLimit());
+    bundlingConfigView.delayThresholdMillis(bundlingConfig.getDelayThresholdMillis());
+
+    return bundlingConfigView.build();
   }
 
   private BundlingDescriptorClassView generateDescriptorClass(MethodTransformerContext context) {

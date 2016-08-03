@@ -156,7 +156,7 @@ public class ApiMethodTransformer {
     return methodViewBuilder.type(ApiMethodType.CallableMethod).build();
   }
 
-  public void setCommonFields(
+  private void setCommonFields(
       MethodTransformerContext context, StaticApiMethodView.Builder methodViewBuilder) {
     SurfaceNamer namer = context.getNamer();
     methodViewBuilder.apiRequestTypeName(
@@ -178,7 +178,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.hasReturnValue(true);
   }
 
-  public void setFlattenedMethodFields(
+  private void setFlattenedMethodFields(
       MethodTransformerContext context,
       ImmutableList<Field> fields,
       StaticApiMethodView.Builder methodViewBuilder) {
@@ -201,7 +201,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.pathTemplateChecks(generatePathTemplateChecks(context, fields));
   }
 
-  public void setRequestObjectMethodFields(
+  private void setRequestObjectMethodFields(
       MethodTransformerContext context,
       String callableMethodName,
       StaticApiMethodView.Builder methodViewBuilder) {
@@ -256,7 +256,7 @@ public class ApiMethodTransformer {
             .build());
   }
 
-  public void setSyncStaticReturnFields(
+  private void setSyncStaticReturnFields(
       MethodTransformerContext context, StaticApiMethodView.Builder methodViewBuilder) {
     String staticReturnTypeFullName =
         context.getNamer().getStaticReturnTypeName(context.getMethod(), context.getMethodConfig());
@@ -266,7 +266,7 @@ public class ApiMethodTransformer {
         !ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
   }
 
-  public List<PathTemplateCheckView> generatePathTemplateChecks(
+  private List<PathTemplateCheckView> generatePathTemplateChecks(
       MethodTransformerContext context, ImmutableList<Field> fields) {
     List<PathTemplateCheckView> pathTemplateChecks = new ArrayList<>();
     for (Field field : fields) {
