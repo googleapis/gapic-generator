@@ -15,8 +15,8 @@
 
 package com.google.gcloud.pubsub.spi;
 
-import com.google.api.gax.testing.LocalServiceHelper;
-import com.google.api.gax.testing.ValueGenerator;
+import com.google.api.gax.testing.MockGrpcService;
+import com.google.api.gax.testing.MockServiceHelper;
 import com.google.example.library.v1.AddCommentsRequest;
 import com.google.example.library.v1.Book;
 import com.google.example.library.v1.Comment;
@@ -50,13 +50,13 @@ import org.junit.Test;
 
 @javax.annotation.Generated("by GAPIC")
 public class LibraryServiceTest {
-  private static LocalServiceHelper serviceHelper;
+  private static MockServiceHelper serviceHelper;
   private LibraryServiceApi api;
 
   @BeforeClass
   public static void startStaticServer() {
     MockLibraryService mockService = new MockLibraryService();
-    serviceHelper = new LocalServiceHelper("in-process-1", mockService);
+    serviceHelper = new MockServiceHelper("in-process-1", mockService);
     serviceHelper.start();
   }
 

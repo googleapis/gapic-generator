@@ -82,8 +82,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("org.junit.Test");
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.util.List");
-    typeTable.saveNicknameFor("com.google.api.gax.testing.ValueGenerator");
-    typeTable.saveNicknameFor("com.google.api.gax.testing.LocalServiceHelper");
+    typeTable.saveNicknameFor("com.google.api.gax.testing.MockServiceHelper");
+    typeTable.saveNicknameFor("com.google.api.gax.testing.MockGrpcService");
     typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessage");
     typeTable.saveNicknameFor("junit.framework.Assert");
   }
