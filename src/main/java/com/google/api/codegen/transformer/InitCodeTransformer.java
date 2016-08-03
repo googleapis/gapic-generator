@@ -42,6 +42,7 @@ import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -81,18 +82,26 @@ public class InitCodeTransformer {
     List<GapicSurfaceTestAssertView> assertViews = new ArrayList<>();
     Map<String, Object> initFieldStructure = createInitFieldStructure(context);
     InitCodeGenerator generator = new InitCodeGenerator();
+
     InitCode initCode =
         generator.generateRequestFieldInitCode(context.getMethod(), initFieldStructure, fields);
 
+    ArrayList<String> fieldNames = new ArrayList<>();
+    for (Field field : fields) {
+      fieldNames.add(Name.from(field.getSimpleName()).toLowerCamel());
+    }
+
     for (InitCodeLine line : initCode.getLines()) {
-      SurfaceNamer namer = context.getNamer();
-      GapicSurfaceTestAssertView assertView =
-          GapicSurfaceTestAssertView.newBuilder()
-              .expectedValueIdentifier(
-                  namer.getVariableName(line.getIdentifier(), line.getInitValueConfig()))
-              .actualValueIdentifier(namer.getGetFunctionCallName(line.getIdentifier()))
-              .build();
-      assertViews.add(assertView);
+      if (fieldNames.contains(line.getIdentifier().toLowerCamel())) {
+        SurfaceNamer namer = context.getNamer();
+        GapicSurfaceTestAssertView assertView =
+            GapicSurfaceTestAssertView.newBuilder()
+                .expectedValueIdentifier(
+                    namer.getVariableName(line.getIdentifier(), line.getInitValueConfig()))
+                .actualValueGetter(namer.getGetFunctionCallName(line.getIdentifier()))
+                .build();
+        assertViews.add(assertView);
+      }
     }
 
     return assertViews;

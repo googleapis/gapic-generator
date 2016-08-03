@@ -116,8 +116,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     return testCaseViews;
   }
 
-  private GapicSurfaceTestCaseView createTestCaseView(
-      MethodTransformerContext methodContext) {
+  private GapicSurfaceTestCaseView createTestCaseView(MethodTransformerContext methodContext) {
     MethodConfig methodConfig = methodContext.getMethodConfig();
     InitCodeTransformer initCodeTransformer = new InitCodeTransformer();
     InitCodeView initCodeView =
@@ -142,8 +141,8 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .getAndSaveNicknameFor(methodContext.getMethod().getInputType());
 
     return GapicSurfaceTestCaseView.newBuilder()
-        .name(methodContext.getNamer().getTestClassName(methodContext.getInterface()))
-        .methodName(methodContext.getMethod().getSimpleName())
+        .name(methodContext.getNamer().getTestCaseName(methodContext.getMethod()))
+        .surfaceMethodName(methodContext.getMethod().getSimpleName())
         .requestTypeName(requestTypeName)
         .initCode(initCodeView)
         .isPageStreaming(isPageStreaming)

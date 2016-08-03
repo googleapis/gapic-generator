@@ -14,7 +14,6 @@
   public class {@xapiTest.name} {
     private static LocalServiceHelper serviceHelper;
     private {@xapiTest.apiClassName} api;
-    private ValueGenerator valueGenerator;
 
     @@BeforeClass
     public static void startStaticServer() {
@@ -35,7 +34,6 @@
           .provideChannelWith(serviceHelper.createChannel(), true)
           .build();
       api = {@xapiTest.apiClassName}.create(settings);
-      valueGenerator = new ValueGenerator();
     }
 
     @@After
@@ -62,20 +60,21 @@
     {@test.requestTypeName} request = ({@test.requestTypeName})requests[0];
 
     @join assert : test.asserts
-      Assert.assertEquals(request.{@assert.actualValueIdentifier}(), {@assert.expectedValueIdentifier});
+      Assert.assertEquals(request.{@assert.actualValueGetter}(), {@assert.expectedValueIdentifier});
     @end
   }
 @end
 
 @private methodCall(test)
   @if {@test.isPageStreaming}
-    PageAccessor<{@test.resourceTypeName}> response = api.{@test.methodName}(\
+    PageAccessor<{@test.resourceTypeName}> response = api.{@test.surfaceMethodName}(\
       {@sampleMethodCallArgList(test.initCode.fieldSettings)});
     for ({@test.resourceTypeName} element : response) {
-      // DO NOTHING
+      // PageAccessor will not make actual request until it is iterated.
+      // Iterate through the element here in order to make grpc requests.
     }
   @else
-    api.{@test.methodName}(\
+    api.{@test.surfaceMethodName}(\
       {@sampleMethodCallArgList(test.initCode.fieldSettings)});
   @end
 @end

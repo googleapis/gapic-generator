@@ -443,6 +443,10 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return methodName(Name.upperCamel(method.getSimpleName(), "Test"));
   }
 
+  public String getTestCaseName(Method method) {
+    return methodName(Name.upperCamel(method.getSimpleName(), "Test"));
+  }
+
   public String getMockServiceClassName(Interface service) {
     return className(Name.upperCamel("Mock", service.getSimpleName()));
   }

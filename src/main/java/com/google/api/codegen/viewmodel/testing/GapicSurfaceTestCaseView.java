@@ -16,13 +16,14 @@ package com.google.api.codegen.viewmodel.testing;
 
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.auto.value.AutoValue;
+
 import java.util.List;
 
 @AutoValue
 public abstract class GapicSurfaceTestCaseView {
   public abstract String name();
 
-  public abstract String methodName();
+  public abstract String surfaceMethodName();
 
   public abstract String requestTypeName();
 
@@ -40,7 +41,7 @@ public abstract class GapicSurfaceTestCaseView {
 
   @AutoValue.Builder
   public abstract static class Builder {
-    public abstract Builder methodName(String val);
+    public abstract Builder surfaceMethodName(String val);
 
     public abstract Builder name(String val);
 
