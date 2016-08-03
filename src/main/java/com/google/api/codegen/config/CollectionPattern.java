@@ -111,9 +111,11 @@ public class CollectionPattern {
   public static List<CollectionPattern> getCollectionPatternsFromMethod(Method method) {
     List<CollectionPattern> collectionPatterns = new LinkedList<CollectionPattern>();
     HttpAttribute httpAttr = method.getAttribute(HttpAttribute.KEY);
-    for (PathSegment pathSegment : httpAttr.getPath()) {
-      if (CollectionPattern.isValidCollectionPattern(pathSegment)) {
-        collectionPatterns.add(CollectionPattern.create((FieldSegment) pathSegment));
+    if (httpAttr != null) {
+      for (PathSegment pathSegment : httpAttr.getPath()) {
+        if (CollectionPattern.isValidCollectionPattern(pathSegment)) {
+          collectionPatterns.add(CollectionPattern.create((FieldSegment) pathSegment));
+        }
       }
     }
     return collectionPatterns;
