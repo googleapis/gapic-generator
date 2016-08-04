@@ -33,11 +33,8 @@ public class PageStreamingTransformer {
   public List<PageStreamingDescriptorView> generateDescriptors(SurfaceTransformerContext context) {
     List<PageStreamingDescriptorView> descriptors = new ArrayList<>();
 
-    for (Method method : context.getNonStreamingMethods()) {
+    for (Method method : context.getPageStreamingMethods()) {
       MethodConfig methodConfig = context.getMethodConfig(method);
-      if (!methodConfig.isPageStreaming()) {
-        continue;
-      }
       context.getNamer().addPageStreamingDescriptorImports(context.getTypeTable());
       PageStreamingConfig pageStreaming = methodConfig.getPageStreaming();
 
@@ -59,11 +56,7 @@ public class PageStreamingTransformer {
     List<PageStreamingDescriptorClassView> descriptors = new ArrayList<>();
 
     context.getNamer().addPageStreamingDescriptorImports(context.getTypeTable());
-    for (Method method : context.getInterface().getMethods()) {
-      MethodConfig methodConfig = context.getMethodConfig(method);
-      if (!methodConfig.isPageStreaming()) {
-        continue;
-      }
+    for (Method method : context.getPageStreamingMethods()) {
       descriptors.add(generateDescriptorClass(context.asMethodContext(method)));
     }
 

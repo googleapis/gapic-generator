@@ -36,7 +36,7 @@ public class ApiCallableTransformer {
   public List<ApiCallableView> generateStaticLangApiCallables(SurfaceTransformerContext context) {
     List<ApiCallableView> callableMembers = new ArrayList<>();
 
-    for (Method method : context.getInterface().getMethods()) {
+    for (Method method : context.getNonStreamingMethods()) {
       callableMembers.addAll(generateStaticLangApiCallables(context.asMethodContext(method)));
     }
 
@@ -46,7 +46,7 @@ public class ApiCallableTransformer {
   public List<ApiCallSettingsView> generateCallSettings(SurfaceTransformerContext context) {
     List<ApiCallSettingsView> settingsMembers = new ArrayList<>();
 
-    for (Method method : context.getInterface().getMethods()) {
+    for (Method method : context.getNonStreamingMethods()) {
       settingsMembers.addAll(generateApiCallableSettings(context.asMethodContext(method)));
     }
 

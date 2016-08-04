@@ -79,12 +79,22 @@ public abstract class SurfaceTransformerContext {
    * Returns a list of simple RPC methods.
    */
   public List<Method> getNonStreamingMethods() {
-    List<Method> simples = new ArrayList<>(getInterface().getMethods().size());
+    List<Method> methods = new ArrayList<>(getInterface().getMethods().size());
     for (Method method : getInterface().getMethods()) {
       if (!method.getRequestStreaming() && !method.getResponseStreaming()) {
-        simples.add(method);
+        methods.add(method);
       }
     }
-    return simples;
+    return methods;
+  }
+
+  public List<Method> getPageStreamingMethods() {
+    List<Method> methods = new ArrayList<>();
+    for (Method method : getNonStreamingMethods()) {
+      if (getMethodConfig(method).isPageStreaming()) {
+        methods.add(method);
+      }
+    }
+    return methods;
   }
 }
