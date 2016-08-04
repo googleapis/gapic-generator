@@ -79,7 +79,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
   /**
    * The import path for generated pb.go files for core-proto files.
    */
-  private static final String CORE_PROTO_BASE = "google.golang.org/genproto/googleapis";
+  private static final String CORE_PROTO_BASE = "google.golang.org/genproto/";
 
   /**
    * The set of the core protobuf packages.
@@ -168,6 +168,10 @@ public class GoGapicContext extends GapicContext implements GoContext {
    * Returns the local name used in Go files for the package of the proto.
    */
   private static String localPackageName(ProtoElement proto) {
+    String goPackage = proto.getFile().getProto().getOptions().getGoPackage();
+    if (goPackage.startsWith(CORE_PROTO_BASE)) {
+      return goPackage.substring(CORE_PROTO_BASE.length()).replace("/", "_");
+    }
     return proto.getFile().getProto().getPackage().replace(".", "_");
   }
 
@@ -383,11 +387,8 @@ public class GoGapicContext extends GapicContext implements GoContext {
    */
   private GoImport createMessageImport(MessageType messageType) {
     String pkgName = messageType.getFile().getProto().getOptions().getGoPackage();
-    // If there's no `go_package` specified, we guess an import path based on the core proto base
-    // repo and the proto package.
     if (Strings.isNullOrEmpty(pkgName)) {
-      pkgName =
-          CORE_PROTO_BASE + "/" + messageType.getFile().getProto().getPackage().replace(".", "/");
+      throw new IllegalArgumentException("go_package attribute must be defined");
     }
     String localName = localPackageName(messageType);
     return GoImport.create(pkgName, localName);
