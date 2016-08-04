@@ -353,7 +353,7 @@
             func (it *{@iteratorTypeName}) Next() ({@resourceFieldTypeName}, error) {
                 for it.currentIndex >= len(it.items) {
                     if it.atLastPage {
-                        return nil, Done
+                        return {@context.zeroValue(resourceFieldType)}, Done
                     }
                     if err := it.apiCall(); err != nil {
                         return {@context.zeroValue(resourceFieldType)}, err
