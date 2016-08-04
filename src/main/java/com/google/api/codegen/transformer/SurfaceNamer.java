@@ -30,6 +30,7 @@ import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.TypeRef;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -119,7 +120,7 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /** The function name to set a field having the given type and name. */
-  public String getFieldSetFunctionName(TypeRef type, Name identifier) {.
+  public String getFieldSetFunctionName(TypeRef type, Name identifier) {
     if (type.isMap()) {
       return methodName(Name.from("put", "all").join(identifier));
     } else if (type.isRepeated()) {
@@ -351,22 +352,6 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return getNotImplementedString("SurfaceNamer.getOptionalArrayTypeName");
   }
 
-  public String getDynamicReturnTypeName(Method method, MethodConfig methodConfig) {
-    return getNotImplementedString("SurfaceNamer.getDynamicReturnTypeName");
-  }
-
-  public String getApiSettingsClassName(Interface service) {
-    return className(Name.upperCamel(service.getSimpleName(), "Settings"));
-  }
-
-  public String getGenericAwareResponseType(ModelTypeTable typeTable, TypeRef outputType) {
-    return SurfaceNamer.NOT_IMPLEMENTED;
-  }
-
-  public String getGetResourceListCallName(Field resourcesField) {
-    return methodName(Name.from("get", resourcesField.getSimpleName(), "list"));
-  }
-
   /** The return type name in a dynamic language for the given method. */
   public String getDynamicLangReturnTypeName(Method method, MethodConfig methodConfig) {
     return getNotImplementedString("SurfaceNamer.getDynamicReturnTypeName");
@@ -443,11 +428,15 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return methodName(Name.upperCamel(method.getSimpleName(), "Test"));
   }
 
-  public String getTestCaseName(Method method) {
-    return methodName(Name.upperCamel(method.getSimpleName(), "Test"));
+  public String getTestClassName(Interface service) {
+    return className(Name.upperCamel(service.getSimpleName(), "Test"));
   }
 
   public String getMockServiceClassName(Interface service) {
     return className(Name.upperCamel("Mock", service.getSimpleName()));
+  }
+
+  public String getGetFunctionCallName(Name name) {
+    return methodName(Name.from("get").join(name));
   }
 }

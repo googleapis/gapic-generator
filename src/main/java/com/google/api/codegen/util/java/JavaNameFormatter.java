@@ -62,10 +62,4 @@ public class JavaNameFormatter implements NameFormatter {
   public String qualifiedName(NamePath namePath) {
     return namePath.toDotted();
   }
-
-  @Override
-  public String varReference(Name name) {
-    // TODO: Implement this.
-    return null;
-  }
 }

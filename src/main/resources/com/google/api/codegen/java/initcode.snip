@@ -1,4 +1,4 @@
-@extends "java/mvvm_common.snip"
+@extends "java/common.snip"
 
 @snippet initCode(initCodeSpec)
   @join line : initCodeSpec.lines
@@ -20,7 +20,7 @@
 @private initLineStructure(line)
   {@line.typeName} {@line.identifier} = {@line.typeName}.newBuilder()
   @join fieldSetting : line.fieldSettings
-    {@EMPTY}  .{@fieldSetting.fnSetFunctionCallName}({@fieldSetting.identifier})
+    {@EMPTY}  .{@fieldSetting.fieldSetFunction}({@fieldSetting.identifier})
   @end
   {@EMPTY}  .build();
 @end
