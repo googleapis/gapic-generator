@@ -20,6 +20,7 @@ import com.google.api.tools.framework.aspects.documentation.DocumentationConfigA
 import com.google.api.tools.framework.aspects.http.HttpConfigAspect;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.processors.merger.Merger;
 import com.google.api.tools.framework.processors.resolver.Resolver;
@@ -29,9 +30,6 @@ import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
-
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -44,6 +42,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
 /** Main class for the config generator. */
 public class ConfigGeneratorApi extends ToolDriverBase {
@@ -68,7 +69,7 @@ public class ConfigGeneratorApi extends ToolDriverBase {
   private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
 
   private static final String CONFIG_KEY_TIMEOUT = "timeout_millis";
-  private static final int CONFIG_VALUE_DEFAULT_TIMEOUT = 30000;
+  private static final int CONFIG_VALUE_DEFAULT_TIMEOUT = 60000;
 
   /** Constructs a config generator api based on given options. */
   public ConfigGeneratorApi(ToolOptions options) {
@@ -156,9 +157,13 @@ public class ConfigGeneratorApi extends ToolDriverBase {
   }
 
   private Map<String, Object> generateLanguageSettings() {
-    int index =
-        Preconditions.checkPositionIndex(model.getFiles().size() - 1, model.getFiles().size());
-    String packageName = model.getFiles().get(index).getFullName();
+    String packageName = null;
+    for (Interface interfaze : model.getSymbolTable().getInterfaces()) {
+      // use the package name of the first interface
+      packageName = interfaze.getFile().getFullName();
+      break;
+    }
+    Preconditions.checkNotNull(packageName, "No interface found.");
     return LanguageGenerator.generate(packageName);
   }
 

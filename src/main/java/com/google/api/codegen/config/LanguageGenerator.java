@@ -17,6 +17,7 @@ package com.google.api.codegen.config;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -33,24 +34,31 @@ public class LanguageGenerator {
 
   private static final String CONFIG_KEY_PACKAGE_NAME = "package_name";
 
-  private static final Map<String, LanguageFormatter> LANGUAGE_FORMATTERS =
-      ImmutableMap.<String, LanguageFormatter>builder()
-          .put("java", new SimpleLanguageFormatter(".", "com", false))
-          .put("python", new SimpleLanguageFormatter(".", null, false))
-          .put("go", new GoLanguageFormatter())
-          .put("csharp", new SimpleLanguageFormatter(".", null, true))
-          .put("ruby", new SimpleLanguageFormatter("::", null, true))
-          .put("php", new SimpleLanguageFormatter("\\", null, true))
-          .build();
+  private static final Map<String, LanguageFormatter> LANGUAGE_FORMATTERS;
+
+  static {
+    List<RewriteRule> javaRewriteRules =
+        Arrays.asList(
+            new RewriteRule("^google", "com.google.cloud"),
+            new RewriteRule("(.v[^.]+)$", ".spi$1"));
+    List<RewriteRule> phpRewriteRules = Arrays.asList(new RewriteRule("^google", "google.cloud"));
+    LANGUAGE_FORMATTERS =
+        ImmutableMap.<String, LanguageFormatter>builder()
+            .put("java", new SimpleLanguageFormatter(".", javaRewriteRules, false))
+            .put("python", new SimpleLanguageFormatter(".", null, false))
+            .put("go", new GoLanguageFormatter())
+            .put("csharp", new SimpleLanguageFormatter(".", null, true))
+            .put("ruby", new SimpleLanguageFormatter("::", null, true))
+            .put("php", new SimpleLanguageFormatter("\\", phpRewriteRules, true))
+            .build();
+  }
 
   public static Map<String, Object> generate(String packageName) {
-    List<String> packageNameComponents =
-        Arrays.asList(packageName.split(DEFAULT_PACKAGE_SEPARATOR));
 
     Map<String, Object> languages = new LinkedHashMap<>();
     for (String language : LANGUAGE_FORMATTERS.keySet()) {
       LanguageFormatter formatter = LANGUAGE_FORMATTERS.get(language);
-      String formattedPackageName = formatter.getFormattedPackageName(packageNameComponents);
+      String formattedPackageName = formatter.getFormattedPackageName(packageName);
 
       Map<String, Object> packageNameMap = new LinkedHashMap<>();
       packageNameMap.put(CONFIG_KEY_PACKAGE_NAME, formattedPackageName);
@@ -64,27 +72,32 @@ public class LanguageGenerator {
   }
 
   private interface LanguageFormatter {
-    String getFormattedPackageName(List<String> nameComponents);
+    String getFormattedPackageName(String packageName);
   }
 
   private static class SimpleLanguageFormatter implements LanguageFormatter {
 
     private final String separator;
-    private final String prefix;
+    private final List<RewriteRule> rewriteRules;
     private final boolean capitalize;
 
-    public SimpleLanguageFormatter(String separator, String prefix, boolean capitalize) {
+    public SimpleLanguageFormatter(
+        String separator, List<RewriteRule> rewriteRules, boolean capitalize) {
       this.separator = separator;
-      this.prefix = prefix;
+      if (rewriteRules != null) {
+        this.rewriteRules = rewriteRules;
+      } else {
+        this.rewriteRules = new ArrayList<>();
+      }
       this.capitalize = capitalize;
     }
 
-    public String getFormattedPackageName(List<String> nameComponents) {
-      List<String> elements = new LinkedList<>();
-      if (prefix != null) {
-        elements.add(prefix);
+    public String getFormattedPackageName(String packageName) {
+      for (RewriteRule rewriteRule : rewriteRules) {
+        packageName = rewriteRule.rewrite(packageName);
       }
-      for (String component : nameComponents) {
+      List<String> elements = new LinkedList<>();
+      for (String component : packageName.split(DEFAULT_PACKAGE_SEPARATOR)) {
         if (capitalize) {
           elements.add(firstCharToUpperCase(component));
         } else {
@@ -96,11 +109,10 @@ public class LanguageGenerator {
   }
 
   private static class GoLanguageFormatter implements LanguageFormatter {
+    public String getFormattedPackageName(String packageName) {
+      List<String> nameComponents = new ArrayList<>();
+      nameComponents.addAll(Arrays.asList(packageName.split(DEFAULT_PACKAGE_SEPARATOR)));
 
-    private static LanguageFormatter backup =
-        new SimpleLanguageFormatter("/", "google.golang.org", false);
-
-    public String getFormattedPackageName(List<String> nameComponents) {
       // If the name follows the pattern google.foo.bar.v1234,
       // we reformat it into cloud.google.com.
       // google.logging.v2 => cloud.google.com/go/logging/apiv2
@@ -109,12 +121,30 @@ public class LanguageGenerator {
       if (size < 3
           || !nameComponents.get(0).equals("google")
           || !nameComponents.get(size - 1).startsWith("v")) {
-        return backup.getFormattedPackageName(nameComponents);
+        nameComponents.add(0, "google.golang.org");
+        return Joiner.on("/").join(nameComponents);
       }
       return "cloud.google.com/go/"
           + Joiner.on("/").join(nameComponents.subList(1, size - 1))
           + "/api"
           + nameComponents.get(size - 1);
+    }
+  }
+
+  private static class RewriteRule {
+    private final String pattern;
+    private final String replacement;
+
+    public RewriteRule(String pattern, String replacement) {
+      this.pattern = pattern;
+      this.replacement = replacement;
+    }
+
+    public String rewrite(String input) {
+      if (pattern == null) {
+        return input;
+      }
+      return input.replaceAll(pattern, replacement);
     }
   }
 }

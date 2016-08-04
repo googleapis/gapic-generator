@@ -68,9 +68,9 @@ public class RetryGenerator implements MethodConfigGenerator {
     retryParamsDefault.put("initial_retry_delay_millis", 100);
     retryParamsDefault.put("retry_delay_multiplier", 1.3);
     retryParamsDefault.put("max_retry_delay_millis", 60000);
-    retryParamsDefault.put("initial_rpc_timeout_millis", 60000);
+    retryParamsDefault.put("initial_rpc_timeout_millis", 20000);
     retryParamsDefault.put("rpc_timeout_multiplier", 1);
-    retryParamsDefault.put("max_rpc_timeout_millis", 60000);
+    retryParamsDefault.put("max_rpc_timeout_millis", 20000);
     retryParamsDefault.put("total_timeout_millis", 600000);
 
     List<Object> output = new LinkedList<Object>();
