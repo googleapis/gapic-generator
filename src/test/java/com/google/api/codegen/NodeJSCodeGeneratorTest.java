@@ -59,9 +59,9 @@ public class NodeJSCodeGeneratorTest {
   }
 
   @RunWith(Parameterized.class)
-  public static class NodeJSNoPathTGemplatesBaseline extends GapicTestBase {
+  public static class NodeJSNoPathTemplatesBaseline extends GapicTestBase {
 
-    public NodeJSNoPathTGemplatesBaseline(
+    public NodeJSNoPathTemplatesBaseline(
         String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
       super(name, idForFactory, gapicConfigFileNames, snippetName);
       getTestDataLocator()
