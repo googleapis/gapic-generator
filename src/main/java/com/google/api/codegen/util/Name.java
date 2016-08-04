@@ -192,6 +192,19 @@ public class Name {
     return new Name(newPieceList);
   }
 
+  @Override
+  public boolean equals(Object other) {
+    if (other instanceof Name) {
+      return ((Name) other).toLowerUnderscore().equals(this.toLowerUnderscore());
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return this.toLowerUnderscore().hashCode();
+  }
+
   private static class NamePiece {
     public final String identifier;
     public final CaseFormat caseFormat;

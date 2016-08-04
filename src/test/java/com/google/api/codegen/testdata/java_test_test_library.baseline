@@ -113,13 +113,10 @@ public class LibraryServiceTest {
 
     PageAccessor<Shelf> response = api.ListShelves();
 
-    // Dumb value to avoid JVM optimization.
-    int requestCount = 0;
-    for (Shelf element : response) {
-      // PageAccessor will not make actual request until it is iterated.
-      // Iterate through the element here in order to make grpc requests.
-      requestCount += 1;
-    }
+    // PageAccessor will not make actual request until it is being used.
+    // Add all the pages here in order to make grpc requests.
+    List<Shelf> resources = new ArrayList<>();
+    resources.addAll(response.getPageValues());
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, requests.size());
@@ -204,13 +201,10 @@ public class LibraryServiceTest {
     String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
     PageAccessor<Book> response = api.ListBooks(formattedName);
 
-    // Dumb value to avoid JVM optimization.
-    int requestCount = 0;
-    for (Book element : response) {
-      // PageAccessor will not make actual request until it is iterated.
-      // Iterate through the element here in order to make grpc requests.
-      requestCount += 1;
-    }
+    // PageAccessor will not make actual request until it is being used.
+    // Add all the pages here in order to make grpc requests.
+    List<Book> resources = new ArrayList<>();
+    resources.addAll(response.getPageValues());
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, requests.size());
@@ -268,13 +262,10 @@ public class LibraryServiceTest {
 
     PageAccessor<String> response = api.ListStrings();
 
-    // Dumb value to avoid JVM optimization.
-    int requestCount = 0;
-    for (String element : response) {
-      // PageAccessor will not make actual request until it is iterated.
-      // Iterate through the element here in order to make grpc requests.
-      requestCount += 1;
-    }
+    // PageAccessor will not make actual request until it is being used.
+    // Add all the pages here in order to make grpc requests.
+    List<String> resources = new ArrayList<>();
+    resources.addAll(response.getPageValues());
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, requests.size());
