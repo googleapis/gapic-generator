@@ -26,8 +26,8 @@ namespace Google\Example\Library\V1;
 use Google\GAX\AgentHeaderDescriptor;
 use Google\GAX\ApiCallable;
 use Google\GAX\CallSettings;
-use Google\GAX\GrpcBootstrap;
 use Google\GAX\GrpcConstants;
+use Google\GAX\GrpcCredentialsHelper;
 use Google\GAX\PageStreamingDescriptor;
 use Google\GAX\PathTemplate;
 use google\example\library\v1\AddCommentsRequest;
@@ -363,7 +363,7 @@ class LibraryServiceApi
             $createStubOptions['sslCreds'] = $options['sslCreds'];
         }
         $grpcCredentialsHelperOptions = array_diff_key($options, $defaultOptions);
-        $this->grpcCredentialsHelper = new grpcCredentialsHelper($this->scopes, $grpcCredentialsHelperOptions);
+        $this->grpcCredentialsHelper = new GrpcCredentialsHelper($this->scopes, $grpcCredentialsHelperOptions);
         $this->stub = $this->grpcCredentialsHelper->createStub(
             $generatedCreateStub,
             $options['serviceAddress'],
