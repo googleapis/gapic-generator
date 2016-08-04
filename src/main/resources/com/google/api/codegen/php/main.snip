@@ -109,7 +109,7 @@
 @end
 
 @private members()
-    private $grpcBootstrap;
+    private $grpcCredentialsHelper;
     private $stub;
     private $scopes;
     private $defaultCallSettings;
@@ -300,11 +300,9 @@
         if (!empty($options['sslCreds'])) {
             $createStubOptions['sslCreds'] = $options['sslCreds'];
         }
-        $grpcBootstrapOptions = array_intersect_key($options, [
-            'credentialsLoader' => null,
-        ]);
-        $this->grpcBootstrap = new GrpcBootstrap($this->scopes, $grpcBootstrapOptions);
-        $this->stub = $this->grpcBootstrap->createStub(
+        $grpcCredentialsHelperOptions = array_diff_key($options, $defaultOptions);
+        $this->grpcCredentialsHelper = new grpcCredentialsHelper($this->scopes, $grpcCredentialsHelperOptions);
+        $this->stub = $this->grpcCredentialsHelper->createStub(
             $generatedCreateStub,
             $options['serviceAddress'],
             $options['port'],
@@ -470,6 +468,6 @@
 
     private function createCredentialsCallback()
     {
-        return $this->grpcBootstrap->createCallCredentialsCallback();
+        return $this->grpcCredentialsHelper->createCallCredentialsCallback();
     }
 @end
