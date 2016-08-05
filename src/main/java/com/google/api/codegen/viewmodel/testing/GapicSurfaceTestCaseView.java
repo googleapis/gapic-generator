@@ -14,6 +14,7 @@
  */
 package com.google.api.codegen.viewmodel.testing;
 
+import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.auto.value.AutoValue;
 
@@ -29,7 +30,7 @@ public abstract class GapicSurfaceTestCaseView {
 
   public abstract String resourceTypeName();
 
-  public abstract boolean isPageStreaming();
+  public abstract ApiMethodType methodType();
 
   public abstract InitCodeView initCode();
 
@@ -49,7 +50,7 @@ public abstract class GapicSurfaceTestCaseView {
 
     public abstract Builder resourceTypeName(String val);
 
-    public abstract Builder isPageStreaming(boolean val);
+    public abstract Builder methodType(ApiMethodType val);
 
     public abstract Builder initCode(InitCodeView val);
 

@@ -22,8 +22,10 @@ import com.google.api.codegen.transformer.InitCodeTransformer;
 import com.google.api.codegen.transformer.MethodTransformerContext;
 import com.google.api.codegen.transformer.ModelToViewTransformer;
 import com.google.api.codegen.transformer.ModelTypeTable;
+import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.transformer.SurfaceTransformerContext;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.codegen.viewmodel.ApiMethodType;
 import com.google.api.codegen.viewmodel.InitCodeView;
 import com.google.api.codegen.viewmodel.ViewModel;
 import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
@@ -39,7 +41,7 @@ import java.util.List;
 /** A subclass of ModelToViewTransformer which translates model into API tests in Java. */
 public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
-  static String TEST_TEMPLATE_FILE = "java/test.snip";
+  private static String TEST_TEMPLATE_FILE = "java/test.snip";
 
   private GapicCodePathMapper pathMapper;
 
@@ -82,8 +84,11 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
     typeTable.saveNicknameFor("org.junit.Test");
     typeTable.saveNicknameFor("java.io.IOException");
     typeTable.saveNicknameFor("java.util.List");
+    typeTable.saveNicknameFor("java.util.ArrayList");
     typeTable.saveNicknameFor("com.google.api.gax.testing.MockServiceHelper");
     typeTable.saveNicknameFor("com.google.api.gax.testing.MockGrpcService");
+    typeTable.saveNicknameFor("com.google.api.gax.core.PageAccessor");
+    typeTable.saveNicknameFor("com.google.common.collect.Lists");
     typeTable.saveNicknameFor("com.google.protobuf.GeneratedMessage");
     typeTable.saveNicknameFor("junit.framework.Assert");
   }
@@ -101,8 +106,9 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .mockServiceClassName(context.getNamer().getMockServiceClassName(service))
             .testCases(createTestCaseViews(context))
             .outputPath(outputPath)
-            .imports(context.getTypeTable().getImports())
             .templateFileName(TEST_TEMPLATE_FILE)
+            // Imports must be done as the last step to catch all imports.
+            .imports(context.getTypeTable().getImports())
             .build();
     return testClass;
   }
@@ -126,6 +132,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             methodContext, methodConfig.getRequiredFields());
 
     String resourceTypeName = "";
+    ApiMethodType type = ApiMethodType.FlattenedMethod;
     boolean isPageStreaming = methodConfig.isPageStreaming();
     if (isPageStreaming) {
       resourceTypeName =
@@ -133,6 +140,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
               .getTypeTable()
               .getAndSaveNicknameForElementType(
                   methodConfig.getPageStreaming().getResourcesField().getType());
+      type = ApiMethodType.PagedFlattenedMethod;
     }
 
     String requestTypeName =
@@ -140,12 +148,13 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .getTypeTable()
             .getAndSaveNicknameFor(methodContext.getMethod().getInputType());
 
+    SurfaceNamer namer = methodContext.getNamer();
     return GapicSurfaceTestCaseView.newBuilder()
-        .name(methodContext.getNamer().getTestCaseName(methodContext.getMethod()))
-        .surfaceMethodName(methodContext.getMethod().getSimpleName())
+        .name(namer.getTestCaseName(methodContext.getMethod()))
+        .surfaceMethodName(namer.getApiMethodName(methodContext.getMethod()))
         .requestTypeName(requestTypeName)
         .initCode(initCodeView)
-        .isPageStreaming(isPageStreaming)
+        .methodType(type)
         .resourceTypeName(resourceTypeName)
         .asserts(assertViews)
         .build();

@@ -57,7 +57,7 @@
 
     List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
     Assert.assertEquals(1, requests.size());
-    {@test.requestTypeName} request = ({@test.requestTypeName})requests[0];
+    {@test.requestTypeName} request = ({@test.requestTypeName})requests.get(0);
 
     @join assert : test.asserts
       Assert.assertEquals(request.{@assert.actualValueGetter}(), {@assert.expectedValueIdentifier});
@@ -66,17 +66,19 @@
 @end
 
 @private methodCall(test)
-  @if {@test.isPageStreaming}
+  @switch test.methodType
+  @case "PagedFlattenedMethod"
     PageAccessor<{@test.resourceTypeName}> response = api.{@test.surfaceMethodName}(\
       {@sampleMethodCallArgList(test.initCode.fieldSettings)});
 
     // PageAccessor will not make actual request until it is being used.
     // Add all the pages here in order to make grpc requests.
-    List<{@test.resourceTypeName}> resources = new ArrayList<>();
-    resources.addAll(response.getPageValues());
-  @else
+    List<{@test.resourceTypeName}> resources = Lists.newArrayList(response.getPageValues());
+  @case "FlattenedMethod"
     api.{@test.surfaceMethodName}(\
       {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+  @default
+    $unhandledCase: {@test.type}$
   @end
 @end
 
