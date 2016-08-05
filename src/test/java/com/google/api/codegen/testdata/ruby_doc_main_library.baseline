@@ -23,11 +23,15 @@
 # The only allowed edits are to method and file documentation. A 3-way
 # merge preserves those additions if the generated source changes.
 
-require 'json'
-require 'pathname'
+require "json"
+require "pathname"
 
-require 'google/gax'
-require 'library_services'
+require "google/gax"
+require "library_services"
+
+# TODO: implement line-wrapping rules and remove this suppression.
+# rubocop:disable LineLength
+# rubocop:disable MethodLength
 
 module Library
   module V1
@@ -50,40 +54,40 @@ module Library
       attr_reader :stub
 
       # The default address of the service.
-      SERVICE_ADDRESS = 'library-example.googleapis.com'.freeze
+      SERVICE_ADDRESS = "library-example.googleapis.com".freeze
 
       # The default port of the service.
       DEFAULT_SERVICE_PORT = 443
 
-      CODE_GEN_NAME_VERSION = 'gapic/0.1.0'.freeze
+      CODE_GEN_NAME_VERSION = "gapic/0.1.0".freeze
 
       DEFAULT_TIMEOUT = 30
 
       PAGE_DESCRIPTORS = {
-        'list_shelves' => Google::Gax::PageDescriptor.new(
-          'page_token',
-          'next_page_token',
-          'shelves'),
-        'list_books' => Google::Gax::PageDescriptor.new(
-          'page_token',
-          'next_page_token',
-          'books'),
-        'list_strings' => Google::Gax::PageDescriptor.new(
-          'page_token',
-          'next_page_token',
-          'strings')
+        "list_shelves" => Google::Gax::PageDescriptor.new(
+          "page_token",
+          "next_page_token",
+          "shelves"),
+        "list_books" => Google::Gax::PageDescriptor.new(
+          "page_token",
+          "next_page_token",
+          "books"),
+        "list_strings" => Google::Gax::PageDescriptor.new(
+          "page_token",
+          "next_page_token",
+          "strings")
       }.freeze
 
       private_constant :PAGE_DESCRIPTORS
 
       BUNDLE_DESCRIPTORS = {
-        'publish_series' => Google::Gax::BundleDescriptor.new(
-          'books',
+        "publish_series" => Google::Gax::BundleDescriptor.new(
+          "books",
           [
-            'edition',
-            'shelf.name'
+            "edition",
+            "shelf.name"
           ],
-          subresponse_field: 'book_names')
+          subresponse_field: "book_names")
       }.freeze
 
       private_constant :BUNDLE_DESCRIPTORS
@@ -91,24 +95,24 @@ module Library
       # The scopes needed to make gRPC calls to all of the methods defined in
       # this service.
       ALL_SCOPES = [
-        'https://www.googleapis.com/auth/cloud-platform',
-        'https://www.googleapis.com/auth/library'
+        "https://www.googleapis.com/auth/cloud-platform",
+        "https://www.googleapis.com/auth/library"
       ].freeze
 
       SHELF_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        'shelves/{shelf}'
+        "shelves/{shelf}"
       )
 
       private_constant :SHELF_PATH_TEMPLATE
 
       BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        'shelves/{shelf}/books/{book}'
+        "shelves/{shelf}/books/{book}"
       )
 
       private_constant :BOOK_PATH_TEMPLATE
 
       ARCHIVED_BOOK_PATH_TEMPLATE = Google::Gax::PathTemplate.new(
-        'archives/{archive_path=**}/books/{book}'
+        "archives/{archive_path=**}/books/{book}"
       )
 
       private_constant :ARCHIVED_BOOK_PATH_TEMPLATE
@@ -116,9 +120,9 @@ module Library
       # Returns a fully-qualified shelf resource name string.
       # @param shelf [String]
       # @return [String]
-      def self.shelf_path(shelf)
+      def self.shelf_path shelf
         SHELF_PATH_TEMPLATE.render(
-          :'shelf' => shelf
+          "shelf": shelf
         )
       end
 
@@ -126,10 +130,10 @@ module Library
       # @param shelf [String]
       # @param book [String]
       # @return [String]
-      def self.book_path(shelf, book)
+      def self.book_path shelf, book
         BOOK_PATH_TEMPLATE.render(
-          :'shelf' => shelf,
-          :'book' => book
+          "shelf": shelf,
+          "book": book
         )
       end
 
@@ -137,46 +141,46 @@ module Library
       # @param archive_path [String]
       # @param book [String]
       # @return [String]
-      def self.archived_book_path(archive_path, book)
+      def self.archived_book_path archive_path, book
         ARCHIVED_BOOK_PATH_TEMPLATE.render(
-          :'archive_path' => archive_path,
-          :'book' => book
+          "archive_path": archive_path,
+          "book": book
         )
       end
 
       # Parses the shelf from a shelf resource.
       # @param shelf_name [String]
       # @return [String]
-      def self.match_shelf_from_shelf_name(shelf_name)
-        SHELF_PATH_TEMPLATE.match(shelf_name)['shelf']
+      def self.match_shelf_from_shelf_name shelf_name
+        SHELF_PATH_TEMPLATE.match(shelf_name)["shelf"]
       end
 
       # Parses the shelf from a book resource.
       # @param book_name [String]
       # @return [String]
-      def self.match_shelf_from_book_name(book_name)
-        BOOK_PATH_TEMPLATE.match(book_name)['shelf']
+      def self.match_shelf_from_book_name book_name
+        BOOK_PATH_TEMPLATE.match(book_name)["shelf"]
       end
 
       # Parses the book from a book resource.
       # @param book_name [String]
       # @return [String]
-      def self.match_book_from_book_name(book_name)
-        BOOK_PATH_TEMPLATE.match(book_name)['book']
+      def self.match_book_from_book_name book_name
+        BOOK_PATH_TEMPLATE.match(book_name)["book"]
       end
 
       # Parses the archive_path from a archived_book resource.
       # @param archived_book_name [String]
       # @return [String]
-      def self.match_archive_path_from_archived_book_name(archived_book_name)
-        ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name)['archive_path']
+      def self.match_archive_path_from_archived_book_name archived_book_name
+        ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name)["archive_path"]
       end
 
       # Parses the book from a archived_book resource.
       # @param archived_book_name [String]
       # @return [String]
-      def self.match_book_from_archived_book_name(archived_book_name)
-        ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name)['book']
+      def self.match_book_from_archived_book_name archived_book_name
+        ARCHIVED_BOOK_PATH_TEMPLATE.match(archived_book_name)["book"]
       end
 
       # @param service_path [String]
@@ -198,26 +202,25 @@ module Library
       #   The codename of the calling service.
       # @param app_version [String]
       #   The version of the calling service.
-      def initialize(
-        service_path: SERVICE_ADDRESS,
-        port: DEFAULT_SERVICE_PORT,
-        channel: nil,
-        chan_creds: nil,
-        scopes: ALL_SCOPES,
-        client_config: {},
-        timeout: DEFAULT_TIMEOUT,
-        app_name: 'gax',
-        app_version: Google::Gax::VERSION
-      )
+      def initialize \
+          service_path: SERVICE_ADDRESS,
+          port: DEFAULT_SERVICE_PORT,
+          channel: nil,
+          chan_creds: nil,
+          scopes: ALL_SCOPES,
+          client_config: {},
+          timeout: DEFAULT_TIMEOUT,
+          app_name: "gax",
+          app_version: Google::Gax::VERSION
         google_api_client = "#{app_name}/#{app_version} " \
           "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze
-        headers = { :'x-goog-api-client' => google_api_client }
+        headers = { "x-goog-api-client": google_api_client }
         client_config_file = Pathname.new(__dir__).join(
-          'library_service_client_config.json'
+          "library_service_client_config.json"
         )
         defaults = client_config_file.open do |f|
           Google::Gax.construct_settings(
-            'google.example.library.v1.LibraryService',
+            "google.example.library.v1.LibraryService",
             JSON.parse(f.read),
             client_config,
             Google::Gax::Grpc::STATUS_CODE_NAMES,
@@ -239,67 +242,67 @@ module Library
 
         @create_shelf = Google::Gax.create_api_call(
           @stub.method(:create_shelf),
-          defaults['create_shelf']
+          defaults["create_shelf"]
         )
         @get_shelf = Google::Gax.create_api_call(
           @stub.method(:get_shelf),
-          defaults['get_shelf']
+          defaults["get_shelf"]
         )
         @list_shelves = Google::Gax.create_api_call(
           @stub.method(:list_shelves),
-          defaults['list_shelves']
+          defaults["list_shelves"]
         )
         @delete_shelf = Google::Gax.create_api_call(
           @stub.method(:delete_shelf),
-          defaults['delete_shelf']
+          defaults["delete_shelf"]
         )
         @merge_shelves = Google::Gax.create_api_call(
           @stub.method(:merge_shelves),
-          defaults['merge_shelves']
+          defaults["merge_shelves"]
         )
         @create_book = Google::Gax.create_api_call(
           @stub.method(:create_book),
-          defaults['create_book']
+          defaults["create_book"]
         )
         @publish_series = Google::Gax.create_api_call(
           @stub.method(:publish_series),
-          defaults['publish_series']
+          defaults["publish_series"]
         )
         @get_book = Google::Gax.create_api_call(
           @stub.method(:get_book),
-          defaults['get_book']
+          defaults["get_book"]
         )
         @list_books = Google::Gax.create_api_call(
           @stub.method(:list_books),
-          defaults['list_books']
+          defaults["list_books"]
         )
         @delete_book = Google::Gax.create_api_call(
           @stub.method(:delete_book),
-          defaults['delete_book']
+          defaults["delete_book"]
         )
         @update_book = Google::Gax.create_api_call(
           @stub.method(:update_book),
-          defaults['update_book']
+          defaults["update_book"]
         )
         @move_book = Google::Gax.create_api_call(
           @stub.method(:move_book),
-          defaults['move_book']
+          defaults["move_book"]
         )
         @list_strings = Google::Gax.create_api_call(
           @stub.method(:list_strings),
-          defaults['list_strings']
+          defaults["list_strings"]
         )
         @add_comments = Google::Gax.create_api_call(
           @stub.method(:add_comments),
-          defaults['add_comments']
+          defaults["add_comments"]
         )
         @get_book_from_archive = Google::Gax.create_api_call(
           @stub.method(:get_book_from_archive),
-          defaults['get_book_from_archive']
+          defaults["get_book_from_archive"]
         )
         @update_book_index = Google::Gax.create_api_call(
           @stub.method(:update_book_index),
-          defaults['update_book_index']
+          defaults["update_book_index"]
         )
       end
 
@@ -314,10 +317,9 @@ module Library
       #   retries, etc.
       # @return [Google::Example::Library::V1::Shelf]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      def create_shelf(
-        shelf,
-        options: nil
-      )
+      def create_shelf \
+          shelf,
+          options: nil
         req = Google::Example::Library::V1::CreateShelfRequest.new(
           shelf: shelf
         )
@@ -338,13 +340,12 @@ module Library
       #   retries, etc.
       # @return [Google::Example::Library::V1::Shelf]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      def get_shelf(
-        name,
-        options_,
-        message: nil,
-        string_builder: nil,
-        options: nil
-      )
+      def get_shelf \
+          name,
+          options_,
+          message: nil,
+          string_builder: nil,
+          options: nil
         req = Google::Example::Library::V1::GetShelfRequest.new(
           name: name,
           options: options_
@@ -365,7 +366,7 @@ module Library
       #   operations such as per-page iteration or access to the response
       #   object.
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      def list_shelves(options: nil)
+      def list_shelves options: nil
         req = Google::Example::Library::V1::ListShelvesRequest.new
         @list_shelves.call(req, options)
       end
@@ -378,10 +379,9 @@ module Library
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      def delete_shelf(
-        name,
-        options: nil
-      )
+      def delete_shelf \
+          name,
+          options: nil
         req = Google::Example::Library::V1::DeleteShelfRequest.new(
           name: name
         )
@@ -401,11 +401,10 @@ module Library
       #   retries, etc.
       # @return [Google::Example::Library::V1::Shelf]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      def merge_shelves(
-        name,
-        other_shelf_name,
-        options: nil
-      )
+      def merge_shelves \
+          name,
+          other_shelf_name,
+          options: nil
         req = Google::Example::Library::V1::MergeShelvesRequest.new(
           name: name,
           other_shelf_name: other_shelf_name
@@ -424,11 +423,10 @@ module Library
       #   retries, etc.
       # @return [Google::Example::Library::V1::Book]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      def create_book(
-        name,
-        book,
-        options: nil
-      )
+      def create_book \
+          name,
+          book,
+          options: nil
         req = Google::Example::Library::V1::CreateBookRequest.new(
           name: name,
           book: book
@@ -449,12 +447,11 @@ module Library
       #   retries, etc.
       # @return [Google::Example::Library::V1::PublishSeriesResponse]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      def publish_series(
-        shelf,
-        books,
-        edition: nil,
-        options: nil
-      )
+      def publish_series \
+          shelf,
+          books,
+          edition: nil,
+          options: nil
         req = Google::Example::Library::V1::PublishSeriesRequest.new(
           shelf: shelf,
           books: books
@@ -472,10 +469,9 @@ module Library
       #   retries, etc.
       # @return [Google::Example::Library::V1::Book]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      def get_book(
-        name,
-        options: nil
-      )
+      def get_book \
+          name,
+          options: nil
         req = Google::Example::Library::V1::GetBookRequest.new(
           name: name
         )
@@ -503,12 +499,11 @@ module Library
       #   operations such as per-page iteration or access to the response
       #   object.
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      def list_books(
-        name,
-        page_size: nil,
-        filter: nil,
-        options: nil
-      )
+      def list_books \
+          name,
+          page_size: nil,
+          filter: nil,
+          options: nil
         req = Google::Example::Library::V1::ListBooksRequest.new(
           name: name
         )
@@ -525,10 +520,9 @@ module Library
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      def delete_book(
-        name,
-        options: nil
-      )
+      def delete_book \
+          name,
+          options: nil
         req = Google::Example::Library::V1::DeleteBookRequest.new(
           name: name
         )
@@ -550,13 +544,12 @@ module Library
       #   retries, etc.
       # @return [Google::Example::Library::V1::Book]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      def update_book(
-        name,
-        book,
-        update_mask: nil,
-        physical_mask: nil,
-        options: nil
-      )
+      def update_book \
+          name,
+          book,
+          update_mask: nil,
+          physical_mask: nil,
+          options: nil
         req = Google::Example::Library::V1::UpdateBookRequest.new(
           name: name,
           book: book
@@ -577,11 +570,10 @@ module Library
       #   retries, etc.
       # @return [Google::Example::Library::V1::Book]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      def move_book(
-        name,
-        other_shelf_name,
-        options: nil
-      )
+      def move_book \
+          name,
+          other_shelf_name,
+          options: nil
         req = Google::Example::Library::V1::MoveBookRequest.new(
           name: name,
           other_shelf_name: other_shelf_name
@@ -607,11 +599,10 @@ module Library
       #   operations such as per-page iteration or access to the response
       #   object.
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      def list_strings(
-        name: nil,
-        page_size: nil,
-        options: nil
-      )
+      def list_strings \
+          name: nil,
+          page_size: nil,
+          options: nil
         req = Google::Example::Library::V1::ListStringsRequest.new
         req.name = name unless name.nil?
         req.page_size = page_size unless page_size.nil?
@@ -626,11 +617,10 @@ module Library
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      def add_comments(
-        name,
-        comments,
-        options: nil
-      )
+      def add_comments \
+          name,
+          comments,
+          options: nil
         req = Google::Example::Library::V1::AddCommentsRequest.new(
           name: name,
           comments: comments
@@ -647,10 +637,9 @@ module Library
       #   retries, etc.
       # @return [Google::Example::Library::V1::Book]
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      def get_book_from_archive(
-        name,
-        options: nil
-      )
+      def get_book_from_archive \
+          name,
+          options: nil
         req = Google::Example::Library::V1::GetBookFromArchiveRequest.new(
           name: name
         )
@@ -669,12 +658,11 @@ module Library
       #   Overrides the default settings for this call, e.g, timeout,
       #   retries, etc.
       # @raise [Google::Gax::GaxError] if the RPC is aborted.
-      def update_book_index(
-        name,
-        index_name,
-        index_map,
-        options: nil
-      )
+      def update_book_index \
+          name,
+          index_name,
+          index_map,
+          options: nil
         req = Google::Example::Library::V1::UpdateBookIndexRequest.new(
           name: name,
           index_name: index_name,
@@ -685,3 +673,4 @@ module Library
     end
   end
 end
+
