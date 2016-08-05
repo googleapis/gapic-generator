@@ -63,6 +63,7 @@ public class JavaTypeTable implements TypeTable {
     return new JavaTypeTable();
   }
 
+  @Override
   public TypeName getTypeName(String fullName) {
     int lastDotIndex = fullName.lastIndexOf('.');
     if (lastDotIndex < 0) {
@@ -88,10 +89,12 @@ public class JavaTypeTable implements TypeTable {
         elementTypeName);
   }
 
+  @Override
   public String getAndSaveNicknameFor(String fullName) {
     return getAndSaveNicknameFor(getTypeName(fullName));
   }
 
+  @Override
   public String getAndSaveNicknameFor(TypeName typeName) {
     return typeName.getAndSaveNicknameIn(this);
   }
@@ -123,6 +126,7 @@ public class JavaTypeTable implements TypeTable {
     return LanguageUtil.getRename(primitiveTypeName, BOXED_TYPE_MAP);
   }
 
+  @Override
   public List<String> getImports() {
     // Clean up the imports.
     List<String> cleanedImports = new ArrayList<>();

@@ -38,17 +38,17 @@ import com.google.api.codegen.viewmodel.MapInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitCodeLineView;
 import com.google.api.codegen.viewmodel.SimpleInitValueView;
 import com.google.api.codegen.viewmodel.StructureInitCodeLineView;
+import com.google.api.codegen.viewmodel.testing.GapicSurfaceTestAssertView;
 import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
- * InitCodeTransformer generates initialization code for a given method and then transforms
- * it to a view object which can be rendered by a template engine.
+ * InitCodeTransformer generates initialization code for a given method and then transforms it to a
+ * view object which can be rendered by a template engine.
  */
 public class InitCodeTransformer {
 
@@ -76,7 +76,31 @@ public class InitCodeTransformer {
         .build();
   }
 
-  private Map<String, Object> createInitFieldStructure(MethodTransformerContext context) {
+  public List<GapicSurfaceTestAssertView> generateTestAssertViews(
+      MethodTransformerContext context, Iterable<Field> fields) {
+    List<GapicSurfaceTestAssertView> assertViews = new ArrayList<>();
+    Map<String, Object> initFieldStructure = createInitFieldStructure(context);
+    InitCodeGenerator generator = new InitCodeGenerator();
+
+    InitCode initCode =
+        generator.generateRequestFieldInitCode(context.getMethod(), initFieldStructure, fields);
+
+    for (FieldSetting fieldSetting : initCode.getArgFields()) {
+      SurfaceNamer namer = context.getNamer();
+      GapicSurfaceTestAssertView assertView =
+          GapicSurfaceTestAssertView.newBuilder()
+              .expectedValueIdentifier(
+                  namer.getVariableName(
+                      fieldSetting.getIdentifier(), fieldSetting.getInitValueConfig()))
+              .actualValueGetter(namer.getGetFunctionCallName(fieldSetting.getIdentifier()))
+              .build();
+      assertViews.add(assertView);
+    }
+
+    return assertViews;
+  }
+
+  public Map<String, Object> createInitFieldStructure(MethodTransformerContext context) {
     Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
 
     ImmutableMap.Builder<String, InitValueConfig> initValueConfigMap = ImmutableMap.builder();

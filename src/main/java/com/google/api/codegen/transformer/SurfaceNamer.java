@@ -423,4 +423,24 @@ public class SurfaceNamer extends NameFormatterDelegator {
   public String getAndSavePagedResponseTypeName(ModelTypeTable typeTable, TypeRef resourceType) {
     return getNotImplementedString("SurfaceNamer.getAndSavePagedResponseTypeName");
   }
+
+  /** The test case name for the given method. */
+  public String getTestCaseName(Method method) {
+    return methodName(Name.upperCamel(method.getSimpleName(), "Test"));
+  }
+
+  /** The test class name for the given API service. */
+  public String getTestClassName(Interface service) {
+    return className(Name.upperCamel(service.getSimpleName(), "Test"));
+  }
+
+  /** The class name of the mock gRPC service for the given API service. */
+  public String getMockServiceClassName(Interface service) {
+    return className(Name.upperCamel("Mock", service.getSimpleName()));
+  }
+
+  /** The class name of the mock gRPC service for the given API service. */
+  public String getGetFunctionCallName(Name name) {
+    return methodName(Name.from("get").join(name));
+  }
 }

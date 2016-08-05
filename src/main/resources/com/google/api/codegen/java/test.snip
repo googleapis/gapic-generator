@@ -1,0 +1,89 @@
+@extends "java/common.snip"
+@extends "java/initcode.snip"
+
+@snippet generate(xapiTest)
+  {@license()}
+
+  package {@xapiTest.packageName};
+
+  @join import : xapiTest.imports
+    import {@import};
+  @end
+
+  @@javax.annotation.Generated("by GAPIC")
+  public class {@xapiTest.name} {
+    private static MockServiceHelper serviceHelper;
+    private {@xapiTest.apiClassName} api;
+
+    @@BeforeClass
+    public static void startStaticServer() {
+      {@xapiTest.mockServiceClassName} mockService = new {@xapiTest.mockServiceClassName}();
+      serviceHelper = new MockServiceHelper("in-process-1", mockService);
+      serviceHelper.start();
+    }
+
+    @@AfterClass
+    public static void stopServer() {
+      serviceHelper.stop();
+    }
+
+    @@Before
+    public void setUp() throws IOException {
+      serviceHelper.reset();
+      {@xapiTest.apiSettingsClassName} settings = {@xapiTest.apiSettingsClassName}.defaultBuilder()
+          .provideChannelWith(serviceHelper.createChannel(), true)
+          .build();
+      api = {@xapiTest.apiClassName}.create(settings);
+    }
+
+    @@After
+    public void tearDown() throws Exception {
+      api.close();
+    }
+
+    @join test : xapiTest.testCases
+      {@testCase(test)}
+
+    @end
+  }
+@end
+
+@private testCase(test)
+  @@Test
+  @@SuppressWarnings("all")
+  public void {@test.name}() {
+    {@initCode(test.initCode)}
+    {@methodCall(test)}
+
+    List<GeneratedMessage> requests = serviceHelper.getService().getRequests();
+    Assert.assertEquals(1, requests.size());
+    {@test.requestTypeName} request = ({@test.requestTypeName})requests.get(0);
+
+    @join assert : test.asserts
+      Assert.assertEquals(request.{@assert.actualValueGetter}(), {@assert.expectedValueIdentifier});
+    @end
+  }
+@end
+
+@private methodCall(test)
+  @switch test.methodType
+  @case "PagedFlattenedMethod"
+    PageAccessor<{@test.resourceTypeName}> response = api.{@test.surfaceMethodName}(\
+      {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+
+    // PageAccessor will not make actual request until it is being used.
+    // Add all the pages here in order to make grpc requests.
+    List<{@test.resourceTypeName}> resources = Lists.newArrayList(response.getPageValues());
+  @case "FlattenedMethod"
+    api.{@test.surfaceMethodName}(\
+      {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+  @default
+    $unhandledCase: {@test.type}$
+  @end
+@end
+
+@private sampleMethodCallArgList(fieldSettings)
+  @join fieldSetting : fieldSettings on ", "
+    {@fieldSetting.identifier}
+  @end
+@end
