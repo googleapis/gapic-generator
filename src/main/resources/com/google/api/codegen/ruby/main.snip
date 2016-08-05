@@ -9,7 +9,12 @@
 
   {@importSection(service)}
 
+  @# TODO: implement line-wrapping rules and remove this suppression.
+  @# rubocop:disable LineLength
+  @# rubocop:disable MethodLength
+
   {@serviceClass(service)}
+
 @end
 
 @private licenseSection(service)
@@ -39,11 +44,11 @@
 @end
 
 @private importSection(service)
-  require 'json'
-  require 'pathname'
+  require "json"
+  require "pathname"
 
-  require 'google/gax'
-  require '{@context.getGrpcFilename(service)}'
+  require "google/gax"
+  require "{@context.getGrpcFilename(service)}"
 @end
 
 @private serviceClass(service)
@@ -80,12 +85,12 @@
 @private constantSection(service)
   @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
     @# The default address of the service.
-    SERVICE_ADDRESS = '{@context.getServiceConfig.getServiceAddress(service)}'.freeze
+    SERVICE_ADDRESS = "{@context.getServiceConfig.getServiceAddress(service)}".freeze
 
     @# The default port of the service.
     DEFAULT_SERVICE_PORT = {@context.getServiceConfig.getServicePort()}
 
-    CODE_GEN_NAME_VERSION = 'gapic/0.1.0'.freeze
+    CODE_GEN_NAME_VERSION = "gapic/0.1.0".freeze
 
     DEFAULT_TIMEOUT = 30
     @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
@@ -97,10 +102,10 @@
                responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
                resources = pageStreaming.getResourcesField().getSimpleName(), \
                methodName = context.upperCamelToLowerUnderscore(method.getSimpleName)
-            '{@methodName}' => Google::Gax::PageDescriptor.new(
-              '{@requestToken}',
-              '{@responseToken}',
-              '{@resources}')
+            "{@methodName}" => Google::Gax::PageDescriptor.new(
+              "{@requestToken}",
+              "{@responseToken}",
+              "{@resources}")
           @end
         @end
       }.freeze
@@ -114,7 +119,7 @@
           @join method : context.messages.filterBundlingMethods(ifaceConfig, service.getMethods) on {@", "}.add(BREAK)
             @let bundling = ifaceConfig.getMethodConfig(method).getBundling(), \
                  methodName = context.upperCamelToLowerUnderscore(method.getSimpleName)
-              '{@methodName}' => Google::Gax::BundleDescriptor.new(
+              "{@methodName}" => Google::Gax::BundleDescriptor.new(
                 {@bundleDescriptorBody(bundling, method)})
             @end
           @end
@@ -128,7 +133,7 @@
     @# this service.
     ALL_SCOPES = [
       @join auth_scope : context.getServiceConfig.getAuthScopes(service) on ",".add(BREAK)
-        '{@auth_scope}'
+        "{@auth_scope}"
       @end
     ].freeze
   @end
@@ -138,13 +143,13 @@
   @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
        jsonBaseName = {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
     client_config_file = Pathname.new(__dir__).join(
-      '{@jsonBaseName}_client_config.json'
+      "{@jsonBaseName}_client_config.json"
     )
     defaults = client_config_file.open do |f|
       @if or(context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods), \
              context.messages.filterBundlingMethods(ifaceConfig, service.getMethods))
         Google::Gax.construct_settings(
-          '{@service.getFullName}',
+          "{@service.getFullName}",
           JSON.parse(f.read),
           client_config,
           Google::Gax::Grpc::STATUS_CODE_NAMES,
@@ -164,7 +169,7 @@
         )
       @else
         Google::Gax.construct_settings(
-          '{@service.getFullName}',
+          "{@service.getFullName}",
           JSON.parse(f.read),
           client_config,
           Google::Gax::Grpc::STATUS_CODE_NAMES,
@@ -198,20 +203,19 @@
     @#   The codename of the calling service.
     @# @@param app_version [String]
     @#   The version of the calling service.
-    def initialize(
-      service_path: SERVICE_ADDRESS,
-      port: DEFAULT_SERVICE_PORT,
-      channel: nil,
-      chan_creds: nil,
-      scopes: ALL_SCOPES,
-      client_config: {},
-      timeout: DEFAULT_TIMEOUT,
-      app_name: 'gax',
-      app_version: Google::Gax::VERSION
-    )
+    def initialize @\
+        service_path: SERVICE_ADDRESS,
+        port: DEFAULT_SERVICE_PORT,
+        channel: nil,
+        chan_creds: nil,
+        scopes: ALL_SCOPES,
+        client_config: {},
+        timeout: DEFAULT_TIMEOUT,
+        app_name: "gax",
+        app_version: Google::Gax::VERSION
       google_api_client = "#{app_name}/#{app_version} " @\
         "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze
-      headers = { :'x-goog-api-client' => google_api_client }
+      headers = { "x-goog-api-client": google_api_client }
       {@constructDefaults(service)}
       @@stub = Google::Gax::Grpc.create_stub(
         service_path,
@@ -226,7 +230,7 @@
         @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName())
           @@{@methodName} = Google::Gax.create_api_call(
             @@stub.method(:{@methodName}),
-            defaults['{@methodName}']
+            defaults["{@methodName}"]
           )
         @end
       @end
@@ -238,18 +242,18 @@
   @let bundledField = bundling.getBundledField().getSimpleName(), \
        discriminatorFields = bundling.getDiscriminatorFields()
     @if {@bundling.hasSubresponseField}
-      '{@bundledField}',
+      "{@bundledField}",
       [
         @join fieldSelector : bundling.getDiscriminatorFields() on {@","}.add(BREAK)
-          '{@fieldSelector.getParamName}'
+          "{@fieldSelector.getParamName}"
         @end
       ],
-      subresponse_field: '{@bundling.getSubresponseField().getSimpleName()}'
+      subresponse_field: "{@bundling.getSubresponseField().getSimpleName()}"
     @else
-      '{@bundledField}',
+      "{@bundledField}",
       [
         @join fieldSelector : bundling.getDiscriminatorFields() on {@","}.add(BREAK)
-          '{@fieldSelector.getParamName}'
+          "{@fieldSelector.getParamName}"
         @end
       ]
     @end
@@ -265,7 +269,7 @@
     @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
 
       {@pathTemplateName(collectionConfig)} = Google::Gax::PathTemplate.new(
-        '{@collectionConfig.getNamePattern}'
+        "{@collectionConfig.getNamePattern}"
       )
 
       private_constant :{@pathTemplateName(collectionConfig)}
@@ -288,7 +292,7 @@
     @# @@param {@param} [String]
   @end
   @# @@return [String]
-  def self.{@collectionConfig.getEntityName}_path({@createResourceFunctionParams(collectionConfig)})
+  def self.{@collectionConfig.getEntityName}_path {@createResourceFunctionParams(collectionConfig)}
     {@pathTemplateName(collectionConfig)}.render(
       {@createRenderDictionary(collectionConfig)}
     )
@@ -303,7 +307,7 @@
 
 @private createRenderDictionary(collectionConfig)
   @join param: collectionConfig.getNameTemplate.vars() on {@","}.add(BREAK)
-    :'{@param}' => {@param}
+    "{@param}": {@param}
   @end
 @end
 
@@ -313,8 +317,8 @@
       @# Parses the {@subField} from a {@collectionConfig.getEntityName} resource.
       @# @@param {@fieldPath} [String]
       @# @@return [String]
-      def self.match_{@subField}_from_{@fieldPath}({@fieldPath})
-        {@pathTemplateName(collectionConfig)}.match({@fieldPath})['{@subField}']
+      def self.match_{@subField}_from_{@fieldPath} {@fieldPath}
+        {@pathTemplateName(collectionConfig)}.match({@fieldPath})["{@subField}"]
       end
     @end
   @end
@@ -349,19 +353,18 @@
     @end
 
     @if or(requiredParams, optionalParams)
-      def {@methodName}(
-        @if requiredParams
-          @if optionalParams
-            {@requiredParameterNames(requiredParams)},
-            {@optionalParameterValues(optionalParams)},
+      def {@methodName} @\
+          @if requiredParams
+            @if optionalParams
+              {@requiredParameterNames(requiredParams)},
+              {@optionalParameterValues(optionalParams)},
+            @else
+              {@requiredParameterNames(requiredParams)},
+            @end
           @else
-            {@requiredParameterNames(requiredParams)},
+            {@optionalParameterValues(optionalParams)},
           @end
-        @else
-          {@optionalParameterValues(optionalParams)},
-        @end
-        options: nil
-      )
+          options: nil
         @if requiredParams
           req = {@inputTypeName}.new(
             {@namedParameters(requiredParams)}
@@ -377,7 +380,7 @@
         @@{@methodName}.call(req, options)
       end
     @else
-      def {@methodName}(options: nil)
+      def {@methodName} options: nil
         req = {@inputTypeName}.new
         @@{@methodName}.call(req, options)
       end
