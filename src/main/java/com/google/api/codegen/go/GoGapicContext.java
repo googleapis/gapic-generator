@@ -415,7 +415,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
     TreeSet<GoImport> messageImports = new TreeSet<>();
 
     // Add method request-type imports
-    // TODO(pongad): Change this back to service.getImports() once streaming is implemented.
+    // TODO(pongad): Change this back to service.getMethods() once streaming is implemented.
     //   imports for streaming methods are removed for now to not mess with tests.
     for (Method method : getNonStreamingMethods(service)) {
       MessageType inputMessage = method.getInputMessage();
