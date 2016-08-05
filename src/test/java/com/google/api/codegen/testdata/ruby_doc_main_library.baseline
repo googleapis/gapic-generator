@@ -32,6 +32,9 @@ require "library_services"
 # TODO: implement line-wrapping rules and remove this suppression.
 # rubocop:disable LineLength
 # rubocop:disable MethodLength
+# HashSyntax is disabled because {"foo-bar": "baz"} is not allowed before
+# Ruby-2.2.
+# rubocop:disable HashSyntax
 
 module Library
   module V1
@@ -122,7 +125,7 @@ module Library
       # @return [String]
       def self.shelf_path shelf
         SHELF_PATH_TEMPLATE.render(
-          "shelf": shelf
+          :"shelf" => shelf
         )
       end
 
@@ -132,8 +135,8 @@ module Library
       # @return [String]
       def self.book_path shelf, book
         BOOK_PATH_TEMPLATE.render(
-          "shelf": shelf,
-          "book": book
+          :"shelf" => shelf,
+          :"book" => book
         )
       end
 
@@ -143,8 +146,8 @@ module Library
       # @return [String]
       def self.archived_book_path archive_path, book
         ARCHIVED_BOOK_PATH_TEMPLATE.render(
-          "archive_path": archive_path,
-          "book": book
+          :"archive_path" => archive_path,
+          :"book" => book
         )
       end
 
@@ -214,7 +217,7 @@ module Library
           app_version: Google::Gax::VERSION
         google_api_client = "#{app_name}/#{app_version} " \
           "#{CODE_GEN_NAME_VERSION} ruby/#{RUBY_VERSION}".freeze
-        headers = { "x-goog-api-client": google_api_client }
+        headers = { :"x-goog-api-client" => google_api_client }
         client_config_file = Pathname.new(__dir__).join(
           "library_service_client_config.json"
         )
