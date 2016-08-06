@@ -20,12 +20,9 @@ import com.google.api.codegen.InterfaceConfig;
 import com.google.api.codegen.MethodConfig;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
-import com.google.api.tools.framework.model.Method;
 import com.google.auto.value.AutoValue;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /** The context for transforming a model into a view model for a surface. */
 @AutoValue
@@ -71,28 +68,5 @@ public abstract class SurfaceTransformerContext {
         getNamer(),
         method,
         getMethodConfig(method));
-  }
-
-  /**
-   * Returns a list of simple RPC methods.
-   */
-  public List<Method> getNonStreamingMethods() {
-    List<Method> methods = new ArrayList<>(getInterface().getMethods().size());
-    for (Method method : getInterface().getMethods()) {
-      if (!method.getRequestStreaming() && !method.getResponseStreaming()) {
-        methods.add(method);
-      }
-    }
-    return methods;
-  }
-
-  public List<Method> getPageStreamingMethods() {
-    List<Method> methods = new ArrayList<>();
-    for (Method method : getNonStreamingMethods()) {
-      if (getMethodConfig(method).isPageStreaming()) {
-        methods.add(method);
-      }
-    }
-    return methods;
   }
 }
