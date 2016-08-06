@@ -543,7 +543,9 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
                 return value.rawName();
               }
             });
-    return FluentIterable.from(service.getMethods())
+    // TODO: Change back to .from(service.getMethods()) once streaming is implemented.
+    //   We ignore streaming for now to not cause test failures.
+    return FluentIterable.from(getNonStreamingMethods(service))
         .transform(
             new Function<Method, MethodInfo>() {
               @Override
@@ -592,7 +594,9 @@ public class CSharpGapicContext extends GapicContext implements CSharpContext {
 
   public List<PageStreamerInfo> getPageStreamerInfos(Interface service) {
     final InterfaceConfig interfaceConfig = getApiConfig().getInterfaceConfig(service);
-    return FluentIterable.from(service.getMethods())
+    // TODO: Change back to .from(service.getMethods()) once streaming is implemented.
+    //   We ignore streaming for now to not cause test failures.
+    return FluentIterable.from(getNonStreamingMethods(service))
         .transform(
             new Function<Method, PageStreamerInfo>() {
               @Override
