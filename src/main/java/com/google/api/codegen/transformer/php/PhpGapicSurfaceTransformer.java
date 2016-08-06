@@ -141,9 +141,9 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private List<String> generateMethodKeys(SurfaceTransformerContext context) {
-    List<String> methodKeys = new ArrayList<>(context.getInterface().getMethods().size());
+    List<String> methodKeys = new ArrayList<>();
 
-    for (Method method : context.getNonStreamingMethods()) {
+    for (Method method : context.getInterface().getMethods()) {
       methodKeys.add(context.getNamer().getMethodKey(method));
     }
 
@@ -151,9 +151,9 @@ public class PhpGapicSurfaceTransformer implements ModelToViewTransformer {
   }
 
   private List<ApiMethodView> generateApiMethods(SurfaceTransformerContext context) {
-    List<ApiMethodView> apiMethods = new ArrayList<>(context.getInterface().getMethods().size());
+    List<ApiMethodView> apiMethods = new ArrayList<>();
 
-    for (Method method : context.getNonStreamingMethods()) {
+    for (Method method : context.getInterface().getMethods()) {
       apiMethods.add(
           apiMethodTransformer.generateOptionalArrayMethod(context.asMethodContext(method)));
     }

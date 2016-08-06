@@ -117,13 +117,6 @@ service LibraryService {
   rpc UpdateBookIndex(UpdateBookIndexRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = { post: "/v1/{name=bookShelves/*/books/*}/index" body: "*" };
   }
-
-  // Test server streaming
-  rpc StreamShelves(ListShelvesRequest) returns (stream ListShelvesResponse) {
-    // gRPC streaming methods don't have HTTP equivalent and need not have google.api.http option.
-    // TODO(jmuk): Delete option once https://github.com/googleapis/toolkit/pull/325 lands.
-    option (google.api.http) = { get: "/v1/StreamShelves" };
-  }
 }
 
 // A single book in the library.

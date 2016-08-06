@@ -92,10 +92,10 @@
     var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
 
     var DEFAULT_TIMEOUT = 30;
-    @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+    @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
 
       var PAGE_DESCRIPTORS = {
-        @join method : context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service)) on {@", "}.add(BREAK)
+        @join method : context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods) on {@", "}.add(BREAK)
           @let pageStreaming = ifaceConfig.getMethodConfig(method).getPageStreaming(), \
                requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
                responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
@@ -108,10 +108,10 @@
         @end
       };
     @end
-    @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+    @if context.messages.filterBundlingMethods(ifaceConfig, service.getMethods)
 
       var BUNDLE_DESCRIPTORS = {
-        @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service)) on {@", "}.add(BREAK)
+        @join method : context.messages.filterBundlingMethods(ifaceConfig, service.getMethods) on {@", "}.add(BREAK)
           @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
             '{@methodName(method)}': new gax.BundleDescriptor(
                 '{@bundling.getBundledField().getSimpleName()}',
@@ -155,12 +155,12 @@
         clientConfig,
         grpc.status,
         timeout,
-        @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+        @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
           PAGE_DESCRIPTORS,
         @else
           null,
         @end
-        @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+        @if context.messages.filterBundlingMethods(ifaceConfig, service.getMethods)
           BUNDLE_DESCRIPTORS,
         @else
           null,
@@ -226,7 +226,7 @@
            'sslCreds': sslCreds,
            'scopes': scopes});
       var methods = [
-        @join method : context.getNonStreamingMethods(service) on {@","}.add(BREAK)
+        @join method : service.getMethods on {@","}.add(BREAK)
           '{@methodName(method)}'
         @end
       ];
@@ -319,7 +319,7 @@
 
 @private serviceMethodsSection(service)
   // Service calls
-  @join method : context.getNonStreamingMethods(service)
+  @join method : service.getMethods
 
     {@flattenedMethod(service, method)}
   @end
