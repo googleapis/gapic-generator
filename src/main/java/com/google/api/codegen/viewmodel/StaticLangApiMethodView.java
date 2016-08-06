@@ -51,7 +51,17 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
   public abstract boolean hasReturnValue();
 
+  public abstract boolean isPageStreaming();
+
   public abstract List<RequestObjectParamView> requestObjectParams();
+
+  @Nullable
+  // Distinct from responseTypeName, listResponseObjectTypeName is the name of the GRPC response message,
+  // not the return type of the function.
+  // Eg, in Go
+  //   responseTypeName = "ShelfIterator"
+  //   listResponseObjectTypeName = "ListShelvesResponse"
+  public abstract String listResponseObjectTypeName();
 
   @Nullable
   public abstract ListMethodDetailView listMethod();
@@ -95,7 +105,11 @@ public abstract class StaticLangApiMethodView implements ApiMethodView {
 
     public abstract Builder hasReturnValue(boolean hasReturnValue);
 
+    public abstract Builder isPageStreaming(boolean isPageStreaming);
+
     public abstract Builder requestObjectParams(List<RequestObjectParamView> requestObjectParams);
+
+    public abstract Builder listResponseObjectTypeName(String listResponseObjectTypeName);
 
     public abstract Builder listMethod(ListMethodDetailView details);
 

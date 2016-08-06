@@ -15,10 +15,11 @@
 package com.google.api.codegen.transformer;
 
 import com.google.api.codegen.CollectionConfig;
+import com.google.api.codegen.util.Name;
 import com.google.api.codegen.viewmodel.FormatResourceFunctionView;
 import com.google.api.codegen.viewmodel.ParseResourceFunctionView;
-import com.google.api.codegen.viewmodel.PathTemplateView;
 import com.google.api.codegen.viewmodel.PathTemplateGetterFunctionView;
+import com.google.api.codegen.viewmodel.PathTemplateView;
 import com.google.api.codegen.viewmodel.ResourceIdParamView;
 
 import java.util.ArrayList;
@@ -97,8 +98,16 @@ public class PathTemplateTransformer {
     for (CollectionConfig collectionConfig : context.getCollectionConfigs()) {
       PathTemplateGetterFunctionView.Builder function = PathTemplateGetterFunctionView.newBuilder();
       function.name(namer.getPathTemplateNameGetter(collectionConfig));
+      function.resourceName(collectionConfig.getEntityName().replaceAll("_", " "));
       function.pathTemplateName(namer.getPathTemplateName(collectionConfig));
       function.pattern(collectionConfig.getNamePattern());
+
+      List<PathTemplateGetterFunctionView.Argument> args = new ArrayList<>();
+      for (String templateArg : collectionConfig.getNameTemplate().vars()) {
+        String funcParam = context.getNamer().varName(Name.from(templateArg));
+        args.add(PathTemplateGetterFunctionView.Argument.create(funcParam, templateArg));
+      }
+      function.args(args);
       functions.add(function.build());
     }
 

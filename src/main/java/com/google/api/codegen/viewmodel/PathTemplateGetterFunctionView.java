@@ -16,10 +16,16 @@ package com.google.api.codegen.viewmodel;
 
 import com.google.auto.value.AutoValue;
 
+import java.util.List;
+
 @AutoValue
 public abstract class PathTemplateGetterFunctionView {
 
   public abstract String name();
+
+  public abstract String resourceName();
+
+  public abstract List<Argument> args();
 
   public abstract String pathTemplateName();
 
@@ -33,10 +39,25 @@ public abstract class PathTemplateGetterFunctionView {
   public static abstract class Builder {
     public abstract Builder name(String val);
 
+    public abstract Builder resourceName(String val);
+
     public abstract Builder pathTemplateName(String val);
+
+    public abstract Builder args(List<Argument> val);
 
     public abstract Builder pattern(String val);
 
     public abstract PathTemplateGetterFunctionView build();
+  }
+
+  @AutoValue
+  public static abstract class Argument {
+    public abstract String funcParam();
+
+    public abstract String templateArg();
+
+    public static Argument create(String funcParam, String templateArg) {
+      return new AutoValue_PathTemplateGetterFunctionView_Argument(funcParam, templateArg);
+    }
   }
 }

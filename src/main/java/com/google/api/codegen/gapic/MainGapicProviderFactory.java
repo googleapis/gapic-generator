@@ -37,6 +37,7 @@ import com.google.api.codegen.rendering.CommonSnippetSetRunner;
 import com.google.api.codegen.ruby.RubyGapicContext;
 import com.google.api.codegen.ruby.RubySnippetSetRunner;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTestTransformer;
+import com.google.api.codegen.transformer.go.GoGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.java.JavaGapicSurfaceTransformer;
 import com.google.api.codegen.transformer.php.PhpGapicSurfaceTransformer;
 import com.google.api.codegen.util.CommonRenderingUtil;
@@ -99,16 +100,17 @@ public class MainGapicProviderFactory
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 
     } else if (id.equals(GO)) {
+      GapicCodePathMapper goPathMapper =
+          CommonGapicCodePathMapper.newBuilder()
+              .setPrefix("src/main/go")
+              .setShouldAppendPackage(true)
+              .build();
       GapicProvider<? extends Object> provider =
-          CommonGapicProvider.<Interface>newBuilder()
+          ViewModelGapicProvider.newBuilder()
               .setModel(model)
-              .setView(new InterfaceView())
-              .setContext(new GoGapicContext(model, apiConfig))
-              .setSnippetSetRunner(
-                  new GoSnippetSetRunner<Interface>(SnippetSetRunner.SNIPPET_RESOURCE_ROOT))
-              .setSnippetFileNames(
-                  Arrays.asList("go/main.snip", "go/example.snip", "go/doc.snip", "go/common.snip"))
-              .setCodePathMapper(CommonGapicCodePathMapper.defaultInstance())
+              .setApiConfig(apiConfig)
+              .setSnippetSetRunner(new CommonSnippetSetRunner(new CommonRenderingUtil()))
+              .setModelToViewTransformer(new GoGapicSurfaceTransformer(goPathMapper))
               .build();
       return Arrays.<GapicProvider<? extends Object>>asList(provider);
 

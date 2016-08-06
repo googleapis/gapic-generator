@@ -20,6 +20,8 @@ import com.google.auto.value.AutoValue;
 public abstract class ListMethodDetailView {
   public abstract String resourceTypeName();
 
+  public abstract String resourceFieldName();
+
   public static Builder newBuilder() {
     return new AutoValue_ListMethodDetailView.Builder();
   }
@@ -27,6 +29,8 @@ public abstract class ListMethodDetailView {
   @AutoValue.Builder
   public static abstract class Builder {
     public abstract Builder resourceTypeName(String name);
+
+    public abstract Builder resourceFieldName(String name);
 
     public abstract ListMethodDetailView build();
   }

@@ -60,6 +60,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.name(context.getNamer().getApiMethodName(context.getMethod()));
     setListMethodFields(context, methodViewBuilder);
     setFlattenedMethodFields(context, fields, methodViewBuilder);
+    methodViewBuilder.isPageStreaming(true);
 
     return methodViewBuilder.type(ApiMethodType.PagedFlattenedMethod).build();
   }
@@ -74,6 +75,7 @@ public class ApiMethodTransformer {
     setListMethodFields(context, methodViewBuilder);
     setRequestObjectMethodFields(
         context, namer.getPagedCallableMethodName(context.getMethod()), methodViewBuilder);
+    methodViewBuilder.isPageStreaming(true);
 
     return methodViewBuilder.type(ApiMethodType.PagedRequestObjectMethod).build();
   }
@@ -87,6 +89,7 @@ public class ApiMethodTransformer {
     setListMethodFields(context, methodViewBuilder);
     setCallableMethodFields(
         context, namer.getPagedCallableName(context.getMethod()), methodViewBuilder);
+    methodViewBuilder.isPageStreaming(true);
 
     return methodViewBuilder.type(ApiMethodType.PagedCallableMethod).build();
   }
@@ -112,6 +115,7 @@ public class ApiMethodTransformer {
 
     methodViewBuilder.responseTypeName(
         context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType()));
+    methodViewBuilder.isPageStreaming(false);
 
     return methodViewBuilder.type(ApiMethodType.UnpagedListCallableMethod).build();
   }
@@ -124,6 +128,7 @@ public class ApiMethodTransformer {
     methodViewBuilder.name(context.getNamer().getApiMethodName(context.getMethod()));
     setFlattenedMethodFields(context, fields, methodViewBuilder);
     setStaticLangSyncReturnFields(context, methodViewBuilder);
+    methodViewBuilder.isPageStreaming(false);
 
     return methodViewBuilder.type(ApiMethodType.FlattenedMethod).build();
   }
@@ -137,6 +142,7 @@ public class ApiMethodTransformer {
     setRequestObjectMethodFields(
         context, namer.getCallableMethodName(context.getMethod()), methodViewBuilder);
     setStaticLangSyncReturnFields(context, methodViewBuilder);
+    methodViewBuilder.isPageStreaming(false);
 
     return methodViewBuilder.type(ApiMethodType.RequestObjectMethod).build();
   }
@@ -152,6 +158,7 @@ public class ApiMethodTransformer {
         context.getTypeTable().getAndSaveNicknameFor(context.getMethod().getOutputType()));
     methodViewBuilder.hasReturnValue(
         !ServiceMessages.s_isEmptyType(context.getMethod().getOutputType()));
+    methodViewBuilder.isPageStreaming(false);
 
     return methodViewBuilder.type(ApiMethodType.CallableMethod).build();
   }
@@ -171,8 +178,13 @@ public class ApiMethodTransformer {
     PageStreamingConfig pageStreaming = context.getMethodConfig().getPageStreaming();
     TypeRef resourceType = pageStreaming.getResourcesField().getType();
     String resourceTypeName = context.getTypeTable().getAndSaveNicknameForElementType(resourceType);
+    String resourceFieldName =
+        context.getNamer().getFieldGetFunctionName(pageStreaming.getResourcesField());
     methodViewBuilder.listMethod(
-        ListMethodDetailView.newBuilder().resourceTypeName(resourceTypeName).build());
+        ListMethodDetailView.newBuilder()
+            .resourceTypeName(resourceTypeName)
+            .resourceFieldName(resourceFieldName)
+            .build());
     methodViewBuilder.responseTypeName(
         context
             .getNamer()
