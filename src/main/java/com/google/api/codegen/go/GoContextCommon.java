@@ -17,6 +17,7 @@ package com.google.api.codegen.go;
 import com.google.common.base.Splitter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,6 +32,36 @@ public class GoContextCommon {
     List<String> result = new ArrayList<>();
     for (String line : Splitter.on(String.format("%n")).split(text)) {
       result.add(line.isEmpty() ? "//" : "// " + line);
+    }
+    return result;
+  }
+
+  public Iterable<String> getCommentLinesWrap(String text) {
+    List<String> result = new ArrayList<>();
+    for (String line : Splitter.on(String.format("%n")).split(text)) {
+      for (String wrapped : wrapLine(line, 70)) {
+        result.add(line.isEmpty() ? "//" : "// " + wrapped);
+      }
+    }
+    return result;
+  }
+
+  private List<String> wrapLine(String line, int length) {
+    if (line.length() <= length) {
+      return Collections.<String>singletonList(line);
+    }
+    List<String> result = new ArrayList<>(line.length() / length + 1);
+    StringBuilder current = new StringBuilder();
+    for (String word : Splitter.onPattern("\\s").omitEmptyStrings().split(line)) {
+      current.append(" ");
+      current.append(word);
+      if (current.length() >= length) {
+        result.add(current.substring(1));
+        current.setLength(0);
+      }
+    }
+    if (current.length() > 0) {
+      result.add(current.substring(1));
     }
     return result;
   }

@@ -27,7 +27,7 @@ import (
     "golang.org/x/net/context"
     "google.golang.org/api/option"
     "google.golang.org/api/transport"
-    googleapis_example_library_v1 "google.golang.org/genproto/googleapis/example/library/v1"
+    pb "google.golang.org/genproto/googleapis/example/library/v1"
     "google.golang.org/grpc"
     "google.golang.org/grpc/codes"
     "google.golang.org/grpc/metadata"
@@ -79,10 +79,9 @@ func defaultRetryOptions() []gax.CallOption {
 
 func defaultCallOptions() *CallOptions {
     withIdempotentRetryCodes := gax.WithRetryCodes([]codes.Code{
-            codes.DeadlineExceeded,
-            codes.Unavailable,
-        },
-    )
+        codes.DeadlineExceeded,
+        codes.Unavailable,
+    })
     return &CallOptions{
         CreateShelf: defaultRetryOptions(),
         GetShelf: append(defaultRetryOptions(), withIdempotentRetryCodes),
@@ -109,7 +108,7 @@ type Client struct {
     conn *grpc.ClientConn
 
     // The gRPC API client.
-    client googleapis_example_library_v1.LibraryServiceClient
+    client pb.LibraryServiceClient
 
     // The call options for this service.
     CallOptions *CallOptions
@@ -139,7 +138,7 @@ func NewClient(ctx context.Context, opts ...option.ClientOption) (*Client, error
     }
     c := &Client {
         conn: conn,
-        client: googleapis_example_library_v1.NewLibraryServiceClient(conn),
+        client: pb.NewLibraryServiceClient(conn),
         CallOptions: defaultCallOptions(),
     }
     c.SetGoogleClientInfo("gax", gax.Version)
@@ -166,7 +165,6 @@ func (c *Client) SetGoogleClientInfo(name, version string) {
     }
 }
 
-// Path templates.
 
 // ShelfPath returns the path for the shelf resource.
 func LibraryShelfPath(shelf string) string {
@@ -204,9 +202,9 @@ func LibraryArchivedBookPath(archivePath string, book string) string {
 }
 
 // CreateShelf creates a shelf, and returns the new Shelf.
-func (c *Client) CreateShelf(ctx context.Context, req *googleapis_example_library_v1.CreateShelfRequest) (*googleapis_example_library_v1.Shelf, error) {
+func (c *Client) CreateShelf(ctx context.Context, req *pb.CreateShelfRequest) (*pb.Shelf, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
-    var resp *googleapis_example_library_v1.Shelf
+    var resp *pb.Shelf
     err := gax.Invoke(ctx, func (ctx context.Context) error {
         var err error
         resp, err = c.client.CreateShelf(ctx, req)
@@ -220,9 +218,9 @@ func (c *Client) CreateShelf(ctx context.Context, req *googleapis_example_librar
 
 
 // GetShelf gets a shelf.
-func (c *Client) GetShelf(ctx context.Context, req *googleapis_example_library_v1.GetShelfRequest) (*googleapis_example_library_v1.Shelf, error) {
+func (c *Client) GetShelf(ctx context.Context, req *pb.GetShelfRequest) (*pb.Shelf, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
-    var resp *googleapis_example_library_v1.Shelf
+    var resp *pb.Shelf
     err := gax.Invoke(ctx, func (ctx context.Context) error {
         var err error
         resp, err = c.client.GetShelf(ctx, req)
@@ -236,11 +234,11 @@ func (c *Client) GetShelf(ctx context.Context, req *googleapis_example_library_v
 
 
 // ListShelves lists shelves.
-func (c *Client) ListShelves(ctx context.Context, req *googleapis_example_library_v1.ListShelvesRequest) *ShelfIterator {
+func (c *Client) ListShelves(ctx context.Context, req *pb.ListShelvesRequest) *ShelfIterator {
     ctx = metadata.NewContext(ctx, c.metadata)
     it := &ShelfIterator{}
     it.apiCall = func() error {
-        var resp *googleapis_example_library_v1.ListShelvesResponse
+        var resp *pb.ListShelvesResponse
         err := gax.Invoke(ctx, func (ctx context.Context) error {
             var err error
             req.PageToken = it.nextPageToken
@@ -262,7 +260,7 @@ func (c *Client) ListShelves(ctx context.Context, req *googleapis_example_librar
 
 
 // DeleteShelf deletes a shelf.
-func (c *Client) DeleteShelf(ctx context.Context, req *googleapis_example_library_v1.DeleteShelfRequest) error {
+func (c *Client) DeleteShelf(ctx context.Context, req *pb.DeleteShelfRequest) error {
     ctx = metadata.NewContext(ctx, c.metadata)
     err := gax.Invoke(ctx, func (ctx context.Context) error {
         var err error
@@ -276,9 +274,9 @@ func (c *Client) DeleteShelf(ctx context.Context, req *googleapis_example_librar
 // MergeShelves merges two shelves by adding all books from the shelf named
 // `other_shelf_name` to shelf `name`, and deletes
 // `other_shelf_name`. Returns the updated shelf.
-func (c *Client) MergeShelves(ctx context.Context, req *googleapis_example_library_v1.MergeShelvesRequest) (*googleapis_example_library_v1.Shelf, error) {
+func (c *Client) MergeShelves(ctx context.Context, req *pb.MergeShelvesRequest) (*pb.Shelf, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
-    var resp *googleapis_example_library_v1.Shelf
+    var resp *pb.Shelf
     err := gax.Invoke(ctx, func (ctx context.Context) error {
         var err error
         resp, err = c.client.MergeShelves(ctx, req)
@@ -292,9 +290,9 @@ func (c *Client) MergeShelves(ctx context.Context, req *googleapis_example_libra
 
 
 // CreateBook creates a book.
-func (c *Client) CreateBook(ctx context.Context, req *googleapis_example_library_v1.CreateBookRequest) (*googleapis_example_library_v1.Book, error) {
+func (c *Client) CreateBook(ctx context.Context, req *pb.CreateBookRequest) (*pb.Book, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
-    var resp *googleapis_example_library_v1.Book
+    var resp *pb.Book
     err := gax.Invoke(ctx, func (ctx context.Context) error {
         var err error
         resp, err = c.client.CreateBook(ctx, req)
@@ -308,9 +306,9 @@ func (c *Client) CreateBook(ctx context.Context, req *googleapis_example_library
 
 
 // PublishSeries creates a series of books.
-func (c *Client) PublishSeries(ctx context.Context, req *googleapis_example_library_v1.PublishSeriesRequest) (*googleapis_example_library_v1.PublishSeriesResponse, error) {
+func (c *Client) PublishSeries(ctx context.Context, req *pb.PublishSeriesRequest) (*pb.PublishSeriesResponse, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
-    var resp *googleapis_example_library_v1.PublishSeriesResponse
+    var resp *pb.PublishSeriesResponse
     err := gax.Invoke(ctx, func (ctx context.Context) error {
         var err error
         resp, err = c.client.PublishSeries(ctx, req)
@@ -324,9 +322,9 @@ func (c *Client) PublishSeries(ctx context.Context, req *googleapis_example_libr
 
 
 // GetBook gets a book.
-func (c *Client) GetBook(ctx context.Context, req *googleapis_example_library_v1.GetBookRequest) (*googleapis_example_library_v1.Book, error) {
+func (c *Client) GetBook(ctx context.Context, req *pb.GetBookRequest) (*pb.Book, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
-    var resp *googleapis_example_library_v1.Book
+    var resp *pb.Book
     err := gax.Invoke(ctx, func (ctx context.Context) error {
         var err error
         resp, err = c.client.GetBook(ctx, req)
@@ -340,11 +338,11 @@ func (c *Client) GetBook(ctx context.Context, req *googleapis_example_library_v1
 
 
 // ListBooks lists books in a shelf.
-func (c *Client) ListBooks(ctx context.Context, req *googleapis_example_library_v1.ListBooksRequest) *BookIterator {
+func (c *Client) ListBooks(ctx context.Context, req *pb.ListBooksRequest) *BookIterator {
     ctx = metadata.NewContext(ctx, c.metadata)
     it := &BookIterator{}
     it.apiCall = func() error {
-        var resp *googleapis_example_library_v1.ListBooksResponse
+        var resp *pb.ListBooksResponse
         err := gax.Invoke(ctx, func (ctx context.Context) error {
             var err error
             req.PageToken = it.nextPageToken
@@ -367,7 +365,7 @@ func (c *Client) ListBooks(ctx context.Context, req *googleapis_example_library_
 
 
 // DeleteBook deletes a book.
-func (c *Client) DeleteBook(ctx context.Context, req *googleapis_example_library_v1.DeleteBookRequest) error {
+func (c *Client) DeleteBook(ctx context.Context, req *pb.DeleteBookRequest) error {
     ctx = metadata.NewContext(ctx, c.metadata)
     err := gax.Invoke(ctx, func (ctx context.Context) error {
         var err error
@@ -379,9 +377,9 @@ func (c *Client) DeleteBook(ctx context.Context, req *googleapis_example_library
 
 
 // UpdateBook updates a book.
-func (c *Client) UpdateBook(ctx context.Context, req *googleapis_example_library_v1.UpdateBookRequest) (*googleapis_example_library_v1.Book, error) {
+func (c *Client) UpdateBook(ctx context.Context, req *pb.UpdateBookRequest) (*pb.Book, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
-    var resp *googleapis_example_library_v1.Book
+    var resp *pb.Book
     err := gax.Invoke(ctx, func (ctx context.Context) error {
         var err error
         resp, err = c.client.UpdateBook(ctx, req)
@@ -395,9 +393,9 @@ func (c *Client) UpdateBook(ctx context.Context, req *googleapis_example_library
 
 
 // MoveBook moves a book to another shelf, and returns the new book.
-func (c *Client) MoveBook(ctx context.Context, req *googleapis_example_library_v1.MoveBookRequest) (*googleapis_example_library_v1.Book, error) {
+func (c *Client) MoveBook(ctx context.Context, req *pb.MoveBookRequest) (*pb.Book, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
-    var resp *googleapis_example_library_v1.Book
+    var resp *pb.Book
     err := gax.Invoke(ctx, func (ctx context.Context) error {
         var err error
         resp, err = c.client.MoveBook(ctx, req)
@@ -411,11 +409,11 @@ func (c *Client) MoveBook(ctx context.Context, req *googleapis_example_library_v
 
 
 // ListStrings lists a primitive resource. To test go page streaming.
-func (c *Client) ListStrings(ctx context.Context, req *googleapis_example_library_v1.ListStringsRequest) *StringIterator {
+func (c *Client) ListStrings(ctx context.Context, req *pb.ListStringsRequest) *StringIterator {
     ctx = metadata.NewContext(ctx, c.metadata)
     it := &StringIterator{}
     it.apiCall = func() error {
-        var resp *googleapis_example_library_v1.ListStringsResponse
+        var resp *pb.ListStringsResponse
         err := gax.Invoke(ctx, func (ctx context.Context) error {
             var err error
             req.PageToken = it.nextPageToken
@@ -438,7 +436,7 @@ func (c *Client) ListStrings(ctx context.Context, req *googleapis_example_librar
 
 
 // AddComments adds comments to a book
-func (c *Client) AddComments(ctx context.Context, req *googleapis_example_library_v1.AddCommentsRequest) error {
+func (c *Client) AddComments(ctx context.Context, req *pb.AddCommentsRequest) error {
     ctx = metadata.NewContext(ctx, c.metadata)
     err := gax.Invoke(ctx, func (ctx context.Context) error {
         var err error
@@ -450,9 +448,9 @@ func (c *Client) AddComments(ctx context.Context, req *googleapis_example_librar
 
 
 // GetBookFromArchive gets a book from an archive.
-func (c *Client) GetBookFromArchive(ctx context.Context, req *googleapis_example_library_v1.GetBookFromArchiveRequest) (*googleapis_example_library_v1.Book, error) {
+func (c *Client) GetBookFromArchive(ctx context.Context, req *pb.GetBookFromArchiveRequest) (*pb.Book, error) {
     ctx = metadata.NewContext(ctx, c.metadata)
-    var resp *googleapis_example_library_v1.Book
+    var resp *pb.Book
     err := gax.Invoke(ctx, func (ctx context.Context) error {
         var err error
         resp, err = c.client.GetBookFromArchive(ctx, req)
@@ -466,7 +464,7 @@ func (c *Client) GetBookFromArchive(ctx context.Context, req *googleapis_example
 
 
 // UpdateBookIndex updates the index of a book.
-func (c *Client) UpdateBookIndex(ctx context.Context, req *googleapis_example_library_v1.UpdateBookIndexRequest) error {
+func (c *Client) UpdateBookIndex(ctx context.Context, req *pb.UpdateBookIndexRequest) error {
     ctx = metadata.NewContext(ctx, c.metadata)
     err := gax.Invoke(ctx, func (ctx context.Context) error {
         var err error
@@ -477,13 +475,11 @@ func (c *Client) UpdateBookIndex(ctx context.Context, req *googleapis_example_li
 }
 
 
-// Iterators.
-//
 
-// ShelfIterator manages a stream of *googleapis_example_library_v1.Shelf.
+// ShelfIterator manages a stream of *pb.Shelf.
 type ShelfIterator struct {
     // The current page data.
-    items         []*googleapis_example_library_v1.Shelf
+    items         []*pb.Shelf
     atLastPage    bool
     currentIndex  int
     nextPageToken string
@@ -496,7 +492,7 @@ type ShelfIterator struct {
 // NextPage returns Done, all subsequent calls to NextPage will return (nil, Done).
 //
 // Next and NextPage should not be used with the same iterator.
-func (it *ShelfIterator) NextPage() ([]*googleapis_example_library_v1.Shelf, error) {
+func (it *ShelfIterator) NextPage() ([]*pb.Shelf, error) {
     if it.atLastPage {
         // We already returned Done with the last page of items. Continue to
         // return Done, but with no items.
@@ -517,7 +513,7 @@ func (it *ShelfIterator) NextPage() ([]*googleapis_example_library_v1.Shelf, err
 // SetPageToken should not be called when using Next.
 //
 // Next and NextPage should not be used with the same iterator.
-func (it *ShelfIterator) Next() (*googleapis_example_library_v1.Shelf, error) {
+func (it *ShelfIterator) Next() (*pb.Shelf, error) {
     for it.currentIndex >= len(it.items) {
         if it.atLastPage {
             return nil, Done
@@ -544,10 +540,10 @@ func (it *ShelfIterator) NextPageToken() string {
     return it.nextPageToken
 }
 
-// BookIterator manages a stream of *googleapis_example_library_v1.Book.
+// BookIterator manages a stream of *pb.Book.
 type BookIterator struct {
     // The current page data.
-    items         []*googleapis_example_library_v1.Book
+    items         []*pb.Book
     atLastPage    bool
     currentIndex  int
     pageSize      int32
@@ -564,7 +560,7 @@ type BookIterator struct {
 // NextPage returns Done, all subsequent calls to NextPage will return (nil, Done).
 //
 // Next and NextPage should not be used with the same iterator.
-func (it *BookIterator) NextPage() ([]*googleapis_example_library_v1.Book, error) {
+func (it *BookIterator) NextPage() ([]*pb.Book, error) {
     if it.atLastPage {
         // We already returned Done with the last page of items. Continue to
         // return Done, but with no items.
@@ -588,7 +584,7 @@ func (it *BookIterator) NextPage() ([]*googleapis_example_library_v1.Book, error
 // SetPageToken should not be called when using Next.
 //
 // Next and NextPage should not be used with the same iterator.
-func (it *BookIterator) Next() (*googleapis_example_library_v1.Book, error) {
+func (it *BookIterator) Next() (*pb.Book, error) {
     for it.currentIndex >= len(it.items) {
         if it.atLastPage {
             return nil, Done
