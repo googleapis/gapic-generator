@@ -75,7 +75,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
 
   public boolean isGcloud() {
     String packageName = getApiConfig().getPackageName();
-    return !Strings.isNullOrEmpty(packageName) && packageName.indexOf("@google-cloud/") == 0;
+    return !Strings.isNullOrEmpty(packageName) && packageName.startsWith("@google-cloud/");
   }
 
   /**
