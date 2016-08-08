@@ -283,4 +283,15 @@ interfaces:
     field_name_patterns:
       name: book_2
     timeout_millis: 60000
+  - name: StreamShelves
+    request_object_method: true
+    page_streaming:
+      request:
+        token_field: page_token
+      response:
+        token_field: next_page_token
+        resources_field: shelves
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 60000
 

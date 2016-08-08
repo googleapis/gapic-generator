@@ -115,7 +115,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
 
   private List<GapicSurfaceTestCaseView> createTestCaseViews(SurfaceTransformerContext context) {
     ArrayList<GapicSurfaceTestCaseView> testCaseViews = new ArrayList<>();
-    for (Method method : context.getInterface().getMethods()) {
+    for (Method method : context.getNonStreamingMethods()) {
       MethodTransformerContext methodContext = context.asMethodContext(method);
       testCaseViews.add(createTestCaseView(methodContext));
     }

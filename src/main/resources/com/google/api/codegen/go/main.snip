@@ -60,7 +60,7 @@
 
     // {@context.getClientPrefix(service)}CallOptions contains the retry settings for each method of this client.
     type {@context.getClientPrefix(service)}CallOptions struct {
-        @join method : service.getMethods
+        @join method : context.getNonStreamingMethods(service)
             @let methodName = method.getSimpleName
                 {@methodName} []gax.CallOption
             @end
@@ -98,7 +98,7 @@
             )
         @end
         return &{@context.getClientPrefix(service)}CallOptions{
-            @join method : service.getMethods
+            @join method : context.getNonStreamingMethods(service)
                 @let methodName = method.getSimpleName, \
                      methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
                      retryParamsName = context.lowerUnderscoreToLowerCamel(methodConfig.getRetrySettingsConfigName), \
@@ -205,7 +205,7 @@
 @end
 
 @private methods(service)
-    @join method : service.getMethods
+    @join method : context.getNonStreamingMethods(service)
         @let methodName = method.getSimpleName, \
              inTypeName = context.typeName(method.getInputType), \
              outTypeName = context.typeName(method.getOutputType), \

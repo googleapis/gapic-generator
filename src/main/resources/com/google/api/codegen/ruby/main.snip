@@ -96,10 +96,10 @@
     CODE_GEN_NAME_VERSION = "gapic/0.1.0".freeze
 
     DEFAULT_TIMEOUT = 30
-    @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
+    @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service))
 
       PAGE_DESCRIPTORS = {
-        @join method : context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods) on {@", "}.add(BREAK)
+        @join method : context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service)) on {@", "}.add(BREAK)
           @let pageStreaming = ifaceConfig.getMethodConfig(method).getPageStreaming(), \
                requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
                responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
@@ -115,11 +115,11 @@
 
       private_constant :PAGE_DESCRIPTORS
     @end
-    @if context.messages.filterBundlingMethods(ifaceConfig, service.getMethods)
+    @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service))
 
       BUNDLE_DESCRIPTORS = {
         @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
-          @join method : context.messages.filterBundlingMethods(ifaceConfig, service.getMethods) on {@", "}.add(BREAK)
+          @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service)) on {@", "}.add(BREAK)
             @let bundling = ifaceConfig.getMethodConfig(method).getBundling(), \
                  methodName = context.upperCamelToLowerUnderscore(method.getSimpleName)
               "{@methodName}" => Google::Gax::BundleDescriptor.new(
@@ -149,22 +149,22 @@
       "{@jsonBaseName}_client_config.json"
     )
     defaults = client_config_file.open do |f|
-      @if or(context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods), \
-             context.messages.filterBundlingMethods(ifaceConfig, service.getMethods))
+      @if or(context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service)), \
+             context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service)))
         Google::Gax.construct_settings(
           "{@service.getFullName}",
           JSON.parse(f.read),
           client_config,
           Google::Gax::Grpc::STATUS_CODE_NAMES,
           timeout,
-          @if context.messages.filterBundlingMethods(ifaceConfig, service.getMethods)
-            @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
+          @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+            @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service))
               bundle_descriptors: BUNDLE_DESCRIPTORS,
             @else
               bundle_descriptors: BUNDLE_DESCRIPTORS,
             @end
           @end
-          @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
+          @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service))
             page_descriptors: PAGE_DESCRIPTORS,
           @end
           errors: Google::Gax::Grpc::API_ERRORS,
@@ -229,7 +229,7 @@
         &{@context.rubyTypeNameForProtoElement(service)}::Stub.method(:new)
       )
 
-      @join method : service.getMethods
+      @join method : context.getNonStreamingMethods(service)
         @let methodName = context.upperCamelToLowerUnderscore(method.getSimpleName())
           @@{@methodName} = Google::Gax.create_api_call(
             @@stub.method(:{@methodName}),
@@ -338,7 +338,7 @@
 
 @private serviceMethodsSection(service)
   @# Service calls
-  @join method : service.getMethods
+  @join method : context.getNonStreamingMethods(service)
 
     {@flattenedMethod(service, method)}
   @end
