@@ -41,11 +41,8 @@
 
 @private importSection(service)
   var arguejs = require('arguejs');
-  var fs = require('fs');
+  var configData = require('./{@context.upperCamelToLowerUnderscore(service.getSimpleName)}_client_config');
   var gax = require('google-gax');
-  var grpc = require('grpc');
-  var grpcClient = require('{@context.grpcClientName(service)}').client;
-  var path = require('path');
 @end
 
 @private serviceClass(service)
@@ -108,28 +105,6 @@
         @end
       };
     @end
-    @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service))
-
-      var BUNDLE_DESCRIPTORS = {
-        @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service)) on {@", "}.add(BREAK)
-          @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
-            '{@methodName(method)}': new gax.BundleDescriptor(
-                '{@bundling.getBundledField().getSimpleName()}',
-                [
-                  @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
-                    '{@fieldSelector.getParamName}'
-                  @end
-                ],
-                @if bundling.hasSubresponseField()
-                  '{@bundling.getSubresponseField().getSimpleName()}',
-                @else
-                  null,
-                @end
-                {@context.getByteLengthFunction(bundling.getBundledField().getType())})
-          @end
-        @end
-      };
-    @end
 
     /**
      * The scopes needed to make gRPC calls to all of the methods defined in
@@ -144,16 +119,11 @@
 @end
 
 @private constructDefaults(service)
-  @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
-       jsonBaseName = {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
-    var clientConfigFile = path.join(
-        __dirname, '{@jsonBaseName}_client_config.json');
-    var configData = fs.readFileSync(clientConfigFile);
-    var defaults = gax.constructSettings(
+  @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
+    var defaults = gax.constructSettingsGrpc(
         '{@service.getFullName}',
-        JSON.parse(configData),
+        configData,
         clientConfig,
-        grpc.status,
         timeout,
         @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service))
           PAGE_DESCRIPTORS,
@@ -161,11 +131,12 @@
           null,
         @end
         @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service))
-          BUNDLE_DESCRIPTORS,
+          bundleDescriptors,
         @else
           null,
         @end
-        {'metadata': metadata});
+        {'x-goog-api-client': googleApiClient},
+        opts.grpc);
   @end
 @end
 
@@ -187,6 +158,11 @@
      *   Custom function to obtain the credentials.
      * @@param {grpc.ClientCredentials} opts.sslCreds
      *   A ClientCredentials for use with an SSL-enabled channel.
+     * @@param {Object} opts.grpc
+     *   When specified, this is used as the grpc module. Otherwise
+     *   the grpc package will be loaded from the dependency (typically
+     *   the one within 'google-gax' will be loaded). This will be useful
+     *   to share channels among multiple APIs.
      * @@param {Object} opts.clientConfig
      *   The customized config to build the call settings. See
      *   {@@link gax.constructSettings} for the format.
@@ -209,12 +185,41 @@
       var appName = opts.appName || 'gax';
       var appVersion = opts.appVersion || gax.Version;
 
+      @if context.isGcloud
+        var grpcClient = gax.loadGrpc(opts.grpc, [{
+          root: require('google-proto-files')('..'),
+          file: '{@service.getFile.getLocation.getDisplayString}'
+        }]);
+      @else
+        var grpcClient = require('{@context.grpcClientName(service)}').client;
+      @end
+      @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+
+        var bundleDescriptors = {
+          @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service)) on {@", "}.add(BREAK)
+            @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
+              '{@methodName(method)}': new gax.BundleDescriptor(
+                  '{@bundling.getBundledField().getSimpleName()}',
+                  [
+                    @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
+                      '{@fieldSelector.getParamName}'
+                    @end
+                  ],
+                  @if bundling.hasSubresponseField()
+                    '{@bundling.getSubresponseField().getSimpleName()}',
+                  @else
+                    null,
+                  @end
+                  {@context.getByteLengthFunction(bundling.getBundledField().getType())})
+            @end
+          @end
+        };
+      @end
+
       var googleApiClient = [
         appName + '/' + appVersion,
         CODE_GEN_NAME_VERSION,
         'nodejs/' + process.version].join(' ');
-      var metadata = new grpc.Metadata();
-      metadata.set('x-goog-api-client', googleApiClient);
 
       {@constructDefaults(service)}
 
@@ -223,6 +228,7 @@
           port,
           grpcClient.{@service.getFullName},
           {'getCredentials': getCredentials,
+           'grpc': opts.grpc,
            'sslCreds': sslCreds,
            'scopes': scopes});
       var methods = [

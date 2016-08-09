@@ -1,4 +1,4 @@
-============== file: lib/library_service_api.js ==============
+============== file: src/library_service_api.js ==============
 /*
  * Copyright 2016 Google Inc. All rights reserved.
  *
@@ -27,11 +27,8 @@
 'use strict';
 
 var arguejs = require('arguejs');
-var fs = require('fs');
+var configData = require('./library_service_client_config');
 var gax = require('google-gax');
-var grpc = require('grpc');
-var grpcClient = require('grpc-google-example-library-v1').client;
-var path = require('path');
 
 /** The default address of the service. */
 var SERVICE_ADDRESS = 'library-example.googleapis.com';
@@ -56,17 +53,6 @@ var PAGE_DESCRIPTORS = {
       'page_token',
       'next_page_token',
       'strings')
-};
-
-var BUNDLE_DESCRIPTORS = {
-  'publishSeries': new gax.BundleDescriptor(
-      'books',
-      [
-        'edition',
-        'shelf.name'
-      ],
-      'book_names',
-      gax.createByteLengthFunction(grpcClient.google.example.library.v1.Book))
 };
 
 /**
@@ -102,6 +88,11 @@ var ALL_SCOPES = [
  *   Custom function to obtain the credentials.
  * @param {grpc.ClientCredentials} opts.sslCreds
  *   A ClientCredentials for use with an SSL-enabled channel.
+ * @param {Object} opts.grpc
+ *   When specified, this is used as the grpc module. Otherwise
+ *   the grpc package will be loaded from the dependency (typically
+ *   the one within 'google-gax' will be loaded). This will be useful
+ *   to share channels among multiple APIs.
  * @param {Object} opts.clientConfig
  *   The customized config to build the call settings. See
  *   {@link gax.constructSettings} for the format.
@@ -124,31 +115,43 @@ function LibraryServiceApi(opts) {
   var appName = opts.appName || 'gax';
   var appVersion = opts.appVersion || gax.Version;
 
+  var grpcClient = gax.loadGrpc(opts.grpc, [{
+    root: require('google-proto-files')('..'),
+    file: 'library.proto'
+  }]);
+
+  var bundleDescriptors = {
+    'publishSeries': new gax.BundleDescriptor(
+        'books',
+        [
+          'edition',
+          'shelf.name'
+        ],
+        'book_names',
+        gax.createByteLengthFunction(grpcClient.google.example.library.v1.Book))
+  };
+
   var googleApiClient = [
     appName + '/' + appVersion,
     CODE_GEN_NAME_VERSION,
     'nodejs/' + process.version].join(' ');
-  var metadata = new grpc.Metadata();
-  metadata.set('x-goog-api-client', googleApiClient);
 
-  var clientConfigFile = path.join(
-      __dirname, 'library_service_client_config.json');
-  var configData = fs.readFileSync(clientConfigFile);
-  var defaults = gax.constructSettings(
+  var defaults = gax.constructSettingsGrpc(
       'google.example.library.v1.LibraryService',
-      JSON.parse(configData),
+      configData,
       clientConfig,
-      grpc.status,
       timeout,
       PAGE_DESCRIPTORS,
-      BUNDLE_DESCRIPTORS,
-      {'metadata': metadata});
+      bundleDescriptors,
+      {'x-goog-api-client': googleApiClient},
+      opts.grpc);
 
   this.stub = gax.createStub(
       servicePath,
       port,
       grpcClient.google.example.library.v1.LibraryService,
       {'getCredentials': getCredentials,
+       'grpc': opts.grpc,
        'sslCreds': sslCreds,
        'scopes': scopes});
   var methods = [

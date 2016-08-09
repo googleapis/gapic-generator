@@ -146,7 +146,7 @@ public class MainGapicProviderFactory
 
     } else if (id.equals(NODEJS)) {
       GapicCodePathMapper nodeJSPathMapper =
-          CommonGapicCodePathMapper.newBuilder().setPrefix("lib").build();
+          CommonGapicCodePathMapper.newBuilder().setPrefix("src").build();
       GapicProvider<? extends Object> mainProvider =
           CommonGapicProvider.<Interface>newBuilder()
               .setModel(model)
