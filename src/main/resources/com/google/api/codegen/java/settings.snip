@@ -53,17 +53,17 @@
   /**
    * The default address of the service.
    */
-  public static final String DEFAULT_SERVICE_ADDRESS = "{@xsettingsClass.serviceAddress}";
+  private static final String DEFAULT_SERVICE_ADDRESS = "{@xsettingsClass.serviceAddress}";
 
   /**
    * The default port of the service.
    */
-  public static final int DEFAULT_SERVICE_PORT = {@xsettingsClass.servicePort};
+  private static final int DEFAULT_SERVICE_PORT = {@xsettingsClass.servicePort};
 
   /**
    * The default scopes of the service.
    */
-  public static final ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
+  private static final ImmutableList<String> DEFAULT_SERVICE_SCOPES = ImmutableList.<String>builder()
       @join scope : {@xsettingsClass.authScopes}
         .add("{@scope}")
       @end
@@ -84,6 +84,27 @@
 @private members(xsettingsClass)
   {@methodMembers(xsettingsClass)}
   {@methodGetters(xsettingsClass)}
+  /**
+   * Returns the default service address.
+   */
+  public static String getDefaultServiceAddress() {
+    return DEFAULT_SERVICE_ADDRESS;
+  }
+
+  /**
+   * Returns the default service port.
+   */
+  public static int getDefaultServicePort() {
+    return DEFAULT_SERVICE_PORT;
+  }
+
+  /**
+   * Returns the default service scopes.
+   */
+  public static ImmutableList<String> getDefaultServiceScopes() {
+    return DEFAULT_SERVICE_SCOPES;
+  }
+
   /**
    * Returns a builder for this class with recommended defaults.
    */
