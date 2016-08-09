@@ -16,7 +16,6 @@ package com.google.api.codegen.config;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -25,8 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Generator for language settings section. Currently the only language setting is the package
- * name.
+ * Generator for language settings section. Currently the only language setting is the package name.
  */
 public class LanguageGenerator {
 
@@ -41,11 +39,14 @@ public class LanguageGenerator {
         Arrays.asList(
             new RewriteRule("^google", "com.google.cloud"),
             new RewriteRule("(.v[^.]+)$", ".spi$1"));
-    List<RewriteRule> phpRewriteRules = Arrays.asList(new RewriteRule("^google", "google.cloud"));
+    List<RewriteRule> phpRewriteRules =
+        Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
+    List<RewriteRule> pythonRewriteRules =
+        Arrays.asList(new RewriteRule("^google(?!\\.cloud)", "google.cloud"));
     LANGUAGE_FORMATTERS =
         ImmutableMap.<String, LanguageFormatter>builder()
             .put("java", new SimpleLanguageFormatter(".", javaRewriteRules, false))
-            .put("python", new SimpleLanguageFormatter(".", null, false))
+            .put("python", new SimpleLanguageFormatter(".", pythonRewriteRules, false))
             .put("go", new GoLanguageFormatter())
             .put("csharp", new SimpleLanguageFormatter(".", null, true))
             .put("ruby", new SimpleLanguageFormatter("::", null, true))
