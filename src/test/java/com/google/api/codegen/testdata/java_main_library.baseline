@@ -379,7 +379,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf getShelf(String name) {
-    SHELF_PATH_TEMPLATE.validate(name);
+    SHELF_PATH_TEMPLATE.validate(name, "getShelf");
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
         .setName(name)
@@ -405,7 +405,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf getShelf(String name, SomeMessage message) {
-    SHELF_PATH_TEMPLATE.validate(name);
+    SHELF_PATH_TEMPLATE.validate(name, "getShelf");
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
         .setName(name)
@@ -434,7 +434,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf getShelf(String name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
-    SHELF_PATH_TEMPLATE.validate(name);
+    SHELF_PATH_TEMPLATE.validate(name, "getShelf");
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
         .setName(name)
@@ -602,7 +602,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final void deleteShelf(String name) {
-    SHELF_PATH_TEMPLATE.validate(name);
+    SHELF_PATH_TEMPLATE.validate(name, "deleteShelf");
     DeleteShelfRequest request =
         DeleteShelfRequest.newBuilder()
         .setName(name)
@@ -673,8 +673,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf mergeShelves(String name, String otherShelfName) {
-    SHELF_PATH_TEMPLATE.validate(name);
-    SHELF_PATH_TEMPLATE.validate(otherShelfName);
+    SHELF_PATH_TEMPLATE.validate(name, "mergeShelves");
+    SHELF_PATH_TEMPLATE.validate(otherShelfName, "mergeShelves");
     MergeShelvesRequest request =
         MergeShelvesRequest.newBuilder()
         .setName(name)
@@ -752,7 +752,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book createBook(String name, Book book) {
-    SHELF_PATH_TEMPLATE.validate(name);
+    SHELF_PATH_TEMPLATE.validate(name, "createBook");
     CreateBookRequest request =
         CreateBookRequest.newBuilder()
         .setName(name)
@@ -900,7 +900,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book getBook(String name) {
-    BOOK_PATH_TEMPLATE.validate(name);
+    BOOK_PATH_TEMPLATE.validate(name, "getBook");
     GetBookRequest request =
         GetBookRequest.newBuilder()
         .setName(name)
@@ -971,7 +971,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final PageAccessor<Book> listBooks(String name, String filter) {
-    SHELF_PATH_TEMPLATE.validate(name);
+    SHELF_PATH_TEMPLATE.validate(name, "listBooks");
     ListBooksRequest request =
         ListBooksRequest.newBuilder()
         .setName(name)
@@ -1074,7 +1074,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final void deleteBook(String name) {
-    BOOK_PATH_TEMPLATE.validate(name);
+    BOOK_PATH_TEMPLATE.validate(name, "deleteBook");
     DeleteBookRequest request =
         DeleteBookRequest.newBuilder()
         .setName(name)
@@ -1143,7 +1143,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book updateBook(String name, Book book) {
-    BOOK_PATH_TEMPLATE.validate(name);
+    BOOK_PATH_TEMPLATE.validate(name, "updateBook");
     UpdateBookRequest request =
         UpdateBookRequest.newBuilder()
         .setName(name)
@@ -1174,7 +1174,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book updateBook(String name, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
-    BOOK_PATH_TEMPLATE.validate(name);
+    BOOK_PATH_TEMPLATE.validate(name, "updateBook");
     UpdateBookRequest request =
         UpdateBookRequest.newBuilder()
         .setName(name)
@@ -1250,8 +1250,8 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book moveBook(String name, String otherShelfName) {
-    BOOK_PATH_TEMPLATE.validate(name);
-    SHELF_PATH_TEMPLATE.validate(otherShelfName);
+    BOOK_PATH_TEMPLATE.validate(name, "moveBook");
+    SHELF_PATH_TEMPLATE.validate(otherShelfName, "moveBook");
     MoveBookRequest request =
         MoveBookRequest.newBuilder()
         .setName(name)
@@ -1424,7 +1424,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final void addComments(String name, List<Comment> comments) {
-    BOOK_PATH_TEMPLATE.validate(name);
+    BOOK_PATH_TEMPLATE.validate(name, "addComments");
     AddCommentsRequest request =
         AddCommentsRequest.newBuilder()
         .setName(name)
@@ -1504,7 +1504,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book getBookFromArchive(String name) {
-    ARCHIVED_BOOK_PATH_TEMPLATE.validate(name);
+    ARCHIVED_BOOK_PATH_TEMPLATE.validate(name, "getBookFromArchive");
     GetBookFromArchiveRequest request =
         GetBookFromArchiveRequest.newBuilder()
         .setName(name)
@@ -1577,7 +1577,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final void updateBookIndex(String name, String indexName, Map<String, String> indexMap) {
-    BOOK_PATH_TEMPLATE.validate(name);
+    BOOK_PATH_TEMPLATE.validate(name, "updateBookIndex");
     UpdateBookIndexRequest request =
         UpdateBookIndexRequest.newBuilder()
         .setName(name)
