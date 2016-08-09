@@ -23,6 +23,8 @@ public abstract class PathTemplateCheckView {
 
   public abstract String paramName();
 
+  public abstract String validationMessageContext();
+
   public static Builder newBuilder() {
     return new AutoValue_PathTemplateCheckView.Builder();
   }
@@ -32,6 +34,8 @@ public abstract class PathTemplateCheckView {
     public abstract Builder pathTemplateName(String val);
 
     public abstract Builder paramName(String val);
+
+    public abstract Builder validationMessageContext(String val);
 
     public abstract PathTemplateCheckView build();
   }
