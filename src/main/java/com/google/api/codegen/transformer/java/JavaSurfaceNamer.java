@@ -25,6 +25,7 @@ import com.google.api.codegen.util.java.JavaTypeTable;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,6 +39,11 @@ public class JavaSurfaceNamer extends SurfaceNamer {
         new JavaNameFormatter(),
         new ModelTypeFormatterImpl(new JavaModelTypeNameConverter()),
         new JavaTypeTable());
+  }
+
+  @Override
+  public String getFullFilePath(String path, String name) {
+    return path + File.separator + name + ".java";
   }
 
   @Override

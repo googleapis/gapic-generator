@@ -1,0 +1,35 @@
+@extends "java/common.snip"
+
+@snippet generate(mockService)
+  {@license()}
+
+  package {@mockService.packageName};
+
+  @join import : mockService.imports
+    import {@import};
+  @end
+
+  @@javax.annotation.Generated("by GAPIC")
+  public class {@mockService.name} implements MockGrpcService  {
+    private {@mockService.serviceImplClassName} serviceImpl;
+
+    public {@mockService.name}() {
+      serviceImpl = new {@mockService.serviceImplClassName}();
+    }
+
+    @@Override
+    public List<GeneratedMessage> getRequests() {
+      return serviceImpl.getRequests();
+    }
+
+    @@Override
+    public ServerServiceDefinition getServiceDefinition() {
+      return {@mockService.grpcContainerName}.bindService(serviceImpl);
+    }
+
+    @@Override
+    public void reset() {
+      serviceImpl.reset();
+    }
+  }
+@end

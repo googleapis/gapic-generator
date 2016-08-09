@@ -1,0 +1,43 @@
+@extends "java/common.snip"
+
+@snippet generate(mockServiceImpl)
+  {@license()}
+
+  package {@mockServiceImpl.packageName};
+
+  @join import : mockServiceImpl.imports
+    import {@import};
+  @end
+
+  @@javax.annotation.Generated("by GAPIC")
+  public class {@mockServiceImpl.name} implements {@mockServiceImpl.grpcClassName}  {
+     private ArrayList<GeneratedMessage> requests;
+
+     public {@mockServiceImpl.name}() {
+       requests = new ArrayList<>();
+     }
+
+     public List<GeneratedMessage> getRequests() {
+       return requests;
+     }
+
+     public void reset() {
+       requests = new ArrayList<>();
+     }
+
+     @join method : mockServiceImpl.grpcMethods
+      {@grpcMethod(method)}
+
+     @end
+  }
+@end
+
+@private grpcMethod(method)
+  @@Override
+  public void {@method.name}({@method.requestTypeName} request,
+      StreamObserver<{@method.responseTypeName}> responseObserver) {
+    requests.add(request);
+    responseObserver.onNext({@method.responseTypeName}.newBuilder().build());
+    responseObserver.onCompleted();
+  }
+@end
