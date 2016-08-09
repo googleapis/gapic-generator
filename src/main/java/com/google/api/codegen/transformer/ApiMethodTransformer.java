@@ -282,7 +282,7 @@ public class ApiMethodTransformer {
         PathTemplateCheckView.Builder check = PathTemplateCheckView.newBuilder();
         check.pathTemplateName(context.getNamer().getPathTemplateName(collectionConfig));
         check.paramName(context.getNamer().getVariableName(field));
-        check.methodName(context.getNamer().getApiMethodName(context.getMethod()));
+        check.validationMessageContext(context.getNamer().getApiMethodName(context.getMethod()));
 
         pathTemplateChecks.add(check.build());
       }
