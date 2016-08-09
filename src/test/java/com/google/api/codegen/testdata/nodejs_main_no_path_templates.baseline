@@ -85,7 +85,7 @@ function NoTemplatesServiceApi(opts) {
   var appName = opts.appName || 'gax';
   var appVersion = opts.appVersion || gax.Version;
 
-  var grpcClient = require('grpc-google-example-v1').client;
+  var grpcClient = require('grpc-google-cloud-example-v1').client;
 
   var googleApiClient = [
     appName + '/' + appVersion,
@@ -93,7 +93,7 @@ function NoTemplatesServiceApi(opts) {
     'nodejs/' + process.version].join(' ');
 
   var defaults = gax.constructSettingsGrpc(
-      'google.example.v1.NoTemplatesService',
+      'google.cloud.example.v1.NoTemplatesService',
       configData,
       clientConfig,
       timeout,
@@ -105,7 +105,7 @@ function NoTemplatesServiceApi(opts) {
   this.stub = gax.createStub(
       servicePath,
       port,
-      grpcClient.google.example.v1.NoTemplatesService,
+      grpcClient.google.cloud.example.v1.NoTemplatesService,
       {'getCredentials': getCredentials,
        'grpc': opts.grpc,
        'sslCreds': sslCreds,

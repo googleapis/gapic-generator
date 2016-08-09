@@ -17,18 +17,16 @@ package com.google.api.codegen;
 import com.google.api.codegen.config.ConfigGeneratorApi;
 import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.tools.ToolOptions;
-
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
 import org.junit.Test;
 
 public class ConfigGenerationTest extends ConfigBaselineTestCase {
   @Override
   protected String baselineFileName() {
-    return "library_config.baseline";
+    return testName.getMethodName() + "_config.baseline";
   }
 
   @Override
@@ -55,5 +53,10 @@ public class ConfigGenerationTest extends ConfigBaselineTestCase {
   @Test
   public void library() throws Exception {
     test("library");
+  }
+
+  @Test
+  public void no_path_templates() throws Exception {
+    test("no_path_templates");
   }
 }
