@@ -175,17 +175,14 @@ public class GoGapicContext extends GapicContext implements GoContext {
     if (!goPackage.startsWith(CORE_PROTO_BASE)) {
       return proto.getFile().getProto().getPackage().replace(".", "_");
     }
-    String name = null;
     List<String> parts = Arrays.asList(goPackage.split("/"));
     Collections.reverse(parts);
+    String name = parts.get(0);
     for (String part : parts) {
       if (part.length() < 2 || part.charAt(0) != 'v' || !Character.isDigit(part.charAt(1))) {
         name = part;
         break;
       }
-    }
-    if (name == null) {
-      name = parts.get(0);
     }
     if (name.equals(getPackageName())) {
       name = "";
