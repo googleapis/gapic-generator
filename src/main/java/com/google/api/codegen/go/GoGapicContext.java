@@ -184,12 +184,15 @@ public class GoGapicContext extends GapicContext implements GoContext {
     // that is not a version number.
     List<String> parts = Arrays.asList(goPackage.split("/"));
     Collections.reverse(parts);
-    String name = parts.get(0);
+    String name = null;
     for (String part : parts) {
       if (part.length() < 2 || part.charAt(0) != 'v' || !Character.isDigit(part.charAt(1))) {
         name = part;
         break;
       }
+    }
+    if (name == null) {
+      throw new IllegalArgumentException("cannot find a suitable import name: " + goPackage);
     }
     // If the name is the same as the package name,
     // the client and the proto are most likely closely related.
