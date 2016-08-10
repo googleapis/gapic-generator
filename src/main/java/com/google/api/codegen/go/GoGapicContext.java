@@ -38,6 +38,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.DescriptorProtos.FieldDescriptorProto.Type;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -243,7 +244,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
    * Returns the list of page streaming configs, grouped by the element type. In Go, the iterator
    * structs are defined per element type.
    */
-  public Iterable<PageStreamingConfig> getPageStreamingConfigs(Interface service) {
+  public Collection<PageStreamingConfig> getPageStreamingConfigs(Interface service) {
     Map<String, PageStreamingConfig> streamingConfigs = new LinkedHashMap<>();
     for (Method method : getNonStreamingMethods(service)) {
       MethodConfig methodConfig =
@@ -402,6 +403,9 @@ public class GoGapicContext extends GapicContext implements GoContext {
 
     if (!getApiConfig().getInterfaceConfig(service).getRetrySettingsDefinition().isEmpty()) {
       standardImports.add(GoImport.create("time"));
+    }
+    if (!getPageStreamingConfigs(service).isEmpty()) {
+      standardImports.add(GoImport.create("math"));
     }
     return standardImports;
   }

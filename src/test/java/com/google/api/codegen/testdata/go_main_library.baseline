@@ -19,6 +19,7 @@ package library
 
 import (
     "fmt"
+    "math"
     "runtime"
     "time"
 
@@ -603,12 +604,15 @@ func (it *BookIterator) Next() (*googleapis_example_library_v1.Book, error) {
 }
 
 // PageSize returns the page size for all subsequent calls to NextPage.
-func (it *BookIterator) PageSize() int32 {
-    return it.pageSize
+func (it *BookIterator) PageSize() int {
+    return int(it.pageSize)
 }
 
 // SetPageSize sets the page size for all subsequent calls to NextPage.
-func (it *BookIterator) SetPageSize(pageSize int32) {
+func (it *BookIterator) SetPageSize(pageSize int) {
+    if pageSize > math.MaxInt32 {
+        pageSize = math.MaxInt32
+    }
     it.pageSize = pageSize
 }
 
@@ -684,12 +688,15 @@ func (it *StringIterator) Next() (string, error) {
 }
 
 // PageSize returns the page size for all subsequent calls to NextPage.
-func (it *StringIterator) PageSize() int32 {
-    return it.pageSize
+func (it *StringIterator) PageSize() int {
+    return int(it.pageSize)
 }
 
 // SetPageSize sets the page size for all subsequent calls to NextPage.
-func (it *StringIterator) SetPageSize(pageSize int32) {
+func (it *StringIterator) SetPageSize(pageSize int) {
+    if pageSize > math.MaxInt32 {
+        pageSize = math.MaxInt32
+    }
     it.pageSize = pageSize
 }
 
