@@ -155,7 +155,7 @@
     @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
          jsonBaseName = {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
         default_client_config = json.loads(pkg_resources.resource_string(
-            __name__, '{@jsonBaseName}_client_config.json'))
+            __name__, '{@jsonBaseName}_client_config.json').decode())
         @if or(context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service)), \
                context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service)))
             defaults = api_callable.construct_settings(
