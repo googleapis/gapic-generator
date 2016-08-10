@@ -180,7 +180,7 @@ public class GoGapicContext extends GapicContext implements GoContext {
     //   google.golang.org/genproto/googleapis/example/library/v1
     // or not
     //   google.golang.org/genproto/googleapis/api/monitoredres
-    // We heuristically get the import name by looking for the right-most element,
+    // We heuristically get the import name by looking for the right-most element
     // that is not a version number.
     List<String> parts = Arrays.asList(goPackage.split("/"));
     Collections.reverse(parts);
@@ -193,14 +193,6 @@ public class GoGapicContext extends GapicContext implements GoContext {
     }
     if (name == null) {
       throw new IllegalArgumentException("cannot find a suitable import name: " + goPackage);
-    }
-    // If the name is the same as the package name,
-    // the client and the proto are most likely closely related.
-    // For example, we are generating library client and importing library proto.
-    // In this case, instead of naming it "librarypb",
-    // just call it "pb" for conciseness.
-    if (name.equals(getPackageName())) {
-      name = "";
     }
     return name + "pb";
   }
