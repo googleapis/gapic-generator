@@ -135,7 +135,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
             .name(name)
             .mockServiceClassName(context.getNamer().getMockServiceClassName(service))
             .testCases(createTestCaseViews(context))
-            .outputPath(namer.getFullFilePath(outputPath, name))
+            .outputPath(namer.getSourceFilePath(outputPath, name))
             .templateFileName(TEST_TEMPLATE_FILE)
             // Imports must be done as the last step to catch all imports.
             .imports(context.getTypeTable().getImports())
@@ -204,7 +204,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .serviceImplClassName(namer.getMockGrpcServiceImplName(context.getInterface()))
         .packageName(context.getApiConfig().getPackageName())
         .grpcContainerName(grpcContainerName)
-        .outputPath(namer.getFullFilePath(outputPath, name))
+        .outputPath(namer.getSourceFilePath(outputPath, name))
         .templateFileName(MOCK_SERVICE_FILE)
         // Imports must be done as the last step to catch all imports.
         .imports(context.getTypeTable().getImports())
@@ -225,7 +225,7 @@ public class JavaGapicSurfaceTestTransformer implements ModelToViewTransformer {
         .packageName(context.getApiConfig().getPackageName())
         .grpcMethods(createGrpcMethodViews(context))
         .grpcClassName(grpcClassName)
-        .outputPath(namer.getFullFilePath(outputPath, name))
+        .outputPath(namer.getSourceFilePath(outputPath, name))
         .templateFileName(MOCK_SERVICE_IMPL_FILE)
         // Imports must be done as the last step to catch all imports.
         .imports(context.getTypeTable().getImports())

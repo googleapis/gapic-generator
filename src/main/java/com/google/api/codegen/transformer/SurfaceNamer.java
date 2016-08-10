@@ -65,9 +65,9 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return "$ NOT IMPLEMENTED: " + feature + " $";
   }
 
-  /** The full path to the file  */
-  public String getFullFilePath(String path, String name) {
-    return getNotImplementedString("SurfaceNamer.getFullFilePath");
+  /** The full path to the source file  */
+  public String getSourceFilePath(String path, String className) {
+    return getNotImplementedString("SurfaceNamer.getSourceFilePath");
   }
 
   /** The name of the class that implements a particular proto interface. */

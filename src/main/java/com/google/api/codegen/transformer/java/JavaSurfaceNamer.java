@@ -42,8 +42,8 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   }
 
   @Override
-  public String getFullFilePath(String path, String name) {
-    return path + File.separator + name + ".java";
+  public String getSourceFilePath(String path, String className) {
+    return path + File.separator + className + ".java";
   }
 
   @Override
