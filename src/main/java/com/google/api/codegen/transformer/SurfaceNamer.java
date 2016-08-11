@@ -65,6 +65,11 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return "$ NOT IMPLEMENTED: " + feature + " $";
   }
 
+  /** The full path to the source file  */
+  public String getSourceFilePath(String path, String className) {
+    return getNotImplementedString("SurfaceNamer.getSourceFilePath");
+  }
+
   /** The name of the class that implements a particular proto interface. */
   public String getApiWrapperClassName(Interface interfaze) {
     return className(Name.upperCamel(interfaze.getSimpleName(), "Api"));
@@ -280,6 +285,17 @@ public class SurfaceNamer extends NameFormatterDelegator {
   }
 
   /**
+   * The type name of the Grpc service class
+   * This needs to match what Grpc generates for the particular language.
+   */
+  public String getGrpcServiceClassName(Interface service) {
+    NamePath namePath = typeNameConverter.getNamePath(modelTypeFormatter.getFullNameFor(service));
+    String grpcContainerName = className(Name.upperCamel(namePath.getHead(), "Grpc"));
+    String serviceClassName = className(Name.upperCamel(service.getSimpleName()));
+    return qualifiedName(namePath.withHead(grpcContainerName).append(serviceClassName));
+  }
+
+  /**
    * The type name of the method constant in the Grpc container class.
    * This needs to match what Grpc generates for the particular language.
    */
@@ -439,7 +455,12 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return className(Name.upperCamel("Mock", service.getSimpleName()));
   }
 
-  /** The class name of the mock gRPC service for the given API service. */
+  /** The class name of the mock gRPC service implementation for the given API service. */
+  public String getMockGrpcServiceImplName(Interface service) {
+    return className(Name.upperCamel("Mock", service.getSimpleName(), "Impl"));
+  }
+
+  /** The method name of getter function call for the given name */
   public String getGetFunctionCallName(Name name) {
     return methodName(Name.from("get").join(name));
   }

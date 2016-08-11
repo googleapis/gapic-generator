@@ -15,6 +15,7 @@
 package com.google.api.codegen.util;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.List;
  * dots or slashes.
  */
 public class NamePath {
-  private List<String> pathPieces;
+  private ArrayList<String> pathPieces;
 
   /**
    * Create a NamePath that is separated by dots.
@@ -51,7 +52,7 @@ public class NamePath {
   }
 
   private NamePath(List<String> pathPieces) {
-    this.pathPieces = pathPieces;
+    this.pathPieces = Lists.newArrayList(pathPieces);
   }
 
   /**
@@ -63,6 +64,14 @@ public class NamePath {
     newPathPieces.addAll(pathPieces);
     newPathPieces.set(pathPieces.size() - 1, newHead);
     return new NamePath(newPathPieces);
+  }
+
+  /**
+   * Append the given head after the last piece of the path.
+   */
+  public NamePath append(String head) {
+    pathPieces.add(head);
+    return this;
   }
 
   /**
