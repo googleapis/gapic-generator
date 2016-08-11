@@ -52,11 +52,14 @@
 @end
 
 @private globals(service)
-    var (
-        @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
-            {@pathTemplateVarName(service, collectionConfig)} = gax.MustCompilePathTemplate("{@collectionConfig.getNamePattern}")
-        @end
-    )
+    @if context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs
+        var (
+            @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs
+                {@pathTemplateVarName(service, collectionConfig)} = gax.MustCompilePathTemplate("{@collectionConfig.getNamePattern}")
+            @end
+        )
+
+    @end
 
     // {@context.getClientPrefix(service)}CallOptions contains the retry settings for each method of this client.
     type {@context.getClientPrefix(service)}CallOptions struct {
@@ -91,11 +94,10 @@
     func default{@context.getClientPrefix(service)}CallOptions() *{@context.getClientPrefix(service)}CallOptions {
         @join retryCodesDef : context.entrySet(context.getApiConfig.getInterfaceConfig(service).getRetryCodesDefinition) if retryCodesDef.getValue
             with{@context.lowerUnderscoreToUpperCamel(retryCodesDef.getKey)}RetryCodes := gax.WithRetryCodes([]codes.Code{
-                    @join code : retryCodesDef.getValue
-                        codes.{@context.upperUnderscoreToUpperCamel(code.toString())},
-                    @end
-                },
-            )
+                @join code : retryCodesDef.getValue
+                    codes.{@context.upperUnderscoreToUpperCamel(code.toString())},
+                @end
+            })
         @end
         return &{@context.getClientPrefix(service)}CallOptions{
             @join method : context.getNonStreamingMethods(service)
@@ -181,7 +183,6 @@
 # methods would have the service instance already.
 @private pathTemplateMethods(service)
 
-    // Path templates.
     @join collectionConfig : context.getApiConfig.getInterfaceConfig(service).getCollectionConfigs()
         @let pathTypeName = context.lowerUnderscoreToUpperCamel(collectionConfig.getEntityName), \
              humanReadableName = collectionConfig.getEntityName.replaceAll("_", " "), \
@@ -291,8 +292,6 @@
 @end
 
 @private iterators(service)
-    // Iterators.
-    //
     @join pageStreaming : context.getPageStreamingConfigs(service)
         @let iteratorTypeName = context.getIteratorTypeName(pageStreaming), \
              tokenType = context.getNextPageTokenType(service, pageStreaming), \
