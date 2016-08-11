@@ -323,6 +323,13 @@ public class SurfaceNamer extends NameFormatterDelegator {
     return true;
   }
 
+  /**
+   * Returns true if the request object param element type for the given field should be imported.
+   */
+  public boolean shouldImportRequestObjectParamElementType(Field field) {
+    return true;
+  }
+
   /** Converts the given text to doc lines in the format of the current language. */
   public List<String> getDocLines(String text) {
     return CommonRenderingUtil.getDocLines(text);

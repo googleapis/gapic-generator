@@ -22,6 +22,7 @@ import com.google.api.codegen.transformer.SurfaceNamer;
 import com.google.api.codegen.util.java.JavaNameFormatter;
 import com.google.api.codegen.util.java.JavaRenderingUtil;
 import com.google.api.codegen.util.java.JavaTypeTable;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 
@@ -44,6 +45,15 @@ public class JavaSurfaceNamer extends SurfaceNamer {
   @Override
   public String getSourceFilePath(String path, String className) {
     return path + File.separator + className + ".java";
+  }
+
+  @Override
+  public boolean shouldImportRequestObjectParamElementType(Field field) {
+    if (Field.IS_MAP.apply(field)) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   @Override
