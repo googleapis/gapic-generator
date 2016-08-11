@@ -32,18 +32,21 @@ public class GoContextCommonTest {
 
   @Test
   public void testLineWrapShort() {
-    Truth.assertThat(ctx.getCommentLinesWrap("aaa")).containsExactly("// aaa");
+    Truth.assertThat(ctx.getWrappedCommentLines("aaa")).containsExactly("// aaa");
   }
 
   @Test
   public void testLineWrapLong() {
-    List<String> words = Arrays.asList(stringRep("a", 50), stringRep("a", 20), stringRep("a", 3));
+    List<String> words = Arrays.asList(stringRep("a", 50), stringRep("b", 20), stringRep("c", 3));
     String in = Joiner.on(" ").join(words);
-    Truth.assertThat(ctx.getCommentLinesWrap(in))
+    Truth.assertThat(ctx.getWrappedCommentLines(in))
         .containsExactly("// " + words.get(0) + " " + words.get(1), "// " + words.get(2))
         .inOrder();
   }
 
+  /**
+   * Repeats string `s` `n` times.
+   */
   private String stringRep(String s, int n) {
     StringBuilder sb = new StringBuilder(s.length() * n);
     for (int i = 0; i < n; i++) {

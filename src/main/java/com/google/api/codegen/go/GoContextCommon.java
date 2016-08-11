@@ -41,7 +41,7 @@ public class GoContextCommon {
    *
    * Lines are wrapped to 70 characters. See documentation of wrapLine for more details.
    */
-  public Iterable<String> getCommentLinesWrap(String text) {
+  public Iterable<String> getWrappedCommentLines(String text) {
     List<String> result = new ArrayList<>();
     for (String line : Splitter.on(String.format("%n")).split(text)) {
       for (String wrapped : wrapLine(line, 70)) {
@@ -54,12 +54,14 @@ public class GoContextCommon {
   /**
    * wrapLine splits `line` into a list of lines around `length` long at whitespaces.
    *
-   * Current implementation first splits the line into words, then add the words,
-   * separated by a single space, to the current line until the line is longer than `length`,
-   * then breaks the line.
-   * This eliminates the corner-case of `line` containing a word that is by itself longer than
-   * length. This issue crops up occasionally since many comments contain URLs.
-   * Consequently, each wrapped line, except from possibly the last, will be slightly longer
+   * The current implementation
+   *   - first splits the line into words
+   *   - adds the words, separated by a single space, to the current line until the line is longer than `length`
+   *   - and then breaks the line.
+   *
+   * This implementation has a corner case of `line` containing a word that is by itself longer than
+   * `length`. This issue crops up occasionally since many comments contain URLs.
+   * Consequently, each wrapped line, except possibly the last, will be slightly longer
    * than `length`. In practice, this is not a serious problem, but this algorithm
    * should be changed if stronger guarantees are required.
    */
