@@ -387,18 +387,24 @@ public class ApiMethodTransformer {
     SurfaceNamer namer = context.getNamer();
     RequestObjectParamView.Builder param = RequestObjectParamView.newBuilder();
     param.name(namer.getVariableName(field));
+
     if (namer.shouldImportRequestObjectParamType(field)) {
-      param.elementTypeName(
-          context.getTypeTable().getAndSaveNicknameForElementType(field.getType()));
       param.typeName(context.getTypeTable().getAndSaveNicknameFor(field.getType()));
     } else {
-      param.elementTypeName(
-          namer.getNotImplementedString(
-              "ApiMethodTransformer.generateRequestObjectParam - elementTypeName"));
       param.typeName(
           namer.getNotImplementedString(
               "ApiMethodTransformer.generateRequestObjectParam - typeName"));
     }
+
+    if (namer.shouldImportRequestObjectParamElementType(field)) {
+      param.elementTypeName(
+          context.getTypeTable().getAndSaveNicknameForElementType(field.getType()));
+    } else {
+      param.elementTypeName(
+          namer.getNotImplementedString(
+              "ApiMethodTransformer.generateRequestObjectParam - elementTypeName"));
+    }
+
     param.setCallName(namer.getFieldSetFunctionName(field));
     param.isMap(field.getType().isMap());
     param.isArray(!field.getType().isMap() && field.getType().isRepeated());
