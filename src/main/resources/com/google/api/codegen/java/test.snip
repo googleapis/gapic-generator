@@ -52,6 +52,8 @@
   @@Test
   @@SuppressWarnings("all")
   public void {@test.name}() {
+    {@setResponse(test.mockResponse)}
+
     {@initCode(test.initCode)}
     {@methodCall(test)}
 
@@ -65,18 +67,28 @@
   }
 @end
 
+@private setResponse(response)
+  {@initCode(response.initCode)}
+  List<GeneratedMessage> responses = new ArrayList<>();
+  responses.add(response);
+  serviceHelper.getService().setResponses(responses);
+@end
+
 @private methodCall(test)
   @switch test.methodType
   @case "PagedFlattenedMethod"
-    PageAccessor<{@test.resourceTypeName}> response = api.{@test.surfaceMethodName}(\
+    PageAccessor<{@test.resourceTypeName}> pageAccessor = api.{@test.surfaceMethodName}(\
       {@sampleMethodCallArgList(test.initCode.fieldSettings)});
 
     // PageAccessor will not make actual request until it is being used.
     // Add all the pages here in order to make grpc requests.
-    List<{@test.resourceTypeName}> resources = Lists.newArrayList(response.getPageValues());
+    List<{@test.resourceTypeName}> resources = Lists.newArrayList(pageAccessor.getPageValues());
+    Assert.assertEquals(0, resources.size());
   @case "FlattenedMethod"
-    api.{@test.surfaceMethodName}(\
-      {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+    {@test.responseTypeName} actualResponse =
+        api.{@test.surfaceMethodName}(\
+        {@sampleMethodCallArgList(test.initCode.fieldSettings)});
+    Assert.assertEquals(response, actualResponse);
   @default
     $unhandledCase: {@test.type}$
   @end

@@ -43,6 +43,7 @@ import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -58,10 +59,7 @@ public class InitCodeTransformer {
     InitCode initCode =
         generator.generateRequestFieldInitCode(context.getMethod(), initFieldStructure, fields);
 
-    return InitCodeView.newBuilder()
-        .lines(generateSurfaceInitCodeLines(context, initCode))
-        .fieldSettings(getFieldSettings(context, initCode.getArgFields()))
-        .build();
+    return buildInitCodeView(context, initCode);
   }
 
   public InitCodeView generateRequestObjectInitCode(MethodTransformerContext context) {
@@ -70,6 +68,17 @@ public class InitCodeTransformer {
     InitCode initCode =
         generator.generateRequestObjectInitCode(context.getMethod(), initFieldStructure);
 
+    return buildInitCodeView(context, initCode);
+  }
+
+  public InitCodeView generateMockResponseObjectInitCode(MethodTransformerContext context) {
+    InitCodeGenerator generator = new InitCodeGenerator();
+    InitCode initCode = generator.generateMockResponseObjectInitCode(context.getMethod());
+
+    return buildInitCodeView(context, initCode);
+  }
+
+  private InitCodeView buildInitCodeView(MethodTransformerContext context, InitCode initCode) {
     return InitCodeView.newBuilder()
         .lines(generateSurfaceInitCodeLines(context, initCode))
         .fieldSettings(getFieldSettings(context, initCode.getArgFields()))
@@ -102,7 +111,6 @@ public class InitCodeTransformer {
 
   public Map<String, Object> createInitFieldStructure(MethodTransformerContext context) {
     Map<String, String> fieldNamePatterns = context.getMethodConfig().getFieldNamePatterns();
-
     ImmutableMap.Builder<String, InitValueConfig> initValueConfigMap = ImmutableMap.builder();
     for (Map.Entry<String, String> fieldNamePattern : fieldNamePatterns.entrySet()) {
       CollectionConfig collectionConfig = context.getCollectionConfig(fieldNamePattern.getValue());
@@ -112,6 +120,7 @@ public class InitCodeTransformer {
           InitValueConfig.create(apiWrapperClassName, collectionConfig);
       initValueConfigMap.put(fieldNamePattern.getKey(), initValueConfig);
     }
+
     Map<String, Object> initFieldStructure =
         FieldStructureParser.parseFields(
             context.getMethodConfig().getSampleCodeInitFields(), initValueConfigMap.build());

@@ -58,6 +58,24 @@ public class InitCodeGenerator {
   }
 
   /**
+   * Generates the simple InitCode for a response object which matches the output type of the
+   * given method.
+   */
+  public InitCode generateMockResponseObjectInitCode(Method method) {
+    InitCodeLine lastLine =
+        generateSampleCodeInit(Name.from("response"), method.getOutputType(), new HashMap<>());
+    initLineSpecs.add(lastLine);
+    FieldSetting responseField =
+        FieldSetting.create(
+            method.getOutputType(),
+            Name.from("response"),
+            lastLine.getIdentifier(),
+            lastLine.getInitValueConfig());
+    List<FieldSetting> outputFields = Arrays.asList(responseField);
+    return InitCode.create(initLineSpecs, outputFields);
+  }
+
+  /**
    * Generates the InitCode for a method, where the input of the function representing the method
    * will take the given set of fields.
    */
