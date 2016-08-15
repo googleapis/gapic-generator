@@ -35,6 +35,8 @@ version = "0.0.0-SNAPSHOT"
 // url to the snapshot repository of a private maven repo.
 def toolkitSnapshotRepo = "http://104.197.230.53:8081/nexus/content/repositories/snapshots/"
 
+def protoVersion = "3.0.0-beta-3"
+
 // Dependencies
 // ------------
 
@@ -62,8 +64,8 @@ ext {
     toolsFxTesting: 'com.google.api:api-compiler:0.0.5:testing',
 
     // Protobuf
-    protobuf: 'com.google.protobuf:protobuf-java:3.0.0-beta-3',
-    protoc:  'com.google.protobuf:protoc:3.0.0-beta-3',
+    protobuf: 'com.google.protobuf:protobuf-java:' + protoVersion,
+    protoc:  'com.google.protobuf:protoc:' + protoVersion,
     protobufGradlePlugin: 'com.google.protobuf:protobuf-gradle-plugin:0.7.3',
 
     // JSON
@@ -319,7 +321,7 @@ task showGrpcJavaPluginPath << {
 task showProtobufPath() << {
   DependencyResolver resolver = new DependencyResolver(project)
   println 'output: ' + resolver.extractArchive(
-    'com.google.protobuf:protobuf-java:3.0.0-beta-2');
+    'com.google.protobuf:protobuf-java:' + protoVersion);
 }
 
 // Task to display the cache path of Google Java formatter
