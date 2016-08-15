@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Storage Transfer API
@@ -11,7 +11,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -29,7 +29,6 @@ import com.google.api.services.storagetransfer.v1.model.GoogleServiceAccount;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StoragetransferExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -50,12 +49,19 @@ public class StoragetransferExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -63,6 +69,7 @@ public class StoragetransferExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
@@ -79,6 +86,9 @@ public class StoragetransferExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -87,11 +97,16 @@ public class StoragetransferExample {
     Storagetransfer.V1.GetGoogleServiceAccount request = storagetransferService.v1().getGoogleServiceAccount();
     GoogleServiceAccount response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Storage Transfer API
@@ -103,7 +118,7 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -121,7 +136,6 @@ import com.google.api.services.storagetransfer.v1.model.GoogleServiceAccount;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StoragetransferExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -142,12 +156,19 @@ public class StoragetransferExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -155,6 +176,7 @@ public class StoragetransferExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
@@ -171,24 +193,34 @@ public class StoragetransferExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * The ID of the Google Developers Console project that the Google service account is associated
-    //   with. Required.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // The ID of the Google Developers Console project that the Google service account is associated with.
+    // Required.
     String projectId = "{MY-PROJECT-ID}";
+
 
     Storagetransfer.GoogleServiceAccounts.Get request = storagetransferService.googleServiceAccounts().get(projectId);
     GoogleServiceAccount response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Storage Transfer API
@@ -200,7 +232,7 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -218,7 +250,6 @@ import com.google.api.services.storagetransfer.v1.model.TransferJob;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StoragetransferExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -238,12 +269,19 @@ public class StoragetransferExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -251,6 +289,7 @@ public class StoragetransferExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
@@ -267,22 +306,31 @@ public class StoragetransferExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
 
-    TransferJob content = new TransferJob();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
+    TransferJob requestBody = new TransferJob();
+    // TODO: Assign values to desired fields of the `requestBody` object.
 
-    Storagetransfer.TransferJobs.Create request = storagetransferService.transferJobs().create(content);
+
+    Storagetransfer.TransferJobs.Create request = storagetransferService.transferJobs().create(requestBody);
     TransferJob response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Storage Transfer API
@@ -294,7 +342,7 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -312,7 +360,6 @@ import com.google.api.services.storagetransfer.v1.model.TransferJob;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StoragetransferExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -332,12 +379,19 @@ public class StoragetransferExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -345,6 +399,7 @@ public class StoragetransferExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
@@ -361,23 +416,33 @@ public class StoragetransferExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * The job to get. Required.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // The job to get. Required.
     String jobName = "{MY-JOB-NAME}";
+
 
     Storagetransfer.TransferJobs.Get request = storagetransferService.transferJobs().get(jobName);
     TransferJob response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Storage Transfer API
@@ -389,7 +454,7 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -408,7 +473,6 @@ import com.google.api.services.storagetransfer.v1.model.TransferJob;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StoragetransferExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -433,12 +497,19 @@ public class StoragetransferExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -446,6 +517,7 @@ public class StoragetransferExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
@@ -453,6 +525,9 @@ public class StoragetransferExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -466,7 +541,8 @@ public class StoragetransferExample {
         continue;
 
       for (TransferJob transferJob : response.getTransferJobs()) {
-        // TODO: Add code here to process each 'transferJob' resource
+        // TODO: Change code below to process each `transferJob` resource:
+        System.out.println(transferJob);
       }
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
@@ -480,7 +556,7 @@ public class StoragetransferExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Storage Transfer API
@@ -492,7 +568,7 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -511,7 +587,6 @@ import com.google.api.services.storagetransfer.v1.model.UpdateTransferJobRequest
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StoragetransferExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -534,12 +609,19 @@ public class StoragetransferExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -547,6 +629,7 @@ public class StoragetransferExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
@@ -563,26 +646,37 @@ public class StoragetransferExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
 
-    // * The name of job to update. Required.
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
+
+    // The name of job to update. Required.
     String jobName = "{MY-JOB-NAME}";
 
-    UpdateTransferJobRequest content = new UpdateTransferJobRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Storagetransfer.TransferJobs.Patch request = storagetransferService.transferJobs().patch(jobName, content);
+    UpdateTransferJobRequest requestBody = new UpdateTransferJobRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    Storagetransfer.TransferJobs.Patch request = storagetransferService.transferJobs().patch(jobName, requestBody);
     TransferJob response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Storage Transfer API
@@ -594,7 +688,7 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -611,7 +705,6 @@ import com.google.api.services.storagetransfer.v1.Storagetransfer.TransferOperat
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StoragetransferExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -630,12 +723,19 @@ public class StoragetransferExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -643,6 +743,7 @@ public class StoragetransferExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
@@ -650,16 +751,21 @@ public class StoragetransferExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'cancel' method:
 
-    // * The name of the operation resource to be cancelled.
+    // TODO: Change placeholders below to desired parameter values for the `cancel` method:
+
+    // The name of the operation resource to be cancelled.
     String name = "{MY-NAME}";
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
       new StoragetransferExample().run();
@@ -668,9 +774,14 @@ public class StoragetransferExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+
+    Storagetransfer.TransferOperations.Cancel request = storagetransferService.transferOperations().cancel(name);
+    request.execute();
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Storage Transfer API
@@ -682,7 +793,7 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -699,7 +810,6 @@ import com.google.api.services.storagetransfer.v1.Storagetransfer.TransferOperat
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StoragetransferExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -718,12 +828,19 @@ public class StoragetransferExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -731,6 +848,7 @@ public class StoragetransferExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
@@ -738,16 +856,21 @@ public class StoragetransferExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
 
-    // * The name of the operation resource to be deleted.
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
+    // The name of the operation resource to be deleted.
     String name = "{MY-NAME}";
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
       new StoragetransferExample().run();
@@ -756,9 +879,14 @@ public class StoragetransferExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+
+    Storagetransfer.TransferOperations.Delete request = storagetransferService.transferOperations().delete(name);
+    request.execute();
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Storage Transfer API
@@ -770,7 +898,7 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -788,7 +916,6 @@ import com.google.api.services.storagetransfer.v1.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StoragetransferExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -808,12 +935,19 @@ public class StoragetransferExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -821,6 +955,7 @@ public class StoragetransferExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
@@ -837,23 +972,33 @@ public class StoragetransferExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * The name of the operation resource.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // The name of the operation resource.
     String name = "{MY-NAME}";
+
 
     Storagetransfer.TransferOperations.Get request = storagetransferService.transferOperations().get(name);
     Operation response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Storage Transfer API
@@ -865,7 +1010,7 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -884,7 +1029,6 @@ import com.google.api.services.storagetransfer.v1.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StoragetransferExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -912,12 +1056,19 @@ public class StoragetransferExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -925,6 +1076,7 @@ public class StoragetransferExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
@@ -932,14 +1084,19 @@ public class StoragetransferExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * The value `transferOperations`.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // The value `transferOperations`.
     String name = "{MY-NAME}";
+
 
     Storagetransfer.TransferOperations.List request = storagetransferService.transferOperations().list(name);
     ListOperationsResponse response;
@@ -949,7 +1106,8 @@ public class StoragetransferExample {
         continue;
 
       for (Operation operation : response.getOperations()) {
-        // TODO: Add code here to process each 'operation' resource
+        // TODO: Change code below to process each `operation` resource:
+        System.out.println(operation);
       }
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
@@ -963,7 +1121,7 @@ public class StoragetransferExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Storage Transfer API
@@ -975,7 +1133,7 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -993,7 +1151,6 @@ import com.google.api.services.storagetransfer.v1.model.PauseTransferOperationRe
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StoragetransferExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1015,12 +1172,19 @@ public class StoragetransferExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1028,6 +1192,7 @@ public class StoragetransferExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
@@ -1044,24 +1209,30 @@ public class StoragetransferExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'pause' method:
 
-    // * The name of the transfer operation. Required.
+    // TODO: Change placeholders below to desired parameter values for the `pause` method:
+
+    // The name of the transfer operation. Required.
     String name = "{MY-NAME}";
 
-    PauseTransferOperationRequest content = new PauseTransferOperationRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storagetransfer.TransferOperations.Pause request = storagetransferService.transferOperations().pause(name, content);
+    PauseTransferOperationRequest requestBody = new PauseTransferOperationRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Storagetransfer.TransferOperations.Pause request = storagetransferService.transferOperations().pause(name, requestBody);
     request.execute();
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Storage Transfer API
@@ -1073,7 +1244,7 @@ public class StoragetransferExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1091,7 +1262,6 @@ import com.google.api.services.storagetransfer.v1.model.ResumeTransferOperationR
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StoragetransferExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1113,12 +1283,19 @@ public class StoragetransferExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1126,6 +1303,7 @@ public class StoragetransferExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
@@ -1142,19 +1320,25 @@ public class StoragetransferExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storagetransfer storagetransferService = new Storagetransfer.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'resume' method:
 
-    // * The name of the transfer operation. Required.
+    // TODO: Change placeholders below to desired parameter values for the `resume` method:
+
+    // The name of the transfer operation. Required.
     String name = "{MY-NAME}";
 
-    ResumeTransferOperationRequest content = new ResumeTransferOperationRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storagetransfer.TransferOperations.Resume request = storagetransferService.transferOperations().resume(name, content);
+    ResumeTransferOperationRequest requestBody = new ResumeTransferOperationRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Storagetransfer.TransferOperations.Resume request = storagetransferService.transferOperations().resume(name, requestBody);
     request.execute();
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }

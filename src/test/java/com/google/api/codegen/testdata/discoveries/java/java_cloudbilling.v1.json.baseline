@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Billing API
@@ -11,7 +11,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -29,7 +29,6 @@ import com.google.api.services.cloudbilling.model.BillingAccount;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class CloudbillingExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -50,12 +49,19 @@ public class CloudbillingExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -63,6 +69,7 @@ public class CloudbillingExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
@@ -79,24 +86,34 @@ public class CloudbillingExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Cloudbilling cloudbillingService = new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * The resource name of the billing account to retrieve. For example,
-    //   `billingAccounts/012345-567890-ABCDEF`.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // The resource name of the billing account to retrieve. For example,
+    // `billingAccounts/012345-567890-ABCDEF`.
     String name = "billingAccounts/{MY-BILLINGACCOUNT}";
+
 
     Cloudbilling.BillingAccounts.Get request = cloudbillingService.billingAccounts().get(name);
     BillingAccount response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Billing API
@@ -108,7 +125,7 @@ public class CloudbillingExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -127,7 +144,6 @@ import com.google.api.services.cloudbilling.model.ListBillingAccountsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class CloudbillingExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -152,12 +168,19 @@ public class CloudbillingExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -165,6 +188,7 @@ public class CloudbillingExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
@@ -172,6 +196,9 @@ public class CloudbillingExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Cloudbilling cloudbillingService = new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -185,7 +212,8 @@ public class CloudbillingExample {
         continue;
 
       for (BillingAccount billingAccount : response.getBillingAccounts()) {
-        // TODO: Add code here to process each 'billingAccount' resource
+        // TODO: Change code below to process each `billingAccount` resource:
+        System.out.println(billingAccount);
       }
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
@@ -199,7 +227,7 @@ public class CloudbillingExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Billing API
@@ -211,7 +239,7 @@ public class CloudbillingExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -231,7 +259,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-
 public class CloudbillingExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
@@ -243,31 +270,28 @@ public class CloudbillingExample {
     List request = service.billingAccounts().projects().list(name);
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Cloudbilling cloudbillingService = new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * The resource name of the billing account associated with the projects that you want to list. For
-    //   example, `billingAccounts/012345-567890-ABCDEF`.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // The resource name of the billing account associated with the projects that you want to list. For
+    // example, `billingAccounts/012345-567890-ABCDEF`.
     String name = "billingAccounts/{MY-BILLINGACCOUNT}";
+
 
     Cloudbilling.BillingAccounts.Projects.List request = cloudbillingService.billingAccounts().projects().list(name);
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
@@ -280,11 +304,16 @@ public class CloudbillingExample {
 =======
 
       for (ProjectBillingInfo projectBillingInfo : response.getProjectBillingInfo()) {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
         // TODO: Add code here to process each 'projectBillingInfo' resource
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
       }
       for (ProjectBillingInfo item : response.getProjectBillingInfo()) {
         System.out.println(item);
+=======
+        // TODO: Change code below to process each `projectBillingInfo` resource:
+        System.out.println(projectBillingInfo);
+>>>>>>> Update discovery sample gen across languages.
       }
     } while (response.getNextPageToken() != null);
   }
@@ -318,7 +347,7 @@ public class CloudbillingExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Billing API
@@ -330,7 +359,7 @@ public class CloudbillingExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -348,7 +377,6 @@ import com.google.api.services.cloudbilling.model.ProjectBillingInfo;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class CloudbillingExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -369,12 +397,19 @@ public class CloudbillingExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -382,6 +417,7 @@ public class CloudbillingExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
@@ -398,24 +434,34 @@ public class CloudbillingExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Cloudbilling cloudbillingService = new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'getBillingInfo' method:
 
-    // * The resource name of the project for which billing information is retrieved. For example,
-    //   `projects/tokyo-rain-123`.
+    // TODO: Change placeholders below to desired parameter values for the `getBillingInfo` method:
+
+    // The resource name of the project for which billing information is retrieved. For example,
+    // `projects/tokyo-rain-123`.
     String name = "projects/{MY-PROJECT}";
+
 
     Cloudbilling.Projects.GetBillingInfo request = cloudbillingService.projects().getBillingInfo(name);
     ProjectBillingInfo response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Billing API
@@ -427,7 +473,7 @@ public class CloudbillingExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -445,7 +491,6 @@ import com.google.api.services.cloudbilling.model.ProjectBillingInfo;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class CloudbillingExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -469,12 +514,19 @@ public class CloudbillingExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -482,6 +534,7 @@ public class CloudbillingExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
@@ -498,23 +551,34 @@ public class CloudbillingExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Cloudbilling cloudbillingService = new Cloudbilling.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'updateBillingInfo' method:
 
-    // * The resource name of the project associated with the billing information that you want to update.
-    //   For example, `projects/tokyo-rain-123`.
+    // TODO: Change placeholders below to desired parameter values for the `updateBillingInfo` method:
+
+    // The resource name of the project associated with the billing information that you want to update.
+    // For example, `projects/tokyo-rain-123`.
     String name = "projects/{MY-PROJECT}";
 
-    ProjectBillingInfo content = new ProjectBillingInfo();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Cloudbilling.Projects.UpdateBillingInfo request = cloudbillingService.projects().updateBillingInfo(name, content);
+    ProjectBillingInfo requestBody = new ProjectBillingInfo();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Cloudbilling.Projects.UpdateBillingInfo request = cloudbillingService.projects().updateBillingInfo(name, requestBody);
     ProjectBillingInfo response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }

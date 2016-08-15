@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -11,7 +11,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -28,7 +28,6 @@ import com.google.api.services.storage.Storage.BucketAccessControls.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -51,12 +50,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -64,6 +70,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -71,20 +78,25 @@ public class StorageExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
     String entity = "{MY-ENTITY}";
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
       new StorageExample().run();
@@ -93,9 +105,14 @@ public class StorageExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+
+    Storage.BucketAccessControls.Delete request = storageService.bucketAccessControls().delete(bucket, entity);
+    request.execute();
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -107,7 +124,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -125,7 +142,6 @@ import com.google.api.services.storage.model.BucketAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -149,12 +165,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -162,6 +185,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -178,27 +202,37 @@ public class StorageExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
     String entity = "{MY-ENTITY}";
+
 
     Storage.BucketAccessControls.Get request = storageService.bucketAccessControls().get(bucket, entity);
     BucketAccessControl response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -210,7 +244,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -228,7 +262,6 @@ import com.google.api.services.storage.model.BucketAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -251,12 +284,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -264,6 +304,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -280,26 +321,37 @@ public class StorageExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    BucketAccessControl content = new BucketAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.BucketAccessControls.Insert request = storageService.bucketAccessControls().insert(bucket, content);
+    BucketAccessControl requestBody = new BucketAccessControl();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Storage.BucketAccessControls.Insert request = storageService.bucketAccessControls().insert(bucket, requestBody);
     BucketAccessControl response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -311,7 +363,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -329,7 +381,6 @@ import com.google.api.services.storage.model.BucketAccessControls;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -349,12 +400,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -362,6 +420,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -378,23 +437,33 @@ public class StorageExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
+
 
     Storage.BucketAccessControls.List request = storageService.bucketAccessControls().list(bucket);
     BucketAccessControls response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -406,7 +475,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -424,7 +493,6 @@ import com.google.api.services.storage.model.BucketAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -474,46 +542,49 @@ public class StorageExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
     String entity = "{MY-ENTITY}";
 
-    BucketAccessControl content = new BucketAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Storage.BucketAccessControls.Patch request = storageService.bucketAccessControls().patch(bucket, entity, content);
+    BucketAccessControl requestBody = new BucketAccessControl();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    Storage.BucketAccessControls.Patch request = storageService.bucketAccessControls().patch(bucket, entity, requestBody);
     BucketAccessControl response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -525,7 +596,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -543,7 +614,6 @@ import com.google.api.services.storage.model.BucketAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -593,46 +663,49 @@ public class StorageExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
     String entity = "{MY-ENTITY}";
 
-    BucketAccessControl content = new BucketAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.BucketAccessControls.Update request = storageService.bucketAccessControls().update(bucket, entity, content);
+    BucketAccessControl requestBody = new BucketAccessControl();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Storage.BucketAccessControls.Update request = storageService.bucketAccessControls().update(bucket, entity, requestBody);
     BucketAccessControl response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -644,7 +717,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -661,7 +734,6 @@ import com.google.api.services.storage.Storage.Buckets.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -680,12 +752,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -693,6 +772,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -700,16 +780,21 @@ public class StorageExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
       new StorageExample().run();
@@ -718,9 +803,14 @@ public class StorageExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+
+    Storage.Buckets.Delete request = storageService.buckets().delete(bucket);
+    request.execute();
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -732,7 +822,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -750,7 +840,6 @@ import com.google.api.services.storage.model.Bucket;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -770,12 +859,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -783,6 +879,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -799,23 +896,33 @@ public class StorageExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
+
 
     Storage.Buckets.Get request = storageService.buckets().get(bucket);
     Bucket response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -827,7 +934,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -845,7 +952,6 @@ import com.google.api.services.storage.model.Bucket;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -868,12 +974,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -881,6 +994,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -897,26 +1011,37 @@ public class StorageExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
 
-    // * A valid API project identifier.
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
+
+    // A valid API project identifier.
     String project = "{MY-PROJECT}";
 
-    Bucket content = new Bucket();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.Buckets.Insert request = storageService.buckets().insert(project, content);
+    Bucket requestBody = new Bucket();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Storage.Buckets.Insert request = storageService.buckets().insert(project, requestBody);
     Bucket response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -928,7 +1053,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -947,7 +1072,6 @@ import com.google.api.services.storage.model.Buckets;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -975,12 +1099,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -988,6 +1119,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -995,14 +1127,19 @@ public class StorageExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * A valid API project identifier.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // A valid API project identifier.
     String project = "{MY-PROJECT}";
+
 
     Storage.Buckets.List request = storageService.buckets().list(project);
     Buckets response;
@@ -1012,7 +1149,8 @@ public class StorageExample {
         continue;
 
       for (Bucket bucket : response.getItems()) {
-        // TODO: Add code here to process each 'bucket' resource
+        // TODO: Change code below to process each `bucket` resource:
+        System.out.println(bucket);
       }
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
@@ -1026,7 +1164,7 @@ public class StorageExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1038,7 +1176,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1056,7 +1194,6 @@ import com.google.api.services.storage.model.Bucket;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1079,12 +1216,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1092,6 +1236,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -1108,26 +1253,37 @@ public class StorageExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    Bucket content = new Bucket();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Storage.Buckets.Patch request = storageService.buckets().patch(bucket, content);
+    Bucket requestBody = new Bucket();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    Storage.Buckets.Patch request = storageService.buckets().patch(bucket, requestBody);
     Bucket response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1139,7 +1295,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1157,7 +1313,6 @@ import com.google.api.services.storage.model.Bucket;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1180,12 +1335,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1193,6 +1355,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -1209,26 +1372,37 @@ public class StorageExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    Bucket content = new Bucket();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.Buckets.Update request = storageService.buckets().update(bucket, content);
+    Bucket requestBody = new Bucket();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Storage.Buckets.Update request = storageService.buckets().update(bucket, requestBody);
     Bucket response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1240,7 +1414,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1259,7 +1433,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
@@ -1277,12 +1450,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1290,6 +1470,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -1306,20 +1487,24 @@ public class StorageExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
 
-    Channel content = new Channel();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
+    Channel requestBody = new Channel();
+    // TODO: Assign values to desired fields of the `requestBody` object.
 
-    Storage.Channels.Stop request = storageService.channels().stop(content);
+
+    Storage.Channels.Stop request = storageService.channels().stop(requestBody);
     request.execute();
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1331,7 +1516,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1348,7 +1533,6 @@ import com.google.api.services.storage.Storage.DefaultObjectAccessControls.Delet
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1371,12 +1555,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1384,6 +1575,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -1391,20 +1583,25 @@ public class StorageExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
     String entity = "{MY-ENTITY}";
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
       new StorageExample().run();
@@ -1413,9 +1610,14 @@ public class StorageExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+
+    Storage.DefaultObjectAccessControls.Delete request = storageService.defaultObjectAccessControls().delete(bucket, entity);
+    request.execute();
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1427,7 +1629,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1445,7 +1647,6 @@ import com.google.api.services.storage.model.ObjectAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1469,12 +1670,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1482,6 +1690,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -1498,27 +1707,37 @@ public class StorageExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
     String entity = "{MY-ENTITY}";
+
 
     Storage.DefaultObjectAccessControls.Get request = storageService.defaultObjectAccessControls().get(bucket, entity);
     ObjectAccessControl response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1530,7 +1749,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1548,7 +1767,6 @@ import com.google.api.services.storage.model.ObjectAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1571,12 +1789,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1584,6 +1809,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -1600,26 +1826,37 @@ public class StorageExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    ObjectAccessControl content = new ObjectAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.DefaultObjectAccessControls.Insert request = storageService.defaultObjectAccessControls().insert(bucket, content);
+    ObjectAccessControl requestBody = new ObjectAccessControl();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Storage.DefaultObjectAccessControls.Insert request = storageService.defaultObjectAccessControls().insert(bucket, requestBody);
     ObjectAccessControl response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1631,7 +1868,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1649,7 +1886,6 @@ import com.google.api.services.storage.model.ObjectAccessControls;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1669,12 +1905,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1682,6 +1925,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -1698,23 +1942,33 @@ public class StorageExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
+
 
     Storage.DefaultObjectAccessControls.List request = storageService.defaultObjectAccessControls().list(bucket);
     ObjectAccessControls response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1726,7 +1980,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1744,7 +1998,6 @@ import com.google.api.services.storage.model.ObjectAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1794,46 +2047,49 @@ public class StorageExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
     String entity = "{MY-ENTITY}";
 
-    ObjectAccessControl content = new ObjectAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Storage.DefaultObjectAccessControls.Patch request = storageService.defaultObjectAccessControls().patch(bucket, entity, content);
+    ObjectAccessControl requestBody = new ObjectAccessControl();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    Storage.DefaultObjectAccessControls.Patch request = storageService.defaultObjectAccessControls().patch(bucket, entity, requestBody);
     ObjectAccessControl response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1845,7 +2101,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1863,7 +2119,6 @@ import com.google.api.services.storage.model.ObjectAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1913,46 +2168,49 @@ public class StorageExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
     String entity = "{MY-ENTITY}";
 
-    ObjectAccessControl content = new ObjectAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.DefaultObjectAccessControls.Update request = storageService.defaultObjectAccessControls().update(bucket, entity, content);
+    ObjectAccessControl requestBody = new ObjectAccessControl();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Storage.DefaultObjectAccessControls.Update request = storageService.defaultObjectAccessControls().update(bucket, entity, requestBody);
     ObjectAccessControl response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -1964,7 +2222,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1982,7 +2240,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
@@ -1998,42 +2255,43 @@ public class StorageExample {
     String entity = ""; // TODO: Update field(s).
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
     String object = "{MY-OBJECT}";
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
     String entity = "{MY-ENTITY}";
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     Storage service = createService();
     Delete request = service.objectAccessControls().delete(bucket, object, entity);
+=======
+
+    Storage.ObjectAccessControls.Delete request = storageService.objectAccessControls().delete(bucket, object, entity);
+>>>>>>> Update discovery sample gen across languages.
     request.execute();
   }
 
@@ -2066,7 +2324,7 @@ public class StorageExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2078,7 +2336,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -2097,7 +2355,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
@@ -2113,46 +2370,48 @@ public class StorageExample {
     String entity = ""; // TODO: Update field(s).
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
     String object = "{MY-OBJECT}";
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
     String entity = "{MY-ENTITY}";
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     Storage service = createService();
     Get request = service.objectAccessControls().get(bucket, object, entity);
+=======
+
+    Storage.ObjectAccessControls.Get request = storageService.objectAccessControls().get(bucket, object, entity);
+>>>>>>> Update discovery sample gen across languages.
     ObjectAccessControl response = request.execute();
     System.out.println(response);
   }
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
   public Storage createService() throws IOException, GeneralSecurityException {
     // TODO: This sample uses Application Default Credentials for authentication.
     // Install the gcloud CLI from https://cloud.google.com/sdk and run
@@ -2184,9 +2443,13 @@ public class StorageExample {
 =======
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2198,7 +2461,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -2216,7 +2479,6 @@ import com.google.api.services.storage.model.ObjectAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -2266,46 +2528,49 @@ public class StorageExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
     String object = "{MY-OBJECT}";
 
-    ObjectAccessControl content = new ObjectAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.ObjectAccessControls.Insert request = storageService.objectAccessControls().insert(bucket, object, content);
+    ObjectAccessControl requestBody = new ObjectAccessControl();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Storage.ObjectAccessControls.Insert request = storageService.objectAccessControls().insert(bucket, object, requestBody);
     ObjectAccessControl response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2317,7 +2582,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -2347,6 +2612,7 @@ public class StorageExample {
     // Encoding URI Path Parts.
     String object = ""; // TODO: Update field(s).
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     Storage service = createService();
     List request = service.objectAccessControls().list(bucket, object);
     ObjectAccessControls response = request.execute();
@@ -2365,6 +2631,14 @@ public class StorageExample {
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+public class StorageExample {
+  public static void main(String[] args) throws IOException, GeneralSecurityException {
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -2372,6 +2646,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -2388,27 +2663,37 @@ public class StorageExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
     String object = "{MY-OBJECT}";
+
 
     Storage.ObjectAccessControls.List request = storageService.objectAccessControls().list(bucket, object);
     ObjectAccessControls response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2420,7 +2705,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -2438,7 +2723,6 @@ import com.google.api.services.storage.model.ObjectAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -2495,50 +2779,53 @@ public class StorageExample {
 /**
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
     String object = "{MY-OBJECT}";
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
     String entity = "{MY-ENTITY}";
 
-    ObjectAccessControl content = new ObjectAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Storage.ObjectAccessControls.Patch request = storageService.objectAccessControls().patch(bucket, object, entity, content);
+    ObjectAccessControl requestBody = new ObjectAccessControl();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    Storage.ObjectAccessControls.Patch request = storageService.objectAccessControls().patch(bucket, object, entity, requestBody);
     ObjectAccessControl response = request.execute();
 
-    // TODO: Add code here to process the 'response' object
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
   }
 }
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 /*
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+/**
+>>>>>>> Update discovery sample gen across languages.
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2550,7 +2837,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -2568,7 +2855,6 @@ import com.google.api.services.storage.model.ObjectAccessControl;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -2622,50 +2908,53 @@ public class StorageExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
 
-    // * Name of a bucket.
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
+
+    // Name of a bucket.
     String bucket = "{MY-BUCKET}";
 
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
     String object = "{MY-OBJECT}";
 
-    // * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
-    //   group-emailAddress, allUsers, or allAuthenticatedUsers.
+    // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+    // group-emailAddress, allUsers, or allAuthenticatedUsers.
     String entity = "{MY-ENTITY}";
 
-    ObjectAccessControl content = new ObjectAccessControl();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.ObjectAccessControls.Update request = storageService.objectAccessControls().update(bucket, object, entity, content);
+    ObjectAccessControl requestBody = new ObjectAccessControl();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Storage.ObjectAccessControls.Update request = storageService.objectAccessControls().update(bucket, object, entity, requestBody);
     ObjectAccessControl response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2677,7 +2966,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -2696,7 +2985,6 @@ import com.google.api.services.storage.model.StorageObject;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -2746,46 +3034,49 @@ public class StorageExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'compose' method:
 
-    // * Name of the bucket in which to store the new object.
+    // TODO: Change placeholders below to desired parameter values for the `compose` method:
+
+    // Name of the bucket in which to store the new object.
     String destinationBucket = "{MY-DESTINATION-BUCKET}";
 
-    // * Name of the new object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
+    // Name of the new object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
     String destinationObject = "{MY-DESTINATION-OBJECT}";
 
-    ComposeRequest content = new ComposeRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.Objects.Compose request = storageService.objects().compose(destinationBucket, destinationObject, content);
+    ComposeRequest requestBody = new ComposeRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Storage.Objects.Compose request = storageService.objects().compose(destinationBucket, destinationObject, requestBody);
     StorageObject response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2797,7 +3088,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -2815,7 +3106,6 @@ import com.google.api.services.storage.model.StorageObject;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -2874,55 +3164,58 @@ public class StorageExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'copy' method:
 
-    // * Name of the bucket in which to find the source object.
+    // TODO: Change placeholders below to desired parameter values for the `copy` method:
+
+    // Name of the bucket in which to find the source object.
     String sourceBucket = "{MY-SOURCE-BUCKET}";
 
-    // * Name of the source object. For information about how to URL encode object names to be path safe,
-    //   see Encoding URI Path Parts.
+    // Name of the source object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
     String sourceObject = "{MY-SOURCE-OBJECT}";
 
-    // * Name of the bucket in which to store the new object. Overrides the provided object metadata's
-    //   bucket value, if any.For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
+    // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
+    // value, if any.For information about how to URL encode object names to be path safe, see Encoding URI
+    // Path Parts.
     String destinationBucket = "{MY-DESTINATION-BUCKET}";
 
-    // * Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
-    //   object metadata's name value, if any.
+    // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
+    // object metadata's name value, if any.
     String destinationObject = "{MY-DESTINATION-OBJECT}";
 
-    StorageObject content = new StorageObject();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.Objects.Copy request = storageService.objects().copy(sourceBucket, sourceObject, destinationBucket, destinationObject, content);
+    StorageObject requestBody = new StorageObject();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Storage.Objects.Copy request = storageService.objects().copy(sourceBucket, sourceObject, destinationBucket, destinationObject, requestBody);
     StorageObject response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -2934,7 +3227,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -2951,7 +3244,6 @@ import com.google.api.services.storage.Storage.Objects.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -2974,12 +3266,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -2987,6 +3286,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -2994,20 +3294,25 @@ public class StorageExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
 
-    // * Name of the bucket in which the object resides.
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
+    // Name of the bucket in which the object resides.
     String bucket = "{MY-BUCKET}";
 
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
     String object = "{MY-OBJECT}";
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
       new StorageExample().run();
@@ -3016,9 +3321,14 @@ public class StorageExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+
+    Storage.Objects.Delete request = storageService.objects().delete(bucket, object);
+    request.execute();
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -3030,7 +3340,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -3048,7 +3358,6 @@ import com.google.api.services.storage.model.StorageObject;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -3072,12 +3381,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -3085,6 +3401,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -3101,27 +3418,37 @@ public class StorageExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * Name of the bucket in which the object resides.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // Name of the bucket in which the object resides.
     String bucket = "{MY-BUCKET}";
 
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
     String object = "{MY-OBJECT}";
+
 
     Storage.Objects.Get request = storageService.objects().get(bucket, object);
     StorageObject response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -3133,7 +3460,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -3151,7 +3478,6 @@ import com.google.api.services.storage.model.StorageObject;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -3175,12 +3501,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -3188,6 +3521,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -3204,27 +3538,38 @@ public class StorageExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
 
-    // * Name of the bucket in which to store the new object. Overrides the provided object metadata's
-    //   bucket value, if any.
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
+
+    // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
+    // value, if any.
     String bucket = "{MY-BUCKET}";
 
-    StorageObject content = new StorageObject();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.Objects.Insert request = storageService.objects().insert(bucket, content);
+    StorageObject requestBody = new StorageObject();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Storage.Objects.Insert request = storageService.objects().insert(bucket, requestBody);
     StorageObject response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -3236,7 +3581,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -3255,7 +3600,6 @@ import com.google.api.services.storage.model.StorageObject;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -3283,12 +3627,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -3296,6 +3647,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -3303,14 +3655,19 @@ public class StorageExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * Name of the bucket in which to look for objects.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // Name of the bucket in which to look for objects.
     String bucket = "{MY-BUCKET}";
+
 
     Storage.Objects.List request = storageService.objects().list(bucket);
     Objects response;
@@ -3320,7 +3677,8 @@ public class StorageExample {
         continue;
 
       for (StorageObject storageObject : response.getItems()) {
-        // TODO: Add code here to process each 'storageObject' resource
+        // TODO: Change code below to process each `storageObject` resource:
+        System.out.println(storageObject);
       }
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
@@ -3334,7 +3692,7 @@ public class StorageExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -3346,7 +3704,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -3364,7 +3722,6 @@ import com.google.api.services.storage.model.StorageObject;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -3414,46 +3771,49 @@ public class StorageExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
 
-    // * Name of the bucket in which the object resides.
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
+
+    // Name of the bucket in which the object resides.
     String bucket = "{MY-BUCKET}";
 
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
     String object = "{MY-OBJECT}";
 
-    StorageObject content = new StorageObject();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Storage.Objects.Patch request = storageService.objects().patch(bucket, object, content);
+    StorageObject requestBody = new StorageObject();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    Storage.Objects.Patch request = storageService.objects().patch(bucket, object, requestBody);
     StorageObject response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -3465,7 +3825,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -3484,7 +3844,6 @@ import com.google.api.services.storage.model.StorageObject;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -3543,55 +3902,58 @@ public class StorageExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'rewrite' method:
 
-    // * Name of the bucket in which to find the source object.
+    // TODO: Change placeholders below to desired parameter values for the `rewrite` method:
+
+    // Name of the bucket in which to find the source object.
     String sourceBucket = "{MY-SOURCE-BUCKET}";
 
-    // * Name of the source object. For information about how to URL encode object names to be path safe,
-    //   see Encoding URI Path Parts.
+    // Name of the source object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
     String sourceObject = "{MY-SOURCE-OBJECT}";
 
-    // * Name of the bucket in which to store the new object. Overrides the provided object metadata's
-    //   bucket value, if any.
+    // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
+    // value, if any.
     String destinationBucket = "{MY-DESTINATION-BUCKET}";
 
-    // * Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
-    //   object metadata's name value, if any. For information about how to URL encode object names to be
-    //   path safe, see Encoding URI Path Parts.
+    // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
+    // object metadata's name value, if any. For information about how to URL encode object names to be
+    // path safe, see Encoding URI Path Parts.
     String destinationObject = "{MY-DESTINATION-OBJECT}";
 
-    StorageObject content = new StorageObject();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.Objects.Rewrite request = storageService.objects().rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, content);
+    StorageObject requestBody = new StorageObject();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Storage.Objects.Rewrite request = storageService.objects().rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, requestBody);
     RewriteResponse response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -3603,7 +3965,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -3621,7 +3983,6 @@ import com.google.api.services.storage.model.StorageObject;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -3671,46 +4032,49 @@ public class StorageExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
 
-    // * Name of the bucket in which the object resides.
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
+
+    // Name of the bucket in which the object resides.
     String bucket = "{MY-BUCKET}";
 
-    // * Name of the object. For information about how to URL encode object names to be path safe, see
-    //   Encoding URI Path Parts.
+    // Name of the object. For information about how to URL encode object names to be path safe, see
+    // Encoding URI Path Parts.
     String object = "{MY-OBJECT}";
 
-    StorageObject content = new StorageObject();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.Objects.Update request = storageService.objects().update(bucket, object, content);
+    StorageObject requestBody = new StorageObject();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Storage.Objects.Update request = storageService.objects().update(bucket, object, requestBody);
     StorageObject response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Storage JSON API
@@ -3722,7 +4086,7 @@ public class StorageExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -3740,7 +4104,6 @@ import com.google.api.services.storage.model.Channel;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class StorageExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -3763,12 +4126,19 @@ public class StorageExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -3776,6 +4146,7 @@ public class StorageExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Storage.Builder(httpTransport, jsonFactory, credential)
@@ -3792,22 +4163,33 @@ public class StorageExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Storage storageService = new Storage.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'watchAll' method:
 
-    // * Name of the bucket in which to look for objects.
+    // TODO: Change placeholders below to desired parameter values for the `watchAll` method:
+
+    // Name of the bucket in which to look for objects.
     String bucket = "{MY-BUCKET}";
 
-    Channel content = new Channel();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Storage.Objects.WatchAll request = storageService.objects().watchAll(bucket, content);
+    Channel requestBody = new Channel();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Storage.Objects.WatchAll request = storageService.objects().watchAll(bucket, requestBody);
     Channel response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }

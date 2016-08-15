@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Datastore API
@@ -11,7 +11,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -27,10 +27,11 @@ import com.google.api.services.datastore.Datastore;
 import com.google.api.services.datastore.Datastore.Datasets.AllocateIds;
 import com.google.api.services.datastore.model.AllocateIdsRequest;
 import com.google.api.services.datastore.model.AllocateIdsResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DatastoreExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -53,8 +54,12 @@ public class DatastoreExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 51f8f4f3d39d21fcc22dbbe6f829c792246e560f
 
     // Authentication is provided by the 'gcloud' tool when running locally
+=======
+    // Authentication is provided by the `gcloud` tool when running locally
+>>>>>>> Update discovery sample gen across languages.
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
@@ -66,6 +71,7 @@ public class DatastoreExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Datastore.Builder(httpTransport, jsonFactory, credential)
@@ -82,26 +88,41 @@ public class DatastoreExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+    // Construct the datastore service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
+>>>>>>> Update discovery sample gen across languages.
     Datastore datastoreService = new Datastore.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'allocateIds' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `allocateIds` method:
 
     // * Identifies the dataset.
     String datasetId = "{MY-DATASET-ID}";
 
-    AllocateIdsRequest content = new AllocateIdsRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Datastore.Datasets.AllocateIds request = datastoreService.datasets().allocateIds(datasetId, content);
+    AllocateIdsRequest requestBody = new AllocateIdsRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Datastore.Datasets.AllocateIds request = datastoreService.datasets().allocateIds(datasetId, requestBody);
     AllocateIdsResponse response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Datastore API
@@ -113,7 +134,7 @@ public class DatastoreExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -129,10 +150,11 @@ import com.google.api.services.datastore.Datastore;
 import com.google.api.services.datastore.Datastore.Datasets.BeginTransaction;
 import com.google.api.services.datastore.model.BeginTransactionRequest;
 import com.google.api.services.datastore.model.BeginTransactionResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DatastoreExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -155,8 +177,12 @@ public class DatastoreExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 51f8f4f3d39d21fcc22dbbe6f829c792246e560f
 
     // Authentication is provided by the 'gcloud' tool when running locally
+=======
+    // Authentication is provided by the `gcloud` tool when running locally
+>>>>>>> Update discovery sample gen across languages.
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
@@ -168,6 +194,7 @@ public class DatastoreExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Datastore.Builder(httpTransport, jsonFactory, credential)
@@ -184,26 +211,41 @@ public class DatastoreExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+    // Construct the datastore service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
+>>>>>>> Update discovery sample gen across languages.
     Datastore datastoreService = new Datastore.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'beginTransaction' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `beginTransaction` method:
 
     // * Identifies the dataset.
     String datasetId = "{MY-DATASET-ID}";
 
-    BeginTransactionRequest content = new BeginTransactionRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Datastore.Datasets.BeginTransaction request = datastoreService.datasets().beginTransaction(datasetId, content);
+    BeginTransactionRequest requestBody = new BeginTransactionRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Datastore.Datasets.BeginTransaction request = datastoreService.datasets().beginTransaction(datasetId, requestBody);
     BeginTransactionResponse response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Datastore API
@@ -215,7 +257,7 @@ public class DatastoreExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -231,10 +273,11 @@ import com.google.api.services.datastore.Datastore;
 import com.google.api.services.datastore.Datastore.Datasets.Commit;
 import com.google.api.services.datastore.model.CommitRequest;
 import com.google.api.services.datastore.model.CommitResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DatastoreExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -257,8 +300,12 @@ public class DatastoreExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 51f8f4f3d39d21fcc22dbbe6f829c792246e560f
 
     // Authentication is provided by the 'gcloud' tool when running locally
+=======
+    // Authentication is provided by the `gcloud` tool when running locally
+>>>>>>> Update discovery sample gen across languages.
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
@@ -270,6 +317,7 @@ public class DatastoreExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Datastore.Builder(httpTransport, jsonFactory, credential)
@@ -286,26 +334,41 @@ public class DatastoreExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+    // Construct the datastore service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
+>>>>>>> Update discovery sample gen across languages.
     Datastore datastoreService = new Datastore.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'commit' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `commit` method:
 
     // * Identifies the dataset.
     String datasetId = "{MY-DATASET-ID}";
 
-    CommitRequest content = new CommitRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Datastore.Datasets.Commit request = datastoreService.datasets().commit(datasetId, content);
+    CommitRequest requestBody = new CommitRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Datastore.Datasets.Commit request = datastoreService.datasets().commit(datasetId, requestBody);
     CommitResponse response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Datastore API
@@ -317,7 +380,7 @@ public class DatastoreExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -333,10 +396,11 @@ import com.google.api.services.datastore.Datastore;
 import com.google.api.services.datastore.Datastore.Datasets.Lookup;
 import com.google.api.services.datastore.model.LookupRequest;
 import com.google.api.services.datastore.model.LookupResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DatastoreExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -359,8 +423,12 @@ public class DatastoreExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 51f8f4f3d39d21fcc22dbbe6f829c792246e560f
 
     // Authentication is provided by the 'gcloud' tool when running locally
+=======
+    // Authentication is provided by the `gcloud` tool when running locally
+>>>>>>> Update discovery sample gen across languages.
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
@@ -372,6 +440,7 @@ public class DatastoreExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Datastore.Builder(httpTransport, jsonFactory, credential)
@@ -388,26 +457,41 @@ public class DatastoreExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+    // Construct the datastore service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
+>>>>>>> Update discovery sample gen across languages.
     Datastore datastoreService = new Datastore.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'lookup' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `lookup` method:
 
     // * Identifies the dataset.
     String datasetId = "{MY-DATASET-ID}";
 
-    LookupRequest content = new LookupRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Datastore.Datasets.Lookup request = datastoreService.datasets().lookup(datasetId, content);
+    LookupRequest requestBody = new LookupRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Datastore.Datasets.Lookup request = datastoreService.datasets().lookup(datasetId, requestBody);
     LookupResponse response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Datastore API
@@ -419,7 +503,7 @@ public class DatastoreExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -435,10 +519,11 @@ import com.google.api.services.datastore.Datastore;
 import com.google.api.services.datastore.Datastore.Datasets.Rollback;
 import com.google.api.services.datastore.model.RollbackRequest;
 import com.google.api.services.datastore.model.RollbackResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DatastoreExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -461,8 +546,12 @@ public class DatastoreExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 51f8f4f3d39d21fcc22dbbe6f829c792246e560f
 
     // Authentication is provided by the 'gcloud' tool when running locally
+=======
+    // Authentication is provided by the `gcloud` tool when running locally
+>>>>>>> Update discovery sample gen across languages.
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
@@ -474,6 +563,7 @@ public class DatastoreExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Datastore.Builder(httpTransport, jsonFactory, credential)
@@ -490,26 +580,41 @@ public class DatastoreExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+    // Construct the datastore service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
+>>>>>>> Update discovery sample gen across languages.
     Datastore datastoreService = new Datastore.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'rollback' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `rollback` method:
 
     // * Identifies the dataset.
     String datasetId = "{MY-DATASET-ID}";
 
-    RollbackRequest content = new RollbackRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Datastore.Datasets.Rollback request = datastoreService.datasets().rollback(datasetId, content);
+    RollbackRequest requestBody = new RollbackRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Datastore.Datasets.Rollback request = datastoreService.datasets().rollback(datasetId, requestBody);
     RollbackResponse response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Datastore API
@@ -521,7 +626,7 @@ public class DatastoreExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -537,10 +642,11 @@ import com.google.api.services.datastore.Datastore;
 import com.google.api.services.datastore.Datastore.Datasets.RunQuery;
 import com.google.api.services.datastore.model.RunQueryRequest;
 import com.google.api.services.datastore.model.RunQueryResponse;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DatastoreExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -563,8 +669,12 @@ public class DatastoreExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 51f8f4f3d39d21fcc22dbbe6f829c792246e560f
 
     // Authentication is provided by the 'gcloud' tool when running locally
+=======
+    // Authentication is provided by the `gcloud` tool when running locally
+>>>>>>> Update discovery sample gen across languages.
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
@@ -576,6 +686,7 @@ public class DatastoreExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Datastore.Builder(httpTransport, jsonFactory, credential)
@@ -592,22 +703,37 @@ public class DatastoreExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+    // Construct the datastore service object for interacting with the API.
+    // You can browse other available API services and versions at
+    // https://developers.google.com/api-client-library/java/apis/
+>>>>>>> Update discovery sample gen across languages.
     Datastore datastoreService = new Datastore.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'runQuery' method:
+
+    // TODO: Change placeholders below to desired parameter values for the `runQuery` method:
 
     // * Identifies the dataset.
     String datasetId = "{MY-DATASET-ID}";
 
-    RunQueryRequest content = new RunQueryRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Datastore.Datasets.RunQuery request = datastoreService.datasets().runQuery(datasetId, content);
+    RunQueryRequest requestBody = new RunQueryRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Datastore.Datasets.RunQuery request = datastoreService.datasets().runQuery(datasetId, requestBody);
     RunQueryResponse response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    System.out.println(gson.toJson(new JsonParser().parse(response.toString())));
+>>>>>>> Update discovery sample gen across languages.
   }
 }

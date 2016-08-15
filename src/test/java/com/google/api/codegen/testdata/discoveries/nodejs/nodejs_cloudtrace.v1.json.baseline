@@ -11,12 +11,10 @@
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudtrace = google.cloudtrace('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -29,11 +27,15 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `patchTraces` method:
+
     // ID of the Cloud project where the trace data is stored.
-    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+    projectId: "{MY-PROJECT-ID}",
+
 
     resource: {
-      // TODO: Add the desired properties to be changed.
+      // TODO: Add desired properties of the request body to be changed.
     },
 
     auth: authClient
@@ -57,12 +59,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudtrace = google.cloudtrace('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -75,11 +75,15 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
     // ID of the Cloud project where the trace data is stored.
-    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+    projectId: "{MY-PROJECT-ID}",
 
     // ID of the trace to return.
-    traceId: "{MY-TRACE-ID}", // TODO: Update placeholder value(s).
+    traceId: "{MY-TRACE-ID}",
+
 
     auth: authClient
   };
@@ -90,7 +94,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -106,12 +110,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var cloudtrace = google.cloudtrace('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -124,13 +126,17 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
     // ID of the Cloud project where the trace data is stored.
-    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+    projectId: "{MY-PROJECT-ID}",
+
 
     auth: authClient
   };
 
-  cloudtrace.projects.traces.list(request, function handlePage(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -138,11 +144,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     var tracesPage = response['traces'];
     if (!tracesPage) {
-      console.log('{}');
       return;
     }
     for (var i = 0; i < tracesPage.length; i++) {
-      // TODO: Use tracesPage
+      // TODO: Change code below to process each resource in `tracesPage`:
       console.log(JSON.stringify(tracesPage[i], null, 2));
     }
 
@@ -150,5 +155,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       request.pageToken = response.nextPageToken;
       cloudtrace.projects.traces.list(request, handlePage);
     }
-  });
+  };
+
+  cloudtrace.projects.traces.list(request, handlePage);
 });

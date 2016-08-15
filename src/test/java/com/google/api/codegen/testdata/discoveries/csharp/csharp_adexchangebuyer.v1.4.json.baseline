@@ -27,14 +27,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -46,16 +42,20 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // The account id
-            int id = 0; // TODO: Update placeholder value(s).
+            int id = 0;
+
 
             AccountsResource.GetRequest request = adExchangeBuyerService.Accounts.Get(id);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Account response = request.Execute();
             // Data.Account response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -88,14 +88,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -109,11 +105,11 @@ namespace AdExchangeBuyerSample
 
             AccountsResource.ListRequest request = adExchangeBuyerService.Accounts.List();
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.AccountsList response = request.Execute();
             // Data.AccountsList response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -146,14 +142,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -165,19 +157,24 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The account id
-            int id = 0; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties to be changed.
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
+            // The account id
+            int id = 0;
+
+
             Data.Account requestBody = new Data.Account();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
 
             AccountsResource.PatchRequest request = adExchangeBuyerService.Accounts.Patch(requestBody, id);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Account response = request.Execute();
             // Data.Account response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -210,14 +207,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -229,19 +222,24 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The account id
-            int id = 0; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
+            // The account id
+            int id = 0;
+
+
             Data.Account requestBody = new Data.Account();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             AccountsResource.UpdateRequest request = adExchangeBuyerService.Accounts.Update(requestBody, id);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Account response = request.Execute();
             // Data.Account response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -274,14 +272,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -293,16 +287,20 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // The account id.
-            int accountId = 0; // TODO: Update placeholder value(s).
+            int accountId = 0;
+
 
             BillingInfoResource.GetRequest request = adExchangeBuyerService.BillingInfo.Get(accountId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.BillingInfo response = request.Execute();
             // Data.BillingInfo response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -335,14 +333,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -356,11 +350,11 @@ namespace AdExchangeBuyerSample
 
             BillingInfoResource.ListRequest request = adExchangeBuyerService.BillingInfo.List();
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.BillingInfoList response = request.Execute();
             // Data.BillingInfoList response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -393,14 +387,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -412,19 +402,23 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // The account id to get the budget information for.
-            long accountId = 0L; // TODO: Update placeholder value(s).
+            long accountId = 0L;
 
             // The billing id to get the budget information for.
-            long billingId = 0L; // TODO: Update placeholder value(s).
+            long billingId = 0L;
+
 
             BudgetResource.GetRequest request = adExchangeBuyerService.Budget.Get(accountId, billingId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Budget response = request.Execute();
             // Data.Budget response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -457,14 +451,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -476,22 +466,27 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
             // The account id associated with the budget being updated.
-            long accountId = 0L; // TODO: Update placeholder value(s).
+            long accountId = 0L;
 
             // The billing id associated with the budget being updated.
-            long billingId = 0L; // TODO: Update placeholder value(s).
+            long billingId = 0L;
 
-            // TODO: Assign values to the desired properties to be changed.
+
             Data.Budget requestBody = new Data.Budget();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
 
             BudgetResource.PatchRequest request = adExchangeBuyerService.Budget.Patch(requestBody, accountId, billingId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Budget response = request.Execute();
             // Data.Budget response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -524,14 +519,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -543,22 +534,27 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
             // The account id associated with the budget being updated.
-            long accountId = 0L; // TODO: Update placeholder value(s).
+            long accountId = 0L;
 
             // The billing id associated with the budget being updated.
-            long billingId = 0L; // TODO: Update placeholder value(s).
+            long billingId = 0L;
 
-            // TODO: Assign values to the desired properties.
+
             Data.Budget requestBody = new Data.Budget();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             BudgetResource.UpdateRequest request = adExchangeBuyerService.Budget.Update(requestBody, accountId, billingId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Budget response = request.Execute();
             // Data.Budget response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -588,14 +584,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -607,18 +599,22 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `AddDeal` method:
+
             // The id for the account that will serve this creative.
-            int accountId = 0; // TODO: Update placeholder value(s).
+            int accountId = 0;
 
             // The buyer-specific id for this creative.
-            string buyerCreativeId = "{MY-BUYER-CREATIVE-ID}"; // TODO: Update placeholder value(s).
+            string buyerCreativeId = "{MY-BUYER-CREATIVE-ID}";
 
             // The id of the deal id to associate with this creative.
-            long dealId = 0L; // TODO: Update placeholder value(s).
+            long dealId = 0L;
+
 
             CreativesResource.AddDealRequest request = adExchangeBuyerService.Creatives.AddDeal(accountId, buyerCreativeId, dealId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
@@ -652,14 +648,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -671,19 +663,23 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // The id for the account that will serve this creative.
-            int accountId = 0; // TODO: Update placeholder value(s).
+            int accountId = 0;
 
             // The buyer-specific id for this creative.
-            string buyerCreativeId = "{MY-BUYER-CREATIVE-ID}"; // TODO: Update placeholder value(s).
+            string buyerCreativeId = "{MY-BUYER-CREATIVE-ID}";
+
 
             CreativesResource.GetRequest request = adExchangeBuyerService.Creatives.Get(accountId, buyerCreativeId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Creative response = request.Execute();
             // Data.Creative response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -716,14 +712,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -735,16 +727,17 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Assign values to the desired properties.
             Data.Creative requestBody = new Data.Creative();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             CreativesResource.InsertRequest request = adExchangeBuyerService.Creatives.Insert(requestBody);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Creative response = request.Execute();
             // Data.Creative response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -777,14 +770,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -801,7 +790,7 @@ namespace AdExchangeBuyerSample
             Data.CreativesList response;
             do
             {
-                // To execute asynchronously in an async method, replace request.Execute() as shown:
+                // To execute asynchronously in an async method, replace `request.Execute()` as shown:
                 response = request.Execute();
                 // response = await request.ExecuteAsync();
 
@@ -811,7 +800,7 @@ namespace AdExchangeBuyerSample
                 }
                 foreach (Data.Creative creative in response.Items)
                 {
-                    // TODO: Use creative
+                    // TODO: Change code below to process each `creative` resource:
                     Console.WriteLine(new JavaScriptSerializer().Serialize(creative));
                 }
                 request.PageToken = response.NextPageToken;
@@ -844,14 +833,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -863,18 +848,22 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `RemoveDeal` method:
+
             // The id for the account that will serve this creative.
-            int accountId = 0; // TODO: Update placeholder value(s).
+            int accountId = 0;
 
             // The buyer-specific id for this creative.
-            string buyerCreativeId = "{MY-BUYER-CREATIVE-ID}"; // TODO: Update placeholder value(s).
+            string buyerCreativeId = "{MY-BUYER-CREATIVE-ID}";
 
             // The id of the deal id to disassociate with this creative.
-            long dealId = 0L; // TODO: Update placeholder value(s).
+            long dealId = 0L;
+
 
             CreativesResource.RemoveDealRequest request = adExchangeBuyerService.Creatives.RemoveDeal(accountId, buyerCreativeId, dealId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
@@ -908,14 +897,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -927,19 +912,24 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The proposalId to delete deals from.
-            string proposalId = "{MY-PROPOSAL-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
+            // The proposalId to delete deals from.
+            string proposalId = "{MY-PROPOSAL-ID}";
+
+
             Data.DeleteOrderDealsRequest requestBody = new Data.DeleteOrderDealsRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             MarketplacedealsResource.DeleteRequest request = adExchangeBuyerService.Marketplacedeals.Delete(requestBody, proposalId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.DeleteOrderDealsResponse response = request.Execute();
             // Data.DeleteOrderDealsResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -972,14 +962,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -991,19 +977,24 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // proposalId for which deals need to be added.
-            string proposalId = "{MY-PROPOSAL-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+            // proposalId for which deals need to be added.
+            string proposalId = "{MY-PROPOSAL-ID}";
+
+
             Data.AddOrderDealsRequest requestBody = new Data.AddOrderDealsRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             MarketplacedealsResource.InsertRequest request = adExchangeBuyerService.Marketplacedeals.Insert(requestBody, proposalId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.AddOrderDealsResponse response = request.Execute();
             // Data.AddOrderDealsResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1036,14 +1027,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1055,17 +1042,21 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The proposalId to get deals for. To search across proposals specify order_id = '-' as part of the
-            // URL.
-            string proposalId = "{MY-PROPOSAL-ID}"; // TODO: Update placeholder value(s).
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // The proposalId to get deals for. To search across all proposals specify order_id = '-' as part of
+            // the URL.
+            string proposalId = "{MY-PROPOSAL-ID}";
+
 
             MarketplacedealsResource.ListRequest request = adExchangeBuyerService.Marketplacedeals.List(proposalId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.GetOrderDealsResponse response = request.Execute();
             // Data.GetOrderDealsResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1098,14 +1089,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1117,19 +1104,24 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The proposalId to edit deals on.
-            string proposalId = "{MY-PROPOSAL-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
+            // The proposalId to edit deals on.
+            string proposalId = "{MY-PROPOSAL-ID}";
+
+
             Data.EditAllOrderDealsRequest requestBody = new Data.EditAllOrderDealsRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             MarketplacedealsResource.UpdateRequest request = adExchangeBuyerService.Marketplacedeals.Update(requestBody, proposalId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.EditAllOrderDealsResponse response = request.Execute();
             // Data.EditAllOrderDealsResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1162,14 +1154,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1181,19 +1169,24 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The proposalId to add notes for.
-            string proposalId = "{MY-PROPOSAL-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+            // The proposalId to add notes for.
+            string proposalId = "{MY-PROPOSAL-ID}";
+
+
             Data.AddOrderNotesRequest requestBody = new Data.AddOrderNotesRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             MarketplacenotesResource.InsertRequest request = adExchangeBuyerService.Marketplacenotes.Insert(requestBody, proposalId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.AddOrderNotesResponse response = request.Execute();
             // Data.AddOrderNotesResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1226,14 +1219,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1245,16 +1234,21 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The proposalId to get notes for.
-            string proposalId = "{MY-PROPOSAL-ID}"; // TODO: Update placeholder value(s).
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
+            // The proposalId to get notes for. To search across all proposals specify order_id = '-' as part of
+            // the URL.
+            string proposalId = "{MY-PROPOSAL-ID}";
+
 
             MarketplacenotesResource.ListRequest request = adExchangeBuyerService.Marketplacenotes.List(proposalId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.GetOrderNotesResponse response = request.Execute();
             // Data.GetOrderNotesResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1286,14 +1280,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1305,15 +1295,20 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The private auction id to be updated.
-            string privateAuctionId = "{MY-PRIVATE-AUCTION-ID}"; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Updateproposal` method:
+
+            // The private auction id to be updated.
+            string privateAuctionId = "{MY-PRIVATE-AUCTION-ID}";
+
+
             Data.UpdatePrivateAuctionProposalRequest requestBody = new Data.UpdatePrivateAuctionProposalRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             MarketplaceprivateauctionResource.UpdateproposalRequest request = adExchangeBuyerService.Marketplaceprivateauction.Updateproposal(requestBody, privateAuctionId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
@@ -1347,14 +1342,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1366,22 +1357,26 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // The account id to get the reports.
-            long accountId = 0L; // TODO: Update placeholder value(s).
+            long accountId = 0L;
 
             // The end time of the report in ISO 8601 timestamp format using UTC.
-            string endDateTime = "{MY-END-DATE-TIME}"; // TODO: Update placeholder value(s).
+            string endDateTime = "{MY-END-DATE-TIME}";
 
             // The start time of the report in ISO 8601 timestamp format using UTC.
-            string startDateTime = "{MY-START-DATE-TIME}"; // TODO: Update placeholder value(s).
+            string startDateTime = "{MY-START-DATE-TIME}";
+
 
             PerformanceReportResource.ListRequest request = adExchangeBuyerService.PerformanceReport.List(accountId, endDateTime, startDateTime);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.PerformanceReportList response = request.Execute();
             // Data.PerformanceReportList response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1411,14 +1406,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1430,15 +1421,19 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // The account id to delete the pretargeting config for.
-            long accountId = 0L; // TODO: Update placeholder value(s).
+            long accountId = 0L;
 
             // The specific id of the configuration to delete.
-            long configId = 0L; // TODO: Update placeholder value(s).
+            long configId = 0L;
+
 
             PretargetingConfigResource.DeleteRequest request = adExchangeBuyerService.PretargetingConfig.Delete(accountId, configId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
@@ -1472,14 +1467,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1491,19 +1482,23 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // The account id to get the pretargeting config for.
-            long accountId = 0L; // TODO: Update placeholder value(s).
+            long accountId = 0L;
 
             // The specific id of the configuration to retrieve.
-            long configId = 0L; // TODO: Update placeholder value(s).
+            long configId = 0L;
+
 
             PretargetingConfigResource.GetRequest request = adExchangeBuyerService.PretargetingConfig.Get(accountId, configId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.PretargetingConfig response = request.Execute();
             // Data.PretargetingConfig response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1536,14 +1531,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1555,19 +1546,24 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // The account id to insert the pretargeting config for.
-            long accountId = 0L; // TODO: Update placeholder value(s).
 
-            // TODO: Assign values to the desired properties.
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
+            // The account id to insert the pretargeting config for.
+            long accountId = 0L;
+
+
             Data.PretargetingConfig requestBody = new Data.PretargetingConfig();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             PretargetingConfigResource.InsertRequest request = adExchangeBuyerService.PretargetingConfig.Insert(requestBody, accountId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.PretargetingConfig response = request.Execute();
             // Data.PretargetingConfig response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1600,14 +1596,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1619,16 +1611,20 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // The account id to get the pretargeting configs for.
-            long accountId = 0L; // TODO: Update placeholder value(s).
+            long accountId = 0L;
+
 
             PretargetingConfigResource.ListRequest request = adExchangeBuyerService.PretargetingConfig.List(accountId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.PretargetingConfigList response = request.Execute();
             // Data.PretargetingConfigList response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1661,14 +1657,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1680,22 +1672,27 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
             // The account id to update the pretargeting config for.
-            long accountId = 0L; // TODO: Update placeholder value(s).
+            long accountId = 0L;
 
             // The specific id of the configuration to update.
-            long configId = 0L; // TODO: Update placeholder value(s).
+            long configId = 0L;
 
-            // TODO: Assign values to the desired properties to be changed.
+
             Data.PretargetingConfig requestBody = new Data.PretargetingConfig();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
 
             PretargetingConfigResource.PatchRequest request = adExchangeBuyerService.PretargetingConfig.Patch(requestBody, accountId, configId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.PretargetingConfig response = request.Execute();
             // Data.PretargetingConfig response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1728,14 +1725,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1747,22 +1740,27 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
             // The account id to update the pretargeting config for.
-            long accountId = 0L; // TODO: Update placeholder value(s).
+            long accountId = 0L;
 
             // The specific id of the configuration to update.
-            long configId = 0L; // TODO: Update placeholder value(s).
+            long configId = 0L;
 
-            // TODO: Assign values to the desired properties.
+
             Data.PretargetingConfig requestBody = new Data.PretargetingConfig();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             PretargetingConfigResource.UpdateRequest request = adExchangeBuyerService.PretargetingConfig.Update(requestBody, accountId, configId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.PretargetingConfig response = request.Execute();
             // Data.PretargetingConfig response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1795,14 +1793,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1814,16 +1808,20 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // The id for the product to get the head revision for.
-            string productId = "{MY-PRODUCT-ID}"; // TODO: Update placeholder value(s).
+            string productId = "{MY-PRODUCT-ID}";
+
 
             ProductsResource.GetRequest request = adExchangeBuyerService.Products.Get(productId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Product response = request.Execute();
             // Data.Product response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1856,14 +1854,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1877,11 +1871,11 @@ namespace AdExchangeBuyerSample
 
             ProductsResource.SearchRequest request = adExchangeBuyerService.Products.Search();
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.GetOffersResponse response = request.Execute();
             // Data.GetOffersResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1914,14 +1908,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1933,16 +1923,20 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // Id of the proposal to retrieve.
-            string proposalId = "{MY-PROPOSAL-ID}"; // TODO: Update placeholder value(s).
+            string proposalId = "{MY-PROPOSAL-ID}";
+
 
             ProposalsResource.GetRequest request = adExchangeBuyerService.Proposals.Get(proposalId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Proposal response = request.Execute();
             // Data.Proposal response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -1975,14 +1969,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -1994,16 +1984,17 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
-            // TODO: Assign values to the desired properties.
             Data.CreateOrdersRequest requestBody = new Data.CreateOrdersRequest();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProposalsResource.InsertRequest request = adExchangeBuyerService.Proposals.Insert(requestBody);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.CreateOrdersResponse response = request.Execute();
             // Data.CreateOrdersResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -2036,14 +2027,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -2055,27 +2042,33 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
             // The proposal id to update.
-            string proposalId = "{MY-PROPOSAL-ID}"; // TODO: Update placeholder value(s).
+            string proposalId = "{MY-PROPOSAL-ID}";
 
             // The last known revision number to update. If the head revision in the marketplace database has since
             // changed, an error will be thrown. The caller should then fetch the latest proposal at head revision
             // and retry the update at that revision.
-            long revisionNumber = 0L; // TODO: Update placeholder value(s).
+            long revisionNumber = 0L;
 
-            // The proposed action to take on the proposal.
-            ProposalsResource.PatchRequest.UpdateActionEnum updateAction = (ProposalsResource.PatchRequest.UpdateActionEnum) 0; // TODO: Update placeholder value(s).
+            // The proposed action to take on the proposal. This field is required and it must be set when updating
+            // a proposal.
+            ProposalsResource.PatchRequest.UpdateActionEnum updateAction = (ProposalsResource.PatchRequest.UpdateActionEnum) 0;
 
-            // TODO: Assign values to the desired properties to be changed.
+
             Data.Proposal requestBody = new Data.Proposal();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
 
             ProposalsResource.PatchRequest request = adExchangeBuyerService.Proposals.Patch(requestBody, proposalId, revisionNumber, updateAction);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Proposal response = request.Execute();
             // Data.Proposal response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -2108,14 +2101,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -2129,11 +2118,11 @@ namespace AdExchangeBuyerSample
 
             ProposalsResource.SearchRequest request = adExchangeBuyerService.Proposals.Search();
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.GetOrdersResponse response = request.Execute();
             // Data.GetOrdersResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -2163,14 +2152,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -2182,12 +2167,16 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Setupcomplete` method:
+
             // The proposal id for which the setup is complete
-            string proposalId = "{MY-PROPOSAL-ID}"; // TODO: Update placeholder value(s).
+            string proposalId = "{MY-PROPOSAL-ID}";
+
 
             ProposalsResource.SetupcompleteRequest request = adExchangeBuyerService.Proposals.Setupcomplete(proposalId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
@@ -2221,14 +2210,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -2240,27 +2225,33 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
             // The proposal id to update.
-            string proposalId = "{MY-PROPOSAL-ID}"; // TODO: Update placeholder value(s).
+            string proposalId = "{MY-PROPOSAL-ID}";
 
             // The last known revision number to update. If the head revision in the marketplace database has since
             // changed, an error will be thrown. The caller should then fetch the latest proposal at head revision
             // and retry the update at that revision.
-            long revisionNumber = 0L; // TODO: Update placeholder value(s).
+            long revisionNumber = 0L;
 
-            // The proposed action to take on the proposal.
-            ProposalsResource.UpdateRequest.UpdateActionEnum updateAction = (ProposalsResource.UpdateRequest.UpdateActionEnum) 0; // TODO: Update placeholder value(s).
+            // The proposed action to take on the proposal. This field is required and it must be set when updating
+            // a proposal.
+            ProposalsResource.UpdateRequest.UpdateActionEnum updateAction = (ProposalsResource.UpdateRequest.UpdateActionEnum) 0;
 
-            // TODO: Assign values to the desired properties.
+
             Data.Proposal requestBody = new Data.Proposal();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             ProposalsResource.UpdateRequest request = adExchangeBuyerService.Proposals.Update(requestBody, proposalId, revisionNumber, updateAction);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Proposal response = request.Execute();
             // Data.Proposal response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -2293,14 +2284,10 @@ namespace AdExchangeBuyerSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -2312,16 +2299,20 @@ namespace AdExchangeBuyerSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // The accountId of the publisher to get profiles for.
-            int accountId = 0; // TODO: Update placeholder value(s).
+            int accountId = 0;
+
 
             PubprofilesResource.ListRequest request = adExchangeBuyerService.Pubprofiles.List(accountId);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.GetPublisherProfilesByAccountIdResponse response = request.Execute();
             // Data.GetPublisherProfilesByAccountIdResponse response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }

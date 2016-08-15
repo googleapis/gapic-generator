@@ -17,9 +17,8 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -28,18 +27,22 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
 // The ID of the Backup Run to delete. To find a Backup Run ID, use the list method.
-$id = '0'; // TODO: Update placeholder value(s).
+$id = '0';
+
 
 $response = $service->backupRuns->delete($project, $instance, $id);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -59,9 +62,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -70,18 +72,22 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
 // The ID of this Backup Run.
-$id = '0'; // TODO: Update placeholder value(s).
+$id = '0';
+
 
 $response = $service->backupRuns->get($project, $instance, $id);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -101,9 +107,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -112,18 +117,68 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
+
+
+$requestBody = new Google_Service_SQLAdmin_BackupRun($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
+
+
+$response = $service->backupRuns->insert($project, $instance, $requestBody);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Cloud SQL Administration API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/sqladmin
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+$client = new Google_Client();
+$client->setApplicationName('Google Cloud Platform Sample');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listBackupRuns` method:
+
+// Project ID of the project that contains the instance.
+$project = '{MY-PROJECT}';
+
+// Cloud SQL instance ID. This does not include the project ID.
+$instance = '{MY-INSTANCE}';
+
 
 $optParams = array();
 do {
   $response = $service->backupRuns->listBackupRuns($project, $instance, $optParams);
 
   foreach ($response['items'] as $backup_run) {
-    // TODO: Use backup_run
+    // TODO: Change code below to process each `backup_run` resource:
     echo '<pre>', var_export($backup_run, true), '</pre>', "\n";
   }
 
@@ -147,9 +202,8 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -158,18 +212,22 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Database instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
 // Name of the database to be deleted in the instance.
-$database = '{MY-DATABASE}'; // TODO: Update placeholder value(s).
+$database = '{MY-DATABASE}';
+
 
 $response = $service->databases->delete($project, $instance, $database);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -189,9 +247,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -200,18 +257,22 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Database instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
 // Name of the database in the instance.
-$database = '{MY-DATABASE}'; // TODO: Update placeholder value(s).
+$database = '{MY-DATABASE}';
+
 
 $response = $service->databases->get($project, $instance, $database);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -231,9 +292,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -241,19 +301,24 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Database instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_SQLAdmin_Database($client);
 
-$response = $service->databases->insert($project, $instance, $postBody);
+$requestBody = new Google_Service_SQLAdmin_Database($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->databases->insert($project, $instance, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -273,9 +338,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -284,15 +348,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listDatabases` method:
+
 // Project ID of the project for which to list Cloud SQL instances.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
+
 
 $response = $service->databases->listDatabases($project, $instance);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -312,9 +380,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -323,21 +390,26 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Database instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
 // Name of the database to be updated in the instance.
-$database = '{MY-DATABASE}'; // TODO: Update placeholder value(s).
+$database = '{MY-DATABASE}';
 
-// TODO: Assign values to the desired properties to be changed.
-$postBody = new Google_Service_SQLAdmin_Database($client);
 
-$response = $service->databases->patch($project, $instance, $database, $postBody);
+$requestBody = new Google_Service_SQLAdmin_Database($client);
+// TODO: Assign values to desired properties of the `requestBody` object to be changed.
 
-// TODO: Use $response
+
+$response = $service->databases->patch($project, $instance, $database, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -357,9 +429,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -368,21 +439,26 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Database instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
 // Name of the database to be updated in the instance.
-$database = '{MY-DATABASE}'; // TODO: Update placeholder value(s).
+$database = '{MY-DATABASE}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_SQLAdmin_Database($client);
 
-$response = $service->databases->update($project, $instance, $database, $postBody);
+$requestBody = new Google_Service_SQLAdmin_Database($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->databases->update($project, $instance, $database, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -402,9 +478,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -416,7 +491,7 @@ $service = new Google_Service_SQLAdmin($client);
 
 $response = $service->flags->listFlags();
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -436,9 +511,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -446,19 +520,24 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `cloneInstances` method:
 
 // Project ID of the source as well as the clone Cloud SQL instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // The ID of the Cloud SQL instance to be cloned (source). This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_SQLAdmin_InstancesCloneRequest($client);
 
-$response = $service->instances->cloneInstances($project, $instance, $postBody);
+$requestBody = new Google_Service_SQLAdmin_InstancesCloneRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->instances->cloneInstances($project, $instance, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -478,9 +557,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -489,15 +567,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // Project ID of the project that contains the instance to be deleted.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
+
 
 $response = $service->instances->delete($project, $instance);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -517,9 +599,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -527,19 +608,24 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `export` method:
 
 // Project ID of the project that contains the instance to be exported.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_SQLAdmin_InstancesExportRequest($client);
 
-$response = $service->instances->export($project, $instance, $postBody);
+$requestBody = new Google_Service_SQLAdmin_InstancesExportRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->instances->export($project, $instance, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -559,9 +645,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -569,19 +654,24 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `failover` method:
 
 // ID of the project that contains the read replica.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_SQLAdmin_InstancesFailoverRequest($client);
 
-$response = $service->instances->failover($project, $instance, $postBody);
+$requestBody = new Google_Service_SQLAdmin_InstancesFailoverRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->instances->failover($project, $instance, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -601,9 +691,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -612,15 +701,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Database instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
+
 
 $response = $service->instances->get($project, $instance);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -640,9 +733,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -650,19 +742,24 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `import` method:
 
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_SQLAdmin_InstancesImportRequest($client);
 
-$response = $service->instances->import($project, $instance, $postBody);
+$requestBody = new Google_Service_SQLAdmin_InstancesImportRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->instances->import($project, $instance, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -682,9 +779,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -692,16 +788,21 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 // Project ID of the project to which the newly created Cloud SQL instances should belong.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_SQLAdmin_DatabaseInstance($client);
 
-$response = $service->instances->insert($project, $postBody);
+$requestBody = new Google_Service_SQLAdmin_DatabaseInstance($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->instances->insert($project, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -721,9 +822,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -732,15 +832,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listInstances` method:
+
 // Project ID of the project for which to list Cloud SQL instances.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
+
 
 $optParams = array();
 do {
   $response = $service->instances->listInstances($project, $optParams);
 
   foreach ($response['items'] as $database_instance) {
-    // TODO: Use database_instance
+    // TODO: Change code below to process each `database_instance` resource:
     echo '<pre>', var_export($database_instance, true), '</pre>', "\n";
   }
 
@@ -764,9 +868,8 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -775,18 +878,23 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
-// TODO: Assign values to the desired properties to be changed.
-$postBody = new Google_Service_SQLAdmin_DatabaseInstance($client);
 
-$response = $service->instances->patch($project, $instance, $postBody);
+$requestBody = new Google_Service_SQLAdmin_DatabaseInstance($client);
+// TODO: Assign values to desired properties of the `requestBody` object to be changed.
 
-// TODO: Use $response
+
+$response = $service->instances->patch($project, $instance, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -806,9 +914,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -817,15 +924,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `promoteReplica` method:
+
 // ID of the project that contains the read replica.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL read replica instance name.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
+
 
 $response = $service->instances->promoteReplica($project, $instance);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -845,9 +956,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -856,15 +966,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `resetSslConfig` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
+
 
 $response = $service->instances->resetSslConfig($project, $instance);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -884,9 +998,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -895,15 +1008,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `restart` method:
+
 // Project ID of the project that contains the instance to be restarted.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
+
 
 $response = $service->instances->restart($project, $instance);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -923,9 +1040,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -933,19 +1049,24 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `restoreBackup` method:
 
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_SQLAdmin_InstancesRestoreBackupRequest($client);
 
-$response = $service->instances->restoreBackup($project, $instance, $postBody);
+$requestBody = new Google_Service_SQLAdmin_InstancesRestoreBackupRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->instances->restoreBackup($project, $instance, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -965,9 +1086,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -976,15 +1096,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `startReplica` method:
+
 // ID of the project that contains the read replica.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL read replica instance name.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
+
 
 $response = $service->instances->startReplica($project, $instance);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1004,9 +1128,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1015,15 +1138,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `stopReplica` method:
+
 // ID of the project that contains the read replica.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL read replica instance name.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
+
 
 $response = $service->instances->stopReplica($project, $instance);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1043,9 +1170,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1054,18 +1180,23 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_SQLAdmin_DatabaseInstance($client);
 
-$response = $service->instances->update($project, $instance, $postBody);
+$requestBody = new Google_Service_SQLAdmin_DatabaseInstance($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->instances->update($project, $instance, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1085,9 +1216,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1096,15 +1226,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Instance operation ID.
-$operation = '{MY-OPERATION}'; // TODO: Update placeholder value(s).
+$operation = '{MY-OPERATION}';
+
 
 $response = $service->operations->get($project, $operation);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1124,9 +1258,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1135,18 +1268,22 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listOperations` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
+
 
 $optParams = array();
 do {
   $response = $service->operations->listOperations($project, $instance, $optParams);
 
   foreach ($response['items'] as $operation) {
-    // TODO: Use operation
+    // TODO: Change code below to process each `operation` resource:
     echo '<pre>', var_export($operation, true), '</pre>', "\n";
   }
 
@@ -1170,9 +1307,8 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1181,18 +1317,23 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `createEphemeral` method:
+
 // Project ID of the Cloud SQL project.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_SQLAdmin_SslCertsCreateEphemeralRequest($client);
 
-$response = $service->sslCerts->createEphemeral($project, $instance, $postBody);
+$requestBody = new Google_Service_SQLAdmin_SslCertsCreateEphemeralRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->sslCerts->createEphemeral($project, $instance, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1212,9 +1353,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1223,18 +1363,22 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // Project ID of the project that contains the instance to be deleted.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
 // Sha1 FingerPrint.
-$sha1Fingerprint = '{MY-SHA1-FINGERPRINT}'; // TODO: Update placeholder value(s).
+$sha1Fingerprint = '{MY-SHA1-FINGERPRINT}';
+
 
 $response = $service->sslCerts->delete($project, $instance, $sha1Fingerprint);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1254,9 +1398,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1265,18 +1408,22 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
 // Sha1 FingerPrint.
-$sha1Fingerprint = '{MY-SHA1-FINGERPRINT}'; // TODO: Update placeholder value(s).
+$sha1Fingerprint = '{MY-SHA1-FINGERPRINT}';
+
 
 $response = $service->sslCerts->get($project, $instance, $sha1Fingerprint);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1296,9 +1443,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1306,19 +1452,24 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 // Project ID of the project to which the newly created Cloud SQL instances should belong.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_SQLAdmin_SslCertsInsertRequest($client);
 
-$response = $service->sslCerts->insert($project, $instance, $postBody);
+$requestBody = new Google_Service_SQLAdmin_SslCertsInsertRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->sslCerts->insert($project, $instance, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1338,9 +1489,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1349,15 +1499,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listSslCerts` method:
+
 // Project ID of the project for which to list Cloud SQL instances.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Cloud SQL instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
+
 
 $response = $service->sslCerts->listSslCerts($project, $instance);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1377,9 +1531,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1388,12 +1541,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listTiers` method:
+
 // Project ID of the project for which to list tiers.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
+
 
 $response = $service->tiers->listTiers($project);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1413,9 +1570,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1424,21 +1580,25 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Database instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
 // Host of the user in the instance.
-$host = '{MY-HOST}'; // TODO: Update placeholder value(s).
+$host = '{MY-HOST}';
 
 // Name of the user in the instance.
-$name = '{MY-NAME}'; // TODO: Update placeholder value(s).
+$name = '{MY-NAME}';
+
 
 $response = $service->users->delete($project, $instance, $host, $name);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1458,9 +1618,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1469,18 +1628,23 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Database instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_SQLAdmin_User($client);
 
-$response = $service->users->insert($project, $instance, $postBody);
+$requestBody = new Google_Service_SQLAdmin_User($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->users->insert($project, $instance, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1500,9 +1664,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1511,15 +1674,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listUsers` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Database instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
+
 
 $response = $service->users->listUsers($project, $instance);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1539,9 +1706,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1550,22 +1716,27 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_SQLAdmin($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
+
 // Project ID of the project that contains the instance.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Database instance ID. This does not include the project ID.
-$instance = '{MY-INSTANCE}'; // TODO: Update placeholder value(s).
+$instance = '{MY-INSTANCE}';
 
 // Host of the user in the instance.
-$host = '{MY-HOST}'; // TODO: Update placeholder value(s).
+$host = '{MY-HOST}';
 
 // Name of the user in the instance.
-$name = '{MY-NAME}'; // TODO: Update placeholder value(s).
+$name = '{MY-NAME}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_SQLAdmin_User($client);
 
-$response = $service->users->update($project, $instance, $host, $name, $postBody);
+$requestBody = new Google_Service_SQLAdmin_User($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->users->update($project, $instance, $host, $name, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";

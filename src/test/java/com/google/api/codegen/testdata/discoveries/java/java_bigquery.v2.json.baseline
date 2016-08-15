@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -11,7 +11,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -28,7 +28,6 @@ import com.google.api.services.bigquery.Bigquery.Datasets.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -50,12 +49,19 @@ public class BigqueryExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -63,6 +69,7 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Bigquery.Builder(httpTransport, jsonFactory, credential)
@@ -70,19 +77,24 @@ public class BigqueryExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
 
-    // * Project ID of the dataset being deleted
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
+    // Project ID of the dataset being deleted
     String projectId = "{MY-PROJECT-ID}";
 
-    // * Dataset ID of dataset being deleted
+    // Dataset ID of dataset being deleted
     String datasetId = "{MY-DATASET-ID}";
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
       new BigqueryExample().run();
@@ -91,9 +103,14 @@ public class BigqueryExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+
+    Bigquery.Datasets.Delete request = bigqueryService.datasets().delete(projectId, datasetId);
+    request.execute();
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -105,7 +122,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -123,7 +140,6 @@ import com.google.api.services.bigquery.model.Dataset;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -146,12 +162,19 @@ public class BigqueryExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -159,6 +182,7 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Bigquery.Builder(httpTransport, jsonFactory, credential)
@@ -175,26 +199,36 @@ public class BigqueryExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * Project ID of the requested dataset
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // Project ID of the requested dataset
     String projectId = "{MY-PROJECT-ID}";
 
-    // * Dataset ID of the requested dataset
+    // Dataset ID of the requested dataset
     String datasetId = "{MY-DATASET-ID}";
+
 
     Bigquery.Datasets.Get request = bigqueryService.datasets().get(projectId, datasetId);
     Dataset response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -206,7 +240,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -224,7 +258,6 @@ import com.google.api.services.bigquery.model.Dataset;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -247,12 +280,19 @@ public class BigqueryExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -260,6 +300,7 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Bigquery.Builder(httpTransport, jsonFactory, credential)
@@ -276,26 +317,37 @@ public class BigqueryExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
 
-    // * Project ID of the new dataset
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
+
+    // Project ID of the new dataset
     String projectId = "{MY-PROJECT-ID}";
 
-    Dataset content = new Dataset();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Bigquery.Datasets.Insert request = bigqueryService.datasets().insert(projectId, content);
+    Dataset requestBody = new Dataset();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Bigquery.Datasets.Insert request = bigqueryService.datasets().insert(projectId, requestBody);
     Dataset response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -307,7 +359,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -326,7 +378,6 @@ import com.google.api.services.bigquery.model.DatasetList.Datasets;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -354,12 +405,19 @@ public class BigqueryExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -367,6 +425,7 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Bigquery.Builder(httpTransport, jsonFactory, credential)
@@ -374,14 +433,19 @@ public class BigqueryExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * Project ID of the datasets to be listed
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // Project ID of the datasets to be listed
     String projectId = "{MY-PROJECT-ID}";
+
 
     Bigquery.Datasets.List request = bigqueryService.datasets().list(projectId);
     DatasetList response;
@@ -391,7 +455,8 @@ public class BigqueryExample {
         continue;
 
       for (Datasets datasets : response.getDatasets()) {
-        // TODO: Add code here to process each 'datasets' resource
+        // TODO: Change code below to process each `datasets` resource:
+        System.out.println(datasets);
       }
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
@@ -405,7 +470,7 @@ public class BigqueryExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -417,7 +482,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -435,7 +500,6 @@ import com.google.api.services.bigquery.model.Dataset;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -461,12 +525,19 @@ public class BigqueryExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -474,6 +545,7 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Bigquery.Builder(httpTransport, jsonFactory, credential)
@@ -490,29 +562,40 @@ public class BigqueryExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
 
-    // * Project ID of the dataset being updated
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
+
+    // Project ID of the dataset being updated
     String projectId = "{MY-PROJECT-ID}";
 
-    // * Dataset ID of the dataset being updated
+    // Dataset ID of the dataset being updated
     String datasetId = "{MY-DATASET-ID}";
 
-    Dataset content = new Dataset();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Bigquery.Datasets.Patch request = bigqueryService.datasets().patch(projectId, datasetId, content);
+    Dataset requestBody = new Dataset();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    Bigquery.Datasets.Patch request = bigqueryService.datasets().patch(projectId, datasetId, requestBody);
     Dataset response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -524,7 +607,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -542,7 +625,6 @@ import com.google.api.services.bigquery.model.Dataset;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -568,12 +650,19 @@ public class BigqueryExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -581,6 +670,7 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Bigquery.Builder(httpTransport, jsonFactory, credential)
@@ -597,29 +687,40 @@ public class BigqueryExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
 
-    // * Project ID of the dataset being updated
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
+
+    // Project ID of the dataset being updated
     String projectId = "{MY-PROJECT-ID}";
 
-    // * Dataset ID of the dataset being updated
+    // Dataset ID of the dataset being updated
     String datasetId = "{MY-DATASET-ID}";
 
-    Dataset content = new Dataset();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Bigquery.Datasets.Update request = bigqueryService.datasets().update(projectId, datasetId, content);
+    Dataset requestBody = new Dataset();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Bigquery.Datasets.Update request = bigqueryService.datasets().update(projectId, datasetId, requestBody);
     Dataset response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -631,7 +732,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -649,7 +750,6 @@ import com.google.api.services.bigquery.model.JobCancelResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -672,12 +772,19 @@ public class BigqueryExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -685,6 +792,7 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Bigquery.Builder(httpTransport, jsonFactory, credential)
@@ -701,26 +809,36 @@ public class BigqueryExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'cancel' method:
 
-    // * [Required] Project ID of the job to cancel
+    // TODO: Change placeholders below to desired parameter values for the `cancel` method:
+
+    // [Required] Project ID of the job to cancel
     String projectId = "{MY-PROJECT-ID}";
 
-    // * [Required] Job ID of the job to cancel
+    // [Required] Job ID of the job to cancel
     String jobId = "{MY-JOB-ID}";
+
 
     Bigquery.Jobs.Cancel request = bigqueryService.jobs().cancel(projectId, jobId);
     JobCancelResponse response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -732,7 +850,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -750,7 +868,6 @@ import com.google.api.services.bigquery.model.Job;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -773,12 +890,19 @@ public class BigqueryExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -786,6 +910,7 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Bigquery.Builder(httpTransport, jsonFactory, credential)
@@ -802,26 +927,36 @@ public class BigqueryExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * [Required] Project ID of the requested job
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // [Required] Project ID of the requested job
     String projectId = "{MY-PROJECT-ID}";
 
-    // * [Required] Job ID of the requested job
+    // [Required] Job ID of the requested job
     String jobId = "{MY-JOB-ID}";
+
 
     Bigquery.Jobs.Get request = bigqueryService.jobs().get(projectId, jobId);
     Job response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -833,7 +968,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -851,7 +986,6 @@ import com.google.api.services.bigquery.model.GetQueryResultsResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -874,12 +1008,19 @@ public class BigqueryExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -887,6 +1028,7 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Bigquery.Builder(httpTransport, jsonFactory, credential)
@@ -903,26 +1045,36 @@ public class BigqueryExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'getQueryResults' method:
 
-    // * [Required] Project ID of the query job
+    // TODO: Change placeholders below to desired parameter values for the `getQueryResults` method:
+
+    // [Required] Project ID of the query job
     String projectId = "{MY-PROJECT-ID}";
 
-    // * [Required] Job ID of the query job
+    // [Required] Job ID of the query job
     String jobId = "{MY-JOB-ID}";
+
 
     Bigquery.Jobs.GetQueryResults request = bigqueryService.jobs().getQueryResults(projectId, jobId);
     GetQueryResultsResponse response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -934,7 +1086,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -952,7 +1104,6 @@ import com.google.api.services.bigquery.model.Job;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -975,12 +1126,19 @@ public class BigqueryExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -988,6 +1146,7 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Bigquery.Builder(httpTransport, jsonFactory, credential)
@@ -1004,26 +1163,37 @@ public class BigqueryExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
 
-    // * Project ID of the project that will be billed for the job
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
+
+    // Project ID of the project that will be billed for the job
     String projectId = "{MY-PROJECT-ID}";
 
-    Job content = new Job();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Bigquery.Jobs.Insert request = bigqueryService.jobs().insert(projectId, content);
+    Job requestBody = new Job();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Bigquery.Jobs.Insert request = bigqueryService.jobs().insert(projectId, requestBody);
     Job response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -1035,7 +1205,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1054,7 +1224,6 @@ import com.google.api.services.bigquery.model.JobList.Jobs;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1082,12 +1251,19 @@ public class BigqueryExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1095,6 +1271,7 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Bigquery.Builder(httpTransport, jsonFactory, credential)
@@ -1102,14 +1279,19 @@ public class BigqueryExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * Project ID of the jobs to list
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // Project ID of the jobs to list
     String projectId = "{MY-PROJECT-ID}";
+
 
     Bigquery.Jobs.List request = bigqueryService.jobs().list(projectId);
     JobList response;
@@ -1119,7 +1301,8 @@ public class BigqueryExample {
         continue;
 
       for (Jobs jobs : response.getJobs()) {
-        // TODO: Add code here to process each 'jobs' resource
+        // TODO: Change code below to process each `jobs` resource:
+        System.out.println(jobs);
       }
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
@@ -1133,7 +1316,7 @@ public class BigqueryExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -1145,7 +1328,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1164,7 +1347,6 @@ import com.google.api.services.bigquery.model.QueryResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1187,12 +1369,19 @@ public class BigqueryExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1200,6 +1389,7 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Bigquery.Builder(httpTransport, jsonFactory, credential)
@@ -1216,26 +1406,37 @@ public class BigqueryExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'query' method:
 
-    // * Project ID of the project billed for the query
+    // TODO: Change placeholders below to desired parameter values for the `query` method:
+
+    // Project ID of the project billed for the query
     String projectId = "{MY-PROJECT-ID}";
 
-    QueryRequest content = new QueryRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Bigquery.Jobs.Query request = bigqueryService.jobs().query(projectId, content);
+    QueryRequest requestBody = new QueryRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Bigquery.Jobs.Query request = bigqueryService.jobs().query(projectId, requestBody);
     QueryResponse response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -1247,7 +1448,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1266,7 +1467,6 @@ import com.google.api.services.bigquery.model.ProjectList.Projects;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1291,12 +1491,19 @@ public class BigqueryExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1304,6 +1511,7 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Bigquery.Builder(httpTransport, jsonFactory, credential)
@@ -1311,6 +1519,9 @@ public class BigqueryExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
@@ -1324,7 +1535,8 @@ public class BigqueryExample {
         continue;
 
       for (Projects projects : response.getProjects()) {
-        // TODO: Add code here to process each 'projects' resource
+        // TODO: Change code below to process each `projects` resource:
+        System.out.println(projects);
       }
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
@@ -1338,7 +1550,7 @@ public class BigqueryExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -1350,7 +1562,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1369,7 +1581,6 @@ import com.google.api.services.bigquery.model.TableDataInsertAllResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1421,48 +1632,51 @@ public class BigqueryExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insertAll' method:
 
-    // * Project ID of the destination table.
+    // TODO: Change placeholders below to desired parameter values for the `insertAll` method:
+
+    // Project ID of the destination table.
     String projectId = "{MY-PROJECT-ID}";
 
-    // * Dataset ID of the destination table.
+    // Dataset ID of the destination table.
     String datasetId = "{MY-DATASET-ID}";
 
-    // * Table ID of the destination table.
+    // Table ID of the destination table.
     String tableId = "{MY-TABLE-ID}";
 
-    TableDataInsertAllRequest content = new TableDataInsertAllRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Bigquery.Tabledata.InsertAll request = bigqueryService.tabledata().insertAll(projectId, datasetId, tableId, content);
+    TableDataInsertAllRequest requestBody = new TableDataInsertAllRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Bigquery.Tabledata.InsertAll request = bigqueryService.tabledata().insertAll(projectId, datasetId, tableId, requestBody);
     TableDataInsertAllResponse response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -1474,7 +1688,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1492,7 +1706,6 @@ import com.google.api.services.bigquery.model.TableDataList;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1518,12 +1731,19 @@ public class BigqueryExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1531,6 +1751,7 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Bigquery.Builder(httpTransport, jsonFactory, credential)
@@ -1547,29 +1768,39 @@ public class BigqueryExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * Project ID of the table to read
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // Project ID of the table to read
     String projectId = "{MY-PROJECT-ID}";
 
-    // * Dataset ID of the table to read
+    // Dataset ID of the table to read
     String datasetId = "{MY-DATASET-ID}";
 
-    // * Table ID of the table to read
+    // Table ID of the table to read
     String tableId = "{MY-TABLE-ID}";
+
 
     Bigquery.Tabledata.List request = bigqueryService.tabledata().list(projectId, datasetId, tableId);
     TableDataList response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -1581,7 +1812,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1598,7 +1829,6 @@ import com.google.api.services.bigquery.Bigquery.Tables.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1623,12 +1853,19 @@ public class BigqueryExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1636,6 +1873,7 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Bigquery.Builder(httpTransport, jsonFactory, credential)
@@ -1643,22 +1881,27 @@ public class BigqueryExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
 
-    // * Project ID of the table to delete
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
+    // Project ID of the table to delete
     String projectId = "{MY-PROJECT-ID}";
 
-    // * Dataset ID of the table to delete
+    // Dataset ID of the table to delete
     String datasetId = "{MY-DATASET-ID}";
 
-    // * Table ID of the table to delete
+    // Table ID of the table to delete
     String tableId = "{MY-TABLE-ID}";
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
       new BigqueryExample().run();
@@ -1667,9 +1910,14 @@ public class BigqueryExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+
+    Bigquery.Tables.Delete request = bigqueryService.tables().delete(projectId, datasetId, tableId);
+    request.execute();
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -1681,7 +1929,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1699,7 +1947,6 @@ import com.google.api.services.bigquery.model.Table;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1725,12 +1972,19 @@ public class BigqueryExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1738,6 +1992,7 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Bigquery.Builder(httpTransport, jsonFactory, credential)
@@ -1754,29 +2009,39 @@ public class BigqueryExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * Project ID of the requested table
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // Project ID of the requested table
     String projectId = "{MY-PROJECT-ID}";
 
-    // * Dataset ID of the requested table
+    // Dataset ID of the requested table
     String datasetId = "{MY-DATASET-ID}";
 
-    // * Table ID of the requested table
+    // Table ID of the requested table
     String tableId = "{MY-TABLE-ID}";
+
 
     Bigquery.Tables.Get request = bigqueryService.tables().get(projectId, datasetId, tableId);
     Table response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -1788,7 +2053,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1806,7 +2071,6 @@ import com.google.api.services.bigquery.model.Table;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1832,12 +2096,19 @@ public class BigqueryExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1845,6 +2116,7 @@ public class BigqueryExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Bigquery.Builder(httpTransport, jsonFactory, credential)
@@ -1861,29 +2133,40 @@ public class BigqueryExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
 
-    // * Project ID of the new table
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
+
+    // Project ID of the new table
     String projectId = "{MY-PROJECT-ID}";
 
-    // * Dataset ID of the new table
+    // Dataset ID of the new table
     String datasetId = "{MY-DATASET-ID}";
 
-    Table content = new Table();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Bigquery.Tables.Insert request = bigqueryService.tables().insert(projectId, datasetId, content);
+    Table requestBody = new Table();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Bigquery.Tables.Insert request = bigqueryService.tables().insert(projectId, datasetId, requestBody);
     Table response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -1895,7 +2178,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1915,7 +2198,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
@@ -1929,33 +2211,30 @@ public class BigqueryExample {
     List request = service.tables().list(projectId, datasetId);
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * Project ID of the tables to list
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // Project ID of the tables to list
     String projectId = "{MY-PROJECT-ID}";
 
-    // * Dataset ID of the tables to list
+    // Dataset ID of the tables to list
     String datasetId = "{MY-DATASET-ID}";
+
 
     Bigquery.Tables.List request = bigqueryService.tables().list(projectId, datasetId);
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
@@ -1968,11 +2247,16 @@ public class BigqueryExample {
 =======
 
       for (Tables tables : response.getTables()) {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
         // TODO: Add code here to process each 'tables' resource
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
       }
       for (Tables item : response.getTables()) {
         System.out.println(item);
+=======
+        // TODO: Change code below to process each `tables` resource:
+        System.out.println(tables);
+>>>>>>> Update discovery sample gen across languages.
       }
     } while (response.getNextPageToken() != null);
   }
@@ -2006,7 +2290,7 @@ public class BigqueryExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -2018,7 +2302,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -2036,7 +2320,6 @@ import com.google.api.services.bigquery.model.Table;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -2088,48 +2371,51 @@ public class BigqueryExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
 
-    // * Project ID of the table to update
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
+
+    // Project ID of the table to update
     String projectId = "{MY-PROJECT-ID}";
 
-    // * Dataset ID of the table to update
+    // Dataset ID of the table to update
     String datasetId = "{MY-DATASET-ID}";
 
-    // * Table ID of the table to update
+    // Table ID of the table to update
     String tableId = "{MY-TABLE-ID}";
 
-    Table content = new Table();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Bigquery.Tables.Patch request = bigqueryService.tables().patch(projectId, datasetId, tableId, content);
+    Table requestBody = new Table();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    Bigquery.Tables.Patch request = bigqueryService.tables().patch(projectId, datasetId, tableId, requestBody);
     Table response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the BigQuery API
@@ -2141,7 +2427,7 @@ public class BigqueryExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -2159,7 +2445,6 @@ import com.google.api.services.bigquery.model.Table;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class BigqueryExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -2211,44 +2496,47 @@ public class BigqueryExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Bigquery bigqueryService = new Bigquery.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
 
-    // * Project ID of the table to update
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
+
+    // Project ID of the table to update
     String projectId = "{MY-PROJECT-ID}";
 
-    // * Dataset ID of the table to update
+    // Dataset ID of the table to update
     String datasetId = "{MY-DATASET-ID}";
 
-    // * Table ID of the table to update
+    // Table ID of the table to update
     String tableId = "{MY-TABLE-ID}";
 
-    Table content = new Table();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Bigquery.Tables.Update request = bigqueryService.tables().update(projectId, datasetId, tableId, content);
+    Table requestBody = new Table();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Bigquery.Tables.Update request = bigqueryService.tables().update(projectId, datasetId, tableId, requestBody);
     Table response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }

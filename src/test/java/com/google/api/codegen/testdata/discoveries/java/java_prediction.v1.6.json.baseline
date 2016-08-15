@@ -1,15 +1,23 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Prediction API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/prediction
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
 =======
  * 2. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Update discovery sample gen across languages.
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/prediction/v1.6/java
@@ -18,8 +26,12 @@
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 =======
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 import com.google.api.client.auth.oauth2.Credential;
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+>>>>>>> Update discovery sample gen across languages.
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -31,7 +43,6 @@ import com.google.api.services.prediction.model.Output;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class PredictionExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -80,48 +91,66 @@ public class PredictionExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // TODO: Implement this function to get authentication credentials.
-    // See https://foo.com/bar
-    // Authorize using one of the following scopes in order to use this method:
-    //   https://www.googleapis.com/auth/prediction
-    Credential credential = getAuth();
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Prediction predictionService = new Prediction.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'predict' method:
 
-    // * The project associated with the model.
+    // TODO: Change placeholders below to desired parameter values for the `predict` method:
+
+    // The project associated with the model.
     String project = "{MY-PROJECT}";
 
-    // * The name of a hosted model.
+    // The name of a hosted model.
     String hostedModelName = "{MY-HOSTED-MODEL-NAME}";
 
-    Input content = new Input();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Prediction.Hostedmodels.Predict request = predictionService.hostedmodels().predict(project, hostedModelName, content);
+    Input requestBody = new Input();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Prediction.Hostedmodels.Predict request = predictionService.hostedmodels().predict(project, hostedModelName, requestBody);
     Output response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Prediction API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/prediction
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
 =======
  * 2. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Update discovery sample gen across languages.
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/prediction/v1.6/java
@@ -130,8 +159,12 @@ public class PredictionExample {
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 =======
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 import com.google.api.client.auth.oauth2.Credential;
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+>>>>>>> Update discovery sample gen across languages.
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -145,7 +178,6 @@ import com.google.api.services.prediction.model.Analyze;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class PredictionExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -191,45 +223,62 @@ public class PredictionExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // TODO: Implement this function to get authentication credentials.
-    // See https://foo.com/bar
-    // Authorize using one of the following scopes in order to use this method:
-    //   https://www.googleapis.com/auth/prediction
-    Credential credential = getAuth();
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Prediction predictionService = new Prediction.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'analyze' method:
 
-    // * The project associated with the model.
+    // TODO: Change placeholders below to desired parameter values for the `analyze` method:
+
+    // The project associated with the model.
     String project = "{MY-PROJECT}";
 
-    // * The unique name for the predictive model.
+    // The unique name for the predictive model.
     String id = "{MY-ID}";
+
 
     Prediction.Trainedmodels.Analyze request = predictionService.trainedmodels().analyze(project, id);
     Analyze response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Prediction API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/prediction
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
 =======
  * 2. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Update discovery sample gen across languages.
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/prediction/v1.6/java
@@ -238,8 +287,12 @@ public class PredictionExample {
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 =======
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 import com.google.api.client.auth.oauth2.Credential;
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+>>>>>>> Update discovery sample gen across languages.
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -249,7 +302,6 @@ import com.google.api.services.prediction.Prediction.Trainedmodels.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class PredictionExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -285,28 +337,32 @@ public class PredictionExample {
   }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // TODO: Implement this function to get authentication credentials.
-    // See https://foo.com/bar
-    // Authorize using one of the following scopes in order to use this method:
-    //   https://www.googleapis.com/auth/prediction
-    Credential credential = getAuth();
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Prediction predictionService = new Prediction.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
 
-    // * The project associated with the model.
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
+    // The project associated with the model.
     String project = "{MY-PROJECT}";
 
-    // * The unique name for the predictive model.
+    // The unique name for the predictive model.
     String id = "{MY-ID}";
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
       new PredictionExample().run();
@@ -315,19 +371,32 @@ public class PredictionExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+
+    Prediction.Trainedmodels.Delete request = predictionService.trainedmodels().delete(project, id);
+    request.execute();
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Prediction API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/prediction
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
 =======
  * 2. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Update discovery sample gen across languages.
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/prediction/v1.6/java
@@ -336,8 +405,12 @@ public class PredictionExample {
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 =======
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 import com.google.api.client.auth.oauth2.Credential;
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+>>>>>>> Update discovery sample gen across languages.
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -348,7 +421,6 @@ import com.google.api.services.prediction.model.Insert2;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class PredictionExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -394,45 +466,62 @@ public class PredictionExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // TODO: Implement this function to get authentication credentials.
-    // See https://foo.com/bar
-    // Authorize using one of the following scopes in order to use this method:
-    //   https://www.googleapis.com/auth/prediction
-    Credential credential = getAuth();
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Prediction predictionService = new Prediction.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * The project associated with the model.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // The project associated with the model.
     String project = "{MY-PROJECT}";
 
-    // * The unique name for the predictive model.
+    // The unique name for the predictive model.
     String id = "{MY-ID}";
+
 
     Prediction.Trainedmodels.Get request = predictionService.trainedmodels().get(project, id);
     Insert2 response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Prediction API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/prediction
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
 =======
  * 2. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Update discovery sample gen across languages.
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/prediction/v1.6/java
@@ -441,8 +530,12 @@ public class PredictionExample {
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 =======
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 import com.google.api.client.auth.oauth2.Credential;
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+>>>>>>> Update discovery sample gen across languages.
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -453,7 +546,6 @@ import com.google.api.services.prediction.model.Insert2;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class PredictionExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -499,48 +591,63 @@ public class PredictionExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // TODO: Implement this function to get authentication credentials.
-    // See https://foo.com/bar
-    // Authorize using one of the following scopes in order to use this method:
-    //   https://www.googleapis.com/auth/devstorage.full_control
-    //   https://www.googleapis.com/auth/devstorage.read_only
-    //   https://www.googleapis.com/auth/devstorage.read_write
-    //   https://www.googleapis.com/auth/prediction
-    Credential credential = getAuth();
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Prediction predictionService = new Prediction.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
 
-    // * The project associated with the model.
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
+
+    // The project associated with the model.
     String project = "{MY-PROJECT}";
 
-    Insert content = new Insert();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Prediction.Trainedmodels.Insert request = predictionService.trainedmodels().insert(project, content);
+    Insert requestBody = new Insert();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Prediction.Trainedmodels.Insert request = predictionService.trainedmodels().insert(project, requestBody);
     Insert2 response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Prediction API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/prediction
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
 =======
  * 2. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Update discovery sample gen across languages.
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/prediction/v1.6/java
@@ -549,8 +656,12 @@ public class PredictionExample {
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 =======
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 import com.google.api.client.auth.oauth2.Credential;
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+>>>>>>> Update discovery sample gen across languages.
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -565,7 +676,6 @@ import com.google.api.services.prediction.model.List;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class PredictionExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -607,23 +717,27 @@ public class PredictionExample {
   }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // TODO: Implement this function to get authentication credentials.
-    // See https://foo.com/bar
-    // Authorize using one of the following scopes in order to use this method:
-    //   https://www.googleapis.com/auth/prediction
-    Credential credential = getAuth();
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Prediction predictionService = new Prediction.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * The project associated with the model.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // The project associated with the model.
     String project = "{MY-PROJECT}";
+
 
     Prediction.Trainedmodels.List request = predictionService.trainedmodels().list(project);
     List response;
@@ -633,7 +747,8 @@ public class PredictionExample {
         continue;
 
       for (Insert2 insert2 : response.getItems()) {
-        // TODO: Add code here to process each 'insert2' resource
+        // TODO: Change code below to process each `insert2` resource:
+        System.out.println(insert2);
       }
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
@@ -647,17 +762,25 @@ public class PredictionExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Prediction API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/prediction
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
 =======
  * 2. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Update discovery sample gen across languages.
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/prediction/v1.6/java
@@ -666,8 +789,12 @@ public class PredictionExample {
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 =======
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 import com.google.api.client.auth.oauth2.Credential;
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+>>>>>>> Update discovery sample gen across languages.
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -679,7 +806,6 @@ import com.google.api.services.prediction.model.Output;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class PredictionExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -728,48 +854,66 @@ public class PredictionExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // TODO: Implement this function to get authentication credentials.
-    // See https://foo.com/bar
-    // Authorize using one of the following scopes in order to use this method:
-    //   https://www.googleapis.com/auth/prediction
-    Credential credential = getAuth();
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Prediction predictionService = new Prediction.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'predict' method:
 
-    // * The project associated with the model.
+    // TODO: Change placeholders below to desired parameter values for the `predict` method:
+
+    // The project associated with the model.
     String project = "{MY-PROJECT}";
 
-    // * The unique name for the predictive model.
+    // The unique name for the predictive model.
     String id = "{MY-ID}";
 
-    Input content = new Input();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Prediction.Trainedmodels.Predict request = predictionService.trainedmodels().predict(project, id, content);
+    Input requestBody = new Input();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Prediction.Trainedmodels.Predict request = predictionService.trainedmodels().predict(project, id, requestBody);
     Output response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Prediction API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/prediction
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
  * 2. Install the Java client library on Maven or Gradle. Check installation
 =======
  * 2. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the Java client library on maven or gradle. Check installation
+>>>>>>> Update discovery sample gen across languages.
  *    instructions at https://github.com/google/google-api-java-client.
  *    On other build systems, you can add the jar files to your project from
  *    https://developers.google.com/resources/api-libraries/download/prediction/v1.6/java
@@ -778,8 +922,12 @@ public class PredictionExample {
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 =======
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 import com.google.api.client.auth.oauth2.Credential;
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+>>>>>>> Update discovery sample gen across languages.
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -794,7 +942,6 @@ import com.google.api.services.prediction.model.Update;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class PredictionExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -843,34 +990,44 @@ public class PredictionExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // TODO: Implement this function to get authentication credentials.
-    // See https://foo.com/bar
-    // Authorize using one of the following scopes in order to use this method:
-    //   https://www.googleapis.com/auth/prediction
-    Credential credential = getAuth();
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+    if (credential.createScopedRequired()) {
+      credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
+    }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Prediction predictionService = new Prediction.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
 
-    // * The project associated with the model.
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
+
+    // The project associated with the model.
     String project = "{MY-PROJECT}";
 
-    // * The unique name for the predictive model.
+    // The unique name for the predictive model.
     String id = "{MY-ID}";
 
-    Update content = new Update();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Prediction.Trainedmodels.Update request = predictionService.trainedmodels().update(project, id, content);
+    Update requestBody = new Update();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Prediction.Trainedmodels.Update request = predictionService.trainedmodels().update(project, id, requestBody);
     Insert2 response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }

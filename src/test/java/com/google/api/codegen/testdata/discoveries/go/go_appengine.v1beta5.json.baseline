@@ -14,6 +14,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -25,30 +26,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := appengine.New(hc)
+  appengineService, err := appengine.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // Part of `name`. Name of the application to get. For example: "apps/myapp".
-  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
 
-  resp, err := s.Apps.Get(appsId).Context(ctx).Do()
+  rb := appengine.Application{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := appengineService.Apps.Create(&rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -65,6 +67,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -76,33 +79,199 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := appengine.New(hc)
+  appengineService, err := appengine.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
+
+  // Part of `name`. Name of the application to get. Example: `apps/myapp`.
+  appsId := "{MY-APPS-ID}"
+
+  resp, err := appengineService.Apps.Get(appsId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/appengine/v1beta5"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  appengineService, err := appengine.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
+
+  // Part of `name`. Resource name for the location.
+  appsId := "{MY-APPS-ID}"
+
+  // Part of `name`. See documentation of `appsId`.
+  locationsId := "{MY-LOCATIONS-ID}"
+
+  resp, err := appengineService.Apps.Locations.Get(appsId, locationsId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/appengine/v1beta5"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  appengineService, err := appengine.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
+
+  // Part of `name`. The resource that owns the locations collection, if applicable.
+  appsId := "{MY-APPS-ID}"
+
+  req := appengineService.Apps.Locations.List(appsId)
+  if err := req.Pages(ctx, func(page *appengine.ListLocationsResponse) error {
+    for _, location := range page.Locations {
+      // TODO: Change code below to process each `location` resource:
+      fmt.Printf("%#v\n", location)
+    }
+    return nil
+  }); err != nil {
+    log.Fatal(err)
+  }
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/appengine/v1beta5"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  appengineService, err := appengine.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // Part of `name`. The name of the operation resource.
-  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
+  appsId := "{MY-APPS-ID}"
 
   // Part of `name`. See documentation of `appsId`.
-  operationsId := "{MY-OPERATIONS-ID}" // TODO: Update placeholder value(s).
+  operationsId := "{MY-OPERATIONS-ID}"
 
-  resp, err := s.Apps.Operations.Get(appsId, operationsId).Context(ctx).Do()
+  resp, err := appengineService.Apps.Operations.Get(appsId, operationsId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -119,6 +288,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -130,30 +300,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := appengine.New(hc)
+  appengineService, err := appengine.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // Part of `name`. The name of the operation collection.
-  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
+  appsId := "{MY-APPS-ID}"
 
-  call := s.Apps.Operations.List(appsId)
-  if err := call.Pages(ctx, func(page *appengine.ListOperationsResponse) error {
+  req := appengineService.Apps.Operations.List(appsId)
+  if err := req.Pages(ctx, func(page *appengine.ListOperationsResponse) error {
     for _, operation := range page.Operations {
-      // TODO: Use operation
-      log.Printf("%#v\n", operation)
+      // TODO: Change code below to process each `operation` resource:
+      fmt.Printf("%#v\n", operation)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -173,6 +344,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -184,33 +356,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := appengine.New(hc)
+  appengineService, err := appengine.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
-  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
+  // TODO: Change placeholders below to desired parameter values for the `Delete` call:
+
+  // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default`.
+  appsId := "{MY-APPS-ID}"
 
   // Part of `name`. See documentation of `appsId`.
-  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
+  servicesId := "{MY-SERVICES-ID}"
 
-  resp, err := s.Apps.Services.Delete(appsId, servicesId).Context(ctx).Do()
+  resp, err := appengineService.Apps.Services.Delete(appsId, servicesId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -227,6 +400,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -238,33 +412,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := appengine.New(hc)
+  appengineService, err := appengine.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
-  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
+
+  // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default`.
+  appsId := "{MY-APPS-ID}"
 
   // Part of `name`. See documentation of `appsId`.
-  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
+  servicesId := "{MY-SERVICES-ID}"
 
-  resp, err := s.Apps.Services.Get(appsId, servicesId).Context(ctx).Do()
+  resp, err := appengineService.Apps.Services.Get(appsId, servicesId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -281,6 +456,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -292,30 +468,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := appengine.New(hc)
+  appengineService, err := appengine.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // Part of `name`. Name of the resource requested. For example: "apps/myapp".
-  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
-  call := s.Apps.Services.List(appsId)
-  if err := call.Pages(ctx, func(page *appengine.ListServicesResponse) error {
+  // Part of `name`. Name of the resource requested. Example: `apps/myapp`.
+  appsId := "{MY-APPS-ID}"
+
+  req := appengineService.Apps.Services.List(appsId)
+  if err := req.Pages(ctx, func(page *appengine.ListServicesResponse) error {
     for _, service := range page.Services {
-      // TODO: Use service
-      log.Printf("%#v\n", service)
+      // TODO: Change code below to process each `service` resource:
+      fmt.Printf("%#v\n", service)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -335,6 +512,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -346,37 +524,98 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := appengine.New(hc)
+  appengineService, err := appengine.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Patch` call:
+
+  // Part of `name`. Name of the resource to update. Example: `apps/myapp/services/default`.
+  appsId := "{MY-APPS-ID}"
+
+  // Part of `name`. See documentation of `appsId`.
+  servicesId := "{MY-SERVICES-ID}"
+
+  rb := appengine.Service{
+    // TODO: Add desired fields of the request body to be changed.
+  }
+
+  resp, err := appengineService.Apps.Services.Patch(appsId, servicesId, &rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/appengine/v1beta5"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  appengineService, err := appengine.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to desired parameter values for the `Create` call:
 
   // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
-  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
+  appsId := "{MY-APPS-ID}"
 
   // Part of `name`. See documentation of `appsId`.
-  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
+  servicesId := "{MY-SERVICES-ID}"
 
-  resource := &appengine.Service{
-    // TODO: Add the desired fields to be changed.
+  rb := appengine.Version{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Apps.Services.Patch(appsId, servicesId, resource).Context(ctx).Do()
+  resp, err := appengineService.Apps.Services.Versions.Create(appsId, servicesId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -393,6 +632,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -404,37 +644,37 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := appengine.New(hc)
+  appengineService, err := appengine.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
-  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
+  // TODO: Change placeholders below to desired parameter values for the `Delete` call:
+
+  // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default/versions/v1`.
+  appsId := "{MY-APPS-ID}"
 
   // Part of `name`. See documentation of `appsId`.
-  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
+  servicesId := "{MY-SERVICES-ID}"
 
-  resource := &appengine.Version{
-    // TODO: Add the desired fields.
-  }
+  // Part of `name`. See documentation of `appsId`.
+  versionsId := "{MY-VERSIONS-ID}"
 
-  resp, err := s.Apps.Services.Versions.Create(appsId, servicesId, resource).Context(ctx).Do()
+  resp, err := appengineService.Apps.Services.Versions.Delete(appsId, servicesId, versionsId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -451,6 +691,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -462,37 +703,167 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := appengine.New(hc)
+  appengineService, err := appengine.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
+
+  // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default/versions/v1`.
+  appsId := "{MY-APPS-ID}"
+
+  // Part of `name`. See documentation of `appsId`.
+  servicesId := "{MY-SERVICES-ID}"
+
+  // Part of `name`. See documentation of `appsId`.
+  versionsId := "{MY-VERSIONS-ID}"
+
+  resp, err := appengineService.Apps.Services.Versions.Get(appsId, servicesId, versionsId).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/appengine/v1beta5"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  appengineService, err := appengine.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to desired parameter values for the `Debug` call:
+
+  // Part of `name`. Name of the resource requested. Example:
+  // `apps/myapp/services/default/versions/v1/instances/instance-1`.
+  appsId := "{MY-APPS-ID}"
+
+  // Part of `name`. See documentation of `appsId`.
+  servicesId := "{MY-SERVICES-ID}"
+
+  // Part of `name`. See documentation of `appsId`.
+  versionsId := "{MY-VERSIONS-ID}"
+
+  // Part of `name`. See documentation of `appsId`.
+  instancesId := "{MY-INSTANCES-ID}"
+
+  rb := appengine.DebugInstanceRequest{
+    // TODO: Add desired fields of the request body.
+  }
+
+  resp, err := appengineService.Apps.Services.Versions.Instances.Debug(appsId, servicesId, versionsId, instancesId, &rb).Context(ctx).Do()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
+}
+package main
+
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google App Engine Admin API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/appengine
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install and update the Go dependencies by running `go get -u` in the
+//    project directory.
+
+import (
+  "fmt"
+  "log"
+
+  "golang.org/x/net/context"
+  "golang.org/x/oauth2/google"
+
+  "google.golang.org/api/appengine/v1beta5"
+)
+
+func main() {
+  ctx := context.Background()
+
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
+  // https://developers.google.com/identity/protocols/application-default-credentials
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  appengineService, err := appengine.New(c)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` call:
 
   // Part of `name`. Name of the resource requested. For example:
-  // "apps/myapp/services/default/versions/v1".
-  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
+  // "apps/myapp/services/default/versions/v1/instances/instance-1".
+  appsId := "{MY-APPS-ID}"
 
   // Part of `name`. See documentation of `appsId`.
-  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
+  servicesId := "{MY-SERVICES-ID}"
 
   // Part of `name`. See documentation of `appsId`.
-  versionsId := "{MY-VERSIONS-ID}" // TODO: Update placeholder value(s).
+  versionsId := "{MY-VERSIONS-ID}"
 
-  resp, err := s.Apps.Services.Versions.Delete(appsId, servicesId, versionsId).Context(ctx).Do()
+  // Part of `name`. See documentation of `appsId`.
+  instancesId := "{MY-INSTANCES-ID}"
+
+  resp, err := appengineService.Apps.Services.Versions.Instances.Delete(appsId, servicesId, versionsId, instancesId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -509,6 +880,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -520,37 +892,41 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := appengine.New(hc)
+  appengineService, err := appengine.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // Part of `name`. Name of the resource requested. For example:
-  // "apps/myapp/services/default/versions/v1".
-  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
+
+  // Part of `name`. Name of the resource requested. Example:
+  // `apps/myapp/services/default/versions/v1/instances/instance-1`.
+  appsId := "{MY-APPS-ID}"
 
   // Part of `name`. See documentation of `appsId`.
-  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
+  servicesId := "{MY-SERVICES-ID}"
 
   // Part of `name`. See documentation of `appsId`.
-  versionsId := "{MY-VERSIONS-ID}" // TODO: Update placeholder value(s).
+  versionsId := "{MY-VERSIONS-ID}"
 
-  resp, err := s.Apps.Services.Versions.Get(appsId, servicesId, versionsId).Context(ctx).Do()
+  // Part of `name`. See documentation of `appsId`.
+  instancesId := "{MY-INSTANCES-ID}"
+
+  resp, err := appengineService.Apps.Services.Versions.Instances.Get(appsId, servicesId, versionsId, instancesId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -567,6 +943,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -578,37 +955,37 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := appengine.New(hc)
+  appengineService, err := appengine.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // Part of `name`. Name of the resource requested. For example:
-  // "apps/myapp/services/default/versions/v1".
-  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
+
+  // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default/versions/v1`.
+  appsId := "{MY-APPS-ID}"
 
   // Part of `name`. See documentation of `appsId`.
-  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
+  servicesId := "{MY-SERVICES-ID}"
 
   // Part of `name`. See documentation of `appsId`.
-  versionsId := "{MY-VERSIONS-ID}" // TODO: Update placeholder value(s).
+  versionsId := "{MY-VERSIONS-ID}"
 
-  call := s.Apps.Services.Versions.Instances.List(appsId, servicesId, versionsId)
-  if err := call.Pages(ctx, func(page *appengine.ListInstancesResponse) error {
+  req := appengineService.Apps.Services.Versions.Instances.List(appsId, servicesId, versionsId)
+  if err := req.Pages(ctx, func(page *appengine.ListInstancesResponse) error {
     for _, instance := range page.Instances {
-      // TODO: Use instance
-      log.Printf("%#v\n", instance)
+      // TODO: Change code below to process each `instance` resource:
+      fmt.Printf("%#v\n", instance)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -628,6 +1005,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -639,33 +1017,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := appengine.New(hc)
+  appengineService, err := appengine.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
-  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
+
+  // Part of `name`. Name of the resource requested. Example: `apps/myapp/services/default`.
+  appsId := "{MY-APPS-ID}"
 
   // Part of `name`. See documentation of `appsId`.
-  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
+  servicesId := "{MY-SERVICES-ID}"
 
-  call := s.Apps.Services.Versions.List(appsId, servicesId)
-  if err := call.Pages(ctx, func(page *appengine.ListVersionsResponse) error {
+  req := appengineService.Apps.Services.Versions.List(appsId, servicesId)
+  if err := req.Pages(ctx, func(page *appengine.ListVersionsResponse) error {
     for _, version := range page.Versions {
-      // TODO: Use version
-      log.Printf("%#v\n", version)
+      // TODO: Change code below to process each `version` resource:
+      fmt.Printf("%#v\n", version)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -685,6 +1064,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -696,39 +1076,39 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, appengine.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := appengine.New(hc)
+  appengineService, err := appengine.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // Part of `name`. Name of the resource to update. For example:
-  // "apps/myapp/services/default/versions/1".
-  appsId := "{MY-APPS-ID}" // TODO: Update placeholder value(s).
+  // TODO: Change placeholders below to desired parameter values for the `Patch` call:
+
+  // Part of `name`. Name of the resource to update. Example: `apps/myapp/services/default/versions/1`.
+  appsId := "{MY-APPS-ID}"
 
   // Part of `name`. See documentation of `appsId`.
-  servicesId := "{MY-SERVICES-ID}" // TODO: Update placeholder value(s).
+  servicesId := "{MY-SERVICES-ID}"
 
   // Part of `name`. See documentation of `appsId`.
-  versionsId := "{MY-VERSIONS-ID}" // TODO: Update placeholder value(s).
+  versionsId := "{MY-VERSIONS-ID}"
 
-  resource := &appengine.Version{
-    // TODO: Add the desired fields to be changed.
+  rb := appengine.Version{
+    // TODO: Add desired fields of the request body to be changed.
   }
 
-  resp, err := s.Apps.Services.Versions.Patch(appsId, servicesId, versionsId, resource).Context(ctx).Do()
+  resp, err := appengineService.Apps.Services.Versions.Patch(appsId, servicesId, versionsId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }

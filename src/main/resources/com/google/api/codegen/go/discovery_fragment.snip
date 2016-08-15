@@ -155,7 +155,7 @@
   @end
   @if context.hasRequestField(method)
 
-    {@requestBodyName(method)} := {@context.getApi.getName}.{@context.getRequestField(method).getTypeUrl}{
+    {@requestBodyName()} := {@context.getApi.getName}.{@context.getRequestField(method).getTypeUrl}{
       @if context.isPatch(method)
         // {@TODO()} Add desired fields of the request body to be changed.
       @else
@@ -170,9 +170,9 @@
   @let params = context.getFlatMethodParams(method)
     @if context.hasRequestField(method)
       @if params
-        {@argumentList(params)}, &{@requestBodyName(method)}
+        {@argumentList(params)}, &{@requestBodyName()}
       @else
-        &{@requestBodyName(method)}
+        &{@requestBodyName()}
       @end
     @else
       {@argumentList(params)}
@@ -194,8 +194,8 @@
   req
 @end
 
-@private requestBodyName(method)
-  {@context.objectTypeName(context.getRequestField(method))}Body
+@private requestBodyName()
+  rb
 @end
 
 @private responseName()

@@ -14,6 +14,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -25,31 +26,32 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudbilling.New(hc)
+  cloudbillingService, err := cloudbilling.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // The resource name of the billing account to retrieve. For example,
   // `billingAccounts/012345-567890-ABCDEF`.
-  name := "billingAccounts/{MY-BILLINGACCOUNT}" // TODO: Update placeholder value(s).
+  name := "billingAccounts/{MY-BILLINGACCOUNT}"
 
-  resp, err := s.BillingAccounts.Get(name).Context(ctx).Do()
+  resp, err := cloudbillingService.BillingAccounts.Get(name).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -66,6 +68,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -77,27 +80,27 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudbilling.New(hc)
+  cloudbillingService, err := cloudbilling.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  call := s.BillingAccounts.List()
-  if err := call.Pages(ctx, func(page *cloudbilling.ListBillingAccountsResponse) error {
+
+  req := cloudbillingService.BillingAccounts.List()
+  if err := req.Pages(ctx, func(page *cloudbilling.ListBillingAccountsResponse) error {
     for _, billingAccount := range page.BillingAccounts {
-      // TODO: Use billingAccount
-      log.Printf("%#v\n", billingAccount)
+      // TODO: Change code below to process each `billingAccount` resource:
+      fmt.Printf("%#v\n", billingAccount)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -117,6 +120,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -128,31 +132,32 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudbilling.New(hc)
+  cloudbillingService, err := cloudbilling.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // The resource name of the billing account associated with the projects that you want to list. For
   // example, `billingAccounts/012345-567890-ABCDEF`.
-  name := "billingAccounts/{MY-BILLINGACCOUNT}" // TODO: Update placeholder value(s).
+  name := "billingAccounts/{MY-BILLINGACCOUNT}"
 
-  call := s.BillingAccounts.Projects.List(name)
-  if err := call.Pages(ctx, func(page *cloudbilling.ListProjectBillingInfoResponse) error {
+  req := cloudbillingService.BillingAccounts.Projects.List(name)
+  if err := req.Pages(ctx, func(page *cloudbilling.ListProjectBillingInfoResponse) error {
     for _, projectBillingInfo := range page.ProjectBillingInfo {
-      // TODO: Use projectBillingInfo
-      log.Printf("%#v\n", projectBillingInfo)
+      // TODO: Change code below to process each `projectBillingInfo` resource:
+      fmt.Printf("%#v\n", projectBillingInfo)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -172,6 +177,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -183,31 +189,32 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudbilling.New(hc)
+  cloudbillingService, err := cloudbilling.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `GetBillingInfo` call:
 
   // The resource name of the project for which billing information is retrieved. For example,
   // `projects/tokyo-rain-123`.
-  name := "projects/{MY-PROJECT}" // TODO: Update placeholder value(s).
+  name := "projects/{MY-PROJECT}"
 
-  resp, err := s.Projects.GetBillingInfo(name).Context(ctx).Do()
+  resp, err := cloudbillingService.Projects.GetBillingInfo(name).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -224,6 +231,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -235,33 +243,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, cloudbilling.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := cloudbilling.New(hc)
+  cloudbillingService, err := cloudbilling.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `UpdateBillingInfo` call:
 
   // The resource name of the project associated with the billing information that you want to update.
   // For example, `projects/tokyo-rain-123`.
-  name := "projects/{MY-PROJECT}" // TODO: Update placeholder value(s).
+  name := "projects/{MY-PROJECT}"
 
-  resource := &cloudbilling.ProjectBillingInfo{
-    // TODO: Add the desired fields.
+  rb := cloudbilling.ProjectBillingInfo{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Projects.UpdateBillingInfo(name, resource).Context(ctx).Do()
+  resp, err := cloudbillingService.Projects.UpdateBillingInfo(name, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }

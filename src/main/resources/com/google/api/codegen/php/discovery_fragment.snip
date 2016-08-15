@@ -85,11 +85,11 @@
   @end
   @if context.hasRequestField(method)
 
-    ${@requestBodyName(method)} = new {@context.getRequestClassName(method)}($client);
+    ${@requestBodyName()} = new {@context.getRequestClassName(method)}($client);
     @if context.isPatch(method)
-      // {@TODO()} Assign values to desired properties of the `${@requestBodyName()}` object to be changed.
+      // {@TODO()} Assign values to desired properties of the `{@requestBodyName()}` object to be changed.
     @else
-      // {@TODO()} Assign values to desired properties of the `${@requestBodyName()}` object.
+      // {@TODO()} Assign values to desired properties of the `{@requestBodyName()}` object.
     @end
 
 
@@ -132,7 +132,7 @@
   @else
     ${@responseName()} = {@methodCall(method)};
 
-    // {@TODO()} Change code below to process the `${@responseName()}` object:
+    // {@TODO()} Change code below to process the `{@responseName()}` object:
     {@print(responseName())}
   @end
 @end
@@ -162,9 +162,9 @@
   @let params = context.getFlatMethodParams(method)
     @if context.hasRequestField(method)
       @if params
-        {@argumentList(params)}, ${@requestBodyName(method)}
+        {@argumentList(params)}, ${@requestBodyName()}
       @else
-        ${@requestBodyName(method)}
+        ${@requestBodyName()}
       @end
     @else
       {@argumentList(params)}

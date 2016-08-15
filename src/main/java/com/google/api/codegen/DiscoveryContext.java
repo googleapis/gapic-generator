@@ -312,7 +312,7 @@ public abstract class DiscoveryContext extends CodegenContext {
     if (Strings.isNullOrEmpty(sample)) {
       return "";
     }
-    return "e.g., " + sample;
+    return "ex: " + sample;
   }
 
   /**

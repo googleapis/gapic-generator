@@ -17,9 +17,8 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -28,20 +27,25 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Container($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `create` method:
+
 // The Google Developers Console [project ID or project number]
-// (https://developers.google.com/console/help/new/#projectnumber).
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+// (https://support.google.com/cloud/answer/6158840).
+$projectId = '{MY-PROJECT-ID}';
 
 // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
 // resides.
-$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
+$zone = '{MY-ZONE}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Container_CreateClusterRequest($client);
 
-$response = $service->projects_zones_clusters->create($projectId, $zone, $postBody);
+$requestBody = new Google_Service_Container_CreateClusterRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->projects_zones_clusters->create($projectId, $zone, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -61,9 +65,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -72,20 +75,24 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Container($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // The Google Developers Console [project ID or project number]
-// (https://developers.google.com/console/help/new/#projectnumber).
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+// (https://support.google.com/cloud/answer/6158840).
+$projectId = '{MY-PROJECT-ID}';
 
 // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
 // resides.
-$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
+$zone = '{MY-ZONE}';
 
 // The name of the cluster to delete.
-$clusterId = '{MY-CLUSTER-ID}'; // TODO: Update placeholder value(s).
+$clusterId = '{MY-CLUSTER-ID}';
+
 
 $response = $service->projects_zones_clusters->delete($projectId, $zone, $clusterId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -105,9 +112,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -116,20 +122,24 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Container($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // The Google Developers Console [project ID or project number]
-// (https://developers.google.com/console/help/new/#projectnumber).
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+// (https://support.google.com/cloud/answer/6158840).
+$projectId = '{MY-PROJECT-ID}';
 
 // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
 // resides.
-$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
+$zone = '{MY-ZONE}';
 
 // The name of the cluster to retrieve.
-$clusterId = '{MY-CLUSTER-ID}'; // TODO: Update placeholder value(s).
+$clusterId = '{MY-CLUSTER-ID}';
+
 
 $response = $service->projects_zones_clusters->get($projectId, $zone, $clusterId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -149,9 +159,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -160,17 +169,21 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Container($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listProjectsZonesClusters` method:
+
 // The Google Developers Console [project ID or project number]
-// (https://developers.google.com/console/help/new/#projectnumber).
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+// (https://support.google.com/cloud/answer/6158840).
+$projectId = '{MY-PROJECT-ID}';
 
 // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
 // resides, or "-" for all zones.
-$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
+$zone = '{MY-ZONE}';
+
 
 $response = $service->projects_zones_clusters->listProjectsZonesClusters($projectId, $zone);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -190,9 +203,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -201,23 +213,28 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Container($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `create` method:
+
 // The Google Developers Console [project ID or project number]
 // (https://developers.google.com/console/help/new/#projectnumber).
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
 
 // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
 // resides.
-$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
+$zone = '{MY-ZONE}';
 
-// The name of the cluster to upgrade.
-$clusterId = '{MY-CLUSTER-ID}'; // TODO: Update placeholder value(s).
+// The name of the cluster.
+$clusterId = '{MY-CLUSTER-ID}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Container_UpdateClusterRequest($client);
 
-$response = $service->projects_zones_clusters->update($projectId, $zone, $clusterId, $postBody);
+$requestBody = new Google_Service_Container_CreateNodePoolRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->projects_zones_clusters_nodePools->create($projectId, $zone, $clusterId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -237,9 +254,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -248,17 +264,219 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Container($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // The Google Developers Console [project ID or project number]
 // (https://developers.google.com/console/help/new/#projectnumber).
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+$projectId = '{MY-PROJECT-ID}';
+
+// The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+// resides.
+$zone = '{MY-ZONE}';
+
+// The name of the cluster.
+$clusterId = '{MY-CLUSTER-ID}';
+
+// The name of the node pool to delete.
+$nodePoolId = '{MY-NODE-POOL-ID}';
+
+
+$response = $service->projects_zones_clusters_nodePools->delete($projectId, $zone, $clusterId, $nodePoolId);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Container Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/container
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+$client = new Google_Client();
+$client->setApplicationName('Google Cloud Platform Sample');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Container($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
+// The Google Developers Console [project ID or project number]
+// (https://developers.google.com/console/help/new/#projectnumber).
+$projectId = '{MY-PROJECT-ID}';
+
+// The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+// resides.
+$zone = '{MY-ZONE}';
+
+// The name of the cluster.
+$clusterId = '{MY-CLUSTER-ID}';
+
+// The name of the node pool.
+$nodePoolId = '{MY-NODE-POOL-ID}';
+
+
+$response = $service->projects_zones_clusters_nodePools->get($projectId, $zone, $clusterId, $nodePoolId);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Container Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/container
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+$client = new Google_Client();
+$client->setApplicationName('Google Cloud Platform Sample');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Container($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `listProjectsZonesClustersNodePools` method:
+
+// The Google Developers Console [project ID or project number]
+// (https://developers.google.com/console/help/new/#projectnumber).
+$projectId = '{MY-PROJECT-ID}';
+
+// The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+// resides.
+$zone = '{MY-ZONE}';
+
+// The name of the cluster.
+$clusterId = '{MY-CLUSTER-ID}';
+
+
+$response = $service->projects_zones_clusters_nodePools->listProjectsZonesClustersNodePools($projectId, $zone, $clusterId);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Container Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/container
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+$client = new Google_Client();
+$client->setApplicationName('Google Cloud Platform Sample');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Container($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
+
+// The Google Developers Console [project ID or project number]
+// (https://support.google.com/cloud/answer/6158840).
+$projectId = '{MY-PROJECT-ID}';
+
+// The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
+// resides.
+$zone = '{MY-ZONE}';
+
+// The name of the cluster to upgrade.
+$clusterId = '{MY-CLUSTER-ID}';
+
+
+$requestBody = new Google_Service_Container_UpdateClusterRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
+
+
+$response = $service->projects_zones_clusters->update($projectId, $zone, $clusterId, $requestBody);
+
+// TODO: Change code below to process the `response` object:
+echo '<pre>', var_export($response, true), '</pre>', "\n";
+<?php
+/*
+ * BEFORE RUNNING:
+ * ---------------
+ * 1. If not already done, enable the Google Container Engine API
+ *    and check the quota for your project at
+ *    https://console.developers.google.com/apis/api/container
+ * 2. This sample uses Application Default Credentials for authentication.
+ *    If not already done, install the gcloud CLI from
+ *    https://cloud.google.com/sdk/ and run
+ *    `gcloud beta auth application-default login`
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
+ */
+
+// Autoload Composer.
+require_once __DIR__ . '/vendor/autoload.php';
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+$client = new Google_Client();
+$client->setApplicationName('Google Cloud Platform Sample');
+$client->useApplicationDefaultCredentials();
+$client->addScope('https://www.googleapis.com/auth/cloud-platform');
+
+$service = new Google_Service_Container($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `getServerconfig` method:
+
+// The Google Developers Console [project ID or project number]
+// (https://support.google.com/cloud/answer/6158840).
+$projectId = '{MY-PROJECT-ID}';
 
 // The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
-// for, or "-" for all zones.
-$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
+// for.
+$zone = '{MY-ZONE}';
+
 
 $response = $service->projects_zones->getServerconfig($projectId, $zone);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -278,9 +496,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -289,20 +506,24 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Container($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // The Google Developers Console [project ID or project number]
-// (https://developers.google.com/console/help/new/#projectnumber).
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+// (https://support.google.com/cloud/answer/6158840).
+$projectId = '{MY-PROJECT-ID}';
 
 // The name of the Google Compute Engine [zone](/compute/docs/zones#available) in which the cluster
 // resides.
-$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
+$zone = '{MY-ZONE}';
 
 // The server-assigned `name` of the operation.
-$operationId = '{MY-OPERATION-ID}'; // TODO: Update placeholder value(s).
+$operationId = '{MY-OPERATION-ID}';
+
 
 $response = $service->projects_zones_operations->get($projectId, $zone, $operationId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -322,9 +543,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -333,15 +553,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Container($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listProjectsZonesOperations` method:
+
 // The Google Developers Console [project ID or project number]
-// (https://developers.google.com/console/help/new/#projectnumber).
-$projectId = '{MY-PROJECT-ID}'; // TODO: Update placeholder value(s).
+// (https://support.google.com/cloud/answer/6158840).
+$projectId = '{MY-PROJECT-ID}';
 
 // The name of the Google Compute Engine [zone](/compute/docs/zones#available) to return operations
-// for, or "-" for all zones.
-$zone = '{MY-ZONE}'; // TODO: Update placeholder value(s).
+// for, or `-` for all zones.
+$zone = '{MY-ZONE}';
+
 
 $response = $service->projects_zones_operations->listProjectsZonesOperations($projectId, $zone);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";

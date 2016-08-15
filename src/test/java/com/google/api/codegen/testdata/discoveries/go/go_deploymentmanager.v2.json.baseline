@@ -14,6 +14,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -25,37 +26,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := deploymentmanager.New(hc)
+  deploymentmanagerService, err := deploymentmanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `CancelPreview` call:
 
   // The project ID for this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}" // TODO: Update placeholder value(s).
+  deployment := "{MY-DEPLOYMENT}"
 
-  resource := &deploymentmanager.DeploymentsCancelPreviewRequest{
-    // TODO: Add the desired fields.
+  rb := deploymentmanager.DeploymentsCancelPreviewRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Deployments.CancelPreview(project, deployment, resource).Context(ctx).Do()
+  resp, err := deploymentmanagerService.Deployments.CancelPreview(project, deployment, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -72,6 +74,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -83,33 +86,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := deploymentmanager.New(hc)
+  deploymentmanagerService, err := deploymentmanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` call:
 
   // The project ID for this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}" // TODO: Update placeholder value(s).
+  deployment := "{MY-DEPLOYMENT}"
 
-  resp, err := s.Deployments.Delete(project, deployment).Context(ctx).Do()
+  resp, err := deploymentmanagerService.Deployments.Delete(project, deployment).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -126,6 +130,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -137,33 +142,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := deploymentmanager.New(hc)
+  deploymentmanagerService, err := deploymentmanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // The project ID for this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}" // TODO: Update placeholder value(s).
+  deployment := "{MY-DEPLOYMENT}"
 
-  resp, err := s.Deployments.Get(project, deployment).Context(ctx).Do()
+  resp, err := deploymentmanagerService.Deployments.Get(project, deployment).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -180,6 +186,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -191,34 +198,35 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := deploymentmanager.New(hc)
+  deploymentmanagerService, err := deploymentmanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Insert` call:
 
   // The project ID for this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
-  resource := &deploymentmanager.Deployment{
-    // TODO: Add the desired fields.
+  rb := deploymentmanager.Deployment{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Deployments.Insert(project, resource).Context(ctx).Do()
+  resp, err := deploymentmanagerService.Deployments.Insert(project, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -235,6 +243,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -246,30 +255,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := deploymentmanager.New(hc)
+  deploymentmanagerService, err := deploymentmanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // The project ID for this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
-  call := s.Deployments.List(project)
-  if err := call.Pages(ctx, func(page *deploymentmanager.DeploymentsListResponse) error {
+  req := deploymentmanagerService.Deployments.List(project)
+  if err := req.Pages(ctx, func(page *deploymentmanager.DeploymentsListResponse) error {
     for _, deployment := range page.Deployments {
-      // TODO: Use deployment
-      log.Printf("%#v\n", deployment)
+      // TODO: Change code below to process each `deployment` resource:
+      fmt.Printf("%#v\n", deployment)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -289,6 +299,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -300,37 +311,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := deploymentmanager.New(hc)
+  deploymentmanagerService, err := deploymentmanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Patch` call:
 
   // The project ID for this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}" // TODO: Update placeholder value(s).
+  deployment := "{MY-DEPLOYMENT}"
 
-  resource := &deploymentmanager.Deployment{
-    // TODO: Add the desired fields to be changed.
+  rb := deploymentmanager.Deployment{
+    // TODO: Add desired fields of the request body to be changed.
   }
 
-  resp, err := s.Deployments.Patch(project, deployment, resource).Context(ctx).Do()
+  resp, err := deploymentmanagerService.Deployments.Patch(project, deployment, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -347,6 +359,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -358,37 +371,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := deploymentmanager.New(hc)
+  deploymentmanagerService, err := deploymentmanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Stop` call:
 
   // The project ID for this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}" // TODO: Update placeholder value(s).
+  deployment := "{MY-DEPLOYMENT}"
 
-  resource := &deploymentmanager.DeploymentsStopRequest{
-    // TODO: Add the desired fields.
+  rb := deploymentmanager.DeploymentsStopRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Deployments.Stop(project, deployment, resource).Context(ctx).Do()
+  resp, err := deploymentmanagerService.Deployments.Stop(project, deployment, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -405,6 +419,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -416,37 +431,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := deploymentmanager.New(hc)
+  deploymentmanagerService, err := deploymentmanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` call:
 
   // The project ID for this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}" // TODO: Update placeholder value(s).
+  deployment := "{MY-DEPLOYMENT}"
 
-  resource := &deploymentmanager.Deployment{
-    // TODO: Add the desired fields.
+  rb := deploymentmanager.Deployment{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Deployments.Update(project, deployment, resource).Context(ctx).Do()
+  resp, err := deploymentmanagerService.Deployments.Update(project, deployment, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -463,6 +479,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -474,36 +491,37 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := deploymentmanager.New(hc)
+  deploymentmanagerService, err := deploymentmanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // The project ID for this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}" // TODO: Update placeholder value(s).
+  deployment := "{MY-DEPLOYMENT}"
 
   // The name of the manifest for this request.
-  manifest := "{MY-MANIFEST}" // TODO: Update placeholder value(s).
+  manifest := "{MY-MANIFEST}"
 
-  resp, err := s.Manifests.Get(project, deployment, manifest).Context(ctx).Do()
+  resp, err := deploymentmanagerService.Manifests.Get(project, deployment, manifest).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -520,6 +538,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -531,33 +550,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := deploymentmanager.New(hc)
+  deploymentmanagerService, err := deploymentmanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // The project ID for this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}" // TODO: Update placeholder value(s).
+  deployment := "{MY-DEPLOYMENT}"
 
-  call := s.Manifests.List(project, deployment)
-  if err := call.Pages(ctx, func(page *deploymentmanager.ManifestsListResponse) error {
+  req := deploymentmanagerService.Manifests.List(project, deployment)
+  if err := req.Pages(ctx, func(page *deploymentmanager.ManifestsListResponse) error {
     for _, manifest := range page.Manifests {
-      // TODO: Use manifest
-      log.Printf("%#v\n", manifest)
+      // TODO: Change code below to process each `manifest` resource:
+      fmt.Printf("%#v\n", manifest)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -577,6 +597,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -588,33 +609,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := deploymentmanager.New(hc)
+  deploymentmanagerService, err := deploymentmanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // The project ID for this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // The name of the operation for this request.
-  operation := "{MY-OPERATION}" // TODO: Update placeholder value(s).
+  operation := "{MY-OPERATION}"
 
-  resp, err := s.Operations.Get(project, operation).Context(ctx).Do()
+  resp, err := deploymentmanagerService.Operations.Get(project, operation).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -631,6 +653,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -642,30 +665,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := deploymentmanager.New(hc)
+  deploymentmanagerService, err := deploymentmanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // The project ID for this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
-  call := s.Operations.List(project)
-  if err := call.Pages(ctx, func(page *deploymentmanager.OperationsListResponse) error {
+  req := deploymentmanagerService.Operations.List(project)
+  if err := req.Pages(ctx, func(page *deploymentmanager.OperationsListResponse) error {
     for _, operation := range page.Operations {
-      // TODO: Use operation
-      log.Printf("%#v\n", operation)
+      // TODO: Change code below to process each `operation` resource:
+      fmt.Printf("%#v\n", operation)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -685,6 +709,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -696,36 +721,37 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := deploymentmanager.New(hc)
+  deploymentmanagerService, err := deploymentmanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // The project ID for this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}" // TODO: Update placeholder value(s).
+  deployment := "{MY-DEPLOYMENT}"
 
   // The name of the resource for this request.
-  resource := "{MY-RESOURCE}" // TODO: Update placeholder value(s).
+  resource := "{MY-RESOURCE}"
 
-  resp, err := s.Resources.Get(project, deployment, resource).Context(ctx).Do()
+  resp, err := deploymentmanagerService.Resources.Get(project, deployment, resource).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -742,6 +768,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -753,33 +780,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := deploymentmanager.New(hc)
+  deploymentmanagerService, err := deploymentmanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // The project ID for this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // The name of the deployment for this request.
-  deployment := "{MY-DEPLOYMENT}" // TODO: Update placeholder value(s).
+  deployment := "{MY-DEPLOYMENT}"
 
-  call := s.Resources.List(project, deployment)
-  if err := call.Pages(ctx, func(page *deploymentmanager.ResourcesListResponse) error {
+  req := deploymentmanagerService.Resources.List(project, deployment)
+  if err := req.Pages(ctx, func(page *deploymentmanager.ResourcesListResponse) error {
     for _, resource := range page.Resources {
-      // TODO: Use resource
-      log.Printf("%#v\n", resource)
+      // TODO: Change code below to process each `resource` resource:
+      fmt.Printf("%#v\n", resource)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -799,6 +827,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -810,30 +839,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, deploymentmanager.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := deploymentmanager.New(hc)
+  deploymentmanagerService, err := deploymentmanager.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // The project ID for this request.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
-  call := s.Types.List(project)
-  if err := call.Pages(ctx, func(page *deploymentmanager.TypesListResponse) error {
+  req := deploymentmanagerService.Types.List(project)
+  if err := req.Pages(ctx, func(page *deploymentmanager.TypesListResponse) error {
     for _, type := range page.Types {
-      // TODO: Use type
-      log.Printf("%#v\n", type)
+      // TODO: Change code below to process each `type` resource:
+      fmt.Printf("%#v\n", type)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }

@@ -11,12 +11,10 @@
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dns = google.dns('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -29,14 +27,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `create` method:
+
     // Identifies the project addressed by this request.
-    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+    project: "{MY-PROJECT}",
 
     // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    managedZone: "{MY-MANAGED-ZONE}", // TODO: Update placeholder value(s).
+    managedZone: "{MY-MANAGED-ZONE}",
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -48,7 +50,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -64,12 +66,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dns = google.dns('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -82,14 +82,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
     // Identifies the project addressed by this request.
-    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+    project: "{MY-PROJECT}",
 
     // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    managedZone: "{MY-MANAGED-ZONE}", // TODO: Update placeholder value(s).
+    managedZone: "{MY-MANAGED-ZONE}",
 
     // The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
-    changeId: "{MY-CHANGE-ID}", // TODO: Update placeholder value(s).
+    changeId: "{MY-CHANGE-ID}",
+
 
     auth: authClient
   };
@@ -100,7 +104,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -116,12 +120,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dns = google.dns('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -134,16 +136,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
     // Identifies the project addressed by this request.
-    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+    project: "{MY-PROJECT}",
 
     // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    managedZone: "{MY-MANAGED-ZONE}", // TODO: Update placeholder value(s).
+    managedZone: "{MY-MANAGED-ZONE}",
+
 
     auth: authClient
   };
 
-  dns.changes.list(request, function handlePage(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -151,11 +157,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     var changesPage = response['changes'];
     if (!changesPage) {
-      console.log('{}');
       return;
     }
     for (var i = 0; i < changesPage.length; i++) {
-      // TODO: Use changesPage
+      // TODO: Change code below to process each resource in `changesPage`:
       console.log(JSON.stringify(changesPage[i], null, 2));
     }
 
@@ -163,7 +168,9 @@ google.auth.getApplicationDefault(function(err, authClient) {
       request.pageToken = response.nextPageToken;
       dns.changes.list(request, handlePage);
     }
-  });
+  };
+
+  dns.changes.list(request, handlePage);
 });
 // BEFORE RUNNING:
 // ---------------
@@ -177,12 +184,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dns = google.dns('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -195,11 +200,15 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `create` method:
+
     // Identifies the project addressed by this request.
-    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+    project: "{MY-PROJECT}",
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -211,7 +220,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -227,12 +236,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dns = google.dns('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -245,11 +252,15 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
     // Identifies the project addressed by this request.
-    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+    project: "{MY-PROJECT}",
 
     // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    managedZone: "{MY-MANAGED-ZONE}", // TODO: Update placeholder value(s).
+    managedZone: "{MY-MANAGED-ZONE}",
+
 
     auth: authClient
   };
@@ -272,12 +283,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dns = google.dns('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -290,11 +299,15 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
     // Identifies the project addressed by this request.
-    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+    project: "{MY-PROJECT}",
 
     // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    managedZone: "{MY-MANAGED-ZONE}", // TODO: Update placeholder value(s).
+    managedZone: "{MY-MANAGED-ZONE}",
+
 
     auth: authClient
   };
@@ -305,7 +318,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -321,12 +334,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dns = google.dns('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -339,13 +350,17 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
     // Identifies the project addressed by this request.
-    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+    project: "{MY-PROJECT}",
+
 
     auth: authClient
   };
 
-  dns.managedZones.list(request, function handlePage(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -353,11 +368,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     var managedZonesPage = response['managedZones'];
     if (!managedZonesPage) {
-      console.log('{}');
       return;
     }
     for (var i = 0; i < managedZonesPage.length; i++) {
-      // TODO: Use managedZonesPage
+      // TODO: Change code below to process each resource in `managedZonesPage`:
       console.log(JSON.stringify(managedZonesPage[i], null, 2));
     }
 
@@ -365,7 +379,9 @@ google.auth.getApplicationDefault(function(err, authClient) {
       request.pageToken = response.nextPageToken;
       dns.managedZones.list(request, handlePage);
     }
-  });
+  };
+
+  dns.managedZones.list(request, handlePage);
 });
 // BEFORE RUNNING:
 // ---------------
@@ -379,12 +395,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dns = google.dns('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -397,8 +411,12 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
     // Identifies the project addressed by this request.
-    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+    project: "{MY-PROJECT}",
+
 
     auth: authClient
   };
@@ -409,7 +427,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -425,12 +443,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dns = google.dns('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -443,16 +459,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
     // Identifies the project addressed by this request.
-    project: "{MY-PROJECT}", // TODO: Update placeholder value(s).
+    project: "{MY-PROJECT}",
 
     // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-    managedZone: "{MY-MANAGED-ZONE}", // TODO: Update placeholder value(s).
+    managedZone: "{MY-MANAGED-ZONE}",
+
 
     auth: authClient
   };
 
-  dns.resourceRecordSets.list(request, function handlePage(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -460,11 +480,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     var rrsetsPage = response['rrsets'];
     if (!rrsetsPage) {
-      console.log('{}');
       return;
     }
     for (var i = 0; i < rrsetsPage.length; i++) {
-      // TODO: Use rrsetsPage
+      // TODO: Change code below to process each resource in `rrsetsPage`:
       console.log(JSON.stringify(rrsetsPage[i], null, 2));
     }
 
@@ -472,5 +491,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       request.pageToken = response.nextPageToken;
       dns.resourceRecordSets.list(request, handlePage);
     }
-  });
+  };
+
+  dns.resourceRecordSets.list(request, handlePage);
 });

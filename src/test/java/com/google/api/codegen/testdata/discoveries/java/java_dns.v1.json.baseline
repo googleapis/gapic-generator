@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -11,7 +11,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -29,7 +29,6 @@ import com.google.api.services.dns.model.Change;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DnsExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -55,12 +54,19 @@ public class DnsExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -68,6 +74,7 @@ public class DnsExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dns.Builder(httpTransport, jsonFactory, credential)
@@ -84,29 +91,40 @@ public class DnsExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
 
-    // * Identifies the project addressed by this request.
+    // TODO: Change placeholders below to desired parameter values for the `create` method:
+
+    // Identifies the project addressed by this request.
     String project = "{MY-PROJECT}";
 
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
     String managedZone = "{MY-MANAGED-ZONE}";
 
-    Change content = new Change();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Dns.Changes.Create request = dnsService.changes().create(project, managedZone, content);
+    Change requestBody = new Change();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Dns.Changes.Create request = dnsService.changes().create(project, managedZone, requestBody);
     Change response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -118,7 +136,7 @@ public class DnsExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -136,7 +154,6 @@ import com.google.api.services.dns.model.Change;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DnsExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -162,12 +179,19 @@ public class DnsExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -175,6 +199,7 @@ public class DnsExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dns.Builder(httpTransport, jsonFactory, credential)
@@ -191,29 +216,39 @@ public class DnsExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * Identifies the project addressed by this request.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // Identifies the project addressed by this request.
     String project = "{MY-PROJECT}";
 
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
     String managedZone = "{MY-MANAGED-ZONE}";
 
-    // * The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
+    // The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
     String changeId = "{MY-CHANGE-ID}";
+
 
     Dns.Changes.Get request = dnsService.changes().get(project, managedZone, changeId);
     Change response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -225,7 +260,7 @@ public class DnsExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -245,7 +280,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-
 public class DnsExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
@@ -259,33 +293,30 @@ public class DnsExample {
     List request = service.changes().list(project, managedZone);
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * Identifies the project addressed by this request.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // Identifies the project addressed by this request.
     String project = "{MY-PROJECT}";
 
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
     String managedZone = "{MY-MANAGED-ZONE}";
+
 
     Dns.Changes.List request = dnsService.changes().list(project, managedZone);
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
@@ -298,11 +329,16 @@ public class DnsExample {
 =======
 
       for (Change change : response.getChanges()) {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
         // TODO: Add code here to process each 'change' resource
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
       }
       for (Change item : response.getChanges()) {
         System.out.println(item);
+=======
+        // TODO: Change code below to process each `change` resource:
+        System.out.println(change);
+>>>>>>> Update discovery sample gen across languages.
       }
     } while (response.getNextPageToken() != null);
   }
@@ -336,7 +372,7 @@ public class DnsExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -348,7 +384,7 @@ public class DnsExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -366,7 +402,6 @@ import com.google.api.services.dns.model.ManagedZone;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DnsExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -389,12 +424,19 @@ public class DnsExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -402,6 +444,7 @@ public class DnsExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dns.Builder(httpTransport, jsonFactory, credential)
@@ -418,26 +461,37 @@ public class DnsExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
 
-    // * Identifies the project addressed by this request.
+    // TODO: Change placeholders below to desired parameter values for the `create` method:
+
+    // Identifies the project addressed by this request.
     String project = "{MY-PROJECT}";
 
-    ManagedZone content = new ManagedZone();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Dns.ManagedZones.Create request = dnsService.managedZones().create(project, content);
+    ManagedZone requestBody = new ManagedZone();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Dns.ManagedZones.Create request = dnsService.managedZones().create(project, requestBody);
     ManagedZone response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -449,7 +503,7 @@ public class DnsExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -466,7 +520,6 @@ import com.google.api.services.dns.Dns.ManagedZones.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DnsExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -488,12 +541,19 @@ public class DnsExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -501,6 +561,7 @@ public class DnsExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dns.Builder(httpTransport, jsonFactory, credential)
@@ -508,19 +569,24 @@ public class DnsExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
 
-    // * Identifies the project addressed by this request.
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
+    // Identifies the project addressed by this request.
     String project = "{MY-PROJECT}";
 
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
     String managedZone = "{MY-MANAGED-ZONE}";
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
       new DnsExample().run();
@@ -529,9 +595,14 @@ public class DnsExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+
+    Dns.ManagedZones.Delete request = dnsService.managedZones().delete(project, managedZone);
+    request.execute();
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -543,7 +614,7 @@ public class DnsExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -561,7 +632,6 @@ import com.google.api.services.dns.model.ManagedZone;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DnsExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -584,12 +654,19 @@ public class DnsExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -597,6 +674,7 @@ public class DnsExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dns.Builder(httpTransport, jsonFactory, credential)
@@ -613,26 +691,36 @@ public class DnsExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * Identifies the project addressed by this request.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // Identifies the project addressed by this request.
     String project = "{MY-PROJECT}";
 
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
     String managedZone = "{MY-MANAGED-ZONE}";
+
 
     Dns.ManagedZones.Get request = dnsService.managedZones().get(project, managedZone);
     ManagedZone response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -644,7 +732,7 @@ public class DnsExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -663,7 +751,6 @@ import com.google.api.services.dns.model.ManagedZonesListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DnsExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -691,12 +778,19 @@ public class DnsExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -704,6 +798,7 @@ public class DnsExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dns.Builder(httpTransport, jsonFactory, credential)
@@ -711,14 +806,19 @@ public class DnsExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * Identifies the project addressed by this request.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // Identifies the project addressed by this request.
     String project = "{MY-PROJECT}";
+
 
     Dns.ManagedZones.List request = dnsService.managedZones().list(project);
     ManagedZonesListResponse response;
@@ -728,7 +828,8 @@ public class DnsExample {
         continue;
 
       for (ManagedZone managedZone : response.getManagedZones()) {
-        // TODO: Add code here to process each 'managedZone' resource
+        // TODO: Change code below to process each `managedZone` resource:
+        System.out.println(managedZone);
       }
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
@@ -742,7 +843,7 @@ public class DnsExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -754,7 +855,7 @@ public class DnsExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -772,7 +873,6 @@ import com.google.api.services.dns.model.Project;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DnsExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -792,12 +892,19 @@ public class DnsExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -805,6 +912,7 @@ public class DnsExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new Dns.Builder(httpTransport, jsonFactory, credential)
@@ -821,23 +929,33 @@ public class DnsExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * Identifies the project addressed by this request.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // Identifies the project addressed by this request.
     String project = "{MY-PROJECT}";
+
 
     Dns.Projects.Get request = dnsService.projects().get(project);
     Project response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud DNS API
@@ -849,7 +967,7 @@ public class DnsExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -869,7 +987,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-
 public class DnsExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
@@ -883,33 +1000,30 @@ public class DnsExample {
     List request = service.resourceRecordSets().list(project, managedZone);
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Dns dnsService = new Dns.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * Identifies the project addressed by this request.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // Identifies the project addressed by this request.
     String project = "{MY-PROJECT}";
 
-    // * Identifies the managed zone addressed by this request. Can be the managed zone name or id.
+    // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
     String managedZone = "{MY-MANAGED-ZONE}";
+
 
     Dns.ResourceRecordSets.List request = dnsService.resourceRecordSets().list(project, managedZone);
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
@@ -922,11 +1036,16 @@ public class DnsExample {
 =======
 
       for (ResourceRecordSet resourceRecordSet : response.getRrsets()) {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
         // TODO: Add code here to process each 'resourceRecordSet' resource
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
       }
       for (ResourceRecordSet item : response.getRrsets()) {
         System.out.println(item);
+=======
+        // TODO: Change code below to process each `resourceRecordSet` resource:
+        System.out.println(resourceRecordSet);
+>>>>>>> Update discovery sample gen across languages.
       }
     } while (response.getNextPageToken() != null);
   }

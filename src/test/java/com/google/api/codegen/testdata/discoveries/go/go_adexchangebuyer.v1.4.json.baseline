@@ -14,6 +14,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -25,30 +26,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // The account id
-  id := int64(0) // TODO: Update placeholder value(s).
+  id := int64(0)
 
-  resp, err := s.Accounts.Get(id).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Accounts.Get(id).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -65,6 +67,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -76,27 +79,27 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  resp, err := s.Accounts.List().Context(ctx).Do()
+
+  resp, err := adexchangebuyerService.Accounts.List().Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -113,6 +116,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -124,34 +128,35 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Patch` call:
 
   // The account id
-  id := int64(0) // TODO: Update placeholder value(s).
+  id := int64(0)
 
-  resource := &adexchangebuyer.Account{
-    // TODO: Add the desired fields to be changed.
+  rb := adexchangebuyer.Account{
+    // TODO: Add desired fields of the request body to be changed.
   }
 
-  resp, err := s.Accounts.Patch(id, resource).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Accounts.Patch(id, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -168,6 +173,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -179,34 +185,35 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` call:
 
   // The account id
-  id := int64(0) // TODO: Update placeholder value(s).
+  id := int64(0)
 
-  resource := &adexchangebuyer.Account{
-    // TODO: Add the desired fields.
+  rb := adexchangebuyer.Account{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Accounts.Update(id, resource).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Accounts.Update(id, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -223,6 +230,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -234,30 +242,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // The account id.
-  accountId := int64(0) // TODO: Update placeholder value(s).
+  accountId := int64(0)
 
-  resp, err := s.BillingInfo.Get(accountId).Context(ctx).Do()
+  resp, err := adexchangebuyerService.BillingInfo.Get(accountId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -274,6 +283,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -285,27 +295,27 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  resp, err := s.BillingInfo.List().Context(ctx).Do()
+
+  resp, err := adexchangebuyerService.BillingInfo.List().Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -322,6 +332,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -333,33 +344,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // The account id to get the budget information for.
-  accountId := int64(0) // TODO: Update placeholder value(s).
+  accountId := int64(0)
 
   // The billing id to get the budget information for.
-  billingId := int64(0) // TODO: Update placeholder value(s).
+  billingId := int64(0)
 
-  resp, err := s.Budget.Get(accountId, billingId).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Budget.Get(accountId, billingId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -376,6 +388,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -387,37 +400,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Patch` call:
 
   // The account id associated with the budget being updated.
-  accountId := int64(0) // TODO: Update placeholder value(s).
+  accountId := int64(0)
 
   // The billing id associated with the budget being updated.
-  billingId := int64(0) // TODO: Update placeholder value(s).
+  billingId := int64(0)
 
-  resource := &adexchangebuyer.Budget{
-    // TODO: Add the desired fields to be changed.
+  rb := adexchangebuyer.Budget{
+    // TODO: Add desired fields of the request body to be changed.
   }
 
-  resp, err := s.Budget.Patch(accountId, billingId, resource).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Budget.Patch(accountId, billingId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -434,6 +448,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -445,37 +460,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` call:
 
   // The account id associated with the budget being updated.
-  accountId := int64(0) // TODO: Update placeholder value(s).
+  accountId := int64(0)
 
   // The billing id associated with the budget being updated.
-  billingId := int64(0) // TODO: Update placeholder value(s).
+  billingId := int64(0)
 
-  resource := &adexchangebuyer.Budget{
-    // TODO: Add the desired fields.
+  rb := adexchangebuyer.Budget{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Budget.Update(accountId, billingId, resource).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Budget.Update(accountId, billingId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -492,6 +508,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -503,30 +520,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `AddDeal` call:
 
   // The id for the account that will serve this creative.
-  accountId := int64(0) // TODO: Update placeholder value(s).
+  accountId := int64(0)
 
   // The buyer-specific id for this creative.
-  buyerCreativeId := "{MY-BUYER-CREATIVE-ID}" // TODO: Update placeholder value(s).
+  buyerCreativeId := "{MY-BUYER-CREATIVE-ID}"
 
   // The id of the deal id to associate with this creative.
-  dealId := int64(0) // TODO: Update placeholder value(s).
+  dealId := int64(0)
 
-  if err := s.Creatives.AddDeal(accountId, buyerCreativeId, dealId).Context(ctx).Do(); err != nil {
+  if err := adexchangebuyerService.Creatives.AddDeal(accountId, buyerCreativeId, dealId).Context(ctx).Do(); err != nil {
     log.Fatal(err)
   }
 }
@@ -545,6 +563,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -556,33 +575,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // The id for the account that will serve this creative.
-  accountId := int64(0) // TODO: Update placeholder value(s).
+  accountId := int64(0)
 
   // The buyer-specific id for this creative.
-  buyerCreativeId := "{MY-BUYER-CREATIVE-ID}" // TODO: Update placeholder value(s).
+  buyerCreativeId := "{MY-BUYER-CREATIVE-ID}"
 
-  resp, err := s.Creatives.Get(accountId, buyerCreativeId).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Creatives.Get(accountId, buyerCreativeId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -599,6 +619,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -610,31 +631,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  resource := &adexchangebuyer.Creative{
-    // TODO: Add the desired fields.
+
+  rb := adexchangebuyer.Creative{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Creatives.Insert(resource).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Creatives.Insert(&rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -651,6 +672,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -662,27 +684,27 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  call := s.Creatives.List()
-  if err := call.Pages(ctx, func(page *adexchangebuyer.CreativesList) error {
+
+  req := adexchangebuyerService.Creatives.List()
+  if err := req.Pages(ctx, func(page *adexchangebuyer.CreativesList) error {
     for _, creative := range page.Items {
-      // TODO: Use creative
-      log.Printf("%#v\n", creative)
+      // TODO: Change code below to process each `creative` resource:
+      fmt.Printf("%#v\n", creative)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -702,6 +724,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -713,30 +736,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `RemoveDeal` call:
 
   // The id for the account that will serve this creative.
-  accountId := int64(0) // TODO: Update placeholder value(s).
+  accountId := int64(0)
 
   // The buyer-specific id for this creative.
-  buyerCreativeId := "{MY-BUYER-CREATIVE-ID}" // TODO: Update placeholder value(s).
+  buyerCreativeId := "{MY-BUYER-CREATIVE-ID}"
 
   // The id of the deal id to disassociate with this creative.
-  dealId := int64(0) // TODO: Update placeholder value(s).
+  dealId := int64(0)
 
-  if err := s.Creatives.RemoveDeal(accountId, buyerCreativeId, dealId).Context(ctx).Do(); err != nil {
+  if err := adexchangebuyerService.Creatives.RemoveDeal(accountId, buyerCreativeId, dealId).Context(ctx).Do(); err != nil {
     log.Fatal(err)
   }
 }
@@ -755,6 +779,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -766,34 +791,35 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` call:
 
   // The proposalId to delete deals from.
-  proposalId := "{MY-PROPOSAL-ID}" // TODO: Update placeholder value(s).
+  proposalId := "{MY-PROPOSAL-ID}"
 
-  resource := &adexchangebuyer.DeleteOrderDealsRequest{
-    // TODO: Add the desired fields.
+  rb := adexchangebuyer.DeleteOrderDealsRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Marketplacedeals.Delete(proposalId, resource).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Marketplacedeals.Delete(proposalId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -810,6 +836,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -821,34 +848,35 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Insert` call:
 
   // proposalId for which deals need to be added.
-  proposalId := "{MY-PROPOSAL-ID}" // TODO: Update placeholder value(s).
+  proposalId := "{MY-PROPOSAL-ID}"
 
-  resource := &adexchangebuyer.AddOrderDealsRequest{
-    // TODO: Add the desired fields.
+  rb := adexchangebuyer.AddOrderDealsRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Marketplacedeals.Insert(proposalId, resource).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Marketplacedeals.Insert(proposalId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -865,6 +893,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -876,31 +905,32 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // The proposalId to get deals for. To search across proposals specify order_id = '-' as part of the
-  // URL.
-  proposalId := "{MY-PROPOSAL-ID}" // TODO: Update placeholder value(s).
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
-  resp, err := s.Marketplacedeals.List(proposalId).Context(ctx).Do()
+  // The proposalId to get deals for. To search across all proposals specify order_id = '-' as part of
+  // the URL.
+  proposalId := "{MY-PROPOSAL-ID}"
+
+  resp, err := adexchangebuyerService.Marketplacedeals.List(proposalId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -917,6 +947,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -928,34 +959,35 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` call:
 
   // The proposalId to edit deals on.
-  proposalId := "{MY-PROPOSAL-ID}" // TODO: Update placeholder value(s).
+  proposalId := "{MY-PROPOSAL-ID}"
 
-  resource := &adexchangebuyer.EditAllOrderDealsRequest{
-    // TODO: Add the desired fields.
+  rb := adexchangebuyer.EditAllOrderDealsRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Marketplacedeals.Update(proposalId, resource).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Marketplacedeals.Update(proposalId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -972,6 +1004,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -983,34 +1016,35 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Insert` call:
 
   // The proposalId to add notes for.
-  proposalId := "{MY-PROPOSAL-ID}" // TODO: Update placeholder value(s).
+  proposalId := "{MY-PROPOSAL-ID}"
 
-  resource := &adexchangebuyer.AddOrderNotesRequest{
-    // TODO: Add the desired fields.
+  rb := adexchangebuyer.AddOrderNotesRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Marketplacenotes.Insert(proposalId, resource).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Marketplacenotes.Insert(proposalId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1027,6 +1061,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1038,30 +1073,32 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  // The proposalId to get notes for.
-  proposalId := "{MY-PROPOSAL-ID}" // TODO: Update placeholder value(s).
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
-  resp, err := s.Marketplacenotes.List(proposalId).Context(ctx).Do()
+  // The proposalId to get notes for. To search across all proposals specify order_id = '-' as part of
+  // the URL.
+  proposalId := "{MY-PROPOSAL-ID}"
+
+  resp, err := adexchangebuyerService.Marketplacenotes.List(proposalId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1078,6 +1115,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1089,28 +1127,29 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Updateproposal` call:
 
   // The private auction id to be updated.
-  privateAuctionId := "{MY-PRIVATE-AUCTION-ID}" // TODO: Update placeholder value(s).
+  privateAuctionId := "{MY-PRIVATE-AUCTION-ID}"
 
-  resource := &adexchangebuyer.UpdatePrivateAuctionProposalRequest{
-    // TODO: Add the desired fields.
+  rb := adexchangebuyer.UpdatePrivateAuctionProposalRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  if err := s.Marketplaceprivateauction.Updateproposal(privateAuctionId, resource).Context(ctx).Do(); err != nil {
+  if err := adexchangebuyerService.Marketplaceprivateauction.Updateproposal(privateAuctionId, &rb).Context(ctx).Do(); err != nil {
     log.Fatal(err)
   }
 }
@@ -1129,6 +1168,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1140,36 +1180,37 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // The account id to get the reports.
-  accountId := int64(0) // TODO: Update placeholder value(s).
+  accountId := int64(0)
 
   // The end time of the report in ISO 8601 timestamp format using UTC.
-  endDateTime := "{MY-END-DATE-TIME}" // TODO: Update placeholder value(s).
+  endDateTime := "{MY-END-DATE-TIME}"
 
   // The start time of the report in ISO 8601 timestamp format using UTC.
-  startDateTime := "{MY-START-DATE-TIME}" // TODO: Update placeholder value(s).
+  startDateTime := "{MY-START-DATE-TIME}"
 
-  resp, err := s.PerformanceReport.List(accountId, endDateTime, startDateTime).Context(ctx).Do()
+  resp, err := adexchangebuyerService.PerformanceReport.List(accountId, endDateTime, startDateTime).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1186,6 +1227,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1197,27 +1239,28 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` call:
 
   // The account id to delete the pretargeting config for.
-  accountId := int64(0) // TODO: Update placeholder value(s).
+  accountId := int64(0)
 
   // The specific id of the configuration to delete.
-  configId := int64(0) // TODO: Update placeholder value(s).
+  configId := int64(0)
 
-  if err := s.PretargetingConfig.Delete(accountId, configId).Context(ctx).Do(); err != nil {
+  if err := adexchangebuyerService.PretargetingConfig.Delete(accountId, configId).Context(ctx).Do(); err != nil {
     log.Fatal(err)
   }
 }
@@ -1236,6 +1279,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1247,33 +1291,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // The account id to get the pretargeting config for.
-  accountId := int64(0) // TODO: Update placeholder value(s).
+  accountId := int64(0)
 
   // The specific id of the configuration to retrieve.
-  configId := int64(0) // TODO: Update placeholder value(s).
+  configId := int64(0)
 
-  resp, err := s.PretargetingConfig.Get(accountId, configId).Context(ctx).Do()
+  resp, err := adexchangebuyerService.PretargetingConfig.Get(accountId, configId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1290,6 +1335,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1301,34 +1347,35 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Insert` call:
 
   // The account id to insert the pretargeting config for.
-  accountId := int64(0) // TODO: Update placeholder value(s).
+  accountId := int64(0)
 
-  resource := &adexchangebuyer.PretargetingConfig{
-    // TODO: Add the desired fields.
+  rb := adexchangebuyer.PretargetingConfig{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.PretargetingConfig.Insert(accountId, resource).Context(ctx).Do()
+  resp, err := adexchangebuyerService.PretargetingConfig.Insert(accountId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1345,6 +1392,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1356,30 +1404,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // The account id to get the pretargeting configs for.
-  accountId := int64(0) // TODO: Update placeholder value(s).
+  accountId := int64(0)
 
-  resp, err := s.PretargetingConfig.List(accountId).Context(ctx).Do()
+  resp, err := adexchangebuyerService.PretargetingConfig.List(accountId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1396,6 +1445,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1407,37 +1457,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Patch` call:
 
   // The account id to update the pretargeting config for.
-  accountId := int64(0) // TODO: Update placeholder value(s).
+  accountId := int64(0)
 
   // The specific id of the configuration to update.
-  configId := int64(0) // TODO: Update placeholder value(s).
+  configId := int64(0)
 
-  resource := &adexchangebuyer.PretargetingConfig{
-    // TODO: Add the desired fields to be changed.
+  rb := adexchangebuyer.PretargetingConfig{
+    // TODO: Add desired fields of the request body to be changed.
   }
 
-  resp, err := s.PretargetingConfig.Patch(accountId, configId, resource).Context(ctx).Do()
+  resp, err := adexchangebuyerService.PretargetingConfig.Patch(accountId, configId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1454,6 +1505,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1465,37 +1517,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` call:
 
   // The account id to update the pretargeting config for.
-  accountId := int64(0) // TODO: Update placeholder value(s).
+  accountId := int64(0)
 
   // The specific id of the configuration to update.
-  configId := int64(0) // TODO: Update placeholder value(s).
+  configId := int64(0)
 
-  resource := &adexchangebuyer.PretargetingConfig{
-    // TODO: Add the desired fields.
+  rb := adexchangebuyer.PretargetingConfig{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.PretargetingConfig.Update(accountId, configId, resource).Context(ctx).Do()
+  resp, err := adexchangebuyerService.PretargetingConfig.Update(accountId, configId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1512,6 +1565,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1523,30 +1577,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // The id for the product to get the head revision for.
-  productId := "{MY-PRODUCT-ID}" // TODO: Update placeholder value(s).
+  productId := "{MY-PRODUCT-ID}"
 
-  resp, err := s.Products.Get(productId).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Products.Get(productId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1563,6 +1618,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1574,27 +1630,27 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  resp, err := s.Products.Search().Context(ctx).Do()
+
+  resp, err := adexchangebuyerService.Products.Search().Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1611,6 +1667,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1622,30 +1679,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // Id of the proposal to retrieve.
-  proposalId := "{MY-PROPOSAL-ID}" // TODO: Update placeholder value(s).
+  proposalId := "{MY-PROPOSAL-ID}"
 
-  resp, err := s.Proposals.Get(proposalId).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Proposals.Get(proposalId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1662,6 +1720,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1673,31 +1732,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  resource := &adexchangebuyer.CreateOrdersRequest{
-    // TODO: Add the desired fields.
+
+  rb := adexchangebuyer.CreateOrdersRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Proposals.Insert(resource).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Proposals.Insert(&rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1714,6 +1773,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1725,42 +1785,44 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Patch` call:
 
   // The proposal id to update.
-  proposalId := "{MY-PROPOSAL-ID}" // TODO: Update placeholder value(s).
+  proposalId := "{MY-PROPOSAL-ID}"
 
   // The last known revision number to update. If the head revision in the marketplace database has since
   // changed, an error will be thrown. The caller should then fetch the latest proposal at head revision
   // and retry the update at that revision.
-  revisionNumber := int64(0) // TODO: Update placeholder value(s).
+  revisionNumber := int64(0)
 
-  // The proposed action to take on the proposal.
-  updateAction := "{MY-UPDATE-ACTION}" // TODO: Update placeholder value(s).
+  // The proposed action to take on the proposal. This field is required and it must be set when updating
+  // a proposal.
+  updateAction := "{MY-UPDATE-ACTION}"
 
-  resource := &adexchangebuyer.Proposal{
-    // TODO: Add the desired fields to be changed.
+  rb := adexchangebuyer.Proposal{
+    // TODO: Add desired fields of the request body to be changed.
   }
 
-  resp, err := s.Proposals.Patch(proposalId, revisionNumber, updateAction, resource).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Proposals.Patch(proposalId, revisionNumber, updateAction, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1777,6 +1839,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1788,27 +1851,27 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  resp, err := s.Proposals.Search().Context(ctx).Do()
+
+  resp, err := adexchangebuyerService.Proposals.Search().Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1825,6 +1888,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1836,24 +1900,25 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Setupcomplete` call:
 
   // The proposal id for which the setup is complete
-  proposalId := "{MY-PROPOSAL-ID}" // TODO: Update placeholder value(s).
+  proposalId := "{MY-PROPOSAL-ID}"
 
-  if err := s.Proposals.Setupcomplete(proposalId).Context(ctx).Do(); err != nil {
+  if err := adexchangebuyerService.Proposals.Setupcomplete(proposalId).Context(ctx).Do(); err != nil {
     log.Fatal(err)
   }
 }
@@ -1872,6 +1937,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1883,42 +1949,44 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` call:
 
   // The proposal id to update.
-  proposalId := "{MY-PROPOSAL-ID}" // TODO: Update placeholder value(s).
+  proposalId := "{MY-PROPOSAL-ID}"
 
   // The last known revision number to update. If the head revision in the marketplace database has since
   // changed, an error will be thrown. The caller should then fetch the latest proposal at head revision
   // and retry the update at that revision.
-  revisionNumber := int64(0) // TODO: Update placeholder value(s).
+  revisionNumber := int64(0)
 
-  // The proposed action to take on the proposal.
-  updateAction := "{MY-UPDATE-ACTION}" // TODO: Update placeholder value(s).
+  // The proposed action to take on the proposal. This field is required and it must be set when updating
+  // a proposal.
+  updateAction := "{MY-UPDATE-ACTION}"
 
-  resource := &adexchangebuyer.Proposal{
-    // TODO: Add the desired fields.
+  rb := adexchangebuyer.Proposal{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Proposals.Update(proposalId, revisionNumber, updateAction, resource).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Proposals.Update(proposalId, revisionNumber, updateAction, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -1935,6 +2003,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -1946,28 +2015,29 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
+  c, err := google.DefaultClient(ctx, adexchangebuyer.AdexchangeBuyerScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := adexchangebuyer.New(hc)
+  adexchangebuyerService, err := adexchangebuyer.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // The accountId of the publisher to get profiles for.
-  accountId := int64(0) // TODO: Update placeholder value(s).
+  accountId := int64(0)
 
-  resp, err := s.Pubprofiles.List(accountId).Context(ctx).Do()
+  resp, err := adexchangebuyerService.Pubprofiles.List(accountId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }

@@ -75,7 +75,7 @@
     @if context.hasRequestField(method)
 
       @let requestBodyType = context.lowerUnderscoreToUpperCamel(context.getRequestTypeName(method))
-        {@requestBodyName(method)} = \
+        {@requestBodyName()} = \
             Google::Apis::{@ApiName}{@ApiVersion}::{@requestBodyType}.new
         @if context.isPatch(method)
           @# {@TODO()} Assign values to desired members of the `{@requestBodyName()}` object to be changed.
@@ -137,9 +137,9 @@
   @let params = context.getFlatMethodParams(method)
     @if context.hasRequestField(method)
       @if params
-        {@argumentList(method, params)}, {@requestBodyName(method)}
+        {@argumentList(method, params)}, {@requestBodyName()}
       @else
-        {@requestBodyName(method)}
+        {@requestBodyName()}
       @end
     @else
       {@argumentList(method, params)}

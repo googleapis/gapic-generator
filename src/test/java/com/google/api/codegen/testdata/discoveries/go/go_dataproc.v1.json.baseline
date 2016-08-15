@@ -14,6 +14,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -25,37 +26,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dataproc.New(hc)
+  dataprocService, err := dataproc.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Create` call:
 
   // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  region := "{MY-REGION}" // TODO: Update placeholder value(s).
+  region := "{MY-REGION}"
 
-  resource := &dataproc.Cluster{
-    // TODO: Add the desired fields.
+  rb := dataproc.Cluster{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Projects.Regions.Clusters.Create(projectId, region, resource).Context(ctx).Do()
+  resp, err := dataprocService.Projects.Regions.Clusters.Create(projectId, region, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -72,6 +74,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -83,36 +86,37 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dataproc.New(hc)
+  dataprocService, err := dataproc.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` call:
 
   // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  region := "{MY-REGION}" // TODO: Update placeholder value(s).
+  region := "{MY-REGION}"
 
   // [Required] The cluster name.
-  clusterName := "{MY-CLUSTER-NAME}" // TODO: Update placeholder value(s).
+  clusterName := "{MY-CLUSTER-NAME}"
 
-  resp, err := s.Projects.Regions.Clusters.Delete(projectId, region, clusterName).Context(ctx).Do()
+  resp, err := dataprocService.Projects.Regions.Clusters.Delete(projectId, region, clusterName).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -129,6 +133,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -140,40 +145,41 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dataproc.New(hc)
+  dataprocService, err := dataproc.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Diagnose` call:
 
   // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  region := "{MY-REGION}" // TODO: Update placeholder value(s).
+  region := "{MY-REGION}"
 
   // [Required] The cluster name.
-  clusterName := "{MY-CLUSTER-NAME}" // TODO: Update placeholder value(s).
+  clusterName := "{MY-CLUSTER-NAME}"
 
-  resource := &dataproc.DiagnoseClusterRequest{
-    // TODO: Add the desired fields.
+  rb := dataproc.DiagnoseClusterRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Projects.Regions.Clusters.Diagnose(projectId, region, clusterName, resource).Context(ctx).Do()
+  resp, err := dataprocService.Projects.Regions.Clusters.Diagnose(projectId, region, clusterName, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -190,6 +196,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -201,36 +208,37 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dataproc.New(hc)
+  dataprocService, err := dataproc.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  region := "{MY-REGION}" // TODO: Update placeholder value(s).
+  region := "{MY-REGION}"
 
   // [Required] The cluster name.
-  clusterName := "{MY-CLUSTER-NAME}" // TODO: Update placeholder value(s).
+  clusterName := "{MY-CLUSTER-NAME}"
 
-  resp, err := s.Projects.Regions.Clusters.Get(projectId, region, clusterName).Context(ctx).Do()
+  resp, err := dataprocService.Projects.Regions.Clusters.Get(projectId, region, clusterName).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -247,6 +255,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -258,33 +267,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dataproc.New(hc)
+  dataprocService, err := dataproc.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // [Required] The ID of the Google Cloud Platform project that the cluster belongs to.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  region := "{MY-REGION}" // TODO: Update placeholder value(s).
+  region := "{MY-REGION}"
 
-  call := s.Projects.Regions.Clusters.List(projectId, region)
-  if err := call.Pages(ctx, func(page *dataproc.ListClustersResponse) error {
+  req := dataprocService.Projects.Regions.Clusters.List(projectId, region)
+  if err := req.Pages(ctx, func(page *dataproc.ListClustersResponse) error {
     for _, cluster := range page.Clusters {
-      // TODO: Use cluster
-      log.Printf("%#v\n", cluster)
+      // TODO: Change code below to process each `cluster` resource:
+      fmt.Printf("%#v\n", cluster)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -304,6 +314,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -315,40 +326,41 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dataproc.New(hc)
+  dataprocService, err := dataproc.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Patch` call:
 
   // [Required] The ID of the Google Cloud Platform project the cluster belongs to.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  region := "{MY-REGION}" // TODO: Update placeholder value(s).
+  region := "{MY-REGION}"
 
   // [Required] The cluster name.
-  clusterName := "{MY-CLUSTER-NAME}" // TODO: Update placeholder value(s).
+  clusterName := "{MY-CLUSTER-NAME}"
 
-  resource := &dataproc.Cluster{
-    // TODO: Add the desired fields to be changed.
+  rb := dataproc.Cluster{
+    // TODO: Add desired fields of the request body to be changed.
   }
 
-  resp, err := s.Projects.Regions.Clusters.Patch(projectId, region, clusterName, resource).Context(ctx).Do()
+  resp, err := dataprocService.Projects.Regions.Clusters.Patch(projectId, region, clusterName, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -365,6 +377,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -376,40 +389,41 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dataproc.New(hc)
+  dataprocService, err := dataproc.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Cancel` call:
 
   // [Required] The ID of the Google Cloud Platform project that the job belongs to.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  region := "{MY-REGION}" // TODO: Update placeholder value(s).
+  region := "{MY-REGION}"
 
   // [Required] The job ID.
-  jobId := "{MY-JOB-ID}" // TODO: Update placeholder value(s).
+  jobId := "{MY-JOB-ID}"
 
-  resource := &dataproc.CancelJobRequest{
-    // TODO: Add the desired fields.
+  rb := dataproc.CancelJobRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Projects.Regions.Jobs.Cancel(projectId, region, jobId, resource).Context(ctx).Do()
+  resp, err := dataprocService.Projects.Regions.Jobs.Cancel(projectId, region, jobId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -426,6 +440,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -437,36 +452,37 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dataproc.New(hc)
+  dataprocService, err := dataproc.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` call:
 
   // [Required] The ID of the Google Cloud Platform project that the job belongs to.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  region := "{MY-REGION}" // TODO: Update placeholder value(s).
+  region := "{MY-REGION}"
 
   // [Required] The job ID.
-  jobId := "{MY-JOB-ID}" // TODO: Update placeholder value(s).
+  jobId := "{MY-JOB-ID}"
 
-  resp, err := s.Projects.Regions.Jobs.Delete(projectId, region, jobId).Context(ctx).Do()
+  resp, err := dataprocService.Projects.Regions.Jobs.Delete(projectId, region, jobId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -483,6 +499,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -494,36 +511,37 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dataproc.New(hc)
+  dataprocService, err := dataproc.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // [Required] The ID of the Google Cloud Platform project that the job belongs to.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  region := "{MY-REGION}" // TODO: Update placeholder value(s).
+  region := "{MY-REGION}"
 
   // [Required] The job ID.
-  jobId := "{MY-JOB-ID}" // TODO: Update placeholder value(s).
+  jobId := "{MY-JOB-ID}"
 
-  resp, err := s.Projects.Regions.Jobs.Get(projectId, region, jobId).Context(ctx).Do()
+  resp, err := dataprocService.Projects.Regions.Jobs.Get(projectId, region, jobId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -540,6 +558,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -551,33 +570,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dataproc.New(hc)
+  dataprocService, err := dataproc.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // [Required] The ID of the Google Cloud Platform project that the job belongs to.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  region := "{MY-REGION}" // TODO: Update placeholder value(s).
+  region := "{MY-REGION}"
 
-  call := s.Projects.Regions.Jobs.List(projectId, region)
-  if err := call.Pages(ctx, func(page *dataproc.ListJobsResponse) error {
+  req := dataprocService.Projects.Regions.Jobs.List(projectId, region)
+  if err := req.Pages(ctx, func(page *dataproc.ListJobsResponse) error {
     for _, job := range page.Jobs {
-      // TODO: Use job
-      log.Printf("%#v\n", job)
+      // TODO: Change code below to process each `job` resource:
+      fmt.Printf("%#v\n", job)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -597,6 +617,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -608,37 +629,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dataproc.New(hc)
+  dataprocService, err := dataproc.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Submit` call:
 
   // [Required] The ID of the Google Cloud Platform project that the job belongs to.
-  projectId := "{MY-PROJECT-ID}" // TODO: Update placeholder value(s).
+  projectId := "{MY-PROJECT-ID}"
 
   // [Required] The Cloud Dataproc region in which to handle the request.
-  region := "{MY-REGION}" // TODO: Update placeholder value(s).
+  region := "{MY-REGION}"
 
-  resource := &dataproc.SubmitJobRequest{
-    // TODO: Add the desired fields.
+  rb := dataproc.SubmitJobRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Projects.Regions.Jobs.Submit(projectId, region, resource).Context(ctx).Do()
+  resp, err := dataprocService.Projects.Regions.Jobs.Submit(projectId, region, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -655,6 +677,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -666,30 +689,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dataproc.New(hc)
+  dataprocService, err := dataproc.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Cancel` call:
 
   // The name of the operation resource to be cancelled.
-  name := "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}" // TODO: Update placeholder value(s).
+  name := "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}"
 
-  resp, err := s.Projects.Regions.Operations.Cancel(name).Context(ctx).Do()
+  resp, err := dataprocService.Projects.Regions.Operations.Cancel(name).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -706,6 +730,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -717,30 +742,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dataproc.New(hc)
+  dataprocService, err := dataproc.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` call:
 
   // The name of the operation resource to be deleted.
-  name := "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}" // TODO: Update placeholder value(s).
+  name := "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}"
 
-  resp, err := s.Projects.Regions.Operations.Delete(name).Context(ctx).Do()
+  resp, err := dataprocService.Projects.Regions.Operations.Delete(name).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -757,6 +783,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -768,30 +795,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dataproc.New(hc)
+  dataprocService, err := dataproc.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // The name of the operation resource.
-  name := "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}" // TODO: Update placeholder value(s).
+  name := "projects/{MY-PROJECT}/regions/{MY-REGION}/operations/{MY-OPERATION}"
 
-  resp, err := s.Projects.Regions.Operations.Get(name).Context(ctx).Do()
+  resp, err := dataprocService.Projects.Regions.Operations.Get(name).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -808,6 +836,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -819,30 +848,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, dataproc.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := dataproc.New(hc)
+  dataprocService, err := dataproc.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // The name of the operation collection.
-  name := "{MY-NAME}" // TODO: Update placeholder value(s).
+  name := "{MY-NAME}"
 
-  call := s.Projects.Regions.Operations.List(name)
-  if err := call.Pages(ctx, func(page *dataproc.ListOperationsResponse) error {
+  req := dataprocService.Projects.Regions.Operations.List(name)
+  if err := req.Pages(ctx, func(page *dataproc.ListOperationsResponse) error {
     for _, operation := range page.Operations {
-      // TODO: Use operation
-      log.Printf("%#v\n", operation)
+      // TODO: Change code below to process each `operation` resource:
+      fmt.Printf("%#v\n", operation)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }

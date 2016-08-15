@@ -1,7 +1,7 @@
 
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Cloud Vision API
+// 1. If not already done, enable the Google Cloud Vision API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/vision
 // 2. This sample uses Application Default Credentials for authentication.
@@ -11,12 +11,10 @@
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var vision = google.vision('v1');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -31,7 +29,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
   var request = {
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -43,7 +41,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });

@@ -17,9 +17,8 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -28,18 +27,23 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Prediction($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `predict` method:
+
 // The project associated with the model.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // The name of a hosted model.
-$hostedModelName = '{MY-HOSTED-MODEL-NAME}'; // TODO: Update placeholder value(s).
+$hostedModelName = '{MY-HOSTED-MODEL-NAME}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Prediction_Input($client);
 
-$response = $service->hostedmodels->predict($project, $hostedModelName, $postBody);
+$requestBody = new Google_Service_Prediction_Input($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->hostedmodels->predict($project, $hostedModelName, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -59,9 +63,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -70,15 +73,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Prediction($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `analyze` method:
+
 // The project associated with the model.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // The unique name for the predictive model.
-$id = '{MY-ID}'; // TODO: Update placeholder value(s).
+$id = '{MY-ID}';
+
 
 $response = $service->trainedmodels->analyze($project, $id);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -98,9 +105,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -109,11 +115,15 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Prediction($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // The project associated with the model.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // The unique name for the predictive model.
-$id = '{MY-ID}'; // TODO: Update placeholder value(s).
+$id = '{MY-ID}';
+
 
 $service->trainedmodels->delete($project, $id);
 <?php
@@ -134,9 +144,8 @@ $service->trainedmodels->delete($project, $id);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -145,15 +154,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Prediction($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // The project associated with the model.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // The unique name for the predictive model.
-$id = '{MY-ID}'; // TODO: Update placeholder value(s).
+$id = '{MY-ID}';
+
 
 $response = $service->trainedmodels->get($project, $id);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -173,9 +186,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -184,15 +196,20 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Prediction($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
+
 // The project associated with the model.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Prediction_Insert($client);
 
-$response = $service->trainedmodels->insert($project, $postBody);
+$requestBody = new Google_Service_Prediction_Insert($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->trainedmodels->insert($project, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -212,9 +229,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -223,15 +239,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Prediction($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listTrainedmodels` method:
+
 // The project associated with the model.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
+
 
 $optParams = array();
 do {
   $response = $service->trainedmodels->listTrainedmodels($project, $optParams);
 
   foreach ($response['items'] as $insert2) {
-    // TODO: Use insert2
+    // TODO: Change code below to process each `insert2` resource:
     echo '<pre>', var_export($insert2, true), '</pre>', "\n";
   }
 
@@ -255,9 +275,8 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -266,18 +285,23 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Prediction($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `predict` method:
+
 // The project associated with the model.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // The unique name for the predictive model.
-$id = '{MY-ID}'; // TODO: Update placeholder value(s).
+$id = '{MY-ID}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Prediction_Input($client);
 
-$response = $service->trainedmodels->predict($project, $id, $postBody);
+$requestBody = new Google_Service_Prediction_Input($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->trainedmodels->predict($project, $id, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -297,9 +321,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -308,16 +331,21 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Prediction($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
+
 // The project associated with the model.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // The unique name for the predictive model.
-$id = '{MY-ID}'; // TODO: Update placeholder value(s).
+$id = '{MY-ID}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Prediction_Update($client);
 
-$response = $service->trainedmodels->update($project, $id, $postBody);
+$requestBody = new Google_Service_Prediction_Update($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->trainedmodels->update($project, $id, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";

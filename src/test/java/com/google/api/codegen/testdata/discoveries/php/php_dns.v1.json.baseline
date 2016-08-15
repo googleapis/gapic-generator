@@ -17,9 +17,8 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -28,18 +27,23 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Dns($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `create` method:
+
 // Identifies the project addressed by this request.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-$managedZone = '{MY-MANAGED-ZONE}'; // TODO: Update placeholder value(s).
+$managedZone = '{MY-MANAGED-ZONE}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Dns_Change($client);
 
-$response = $service->changes->create($project, $managedZone, $postBody);
+$requestBody = new Google_Service_Dns_Change($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->changes->create($project, $managedZone, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -59,9 +63,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -70,18 +73,22 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Dns($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // Identifies the project addressed by this request.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-$managedZone = '{MY-MANAGED-ZONE}'; // TODO: Update placeholder value(s).
+$managedZone = '{MY-MANAGED-ZONE}';
 
 // The identifier of the requested change, from a previous ResourceRecordSetsChangeResponse.
-$changeId = '{MY-CHANGE-ID}'; // TODO: Update placeholder value(s).
+$changeId = '{MY-CHANGE-ID}';
+
 
 $response = $service->changes->get($project, $managedZone, $changeId);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -101,9 +108,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -112,18 +118,22 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Dns($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listChanges` method:
+
 // Identifies the project addressed by this request.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-$managedZone = '{MY-MANAGED-ZONE}'; // TODO: Update placeholder value(s).
+$managedZone = '{MY-MANAGED-ZONE}';
+
 
 $optParams = array();
 do {
   $response = $service->changes->listChanges($project, $managedZone, $optParams);
 
   foreach ($response['changes'] as $change) {
-    // TODO: Use change
+    // TODO: Change code below to process each `change` resource:
     echo '<pre>', var_export($change, true), '</pre>', "\n";
   }
 
@@ -147,9 +157,8 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -158,15 +167,20 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Dns($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `create` method:
+
 // Identifies the project addressed by this request.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Dns_ManagedZone($client);
 
-$response = $service->managedZones->create($project, $postBody);
+$requestBody = new Google_Service_Dns_ManagedZone($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->managedZones->create($project, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -186,9 +200,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -197,11 +210,15 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Dns($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // Identifies the project addressed by this request.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-$managedZone = '{MY-MANAGED-ZONE}'; // TODO: Update placeholder value(s).
+$managedZone = '{MY-MANAGED-ZONE}';
+
 
 $service->managedZones->delete($project, $managedZone);
 <?php
@@ -222,9 +239,8 @@ $service->managedZones->delete($project, $managedZone);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -233,15 +249,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Dns($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // Identifies the project addressed by this request.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-$managedZone = '{MY-MANAGED-ZONE}'; // TODO: Update placeholder value(s).
+$managedZone = '{MY-MANAGED-ZONE}';
+
 
 $response = $service->managedZones->get($project, $managedZone);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -261,9 +281,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -272,15 +291,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Dns($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listManagedZones` method:
+
 // Identifies the project addressed by this request.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
+
 
 $optParams = array();
 do {
   $response = $service->managedZones->listManagedZones($project, $optParams);
 
   foreach ($response['managedZones'] as $managed_zone) {
-    // TODO: Use managed_zone
+    // TODO: Change code below to process each `managed_zone` resource:
     echo '<pre>', var_export($managed_zone, true), '</pre>', "\n";
   }
 
@@ -304,9 +327,8 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -315,12 +337,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Dns($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // Identifies the project addressed by this request.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
+
 
 $response = $service->projects->get($project);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -340,9 +366,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -351,18 +376,22 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Dns($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listResourceRecordSets` method:
+
 // Identifies the project addressed by this request.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
 // Identifies the managed zone addressed by this request. Can be the managed zone name or id.
-$managedZone = '{MY-MANAGED-ZONE}'; // TODO: Update placeholder value(s).
+$managedZone = '{MY-MANAGED-ZONE}';
+
 
 $optParams = array();
 do {
   $response = $service->resourceRecordSets->listResourceRecordSets($project, $managedZone, $optParams);
 
   foreach ($response['rrsets'] as $resource_record_set) {
-    // TODO: Use resource_record_set
+    // TODO: Change code below to process each `resource_record_set` resource:
     echo '<pre>', var_export($resource_record_set, true), '</pre>', "\n";
   }
 

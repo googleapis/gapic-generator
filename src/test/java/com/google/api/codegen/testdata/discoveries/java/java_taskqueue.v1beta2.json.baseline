@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the TaskQueue API
@@ -30,7 +30,6 @@ import com.google.api.services.taskqueue.model.TaskQueue;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class TaskqueueExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -76,7 +75,6 @@ public class TaskqueueExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
     // TODO: Implement this function to get authentication credentials.
     // See https://foo.com/bar
     // Authorize using one of the following scopes in order to use this method:
@@ -86,26 +84,34 @@ public class TaskqueueExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Taskqueue taskqueueService = new Taskqueue.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * The project under which the queue lies.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // The project under which the queue lies.
     String project = "{MY-PROJECT}";
 
-    // * The id of the taskqueue to get the properties of.
+    // The id of the taskqueue to get the properties of.
     String taskqueue = "{MY-TASKQUEUE}";
+
 
     Taskqueue.Taskqueues.Get request = taskqueueService.taskqueues().get(project, taskqueue);
     TaskQueue response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the TaskQueue API
@@ -135,7 +141,6 @@ import com.google.api.services.taskqueue.Taskqueue.Tasks.Delete;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class TaskqueueExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -174,7 +179,6 @@ public class TaskqueueExample {
   }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
     // TODO: Implement this function to get authentication credentials.
     // See https://foo.com/bar
     // Authorize using one of the following scopes in order to use this method:
@@ -184,22 +188,25 @@ public class TaskqueueExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Taskqueue taskqueueService = new Taskqueue.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
 
-    // * The project under which the queue lies.
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
+    // The project under which the queue lies.
     String project = "{MY-PROJECT}";
 
-    // * The taskqueue to delete a task from.
+    // The taskqueue to delete a task from.
     String taskqueue = "{MY-TASKQUEUE}";
 
-    // * The id of the task to delete.
+    // The id of the task to delete.
     String task = "{MY-TASK}";
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
   public static void main(String[] args) throws IOException, GeneralSecurityException {
     try {
       new TaskqueueExample().run();
@@ -208,9 +215,14 @@ public class TaskqueueExample {
     } catch (GeneralSecurityException e) {
       System.out.println(e.getMessage());
     }
+=======
+
+    Taskqueue.Tasks.Delete request = taskqueueService.tasks().delete(project, taskqueue, task);
+    request.execute();
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the TaskQueue API
@@ -241,7 +253,6 @@ import com.google.api.services.taskqueue.model.Task;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class TaskqueueExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -290,7 +301,6 @@ public class TaskqueueExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
     // TODO: Implement this function to get authentication credentials.
     // See https://foo.com/bar
     // Authorize using one of the following scopes in order to use this method:
@@ -300,29 +310,37 @@ public class TaskqueueExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Taskqueue taskqueueService = new Taskqueue.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * The project under which the queue lies.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // The project under which the queue lies.
     String project = "{MY-PROJECT}";
 
-    // * The taskqueue in which the task belongs.
+    // The taskqueue in which the task belongs.
     String taskqueue = "{MY-TASKQUEUE}";
 
-    // * The task to get properties of.
+    // The task to get properties of.
     String task = "{MY-TASK}";
+
 
     Taskqueue.Tasks.Get request = taskqueueService.tasks().get(project, taskqueue, task);
     Task response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the TaskQueue API
@@ -353,7 +371,6 @@ import com.google.api.services.taskqueue.model.Task;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class TaskqueueExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -402,7 +419,6 @@ public class TaskqueueExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
     // TODO: Implement this function to get authentication credentials.
     // See https://foo.com/bar
     // Authorize using one of the following scopes in order to use this method:
@@ -412,29 +428,38 @@ public class TaskqueueExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Taskqueue taskqueueService = new Taskqueue.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
 
-    // * The project under which the queue lies
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
+
+    // The project under which the queue lies
     String project = "{MY-PROJECT}";
 
-    // * The taskqueue to insert the task into
+    // The taskqueue to insert the task into
     String taskqueue = "{MY-TASKQUEUE}";
 
-    Task content = new Task();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Taskqueue.Tasks.Insert request = taskqueueService.tasks().insert(project, taskqueue, content);
+    Task requestBody = new Task();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Taskqueue.Tasks.Insert request = taskqueueService.tasks().insert(project, taskqueue, requestBody);
     Task response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the TaskQueue API
@@ -466,7 +491,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-
 public class TaskqueueExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
@@ -483,7 +507,6 @@ public class TaskqueueExample {
     int leaseSecs = 0; // TODO: Update field(s).
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
     // TODO: Implement this function to get authentication credentials.
     // See https://foo.com/bar
     // Authorize using one of the following scopes in order to use this method:
@@ -493,27 +516,34 @@ public class TaskqueueExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Taskqueue taskqueueService = new Taskqueue.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'lease' method:
 
-    // * The project under which the queue lies.
+    // TODO: Change placeholders below to desired parameter values for the `lease` method:
+
+    // The project under which the queue lies.
     String project = "{MY-PROJECT}";
 
-    // * The taskqueue to lease a task from.
+    // The taskqueue to lease a task from.
     String taskqueue = "{MY-TASKQUEUE}";
 
-    // * The number of tasks to lease.
+    // The number of tasks to lease.
     int numTasks = 0;
 
-    // * The lease in seconds.
+    // The lease in seconds.
     int leaseSecs = 0;
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     Taskqueue service = createService();
     Lease request = service.tasks().lease(project, taskqueue, numTasks, leaseSecs);
+=======
+
+    Taskqueue.Tasks.Lease request = taskqueueService.tasks().lease(project, taskqueue, numTasks, leaseSecs);
+>>>>>>> Update discovery sample gen across languages.
     Tasks response = request.execute();
     System.out.println(response);
   }
@@ -525,6 +555,7 @@ public class TaskqueueExample {
     // `gcloud beta auth application-default login`
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -549,9 +580,13 @@ public class TaskqueueExample {
 =======
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the TaskQueue API
@@ -582,7 +617,6 @@ import com.google.api.services.taskqueue.model.Tasks2;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class TaskqueueExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -628,7 +662,6 @@ public class TaskqueueExample {
     }
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
     // TODO: Implement this function to get authentication credentials.
     // See https://foo.com/bar
     // Authorize using one of the following scopes in order to use this method:
@@ -638,26 +671,34 @@ public class TaskqueueExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Taskqueue taskqueueService = new Taskqueue.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * The project under which the queue lies.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // The project under which the queue lies.
     String project = "{MY-PROJECT}";
 
-    // * The id of the taskqueue to list tasks from.
+    // The id of the taskqueue to list tasks from.
     String taskqueue = "{MY-TASKQUEUE}";
+
 
     Taskqueue.Tasks.List request = taskqueueService.tasks().list(project, taskqueue);
     Tasks2 response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the TaskQueue API
@@ -689,7 +730,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-
 public class TaskqueueExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
@@ -700,7 +740,6 @@ public class TaskqueueExample {
     String project = ""; // TODO: Update field(s).
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
     // TODO: Implement this function to get authentication credentials.
     // See https://foo.com/bar
     // Authorize using one of the following scopes in order to use this method:
@@ -710,23 +749,33 @@ public class TaskqueueExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Taskqueue taskqueueService = new Taskqueue.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+>>>>>>> Update discovery sample gen across languages.
 
-    // * The project under which the queue lies.
-    String project = "{MY-PROJECT}";
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
     String taskqueue = ""; // TODO: Update field(s).
 =======
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // The project under which the queue lies.
+    String project = "{MY-PROJECT}";
+>>>>>>> Update discovery sample gen across languages.
 
+    // taskqueue
     String taskqueue = "{MY-TASKQUEUE}";
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
     String task = ""; // TODO: Update field(s).
 
@@ -768,22 +817,32 @@ public class TaskqueueExample {
     }
 =======
 
+=======
+    // task
+>>>>>>> Update discovery sample gen across languages.
     String task = "{MY-TASK}";
 
-    // * The new lease in seconds.
+    // The new lease in seconds.
     int newLeaseSeconds = 0;
 
-    Task content = new Task();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    Taskqueue.Tasks.Patch request = taskqueueService.tasks().patch(project, taskqueue, task, newLeaseSeconds, content);
+    Task requestBody = new Task();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    Taskqueue.Tasks.Patch request = taskqueueService.tasks().patch(project, taskqueue, task, newLeaseSeconds, requestBody);
     Task response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the TaskQueue API
@@ -815,7 +874,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-
 public class TaskqueueExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
@@ -826,7 +884,6 @@ public class TaskqueueExample {
     String project = ""; // TODO: Update field(s).
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
     // TODO: Implement this function to get authentication credentials.
     // See https://foo.com/bar
     // Authorize using one of the following scopes in order to use this method:
@@ -836,23 +893,33 @@ public class TaskqueueExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     Taskqueue taskqueueService = new Taskqueue.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+>>>>>>> Update discovery sample gen across languages.
 
-    // * The project under which the queue lies.
-    String project = "{MY-PROJECT}";
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
     String taskqueue = ""; // TODO: Update field(s).
 =======
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // The project under which the queue lies.
+    String project = "{MY-PROJECT}";
+>>>>>>> Update discovery sample gen across languages.
 
+    // taskqueue
     String taskqueue = "{MY-TASKQUEUE}";
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
     String task = ""; // TODO: Update field(s).
 
@@ -894,18 +961,28 @@ public class TaskqueueExample {
     }
 =======
 
+=======
+    // task
+>>>>>>> Update discovery sample gen across languages.
     String task = "{MY-TASK}";
 
-    // * The new lease in seconds.
+    // The new lease in seconds.
     int newLeaseSeconds = 0;
 
-    Task content = new Task();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    Taskqueue.Tasks.Update request = taskqueueService.tasks().update(project, taskqueue, task, newLeaseSeconds, content);
+    Task requestBody = new Task();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    Taskqueue.Tasks.Update request = taskqueueService.tasks().update(project, taskqueue, task, newLeaseSeconds, requestBody);
     Task response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }

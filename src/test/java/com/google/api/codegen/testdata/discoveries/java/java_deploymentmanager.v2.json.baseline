@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -11,7 +11,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -30,7 +30,6 @@ import com.google.api.services.deploymentmanager.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DeploymentManagerExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -56,12 +55,19 @@ public class DeploymentManagerExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -69,6 +75,7 @@ public class DeploymentManagerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
@@ -85,29 +92,40 @@ public class DeploymentManagerExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'cancelPreview' method:
 
-    // * The project ID for this request.
+    // TODO: Change placeholders below to desired parameter values for the `cancelPreview` method:
+
+    // The project ID for this request.
     String project = "{MY-PROJECT}";
 
-    // * The name of the deployment for this request.
+    // The name of the deployment for this request.
     String deployment = "{MY-DEPLOYMENT}";
 
-    DeploymentsCancelPreviewRequest content = new DeploymentsCancelPreviewRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    DeploymentManager.Deployments.CancelPreview request = deploymentmanagerService.deployments().cancelPreview(project, deployment, content);
+    DeploymentsCancelPreviewRequest requestBody = new DeploymentsCancelPreviewRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    DeploymentManager.Deployments.CancelPreview request = deploymentmanagerService.deployments().cancelPreview(project, deployment, requestBody);
     Operation response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -119,7 +137,7 @@ public class DeploymentManagerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -137,7 +155,6 @@ import com.google.api.services.deploymentmanager.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DeploymentManagerExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -160,12 +177,19 @@ public class DeploymentManagerExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -173,6 +197,7 @@ public class DeploymentManagerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
@@ -189,26 +214,36 @@ public class DeploymentManagerExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
 
-    // * The project ID for this request.
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
+    // The project ID for this request.
     String project = "{MY-PROJECT}";
 
-    // * The name of the deployment for this request.
+    // The name of the deployment for this request.
     String deployment = "{MY-DEPLOYMENT}";
+
 
     DeploymentManager.Deployments.Delete request = deploymentmanagerService.deployments().delete(project, deployment);
     Operation response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -220,7 +255,7 @@ public class DeploymentManagerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -238,7 +273,6 @@ import com.google.api.services.deploymentmanager.model.Deployment;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DeploymentManagerExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -261,12 +295,19 @@ public class DeploymentManagerExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -274,6 +315,7 @@ public class DeploymentManagerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
@@ -290,26 +332,36 @@ public class DeploymentManagerExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * The project ID for this request.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // The project ID for this request.
     String project = "{MY-PROJECT}";
 
-    // * The name of the deployment for this request.
+    // The name of the deployment for this request.
     String deployment = "{MY-DEPLOYMENT}";
+
 
     DeploymentManager.Deployments.Get request = deploymentmanagerService.deployments().get(project, deployment);
     Deployment response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -321,7 +373,7 @@ public class DeploymentManagerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -340,7 +392,6 @@ import com.google.api.services.deploymentmanager.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DeploymentManagerExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -363,12 +414,19 @@ public class DeploymentManagerExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -376,6 +434,7 @@ public class DeploymentManagerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
@@ -392,26 +451,37 @@ public class DeploymentManagerExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
 
-    // * The project ID for this request.
+    // TODO: Change placeholders below to desired parameter values for the `insert` method:
+
+    // The project ID for this request.
     String project = "{MY-PROJECT}";
 
-    Deployment content = new Deployment();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    DeploymentManager.Deployments.Insert request = deploymentmanagerService.deployments().insert(project, content);
+    Deployment requestBody = new Deployment();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    DeploymentManager.Deployments.Insert request = deploymentmanagerService.deployments().insert(project, requestBody);
     Operation response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -423,7 +493,7 @@ public class DeploymentManagerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -442,7 +512,6 @@ import com.google.api.services.deploymentmanager.model.DeploymentsListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DeploymentManagerExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -470,12 +539,19 @@ public class DeploymentManagerExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -483,6 +559,7 @@ public class DeploymentManagerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
@@ -490,14 +567,19 @@ public class DeploymentManagerExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * The project ID for this request.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // The project ID for this request.
     String project = "{MY-PROJECT}";
+
 
     DeploymentManager.Deployments.List request = deploymentmanagerService.deployments().list(project);
     DeploymentsListResponse response;
@@ -507,7 +589,8 @@ public class DeploymentManagerExample {
         continue;
 
       for (Deployment deployment : response.getDeployments()) {
-        // TODO: Add code here to process each 'deployment' resource
+        // TODO: Change code below to process each `deployment` resource:
+        System.out.println(deployment);
       }
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
@@ -521,7 +604,7 @@ public class DeploymentManagerExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -533,7 +616,7 @@ public class DeploymentManagerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -552,7 +635,6 @@ import com.google.api.services.deploymentmanager.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DeploymentManagerExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -578,12 +660,19 @@ public class DeploymentManagerExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -591,6 +680,7 @@ public class DeploymentManagerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
@@ -607,29 +697,40 @@ public class DeploymentManagerExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
 
-    // * The project ID for this request.
+    // TODO: Change placeholders below to desired parameter values for the `patch` method:
+
+    // The project ID for this request.
     String project = "{MY-PROJECT}";
 
-    // * The name of the deployment for this request.
+    // The name of the deployment for this request.
     String deployment = "{MY-DEPLOYMENT}";
 
-    Deployment content = new Deployment();
-    // TODO: Add code here to assign values to desired fields of the 'content' object to be changed
 
-    DeploymentManager.Deployments.Patch request = deploymentmanagerService.deployments().patch(project, deployment, content);
+    Deployment requestBody = new Deployment();
+    // TODO: Assign values to desired fields of the `requestBody` object to be changed.
+
+
+    DeploymentManager.Deployments.Patch request = deploymentmanagerService.deployments().patch(project, deployment, requestBody);
     Operation response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -641,7 +742,7 @@ public class DeploymentManagerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -660,7 +761,6 @@ import com.google.api.services.deploymentmanager.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DeploymentManagerExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -686,12 +786,19 @@ public class DeploymentManagerExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -699,6 +806,7 @@ public class DeploymentManagerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
@@ -715,29 +823,40 @@ public class DeploymentManagerExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'stop' method:
 
-    // * The project ID for this request.
+    // TODO: Change placeholders below to desired parameter values for the `stop` method:
+
+    // The project ID for this request.
     String project = "{MY-PROJECT}";
 
-    // * The name of the deployment for this request.
+    // The name of the deployment for this request.
     String deployment = "{MY-DEPLOYMENT}";
 
-    DeploymentsStopRequest content = new DeploymentsStopRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    DeploymentManager.Deployments.Stop request = deploymentmanagerService.deployments().stop(project, deployment, content);
+    DeploymentsStopRequest requestBody = new DeploymentsStopRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    DeploymentManager.Deployments.Stop request = deploymentmanagerService.deployments().stop(project, deployment, requestBody);
     Operation response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -749,7 +868,7 @@ public class DeploymentManagerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -768,7 +887,6 @@ import com.google.api.services.deploymentmanager.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DeploymentManagerExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -794,12 +912,19 @@ public class DeploymentManagerExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -807,6 +932,7 @@ public class DeploymentManagerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
@@ -823,29 +949,40 @@ public class DeploymentManagerExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'update' method:
 
-    // * The project ID for this request.
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
+
+    // The project ID for this request.
     String project = "{MY-PROJECT}";
 
-    // * The name of the deployment for this request.
+    // The name of the deployment for this request.
     String deployment = "{MY-DEPLOYMENT}";
 
-    Deployment content = new Deployment();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    DeploymentManager.Deployments.Update request = deploymentmanagerService.deployments().update(project, deployment, content);
+    Deployment requestBody = new Deployment();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    DeploymentManager.Deployments.Update request = deploymentmanagerService.deployments().update(project, deployment, requestBody);
     Operation response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -857,7 +994,7 @@ public class DeploymentManagerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -875,7 +1012,6 @@ import com.google.api.services.deploymentmanager.model.Manifest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DeploymentManagerExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -901,12 +1037,19 @@ public class DeploymentManagerExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -914,6 +1057,7 @@ public class DeploymentManagerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
@@ -930,29 +1074,39 @@ public class DeploymentManagerExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * The project ID for this request.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // The project ID for this request.
     String project = "{MY-PROJECT}";
 
-    // * The name of the deployment for this request.
+    // The name of the deployment for this request.
     String deployment = "{MY-DEPLOYMENT}";
 
-    // * The name of the manifest for this request.
+    // The name of the manifest for this request.
     String manifest = "{MY-MANIFEST}";
+
 
     DeploymentManager.Manifests.Get request = deploymentmanagerService.manifests().get(project, deployment, manifest);
     Manifest response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -964,7 +1118,7 @@ public class DeploymentManagerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -984,7 +1138,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-
 public class DeploymentManagerExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
@@ -998,33 +1151,30 @@ public class DeploymentManagerExample {
     List request = service.manifests().list(project, deployment);
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * The project ID for this request.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // The project ID for this request.
     String project = "{MY-PROJECT}";
 
-    // * The name of the deployment for this request.
+    // The name of the deployment for this request.
     String deployment = "{MY-DEPLOYMENT}";
+
 
     DeploymentManager.Manifests.List request = deploymentmanagerService.manifests().list(project, deployment);
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
@@ -1037,11 +1187,16 @@ public class DeploymentManagerExample {
 =======
 
       for (Manifest manifest : response.getManifests()) {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
         // TODO: Add code here to process each 'manifest' resource
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
       }
       for (Manifest item : response.getManifests()) {
         System.out.println(item);
+=======
+        // TODO: Change code below to process each `manifest` resource:
+        System.out.println(manifest);
+>>>>>>> Update discovery sample gen across languages.
       }
     } while (response.getNextPageToken() != null);
   }
@@ -1075,7 +1230,7 @@ public class DeploymentManagerExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -1087,7 +1242,7 @@ public class DeploymentManagerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1105,7 +1260,6 @@ import com.google.api.services.deploymentmanager.model.Operation;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DeploymentManagerExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1128,12 +1282,19 @@ public class DeploymentManagerExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1141,6 +1302,7 @@ public class DeploymentManagerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
@@ -1157,26 +1319,36 @@ public class DeploymentManagerExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * The project ID for this request.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // The project ID for this request.
     String project = "{MY-PROJECT}";
 
-    // * The name of the operation for this request.
+    // The name of the operation for this request.
     String operation = "{MY-OPERATION}";
+
 
     DeploymentManager.Operations.Get request = deploymentmanagerService.operations().get(project, operation);
     Operation response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -1188,7 +1360,7 @@ public class DeploymentManagerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1207,7 +1379,6 @@ import com.google.api.services.deploymentmanager.model.OperationsListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DeploymentManagerExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1235,12 +1406,19 @@ public class DeploymentManagerExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1248,6 +1426,7 @@ public class DeploymentManagerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
@@ -1255,14 +1434,19 @@ public class DeploymentManagerExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * The project ID for this request.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // The project ID for this request.
     String project = "{MY-PROJECT}";
+
 
     DeploymentManager.Operations.List request = deploymentmanagerService.operations().list(project);
     OperationsListResponse response;
@@ -1272,7 +1456,8 @@ public class DeploymentManagerExample {
         continue;
 
       for (Operation operation : response.getOperations()) {
-        // TODO: Add code here to process each 'operation' resource
+        // TODO: Change code below to process each `operation` resource:
+        System.out.println(operation);
       }
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
@@ -1286,7 +1471,7 @@ public class DeploymentManagerExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -1298,7 +1483,7 @@ public class DeploymentManagerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1316,7 +1501,6 @@ import com.google.api.services.deploymentmanager.model.Resource;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DeploymentManagerExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1342,12 +1526,19 @@ public class DeploymentManagerExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1355,6 +1546,7 @@ public class DeploymentManagerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
@@ -1371,29 +1563,39 @@ public class DeploymentManagerExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
-    // * The project ID for this request.
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
+    // The project ID for this request.
     String project = "{MY-PROJECT}";
 
-    // * The name of the deployment for this request.
+    // The name of the deployment for this request.
     String deployment = "{MY-DEPLOYMENT}";
 
-    // * The name of the resource for this request.
+    // The name of the resource for this request.
     String resource = "{MY-RESOURCE}";
+
 
     DeploymentManager.Resources.Get request = deploymentmanagerService.resources().get(project, deployment, resource);
     Resource response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -1405,7 +1607,7 @@ public class DeploymentManagerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1425,7 +1627,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-
 public class DeploymentManagerExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
@@ -1439,33 +1640,30 @@ public class DeploymentManagerExample {
     List request = service.resources().list(project, deployment);
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * The project ID for this request.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // The project ID for this request.
     String project = "{MY-PROJECT}";
 
-    // * The name of the deployment for this request.
+    // The name of the deployment for this request.
     String deployment = "{MY-DEPLOYMENT}";
+
 
     DeploymentManager.Resources.List request = deploymentmanagerService.resources().list(project, deployment);
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
@@ -1478,11 +1676,16 @@ public class DeploymentManagerExample {
 =======
 
       for (Resource resource : response.getResources()) {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
         // TODO: Add code here to process each 'resource' resource
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
       }
       for (Resource item : response.getResources()) {
         System.out.println(item);
+=======
+        // TODO: Change code below to process each `resource` resource:
+        System.out.println(resource);
+>>>>>>> Update discovery sample gen across languages.
       }
     } while (response.getNextPageToken() != null);
   }
@@ -1516,7 +1719,7 @@ public class DeploymentManagerExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Google Cloud Deployment Manager API
@@ -1528,7 +1731,7 @@ public class DeploymentManagerExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -1547,7 +1750,6 @@ import com.google.api.services.deploymentmanager.model.TypesListResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class DeploymentManagerExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -1575,12 +1777,19 @@ public class DeploymentManagerExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -1588,6 +1797,7 @@ public class DeploymentManagerExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
@@ -1595,14 +1805,19 @@ public class DeploymentManagerExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     DeploymentManager deploymentmanagerService = new DeploymentManager.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * The project ID for this request.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // The project ID for this request.
     String project = "{MY-PROJECT}";
+
 
     DeploymentManager.Types.List request = deploymentmanagerService.types().list(project);
     TypesListResponse response;
@@ -1612,7 +1827,8 @@ public class DeploymentManagerExample {
         continue;
 
       for (Type type : response.getTypes()) {
-        // TODO: Add code here to process each 'type' resource
+        // TODO: Change code below to process each `type` resource:
+        System.out.println(type);
       }
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 

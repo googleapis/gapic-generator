@@ -27,14 +27,10 @@ namespace TaskqueueSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -46,19 +42,23 @@ namespace TaskqueueSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // The project under which the queue lies.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // The id of the taskqueue to get the properties of.
-            string taskqueue = "{MY-TASKQUEUE}"; // TODO: Update placeholder value(s).
+            string taskqueue = "{MY-TASKQUEUE}";
+
 
             TaskqueuesResource.GetRequest request = taskqueueService.Taskqueues.Get(project, taskqueue);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.TaskQueue response = request.Execute();
             // Data.TaskQueue response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -88,14 +88,10 @@ namespace TaskqueueSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -107,18 +103,22 @@ namespace TaskqueueSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Delete` method:
+
             // The project under which the queue lies.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // The taskqueue to delete a task from.
-            string taskqueue = "{MY-TASKQUEUE}"; // TODO: Update placeholder value(s).
+            string taskqueue = "{MY-TASKQUEUE}";
 
             // The id of the task to delete.
-            string task = "{MY-TASK}"; // TODO: Update placeholder value(s).
+            string task = "{MY-TASK}";
+
 
             TasksResource.DeleteRequest request = taskqueueService.Tasks.Delete(project, taskqueue, task);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             request.Execute();
             // await request.ExecuteAsync();
         }
@@ -152,14 +152,10 @@ namespace TaskqueueSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -171,22 +167,26 @@ namespace TaskqueueSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Get` method:
+
             // The project under which the queue lies.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // The taskqueue in which the task belongs.
-            string taskqueue = "{MY-TASKQUEUE}"; // TODO: Update placeholder value(s).
+            string taskqueue = "{MY-TASKQUEUE}";
 
             // The task to get properties of.
-            string task = "{MY-TASK}"; // TODO: Update placeholder value(s).
+            string task = "{MY-TASK}";
+
 
             TasksResource.GetRequest request = taskqueueService.Tasks.Get(project, taskqueue, task);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Task response = request.Execute();
             // Data.Task response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -219,14 +219,10 @@ namespace TaskqueueSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -238,22 +234,27 @@ namespace TaskqueueSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Insert` method:
+
             // The project under which the queue lies
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // The taskqueue to insert the task into
-            string taskqueue = "{MY-TASKQUEUE}"; // TODO: Update placeholder value(s).
+            string taskqueue = "{MY-TASKQUEUE}";
 
-            // TODO: Assign values to the desired properties.
+
             Data.Task requestBody = new Data.Task();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             TasksResource.InsertRequest request = taskqueueService.Tasks.Insert(requestBody, project, taskqueue);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Task response = request.Execute();
             // Data.Task response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -286,14 +287,10 @@ namespace TaskqueueSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -305,25 +302,29 @@ namespace TaskqueueSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Lease` method:
+
             // The project under which the queue lies.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // The taskqueue to lease a task from.
-            string taskqueue = "{MY-TASKQUEUE}"; // TODO: Update placeholder value(s).
+            string taskqueue = "{MY-TASKQUEUE}";
 
             // The number of tasks to lease.
-            int numTasks = 0; // TODO: Update placeholder value(s).
+            int numTasks = 0;
 
             // The lease in seconds.
-            int leaseSecs = 0; // TODO: Update placeholder value(s).
+            int leaseSecs = 0;
+
 
             TasksResource.LeaseRequest request = taskqueueService.Tasks.Lease(project, taskqueue, numTasks, leaseSecs);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Tasks response = request.Execute();
             // Data.Tasks response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -356,14 +357,10 @@ namespace TaskqueueSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -375,19 +372,23 @@ namespace TaskqueueSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `List` method:
+
             // The project under which the queue lies.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
             // The id of the taskqueue to list tasks from.
-            string taskqueue = "{MY-TASKQUEUE}"; // TODO: Update placeholder value(s).
+            string taskqueue = "{MY-TASKQUEUE}";
+
 
             TasksResource.ListRequest request = taskqueueService.Tasks.List(project, taskqueue);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Tasks2 response = request.Execute();
             // Data.Tasks2 response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -420,14 +421,10 @@ namespace TaskqueueSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -439,28 +436,33 @@ namespace TaskqueueSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Patch` method:
+
             // The project under which the queue lies.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
+            // taskqueue
+            string taskqueue = "{MY-TASKQUEUE}";
 
-            string taskqueue = "{MY-TASKQUEUE}"; // TODO: Update placeholder value(s).
-
-
-            string task = "{MY-TASK}"; // TODO: Update placeholder value(s).
+            // task
+            string task = "{MY-TASK}";
 
             // The new lease in seconds.
-            int newLeaseSeconds = 0; // TODO: Update placeholder value(s).
+            int newLeaseSeconds = 0;
 
-            // TODO: Assign values to the desired properties to be changed.
+
             Data.Task requestBody = new Data.Task();
+            // TODO: Assign values to desired properties of the `requestBody` object to be changed.
+
 
             TasksResource.PatchRequest request = taskqueueService.Tasks.Patch(requestBody, project, taskqueue, task, newLeaseSeconds);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Task response = request.Execute();
             // Data.Task response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }
@@ -493,14 +495,10 @@ namespace TaskqueueSample
     {
         public static void Main(string[] args)
         {
-            // Authentication is provided by the `gcloud` tool when running locally
-            // and by built-in service accounts when running on GCE.
-            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
-
-            // Running locally requires scopes to be passed in manually.
-            // GCE automatically pulls the scopes from the GCE metadata server.
-            // For more information, see
+            // Use Application Default Credentials for authentication when running locally.
+            // For more information, see:
             // https://developers.google.com/identity/protocols/application-default-credentials
+            GoogleCredential credential = Task.Run(() => GoogleCredential.GetApplicationDefaultAsync()).Result;
             if (credential.IsCreateScopedRequired)
             {
                 credential = credential.CreateScoped("https://www.googleapis.com/auth/cloud-platform");
@@ -512,28 +510,33 @@ namespace TaskqueueSample
                 ApplicationName = "Google Cloud Platform Sample",
             });
 
+
+            // TODO: Change placeholders below to desired parameter values for the `Update` method:
+
             // The project under which the queue lies.
-            string project = "{MY-PROJECT}"; // TODO: Update placeholder value(s).
+            string project = "{MY-PROJECT}";
 
+            // taskqueue
+            string taskqueue = "{MY-TASKQUEUE}";
 
-            string taskqueue = "{MY-TASKQUEUE}"; // TODO: Update placeholder value(s).
-
-
-            string task = "{MY-TASK}"; // TODO: Update placeholder value(s).
+            // task
+            string task = "{MY-TASK}";
 
             // The new lease in seconds.
-            int newLeaseSeconds = 0; // TODO: Update placeholder value(s).
+            int newLeaseSeconds = 0;
 
-            // TODO: Assign values to the desired properties.
+
             Data.Task requestBody = new Data.Task();
+            // TODO: Assign values to desired properties of the `requestBody` object.
+
 
             TasksResource.UpdateRequest request = taskqueueService.Tasks.Update(requestBody, project, taskqueue, task, newLeaseSeconds);
 
-            // To execute asynchronously in an async method, replace request.Execute() as shown:
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
             Data.Task response = request.Execute();
             // Data.Task response = await request.ExecuteAsync();
 
-            // TODO: Use response
+            // TODO: Change code below to process the `response` object:
             Console.WriteLine(new JavaScriptSerializer().Serialize(response));
         }
     }

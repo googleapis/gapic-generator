@@ -17,9 +17,8 @@
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -28,12 +27,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 // group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
+$entity = '{MY-ENTITY}';
+
 
 $service->bucketAccessControls->delete($bucket, $entity);
 <?php
@@ -54,9 +57,8 @@ $service->bucketAccessControls->delete($bucket, $entity);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -65,16 +67,20 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 // group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
+$entity = '{MY-ENTITY}';
+
 
 $response = $service->bucketAccessControls->get($bucket, $entity);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -94,9 +100,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -105,15 +110,20 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Storage_BucketAccessControl($client);
 
-$response = $service->bucketAccessControls->insert($bucket, $postBody);
+$requestBody = new Google_Service_Storage_BucketAccessControl($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->bucketAccessControls->insert($bucket, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -133,9 +143,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -144,12 +153,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listBucketAccessControls` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
+
 
 $response = $service->bucketAccessControls->listBucketAccessControls($bucket);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -169,9 +182,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -180,19 +192,24 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 // group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
+$entity = '{MY-ENTITY}';
 
-// TODO: Assign values to the desired properties to be changed.
-$postBody = new Google_Service_Storage_BucketAccessControl($client);
 
-$response = $service->bucketAccessControls->patch($bucket, $entity, $postBody);
+$requestBody = new Google_Service_Storage_BucketAccessControl($client);
+// TODO: Assign values to desired properties of the `requestBody` object to be changed.
 
-// TODO: Use $response
+
+$response = $service->bucketAccessControls->patch($bucket, $entity, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -212,9 +229,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -223,19 +239,24 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 // group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
+$entity = '{MY-ENTITY}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Storage_BucketAccessControl($client);
 
-$response = $service->bucketAccessControls->update($bucket, $entity, $postBody);
+$requestBody = new Google_Service_Storage_BucketAccessControl($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->bucketAccessControls->update($bucket, $entity, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -255,9 +276,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -266,8 +286,12 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
+
 
 $service->buckets->delete($bucket);
 <?php
@@ -288,9 +312,8 @@ $service->buckets->delete($bucket);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -299,12 +322,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
+
 
 $response = $service->buckets->get($bucket);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -324,9 +351,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -335,15 +361,20 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
+
 // A valid API project identifier.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Storage_Bucket($client);
 
-$response = $service->buckets->insert($project, $postBody);
+$requestBody = new Google_Service_Storage_Bucket($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->buckets->insert($project, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -363,9 +394,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -374,15 +404,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listBuckets` method:
+
 // A valid API project identifier.
-$project = '{MY-PROJECT}'; // TODO: Update placeholder value(s).
+$project = '{MY-PROJECT}';
+
 
 $optParams = array();
 do {
   $response = $service->buckets->listBuckets($project, $optParams);
 
   foreach ($response['items'] as $bucket) {
-    // TODO: Use bucket
+    // TODO: Change code below to process each `bucket` resource:
     echo '<pre>', var_export($bucket, true), '</pre>', "\n";
   }
 
@@ -406,9 +440,8 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -417,15 +450,20 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
-// TODO: Assign values to the desired properties to be changed.
-$postBody = new Google_Service_Storage_Bucket($client);
 
-$response = $service->buckets->patch($bucket, $postBody);
+$requestBody = new Google_Service_Storage_Bucket($client);
+// TODO: Assign values to desired properties of the `requestBody` object to be changed.
 
-// TODO: Use $response
+
+$response = $service->buckets->patch($bucket, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -445,9 +483,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -456,15 +493,20 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Storage_Bucket($client);
 
-$response = $service->buckets->update($bucket, $postBody);
+$requestBody = new Google_Service_Storage_Bucket($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->buckets->update($bucket, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -484,9 +526,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -496,10 +537,11 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 $service = new Google_Service_Storage($client);
 
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Storage_Channel($client);
+$requestBody = new Google_Service_Storage_Channel($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-$service->channels->stop($postBody);
+
+$service->channels->stop($requestBody);
 <?php
 /*
  * BEFORE RUNNING:
@@ -518,9 +560,8 @@ $service->channels->stop($postBody);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -529,12 +570,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 // group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
+$entity = '{MY-ENTITY}';
+
 
 $service->defaultObjectAccessControls->delete($bucket, $entity);
 <?php
@@ -555,9 +600,8 @@ $service->defaultObjectAccessControls->delete($bucket, $entity);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -566,16 +610,20 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 // group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
+$entity = '{MY-ENTITY}';
+
 
 $response = $service->defaultObjectAccessControls->get($bucket, $entity);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -595,9 +643,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -606,15 +653,20 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Storage_ObjectAccessControl($client);
 
-$response = $service->defaultObjectAccessControls->insert($bucket, $postBody);
+$requestBody = new Google_Service_Storage_ObjectAccessControl($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->defaultObjectAccessControls->insert($bucket, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -634,9 +686,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -645,12 +696,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listDefaultObjectAccessControls` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
+
 
 $response = $service->defaultObjectAccessControls->listDefaultObjectAccessControls($bucket);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -670,9 +725,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -681,19 +735,24 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 // group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
+$entity = '{MY-ENTITY}';
 
-// TODO: Assign values to the desired properties to be changed.
-$postBody = new Google_Service_Storage_ObjectAccessControl($client);
 
-$response = $service->defaultObjectAccessControls->patch($bucket, $entity, $postBody);
+$requestBody = new Google_Service_Storage_ObjectAccessControl($client);
+// TODO: Assign values to desired properties of the `requestBody` object to be changed.
 
-// TODO: Use $response
+
+$response = $service->defaultObjectAccessControls->patch($bucket, $entity, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -713,9 +772,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -724,19 +782,24 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 // group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
+$entity = '{MY-ENTITY}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Storage_ObjectAccessControl($client);
 
-$response = $service->defaultObjectAccessControls->update($bucket, $entity, $postBody);
+$requestBody = new Google_Service_Storage_ObjectAccessControl($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->defaultObjectAccessControls->update($bucket, $entity, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -756,9 +819,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -767,16 +829,20 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // Name of the object. For information about how to URL encode object names to be path safe, see
 // Encoding URI Path Parts.
-$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
+$object = '{MY-OBJECT}';
 
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 // group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
+$entity = '{MY-ENTITY}';
+
 
 $service->objectAccessControls->delete($bucket, $object, $entity);
 <?php
@@ -797,9 +863,8 @@ $service->objectAccessControls->delete($bucket, $object, $entity);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -808,20 +873,24 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // Name of the object. For information about how to URL encode object names to be path safe, see
 // Encoding URI Path Parts.
-$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
+$object = '{MY-OBJECT}';
 
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 // group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
+$entity = '{MY-ENTITY}';
+
 
 $response = $service->objectAccessControls->get($bucket, $object, $entity);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -841,9 +910,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -852,19 +920,24 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // Name of the object. For information about how to URL encode object names to be path safe, see
 // Encoding URI Path Parts.
-$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
+$object = '{MY-OBJECT}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Storage_ObjectAccessControl($client);
 
-$response = $service->objectAccessControls->insert($bucket, $object, $postBody);
+$requestBody = new Google_Service_Storage_ObjectAccessControl($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->objectAccessControls->insert($bucket, $object, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -884,9 +957,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -895,16 +967,20 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listObjectAccessControls` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // Name of the object. For information about how to URL encode object names to be path safe, see
 // Encoding URI Path Parts.
-$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
+$object = '{MY-OBJECT}';
+
 
 $response = $service->objectAccessControls->listObjectAccessControls($bucket, $object);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -924,9 +1000,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -935,23 +1010,28 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // Name of the object. For information about how to URL encode object names to be path safe, see
 // Encoding URI Path Parts.
-$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
+$object = '{MY-OBJECT}';
 
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 // group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
+$entity = '{MY-ENTITY}';
 
-// TODO: Assign values to the desired properties to be changed.
-$postBody = new Google_Service_Storage_ObjectAccessControl($client);
 
-$response = $service->objectAccessControls->patch($bucket, $object, $entity, $postBody);
+$requestBody = new Google_Service_Storage_ObjectAccessControl($client);
+// TODO: Assign values to desired properties of the `requestBody` object to be changed.
 
-// TODO: Use $response
+
+$response = $service->objectAccessControls->patch($bucket, $object, $entity, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -971,9 +1051,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -982,23 +1061,28 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
+
 // Name of a bucket.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // Name of the object. For information about how to URL encode object names to be path safe, see
 // Encoding URI Path Parts.
-$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
+$object = '{MY-OBJECT}';
 
 // The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
 // group-emailAddress, allUsers, or allAuthenticatedUsers.
-$entity = '{MY-ENTITY}'; // TODO: Update placeholder value(s).
+$entity = '{MY-ENTITY}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Storage_ObjectAccessControl($client);
 
-$response = $service->objectAccessControls->update($bucket, $object, $entity, $postBody);
+$requestBody = new Google_Service_Storage_ObjectAccessControl($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->objectAccessControls->update($bucket, $object, $entity, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1018,9 +1102,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1028,20 +1111,25 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `compose` method:
 
 // Name of the bucket in which to store the new object.
-$destinationBucket = '{MY-DESTINATION-BUCKET}'; // TODO: Update placeholder value(s).
+$destinationBucket = '{MY-DESTINATION-BUCKET}';
 
 // Name of the new object. For information about how to URL encode object names to be path safe, see
 // Encoding URI Path Parts.
-$destinationObject = '{MY-DESTINATION-OBJECT}'; // TODO: Update placeholder value(s).
+$destinationObject = '{MY-DESTINATION-OBJECT}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Storage_ComposeRequest($client);
 
-$response = $service->objects->compose($destinationBucket, $destinationObject, $postBody);
+$requestBody = new Google_Service_Storage_ComposeRequest($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->objects->compose($destinationBucket, $destinationObject, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1061,9 +1149,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1072,28 +1159,33 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `copy` method:
+
 // Name of the bucket in which to find the source object.
-$sourceBucket = '{MY-SOURCE-BUCKET}'; // TODO: Update placeholder value(s).
+$sourceBucket = '{MY-SOURCE-BUCKET}';
 
 // Name of the source object. For information about how to URL encode object names to be path safe, see
 // Encoding URI Path Parts.
-$sourceObject = '{MY-SOURCE-OBJECT}'; // TODO: Update placeholder value(s).
+$sourceObject = '{MY-SOURCE-OBJECT}';
 
 // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
 // value, if any.For information about how to URL encode object names to be path safe, see Encoding URI
 // Path Parts.
-$destinationBucket = '{MY-DESTINATION-BUCKET}'; // TODO: Update placeholder value(s).
+$destinationBucket = '{MY-DESTINATION-BUCKET}';
 
 // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
 // object metadata's name value, if any.
-$destinationObject = '{MY-DESTINATION-OBJECT}'; // TODO: Update placeholder value(s).
+$destinationObject = '{MY-DESTINATION-OBJECT}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Storage_StorageObject($client);
 
-$response = $service->objects->copy($sourceBucket, $sourceObject, $destinationBucket, $destinationObject, $postBody);
+$requestBody = new Google_Service_Storage_StorageObject($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->objects->copy($sourceBucket, $sourceObject, $destinationBucket, $destinationObject, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1113,9 +1205,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1124,12 +1215,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 // Name of the bucket in which the object resides.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // Name of the object. For information about how to URL encode object names to be path safe, see
 // Encoding URI Path Parts.
-$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
+$object = '{MY-OBJECT}';
+
 
 $service->objects->delete($bucket, $object);
 <?php
@@ -1150,9 +1245,8 @@ $service->objects->delete($bucket, $object);
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1161,16 +1255,20 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `get` method:
+
 // Name of the bucket in which the object resides.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // Name of the object. For information about how to URL encode object names to be path safe, see
 // Encoding URI Path Parts.
-$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
+$object = '{MY-OBJECT}';
+
 
 $response = $service->objects->get($bucket, $object);
 
-// TODO: Use $response
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1190,9 +1288,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1200,17 +1297,22 @@ $client->useApplicationDefaultCredentials();
 $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
+
+
+// TODO: Change placeholders below to desired parameter values for the `insert` method:
 
 // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
 // value, if any.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Storage_StorageObject($client);
 
-$response = $service->objects->insert($bucket, $postBody);
+$requestBody = new Google_Service_Storage_StorageObject($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->objects->insert($bucket, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1230,9 +1332,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1241,15 +1342,19 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `listObjects` method:
+
 // Name of the bucket in which to look for objects.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
+
 
 $optParams = array();
 do {
   $response = $service->objects->listObjects($bucket, $optParams);
 
   foreach ($response['items'] as $object) {
-    // TODO: Use object
+    // TODO: Change code below to process each `object` resource:
     echo '<pre>', var_export($object, true), '</pre>', "\n";
   }
 
@@ -1273,9 +1378,8 @@ do {
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1284,19 +1388,24 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `patch` method:
+
 // Name of the bucket in which the object resides.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // Name of the object. For information about how to URL encode object names to be path safe, see
 // Encoding URI Path Parts.
-$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
+$object = '{MY-OBJECT}';
 
-// TODO: Assign values to the desired properties to be changed.
-$postBody = new Google_Service_Storage_StorageObject($client);
 
-$response = $service->objects->patch($bucket, $object, $postBody);
+$requestBody = new Google_Service_Storage_StorageObject($client);
+// TODO: Assign values to desired properties of the `requestBody` object to be changed.
 
-// TODO: Use $response
+
+$response = $service->objects->patch($bucket, $object, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1316,9 +1425,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1327,28 +1435,33 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `rewrite` method:
+
 // Name of the bucket in which to find the source object.
-$sourceBucket = '{MY-SOURCE-BUCKET}'; // TODO: Update placeholder value(s).
+$sourceBucket = '{MY-SOURCE-BUCKET}';
 
 // Name of the source object. For information about how to URL encode object names to be path safe, see
 // Encoding URI Path Parts.
-$sourceObject = '{MY-SOURCE-OBJECT}'; // TODO: Update placeholder value(s).
+$sourceObject = '{MY-SOURCE-OBJECT}';
 
 // Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket
 // value, if any.
-$destinationBucket = '{MY-DESTINATION-BUCKET}'; // TODO: Update placeholder value(s).
+$destinationBucket = '{MY-DESTINATION-BUCKET}';
 
 // Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
 // object metadata's name value, if any. For information about how to URL encode object names to be
 // path safe, see Encoding URI Path Parts.
-$destinationObject = '{MY-DESTINATION-OBJECT}'; // TODO: Update placeholder value(s).
+$destinationObject = '{MY-DESTINATION-OBJECT}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Storage_StorageObject($client);
 
-$response = $service->objects->rewrite($sourceBucket, $sourceObject, $destinationBucket, $destinationObject, $postBody);
+$requestBody = new Google_Service_Storage_StorageObject($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->objects->rewrite($sourceBucket, $sourceObject, $destinationBucket, $destinationObject, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1368,9 +1481,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1379,19 +1491,24 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `update` method:
+
 // Name of the bucket in which the object resides.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
 // Name of the object. For information about how to URL encode object names to be path safe, see
 // Encoding URI Path Parts.
-$object = '{MY-OBJECT}'; // TODO: Update placeholder value(s).
+$object = '{MY-OBJECT}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Storage_StorageObject($client);
 
-$response = $service->objects->update($bucket, $object, $postBody);
+$requestBody = new Google_Service_Storage_StorageObject($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->objects->update($bucket, $object, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";
 <?php
 /*
@@ -1411,9 +1528,8 @@ echo '<pre>', var_export($response, true), '</pre>', "\n";
 // Autoload Composer.
 require_once __DIR__ . '/vendor/autoload.php';
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 $client = new Google_Client();
 $client->setApplicationName('Google Cloud Platform Sample');
@@ -1422,13 +1538,18 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 $service = new Google_Service_Storage($client);
 
+
+// TODO: Change placeholders below to desired parameter values for the `watchAll` method:
+
 // Name of the bucket in which to look for objects.
-$bucket = '{MY-BUCKET}'; // TODO: Update placeholder value(s).
+$bucket = '{MY-BUCKET}';
 
-// TODO: Assign values to the desired properties.
-$postBody = new Google_Service_Storage_Channel($client);
 
-$response = $service->objects->watchAll($bucket, $postBody);
+$requestBody = new Google_Service_Storage_Channel($client);
+// TODO: Assign values to desired properties of the `requestBody` object.
 
-// TODO: Use $response
+
+$response = $service->objects->watchAll($bucket, $requestBody);
+
+// TODO: Change code below to process the `response` object:
 echo '<pre>', var_export($response, true), '</pre>', "\n";

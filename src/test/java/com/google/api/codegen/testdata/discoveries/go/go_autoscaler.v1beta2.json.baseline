@@ -14,6 +14,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -25,36 +26,37 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
+  c, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := autoscaler.New(hc)
+  autoscalerService, err := autoscaler.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` call:
 
   // Project ID of Autoscaler resource.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // Zone name of Autoscaler resource.
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}"
 
   // Name of the Autoscaler resource.
-  autoscaler2 := "{MY-AUTOSCALER}" // TODO: Update placeholder value(s).
+  autoscaler2 := "{MY-AUTOSCALER}"
 
-  resp, err := s.Autoscalers.Delete(project, zone, autoscaler2).Context(ctx).Do()
+  resp, err := autoscalerService.Autoscalers.Delete(project, zone, autoscaler2).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -71,6 +73,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -82,36 +85,37 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
+  c, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := autoscaler.New(hc)
+  autoscalerService, err := autoscaler.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // Project ID of Autoscaler resource.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // Zone name of Autoscaler resource.
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}"
 
   // Name of the Autoscaler resource.
-  autoscaler2 := "{MY-AUTOSCALER}" // TODO: Update placeholder value(s).
+  autoscaler2 := "{MY-AUTOSCALER}"
 
-  resp, err := s.Autoscalers.Get(project, zone, autoscaler2).Context(ctx).Do()
+  resp, err := autoscalerService.Autoscalers.Get(project, zone, autoscaler2).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -128,6 +132,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -139,37 +144,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
+  c, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := autoscaler.New(hc)
+  autoscalerService, err := autoscaler.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Insert` call:
 
   // Project ID of Autoscaler resource.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // Zone name of Autoscaler resource.
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}"
 
-  resource := &autoscaler.Autoscaler{
-    // TODO: Add the desired fields.
+  rb := autoscaler.Autoscaler{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Autoscalers.Insert(project, zone, resource).Context(ctx).Do()
+  resp, err := autoscalerService.Autoscalers.Insert(project, zone, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -186,6 +192,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -197,33 +204,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
+  c, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := autoscaler.New(hc)
+  autoscalerService, err := autoscaler.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // Project ID of Autoscaler resource.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // Zone name of Autoscaler resource.
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}"
 
-  call := s.Autoscalers.List(project, zone)
-  if err := call.Pages(ctx, func(page *autoscaler.AutoscalerListResponse) error {
+  req := autoscalerService.Autoscalers.List(project, zone)
+  if err := req.Pages(ctx, func(page *autoscaler.AutoscalerListResponse) error {
     for _, autoscaler := range page.Items {
-      // TODO: Use autoscaler
-      log.Printf("%#v\n", autoscaler)
+      // TODO: Change code below to process each `autoscaler` resource:
+      fmt.Printf("%#v\n", autoscaler)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -243,6 +251,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -254,40 +263,41 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
+  c, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := autoscaler.New(hc)
+  autoscalerService, err := autoscaler.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Patch` call:
 
   // Project ID of Autoscaler resource.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // Zone name of Autoscaler resource.
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}"
 
   // Name of the Autoscaler resource.
-  autoscaler2 := "{MY-AUTOSCALER}" // TODO: Update placeholder value(s).
+  autoscaler2 := "{MY-AUTOSCALER}"
 
-  resource := &autoscaler.Autoscaler{
-    // TODO: Add the desired fields to be changed.
+  rb := autoscaler.Autoscaler{
+    // TODO: Add desired fields of the request body to be changed.
   }
 
-  resp, err := s.Autoscalers.Patch(project, zone, autoscaler2, resource).Context(ctx).Do()
+  resp, err := autoscalerService.Autoscalers.Patch(project, zone, autoscaler2, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -304,6 +314,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -315,40 +326,41 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
+  c, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := autoscaler.New(hc)
+  autoscalerService, err := autoscaler.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` call:
 
   // Project ID of Autoscaler resource.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // Zone name of Autoscaler resource.
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s).
+  zone := "{MY-ZONE}"
 
   // Name of the Autoscaler resource.
-  autoscaler2 := "{MY-AUTOSCALER}" // TODO: Update placeholder value(s).
+  autoscaler2 := "{MY-AUTOSCALER}"
 
-  resource := &autoscaler.Autoscaler{
-    // TODO: Add the desired fields.
+  rb := autoscaler.Autoscaler{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Autoscalers.Update(project, zone, autoscaler2, resource).Context(ctx).Do()
+  resp, err := autoscalerService.Autoscalers.Update(project, zone, autoscaler2, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -365,6 +377,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -376,30 +389,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
+  c, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := autoscaler.New(hc)
+  autoscalerService, err := autoscaler.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
+  // TODO: Change placeholders below to desired parameter values for the `Delete` call:
 
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  // project
+  project := "{MY-PROJECT}"
 
+  // zone
+  zone := "{MY-ZONE}"  // ex: "us-central1-f"
 
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s). eg. "us-central1-f"
+  // operation
+  operation := "{MY-OPERATION}"
 
-
-  operation := "{MY-OPERATION}" // TODO: Update placeholder value(s).
-
-  if err := s.ZoneOperations.Delete(project, zone, operation).Context(ctx).Do(); err != nil {
+  if err := autoscalerService.ZoneOperations.Delete(project, zone, operation).Context(ctx).Do(); err != nil {
     log.Fatal(err)
   }
 }
@@ -418,6 +432,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -429,36 +444,37 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
+  c, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := autoscaler.New(hc)
+  autoscalerService, err := autoscaler.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  // project
+  project := "{MY-PROJECT}"
 
+  // zone
+  zone := "{MY-ZONE}"  // ex: "us-central1-f"
 
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s). eg. "us-central1-f"
+  // operation
+  operation := "{MY-OPERATION}"
 
-
-  operation := "{MY-OPERATION}" // TODO: Update placeholder value(s).
-
-  resp, err := s.ZoneOperations.Get(project, zone, operation).Context(ctx).Do()
+  resp, err := autoscalerService.ZoneOperations.Get(project, zone, operation).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -475,6 +491,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -486,33 +503,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
+  c, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := autoscaler.New(hc)
+  autoscalerService, err := autoscaler.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  // project
+  project := "{MY-PROJECT}"
 
+  // zone
+  zone := "{MY-ZONE}"  // ex: "us-central1-f"
 
-  zone := "{MY-ZONE}" // TODO: Update placeholder value(s). eg. "us-central1-f"
-
-  call := s.ZoneOperations.List(project, zone)
-  if err := call.Pages(ctx, func(page *autoscaler.OperationList) error {
+  req := autoscalerService.ZoneOperations.List(project, zone)
+  if err := req.Pages(ctx, func(page *autoscaler.OperationList) error {
     for _, operation := range page.Items {
-      // TODO: Use operation
-      log.Printf("%#v\n", operation)
+      // TODO: Change code below to process each `operation` resource:
+      fmt.Printf("%#v\n", operation)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -532,6 +550,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -543,30 +562,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
+  c, err := google.DefaultClient(ctx, autoscaler.ComputeScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := autoscaler.New(hc)
+  autoscalerService, err := autoscaler.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  // project
+  project := "{MY-PROJECT}"
 
-  call := s.Zones.List(project)
-  if err := call.Pages(ctx, func(page *autoscaler.ZoneList) error {
+  req := autoscalerService.Zones.List(project)
+  if err := req.Pages(ctx, func(page *autoscaler.ZoneList) error {
     for _, zone := range page.Items {
-      // TODO: Use zone
-      log.Printf("%#v\n", zone)
+      // TODO: Change code below to process each `zone` resource:
+      fmt.Printf("%#v\n", zone)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }

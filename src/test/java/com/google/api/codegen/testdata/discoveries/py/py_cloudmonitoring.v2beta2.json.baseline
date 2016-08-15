@@ -18,26 +18,29 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `create` method:
+
 # The project id. The value can be the numeric project ID or string-based project name.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
+
 
 metric_descriptor_body = {
-    # TODO: Add the desired entries.
+    # TODO: Add desired entries of the request body.
 }
 
 
 request = service.metricDescriptors().create(project=project, body=metric_descriptor_body)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -58,24 +61,27 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `delete` method:
+
 # The project ID to which the metric belongs.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Name of the metric.
-metric = '{MY-METRIC}'  # TODO: Update placeholder value(s).
+metric = '{MY-METRIC}'
+
 
 request = service.metricDescriptors().delete(project=project, metric=metric)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -96,16 +102,19 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `list` method:
+
 # The project id. The value can be the numeric project ID or string-based project name.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
+
 
 metricDescriptors = service.metricDescriptors()
 request = metricDescriptors.list(project=project)
@@ -113,7 +122,7 @@ while request is not None:
     response = request.execute()
 
     for metric_descriptor in response['metrics']:
-        # TODO: Use metric_descriptor
+        # TODO: Change code below to process each `metric_descriptor` resource:
         pprint(metric_descriptor)
 
     request = metricDescriptors.list_next(previous_request=request, previous_response=response)
@@ -136,24 +145,27 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `list` method:
+
 # The project ID to which this time series belongs. The value can be the numeric project ID or
 # string-based project name.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
 # compute.googleapis.com/instance/disk/read_ops_count.
-metric = '{MY-METRIC}'  # TODO: Update placeholder value(s).
+metric = '{MY-METRIC}'
 
 # End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-youngest = '{MY-YOUNGEST}'  # TODO: Update placeholder value(s).
+youngest = '{MY-YOUNGEST}'
+
 
 timeseries = service.timeseries()
 request = timeseries.list(project=project, metric=metric, youngest=youngest)
@@ -161,7 +173,7 @@ while request is not None:
     response = request.execute()
 
     for timeseries in response['timeseries']:
-        # TODO: Use timeseries
+        # TODO: Change code below to process each `timeseries` resource:
         pprint(timeseries)
 
     request = timeseries.list_next(previous_request=request, previous_response=response)
@@ -184,26 +196,29 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `write` method:
+
 # The project ID. The value can be the numeric project ID or string-based project name.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
+
 
 write_timeseries_request_body = {
-    # TODO: Add the desired entries.
+    # TODO: Add desired entries of the request body.
 }
 
 
 request = service.timeseries().write(project=project, body=write_timeseries_request_body)
 response = request.execute()
 
-# TODO: Use response
+# TODO: Change code below to process the `response` dict:
 pprint(response)
 """
 BEFORE RUNNING:
@@ -224,24 +239,27 @@ from pprint import pprint
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
-# Authentication is provided by the `gcloud` tool when running locally
-# and by built-in service accounts when running on GAE, GCE, or GKE.
-# For more information, see
+# Use Application Default Credentials for authentication when running locally.
+# For more information, see:
 # https://developers.google.com/identity/protocols/application-default-credentials
 credentials = GoogleCredentials.get_application_default()
 
 service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
+
+# TODO: Change placeholders below to desired parameter values for the `list` method:
+
 # The project ID to which this time series belongs. The value can be the numeric project ID or
 # string-based project name.
-project = '{MY-PROJECT}'  # TODO: Update placeholder value(s).
+project = '{MY-PROJECT}'
 
 # Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
 # compute.googleapis.com/instance/disk/read_ops_count.
-metric = '{MY-METRIC}'  # TODO: Update placeholder value(s).
+metric = '{MY-METRIC}'
 
 # End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
-youngest = '{MY-YOUNGEST}'  # TODO: Update placeholder value(s).
+youngest = '{MY-YOUNGEST}'
+
 
 timeseriesDescriptors = service.timeseriesDescriptors()
 request = timeseriesDescriptors.list(project=project, metric=metric, youngest=youngest)
@@ -249,7 +267,7 @@ while request is not None:
     response = request.execute()
 
     for timeseries_descriptor in response['timeseries']:
-        # TODO: Use timeseries_descriptor
+        # TODO: Change code below to process each `timeseries_descriptor` resource:
         pprint(timeseries_descriptor)
 
     request = timeseriesDescriptors.list_next(previous_request=request, previous_response=response)

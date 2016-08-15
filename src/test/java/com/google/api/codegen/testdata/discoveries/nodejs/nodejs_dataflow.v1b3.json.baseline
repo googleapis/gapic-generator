@@ -11,12 +11,10 @@
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dataflow = google.dataflow('v1b3');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -29,11 +27,15 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `create` method:
+
     // The project which owns the job.
-    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+    projectId: "{MY-PROJECT-ID}",
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -45,7 +47,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -61,12 +63,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dataflow = google.dataflow('v1b3');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -79,11 +79,125 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `getConfig` method:
+
+    // The project id.
+    projectId: "{MY-PROJECT-ID}",
+
+    // The job id.
+    jobId: "{MY-JOB-ID}",
+
+
+    resource: {
+      // TODO: Add desired properties of the request body.
+    },
+
+    auth: authClient
+  };
+
+  dataflow.projects.jobs.debug.getConfig(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Dataflow API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dataflow
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+var dataflow = google.dataflow('v1b3');
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `sendCapture` method:
+
+    // The project id.
+    projectId: "{MY-PROJECT-ID}",
+
+    // The job id.
+    jobId: "{MY-JOB-ID}",
+
+
+    resource: {
+      // TODO: Add desired properties of the request body.
+    },
+
+    auth: authClient
+  };
+
+  dataflow.projects.jobs.debug.sendCapture(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Dataflow API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dataflow
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+var dataflow = google.dataflow('v1b3');
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `get` method:
+
     // The project which owns the job.
-    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+    projectId: "{MY-PROJECT-ID}",
 
     // Identifies a single job.
-    jobId: "{MY-JOB-ID}", // TODO: Update placeholder value(s).
+    jobId: "{MY-JOB-ID}",
+
 
     auth: authClient
   };
@@ -94,7 +208,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -110,12 +224,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dataflow = google.dataflow('v1b3');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -128,11 +240,15 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `getMetrics` method:
+
     // A project id.
-    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+    projectId: "{MY-PROJECT-ID}",
 
     // The job to get messages for.
-    jobId: "{MY-JOB-ID}", // TODO: Update placeholder value(s).
+    jobId: "{MY-JOB-ID}",
+
 
     auth: authClient
   };
@@ -143,7 +259,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -159,12 +275,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dataflow = google.dataflow('v1b3');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -177,13 +291,17 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
     // The project which owns the jobs.
-    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+    projectId: "{MY-PROJECT-ID}",
+
 
     auth: authClient
   };
 
-  dataflow.projects.jobs.list(request, function handlePage(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -191,11 +309,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     var jobsPage = response['jobs'];
     if (!jobsPage) {
-      console.log('{}');
       return;
     }
     for (var i = 0; i < jobsPage.length; i++) {
-      // TODO: Use jobsPage
+      // TODO: Change code below to process each resource in `jobsPage`:
       console.log(JSON.stringify(jobsPage[i], null, 2));
     }
 
@@ -203,7 +320,9 @@ google.auth.getApplicationDefault(function(err, authClient) {
       request.pageToken = response.nextPageToken;
       dataflow.projects.jobs.list(request, handlePage);
     }
-  });
+  };
+
+  dataflow.projects.jobs.list(request, handlePage);
 });
 // BEFORE RUNNING:
 // ---------------
@@ -217,12 +336,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dataflow = google.dataflow('v1b3');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -235,16 +352,20 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
     // A project id.
-    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+    projectId: "{MY-PROJECT-ID}",
 
     // The job to get messages about.
-    jobId: "{MY-JOB-ID}", // TODO: Update placeholder value(s).
+    jobId: "{MY-JOB-ID}",
+
 
     auth: authClient
   };
 
-  dataflow.projects.jobs.messages.list(request, function handlePage(err, response) {
+  var handlePage = function(err, response) {
     if (err) {
       console.log(err);
       return;
@@ -252,11 +373,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 
     var jobMessagesPage = response['jobMessages'];
     if (!jobMessagesPage) {
-      console.log('{}');
       return;
     }
     for (var i = 0; i < jobMessagesPage.length; i++) {
-      // TODO: Use jobMessagesPage
+      // TODO: Change code below to process each resource in `jobMessagesPage`:
       console.log(JSON.stringify(jobMessagesPage[i], null, 2));
     }
 
@@ -264,7 +384,9 @@ google.auth.getApplicationDefault(function(err, authClient) {
       request.pageToken = response.nextPageToken;
       dataflow.projects.jobs.messages.list(request, handlePage);
     }
-  });
+  };
+
+  dataflow.projects.jobs.messages.list(request, handlePage);
 });
 // BEFORE RUNNING:
 // ---------------
@@ -278,12 +400,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dataflow = google.dataflow('v1b3');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -296,14 +416,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `update` method:
+
     // The project which owns the job.
-    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+    projectId: "{MY-PROJECT-ID}",
 
     // Identifies a single job.
-    jobId: "{MY-JOB-ID}", // TODO: Update placeholder value(s).
+    jobId: "{MY-JOB-ID}",
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -315,7 +439,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -331,12 +455,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dataflow = google.dataflow('v1b3');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -349,14 +471,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `lease` method:
+
     // Identifies the project this worker belongs to.
-    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+    projectId: "{MY-PROJECT-ID}",
 
     // Identifies the workflow job this worker belongs to.
-    jobId: "{MY-JOB-ID}", // TODO: Update placeholder value(s).
+    jobId: "{MY-JOB-ID}",
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -368,7 +494,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -384,12 +510,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dataflow = google.dataflow('v1b3');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -402,14 +526,18 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `reportStatus` method:
+
     // The project which owns the WorkItem's job.
-    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+    projectId: "{MY-PROJECT-ID}",
 
     // The job which the WorkItem is part of.
-    jobId: "{MY-JOB-ID}", // TODO: Update placeholder value(s).
+    jobId: "{MY-JOB-ID}",
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -421,7 +549,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });
@@ -437,12 +565,10 @@ google.auth.getApplicationDefault(function(err, authClient) {
 // 3. Install the Node.js client library and Application Default Credentials
 //    library by running `npm install googleapis --save`
 var google = require('googleapis');
-
 var dataflow = google.dataflow('v1b3');
 
-// Authentication is provided by the `gcloud` tool when running locally
-// and by built-in service accounts when running on GAE, GCE, or GKE.
-// For more information, see
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
 // https://developers.google.com/identity/protocols/application-default-credentials
 google.auth.getApplicationDefault(function(err, authClient) {
   if (err) {
@@ -455,11 +581,67 @@ google.auth.getApplicationDefault(function(err, authClient) {
   }
 
   var request = {
-    // The project to send the WorkerMessages to.
-    projectId: "{MY-PROJECT-ID}", // TODO: Update placeholder value(s).
+
+    // TODO: Change placeholders below to desired parameter values for the `create` method:
+
+    // The project which owns the job.
+    projectId: "{MY-PROJECT-ID}",
+
 
     resource: {
-      // TODO: Add the desired properties.
+      // TODO: Add desired properties of the request body.
+    },
+
+    auth: authClient
+  };
+
+  dataflow.projects.templates.create(request, function(err, response) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+
+    // TODO: Change code below to process the `response` object:
+    console.log(JSON.stringify(response, null, 2));
+  });
+});
+// BEFORE RUNNING:
+// ---------------
+// 1. If not already done, enable the Google Dataflow API
+//    and check the quota for your project at
+//    https://console.developers.google.com/apis/api/dataflow
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    `gcloud beta auth application-default login`
+// 3. Install the Node.js client library and Application Default Credentials
+//    library by running `npm install googleapis --save`
+var google = require('googleapis');
+var dataflow = google.dataflow('v1b3');
+
+// Use Application Default Credentials for authentication when running locally.
+// For more information, see:
+// https://developers.google.com/identity/protocols/application-default-credentials
+google.auth.getApplicationDefault(function(err, authClient) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  if (authClient.createScopedRequired && authClient.createScopedRequired()) {
+    var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
+    authClient = authClient.createScoped(scopes);
+  }
+
+  var request = {
+
+    // TODO: Change placeholders below to desired parameter values for the `workerMessages` method:
+
+    // The project to send the WorkerMessages to.
+    projectId: "{MY-PROJECT-ID}",
+
+
+    resource: {
+      // TODO: Add desired properties of the request body.
     },
 
     auth: authClient
@@ -471,7 +653,7 @@ google.auth.getApplicationDefault(function(err, authClient) {
       return;
     }
 
-    // TODO: Use response
+    // TODO: Change code below to process the `response` object:
     console.log(JSON.stringify(response, null, 2));
   });
 });

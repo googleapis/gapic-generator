@@ -1,5 +1,5 @@
 
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
@@ -11,7 +11,7 @@
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -29,7 +29,6 @@ import com.google.api.services.cloudmonitoring.model.MetricDescriptor;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class CloudMonitoringExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -52,12 +51,19 @@ public class CloudMonitoringExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -65,6 +71,7 @@ public class CloudMonitoringExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
@@ -81,26 +88,37 @@ public class CloudMonitoringExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     CloudMonitoring cloudmonitoringService = new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'create' method:
 
-    // * The project id. The value can be the numeric project ID or string-based project name.
+    // TODO: Change placeholders below to desired parameter values for the `create` method:
+
+    // The project id. The value can be the numeric project ID or string-based project name.
     String project = "{MY-PROJECT}";
 
-    MetricDescriptor content = new MetricDescriptor();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    CloudMonitoring.MetricDescriptors.Create request = cloudmonitoringService.metricDescriptors().create(project, content);
+    MetricDescriptor requestBody = new MetricDescriptor();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    CloudMonitoring.MetricDescriptors.Create request = cloudmonitoringService.metricDescriptors().create(project, requestBody);
     MetricDescriptor response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
@@ -112,7 +130,7 @@ public class CloudMonitoringExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -130,7 +148,6 @@ import com.google.api.services.cloudmonitoring.model.DeleteMetricDescriptorRespo
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class CloudMonitoringExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -153,12 +170,19 @@ public class CloudMonitoringExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -166,6 +190,7 @@ public class CloudMonitoringExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
@@ -182,26 +207,36 @@ public class CloudMonitoringExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     CloudMonitoring cloudmonitoringService = new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
 
-    // * The project ID to which the metric belongs.
+    // TODO: Change placeholders below to desired parameter values for the `delete` method:
+
+    // The project ID to which the metric belongs.
     String project = "{MY-PROJECT}";
 
-    // * Name of the metric.
+    // Name of the metric.
     String metric = "{MY-METRIC}";
+
 
     CloudMonitoring.MetricDescriptors.Delete request = cloudmonitoringService.metricDescriptors().delete(project, metric);
     DeleteMetricDescriptorResponse response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
@@ -213,7 +248,7 @@ public class CloudMonitoringExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -232,7 +267,6 @@ import com.google.api.services.cloudmonitoring.model.MetricDescriptor;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class CloudMonitoringExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -260,12 +294,19 @@ public class CloudMonitoringExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -273,6 +314,7 @@ public class CloudMonitoringExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
@@ -280,14 +322,19 @@ public class CloudMonitoringExample {
         .build();
   }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     CloudMonitoring cloudmonitoringService = new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * The project id. The value can be the numeric project ID or string-based project name.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // The project id. The value can be the numeric project ID or string-based project name.
     String project = "{MY-PROJECT}";
+
 
     CloudMonitoring.MetricDescriptors.List request = cloudmonitoringService.metricDescriptors().list(project);
     ListMetricDescriptorsResponse response;
@@ -297,7 +344,8 @@ public class CloudMonitoringExample {
         continue;
 
       for (MetricDescriptor metricDescriptor : response.getMetrics()) {
-        // TODO: Add code here to process each 'metricDescriptor' resource
+        // TODO: Change code below to process each `metricDescriptor` resource:
+        System.out.println(metricDescriptor);
       }
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
 
@@ -311,7 +359,7 @@ public class CloudMonitoringExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
@@ -323,7 +371,7 @@ public class CloudMonitoringExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -343,7 +391,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-
 public class CloudMonitoringExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
@@ -362,38 +409,35 @@ public class CloudMonitoringExample {
     List request = service.timeseries().list(project, metric, youngest);
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     CloudMonitoring cloudmonitoringService = new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * The project ID to which this time series belongs. The value can be the numeric project ID or
-    //   string-based project name.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // The project ID to which this time series belongs. The value can be the numeric project ID or
+    // string-based project name.
     String project = "{MY-PROJECT}";
 
-    // * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
-    //   compute.googleapis.com/instance/disk/read_ops_count.
+    // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+    // compute.googleapis.com/instance/disk/read_ops_count.
     String metric = "{MY-METRIC}";
 
-    // * End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
+    // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
     String youngest = "{MY-YOUNGEST}";
+
 
     CloudMonitoring.Timeseries.List request = cloudmonitoringService.timeseries().list(project, metric, youngest);
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
@@ -406,11 +450,16 @@ public class CloudMonitoringExample {
 =======
 
       for (Timeseries timeseries : response.getTimeseries()) {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
         // TODO: Add code here to process each 'timeseries' resource
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
       }
       for (Timeseries item : response.getTimeseries()) {
         System.out.println(item);
+=======
+        // TODO: Change code below to process each `timeseries` resource:
+        System.out.println(timeseries);
+>>>>>>> Update discovery sample gen across languages.
       }
     } while (response.getNextPageToken() != null);
   }
@@ -444,7 +493,7 @@ public class CloudMonitoringExample {
     }
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
@@ -456,7 +505,7 @@ public class CloudMonitoringExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -475,7 +524,6 @@ import com.google.api.services.cloudmonitoring.model.WriteTimeseriesResponse;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
-
 
 public class CloudMonitoringExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
@@ -498,12 +546,19 @@ public class CloudMonitoringExample {
     // `gcloud beta auth application-default login`
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 
     // Authentication is provided by the 'gcloud' tool when running locally
     // and by built-in service accounts when running on GAE, GCE, or GKE.
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
     GoogleCredential credential = GoogleCredential.getApplicationDefault();
 
+=======
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
+    // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
+>>>>>>> Update discovery sample gen across languages.
     if (credential.createScopedRequired()) {
       credential =
           credential.createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
@@ -511,6 +566,7 @@ public class CloudMonitoringExample {
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
 
     return new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
@@ -527,26 +583,37 @@ public class CloudMonitoringExample {
       System.out.println(e.getMessage());
     }
 =======
+=======
+
+>>>>>>> Update discovery sample gen across languages.
     CloudMonitoring cloudmonitoringService = new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'write' method:
 
-    // * The project ID. The value can be the numeric project ID or string-based project name.
+    // TODO: Change placeholders below to desired parameter values for the `write` method:
+
+    // The project ID. The value can be the numeric project ID or string-based project name.
     String project = "{MY-PROJECT}";
 
-    WriteTimeseriesRequest content = new WriteTimeseriesRequest();
-    // TODO: Add code here to assign values to desired fields of the 'content' object
 
-    CloudMonitoring.Timeseries.Write request = cloudmonitoringService.timeseries().write(project, content);
+    WriteTimeseriesRequest requestBody = new WriteTimeseriesRequest();
+    // TODO: Assign values to desired fields of the `requestBody` object.
+
+
+    CloudMonitoring.Timeseries.Write request = cloudmonitoringService.timeseries().write(project, requestBody);
     WriteTimeseriesResponse response = request.execute();
 
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
     // TODO: Add code here to process the 'response' object
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
+=======
+    // TODO: Change code below to process the `response` object:
+    System.out.println(response);
+>>>>>>> Update discovery sample gen across languages.
   }
 }
-/*
+/**
  * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
@@ -558,7 +625,7 @@ public class CloudMonitoringExample {
  * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
  *    https://cloud.google.com/sdk/ and run
- *    'gcloud beta auth application-default login'
+ *    `gcloud beta auth application-default login`
  * 3. Install the Java client library on maven or gradle. Check installation
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
  *    instructions at https://github.com/google/google-api-java-client.
@@ -578,7 +645,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
-
 public class CloudMonitoringExample {
 <<<<<<< 87e3673f9830eb19419833f4430c7f10a733ae35
   public void run() throws IOException, GeneralSecurityException {
@@ -597,38 +663,35 @@ public class CloudMonitoringExample {
     List request = service.timeseriesDescriptors().list(project, metric, youngest);
 =======
   public static void main(String[] args) throws IOException, GeneralSecurityException {
-
-    // Authentication is provided by the 'gcloud' tool when running locally
-    // and by built-in service accounts when running on GAE, GCE, or GKE.
-    GoogleCredential credential = GoogleCredential.getApplicationDefault();
-
-    // The createScopedRequired method returns true when running on GAE or a local developer
-    // machine. In that case, the desired scopes must be passed in manually. When the code is
-    // running in GCE, GKE or a Managed VM, the scopes are pulled from the GCE metadata server.
-    // For more information, see
+    // Use Application Default Credentials for authentication when running locally.
+    // For more information, see:
     // https://developers.google.com/identity/protocols/application-default-credentials
+    GoogleCredential credential = GoogleCredential.getApplicationDefault();
     if (credential.createScopedRequired()) {
       credential = credential.createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
     }
 
     HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
     JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+
     CloudMonitoring cloudmonitoringService = new CloudMonitoring.Builder(httpTransport, jsonFactory, credential)
       .setApplicationName("Google Cloud Platform Sample")
       .build();
 
-    // TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
-    // * The project ID to which this time series belongs. The value can be the numeric project ID or
-    //   string-based project name.
+    // TODO: Change placeholders below to desired parameter values for the `list` method:
+
+    // The project ID to which this time series belongs. The value can be the numeric project ID or
+    // string-based project name.
     String project = "{MY-PROJECT}";
 
-    // * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
-    //   compute.googleapis.com/instance/disk/read_ops_count.
+    // Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+    // compute.googleapis.com/instance/disk/read_ops_count.
     String metric = "{MY-METRIC}";
 
-    // * End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
+    // End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
     String youngest = "{MY-YOUNGEST}";
+
 
     CloudMonitoring.TimeseriesDescriptors.List request = cloudmonitoringService.timeseriesDescriptors().list(project, metric, youngest);
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
@@ -641,11 +704,16 @@ public class CloudMonitoringExample {
 =======
 
       for (TimeseriesDescriptor timeseriesDescriptor : response.getTimeseries()) {
+<<<<<<< 0cfad80210389130a265883bdb0e5c6c534b80d6
         // TODO: Add code here to process each 'timeseriesDescriptor' resource
 >>>>>>> Add basic 3LO and API key auth support in discovery (#445)
       }
       for (TimeseriesDescriptor item : response.getTimeseries()) {
         System.out.println(item);
+=======
+        // TODO: Change code below to process each `timeseriesDescriptor` resource:
+        System.out.println(timeseriesDescriptor);
+>>>>>>> Update discovery sample gen across languages.
       }
     } while (response.getNextPageToken() != null);
   }

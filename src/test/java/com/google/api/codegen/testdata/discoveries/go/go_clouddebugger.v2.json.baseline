@@ -3,7 +3,7 @@ package main
 
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API
+// 1. If not already done, enable the Stackdriver Debugger API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
@@ -14,6 +14,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -25,36 +26,37 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := clouddebugger.New(hc)
+  clouddebuggerService, err := clouddebugger.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // Identifies the debuggee.
-  debuggeeId := "{MY-DEBUGGEE-ID}" // TODO: Update placeholder value(s).
+  debuggeeId := "{MY-DEBUGGEE-ID}"
 
-  resp, err := s.Controller.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
+  resp, err := clouddebuggerService.Controller.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API
+// 1. If not already done, enable the Stackdriver Debugger API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
@@ -65,6 +67,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -76,43 +79,44 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := clouddebugger.New(hc)
+  clouddebuggerService, err := clouddebugger.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` call:
 
   // Identifies the debuggee being debugged.
-  debuggeeId := "{MY-DEBUGGEE-ID}" // TODO: Update placeholder value(s).
+  debuggeeId := "{MY-DEBUGGEE-ID}"
 
   // Breakpoint identifier, unique in the scope of the debuggee.
-  id := "{MY-ID}" // TODO: Update placeholder value(s).
+  id := "{MY-ID}"
 
-  resource := &clouddebugger.UpdateActiveBreakpointRequest{
-    // TODO: Add the desired fields.
+  rb := clouddebugger.UpdateActiveBreakpointRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Controller.Debuggees.Breakpoints.Update(debuggeeId, id, resource).Context(ctx).Do()
+  resp, err := clouddebuggerService.Controller.Debuggees.Breakpoints.Update(debuggeeId, id, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API
+// 1. If not already done, enable the Stackdriver Debugger API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
@@ -123,6 +127,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -134,37 +139,37 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := clouddebugger.New(hc)
+  clouddebuggerService, err := clouddebugger.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  resource := &clouddebugger.RegisterDebuggeeRequest{
-    // TODO: Add the desired fields.
+
+  rb := clouddebugger.RegisterDebuggeeRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Controller.Debuggees.Register(resource).Context(ctx).Do()
+  resp, err := clouddebuggerService.Controller.Debuggees.Register(&rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API
+// 1. If not already done, enable the Stackdriver Debugger API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
@@ -175,6 +180,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -186,39 +192,40 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := clouddebugger.New(hc)
+  clouddebuggerService, err := clouddebugger.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` call:
 
   // ID of the debuggee whose breakpoint to delete.
-  debuggeeId := "{MY-DEBUGGEE-ID}" // TODO: Update placeholder value(s).
+  debuggeeId := "{MY-DEBUGGEE-ID}"
 
   // ID of the breakpoint to delete.
-  breakpointId := "{MY-BREAKPOINT-ID}" // TODO: Update placeholder value(s).
+  breakpointId := "{MY-BREAKPOINT-ID}"
 
-  resp, err := s.Debugger.Debuggees.Breakpoints.Delete(debuggeeId, breakpointId).Context(ctx).Do()
+  resp, err := clouddebuggerService.Debugger.Debuggees.Breakpoints.Delete(debuggeeId, breakpointId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API
+// 1. If not already done, enable the Stackdriver Debugger API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
@@ -229,6 +236,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -240,39 +248,40 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := clouddebugger.New(hc)
+  clouddebuggerService, err := clouddebugger.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // ID of the debuggee whose breakpoint to get.
-  debuggeeId := "{MY-DEBUGGEE-ID}" // TODO: Update placeholder value(s).
+  debuggeeId := "{MY-DEBUGGEE-ID}"
 
   // ID of the breakpoint to get.
-  breakpointId := "{MY-BREAKPOINT-ID}" // TODO: Update placeholder value(s).
+  breakpointId := "{MY-BREAKPOINT-ID}"
 
-  resp, err := s.Debugger.Debuggees.Breakpoints.Get(debuggeeId, breakpointId).Context(ctx).Do()
+  resp, err := clouddebuggerService.Debugger.Debuggees.Breakpoints.Get(debuggeeId, breakpointId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API
+// 1. If not already done, enable the Stackdriver Debugger API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
@@ -283,6 +292,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -294,36 +304,37 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := clouddebugger.New(hc)
+  clouddebuggerService, err := clouddebugger.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // ID of the debuggee whose breakpoints to list.
-  debuggeeId := "{MY-DEBUGGEE-ID}" // TODO: Update placeholder value(s).
+  debuggeeId := "{MY-DEBUGGEE-ID}"
 
-  resp, err := s.Debugger.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
+  resp, err := clouddebuggerService.Debugger.Debuggees.Breakpoints.List(debuggeeId).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API
+// 1. If not already done, enable the Stackdriver Debugger API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
@@ -334,6 +345,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -345,40 +357,41 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := clouddebugger.New(hc)
+  clouddebuggerService, err := clouddebugger.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Set` call:
 
   // ID of the debuggee where the breakpoint is to be set.
-  debuggeeId := "{MY-DEBUGGEE-ID}" // TODO: Update placeholder value(s).
+  debuggeeId := "{MY-DEBUGGEE-ID}"
 
-  resource := &clouddebugger.Breakpoint{
-    // TODO: Add the desired fields.
+  rb := clouddebugger.Breakpoint{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Debugger.Debuggees.Breakpoints.Set(debuggeeId, resource).Context(ctx).Do()
+  resp, err := clouddebuggerService.Debugger.Debuggees.Breakpoints.Set(debuggeeId, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
 // BEFORE RUNNING:
 // ---------------
-// 1. If not already done, enable the Google Cloud Debugger API
+// 1. If not already done, enable the Stackdriver Debugger API
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/clouddebugger
 // 2. This sample uses Application Default Credentials for authentication.
@@ -389,6 +402,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -400,25 +414,25 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, clouddebugger.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := clouddebugger.New(hc)
+  clouddebuggerService, err := clouddebugger.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  resp, err := s.Debugger.Debuggees.List().Context(ctx).Do()
+
+  resp, err := clouddebuggerService.Debugger.Debuggees.List().Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }

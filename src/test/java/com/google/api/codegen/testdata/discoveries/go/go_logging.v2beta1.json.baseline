@@ -14,6 +14,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -25,31 +26,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := logging.New(hc)
+  loggingService, err := logging.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  resource := &logging.ListLogEntriesRequest{
-    // TODO: Add the desired fields.
+
+  rb := logging.ListLogEntriesRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Entries.List(resource).Context(ctx).Do()
+  resp, err := loggingService.Entries.List(&rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -66,6 +67,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -77,31 +79,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := logging.New(hc)
+  loggingService, err := logging.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  resource := &logging.WriteLogEntriesRequest{
-    // TODO: Add the desired fields.
+
+  rb := logging.WriteLogEntriesRequest{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Entries.Write(resource).Context(ctx).Do()
+  resp, err := loggingService.Entries.Write(&rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -118,6 +120,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -129,27 +132,27 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := logging.New(hc)
+  loggingService, err := logging.New(c)
   if err != nil {
     log.Fatal(err)
   }
 
-  call := s.MonitoredResourceDescriptors.List()
-  if err := call.Pages(ctx, func(page *logging.ListMonitoredResourceDescriptorsResponse) error {
+
+  req := loggingService.MonitoredResourceDescriptors.List()
+  if err := req.Pages(ctx, func(page *logging.ListMonitoredResourceDescriptorsResponse) error {
     for _, monitoredResourceDescriptor := range page.ResourceDescriptors {
-      // TODO: Use monitoredResourceDescriptor
-      log.Printf("%#v\n", monitoredResourceDescriptor)
+      // TODO: Change code below to process each `monitoredResourceDescriptor` resource:
+      fmt.Printf("%#v\n", monitoredResourceDescriptor)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -169,6 +172,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -180,30 +184,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := logging.New(hc)
+  loggingService, err := logging.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` call:
 
   // Required. The resource name of the log to delete. Example: `"projects/my-project/logs/syslog"`.
-  logName := "projects/{MY-PROJECT}/logs/{MY-LOG}" // TODO: Update placeholder value(s).
+  logName := "projects/{MY-PROJECT}/logs/{MY-LOG}"
 
-  resp, err := s.Projects.Logs.Delete(logName).Context(ctx).Do()
+  resp, err := loggingService.Projects.Logs.Delete(logName).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -220,6 +225,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -231,35 +237,36 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := logging.New(hc)
+  loggingService, err := logging.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Create` call:
 
   // The resource name of the project in which to create the metric. Example: `"projects/my-project-id"`.
   // The new metric must be provided in the request.
-  projectName := "projects/{MY-PROJECT}" // TODO: Update placeholder value(s).
+  projectName := "projects/{MY-PROJECT}"
 
-  resource := &logging.LogMetric{
-    // TODO: Add the desired fields.
+  rb := logging.LogMetric{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Projects.Metrics.Create(projectName, resource).Context(ctx).Do()
+  resp, err := loggingService.Projects.Metrics.Create(projectName, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -276,6 +283,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -287,30 +295,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := logging.New(hc)
+  loggingService, err := logging.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` call:
 
   // The resource name of the metric to delete. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}" // TODO: Update placeholder value(s).
+  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}"
 
-  resp, err := s.Projects.Metrics.Delete(metricName).Context(ctx).Do()
+  resp, err := loggingService.Projects.Metrics.Delete(metricName).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -327,6 +336,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -338,30 +348,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := logging.New(hc)
+  loggingService, err := logging.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // The resource name of the desired metric. Example: `"projects/my-project-id/metrics/my-metric-id"`.
-  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}" // TODO: Update placeholder value(s).
+  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}"
 
-  resp, err := s.Projects.Metrics.Get(metricName).Context(ctx).Do()
+  resp, err := loggingService.Projects.Metrics.Get(metricName).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -378,6 +389,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -389,31 +401,32 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := logging.New(hc)
+  loggingService, err := logging.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // Required. The resource name of the project containing the metrics. Example:
   // `"projects/my-project-id"`.
-  projectName := "projects/{MY-PROJECT}" // TODO: Update placeholder value(s).
+  projectName := "projects/{MY-PROJECT}"
 
-  call := s.Projects.Metrics.List(projectName)
-  if err := call.Pages(ctx, func(page *logging.ListLogMetricsResponse) error {
+  req := loggingService.Projects.Metrics.List(projectName)
+  if err := req.Pages(ctx, func(page *logging.ListLogMetricsResponse) error {
     for _, logMetric := range page.Metrics {
-      // TODO: Use logMetric
-      log.Printf("%#v\n", logMetric)
+      // TODO: Change code below to process each `logMetric` resource:
+      fmt.Printf("%#v\n", logMetric)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -433,6 +446,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -444,36 +458,37 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := logging.New(hc)
+  loggingService, err := logging.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` call:
 
   // The resource name of the metric to update. Example: `"projects/my-project-id/metrics/my-metric-id"`.
   // The updated metric must be provided in the request and have the same identifier that is specified in
   // `metricName`. If the metric does not exist, it is created.
-  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}" // TODO: Update placeholder value(s).
+  metricName := "projects/{MY-PROJECT}/metrics/{MY-METRIC}"
 
-  resource := &logging.LogMetric{
-    // TODO: Add the desired fields.
+  rb := logging.LogMetric{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Projects.Metrics.Update(metricName, resource).Context(ctx).Do()
+  resp, err := loggingService.Projects.Metrics.Update(metricName, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -490,6 +505,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -501,35 +517,36 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := logging.New(hc)
+  loggingService, err := logging.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Create` call:
 
   // The resource name of the project in which to create the sink. Example: `"projects/my-project-id"`.
   // The new sink must be provided in the request.
-  projectName := "projects/{MY-PROJECT}" // TODO: Update placeholder value(s).
+  projectName := "projects/{MY-PROJECT}"
 
-  resource := &logging.LogSink{
-    // TODO: Add the desired fields.
+  rb := logging.LogSink{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Projects.Sinks.Create(projectName, resource).Context(ctx).Do()
+  resp, err := loggingService.Projects.Sinks.Create(projectName, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -546,6 +563,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -557,30 +575,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := logging.New(hc)
+  loggingService, err := logging.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` call:
 
   // The resource name of the sink to delete. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}" // TODO: Update placeholder value(s).
+  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}"
 
-  resp, err := s.Projects.Sinks.Delete(sinkName).Context(ctx).Do()
+  resp, err := loggingService.Projects.Sinks.Delete(sinkName).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -597,6 +616,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -608,30 +628,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := logging.New(hc)
+  loggingService, err := logging.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // The resource name of the sink to return. Example: `"projects/my-project-id/sinks/my-sink-id"`.
-  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}" // TODO: Update placeholder value(s).
+  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}"
 
-  resp, err := s.Projects.Sinks.Get(sinkName).Context(ctx).Do()
+  resp, err := loggingService.Projects.Sinks.Get(sinkName).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -648,6 +669,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -659,31 +681,32 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := logging.New(hc)
+  loggingService, err := logging.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // Required. The resource name of the project containing the sinks. Example:
-  // `"projects/my-logging-project"`, `"projects/01234567890"`.
-  projectName := "projects/{MY-PROJECT}" // TODO: Update placeholder value(s).
+  // `"projects/my-logging-project"`.
+  projectName := "projects/{MY-PROJECT}"
 
-  call := s.Projects.Sinks.List(projectName)
-  if err := call.Pages(ctx, func(page *logging.ListSinksResponse) error {
+  req := loggingService.Projects.Sinks.List(projectName)
+  if err := req.Pages(ctx, func(page *logging.ListSinksResponse) error {
     for _, logSink := range page.Sinks {
-      // TODO: Use logSink
-      log.Printf("%#v\n", logSink)
+      // TODO: Change code below to process each `logSink` resource:
+      fmt.Printf("%#v\n", logSink)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -703,6 +726,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -714,34 +738,35 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
+  c, err := google.DefaultClient(ctx, logging.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := logging.New(hc)
+  loggingService, err := logging.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` call:
 
   // The resource name of the sink to update. Example: `"projects/my-project-id/sinks/my-sink-id"`. The
   // updated sink must be provided in the request and have the same name that is specified in `sinkName`.
   // If the sink does not exist, it is created.
-  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}" // TODO: Update placeholder value(s).
+  sinkName := "projects/{MY-PROJECT}/sinks/{MY-SINK}"
 
-  resource := &logging.LogSink{
-    // TODO: Add the desired fields.
+  rb := logging.LogSink{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Projects.Sinks.Update(sinkName, resource).Context(ctx).Do()
+  resp, err := loggingService.Projects.Sinks.Update(sinkName, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }

@@ -14,6 +14,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -25,37 +26,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, prediction.PredictionScope)
+  c, err := google.DefaultClient(ctx, prediction.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := prediction.New(hc)
+  predictionService, err := prediction.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Predict` call:
 
   // The project associated with the model.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // The name of a hosted model.
-  hostedModelName := "{MY-HOSTED-MODEL-NAME}" // TODO: Update placeholder value(s).
+  hostedModelName := "{MY-HOSTED-MODEL-NAME}"
 
-  resource := &prediction.Input{
-    // TODO: Add the desired fields.
+  rb := prediction.Input{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Hostedmodels.Predict(project, hostedModelName, resource).Context(ctx).Do()
+  resp, err := predictionService.Hostedmodels.Predict(project, hostedModelName, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -72,6 +74,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -83,33 +86,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, prediction.PredictionScope)
+  c, err := google.DefaultClient(ctx, prediction.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := prediction.New(hc)
+  predictionService, err := prediction.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Analyze` call:
 
   // The project associated with the model.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // The unique name for the predictive model.
-  id := "{MY-ID}" // TODO: Update placeholder value(s).
+  id := "{MY-ID}"
 
-  resp, err := s.Trainedmodels.Analyze(project, id).Context(ctx).Do()
+  resp, err := predictionService.Trainedmodels.Analyze(project, id).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -126,6 +130,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -137,27 +142,28 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, prediction.PredictionScope)
+  c, err := google.DefaultClient(ctx, prediction.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := prediction.New(hc)
+  predictionService, err := prediction.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Delete` call:
 
   // The project associated with the model.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // The unique name for the predictive model.
-  id := "{MY-ID}" // TODO: Update placeholder value(s).
+  id := "{MY-ID}"
 
-  if err := s.Trainedmodels.Delete(project, id).Context(ctx).Do(); err != nil {
+  if err := predictionService.Trainedmodels.Delete(project, id).Context(ctx).Do(); err != nil {
     log.Fatal(err)
   }
 }
@@ -176,6 +182,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -187,33 +194,34 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, prediction.PredictionScope)
+  c, err := google.DefaultClient(ctx, prediction.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := prediction.New(hc)
+  predictionService, err := prediction.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Get` call:
 
   // The project associated with the model.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // The unique name for the predictive model.
-  id := "{MY-ID}" // TODO: Update placeholder value(s).
+  id := "{MY-ID}"
 
-  resp, err := s.Trainedmodels.Get(project, id).Context(ctx).Do()
+  resp, err := predictionService.Trainedmodels.Get(project, id).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -230,6 +238,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -241,34 +250,35 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, prediction.DevstorageFullControlScope)
+  c, err := google.DefaultClient(ctx, prediction.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := prediction.New(hc)
+  predictionService, err := prediction.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Insert` call:
 
   // The project associated with the model.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
-  resource := &prediction.Insert{
-    // TODO: Add the desired fields.
+  rb := prediction.Insert{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Trainedmodels.Insert(project, resource).Context(ctx).Do()
+  resp, err := predictionService.Trainedmodels.Insert(project, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -285,6 +295,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -296,30 +307,31 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, prediction.PredictionScope)
+  c, err := google.DefaultClient(ctx, prediction.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := prediction.New(hc)
+  predictionService, err := prediction.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `List` call:
 
   // The project associated with the model.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
-  call := s.Trainedmodels.List(project)
-  if err := call.Pages(ctx, func(page *prediction.List) error {
+  req := predictionService.Trainedmodels.List(project)
+  if err := req.Pages(ctx, func(page *prediction.List) error {
     for _, insert2 := range page.Items {
-      // TODO: Use insert2
-      log.Printf("%#v\n", insert2)
+      // TODO: Change code below to process each `insert2` resource:
+      fmt.Printf("%#v\n", insert2)
     }
-    return nil // NOTE: Returning a non-nil error stops pagination.
+    return nil
   }); err != nil {
     log.Fatal(err)
   }
@@ -339,6 +351,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -350,37 +363,38 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, prediction.PredictionScope)
+  c, err := google.DefaultClient(ctx, prediction.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := prediction.New(hc)
+  predictionService, err := prediction.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Predict` call:
 
   // The project associated with the model.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // The unique name for the predictive model.
-  id := "{MY-ID}" // TODO: Update placeholder value(s).
+  id := "{MY-ID}"
 
-  resource := &prediction.Input{
-    // TODO: Add the desired fields.
+  rb := prediction.Input{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Trainedmodels.Predict(project, id, resource).Context(ctx).Do()
+  resp, err := predictionService.Trainedmodels.Predict(project, id, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
 package main
 
@@ -397,6 +411,7 @@ package main
 //    project directory.
 
 import (
+  "fmt"
   "log"
 
   "golang.org/x/net/context"
@@ -408,35 +423,36 @@ import (
 func main() {
   ctx := context.Background()
 
-  // Authentication is provided by the `gcloud` tool when running locally
-  // and by built-in service accounts when running on GAE, GCE, or GKE.
-  // For more information, see
+  // Use Application Default Credentials for authentication when running locally.
+  // For more information, see:
   // https://developers.google.com/identity/protocols/application-default-credentials
-  hc, err := google.DefaultClient(ctx, prediction.PredictionScope)
+  c, err := google.DefaultClient(ctx, prediction.CloudPlatformScope)
   if err != nil {
     log.Fatal(err)
   }
 
-  s, err := prediction.New(hc)
+  predictionService, err := prediction.New(c)
   if err != nil {
     log.Fatal(err)
   }
+
+  // TODO: Change placeholders below to desired parameter values for the `Update` call:
 
   // The project associated with the model.
-  project := "{MY-PROJECT}" // TODO: Update placeholder value(s).
+  project := "{MY-PROJECT}"
 
   // The unique name for the predictive model.
-  id := "{MY-ID}" // TODO: Update placeholder value(s).
+  id := "{MY-ID}"
 
-  resource := &prediction.Update{
-    // TODO: Add the desired fields.
+  rb := prediction.Update{
+    // TODO: Add desired fields of the request body.
   }
 
-  resp, err := s.Trainedmodels.Update(project, id, resource).Context(ctx).Do()
+  resp, err := predictionService.Trainedmodels.Update(project, id, &rb).Context(ctx).Do()
   if err != nil {
     log.Fatal(err)
   }
 
-  // TODO: Use resp
-  log.Printf("%#v\n", resp)
+  // TODO: Change code below to process the `resp` object:
+  fmt.Printf("%#v\n", resp)
 }
