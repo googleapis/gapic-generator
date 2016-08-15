@@ -32,8 +32,8 @@ sourceCompatibility = 1.7
 
 group = "com.google.api"
 version = "0.0.0-SNAPSHOT"
-// url to the snapshot repository of a private maven repo.
-def toolkitSnapshotRepo = "http://104.197.230.53:8081/nexus/content/repositories/snapshots/"
+// Nexus repository for publishing toolkit snapshots and downloading api-compiler snapshot.
+def nexusSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots/"
 
 // Dependencies
 // ------------
@@ -53,14 +53,13 @@ ext {
     gax: 'com.google.api:gax:0.0.8',
 
     // Gapi
-    // TODO(cbao): Use released version instead of snapshot.
-    toolsFx: 'io.gapi:gapi-tools-framework:0.0.3-SNAPSHOT',
+    toolsFx: 'com.google.api:api-compiler:0.0.5-SNAPSHOT',
 
     // Testing
     junit: 'junit:junit:4.11',
     mockito: 'org.mockito:mockito-core:1.10.19',
     truth: 'com.google.truth:truth:0.27',
-    toolsFxTesting: 'io.gapi:gapi-tools-framework:0.0.0-SNAPSHOT:testing',
+    toolsFxTesting: 'com.google.api:api-compiler:0.0.5-SNAPSHOT:testing',
 
     // Protobuf
     protobuf: 'com.google.protobuf:protobuf-java:3.0.0-beta-3',
@@ -79,8 +78,7 @@ repositories {
   mavenLocal()
   mavenCentral()
   maven {
-    // Private maven repo for publishing toolkit snapshots.
-    url toolkitSnapshotRepo
+    url nexusSnapshotRepo
   }
 }
 
@@ -249,7 +247,7 @@ if (project.hasProperty('privateToolkitUsername') && project.hasProperty('privat
   uploadArchives {
     repositories {
       mavenDeployer {
-        snapshotRepository(url: toolkitSnapshotRepo) {
+        snapshotRepository(url: nexusSnapshotRepo) {
           authentication(userName: privateToolkitUsername, password: privateToolkitPassword)
         }
 
@@ -320,7 +318,7 @@ task showGrpcJavaPluginPath << {
 task showProtobufPath() << {
   DependencyResolver resolver = new DependencyResolver(project)
   println 'output: ' + resolver.extractArchive(
-    'com.google.protobuf:protobuf-java:3.0.0-beta-2');
+    'com.google.protobuf:protobuf-java:3.0.0-beta-3');
 }
 
 // Task to display the cache path of Google Java formatter
@@ -393,5 +391,6 @@ tasks.verifyGoogleJavaFormat {
   exclude 'build/**'
   exclude 'vgen/build/**'
   exclude 'vgen/.apt_generated/**'
+  exclude 'src-gen/**'
 }
 test.dependsOn verifyGoogleJavaFormat
