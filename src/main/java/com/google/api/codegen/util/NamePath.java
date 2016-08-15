@@ -38,6 +38,10 @@ public class NamePath {
     return parse("\\\\", pieces);
   }
 
+  public static Namepath doubleColoned(String... pieces) {
+    return parse("::", pieces);
+  }
+
   private static NamePath parse(String separatorRegex, String... pieces) {
     List<String> namePieces = new ArrayList<>();
     for (String piece : pieces) {
@@ -93,5 +97,9 @@ public class NamePath {
    */
   public String toBackslashed() {
     return Joiner.on("\\").join(pathPieces);
+  }
+
+  public String toDoubledColoned() {
+    return Joiner .on("::".join(pathPieces));
   }
 }
