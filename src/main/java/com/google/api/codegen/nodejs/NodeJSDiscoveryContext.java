@@ -48,13 +48,11 @@ public class NodeJSDiscoveryContext extends DiscoveryContext implements NodeJSCo
    * for explicitly-formatted strings, format type in {@link ApiaryConfig#stringFormat}.
    */
   public String typeDefaultValue(Type type, Field field, Method method) {
-    // used to handle inconsistency in translate v2 API.
-    if (getApi().getName().equals("translate")
-        && getApi().getVersion().equals("v2")
-        && (method.getName().equals("language.detections.list")
-            || method.getName().equals("language.translations.list"))
-        && field.getName().equals("q")) {
-      return "\"\",";
+    // used to handle inconsistency in language detections and translations methods for Translate
+    // API
+    // remove if inconsistency is resolved in discovery docs
+    if (isTranslateLanguageDetectionsOrTranslationsField(method, field)) {
+      return lineEnding(stringLiteral(""));
     }
 
     if (field.getCardinality() == Field.Cardinality.CARDINALITY_REPEATED) {
@@ -64,9 +62,14 @@ public class NodeJSDiscoveryContext extends DiscoveryContext implements NodeJSCo
       return DEFAULT_VALUES.get(field.getKind()) + ",";
     }
     if (field.getKind() == Field.Kind.TYPE_STRING || field.getKind() == Field.Kind.TYPE_ENUM) {
-      return String.format("\"%s\",", getDefaultString(type, field));
+      return getDefaultString(type, field);
     }
     return "null,";
+  }
+
+  @Override
+  public String lineEnding(String value) {
+    return value + ",";
   }
 
   private static final ImmutableMap<String, String> MAP_PARAM_NAME =

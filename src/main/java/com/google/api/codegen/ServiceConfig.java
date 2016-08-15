@@ -20,9 +20,9 @@ import com.google.api.Service;
 import com.google.api.tools.framework.model.Interface;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Utility class that provides service configuration data from an Interface.
@@ -50,7 +50,7 @@ public class ServiceConfig {
    * Return a list of scopes for authentication.
    */
   public Iterable<String> getAuthScopes(Interface service) {
-    Set<String> result = new HashSet<>();
+    Set<String> result = new TreeSet<>();
     Service config = service.getModel().getServiceConfig();
     Authentication auth = config.getAuthentication();
     for (AuthenticationRule rule : auth.getRulesList()) {

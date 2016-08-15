@@ -41,14 +41,10 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-/**
- * A GapicContext specialized for Python.
- */
+/** A GapicContext specialized for Python. */
 public class PythonGapicContext extends GapicContext {
 
-  /**
-   * A map from primitive types to its default value.
-   */
+  /** A map from primitive types to its default value. */
   private static final ImmutableMap<Type, String> DEFAULT_VALUE_MAP =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_BOOL, "False")
@@ -68,9 +64,7 @@ public class PythonGapicContext extends GapicContext {
           .put(Type.TYPE_BYTES, "\'\'")
           .build();
 
-  /**
-   * A map from primitive types to their names in Python.
-   */
+  /** A map from primitive types to their names in Python. */
   private static final Map<Type, String> PRIMITIVE_TYPE_NAMES =
       ImmutableMap.<Type, String>builder()
           .put(Type.TYPE_DOUBLE, "float")
@@ -108,9 +102,7 @@ public class PythonGapicContext extends GapicContext {
     return file.getSimpleName().replace(".proto", "_pb2.py");
   }
 
-  /**
-   * Return comments lines for a given proto element, extracted directly from the proto doc
-   */
+  /** Return comments lines for a given proto element, extracted directly from the proto doc */
   public List<String> defaultComments(ProtoElement element) {
     if (!element.hasAttribute(ElementDocumentationAttribute.KEY)) {
       return ImmutableList.<String>of("");
@@ -118,9 +110,7 @@ public class PythonGapicContext extends GapicContext {
     return pythonCommon.convertToCommentedBlock(getSphinxifiedScopedDescription(element));
   }
 
-  /**
-   * Returns type information for a field in Sphinx docstring style.
-   */
+  /** Returns type information for a field in Sphinx docstring style. */
   private String fieldTypeCardinalityComment(Field field, PythonImportHandler importHandler) {
     return typeCardinalityComment(field.getType(), importHandler);
   }
@@ -143,9 +133,7 @@ public class PythonGapicContext extends GapicContext {
     return String.format("%s%s%s", prefix, typeComment, closingBrace ? "]" : "");
   }
 
-  /**
-   * Returns type information for a field in Sphinx docstring style.
-   */
+  /** Returns type information for a field in Sphinx docstring style. */
   private String fieldTypeComment(Field field, PythonImportHandler importHandler) {
     return typeComment(field.getType(), importHandler);
   }
@@ -165,13 +153,11 @@ public class PythonGapicContext extends GapicContext {
     }
   }
 
-  /**
-   * Returns a comment string for field, consisting of type information and proto comment.
-   */
-  private String fieldComment(Field field, PythonImportHandler importHandler, String paramComment) {
+  /** Returns a comment string for field, consisting of type information and proto comment. */
+  private String fieldComment(
+      String name, Field field, PythonImportHandler importHandler, String paramComment) {
     String comment =
-        String.format(
-            "  %s (%s)", field.getSimpleName(), fieldTypeCardinalityComment(field, importHandler));
+        String.format("  %s (%s)", name, fieldTypeCardinalityComment(field, importHandler));
     if (paramComment == null) {
       paramComment = getSphinxifiedScopedDescription(field);
     }
@@ -193,7 +179,7 @@ public class PythonGapicContext extends GapicContext {
     StringBuilder paramTypesBuilder = new StringBuilder();
     paramTypesBuilder.append("Attributes:\n");
     for (Field field : msg.getFields()) {
-      paramTypesBuilder.append(fieldComment(field, importHandler, null));
+      paramTypesBuilder.append(fieldComment(field.getSimpleName(), field, importHandler, null));
     }
     String paramTypes = paramTypesBuilder.toString();
     // Generate comment contents
@@ -241,9 +227,7 @@ public class PythonGapicContext extends GapicContext {
     return PythonDocConfig.newBuilder();
   }
 
-  /**
-   * Generate comments lines for a given method's description.
-   */
+  /** Generate comments lines for a given method's description. */
   public List<String> methodDescriptionComments(Method method) {
     String description = "";
     if (method.hasAttribute(ElementDocumentationAttribute.KEY)) {
@@ -266,11 +250,14 @@ public class PythonGapicContext extends GapicContext {
 
     // parameter types
     contentBuilder.append("Args:\n");
-    for (Field field : this.messages().flattenedFields(method.getInputType())) {
+    for (Field field :
+        removePageTokenFromFields(method.getInputType().getMessageType().getFields(), config)) {
+      String name = pythonCommon.wrapIfKeywordOrBuiltIn(field.getSimpleName());
       if (config.isPageStreaming()
           && field.equals((config.getPageStreaming().getPageSizeField()))) {
         contentBuilder.append(
             fieldComment(
+                name,
                 field,
                 importHandler,
                 "The maximum number of resources contained in the\n"
@@ -279,7 +266,7 @@ public class PythonGapicContext extends GapicContext {
                     + "streaming is performed per-page, this determines the maximum number\n"
                     + "of resources in a page."));
       } else {
-        contentBuilder.append(fieldComment(field, importHandler, null));
+        contentBuilder.append(fieldComment(name, field, importHandler, null));
       }
     }
     contentBuilder.append(
@@ -299,18 +286,14 @@ public class PythonGapicContext extends GapicContext {
     return Splitter.on("\n").splitToList(contentBuilder.toString());
   }
 
-  /**
-   * Get required (non-optional) fields.
-   */
+  /** Get required (non-optional) fields. */
   public List<Field> getRequiredFields(Method method) {
     Interface service = (Interface) method.getParent();
     MethodConfig methodConfig = getApiConfig().getInterfaceConfig(service).getMethodConfig(method);
     return Lists.newArrayList(methodConfig.getRequiredFields());
   }
 
-  /**
-   * Get return type string, or an empty string if there is no return type.
-   */
+  /** Get return type string, or an empty string if there is no return type. */
   public String returnTypeOrEmpty(Method method, PythonImportHandler importHandler) {
     TypeRef returnType = method.getOutputType();
     return messages().isEmptyType(returnType)
@@ -318,16 +301,12 @@ public class PythonGapicContext extends GapicContext {
         : typeCardinalityComment(returnType, importHandler);
   }
 
-  /**
-   * Return the default value for the given field. Return null if there is no default value.
-   */
+  /** Return the default value for the given field. Return null if there is no default value. */
   public String defaultValue(Field field, PythonImportHandler importHandler) {
     return defaultValue(field.getType(), importHandler);
   }
 
-  /**
-   * Return the default value for the given type. Return null if there is no default value.
-   */
+  /** Return the default value for the given type. Return null if there is no default value. */
   public String defaultValue(TypeRef type, PythonImportHandler importHandler) {
     // Return empty array if the type is repeated.
     if (type.getCardinality() == Cardinality.REPEATED) {
@@ -348,9 +327,7 @@ public class PythonGapicContext extends GapicContext {
     }
   }
 
-  /**
-   * Return whether the given field's default value is mutable in python.
-   */
+  /** Return whether the given field's default value is mutable in python. */
   public boolean isDefaultValueMutable(Field field) {
     TypeRef type = field.getType();
     if (type.getCardinality() == Cardinality.REPEATED) {

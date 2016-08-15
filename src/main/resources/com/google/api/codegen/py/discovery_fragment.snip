@@ -1,4 +1,4 @@
-@extends "../common.snip"
+@extends "common.snip"
 
 @snippet generateFilename(method)
     {@method.getName}.frag.py
@@ -10,14 +10,17 @@
          apiVersion = api.getVersion, \
          serviceTitle = context.getService.getTitle
         """
-        PRE-REQUISITES:
+        BEFORE RUNNING:
         ---------------
         1. If not already done, enable the {@serviceTitle}
            and check the quota for your project at
            https://console.developers.google.com/apis/api/{@apiName}
-        2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-        3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-           https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+        2. This sample uses Application Default Credentials for authentication.
+           If not already done, install the gcloud CLI from
+           https://cloud.google.com/sdk/ and run
+           'gcloud beta auth application-default login'
+        3. Install the Python client library for Google APIs by running
+           'pip install --upgrade google-api-python-client'
         """
 
         @join import : imports
@@ -85,7 +88,7 @@
             @if context.isLogEntriesListMethod(method)
                 {@requestName(method)}.pageToken = response.nextPageToken
             @else
-                request = {@resourcesObject}.{@methodName}_next(request, response)
+                request = {@resourcesObject}.{@methodName}_next(previous_request=request, previous_response=response)
             @end
     @end
 @end
@@ -100,9 +103,8 @@
             response = request.execute()
 
             @# {@TODO()} Change code below to process the 'response' dict:
-            @let json = importHandler.addImportStandard("json"), \
-                 _ = importHandler.addImportStandard("__future__", "print_function")
-                print({@json}.dumps(response))
+	    @let pprint = importHandler.addImportStandard("pprint", "pprint")
+	    	{@pprint}(response)
             @end
         @end
     @end
@@ -113,9 +115,9 @@
     @if context.hasRequestField(method)
         @let params = context.getFlatMethodParams(method)
             @if params
-                {@argumentList(params)}, {@requestName(method)}
+                {@argumentList(params)}, body={@requestName(method)}
             @else
-                {@requestName(method)}
+                body={@requestName(method)}
             @end
         @end
     @else
@@ -136,9 +138,10 @@
         @end
         @join param : params
             @let paramField = context.getField(signatureType, param), \
-                 paramValue = context.typeDefaultValue(signatureType, paramField), \
+                 paramValue = context.typeDefaultValue(signatureType, paramField, method), \
                  paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
-                {@item(paramDescription)}
+
+                {@description(paramDescription)}
                 {@param} = {@paramValue}
             @end
         @end
@@ -162,7 +165,7 @@
 @end
 
 @private requestName(method)
-    {@context.getSampleVarName(context.getRequestField(method).getTypeUrl)}
+    {@context.getSampleVarName(context.getRequestField(method).getTypeUrl)}_body
 @end
 
 @private item(description)
@@ -179,11 +182,17 @@
 
 @private argumentList(arguments)
     @join argument : arguments on ", "
-        {@argument}
+        {@argument}={@argument}
     @end
 @end
 
+@private description(description)
+  @join line : context.lineWrapDoc(description, 100)
+    @# {@line}
+  @end
+@end
+
 @private alwaysImport() fill
-  {@context.silent(importHandler.addImportLocal("apiclient", "discovery"))}
+  {@context.silent(importHandler.addImportLocal("googleapiclient", "discovery"))}
   {@context.silent(importHandler.addImportLocal("oauth2client.client", "GoogleCredentials"))}
 @end

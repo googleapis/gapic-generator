@@ -41,11 +41,8 @@
 
 @private importSection(service)
   var arguejs = require('arguejs');
-  var fs = require('fs');
+  var configData = require('./{@context.upperCamelToLowerUnderscore(service.getSimpleName)}_client_config');
   var gax = require('google-gax');
-  var grpc = require('grpc');
-  var grpcClient = require('{@context.grpcClientName(service)}').client;
-  var path = require('path');
 @end
 
 @private serviceClass(service)
@@ -92,10 +89,10 @@
     var CODE_GEN_NAME_VERSION = 'gapic/0.1.0';
 
     var DEFAULT_TIMEOUT = 30;
-    @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
+    @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service))
 
       var PAGE_DESCRIPTORS = {
-        @join method : context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods) on {@", "}.add(BREAK)
+        @join method : context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service)) on {@", "}.add(BREAK)
           @let pageStreaming = ifaceConfig.getMethodConfig(method).getPageStreaming(), \
                requestToken = pageStreaming.getRequestTokenField().getSimpleName(), \
                responseToken = pageStreaming.getResponseTokenField().getSimpleName(), \
@@ -122,30 +119,24 @@
 @end
 
 @private constructDefaults(service)
-  @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service), \
-       jsonBaseName = {@context.upperCamelToLowerUnderscore(service.getSimpleName)}
-    var clientConfigFile = path.join(
-        __dirname, '{@jsonBaseName}_client_config.json');
-    var configData = fs.readFileSync(clientConfigFile);
-    @if context.messages.filterPageStreamingMethods(ifaceConfig, service.getMethods)
-      var defaults = gax.constructSettings(
-          '{@service.getFullName}',
-          JSON.parse(configData),
-          clientConfig,
-          grpc.status,
-          timeout,
+  @let ifaceConfig = context.getApiConfig.getInterfaceConfig(service)
+    var defaults = gax.constructSettingsGrpc(
+        '{@service.getFullName}',
+        configData,
+        clientConfig,
+        timeout,
+        @if context.messages.filterPageStreamingMethods(ifaceConfig, context.getNonStreamingMethods(service))
           PAGE_DESCRIPTORS,
-          {'metadata': metadata});
-    @else
-      var defaults = gax.constructSettings(
-          '{@service.getFullName}',
-          JSON.parse(configData),
-          clientConfig,
-          grpc.status,
-          timeout,
+        @else
           null,
-          {'metadata': metadata});
-    @end
+        @end
+        @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+          bundleDescriptors,
+        @else
+          null,
+        @end
+        {'x-goog-api-client': googleApiClient},
+        opts.grpc);
   @end
 @end
 
@@ -167,6 +158,11 @@
      *   Custom function to obtain the credentials.
      * @@param {grpc.ClientCredentials} opts.sslCreds
      *   A ClientCredentials for use with an SSL-enabled channel.
+     * @@param {Object} opts.grpc
+     *   When specified, this is used as the grpc module. Otherwise
+     *   the grpc package will be loaded from the dependency (typically
+     *   the one within 'google-gax' will be loaded). This will be useful
+     *   to share channels among multiple APIs.
      * @@param {Object} opts.clientConfig
      *   The customized config to build the call settings. See
      *   {@@link gax.constructSettings} for the format.
@@ -189,12 +185,41 @@
       var appName = opts.appName || 'gax';
       var appVersion = opts.appVersion || gax.Version;
 
+      @if context.isGcloud
+        var grpcClient = gax.loadGrpc(opts.grpc, [{
+          root: require('google-proto-files')('..'),
+          file: '{@service.getFile.getLocation.getDisplayString}'
+        }]);
+      @else
+        var grpcClient = require('{@context.grpcClientName(service)}').client;
+      @end
+      @if context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service))
+
+        var bundleDescriptors = {
+          @join method : context.messages.filterBundlingMethods(ifaceConfig, context.getNonStreamingMethods(service)) on {@", "}.add(BREAK)
+            @let bundling = ifaceConfig.getMethodConfig(method).getBundling()
+              '{@methodName(method)}': new gax.BundleDescriptor(
+                  '{@bundling.getBundledField().getSimpleName()}',
+                  [
+                    @join fieldSelector : bundling.getDiscriminatorFields() on {@", "}.add(BREAK)
+                      '{@fieldSelector.getParamName}'
+                    @end
+                  ],
+                  @if bundling.hasSubresponseField()
+                    '{@bundling.getSubresponseField().getSimpleName()}',
+                  @else
+                    null,
+                  @end
+                  {@context.getByteLengthFunction(bundling.getBundledField().getType())})
+            @end
+          @end
+        };
+      @end
+
       var googleApiClient = [
         appName + '/' + appVersion,
         CODE_GEN_NAME_VERSION,
         'nodejs/' + process.version].join(' ');
-      var metadata = new grpc.Metadata();
-      metadata.set('x-goog-api-client', googleApiClient);
 
       {@constructDefaults(service)}
 
@@ -203,16 +228,17 @@
           port,
           grpcClient.{@service.getFullName},
           {'getCredentials': getCredentials,
+           'grpc': opts.grpc,
            'sslCreds': sslCreds,
            'scopes': scopes});
       var methods = [
-        @join method : service.getMethods on {@","}.add(BREAK)
+        @join method : context.getNonStreamingMethods(service) on {@","}.add(BREAK)
           '{@methodName(method)}'
         @end
       ];
       methods.forEach(function(methodName) {
         this['_' + methodName] = gax.createApiCall(
-            this.stub.then(function(stub) { return stub[methodName]; }),
+            this.stub.then(function(stub) { return stub[methodName].bind(stub); }),
             defaults[methodName]);
       }.bind(this));
     };
@@ -299,7 +325,7 @@
 
 @private serviceMethodsSection(service)
   // Service calls
-  @join method : service.getMethods
+  @join method : context.getNonStreamingMethods(service)
 
     {@flattenedMethod(service, method)}
   @end
@@ -320,7 +346,7 @@
        documentation = comments(context.methodComments(method)), \
        methodConfig = context.getApiConfig.getInterfaceConfig(service).getMethodConfig(method), \
        requiredParams = methodConfig.getRequiredFields(), \
-       optionalParams = methodConfig.getOptionalFields()
+       optionalParams = context.removePageTokenFromFields(methodConfig.getOptionalFields(), methodConfig)
     @if documentation
       /**
        {@documentation}
@@ -339,17 +365,17 @@
         'callback': [Function]
       }, arguments);
       var req = {
-        @if requiredParams
-          @if optionalParams
-            {@namedParameters(requiredParams)},
-            {@namedOptionalParameters(optionalParams)}
-          @else
-            {@namedParameters(requiredParams)}
-          @end
-        @else
-          {@namedOptionalParameters(optionalParams)}
+        @join field : requiredParams on ",".add(BREAK)
+          '{@field.getSimpleName}': args.{@fieldParameterName(field)}
         @end
       };
+      @join field : optionalParams
+        @let paramName = fieldParameterName(field)
+          if ('{@paramName}' in args.otherArgs) {
+            req.{@field.getSimpleName} = args.otherArgs.{@paramName};
+          }
+        @end
+      @end
       return this._{@methodName(method)}(req, args.options, args.callback);
     };
   @end
@@ -362,20 +388,5 @@
 @private requiredParameterDefs(params)
   @join field : params on ",".add(BREAK)
     '{@fieldParameterName(field)}': {@context.getFieldType(field)}
-  @end
-@end
-
-@private namedParameters(params)
-  @join field : params on ",".add(BREAK)
-    '{@field.getSimpleName()}': args.{@fieldParameterName(field)}
-  @end
-@end
-
-@private namedOptionalParameters(params)
-  @join field : params on ",".add(BREAK)
-    @let paramName = field.getSimpleName(), \
-         defaultValue = context.defaultValue(field)
-      '{@paramName}': args.otherArgs.{@fieldParameterName(field)} || {@defaultValue}
-    @end
   @end
 @end

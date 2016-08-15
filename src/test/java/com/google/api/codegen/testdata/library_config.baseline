@@ -2,25 +2,25 @@ type: com.google.api.codegen.ConfigProto
 generate_samples: true
 language_settings:
   java:
-    package_name: com.google.example.library.v1
+    package_name: com.google.cloud.example.library.spi.v1
   python:
-    package_name: google.example.library.v1
+    package_name: google.cloud.example.library.v1
   go:
-    package_name: google.golang.org/google/example/library/v1
+    package_name: cloud.google.com/go/example/library/apiv1
   csharp:
     package_name: Google.Example.Library.V1
   ruby:
     package_name: Google::Example::Library::V1
   php:
-    package_name: Google\Example\Library\V1
+    package_name: Google\Cloud\Example\Library\V1
 interfaces:
 - name: google.example.library.v1.LibraryService
   collections:
   - name_pattern: archives/{archive_path=**}/books/{book}
     entity_name: book
-  - name_pattern: shelves/{shelf}
-    entity_name: shelf
-  - name_pattern: shelves/{shelf}/books/{book}
+  - name_pattern: bookShelves/{book_shelf}
+    entity_name: book_shelf
+  - name_pattern: bookShelves/{book_shelf}/books/{book}
     entity_name: book_2
   retry_codes_def:
   - name: idempotent
@@ -34,9 +34,9 @@ interfaces:
     initial_retry_delay_millis: 100
     retry_delay_multiplier: 1.3
     max_retry_delay_millis: 60000
-    initial_rpc_timeout_millis: 60000
+    initial_rpc_timeout_millis: 20000
     rpc_timeout_multiplier: 1
-    max_rpc_timeout_millis: 60000
+    max_rpc_timeout_millis: 20000
     total_timeout_millis: 600000
   methods:
   - name: CreateShelf
@@ -49,6 +49,7 @@ interfaces:
     request_object_method: false
     retry_codes_name: non_idempotent
     retry_params_name: default
+    timeout_millis: 60000
   - name: GetShelf
     flattening:
       groups:
@@ -56,17 +57,20 @@ interfaces:
         - name
         - message
         - string_builder
+        - options
     required_fields:
     - name
     - message
     - string_builder
+    - options
     request_object_method: true
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      name: shelf
+      name: book_shelf
+    timeout_millis: 60000
   - name: ListShelves
-    request_object_method: false
+    request_object_method: true
     page_streaming:
       request:
         token_field: page_token
@@ -75,6 +79,7 @@ interfaces:
         resources_field: shelves
     retry_codes_name: idempotent
     retry_params_name: default
+    timeout_millis: 60000
   - name: DeleteShelf
     flattening:
       groups:
@@ -86,7 +91,8 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      name: shelf
+      name: book_shelf
+    timeout_millis: 60000
   - name: MergeShelves
     flattening:
       groups:
@@ -100,7 +106,8 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
-      name: shelf
+      name: book_shelf
+    timeout_millis: 60000
   - name: CreateBook
     flattening:
       groups:
@@ -114,7 +121,8 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
-      name: shelf
+      name: book_shelf
+    timeout_millis: 60000
   - name: PublishSeries
     flattening:
       groups:
@@ -129,6 +137,7 @@ interfaces:
     request_object_method: true
     retry_codes_name: non_idempotent
     retry_params_name: default
+    timeout_millis: 60000
   - name: GetBook
     flattening:
       groups:
@@ -141,6 +150,7 @@ interfaces:
     retry_params_name: default
     field_name_patterns:
       name: book_2
+    timeout_millis: 60000
   - name: ListBooks
     flattening:
       groups:
@@ -161,7 +171,8 @@ interfaces:
     retry_codes_name: idempotent
     retry_params_name: default
     field_name_patterns:
-      name: shelf
+      name: book_shelf
+    timeout_millis: 60000
   - name: DeleteBook
     flattening:
       groups:
@@ -174,6 +185,7 @@ interfaces:
     retry_params_name: default
     field_name_patterns:
       name: book_2
+    timeout_millis: 60000
   - name: UpdateBook
     flattening:
       groups:
@@ -192,6 +204,7 @@ interfaces:
     retry_params_name: default
     field_name_patterns:
       name: book_2
+    timeout_millis: 60000
   - name: MoveBook
     flattening:
       groups:
@@ -206,6 +219,7 @@ interfaces:
     retry_params_name: default
     field_name_patterns:
       name: book_2
+    timeout_millis: 60000
   - name: ListStrings
     flattening:
       groups:
@@ -213,7 +227,7 @@ interfaces:
         - name
     required_fields:
     - name
-    request_object_method: false
+    request_object_method: true
     page_streaming:
       request:
         page_size_field: page_size
@@ -223,6 +237,7 @@ interfaces:
         resources_field: strings
     retry_codes_name: idempotent
     retry_params_name: default
+    timeout_millis: 60000
   - name: AddComments
     flattening:
       groups:
@@ -236,7 +251,8 @@ interfaces:
     retry_codes_name: non_idempotent
     retry_params_name: default
     field_name_patterns:
-      name: shelf
+      name: book_shelf
+    timeout_millis: 60000
   - name: GetBookFromArchive
     flattening:
       groups:
@@ -249,6 +265,7 @@ interfaces:
     retry_params_name: default
     field_name_patterns:
       name: book
+    timeout_millis: 60000
   - name: UpdateBookIndex
     flattening:
       groups:
@@ -265,3 +282,16 @@ interfaces:
     retry_params_name: default
     field_name_patterns:
       name: book_2
+    timeout_millis: 60000
+  - name: StreamShelves
+    request_object_method: true
+    page_streaming:
+      request:
+        token_field: page_token
+      response:
+        token_field: next_page_token
+        resources_field: shelves
+    retry_codes_name: idempotent
+    retry_params_name: default
+    timeout_millis: 60000
+

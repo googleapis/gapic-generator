@@ -8,16 +8,17 @@
        serviceTitle = context.getService.getTitle
     <?php
     /*
-     * PRE-REQUISITES:
+     * BEFORE RUNNING:
      * ---------------
      * 1. If not already done, enable the {@serviceTitle}
      *    and check the quota for your project at
      *    https://console.developers.google.com/apis/api/{@apiName}
-     * 2. To install the client library with Composer, check installation instructions at
-     *    https://github.com/google/google-api-php-client.
-     * 3. This sample uses Application Default Credentials for Auth.
+     * 2. This sample uses Application Default Credentials for authentication.
      *    If not already done, install the gcloud CLI from
-     *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'.
+     *    https://cloud.google.com/sdk/ and run
+     *    'gcloud beta auth application-default login'
+     * 3. Install the PHP client library with Composer. Check installation
+     *    instructions at https://github.com/google/google-api-php-client.
      */
 
     // Autoload Composer.
@@ -64,6 +65,7 @@
       @let paramField = context.getField(signatureType, param), \
            paramValue = context.typeDefaultValue(signatureType, paramField), \
            paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
+
         {@description(paramDescription)}
         ${@param} = {@paramValue};
       @end
@@ -120,7 +122,7 @@
   @end
 @end
 
-@snippet description(description)
+@private description(description)
   @join line : context.lineWrapDoc(description, 100)
     // {@line}
   @end

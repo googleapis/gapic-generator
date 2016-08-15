@@ -28,7 +28,6 @@ import com.google.api.tools.framework.model.ProtoElement;
 import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.api.tools.framework.model.TypeRef.Cardinality;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -72,6 +71,11 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
    */
   public String grpcClientName(Interface service) {
     return "grpc-" + service.getFile().getFullName().replace('.', '-');
+  }
+
+  public boolean isGcloud() {
+    String packageName = getApiConfig().getPackageName();
+    return !Strings.isNullOrEmpty(packageName) && packageName.startsWith("@google-cloud/");
   }
 
   /**
@@ -147,12 +151,22 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     String classInfo = jsTypeName(method.getOutputType());
 
     String callbackType = isEmpty ? "EmptyCallback" : String.format("APICallback<%s>", classInfo);
+    String returnMessage =
+        "@returns {"
+            + (config.isBundling() ? "gax.BundleEventEmitter" : "gax.EventEmitter")
+            + "} - the event emitter to handle the call\n"
+            + "  status.";
+    if (config.isBundling()) {
+      returnMessage +=
+          " When isBundling: false is specified in the options, it still returns\n"
+              + "  a gax.BundleEventEmitter but the API is immediately invoked, so it behaves same\n"
+              + "  as a gax.EventEmitter does.";
+    }
     return "@param {?"
         + callbackType
         + "} callback\n"
         + "  The function which will be called with the result of the API call.\n"
-        + "@returns {gax.EventEmitter} - the event emitter to handle the call\n"
-        + "  status.";
+        + returnMessage;
   }
 
   /**
@@ -168,7 +182,7 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
     for (Field field : config.getRequiredFields()) {
       paramTypesBuilder.append(fieldParamComment(field, null, false));
     }
-    Iterable<Field> optionalParams = config.getOptionalFields();
+    Iterable<Field> optionalParams = removePageTokenFromFields(config.getOptionalFields(), config);
     if (optionalParams.iterator().hasNext()) {
       paramTypesBuilder.append("@param {?Object} otherArgs\n");
       for (Field field : optionalParams) {
@@ -244,33 +258,6 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
   }
 
   /**
-   * Return the default value for the given field.
-   */
-  public String defaultValue(Field field) {
-    TypeRef type = field.getType();
-    if (type.isMap()) {
-      return "{}";
-    }
-    // Return empty array if the type is repeated.
-    if (type.getCardinality() == Cardinality.REPEATED) {
-      return "[]";
-    }
-    switch (type.getKind()) {
-      case TYPE_MESSAGE:
-        return "{}";
-      case TYPE_ENUM:
-        Preconditions.checkArgument(
-            type.getEnumType().getValues().size() > 0, "enum must have a value");
-        return type.getEnumType().getValues().get(0).getFullName();
-      default:
-        if (type.isPrimitive()) {
-          return DEFAULT_VALUE_MAP.get(type.getKind());
-        }
-        throw new IllegalArgumentException("unknown type kind: " + type.getKind());
-    }
-  }
-
-  /**
    * Returns the name of JS type for the given typeRef.
    */
   public String jsTypeName(TypeRef typeRef) {
@@ -312,6 +299,26 @@ public class NodeJSGapicContext extends GapicContext implements NodeJSContext {
       default:
         // Numeric types and enums.
         return "Number";
+    }
+  }
+
+  /**
+   * Returns the JavaScript representation of the function to return the byte length.
+   */
+  public String getByteLengthFunction(TypeRef typeRef) {
+    switch (typeRef.getKind()) {
+      case TYPE_MESSAGE:
+        return "gax.createByteLengthFunction(grpcClient."
+            + typeRef.getMessageType().getFullName()
+            + ")";
+      case TYPE_STRING:
+      case TYPE_BYTES:
+        return "function(s) { return s.length; }";
+      default:
+        // There is no easy way to say the actual length of the numeric fields.
+        // For now throwing an exception.
+        throw new IllegalArgumentException(
+            "Can't determine the byte length function for " + typeRef.getKind());
     }
   }
 

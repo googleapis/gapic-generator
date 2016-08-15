@@ -1,19 +1,21 @@
 
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Monitoring API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/cloudmonitoring
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -28,33 +30,36 @@ service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+
 # * The project id. The value can be the numeric project ID or string-based project name.
 project = ''
 
-metric_descriptor = {
-# TODO: Add desired entries of the 'metric_descriptor' dict
+metric_descriptor_body = {
+# TODO: Add desired entries of the 'metric_descriptor_body' dict
 }
 
-request = service.metricDescriptors().create(project, metric_descriptor)
+request = service.metricDescriptors().create(project=project, body=metric_descriptor_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Monitoring API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/cloudmonitoring
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -69,28 +74,33 @@ service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
 # * The project ID to which the metric belongs.
 project = ''
+
 # * Name of the metric.
 metric = ''
 
-request = service.metricDescriptors().delete(project, metric)
+request = service.metricDescriptors().delete(project=project, metric=metric)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Monitoring API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/cloudmonitoring
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -105,30 +115,34 @@ service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
 # * The project id. The value can be the numeric project ID or string-based project name.
 project = ''
 
 metricDescriptors = service.metricDescriptors()
-request = metricDescriptors.list(project)
+request = metricDescriptors.list(project=project)
 while request is not None:
     response = request.execute()
 
     for metric_descriptor in response['metrics']:
         # TODO: Add code here to process each 'metric_descriptor' resource
 
-    request = metricDescriptors.list_next(request, response)
+    request = metricDescriptors.list_next(previous_request=request, previous_response=response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Monitoring API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/cloudmonitoring
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -143,37 +157,44 @@ service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-# * The project ID to which this time series belongs. The value can be the numeric project ID or string-based project name.
+
+# * The project ID to which this time series belongs. The value can be the numeric project ID or
+#   string-based project name.
 project = ''
-# * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example, compute.googleapis.com/instance/disk/read_ops_count.
+
+# * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+#   compute.googleapis.com/instance/disk/read_ops_count.
 metric = ''
+
 # * End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
 youngest = ''
 
 timeseries = service.timeseries()
-request = timeseries.list(project, metric, youngest)
+request = timeseries.list(project=project, metric=metric, youngest=youngest)
 while request is not None:
     response = request.execute()
 
     for timeseries in response['timeseries']:
         # TODO: Add code here to process each 'timeseries' resource
 
-    request = timeseries.list_next(request, response)
+    request = timeseries.list_next(previous_request=request, previous_response=response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Monitoring API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/cloudmonitoring
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -188,30 +209,34 @@ service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'write' method:
+
 # * The project ID. The value can be the numeric project ID or string-based project name.
 project = ''
 
-write_timeseries_request = {
-# TODO: Add desired entries of the 'write_timeseries_request' dict
+write_timeseries_request_body = {
+# TODO: Add desired entries of the 'write_timeseries_request_body' dict
 }
 
-request = service.timeseries().write(project, write_timeseries_request)
+request = service.timeseries().write(project=project, body=write_timeseries_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Monitoring API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/cloudmonitoring
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -226,19 +251,24 @@ service = discovery.build('cloudmonitoring', 'v2beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-# * The project ID to which this time series belongs. The value can be the numeric project ID or string-based project name.
+
+# * The project ID to which this time series belongs. The value can be the numeric project ID or
+#   string-based project name.
 project = ''
-# * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example, compute.googleapis.com/instance/disk/read_ops_count.
+
+# * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+#   compute.googleapis.com/instance/disk/read_ops_count.
 metric = ''
+
 # * End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
 youngest = ''
 
 timeseriesDescriptors = service.timeseriesDescriptors()
-request = timeseriesDescriptors.list(project, metric, youngest)
+request = timeseriesDescriptors.list(project=project, metric=metric, youngest=youngest)
 while request is not None:
     response = request.execute()
 
     for timeseries_descriptor in response['timeseries']:
         # TODO: Add code here to process each 'timeseries_descriptor' resource
 
-    request = timeseriesDescriptors.list_next(request, response)
+    request = timeseriesDescriptors.list_next(previous_request=request, previous_response=response)

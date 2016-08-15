@@ -20,6 +20,7 @@ import com.google.api.tools.framework.aspects.documentation.DocumentationConfigA
 import com.google.api.tools.framework.aspects.http.HttpConfigAspect;
 import com.google.api.tools.framework.model.Interface;
 import com.google.api.tools.framework.model.Method;
+import com.google.api.tools.framework.model.ProtoFile;
 import com.google.api.tools.framework.model.stages.Merged;
 import com.google.api.tools.framework.processors.merger.Merger;
 import com.google.api.tools.framework.processors.resolver.Resolver;
@@ -29,9 +30,6 @@ import com.google.api.tools.framework.tools.ToolOptions.Option;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
-
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -45,9 +43,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-/**
- * Main class for the config generator.
- */
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
+
+/** Main class for the config generator. */
 public class ConfigGeneratorApi extends ToolDriverBase {
 
   public static final Option<String> OUTPUT_FILE =
@@ -69,9 +68,10 @@ public class ConfigGeneratorApi extends ToolDriverBase {
 
   private static final String CONFIG_PROTO_TYPE = ConfigProto.getDescriptor().getFullName();
 
-  /**
-   * Constructs a config generator api based on given options.
-   */
+  private static final String CONFIG_KEY_TIMEOUT = "timeout_millis";
+  private static final int CONFIG_VALUE_DEFAULT_TIMEOUT = 60000;
+
+  /** Constructs a config generator api based on given options. */
   public ConfigGeneratorApi(ToolOptions options) {
     super(options);
   }
@@ -101,9 +101,7 @@ public class ConfigGeneratorApi extends ToolDriverBase {
     dump(output);
   }
 
-  /**
-   * Generates a collection configurations section.
-   */
+  /** Generates a collection configurations section. */
   private static List<Object> generateCollectionConfigs(Map<String, String> nameMap) {
     List<Object> output = new LinkedList<Object>();
     for (String resourceNameString : nameMap.keySet()) {
@@ -122,7 +120,13 @@ public class ConfigGeneratorApi extends ToolDriverBase {
             new FieldConfigGenerator(),
             new PageStreamingConfigGenerator(),
             new RetryGenerator(),
-            new FieldNamePatternConfigGenerator(collectionConfigNameMap));
+            new FieldNamePatternConfigGenerator(collectionConfigNameMap),
+            new MethodConfigGenerator() {
+              @Override
+              public Map<String, Object> generate(Method method) {
+                return ImmutableMap.of(CONFIG_KEY_TIMEOUT, (Object) CONFIG_VALUE_DEFAULT_TIMEOUT);
+              }
+            });
     List<Object> methods = new LinkedList<Object>();
     for (Method method : service.getMethods()) {
       Map<String, Object> methodConfig = new LinkedHashMap<String, Object>();
@@ -153,9 +157,13 @@ public class ConfigGeneratorApi extends ToolDriverBase {
   }
 
   private Map<String, Object> generateLanguageSettings() {
-    int index =
-        Preconditions.checkPositionIndex(model.getFiles().size() - 1, model.getFiles().size());
-    String packageName = model.getFiles().get(index).getFullName();
+    String packageName = null;
+    for (Interface interfaze : model.getSymbolTable().getInterfaces()) {
+      // use the package name of the first interface
+      packageName = interfaze.getFile().getFullName();
+      break;
+    }
+    Preconditions.checkNotNull(packageName, "No interface found.");
     return LanguageGenerator.generate(packageName);
   }
 

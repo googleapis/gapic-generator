@@ -1,4 +1,4 @@
-@extends "header.snip"
+@extends "go/header.snip"
 
 @snippet generateFilename(service)
     {@context.getApiConfig.getPackageName}/{@context.getPackageName}.go
@@ -23,12 +23,10 @@
         gapicNameVersion = "gapic/0.1.0"
     )
 
-    var (
-        @if {context.hasPageStreamingMethod()}
-            // Done is returned by iterators on successful completion.
-            Done = errors.New("iterator done")
-        @end
-    )
+    @if {context.hasPageStreamingMethod()}
+        // Done is returned by iterators on successful completion.
+        var Done = errors.New("iterator done")
+    @end
 @end
 
 @private importSection()

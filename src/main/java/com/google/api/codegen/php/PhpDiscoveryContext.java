@@ -17,6 +17,7 @@ package com.google.api.codegen.php;
 import com.google.api.Service;
 import com.google.api.codegen.ApiaryConfig;
 import com.google.api.codegen.DiscoveryContext;
+import com.google.api.codegen.util.php.PhpTypeTable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Field;
@@ -32,7 +33,7 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
 
   private static final String GOOGLE_SERVICE_PREFIX = "Google_Service_";
 
-  private PhpContextCommon phpCommon;
+  private PhpTypeTable phpTypeTable;
 
   /**
    * A map from inferred API package names to renamed counterparts in PHP client libraries.
@@ -89,12 +90,12 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
   }
 
   @Override
-  public void resetState(PhpContextCommon phpCommon) {
-    this.phpCommon = phpCommon;
+  public void resetState(PhpTypeTable phpTypeTable) {
+    this.phpTypeTable = phpTypeTable;
   }
 
-  public PhpContextCommon php() {
-    return this.phpCommon;
+  public PhpTypeTable php() {
+    return this.phpTypeTable;
   }
 
   // Snippet Helpers
@@ -169,9 +170,19 @@ public class PhpDiscoveryContext extends DiscoveryContext implements PhpContext 
       if (defaultPrimitiveValue != null) {
         return defaultPrimitiveValue;
       } else if (kind.equals(Field.Kind.TYPE_STRING) || kind.equals(Field.Kind.TYPE_ENUM)) {
-        return String.format("'%s'", getDefaultString(type, field));
+        return getDefaultString(type, field);
       }
     }
     return "null";
+  }
+
+  @Override
+  public String stringLiteral(String value) {
+    return "'" + value + "'";
+  }
+
+  @Override
+  public String lineEnding(String value) {
+    return value;
   }
 }

@@ -1,16 +1,19 @@
 
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -25,28 +28,33 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
 # * Name of a bucket.
 bucket = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
-request = service.bucketAccessControls().delete(bucket, entity)
+request = service.bucketAccessControls().delete(bucket=bucket, entity=entity)
 request.execute()
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -61,31 +69,36 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
 # * Name of a bucket.
 bucket = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
-request = service.bucketAccessControls().get(bucket, entity)
+request = service.bucketAccessControls().get(bucket=bucket, entity=entity)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -100,33 +113,36 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
 # * Name of a bucket.
 bucket = ''
 
-bucket_access_control = {
-# TODO: Add desired entries of the 'bucket_access_control' dict
+bucket_access_control_body = {
+# TODO: Add desired entries of the 'bucket_access_control_body' dict
 }
 
-request = service.bucketAccessControls().insert(bucket, bucket_access_control)
+request = service.bucketAccessControls().insert(bucket=bucket, body=bucket_access_control_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -141,29 +157,32 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
 # * Name of a bucket.
 bucket = ''
 
-request = service.bucketAccessControls().list(bucket)
+request = service.bucketAccessControls().list(bucket=bucket)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -178,35 +197,40 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
 # * Name of a bucket.
 bucket = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
-bucket_access_control = {
-# TODO: Add desired entries of the 'bucket_access_control' dict to be changed
+bucket_access_control_body = {
+# TODO: Add desired entries of the 'bucket_access_control_body' dict to be changed
 }
 
-request = service.bucketAccessControls().patch(bucket, entity, bucket_access_control)
+request = service.bucketAccessControls().patch(bucket=bucket, entity=entity, body=bucket_access_control_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -221,32 +245,38 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
 # * Name of a bucket.
 bucket = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
-bucket_access_control = {
-# TODO: Add desired entries of the 'bucket_access_control' dict
+bucket_access_control_body = {
+# TODO: Add desired entries of the 'bucket_access_control_body' dict
 }
 
-request = service.bucketAccessControls().update(bucket, entity, bucket_access_control)
+request = service.bucketAccessControls().update(bucket=bucket, entity=entity, body=bucket_access_control_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -261,26 +291,29 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
 # * Name of a bucket.
 bucket = ''
 
-request = service.buckets().delete(bucket)
+request = service.buckets().delete(bucket=bucket)
 request.execute()
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -295,29 +328,32 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
 # * Name of a bucket.
 bucket = ''
 
-request = service.buckets().get(bucket)
+request = service.buckets().get(bucket=bucket)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -332,30 +368,34 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
 # * A valid API project identifier.
 project = ''
 
-bucket = {
-# TODO: Add desired entries of the 'bucket' dict
+bucket_body = {
+# TODO: Add desired entries of the 'bucket_body' dict
 }
 
-request = service.buckets().insert(project, bucket)
+request = service.buckets().insert(project=project, body=bucket_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -370,33 +410,36 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
 # * A valid API project identifier.
 project = ''
 
 buckets = service.buckets()
-request = buckets.list(project)
+request = buckets.list(project=project)
 while request is not None:
     response = request.execute()
 
     for bucket in response['items']:
         # TODO: Add code here to process each 'bucket' resource
 
-    request = buckets.list_next(request, response)
+    request = buckets.list_next(previous_request=request, previous_response=response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -411,33 +454,36 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
 # * Name of a bucket.
 bucket = ''
 
-bucket = {
-# TODO: Add desired entries of the 'bucket' dict to be changed
+bucket_body = {
+# TODO: Add desired entries of the 'bucket_body' dict to be changed
 }
 
-request = service.buckets().patch(bucket, bucket)
+request = service.buckets().patch(bucket=bucket, body=bucket_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -452,30 +498,34 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
 # * Name of a bucket.
 bucket = ''
 
-bucket = {
-# TODO: Add desired entries of the 'bucket' dict
+bucket_body = {
+# TODO: Add desired entries of the 'bucket_body' dict
 }
 
-request = service.buckets().update(bucket, bucket)
+request = service.buckets().update(bucket=bucket, body=bucket_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -490,24 +540,27 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 
-channel = {
-# TODO: Add desired entries of the 'channel' dict
+channel_body = {
+# TODO: Add desired entries of the 'channel_body' dict
 }
 
-request = service.channels().stop(channel)
+request = service.channels().stop(body=channel_body)
 request.execute()
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -522,28 +575,33 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
 # * Name of a bucket.
 bucket = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
-request = service.defaultObjectAccessControls().delete(bucket, entity)
+request = service.defaultObjectAccessControls().delete(bucket=bucket, entity=entity)
 request.execute()
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -558,31 +616,36 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
 # * Name of a bucket.
 bucket = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
-request = service.defaultObjectAccessControls().get(bucket, entity)
+request = service.defaultObjectAccessControls().get(bucket=bucket, entity=entity)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -597,33 +660,36 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
 # * Name of a bucket.
 bucket = ''
 
-object_access_control = {
-# TODO: Add desired entries of the 'object_access_control' dict
+object_access_control_body = {
+# TODO: Add desired entries of the 'object_access_control_body' dict
 }
 
-request = service.defaultObjectAccessControls().insert(bucket, object_access_control)
+request = service.defaultObjectAccessControls().insert(bucket=bucket, body=object_access_control_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -638,29 +704,32 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
 # * Name of a bucket.
 bucket = ''
 
-request = service.defaultObjectAccessControls().list(bucket)
+request = service.defaultObjectAccessControls().list(bucket=bucket)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -675,35 +744,40 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
 # * Name of a bucket.
 bucket = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
-object_access_control = {
-# TODO: Add desired entries of the 'object_access_control' dict to be changed
+object_access_control_body = {
+# TODO: Add desired entries of the 'object_access_control_body' dict to be changed
 }
 
-request = service.defaultObjectAccessControls().patch(bucket, entity, object_access_control)
+request = service.defaultObjectAccessControls().patch(bucket=bucket, entity=entity, body=object_access_control_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -718,32 +792,38 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
 # * Name of a bucket.
 bucket = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
-object_access_control = {
-# TODO: Add desired entries of the 'object_access_control' dict
+object_access_control_body = {
+# TODO: Add desired entries of the 'object_access_control_body' dict
 }
 
-request = service.defaultObjectAccessControls().update(bucket, entity, object_access_control)
+request = service.defaultObjectAccessControls().update(bucket=bucket, entity=entity, body=object_access_control_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -758,30 +838,37 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
 # * Name of a bucket.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
-request = service.objectAccessControls().delete(bucket, object, entity)
+request = service.objectAccessControls().delete(bucket=bucket, object=object, entity=entity)
 request.execute()
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -796,33 +883,40 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
 # * Name of a bucket.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
-request = service.objectAccessControls().get(bucket, object, entity)
+request = service.objectAccessControls().get(bucket=bucket, object=object, entity=entity)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -837,35 +931,40 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
 # * Name of a bucket.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
 
-object_access_control = {
-# TODO: Add desired entries of the 'object_access_control' dict
+object_access_control_body = {
+# TODO: Add desired entries of the 'object_access_control_body' dict
 }
 
-request = service.objectAccessControls().insert(bucket, object, object_access_control)
+request = service.objectAccessControls().insert(bucket=bucket, object=object, body=object_access_control_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -880,31 +979,36 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
 # * Name of a bucket.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
 
-request = service.objectAccessControls().list(bucket, object)
+request = service.objectAccessControls().list(bucket=bucket, object=object)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -919,37 +1023,44 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
 # * Name of a bucket.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
-object_access_control = {
-# TODO: Add desired entries of the 'object_access_control' dict to be changed
+object_access_control_body = {
+# TODO: Add desired entries of the 'object_access_control_body' dict to be changed
 }
 
-request = service.objectAccessControls().patch(bucket, object, entity, object_access_control)
+request = service.objectAccessControls().patch(bucket=bucket, object=object, entity=entity, body=object_access_control_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -964,37 +1075,44 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
 # * Name of a bucket.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
-# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId, group-emailAddress, allUsers, or allAuthenticatedUsers.
+
+# * The entity holding the permission. Can be user-userId, user-emailAddress, group-groupId,
+#   group-emailAddress, allUsers, or allAuthenticatedUsers.
 entity = ''
 
-object_access_control = {
-# TODO: Add desired entries of the 'object_access_control' dict
+object_access_control_body = {
+# TODO: Add desired entries of the 'object_access_control_body' dict
 }
 
-request = service.objectAccessControls().update(bucket, object, entity, object_access_control)
+request = service.objectAccessControls().update(bucket=bucket, object=object, entity=entity, body=object_access_control_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1009,35 +1127,40 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'compose' method:
+
 # * Name of the bucket in which to store the new object.
 destinationBucket = ''
-# * Name of the new object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the new object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 destinationObject = ''
 
-compose_request = {
-# TODO: Add desired entries of the 'compose_request' dict
+compose_request_body = {
+# TODO: Add desired entries of the 'compose_request_body' dict
 }
 
-request = service.objects().compose(destinationBucket, destinationObject, compose_request)
+request = service.objects().compose(destinationBucket=destinationBucket, destinationObject=destinationObject, body=compose_request_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1052,36 +1175,47 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'copy' method:
+
 # * Name of the bucket in which to find the source object.
 sourceBucket = ''
-# * Name of the source object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the source object. For information about how to URL encode object names to be path safe,
+#   see Encoding URI Path Parts.
 sourceObject = ''
-# * Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket value, if any.For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the bucket in which to store the new object. Overrides the provided object metadata's
+#   bucket value, if any.For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 destinationBucket = ''
-# * Name of the new object. Required when the object metadata is not otherwise provided. Overrides the object metadata's name value, if any.
+
+# * Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
+#   object metadata's name value, if any.
 destinationObject = ''
 
-object_ = {
-# TODO: Add desired entries of the 'object_' dict
+object__body = {
+# TODO: Add desired entries of the 'object__body' dict
 }
 
-request = service.objects().copy(sourceBucket, sourceObject, destinationBucket, destinationObject, object_)
+request = service.objects().copy(sourceBucket=sourceBucket, sourceObject=sourceObject, destinationBucket=destinationBucket, destinationObject=destinationObject, body=object__body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1096,28 +1230,33 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
 # * Name of the bucket in which the object resides.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
 
-request = service.objects().delete(bucket, object)
+request = service.objects().delete(bucket=bucket, object=object)
 request.execute()
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1132,31 +1271,36 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
 # * Name of the bucket in which the object resides.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
 
-request = service.objects().get(bucket, object)
+request = service.objects().get(bucket=bucket, object=object)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1171,30 +1315,35 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
-# * Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket value, if any.
+
+# * Name of the bucket in which to store the new object. Overrides the provided object metadata's
+#   bucket value, if any.
 bucket = ''
 
-object_ = {
-# TODO: Add desired entries of the 'object_' dict
+object__body = {
+# TODO: Add desired entries of the 'object__body' dict
 }
 
-request = service.objects().insert(bucket, object_)
+request = service.objects().insert(bucket=bucket, body=object__body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1209,33 +1358,36 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
 # * Name of the bucket in which to look for objects.
 bucket = ''
 
 objects = service.objects()
-request = objects.list(bucket)
+request = objects.list(bucket=bucket)
 while request is not None:
     response = request.execute()
 
     for object_ in response['items']:
         # TODO: Add code here to process each 'object_' resource
 
-    request = objects.list_next(request, response)
+    request = objects.list_next(previous_request=request, previous_response=response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1250,35 +1402,40 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
 # * Name of the bucket in which the object resides.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
 
-object_ = {
-# TODO: Add desired entries of the 'object_' dict to be changed
+object__body = {
+# TODO: Add desired entries of the 'object__body' dict to be changed
 }
 
-request = service.objects().patch(bucket, object, object_)
+request = service.objects().patch(bucket=bucket, object=object, body=object__body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1293,39 +1450,49 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'rewrite' method:
+
 # * Name of the bucket in which to find the source object.
 sourceBucket = ''
-# * Name of the source object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the source object. For information about how to URL encode object names to be path safe,
+#   see Encoding URI Path Parts.
 sourceObject = ''
-# * Name of the bucket in which to store the new object. Overrides the provided object metadata's bucket value, if any.
+
+# * Name of the bucket in which to store the new object. Overrides the provided object metadata's
+#   bucket value, if any.
 destinationBucket = ''
-# * Name of the new object. Required when the object metadata is not otherwise provided. Overrides the object metadata's name value, if any. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the new object. Required when the object metadata is not otherwise provided. Overrides the
+#   object metadata's name value, if any. For information about how to URL encode object names to be
+#   path safe, see Encoding URI Path Parts.
 destinationObject = ''
 
-object_ = {
-# TODO: Add desired entries of the 'object_' dict
+object__body = {
+# TODO: Add desired entries of the 'object__body' dict
 }
 
-request = service.objects().rewrite(sourceBucket, sourceObject, destinationBucket, destinationObject, object_)
+request = service.objects().rewrite(sourceBucket=sourceBucket, sourceObject=sourceObject, destinationBucket=destinationBucket, destinationObject=destinationObject, body=object__body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1340,35 +1507,40 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
 # * Name of the bucket in which the object resides.
 bucket = ''
-# * Name of the object. For information about how to URL encode object names to be path safe, see Encoding URI Path Parts.
+
+# * Name of the object. For information about how to URL encode object names to be path safe, see
+#   Encoding URI Path Parts.
 object = ''
 
-object_ = {
-# TODO: Add desired entries of the 'object_' dict
+object__body = {
+# TODO: Add desired entries of the 'object__body' dict
 }
 
-request = service.objects().update(bucket, object, object_)
+request = service.objects().update(bucket=bucket, object=object, body=object__body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Cloud Storage JSON API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/storage
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -1383,15 +1555,16 @@ service = discovery.build('storage', 'v1', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'watchAll' method:
+
 # * Name of the bucket in which to look for objects.
 bucket = ''
 
-channel = {
-# TODO: Add desired entries of the 'channel' dict
+channel_body = {
+# TODO: Add desired entries of the 'channel_body' dict
 }
 
-request = service.objects().watchAll(bucket, channel)
+request = service.objects().watchAll(bucket=bucket, body=channel_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)

@@ -21,13 +21,14 @@ import com.google.api.tools.framework.snippet.Doc;
 import com.google.api.tools.framework.snippet.SnippetSet;
 import com.google.common.collect.ImmutableMap;
 
-public class ClientConfigSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
+public class ClientConfigSnippetSetRunner<ElementT>
+    implements SnippetSetRunner.Generator<ElementT> {
 
-  /**
-   * The path to the root of snippet resources.
-   */
-  private static final String SNIPPET_RESOURCE_ROOT =
-      ClientConfigSnippetSetRunner.class.getPackage().getName().replace('.', '/');
+  private final String resourceRoot;
+
+  public ClientConfigSnippetSetRunner(String resourceRoot) {
+    this.resourceRoot = resourceRoot;
+  }
 
   @Override
   @SuppressWarnings("unchecked")
@@ -36,7 +37,7 @@ public class ClientConfigSnippetSetRunner<ElementT> implements SnippetSetRunner<
     ClientConfigSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             ClientConfigSnippetSet.class,
-            SNIPPET_RESOURCE_ROOT,
+            resourceRoot,
             snippetFileName,
             ImmutableMap.<String, Object>of("context", context));
 

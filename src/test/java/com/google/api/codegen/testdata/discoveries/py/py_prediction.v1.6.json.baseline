@@ -1,19 +1,21 @@
 
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Prediction API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/prediction
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -28,35 +30,39 @@ service = discovery.build('prediction', 'v1.6', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'predict' method:
+
 # * The project associated with the model.
 project = ''
+
 # * The name of a hosted model.
 hostedModelName = ''
 
-input_ = {
-# TODO: Add desired entries of the 'input_' dict
+input__body = {
+# TODO: Add desired entries of the 'input__body' dict
 }
 
-request = service.hostedmodels().predict(project, hostedModelName, input_)
+request = service.hostedmodels().predict(project=project, hostedModelName=hostedModelName, body=input__body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Prediction API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/prediction
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -71,28 +77,33 @@ service = discovery.build('prediction', 'v1.6', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'analyze' method:
+
 # * The project associated with the model.
 project = ''
+
 # * The unique name for the predictive model.
 id = ''
 
-request = service.trainedmodels().analyze(project, id)
+request = service.trainedmodels().analyze(project=project, id=id)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Prediction API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/prediction
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -107,28 +118,32 @@ service = discovery.build('prediction', 'v1.6', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
 # * The project associated with the model.
 project = ''
+
 # * The unique name for the predictive model.
 id = ''
 
-request = service.trainedmodels().delete(project, id)
+request = service.trainedmodels().delete(project=project, id=id)
 request.execute()
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Prediction API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/prediction
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -143,31 +158,35 @@ service = discovery.build('prediction', 'v1.6', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
 # * The project associated with the model.
 project = ''
+
 # * The unique name for the predictive model.
 id = ''
 
-request = service.trainedmodels().get(project, id)
+request = service.trainedmodels().get(project=project, id=id)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Prediction API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/prediction
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -182,30 +201,34 @@ service = discovery.build('prediction', 'v1.6', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
 # * The project associated with the model.
 project = ''
 
-insert = {
-# TODO: Add desired entries of the 'insert' dict
+insert_body = {
+# TODO: Add desired entries of the 'insert_body' dict
 }
 
-request = service.trainedmodels().insert(project, insert)
+request = service.trainedmodels().insert(project=project, body=insert_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Prediction API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/prediction
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -220,33 +243,36 @@ service = discovery.build('prediction', 'v1.6', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
 # * The project associated with the model.
 project = ''
 
 trainedmodels = service.trainedmodels()
-request = trainedmodels.list(project)
+request = trainedmodels.list(project=project)
 while request is not None:
     response = request.execute()
 
     for insert2 in response['items']:
         # TODO: Add code here to process each 'insert2' resource
 
-    request = trainedmodels.list_next(request, response)
+    request = trainedmodels.list_next(previous_request=request, previous_response=response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Prediction API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/prediction
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -261,35 +287,39 @@ service = discovery.build('prediction', 'v1.6', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'predict' method:
+
 # * The project associated with the model.
 project = ''
+
 # * The unique name for the predictive model.
 id = ''
 
-input_ = {
-# TODO: Add desired entries of the 'input_' dict
+input__body = {
+# TODO: Add desired entries of the 'input__body' dict
 }
 
-request = service.trainedmodels().predict(project, id, input_)
+request = service.trainedmodels().predict(project=project, id=id, body=input__body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Prediction API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/prediction
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -304,17 +334,19 @@ service = discovery.build('prediction', 'v1.6', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
 # * The project associated with the model.
 project = ''
+
 # * The unique name for the predictive model.
 id = ''
 
-update = {
-# TODO: Add desired entries of the 'update' dict
+update_body = {
+# TODO: Add desired entries of the 'update_body' dict
 }
 
-request = service.trainedmodels().update(project, id, update)
+request = service.trainedmodels().update(project=project, id=id, body=update_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)

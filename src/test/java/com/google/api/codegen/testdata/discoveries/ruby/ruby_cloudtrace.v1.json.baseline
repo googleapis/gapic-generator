@@ -1,14 +1,15 @@
 
-# PRE-REQUISITES:
+# BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Trace API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/cloudtrace
-# 2. This sample uses Application Default Credentials for Auth.
+# 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-# 3. To install the client library and Application Default Credentials library, run:
-#    'gem install google-api-client'
+#    https://cloud.google.com/sdk/ and run
+#    'gcloud beta auth application-default login'
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running 'gem install google-api-client' and
 #    'gem install googleauth'
 require 'googleauth'
 require 'google/apis/cloudtrace_v1'
@@ -18,23 +19,26 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # TODO: Change placeholders below to appropriate parameter values for the 'patch_project_traces' method:
-# ID of the Cloud project where the trace data is stored.
+
+# * ID of the Cloud project where the trace data is stored.
 project_id = ''
+
 traces_object = Google::Apis::CloudtraceV1::Traces.new
 
 
 # Perform the call
 service.patch_project_traces(project_id, traces_object)
-# PRE-REQUISITES:
+# BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Trace API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/cloudtrace
-# 2. This sample uses Application Default Credentials for Auth.
+# 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-# 3. To install the client library and Application Default Credentials library, run:
-#    'gem install google-api-client'
+#    https://cloud.google.com/sdk/ and run
+#    'gcloud beta auth application-default login'
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running 'gem install google-api-client' and
 #    'gem install googleauth'
 require 'googleauth'
 require 'google/apis/cloudtrace_v1'
@@ -44,25 +48,26 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get_project_trace' method:
-# ID of the Cloud project where the trace data is stored.
+
+# * ID of the Cloud project where the trace data is stored.
 project_id = ''
 
-# ID of the trace to return.
+# * ID of the trace to return.
 trace_id = ''
-
 
 # Perform the call
 response = service.get_project_trace(project_id, trace_id)
-# PRE-REQUISITES:
+# BEFORE RUNNING:
 # ---------------
 # 1. If not already done, enable the Google Cloud Trace API
 #    and check the quota for your project at
 #    https://console.developers.google.com/apis/api/cloudtrace
-# 2. This sample uses Application Default Credentials for Auth.
+# 2. This sample uses Application Default Credentials for authentication.
 #    If not already done, install the gcloud CLI from
-#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-# 3. To install the client library and Application Default Credentials library, run:
-#    'gem install google-api-client'
+#    https://cloud.google.com/sdk/ and run
+#    'gcloud beta auth application-default login'
+# 3. Install the Ruby client library and Application Default Credentials
+#    library by running 'gem install google-api-client' and
 #    'gem install googleauth'
 require 'googleauth'
 require 'google/apis/cloudtrace_v1'
@@ -72,9 +77,9 @@ service.authorization = \
     Google::Auth.get_application_default(['https://www.googleapis.com/auth/cloud-platform'])
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list_project_traces' method:
-# ID of the Cloud project where the trace data is stored.
-project_id = ''
 
+# * ID of the Cloud project where the trace data is stored.
+project_id = ''
 
 # Perform the call
 result_list = service.fetch_all(items: :traces) { |token|

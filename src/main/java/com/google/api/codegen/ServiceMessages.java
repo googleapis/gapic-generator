@@ -14,14 +14,12 @@
  */
 package com.google.api.codegen;
 
-import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.TypeRef;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.protobuf.Empty;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,6 +31,10 @@ public class ServiceMessages {
    * Returns true if the message is the empty message.
    */
   public boolean isEmptyType(TypeRef type) {
+    return s_isEmptyType(type);
+  }
+
+  public static boolean s_isEmptyType(TypeRef type) {
     return type.isMessage()
         && type.getMessageType().getFullName().equals(Empty.getDescriptor().getFullName());
   }
@@ -67,22 +69,5 @@ public class ServiceMessages {
         };
 
     return Iterables.filter(methods, isBundling);
-  }
-
-  /**
-   * Returns the list of flattened fields from the given request type, excluding fields related to
-   * page streaming.
-   */
-  public Iterable<Field> flattenedFields(TypeRef requestType) {
-    List<Field> fields = new ArrayList<>();
-    for (Field field : requestType.getMessageType().getFields()) {
-      String simpleName = field.getSimpleName();
-      // TODO: Look this up from the config rather than hard coding it.
-      if (simpleName.equals("page_token")) {
-        continue;
-      }
-      fields.add(field);
-    }
-    return fields;
   }
 }

@@ -15,63 +15,48 @@
 package com.google.api.codegen;
 
 import com.google.api.codegen.config.ConfigGeneratorApi;
-import com.google.api.tools.framework.model.Model;
-import com.google.api.tools.framework.model.testing.TestConfig;
-import com.google.api.tools.framework.model.testing.TestDataLocator;
+import com.google.api.tools.framework.model.testing.ConfigBaselineTestCase;
 import com.google.api.tools.framework.tools.ToolOptions;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-
 import java.io.File;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Collections;
+import org.junit.Test;
 
-public class ConfigGenerationTest {
-  @Rule public TemporaryFolder tempDir = new TemporaryFolder();
+public class ConfigGenerationTest extends ConfigBaselineTestCase {
+  @Override
+  protected String baselineFileName() {
+    return testName.getMethodName() + "_config.baseline";
+  }
 
-  @Test
-  public void config() throws Exception {
-    String testTarget = "library";
-    String baselineName = testTarget + "_config.baseline";
+  @Override
+  protected boolean suppressDiagnosis() {
+    // Suppress linter warnings
+    return true;
+  }
 
-    TestDataLocator locator = TestDataLocator.create(this.getClass());
-    TestConfig testConfig =
-        new TestConfig(
-            locator, tempDir.getRoot().getPath(), Collections.singletonList(testTarget + ".proto"));
-    Model model = Model.create(testConfig.getDescriptor());
-
-    String outFile = tempDir.getRoot().getPath() + File.separator + baselineName;
+  @Override
+  public Object run() throws Exception {
+    String outFile = tempDir.getRoot().getPath() + File.separator + baselineFileName();
 
     ToolOptions options = ToolOptions.create();
     options.set(ConfigGeneratorApi.OUTPUT_FILE, outFile);
     options.set(ToolOptions.DESCRIPTOR_SET, testConfig.getDescriptorFile().toString());
     new ConfigGeneratorApi(options).run();
 
-    URL baselineUrl = locator.findTestData(baselineName);
-    if (baselineUrl == null) {
-      throw new IllegalStateException(String.format("baseline not found: %s", baselineName));
-    }
-    String baselineContent = locator.readTestData(baselineUrl);
     String outputContent =
         new String(Files.readAllBytes(Paths.get(outFile)), StandardCharsets.UTF_8);
 
-    if (!outputContent.equals(baselineContent)) {
-      Path saveFile =
-          Paths.get(
-              System.getProperty("java.io.tmpdir"),
-              String.format("%s_testdata", this.getClass().getPackage().getName()),
-              baselineName);
-      Files.createDirectories(saveFile.getParent());
-      Files.copy(Paths.get(outFile), saveFile, StandardCopyOption.REPLACE_EXISTING);
-      throw new IllegalStateException(
-          String.format("baseline failed, output saved at %s", saveFile));
-    }
+    return outputContent;
+  }
+
+  @Test
+  public void library() throws Exception {
+    test("library");
+  }
+
+  @Test
+  public void no_path_templates() throws Exception {
+    test("no_path_templates");
   }
 }

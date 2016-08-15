@@ -1,0 +1,53 @@
+@extends "java/common.snip"
+
+@snippet initCode(initCodeSpec)
+  @join line : initCodeSpec.lines
+    @switch line.lineType.toString
+    @case "StructureInitLine"
+      {@initLineStructure(line)}
+    @case "ListInitLine"
+      {@initLineList(line)}
+    @case "MapInitLine"
+      {@initLineMap(line)}
+    @case "SimpleInitLine"
+      {@initLineSimple(line)}
+    @default
+      $unhandledCase: {@line.lineType.toString}$
+    @end
+  @end
+@end
+
+@private initLineStructure(line)
+  {@line.typeName} {@line.identifier} = {@line.typeName}.newBuilder()
+  @join fieldSetting : line.fieldSettings
+    {@EMPTY}  .{@fieldSetting.fieldSetFunction}({@fieldSetting.identifier})
+  @end
+  {@EMPTY}  .build();
+@end
+
+@private initLineList(line)
+  List<{@line.elementTypeName}> {@line.identifier} = \
+      Arrays.asList({@argList(line.elementIdentifiers)});
+@end
+
+@private initLineMap(line)
+  Map<{@line.keyTypeName}, {@line.valueTypeName}> {@line.identifier} = new HashMap<>();
+  @join mapEntry : line.initEntries vertical
+    {@line.identifier}.put({@mapEntry.key}, {@mapEntry.value});
+  @end
+@end
+
+@private initLineSimple(line)
+  {@line.typeName} {@line.identifier} = {@renderInitValue(line.initValue)};
+@end
+
+@private renderInitValue(initValue)
+  @switch initValue.type
+  @case "SimpleInitValueView"
+    {@initValue.initialValue}
+  @case "FormattedInitValueView"
+    {@initValue.apiWrapperName}.{@initValue.formatFunctionName}({@argList(initValue.formatArgs)})
+  @default
+    $unhandledCase: {@initValue.type}$
+  @end
+@end

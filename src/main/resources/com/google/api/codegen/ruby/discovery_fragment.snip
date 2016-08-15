@@ -1,4 +1,4 @@
-@extends "../common.snip"
+@extends "common.snip"
 
 @snippet generateFilename(method)
   {@method.getName}.frag.rb
@@ -9,16 +9,17 @@
       ApiName = context.lowerCamelToUpperCamel(apiName), \
       apiVersion = context.getApiVersion, \
       ApiVersion = context.lowerCamelToUpperCamel(apiVersion)
-    @# PRE-REQUISITES:
+    @# BEFORE RUNNING:
     @# ---------------
     @# 1. If not already done, enable the {@context.getService.getTitle}
     @#    and check the quota for your project at
     @#    https://console.developers.google.com/apis/api/{@context.getApi.getName}
-    @# 2. This sample uses Application Default Credentials for Auth.
+    @# 2. This sample uses Application Default Credentials for authentication.
     @#    If not already done, install the gcloud CLI from
-    @#    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
-    @# 3. To install the client library and Application Default Credentials library, run:
-    @#    'gem install google-api-client'
+    @#    https://cloud.google.com/sdk/ and run
+    @#    'gcloud beta auth application-default login'
+    @# 3. Install the Ruby client library and Application Default Credentials
+    @#    library by running 'gem install google-api-client' and
     @#    'gem install googleauth'
     require 'googleauth'
     require 'google/apis/{@apiName}_{@apiVersion}'
@@ -56,15 +57,14 @@
       @let paramField = context.getField(signatureType, param), \
            paramValue = context.typeDefaultValue(signatureType, paramField), \
            paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
-        @join line : context.lineWrapDoc(paramDescription, 100)
-          @# {@line}
-        @end
 
+        {@description(paramDescription)}
         {@context.getParamName(method, param)} = {@paramValue}
-
       @end
     @end
+
     @if context.hasRequestField(method)
+
       {@resourceObject(method)} = \
           Google::Apis::{@ApiName}{@ApiVersion}::{@context.lowerUnderscoreToUpperCamel(context.getRequestTypeName(method))}.new
 
@@ -114,4 +114,10 @@
 
 @private resourceObject(method)
   {@context.getRequestTypeName(method)}_object
+@end
+
+@private description(description)
+  @join line : context.lineWrapDoc(description, 100)
+    @# {@line}
+  @end
 @end

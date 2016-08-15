@@ -1,19 +1,21 @@
 
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google Compute Engine Autoscaler API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/autoscaler
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -28,33 +30,38 @@ service = discovery.build('autoscaler', 'v1beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
 # * Project ID of Autoscaler resource.
 project = ''
+
 # * Zone name of Autoscaler resource.
 zone = ''
+
 # * Name of the Autoscaler resource.
 autoscaler = ''
 
-request = service.autoscalers().delete(project, zone, autoscaler)
+request = service.autoscalers().delete(project=project, zone=zone, autoscaler=autoscaler)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google Compute Engine Autoscaler API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/autoscaler
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -69,33 +76,38 @@ service = discovery.build('autoscaler', 'v1beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
 # * Project ID of Autoscaler resource.
 project = ''
+
 # * Zone name of Autoscaler resource.
 zone = ''
+
 # * Name of the Autoscaler resource.
 autoscaler = ''
 
-request = service.autoscalers().get(project, zone, autoscaler)
+request = service.autoscalers().get(project=project, zone=zone, autoscaler=autoscaler)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google Compute Engine Autoscaler API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/autoscaler
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -110,32 +122,37 @@ service = discovery.build('autoscaler', 'v1beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'insert' method:
+
 # * Project ID of Autoscaler resource.
 project = ''
+
 # * Zone name of Autoscaler resource.
 zone = ''
 
-autoscaler = {
-# TODO: Add desired entries of the 'autoscaler' dict
+autoscaler_body = {
+# TODO: Add desired entries of the 'autoscaler_body' dict
 }
 
-request = service.autoscalers().insert(project, zone, autoscaler)
+request = service.autoscalers().insert(project=project, zone=zone, body=autoscaler_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google Compute Engine Autoscaler API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/autoscaler
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -150,35 +167,39 @@ service = discovery.build('autoscaler', 'v1beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
 # * Project ID of Autoscaler resource.
 project = ''
+
 # * Zone name of Autoscaler resource.
 zone = ''
 
 autoscalers = service.autoscalers()
-request = autoscalers.list(project, zone)
+request = autoscalers.list(project=project, zone=zone)
 while request is not None:
     response = request.execute()
 
     for autoscaler in response['items']:
         # TODO: Add code here to process each 'autoscaler' resource
 
-    request = autoscalers.list_next(request, response)
+    request = autoscalers.list_next(previous_request=request, previous_response=response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google Compute Engine Autoscaler API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/autoscaler
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -193,37 +214,42 @@ service = discovery.build('autoscaler', 'v1beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
 # * Project ID of Autoscaler resource.
 project = ''
+
 # * Zone name of Autoscaler resource.
 zone = ''
+
 # * Name of the Autoscaler resource.
 autoscaler = ''
 
-autoscaler = {
-# TODO: Add desired entries of the 'autoscaler' dict to be changed
+autoscaler_body = {
+# TODO: Add desired entries of the 'autoscaler_body' dict to be changed
 }
 
-request = service.autoscalers().patch(project, zone, autoscaler, autoscaler)
+request = service.autoscalers().patch(project=project, zone=zone, autoscaler=autoscaler, body=autoscaler_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google Compute Engine Autoscaler API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/autoscaler
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -238,34 +264,40 @@ service = discovery.build('autoscaler', 'v1beta2', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'update' method:
+
 # * Project ID of Autoscaler resource.
 project = ''
+
 # * Zone name of Autoscaler resource.
 zone = ''
+
 # * Name of the Autoscaler resource.
 autoscaler = ''
 
-autoscaler = {
-# TODO: Add desired entries of the 'autoscaler' dict
+autoscaler_body = {
+# TODO: Add desired entries of the 'autoscaler_body' dict
 }
 
-request = service.autoscalers().update(project, zone, autoscaler, autoscaler)
+request = service.autoscalers().update(project=project, zone=zone, autoscaler=autoscaler, body=autoscaler_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google Compute Engine Autoscaler API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/autoscaler
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -281,29 +313,34 @@ service = discovery.build('autoscaler', 'v1beta2', credentials=credentials)
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
 
+
 project = ''
+
 
 zone = ''
 
+
 operation = ''
 
-request = service.zoneOperations().delete(project, zone, operation)
+request = service.zoneOperations().delete(project=project, zone=zone, operation=operation)
 request.execute()
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google Compute Engine Autoscaler API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/autoscaler
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -319,29 +356,35 @@ service = discovery.build('autoscaler', 'v1beta2', credentials=credentials)
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
 
+
 project = ''
+
 
 zone = ''
 
+
 operation = ''
 
-request = service.zoneOperations().get(project, zone, operation)
+request = service.zoneOperations().get(project=project, zone=zone, operation=operation)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google Compute Engine Autoscaler API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/autoscaler
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -357,31 +400,36 @@ service = discovery.build('autoscaler', 'v1beta2', credentials=credentials)
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
+
 project = ''
+
 
 zone = ''
 
 zoneOperations = service.zoneOperations()
-request = zoneOperations.list(project, zone)
+request = zoneOperations.list(project=project, zone=zone)
 while request is not None:
     response = request.execute()
 
     for operation in response['items']:
         # TODO: Add code here to process each 'operation' resource
 
-    request = zoneOperations.list_next(request, response)
+    request = zoneOperations.list_next(previous_request=request, previous_response=response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google Compute Engine Autoscaler API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/autoscaler
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -397,14 +445,15 @@ service = discovery.build('autoscaler', 'v1beta2', credentials=credentials)
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
 
+
 project = ''
 
 zones = service.zones()
-request = zones.list(project)
+request = zones.list(project=project)
 while request is not None:
     response = request.execute()
 
     for zone in response['items']:
         # TODO: Add code here to process each 'zone' resource
 
-    request = zones.list_next(request, response)
+    request = zones.list_next(previous_request=request, previous_response=response)

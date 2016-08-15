@@ -1,4 +1,4 @@
-@extends "../common.snip"
+@extends "common.snip"
 
 @snippet generateFilename(method)
   {@method.getName}.frag.java
@@ -10,18 +10,19 @@
        apiVersion = api.getVersion, \
        serviceTitle = context.getService.getTitle
     /*
-     * PRE-REQUISITES:
+     * BEFORE RUNNING:
      * ---------------
      * 1. If not already done, enable the {@serviceTitle}
      *    and check the quota for your project at
      *    https://console.developers.google.com/apis/api/{@apiName}
-     * 2. To install the client library on Maven or Gradle, check installation instructions at
-     *    https://github.com/google/google-api-java-client.
+     * 2. This sample uses Application Default Credentials for authentication.
+     *    If not already done, install the gcloud CLI from
+     *    https://cloud.google.com/sdk/ and run
+     *    'gcloud beta auth application-default login'
+     * 3. Install the Java client library on maven or gradle. Check installation
+     *    instructions at https://github.com/google/google-api-java-client.
      *    On other build systems, you can add the jar files to your project from
      *    https://developers.google.com/resources/api-libraries/download/{@apiName}/{@apiVersion}/java
-     * 3. This sample uses Application Default Credentials for Auth.
-     *    If not already done, install the gcloud CLI from
-     *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
      */
 
     @join import : imports
@@ -164,10 +165,8 @@
            paramType = context.typeName(signatureType, paramField), \
            paramValue = context.typeDefaultValue(signatureType, paramField), \
            paramDescription = apiaryConfig.getDescription(signatureType.getName, param)
-        @join line : context.lineWrapDoc(paramDescription, 100)
-          // {@line}
-        @end
 
+        {@description(paramDescription)}
         {@paramType} {@param} = {@paramValue}
       @end
     @end
@@ -218,6 +217,12 @@
 @private argumentList(arguments)
   @join argument : arguments on ", "
     {@argument}
+  @end
+@end
+
+@private description(description)
+  @join line : context.lineWrapDoc(description, 100)
+    // {@line}
   @end
 @end
 

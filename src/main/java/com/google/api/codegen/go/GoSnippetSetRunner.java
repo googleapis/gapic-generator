@@ -24,13 +24,13 @@ import com.google.common.collect.ImmutableMap;
 /**
  * A GoProvider provides general Go code generation logic.
  */
-public class GoSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> {
+public class GoSnippetSetRunner<ElementT> implements SnippetSetRunner.Generator<ElementT> {
 
-  /**
-   * The path to the root of snippet resources.
-   */
-  private static final String SNIPPET_RESOURCE_ROOT =
-      GoContextCommon.class.getPackage().getName().replace('.', '/');
+  private final String resourceRoot;
+
+  public GoSnippetSetRunner(String resourceRoot) {
+    this.resourceRoot = resourceRoot;
+  }
 
   @Override
   @SuppressWarnings("unchecked")
@@ -39,7 +39,7 @@ public class GoSnippetSetRunner<ElementT> implements SnippetSetRunner<ElementT> 
     GoSnippetSet<ElementT> snippets =
         SnippetSet.createSnippetInterface(
             GoSnippetSet.class,
-            SNIPPET_RESOURCE_ROOT,
+            resourceRoot,
             snippetFileName,
             ImmutableMap.<String, Object>of("context", context));
 

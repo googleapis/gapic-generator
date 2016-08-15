@@ -38,7 +38,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
   private final Model model;
   private final InputElementView<ElementT> view;
   private final GapicContext context;
-  private final SnippetSetRunner<ElementT> snippetSetRunner;
+  private final SnippetSetRunner.Generator<ElementT> generator;
   private final List<String> snippetFileNames;
   private final GapicCodePathMapper pathMapper;
 
@@ -46,13 +46,13 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
       Model model,
       InputElementView<ElementT> view,
       GapicContext context,
-      SnippetSetRunner<ElementT> snippetSetRunner,
+      SnippetSetRunner.Generator<ElementT> generator,
       List<String> snippetFileNames,
       GapicCodePathMapper pathMapper) {
     this.model = model;
     this.view = view;
     this.context = context;
-    this.snippetSetRunner = snippetSetRunner;
+    this.generator = generator;
     this.snippetFileNames = snippetFileNames;
     this.pathMapper = pathMapper;
   }
@@ -99,7 +99,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
     // Run the generator for each service.
     List<GeneratedResult> generated = new ArrayList<>();
     for (ElementT element : view.getElementIterable(model)) {
-      GeneratedResult result = snippetSetRunner.generate(element, snippetFileName, context);
+      GeneratedResult result = generator.generate(element, snippetFileName, context);
 
       String subPath;
       // Note on usage of instanceof: there is one case (as of this writing)
@@ -136,7 +136,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
     private Model model;
     private InputElementView<ElementT> view;
     private GapicContext context;
-    private SnippetSetRunner<ElementT> snippetSetRunner;
+    private SnippetSetRunner.Generator<ElementT> generator;
     private List<String> snippetFileNames;
     private GapicCodePathMapper pathMapper;
 
@@ -157,8 +157,8 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
       return this;
     }
 
-    public Builder<ElementT> setSnippetSetRunner(SnippetSetRunner<ElementT> snippetSetRunner) {
-      this.snippetSetRunner = snippetSetRunner;
+    public Builder<ElementT> setSnippetSetRunner(SnippetSetRunner.Generator<ElementT> generator) {
+      this.generator = generator;
       return this;
     }
 
@@ -174,7 +174,7 @@ public class CommonGapicProvider<ElementT> implements GapicProvider<ElementT> {
 
     public CommonGapicProvider<ElementT> build() {
       return new CommonGapicProvider<ElementT>(
-          model, view, context, snippetSetRunner, snippetFileNames, pathMapper);
+          model, view, context, generator, snippetFileNames, pathMapper);
     }
   }
 }

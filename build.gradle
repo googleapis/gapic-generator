@@ -15,10 +15,12 @@ buildscript {
       url 'https://plugins.gradle.org/m2/'
     }
     mavenCentral()
+    jcenter()
   }
   dependencies {
     classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.7'
     classpath "gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.2"
+    classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
   }
 }
 
@@ -29,6 +31,7 @@ apply plugin: "idea"
 apply plugin: "eclipse"
 apply plugin: "com.google.protobuf"
 apply plugin: "com.github.sherter.google-java-format"
+apply plugin: "com.github.johnrengelman.shadow"
 
 sourceCompatibility = 1.7
 
@@ -105,6 +108,15 @@ dependencies {
     libraries.mockito,
     libraries.truth,
     libraries.toolsFxTesting
+}
+
+task discoJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+  archiveName = "discoGen-${version}.jar"
+  manifest {
+    attributes "Main-Class": "com.google.api.codegen.DiscoveryFragmentGeneratorTool"
+  }
+  from sourceSets.main.output
+  configurations = [ project.configurations.runtime ]
 }
 
 // Source jar
@@ -265,6 +277,14 @@ if (project.hasProperty('privateOssrhUsername') && project.hasProperty('privateO
   logger.warn("The uploadArchives task was skipped. The privateOssrhUsername "
     + "and privateOssrhPassword properties need to be set correctly in "
     + "your ~/.gradle/gradle.properties file in order to upload archives.")
+}
+
+allprojects {
+  gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+      options.compilerArgs << "-Xlint:unchecked"
+    }
+  }
 }
 
 // Task to run CodeGeneratorTool

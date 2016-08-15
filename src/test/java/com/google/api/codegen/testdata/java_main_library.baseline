@@ -12,26 +12,6 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-
-/*
- * EDITING INSTRUCTIONS
- * This file was generated from the file
- * https://github.com/google/googleapis/blob/master/library.proto
- * and updates to that file get reflected here through a refresh process.
- * For the short term, the refresh process will only be runnable by Google engineers.
- * Manual additions are allowed because the refresh process performs
- * a 3-way merge in order to preserve those manual additions. In order to not
- * break the refresh process, only certain types of modifications are
- * allowed.
- *
- * Allowed modifications - currently these are the only types allowed:
- * 1. New methods (these should be added to the end of the class)
- * 2. New imports
- * 3. Additional documentation between "manual edit" demarcations
- *
- * Happy editing!
- */
-
 package com.google.gcloud.pubsub.spi;
 
 import com.google.api.gax.core.PageAccessor;
@@ -72,21 +52,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 
-// Manually-added imports: add custom (non-generated) imports after this point.
-
-
-
-// AUTO-GENERATED DOCUMENTATION AND SERVICE - see instructions at the top of the file for editing.
+// AUTO-GENERATED DOCUMENTATION AND SERVICE
 /**
  * Service Description: This API represents a simple digital library.  It lets you manage Shelf
  * resources and Book resources in the library. It defines the following
  * resource model:
  *
  * - The API has a collection of [Shelf][google.example.library.v1.Shelf]
- *   resources, named ``shelves/&ast;``
+ *   resources, named ``bookShelves/&ast;``
  *
  * - Each Shelf has a collection of [Book][google.example.library.v1.Book]
- *   resources, named `shelves/&ast;/books/&ast;`
+ *   resources, named `bookShelves/&ast;/books/&ast;`
  *
  * Check out [cloud docs!](/library/example/link).
  * This is [not a cloud link](http://www.google.com).
@@ -96,7 +72,7 @@ import java.util.concurrent.ScheduledExecutorService;
  *
  * <pre>
  * <code>
- * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+ * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
  *   Shelf shelf = Shelf.newBuilder().build();
  *   Shelf response = libraryServiceApi.createShelf(shelf);
  * }
@@ -138,9 +114,6 @@ import java.util.concurrent.ScheduledExecutorService;
  * LibraryServiceApi libraryServiceApi = LibraryServiceApi.create(libraryServiceSettings);
  * </code>
  * </pre>
- *
- * <!-- manual edit -->
- * <!-- end manual edit -->
  */
 @javax.annotation.Generated("by GAPIC")
 public class LibraryServiceApi implements AutoCloseable {
@@ -152,22 +125,19 @@ public class LibraryServiceApi implements AutoCloseable {
   private final ApiCallable<CreateShelfRequest, Shelf> createShelfCallable;
   private final ApiCallable<GetShelfRequest, Shelf> getShelfCallable;
   private final ApiCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable;
-  private final ApiCallable<ListShelvesRequest, PageAccessor<Shelf>>
-      listShelvesPagedCallable;
+  private final ApiCallable<ListShelvesRequest, PageAccessor<Shelf>> listShelvesPagedCallable;
   private final ApiCallable<DeleteShelfRequest, Empty> deleteShelfCallable;
   private final ApiCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable;
   private final ApiCallable<CreateBookRequest, Book> createBookCallable;
   private final ApiCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable;
   private final ApiCallable<GetBookRequest, Book> getBookCallable;
   private final ApiCallable<ListBooksRequest, ListBooksResponse> listBooksCallable;
-  private final ApiCallable<ListBooksRequest, PageAccessor<Book>>
-      listBooksPagedCallable;
+  private final ApiCallable<ListBooksRequest, PageAccessor<Book>> listBooksPagedCallable;
   private final ApiCallable<DeleteBookRequest, Empty> deleteBookCallable;
   private final ApiCallable<UpdateBookRequest, Book> updateBookCallable;
   private final ApiCallable<MoveBookRequest, Book> moveBookCallable;
   private final ApiCallable<ListStringsRequest, ListStringsResponse> listStringsCallable;
-  private final ApiCallable<ListStringsRequest, PageAccessor<String>>
-      listStringsPagedCallable;
+  private final ApiCallable<ListStringsRequest, PageAccessor<String>> listStringsPagedCallable;
   private final ApiCallable<AddCommentsRequest, Empty> addCommentsCallable;
   private final ApiCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable;
   private final ApiCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable;
@@ -188,9 +158,6 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Formats a string containing the fully-qualified path to represent
    * a shelf resource.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public static final String formatShelfName(String shelf) {
     return SHELF_PATH_TEMPLATE.instantiate(
@@ -200,33 +167,26 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Formats a string containing the fully-qualified path to represent
    * a book resource.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public static final String formatBookName(String shelf, String book) {
     return BOOK_PATH_TEMPLATE.instantiate(
-        "shelf", shelf,"book", book);
+        "shelf", shelf,
+        "book", book);
   }
 
   /**
    * Formats a string containing the fully-qualified path to represent
    * a archived_book resource.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public static final String formatArchivedBookName(String archivePath, String book) {
     return ARCHIVED_BOOK_PATH_TEMPLATE.instantiate(
-        "archive_path", archivePath,"book", book);
+        "archive_path", archivePath,
+        "book", book);
   }
 
   /**
    * Parses the shelf from the given fully-qualified path which
    * represents a shelf resource.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public static final String parseShelfFromShelfName(String shelfName) {
     return SHELF_PATH_TEMPLATE.parse(shelfName).get("shelf");
@@ -235,9 +195,6 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Parses the shelf from the given fully-qualified path which
    * represents a book resource.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public static final String parseShelfFromBookName(String bookName) {
     return BOOK_PATH_TEMPLATE.parse(bookName).get("shelf");
@@ -246,9 +203,6 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Parses the book from the given fully-qualified path which
    * represents a book resource.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public static final String parseBookFromBookName(String bookName) {
     return BOOK_PATH_TEMPLATE.parse(bookName).get("book");
@@ -257,9 +211,6 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Parses the archive_path from the given fully-qualified path which
    * represents a archivedBook resource.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public static final String parseArchivePathFromArchivedBookName(String archivedBookName) {
     return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("archive_path");
@@ -268,22 +219,15 @@ public class LibraryServiceApi implements AutoCloseable {
   /**
    * Parses the book from the given fully-qualified path which
    * represents a archivedBook resource.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public static final String parseBookFromArchivedBookName(String archivedBookName) {
     return ARCHIVED_BOOK_PATH_TEMPLATE.parse(archivedBookName).get("book");
   }
 
-
   /**
    * Constructs an instance of LibraryServiceApi with default settings.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
-  public static final LibraryServiceApi createWithDefaults() throws IOException {
+  public static final LibraryServiceApi create() throws IOException {
     return create(LibraryServiceSettings.defaultBuilder().build());
   }
 
@@ -291,9 +235,6 @@ public class LibraryServiceApi implements AutoCloseable {
    * Constructs an instance of LibraryServiceApi, using the given settings.
    * The channels are created based on the settings passed in, or defaults for any
    * settings that are not set.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public static final LibraryServiceApi create(LibraryServiceSettings settings) throws IOException {
     return new LibraryServiceApi(settings);
@@ -303,9 +244,6 @@ public class LibraryServiceApi implements AutoCloseable {
    * Constructs an instance of LibraryServiceApi, using the given settings.
    * This is protected so that it easy to make a subclass, but otherwise, the static
    * factory methods should be preferred.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   protected LibraryServiceApi(LibraryServiceSettings settings) throws IOException {
     this.settings = settings;
@@ -358,22 +296,17 @@ public class LibraryServiceApi implements AutoCloseable {
     }
   }
 
-  // ----- createShelf -----
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Creates a shelf, and returns the new Shelf.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   Shelf response = libraryServiceApi.createShelf(shelf);
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    *
    * @param shelf The shelf to create.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
@@ -386,13 +319,13 @@ public class LibraryServiceApi implements AutoCloseable {
     return createShelf(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Creates a shelf, and returns the new Shelf.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   CreateShelfRequest request = CreateShelfRequest.newBuilder()
    *     .setShelf(shelf)
@@ -401,23 +334,20 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  private Shelf createShelf(CreateShelfRequest request) {
+  private final Shelf createShelf(CreateShelfRequest request) {
     return createShelfCallable().call(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Creates a shelf, and returns the new Shelf.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   CreateShelfRequest request = CreateShelfRequest.newBuilder()
    *     .setShelf(shelf)
@@ -427,36 +357,28 @@ public class LibraryServiceApi implements AutoCloseable {
    *   Shelf response = future.get();
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<CreateShelfRequest, Shelf> createShelfCallable() {
     return createShelfCallable;
   }
 
-  // ----- getShelf -----
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Gets a shelf.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   Shelf response = libraryServiceApi.getShelf(formattedName);
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param name The name of the shelf to retrieve.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf getShelf(String name) {
-    SHELF_PATH_TEMPLATE.validate(name);
+    SHELF_PATH_TEMPLATE.validate(name, "getShelf");
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
         .setName(name)
@@ -464,29 +386,25 @@ public class LibraryServiceApi implements AutoCloseable {
     return getShelf(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Gets a shelf.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   SomeMessage message = SomeMessage.newBuilder().build();
    *   Shelf response = libraryServiceApi.getShelf(formattedName, message);
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param name The name of the shelf to retrieve.
    * @param message Field to verify that message-type query parameter gets flattened.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf getShelf(String name, SomeMessage message) {
-    SHELF_PATH_TEMPLATE.validate(name);
-
+    SHELF_PATH_TEMPLATE.validate(name, "getShelf");
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
         .setName(name)
@@ -495,13 +413,13 @@ public class LibraryServiceApi implements AutoCloseable {
     return getShelf(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Gets a shelf.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   SomeMessage message = SomeMessage.newBuilder().build();
    *   com.google.example.library.v1.StringBuilder stringBuilder = com.google.example.library.v1.StringBuilder.newBuilder().build();
@@ -509,18 +427,13 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param name The name of the shelf to retrieve.
    * @param message Field to verify that message-type query parameter gets flattened.
    * @param stringBuilder
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf getShelf(String name, SomeMessage message, com.google.example.library.v1.StringBuilder stringBuilder) {
-    SHELF_PATH_TEMPLATE.validate(name);
-
-
+    SHELF_PATH_TEMPLATE.validate(name, "getShelf");
     GetShelfRequest request =
         GetShelfRequest.newBuilder()
         .setName(name)
@@ -530,74 +443,66 @@ public class LibraryServiceApi implements AutoCloseable {
     return getShelf(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Gets a shelf.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
    *     .setName(formattedName)
+   *     .setOptions(options)
    *     .build();
    *   Shelf response = libraryServiceApi.getShelf(request);
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public Shelf getShelf(GetShelfRequest request) {
+  public final Shelf getShelf(GetShelfRequest request) {
     return getShelfCallable().call(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Gets a shelf.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
+   *   String options = "";
    *   GetShelfRequest request = GetShelfRequest.newBuilder()
    *     .setName(formattedName)
+   *     .setOptions(options)
    *     .build();
    *   ListenableFuture&lt;Shelf&gt; future = libraryServiceApi.getShelfCallable().futureCall(request);
    *   // Do something
    *   Shelf response = future.get();
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<GetShelfRequest, Shelf> getShelfCallable() {
     return getShelfCallable;
   }
 
-  // ----- listShelves -----
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Lists shelves.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *
-   *   for (Shelf elements : libraryServiceApi.listShelves()) {
-   *     // doThingsWith(elements);
+   *   for (Shelf element : libraryServiceApi.listShelves()) {
+   *     // doThingsWith(element);
    *   }
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final PageAccessor<Shelf> listShelves() {
@@ -608,23 +513,20 @@ public class LibraryServiceApi implements AutoCloseable {
     return listShelves(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Lists shelves.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder()
    *     .build();
-   *   for (Shelf elements : libraryServiceApi.listShelves(request)) {
-   *     // doThingsWith(elements);
+   *   for (Shelf element : libraryServiceApi.listShelves(request)) {
+   *     // doThingsWith(element);
    *   }
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
@@ -634,43 +536,40 @@ public class LibraryServiceApi implements AutoCloseable {
         .call(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Lists shelves.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder()
    *     .build();
    *   ListenableFuture&lt;PageAccessor&lt;Shelf&gt;&gt; future = libraryServiceApi.listShelvesPagedCallable().futureCall(request);
    *   // Do something
-   *   for (Shelf elements : future.get()) {
-   *     // doThingsWith(elements);
+   *   for (Shelf element : future.get()) {
+   *     // doThingsWith(element);
    *   }
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<ListShelvesRequest, PageAccessor<Shelf>> listShelvesPagedCallable() {
     return listShelvesPagedCallable;
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Lists shelves.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   ListShelvesRequest request = ListShelvesRequest.newBuilder()
    *     .build();
    *   while (true) {
    *     ListShelvesResponse response = libraryServiceApi.listShelvesCallable().call(request);
-   *     for (Shelf elements : response.getShelvesList()) {
-   *       // doThingsWith(elements);
+   *     for (Shelf element : response.getShelvesList()) {
+   *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
    *     if (!Strings.isNullOrEmpty(nextPageToken)) {
@@ -681,36 +580,28 @@ public class LibraryServiceApi implements AutoCloseable {
    *   }
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<ListShelvesRequest, ListShelvesResponse> listShelvesCallable() {
     return listShelvesCallable;
   }
 
-  // ----- deleteShelf -----
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Deletes a shelf.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   libraryServiceApi.deleteShelf(formattedName);
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param name The name of the shelf to delete.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final void deleteShelf(String name) {
-    SHELF_PATH_TEMPLATE.validate(name);
+    SHELF_PATH_TEMPLATE.validate(name, "deleteShelf");
     DeleteShelfRequest request =
         DeleteShelfRequest.newBuilder()
         .setName(name)
@@ -718,13 +609,13 @@ public class LibraryServiceApi implements AutoCloseable {
     deleteShelf(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Deletes a shelf.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
    *     .setName(formattedName)
@@ -733,23 +624,20 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  private void deleteShelf(DeleteShelfRequest request) {
+  private final void deleteShelf(DeleteShelfRequest request) {
     deleteShelfCallable().call(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Deletes a shelf.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   DeleteShelfRequest request = DeleteShelfRequest.newBuilder()
    *     .setName(formattedName)
@@ -759,17 +647,12 @@ public class LibraryServiceApi implements AutoCloseable {
    *   future.get();
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<DeleteShelfRequest, Empty> deleteShelfCallable() {
     return deleteShelfCallable;
   }
 
-  // ----- mergeShelves -----
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Merges two shelves by adding all books from the shelf named
    * `other_shelf_name` to shelf `name`, and deletes
@@ -777,23 +660,20 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   Shelf response = libraryServiceApi.mergeShelves(formattedName, formattedOtherShelfName);
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param name The name of the shelf we're adding books to.
    * @param otherShelfName The name of the shelf we're removing books from and deleting.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Shelf mergeShelves(String name, String otherShelfName) {
-    SHELF_PATH_TEMPLATE.validate(name);
-    SHELF_PATH_TEMPLATE.validate(otherShelfName);
+    SHELF_PATH_TEMPLATE.validate(name, "mergeShelves");
+    SHELF_PATH_TEMPLATE.validate(otherShelfName, "mergeShelves");
     MergeShelvesRequest request =
         MergeShelvesRequest.newBuilder()
         .setName(name)
@@ -802,7 +682,7 @@ public class LibraryServiceApi implements AutoCloseable {
     return mergeShelves(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Merges two shelves by adding all books from the shelf named
    * `other_shelf_name` to shelf `name`, and deletes
@@ -810,7 +690,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   MergeShelvesRequest request = MergeShelvesRequest.newBuilder()
@@ -821,17 +701,14 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public Shelf mergeShelves(MergeShelvesRequest request) {
+  public final Shelf mergeShelves(MergeShelvesRequest request) {
     return mergeShelvesCallable().call(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Merges two shelves by adding all books from the shelf named
    * `other_shelf_name` to shelf `name`, and deletes
@@ -839,7 +716,7 @@ public class LibraryServiceApi implements AutoCloseable {
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   MergeShelvesRequest request = MergeShelvesRequest.newBuilder()
@@ -851,39 +728,30 @@ public class LibraryServiceApi implements AutoCloseable {
    *   Shelf response = future.get();
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<MergeShelvesRequest, Shelf> mergeShelvesCallable() {
     return mergeShelvesCallable;
   }
 
-  // ----- createBook -----
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Creates a book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   Book book = Book.newBuilder().build();
    *   Book response = libraryServiceApi.createBook(formattedName, book);
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param name The name of the shelf in which the book is created.
    * @param book The book to create.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book createBook(String name, Book book) {
-    SHELF_PATH_TEMPLATE.validate(name);
-
+    SHELF_PATH_TEMPLATE.validate(name, "createBook");
     CreateBookRequest request =
         CreateBookRequest.newBuilder()
         .setName(name)
@@ -892,13 +760,13 @@ public class LibraryServiceApi implements AutoCloseable {
     return createBook(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Creates a book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
@@ -909,23 +777,20 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public Book createBook(CreateBookRequest request) {
+  public final Book createBook(CreateBookRequest request) {
     return createBookCallable().call(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Creates a book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   Book book = Book.newBuilder().build();
    *   CreateBookRequest request = CreateBookRequest.newBuilder()
@@ -937,23 +802,18 @@ public class LibraryServiceApi implements AutoCloseable {
    *   Book response = future.get();
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<CreateBookRequest, Book> createBookCallable() {
     return createBookCallable;
   }
 
-  // ----- publishSeries -----
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Creates a series of books.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   int edition = 0;
@@ -961,17 +821,12 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param shelf The shelf in which the series is created.
    * @param books The books to publish in the series.
    * @param edition The edition of the series
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final PublishSeriesResponse publishSeries(Shelf shelf, List<Book> books, int edition) {
-
-
     PublishSeriesRequest request =
         PublishSeriesRequest.newBuilder()
         .setShelf(shelf)
@@ -981,13 +836,13 @@ public class LibraryServiceApi implements AutoCloseable {
     return publishSeries(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Creates a series of books.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
@@ -998,23 +853,20 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public PublishSeriesResponse publishSeries(PublishSeriesRequest request) {
+  public final PublishSeriesResponse publishSeries(PublishSeriesRequest request) {
     return publishSeriesCallable().call(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Creates a series of books.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   Shelf shelf = Shelf.newBuilder().build();
    *   List&lt;Book&gt; books = new ArrayList&lt;&gt;();
    *   PublishSeriesRequest request = PublishSeriesRequest.newBuilder()
@@ -1026,36 +878,28 @@ public class LibraryServiceApi implements AutoCloseable {
    *   PublishSeriesResponse response = future.get();
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<PublishSeriesRequest, PublishSeriesResponse> publishSeriesCallable() {
     return publishSeriesCallable;
   }
 
-  // ----- getBook -----
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Gets a book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   Book response = libraryServiceApi.getBook(formattedName);
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param name The name of the book to retrieve.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book getBook(String name) {
-    BOOK_PATH_TEMPLATE.validate(name);
+    BOOK_PATH_TEMPLATE.validate(name, "getBook");
     GetBookRequest request =
         GetBookRequest.newBuilder()
         .setName(name)
@@ -1063,13 +907,13 @@ public class LibraryServiceApi implements AutoCloseable {
     return getBook(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Gets a book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(formattedName)
@@ -1078,23 +922,20 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  private Book getBook(GetBookRequest request) {
+  private final Book getBook(GetBookRequest request) {
     return getBookCallable().call(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Gets a book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   GetBookRequest request = GetBookRequest.newBuilder()
    *     .setName(formattedName)
@@ -1104,41 +945,32 @@ public class LibraryServiceApi implements AutoCloseable {
    *   Book response = future.get();
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<GetBookRequest, Book> getBookCallable() {
     return getBookCallable;
   }
 
-  // ----- listBooks -----
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Lists books in a shelf.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   String filter = "";
-   *   for (Book elements : libraryServiceApi.listBooks(formattedName, filter)) {
-   *     // doThingsWith(elements);
+   *   for (Book element : libraryServiceApi.listBooks(formattedName, filter)) {
+   *     // doThingsWith(element);
    *   }
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    *
    * @param name The name of the shelf whose books we'd like to list.
    * @param filter To test python built-in wrapping.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final PageAccessor<Book> listBooks(String name, String filter) {
-    SHELF_PATH_TEMPLATE.validate(name);
-
+    SHELF_PATH_TEMPLATE.validate(name, "listBooks");
     ListBooksRequest request =
         ListBooksRequest.newBuilder()
         .setName(name)
@@ -1147,25 +979,22 @@ public class LibraryServiceApi implements AutoCloseable {
     return listBooks(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Lists books in a shelf.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setName(formattedName)
    *     .build();
-   *   for (Book elements : libraryServiceApi.listBooks(request)) {
-   *     // doThingsWith(elements);
+   *   for (Book element : libraryServiceApi.listBooks(request)) {
+   *     // doThingsWith(element);
    *   }
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
@@ -1175,47 +1004,44 @@ public class LibraryServiceApi implements AutoCloseable {
         .call(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Lists books in a shelf.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setName(formattedName)
    *     .build();
    *   ListenableFuture&lt;PageAccessor&lt;Book&gt;&gt; future = libraryServiceApi.listBooksPagedCallable().futureCall(request);
    *   // Do something
-   *   for (Book elements : future.get()) {
-   *     // doThingsWith(elements);
+   *   for (Book element : future.get()) {
+   *     // doThingsWith(element);
    *   }
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<ListBooksRequest, PageAccessor<Book>> listBooksPagedCallable() {
     return listBooksPagedCallable;
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Lists books in a shelf.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   ListBooksRequest request = ListBooksRequest.newBuilder()
    *     .setName(formattedName)
    *     .build();
    *   while (true) {
    *     ListBooksResponse response = libraryServiceApi.listBooksCallable().call(request);
-   *     for (Book elements : response.getBooksList()) {
-   *       // doThingsWith(elements);
+   *     for (Book element : response.getBooksList()) {
+   *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
    *     if (!Strings.isNullOrEmpty(nextPageToken)) {
@@ -1226,36 +1052,28 @@ public class LibraryServiceApi implements AutoCloseable {
    *   }
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<ListBooksRequest, ListBooksResponse> listBooksCallable() {
     return listBooksCallable;
   }
 
-  // ----- deleteBook -----
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Deletes a book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   libraryServiceApi.deleteBook(formattedName);
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param name The name of the book to delete.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final void deleteBook(String name) {
-    BOOK_PATH_TEMPLATE.validate(name);
+    BOOK_PATH_TEMPLATE.validate(name, "deleteBook");
     DeleteBookRequest request =
         DeleteBookRequest.newBuilder()
         .setName(name)
@@ -1263,13 +1081,13 @@ public class LibraryServiceApi implements AutoCloseable {
     deleteBook(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Deletes a book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
    *     .setName(formattedName)
@@ -1278,23 +1096,20 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  private void deleteBook(DeleteBookRequest request) {
+  private final void deleteBook(DeleteBookRequest request) {
     deleteBookCallable().call(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Deletes a book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   DeleteBookRequest request = DeleteBookRequest.newBuilder()
    *     .setName(formattedName)
@@ -1304,39 +1119,30 @@ public class LibraryServiceApi implements AutoCloseable {
    *   future.get();
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<DeleteBookRequest, Empty> deleteBookCallable() {
     return deleteBookCallable;
   }
 
-  // ----- updateBook -----
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Updates a book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   Book book = Book.newBuilder().build();
    *   Book response = libraryServiceApi.updateBook(formattedName, book);
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param name The name of the book to update.
    * @param book The book to update with.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book updateBook(String name, Book book) {
-    BOOK_PATH_TEMPLATE.validate(name);
-
+    BOOK_PATH_TEMPLATE.validate(name, "updateBook");
     UpdateBookRequest request =
         UpdateBookRequest.newBuilder()
         .setName(name)
@@ -1345,13 +1151,13 @@ public class LibraryServiceApi implements AutoCloseable {
     return updateBook(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Updates a book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   Book book = Book.newBuilder().build();
    *   FieldMask updateMask = FieldMask.newBuilder().build();
@@ -1360,9 +1166,6 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param name The name of the book to update.
    * @param book The book to update with.
    * @param updateMask A field mask to apply, rendered as an HTTP parameter.
@@ -1370,10 +1173,7 @@ public class LibraryServiceApi implements AutoCloseable {
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book updateBook(String name, Book book, FieldMask updateMask, com.google.example.library.v1.FieldMask physicalMask) {
-    BOOK_PATH_TEMPLATE.validate(name);
-
-
-
+    BOOK_PATH_TEMPLATE.validate(name, "updateBook");
     UpdateBookRequest request =
         UpdateBookRequest.newBuilder()
         .setName(name)
@@ -1384,13 +1184,13 @@ public class LibraryServiceApi implements AutoCloseable {
     return updateBook(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Updates a book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   Book book = Book.newBuilder().build();
    *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
@@ -1401,23 +1201,20 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public Book updateBook(UpdateBookRequest request) {
+  public final Book updateBook(UpdateBookRequest request) {
     return updateBookCallable().call(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Updates a book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   Book book = Book.newBuilder().build();
    *   UpdateBookRequest request = UpdateBookRequest.newBuilder()
@@ -1429,39 +1226,31 @@ public class LibraryServiceApi implements AutoCloseable {
    *   Book response = future.get();
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<UpdateBookRequest, Book> updateBookCallable() {
     return updateBookCallable;
   }
 
-  // ----- moveBook -----
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Moves a book to another shelf, and returns the new book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   Book response = libraryServiceApi.moveBook(formattedName, formattedOtherShelfName);
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param name The name of the book to move.
    * @param otherShelfName The name of the destination shelf.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book moveBook(String name, String otherShelfName) {
-    BOOK_PATH_TEMPLATE.validate(name);
-    SHELF_PATH_TEMPLATE.validate(otherShelfName);
+    BOOK_PATH_TEMPLATE.validate(name, "moveBook");
+    SHELF_PATH_TEMPLATE.validate(otherShelfName, "moveBook");
     MoveBookRequest request =
         MoveBookRequest.newBuilder()
         .setName(name)
@@ -1470,13 +1259,13 @@ public class LibraryServiceApi implements AutoCloseable {
     return moveBook(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Moves a book to another shelf, and returns the new book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   MoveBookRequest request = MoveBookRequest.newBuilder()
@@ -1487,23 +1276,20 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public Book moveBook(MoveBookRequest request) {
+  public final Book moveBook(MoveBookRequest request) {
     return moveBookCallable().call(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Moves a book to another shelf, and returns the new book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   String formattedOtherShelfName = LibraryServiceApi.formatShelfName("[SHELF]");
    *   MoveBookRequest request = MoveBookRequest.newBuilder()
@@ -1515,33 +1301,24 @@ public class LibraryServiceApi implements AutoCloseable {
    *   Book response = future.get();
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<MoveBookRequest, Book> moveBookCallable() {
     return moveBookCallable;
   }
 
-  // ----- listStrings -----
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Lists a primitive resource. To test go page streaming.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *
-   *   for (String elements : libraryServiceApi.listStrings()) {
-   *     // doThingsWith(elements);
+   *   for (String element : libraryServiceApi.listStrings()) {
+   *     // doThingsWith(element);
    *   }
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final PageAccessor<String> listStrings() {
@@ -1552,23 +1329,20 @@ public class LibraryServiceApi implements AutoCloseable {
     return listStrings(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Lists a primitive resource. To test go page streaming.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder()
    *     .build();
-   *   for (String elements : libraryServiceApi.listStrings(request)) {
-   *     // doThingsWith(elements);
+   *   for (String element : libraryServiceApi.listStrings(request)) {
+   *     // doThingsWith(element);
    *   }
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
@@ -1578,43 +1352,40 @@ public class LibraryServiceApi implements AutoCloseable {
         .call(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Lists a primitive resource. To test go page streaming.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder()
    *     .build();
    *   ListenableFuture&lt;PageAccessor&lt;String&gt;&gt; future = libraryServiceApi.listStringsPagedCallable().futureCall(request);
    *   // Do something
-   *   for (String elements : future.get()) {
-   *     // doThingsWith(elements);
+   *   for (String element : future.get()) {
+   *     // doThingsWith(element);
    *   }
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<ListStringsRequest, PageAccessor<String>> listStringsPagedCallable() {
     return listStringsPagedCallable;
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Lists a primitive resource. To test go page streaming.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   ListStringsRequest request = ListStringsRequest.newBuilder()
    *     .build();
    *   while (true) {
    *     ListStringsResponse response = libraryServiceApi.listStringsCallable().call(request);
-   *     for (String elements : response.getStringsList()) {
-   *       // doThingsWith(elements);
+   *     for (String element : response.getStringsList()) {
+   *       // doThingsWith(element);
    *     }
    *     String nextPageToken = response.getNextPageToken();
    *     if (!Strings.isNullOrEmpty(nextPageToken)) {
@@ -1625,23 +1396,18 @@ public class LibraryServiceApi implements AutoCloseable {
    *   }
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<ListStringsRequest, ListStringsResponse> listStringsCallable() {
     return listStringsCallable;
   }
 
-  // ----- addComments -----
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Adds comments to a book
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment commentsElement = Comment.newBuilder()
@@ -1652,16 +1418,12 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param name
    * @param comments
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final void addComments(String name, List<Comment> comments) {
-    BOOK_PATH_TEMPLATE.validate(name);
-
+    BOOK_PATH_TEMPLATE.validate(name, "addComments");
     AddCommentsRequest request =
         AddCommentsRequest.newBuilder()
         .setName(name)
@@ -1670,13 +1432,13 @@ public class LibraryServiceApi implements AutoCloseable {
     addComments(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Adds comments to a book
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment commentsElement = Comment.newBuilder()
@@ -1691,23 +1453,20 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public void addComments(AddCommentsRequest request) {
+  public final void addComments(AddCommentsRequest request) {
     addCommentsCallable().call(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Adds comments to a book
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   ByteString comment = ByteString.copyFromUtf8("");
    *   Comment commentsElement = Comment.newBuilder()
@@ -1723,36 +1482,28 @@ public class LibraryServiceApi implements AutoCloseable {
    *   future.get();
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<AddCommentsRequest, Empty> addCommentsCallable() {
     return addCommentsCallable;
   }
 
-  // ----- getBookFromArchive -----
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Gets a book from an archive.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
    *   Book response = libraryServiceApi.getBookFromArchive(formattedName);
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param name The name of the book to retrieve.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final Book getBookFromArchive(String name) {
-    ARCHIVED_BOOK_PATH_TEMPLATE.validate(name);
+    ARCHIVED_BOOK_PATH_TEMPLATE.validate(name, "getBookFromArchive");
     GetBookFromArchiveRequest request =
         GetBookFromArchiveRequest.newBuilder()
         .setName(name)
@@ -1760,13 +1511,13 @@ public class LibraryServiceApi implements AutoCloseable {
     return getBookFromArchive(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Gets a book from an archive.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setName(formattedName)
@@ -1775,23 +1526,20 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  private Book getBookFromArchive(GetBookFromArchiveRequest request) {
+  private final Book getBookFromArchive(GetBookFromArchiveRequest request) {
     return getBookFromArchiveCallable().call(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Gets a book from an archive.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatArchivedBookName("[ARCHIVE_PATH]", "[BOOK]");
    *   GetBookFromArchiveRequest request = GetBookFromArchiveRequest.newBuilder()
    *     .setName(formattedName)
@@ -1801,23 +1549,18 @@ public class LibraryServiceApi implements AutoCloseable {
    *   Book response = future.get();
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<GetBookFromArchiveRequest, Book> getBookFromArchiveCallable() {
     return getBookFromArchiveCallable;
   }
 
-  // ----- updateBookIndex -----
-
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Updates the index of a book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   String indexName = "default index";
    *   String indexMapItem = "";
@@ -1827,18 +1570,13 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param name The name of the book to update.
    * @param indexName The name of the index for the book
    * @param indexMap The index to update the book with
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
   public final void updateBookIndex(String name, String indexName, Map<String, String> indexMap) {
-    BOOK_PATH_TEMPLATE.validate(name);
-
-
+    BOOK_PATH_TEMPLATE.validate(name, "updateBookIndex");
     UpdateBookIndexRequest request =
         UpdateBookIndexRequest.newBuilder()
         .setName(name)
@@ -1848,13 +1586,13 @@ public class LibraryServiceApi implements AutoCloseable {
     updateBookIndex(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Updates the index of a book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   String indexName = "default index";
    *   String indexMapItem = "";
@@ -1869,23 +1607,20 @@ public class LibraryServiceApi implements AutoCloseable {
    * }
    * </code></pre>
    *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
-   *
    * @param request The request object containing all of the parameters for the API call.
    * @throws com.google.api.gax.grpc.ApiException if the remote call fails
    */
-  public void updateBookIndex(UpdateBookIndexRequest request) {
+  public final void updateBookIndex(UpdateBookIndexRequest request) {
     updateBookIndexCallable().call(request);
   }
 
-  // AUTO-GENERATED DOCUMENTATION AND METHOD - see instructions at the top of the file for editing.
+  // AUTO-GENERATED DOCUMENTATION AND METHOD
   /**
    * Updates the index of a book.
    *
    * Sample code:
    * <pre><code>
-   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.createWithDefaults()) {
+   * try (LibraryServiceApi libraryServiceApi = LibraryServiceApi.create()) {
    *   String formattedName = LibraryServiceApi.formatBookName("[SHELF]", "[BOOK]");
    *   String indexName = "default index";
    *   String indexMapItem = "";
@@ -1901,21 +1636,14 @@ public class LibraryServiceApi implements AutoCloseable {
    *   future.get();
    * }
    * </code></pre>
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   public final ApiCallable<UpdateBookIndexRequest, Empty> updateBookIndexCallable() {
     return updateBookIndexCallable;
   }
 
-
   /**
    * Initiates an orderly shutdown in which preexisting calls continue but new calls are immediately
    * cancelled.
-   *
-   * <!-- manual edit -->
-   * <!-- end manual edit -->
    */
   @Override
   public final void close() throws Exception {
@@ -1923,10 +1651,5 @@ public class LibraryServiceApi implements AutoCloseable {
       closeable.close();
     }
   }
-
-
-  // ========
-  // Manually-added methods: add custom (non-generated) methods after this point.
-  // ========
 
 }

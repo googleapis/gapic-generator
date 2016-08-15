@@ -1,16 +1,17 @@
 
 <?php
 /*
- * PRE-REQUISITES:
+ * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudmonitoring
- * 2. To install the client library with Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth.
+ * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'.
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
  */
 
 // Autoload Composer.
@@ -24,7 +25,8 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudMonitoring service.
 $service = new Google_Service_CloudMonitoring($client);
-// The project id. The value can be the numeric project ID or string-based project name.
+
+// * The project id. The value can be the numeric project ID or string-based project name.
 $project = '';
 
 $postBody = new Google_Service_CloudMonitoring_MetricDescriptor($client);
@@ -33,16 +35,17 @@ $response = $service->metricDescriptors->create($project, $postBody);
 
 <?php
 /*
- * PRE-REQUISITES:
+ * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudmonitoring
- * 2. To install the client library with Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth.
+ * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'.
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
  */
 
 // Autoload Composer.
@@ -56,25 +59,28 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudMonitoring service.
 $service = new Google_Service_CloudMonitoring($client);
-// The project ID to which the metric belongs.
+
+// * The project ID to which the metric belongs.
 $project = '';
-// Name of the metric.
+
+// * Name of the metric.
 $metric = '';
 
 $response = $service->metricDescriptors->delete($project, $metric);
 
 <?php
 /*
- * PRE-REQUISITES:
+ * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudmonitoring
- * 2. To install the client library with Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth.
+ * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'.
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
  */
 
 // Autoload Composer.
@@ -88,7 +94,8 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudMonitoring service.
 $service = new Google_Service_CloudMonitoring($client);
-// The project id. The value can be the numeric project ID or string-based project name.
+
+// * The project id. The value can be the numeric project ID or string-based project name.
 $project = '';
 
 $postBody = new Google_Service_CloudMonitoring_ListMetricDescriptorsRequest($client);
@@ -101,16 +108,17 @@ foreach ($response['metrics'] as $element) {
 
 <?php
 /*
- * PRE-REQUISITES:
+ * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudmonitoring
- * 2. To install the client library with Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth.
+ * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'.
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
  */
 
 // Autoload Composer.
@@ -124,13 +132,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudMonitoring service.
 $service = new Google_Service_CloudMonitoring($client);
-// The project ID to which this time series belongs. The value can be the numeric project ID or
-// string-based project name.
+
+// * The project ID to which this time series belongs. The value can be the numeric project ID or
+//   string-based project name.
 $project = '';
-// Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
-// compute.googleapis.com/instance/disk/read_ops_count.
+
+// * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+//   compute.googleapis.com/instance/disk/read_ops_count.
 $metric = '';
-// End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
+
+// * End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
 $youngest = '';
 
 $postBody = new Google_Service_CloudMonitoring_ListTimeseriesRequest($client);
@@ -143,16 +154,17 @@ foreach ($response['timeseries'] as $element) {
 
 <?php
 /*
- * PRE-REQUISITES:
+ * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudmonitoring
- * 2. To install the client library with Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth.
+ * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'.
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
  */
 
 // Autoload Composer.
@@ -166,7 +178,8 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudMonitoring service.
 $service = new Google_Service_CloudMonitoring($client);
-// The project ID. The value can be the numeric project ID or string-based project name.
+
+// * The project ID. The value can be the numeric project ID or string-based project name.
 $project = '';
 
 $postBody = new Google_Service_CloudMonitoring_WriteTimeseriesRequest($client);
@@ -175,16 +188,17 @@ $response = $service->timeseries->write($project, $postBody);
 
 <?php
 /*
- * PRE-REQUISITES:
+ * BEFORE RUNNING:
  * ---------------
  * 1. If not already done, enable the Cloud Monitoring API
  *    and check the quota for your project at
  *    https://console.developers.google.com/apis/api/cloudmonitoring
- * 2. To install the client library with Composer, check installation instructions at
- *    https://github.com/google/google-api-php-client.
- * 3. This sample uses Application Default Credentials for Auth.
+ * 2. This sample uses Application Default Credentials for authentication.
  *    If not already done, install the gcloud CLI from
- *    https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'.
+ *    https://cloud.google.com/sdk/ and run
+ *    'gcloud beta auth application-default login'
+ * 3. Install the PHP client library with Composer. Check installation
+ *    instructions at https://github.com/google/google-api-php-client.
  */
 
 // Autoload Composer.
@@ -198,13 +212,16 @@ $client->addScope('https://www.googleapis.com/auth/cloud-platform');
 
 // Create a new CloudMonitoring service.
 $service = new Google_Service_CloudMonitoring($client);
-// The project ID to which this time series belongs. The value can be the numeric project ID or
-// string-based project name.
+
+// * The project ID to which this time series belongs. The value can be the numeric project ID or
+//   string-based project name.
 $project = '';
-// Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
-// compute.googleapis.com/instance/disk/read_ops_count.
+
+// * Metric names are protocol-free URLs as listed in the Supported Metrics page. For example,
+//   compute.googleapis.com/instance/disk/read_ops_count.
 $metric = '';
-// End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
+
+// * End of the time interval (inclusive), which is expressed as an RFC 3339 timestamp.
 $youngest = '';
 
 $postBody = new Google_Service_CloudMonitoring_ListTimeseriesDescriptorsRequest($client);

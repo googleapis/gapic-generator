@@ -15,10 +15,15 @@
 package com.google.api.codegen;
 
 import com.google.api.tools.framework.aspects.documentation.model.DocumentationUtil;
+import com.google.api.tools.framework.model.Field;
 import com.google.api.tools.framework.model.Interface;
+import com.google.api.tools.framework.model.Method;
 import com.google.api.tools.framework.model.Model;
 import com.google.api.tools.framework.model.ProtoElement;
 import com.google.common.base.Preconditions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A CodegenContext that provides helpers specific to the use case of GAPIC (code-generation of
@@ -89,5 +94,33 @@ public class GapicContext extends CodegenContext {
           "A collection config was not present for entity name " + entityName);
     }
     return result;
+  }
+
+  /**
+   * Returns the list of optional fields from the given MethodConfig, excluding the Page Token field
+   */
+  public List<Field> removePageTokenFromFields(Iterable<Field> fields, MethodConfig methodConfig) {
+    List<Field> newFields = new ArrayList<>();
+    for (Field field : fields) {
+      if (methodConfig.isPageStreaming()
+          && field.equals(methodConfig.getPageStreaming().getRequestTokenField())) {
+        continue;
+      }
+      newFields.add(field);
+    }
+    return newFields;
+  }
+
+  /**
+   * Returns a list of simple RPC methods.
+   */
+  public List<Method> getNonStreamingMethods(Interface service) {
+    List<Method> simples = new ArrayList<>(service.getMethods().size());
+    for (Method method : service.getMethods()) {
+      if (!method.getRequestStreaming() && !method.getResponseStreaming()) {
+        simples.add(method);
+      }
+    }
+    return simples;
   }
 }

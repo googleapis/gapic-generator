@@ -1,4 +1,4 @@
-@extends "common.snip"
+@extends "py/common.snip"
 
 # Generate code samples for method-level documentation.
 @snippet generateMethodSampleCode(docConfig)
@@ -13,7 +13,7 @@
         {@prompt} from google.gax import CallOptions, INITIAL_PAGE
       @end
       {@prompt} api = {@ApiName}()
-      @if initCode 
+      @if initCode
         {@initCode}
       @end
       @if docConfig.isIterableResponse
@@ -66,7 +66,7 @@
 @end
 
 # Helper method for initLineStructure()
-@private initLineStructureArgs(line) 
+@private initLineStructureArgs(line)
   @join fieldSetting : line.getFieldSettings on ", "
     {@formattedIdentifier(fieldSetting)}
   @end
@@ -85,7 +85,7 @@
 # Helper method for initLineList()
 @private initList(line)
   @join identifier : line.getElementIdentifiers on ", "
-    {@identifier}
+    {@identifier.toLowerUnderscore}
   @end
 @end
 
@@ -93,7 +93,7 @@
 @private initMap(line)
   @join key : line.getElementIdentifierKeys vertical on ","
     @let identifierValue = line.getElementIdentifierValue(key)
-      {@context.renderPrimitiveValue(line.getKeyType, key)}: {@identifierValue}
+      {@context.renderPrimitiveValue(line.getKeyType, key)}: {@identifierValue.toLowerUnderscore}
     @end
   @end
 @end
@@ -105,7 +105,7 @@
 
 # Properly format an identifier for this language
 @private formattedIdentifier(lineOrFieldSetting)
-  {@lineOrFieldSetting.getIdentifier}
+  {@lineOrFieldSetting.getIdentifier.toLowerUnderscore}
 @end
 
 # Value for simple argument
@@ -146,7 +146,7 @@
   @end
 @end
 
-# Optionally render the options argument for page streaming 
+# Optionally render the options argument for page streaming
 @private pageStreamingArg(argFields, isPageStreaming)
   @if isPageStreaming
     @if argFields.isEmpty

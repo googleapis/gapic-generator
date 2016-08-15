@@ -1,19 +1,21 @@
 
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google App Engine Admin API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/appengine
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -28,29 +30,32 @@ service = discovery.build('appengine', 'v1beta5', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
 # * Part of `name`. Name of the application to get. For example: "apps/myapp".
 appsId = ''
 
-request = service.apps().get(appsId)
+request = service.apps().get(appsId=appsId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google App Engine Admin API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/appengine
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -65,28 +70,33 @@ service = discovery.build('appengine', 'v1beta5', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
 # * Part of `name`. The name of the operation resource.
 appsId = ''
+
 # * Part of `name`. See documentation of `appsId`.
 operationsId = ''
 
-request = service.apps().operations().get(appsId, operationsId)
+request = service.apps().operations().get(appsId=appsId, operationsId=operationsId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google App Engine Admin API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/appengine
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -101,33 +111,36 @@ service = discovery.build('appengine', 'v1beta5', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
 # * Part of `name`. The name of the operation collection.
 appsId = ''
 
 operations = service.apps().operations()
-request = operations.list(appsId)
+request = operations.list(appsId=appsId)
 while request is not None:
     response = request.execute()
 
     for operation in response['operations']:
         # TODO: Add code here to process each 'operation' resource
 
-    request = operations.list_next(request, response)
+    request = operations.list_next(previous_request=request, previous_response=response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google App Engine Admin API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/appengine
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -142,31 +155,35 @@ service = discovery.build('appengine', 'v1beta5', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
+
 # * Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
 appsId = ''
+
 # * Part of `name`. See documentation of `appsId`.
 servicesId = ''
 
-request = service.apps().services().delete(appsId, servicesId)
+request = service.apps().services().delete(appsId=appsId, servicesId=servicesId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google App Engine Admin API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/appengine
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -181,28 +198,33 @@ service = discovery.build('appengine', 'v1beta5', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
+
 # * Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
 appsId = ''
+
 # * Part of `name`. See documentation of `appsId`.
 servicesId = ''
 
-request = service.apps().services().get(appsId, servicesId)
+request = service.apps().services().get(appsId=appsId, servicesId=servicesId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google App Engine Admin API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/appengine
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -217,33 +239,36 @@ service = discovery.build('appengine', 'v1beta5', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
 # * Part of `name`. Name of the resource requested. For example: "apps/myapp".
 appsId = ''
 
 services = service.apps().services()
-request = services.list(appsId)
+request = services.list(appsId=appsId)
 while request is not None:
     response = request.execute()
 
     for service in response['services']:
         # TODO: Add code here to process each 'service' resource
 
-    request = services.list_next(request, response)
+    request = services.list_next(previous_request=request, previous_response=response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google App Engine Admin API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/appengine
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -258,35 +283,39 @@ service = discovery.build('appengine', 'v1beta5', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
+
 # * Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
 appsId = ''
+
 # * Part of `name`. See documentation of `appsId`.
 servicesId = ''
 
-service = {
-# TODO: Add desired entries of the 'service' dict to be changed
+service_body = {
+# TODO: Add desired entries of the 'service_body' dict to be changed
 }
 
-request = service.apps().services().patch(appsId, servicesId, service)
+request = service.apps().services().patch(appsId=appsId, servicesId=servicesId, body=service_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google App Engine Admin API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/appengine
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -301,35 +330,39 @@ service = discovery.build('appengine', 'v1beta5', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'create' method:
+
 # * Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default".
 appsId = ''
+
 # * Part of `name`. See documentation of `appsId`.
 servicesId = ''
 
-version = {
-# TODO: Add desired entries of the 'version' dict
+version_body = {
+# TODO: Add desired entries of the 'version_body' dict
 }
 
-request = service.apps().services().versions().create(appsId, servicesId, version)
+request = service.apps().services().versions().create(appsId=appsId, servicesId=servicesId, body=version_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google App Engine Admin API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/appengine
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -344,33 +377,39 @@ service = discovery.build('appengine', 'v1beta5', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'delete' method:
-# * Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default/versions/v1".
+
+# * Part of `name`. Name of the resource requested. For example:
+#   "apps/myapp/services/default/versions/v1".
 appsId = ''
+
 # * Part of `name`. See documentation of `appsId`.
 servicesId = ''
+
 # * Part of `name`. See documentation of `appsId`.
 versionsId = ''
 
-request = service.apps().services().versions().delete(appsId, servicesId, versionsId)
+request = service.apps().services().versions().delete(appsId=appsId, servicesId=servicesId, versionsId=versionsId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google App Engine Admin API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/appengine
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -385,30 +424,37 @@ service = discovery.build('appengine', 'v1beta5', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'get' method:
-# * Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default/versions/v1".
+
+# * Part of `name`. Name of the resource requested. For example:
+#   "apps/myapp/services/default/versions/v1".
 appsId = ''
+
 # * Part of `name`. See documentation of `appsId`.
 servicesId = ''
+
 # * Part of `name`. See documentation of `appsId`.
 versionsId = ''
 
-request = service.apps().services().versions().get(appsId, servicesId, versionsId)
+request = service.apps().services().versions().get(appsId=appsId, servicesId=servicesId, versionsId=versionsId)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google App Engine Admin API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/appengine
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -423,34 +469,41 @@ service = discovery.build('appengine', 'v1beta5', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
-# * Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default/versions/v1".
+
+# * Part of `name`. Name of the resource requested. For example:
+#   "apps/myapp/services/default/versions/v1".
 appsId = ''
+
 # * Part of `name`. See documentation of `appsId`.
 servicesId = ''
+
 # * Part of `name`. See documentation of `appsId`.
 versionsId = ''
 
 instances = service.apps().services().versions().instances()
-request = instances.list(appsId, servicesId, versionsId)
+request = instances.list(appsId=appsId, servicesId=servicesId, versionsId=versionsId)
 while request is not None:
     response = request.execute()
 
     for instance in response['instances']:
         # TODO: Add code here to process each 'instance' resource
 
-    request = instances.list_next(request, response)
+    request = instances.list_next(previous_request=request, previous_response=response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google App Engine Admin API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/appengine
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -465,35 +518,39 @@ service = discovery.build('appengine', 'v1beta5', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'list' method:
+
 # * Part of `name`. Name of the resource requested. For example: "apps/myapp/services/default".
 appsId = ''
+
 # * Part of `name`. See documentation of `appsId`.
 servicesId = ''
 
 versions = service.apps().services().versions()
-request = versions.list(appsId, servicesId)
+request = versions.list(appsId=appsId, servicesId=servicesId)
 while request is not None:
     response = request.execute()
 
     for version in response['versions']:
         # TODO: Add code here to process each 'version' resource
 
-    request = versions.list_next(request, response)
+    request = versions.list_next(previous_request=request, previous_response=response)
 """
-PRE-REQUISITES:
+BEFORE RUNNING:
 ---------------
 1. If not already done, enable the Google App Engine Admin API
    and check the quota for your project at
    https://console.developers.google.com/apis/api/appengine
-2. Install python client library for Google APIs using 'pip install --upgrade google-api-python-client'
-3. This sample uses Application Default Credentials for Auth. If not already done, install the gcloud CLI from
-   https://cloud.google.com/sdk/ and run 'gcloud beta auth application-default login'
+2. This sample uses Application Default Credentials for authentication.
+   If not already done, install the gcloud CLI from
+   https://cloud.google.com/sdk/ and run
+   'gcloud beta auth application-default login'
+3. Install the Python client library for Google APIs by running
+   'pip install --upgrade google-api-python-client'
 """
 
-from __future__ import print_function
-import json
+from pprint import pprint
 
-from apiclient import discovery
+from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
 # Authentication is provided by the 'gcloud' tool when running locally
@@ -508,19 +565,23 @@ service = discovery.build('appengine', 'v1beta5', credentials=credentials)
 
 
 # TODO: Change placeholders below to appropriate parameter values for the 'patch' method:
-# * Part of `name`. Name of the resource to update. For example: "apps/myapp/services/default/versions/1".
+
+# * Part of `name`. Name of the resource to update. For example:
+#   "apps/myapp/services/default/versions/1".
 appsId = ''
+
 # * Part of `name`. See documentation of `appsId`.
 servicesId = ''
+
 # * Part of `name`. See documentation of `appsId`.
 versionsId = ''
 
-version = {
-# TODO: Add desired entries of the 'version' dict to be changed
+version_body = {
+# TODO: Add desired entries of the 'version_body' dict to be changed
 }
 
-request = service.apps().services().versions().patch(appsId, servicesId, versionsId, version)
+request = service.apps().services().versions().patch(appsId=appsId, servicesId=servicesId, versionsId=versionsId, body=version_body)
 response = request.execute()
 
 # TODO: Change code below to process the 'response' dict:
-print(json.dumps(response))
+pprint(response)

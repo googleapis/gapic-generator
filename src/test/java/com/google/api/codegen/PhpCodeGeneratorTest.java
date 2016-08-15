@@ -32,7 +32,7 @@ public class PhpCodeGeneratorTest extends GapicTestBase {
   public PhpCodeGeneratorTest(
       String name, String idForFactory, String[] gapicConfigFileNames, String snippetName) {
     super(name, idForFactory, gapicConfigFileNames, snippetName);
-    getTestDataLocator().addTestDataSource(com.google.api.codegen.php.PhpGapicContext.class, "");
+    getTestDataLocator().addTestDataSource(com.google.api.codegen.php.PhpContext.class, "");
   }
 
   /**

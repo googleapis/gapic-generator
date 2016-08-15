@@ -1,4 +1,4 @@
-@extends "../common.snip"
+@extends "common.snip"
 
 @snippet generateFilename(method)
   {@method.getName}.frag.go
@@ -11,16 +11,17 @@
 @snippet generateClass(method, body)
 package main
 
-// PRE-REQUISITES:
+// BEFORE RUNNING:
 // ---------------
 // 1. If not already done, enable the {@context.getService.getTitle}
 //    and check the quota for your project at
 //    https://console.developers.google.com/apis/api/{@context.getApi.getName}
-// 2. This sample uses Application Default Credentials for authentication. If
-//    not already done, install the gcloud CLI from https://cloud.google.com/sdk/
-//    and run 'gcloud beta auth application-default login'
-// 3. To install the client library, run:
-//    go get -u google.golang.org/api/{@context.getApi.getName}/{@context.getApiVersion}
+// 2. This sample uses Application Default Credentials for authentication.
+//    If not already done, install the gcloud CLI from
+//    https://cloud.google.com/sdk/ and run
+//    'gcloud beta auth application-default login'
+// 3. Install and update the Go dependencies by running 'go get -u' in the
+//    project directory.
 
 import (
   "golang.org/x/net/context"
@@ -117,10 +118,7 @@ func main() {
         paramField = context.getField(signatureType, param), \
         paramValue = context.typeDefaultValue(signatureType, paramField), \
         paramDescription = context.getApiaryConfig.getDescription(signatureType.getName, param)
-      @join line : context.lineWrapDoc(paramDescription, 100)
-        // {@line}
-      @end
-
+      {@description(paramDescription)}
       {@unclashVar(param)} := {@paramValue} // {@TODO()} Update placeholder value.
     @end
   @end
@@ -153,5 +151,11 @@ func main() {
     {@var}2
   @else
     {@var}
+  @end
+@end
+
+@private description(description)
+  @join line : context.lineWrapDoc(description, 100, "")
+    // {@line}
   @end
 @end
