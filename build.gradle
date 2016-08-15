@@ -7,18 +7,13 @@ buildscript {
   repositories {
     mavenLocal()
     maven {
-      // For 0.7.2-SNAPSHOT of protobuf gradle plugin. This should be removed once
-      // this version is releaed.
-      url 'https://oss.sonatype.org/content/repositories/snapshots/'
-    }
-    maven {
       url 'https://plugins.gradle.org/m2/'
     }
     mavenCentral()
     jcenter()
   }
   dependencies {
-    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.7'
+    classpath "com.google.protobuf:protobuf-gradle-plugin:0.7.3"
     classpath "gradle.plugin.com.github.sherter.google-java-format:google-java-format-gradle-plugin:0.2"
     classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
   }
@@ -37,8 +32,8 @@ sourceCompatibility = 1.7
 
 group = "com.google.api"
 version = "0.0.0-SNAPSHOT"
-// url to the snapshot repository of a private maven repo.
-def privateSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots/"
+// Nexus repository for publishing toolkit snapshots and downloading api-compiler snapshot.
+def nexusSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots/"
 
 // Dependencies
 // ------------
@@ -69,7 +64,7 @@ ext {
     // Protobuf
     protobuf: 'com.google.protobuf:protobuf-java:3.0.0-beta-3',
     protoc:  'com.google.protobuf:protoc:3.0.0-beta-3',
-    protobufGradlePlugin: 'com.google.protobuf:protobuf-gradle-plugin:0.7.7',
+    protobufGradlePlugin: 'com.google.protobuf:protobuf-gradle-plugin:0.7.3',
 
     // JSON
     jackson: 'com.fasterxml.jackson.core:jackson-databind:2.7.0',
@@ -83,8 +78,7 @@ repositories {
   mavenLocal()
   mavenCentral()
   maven {
-    // Private maven repo.
-    url privateSnapshotRepo
+    url nexusSnapshotRepo
   }
 }
 
@@ -249,12 +243,12 @@ tasks.cleanEclipseJdt {
   }
 }
 
-if (project.hasProperty('privateOssrhUsername') && project.hasProperty('privateOssrhPassword')) {
+if (project.hasProperty('privateToolkitUsername') && project.hasProperty('privateToolkitPassword')) {
   uploadArchives {
     repositories {
       mavenDeployer {
-        snapshotRepository(url: privateSnapshotRepo) {
-          authentication(userName: privateOssrhUsername, password: privateOssrhPassword)
+        snapshotRepository(url: nexusSnapshotRepo) {
+          authentication(userName: privateToolkitUsername, password: privateToolkitPassword)
         }
 
         pom.project {
@@ -274,8 +268,8 @@ if (project.hasProperty('privateOssrhUsername') && project.hasProperty('privateO
     }
   }
 } else {
-  logger.warn("The uploadArchives task was skipped. The privateOssrhUsername "
-    + "and privateOssrhPassword properties need to be set correctly in "
+  logger.warn("The uploadArchives task was skipped. The privateToolkitUsername "
+    + "and privateToolkitPassword properties need to be set correctly in "
     + "your ~/.gradle/gradle.properties file in order to upload archives.")
 }
 
